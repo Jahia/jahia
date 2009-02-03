@@ -1,0 +1,837 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+.redirectJahiaStyle {
+    background: url( "images/languageswitch/redirectLink.png" ) no-repeat top right;
+    padding-right: 10px;
+}
+
+.languageSwitching_horizontal_display ul li {
+    background-image: none;
+    background-position: 0 0;
+    padding: 3px 5px 3px 3px;
+    display: inline;
+    list-style-type: none;
+}
+
+.languageSwitching_horizontal_display ul li div {
+    display: inline;
+}
+
+.languageSwitching_vertical_display ul li {
+    background-image: none;
+    background-position: 0 0;
+    padding: 3px 5px 3px 3px;
+    list-style-type: none;
+}
+
+span.flag {
+    height: 16px;
+    padding-left: 12px;
+    padding-top: 2px;
+    display: inline;
+}
+
+span.flag a:hover {
+    text-decoration: none;
+}
+
+li.nameInLocale span,
+    li.letter span,
+    li.doubleLetter span,
+    li.nameCurrentLocale span,
+    li.languageCode span {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+li.nameInLocale div,
+    li.letter div,
+    li.doubleLetter div,
+    li.nameCurrentLocale div,
+    li.languageCode div {
+    text-decoration: none;  
+}
+
+span.flag_ar_off,
+    span.flag_ar_DZ_off,
+    span.flag_ar_BH_off,
+    span.flag_ar_EG_off,
+    span.flag_ar_IQ_off,
+    span.flag_ar_JO_off,
+    span.flag_ar_KW_off,
+    span.flag_ar_LB_off,
+    span.flag_ar_LY_off,
+    span.flag_ar_MA_off,
+    span.flag_ar_OM_off,
+    span.flag_ar_QA_off,
+    span.flag_ar_SA_off,
+    span.flag_ar_SD_off,
+    span.flag_ar_SY_off,
+    span.flag_ar_TN_off,
+    span.flag_ar_AE_off,
+    span.flag_ar_YE_off {
+    background: url( "images/flags/ar_off.png" ) no-repeat 0 0;
+}
+
+span.flag_ar_off:hover,
+    span.flag_ar_DZ_off:hover,
+    span.flag_ar_BH_off:hover,
+    span.flag_ar_EG_off:hover,
+    span.flag_ar_IQ_off:hover,
+    span.flag_ar_JO_off:hover,
+    span.flag_ar_KW_off:hover,
+    span.flag_ar_LB_off:hover,
+    span.flag_ar_LY_off:hover,
+    span.flag_ar_MA_off:hover,
+    span.flag_ar_OM_off:hover,
+    span.flag_ar_QA_off:hover,
+    span.flag_ar_SA_off:hover,
+    span.flag_ar_SD_off:hover,
+    span.flag_ar_SY_off:hover,
+    span.flag_ar_TN_off:hover,
+    span.flag_ar_AE_off:hover,
+    span.flag_ar_YE_off:hover {
+    background: url( "images/flags/ar_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ar_on,
+    span.flag_ar_DZ_on,
+    span.flag_ar_BH_on,
+    span.flag_ar_EG_on,
+    span.flag_ar_IQ_on,
+    span.flag_ar_JO_on,
+    span.flag_ar_KW_on,
+    span.flag_ar_LB_on,
+    span.flag_ar_LY_on,
+    span.flag_ar_MA_on,
+    span.flag_ar_OM_on,
+    span.flag_ar_QA_on,
+    span.flag_ar_SA_on,
+    span.flag_ar_SD_on,
+    span.flag_ar_SY_on,
+    span.flag_ar_TN_on,
+    span.flag_ar_AE_on,
+    span.flag_ar_YE_on {
+    background: url( "images/flags/ar_on.png" ) no-repeat 0 0;
+}
+
+span.flag_be_off,
+    span.flag_be_BY_off {
+    background: url( "images/flags/be_off.png" ) no-repeat 0 0;
+}
+
+span.flag_be_off:hover,
+    span.flag_be_BY_off:hover {
+    background: url( "images/flags/be_on.png" ) no-repeat 0 0;
+}
+
+span.flag_be_on,
+    span.flag_be_BY_on {
+    background: url( "images/flags/be_on.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_off,
+    span.flag_bg_BG_off {
+    background: url( "images/flags/bg_off.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_off:hover,
+    span.flag_bg_BG_off:hover {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
+}
+
+span.flag_bg_on,
+    span.flag_bg_BG_on {
+    background: url( "images/flags/bg_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_off,
+    span.flag_ca_ES_off {
+    background: url( "images/flags/ca_off.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_off:hover,
+    span.flag_ca_ES_off:hover {
+    background: url( "images/flags/ca_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ca_on,
+    span.flag_ca_ES_on {
+    background: url( "images/flags/ca_on.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_off,
+    span.flag_cs_CZ_off {
+    background: url( "images/flags/cs_off.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_off:hover,
+    span.flag_cs_CZ_off:hover {
+    background: url( "images/flags/cs_on.png" ) no-repeat 0 0;
+}
+
+span.flag_cs_on,
+    span.flag_cs_CZ_on {
+    background: url( "images/flags/cs_on.png" ) no-repeat 0 0;
+}
+
+span.flag_da_off,
+    span.flag_da_DK_off {
+    background: url( "images/flags/da_off.png" ) no-repeat 0 0;
+}
+
+span.flag_da_off:hover,
+    span.flag_da_DK_off:hover {
+    background: url( "images/flags/da_on.png" ) no-repeat 0 0;
+}
+
+span.flag_da_on,
+    span.flag_da_DK_on {
+    background: url( "images/flags/da_on.png" ) no-repeat 0 0;
+}
+
+span.flag_de_off,
+    span.flag_de_AT_off,
+    span.flag_de_DE_off,
+    span.flag_de_LU_off,
+    span.flag_de_CH_off {
+    background: url( "images/flags/de_off.png" ) no-repeat 0 0;
+}
+
+span.flag_de_off:hover,
+    span.flag_de_AT_off:hover,
+    span.flag_de_DE_off:hover,
+    span.flag_de_LU_off:hover,
+    span.flag_de_CH_off:hover {
+    background: url( "images/flags/de_on.png" ) no-repeat 0 0;
+}
+
+span.flag_de_on,
+    span.flag_de_AT_on,
+    span.flag_de_DE_on,
+    span.flag_de_LU_on,
+    span.flag_de_CH_on {
+    background: url( "images/flags/de_on.png" ) no-repeat 0 0;
+}
+
+span.flag_el_off,
+    span.flag_el_GR_off {
+    background: url( "images/flags/el_off.png" ) no-repeat 0 0;
+}
+
+span.flag_el_off:hover,
+    span.flag_el_GR_off:hover {
+    background: url( "images/flags/el_on.png" ) no-repeat 0 0;
+}
+
+span.flag_el_on,
+    span.flag_el_GR_on {
+    background: url( "images/flags/el_on.png" ) no-repeat 0 0;
+}
+
+span.flag_en_off,
+    span.flag_en_AU_off,
+    span.flag_en_CA_off,
+    span.flag_en_IN_off,
+    span.flag_en_IE_off,
+    span.flag_en_NZ_off,
+    span.flag_en_ZA_off,
+    span.flag_en_GB_off,
+    span.flag_en_US_off {
+    background: url( "images/flags/en_off.png" ) no-repeat 0 0;
+}
+
+span.flag_en_off:hover,
+    span.flag_en_AU_off:hover,
+    span.flag_en_CA_off:hover,
+    span.flag_en_IN_off:hover,
+    span.flag_en_IE_off:hover,
+    span.flag_en_NZ_off:hover,
+    span.flag_en_ZA_off:hover,
+    span.flag_en_GB_off:hover,
+    span.flag_en_US_off:hover {
+    background: url( "images/flags/en_on.png" ) no-repeat 0 0;
+}
+
+span.flag_en_on,
+    span.flag_en_AU_on,
+    span.flag_en_CA_on,
+    span.flag_en_IN_on,
+    span.flag_en_IE_on,
+    span.flag_en_NZ_on,
+    span.flag_en_ZA_on,
+    span.flag_en_GB_on,
+    span.flag_en_US_on {
+    background: url( "images/flags/en_on.png" ) no-repeat 0 0;
+}
+
+span.flag_es_off,
+    span.flag_es_AR_off,
+    span.flag_es_BO_off,
+    span.flag_es_CL_off,
+    span.flag_es_CO_off,
+    span.flag_es_CR_off,
+    span.flag_es_DO_off,
+    span.flag_es_EC_off,
+    span.flag_es_SV_off,
+    span.flag_es_GT_off,
+    span.flag_es_HN_off,
+    span.flag_es_MX_off,
+    span.flag_es_NI_off,
+    span.flag_es_PA_off,
+    span.flag_es_PY_off,
+    span.flag_es_PE_off,
+    span.flag_es_PR_off,
+    span.flag_es_ES_off,
+    span.flag_es_UY_off,
+    span.flag_es_VE_off {
+    background: url( "images/flags/es_off.png" ) no-repeat 0 0;
+}
+
+span.flag_es_off:hover,
+    span.flag_es_AR_off:hover,
+    span.flag_es_BO_off:hover,
+    span.flag_es_CL_off:hover,
+    span.flag_es_CO_off:hover,
+    span.flag_es_CR_off:hover,
+    span.flag_es_DO_off:hover,
+    span.flag_es_EC_off:hover,
+    span.flag_es_SV_off:hover,
+    span.flag_es_GT_off:hover,
+    span.flag_es_HN_off:hover,
+    span.flag_es_MX_off:hover,
+    span.flag_es_NI_off:hover,
+    span.flag_es_PA_off:hover,
+    span.flag_es_PY_off:hover,
+    span.flag_es_PE_off:hover,
+    span.flag_es_PR_off:hover,
+    span.flag_es_ES_off:hover,
+    span.flag_es_UY_off:hover,
+    span.flag_es_VE_off:hover {
+    background: url( "images/flags/es_on.png" ) no-repeat 0 0;
+}
+
+span.flag_es_on,
+    span.flag_es_AR_on,
+    span.flag_es_BO_on,
+    span.flag_es_CL_on,
+    span.flag_es_CO_on,
+    span.flag_es_CR_on,
+    span.flag_es_DO_on,
+    span.flag_es_EC_on,
+    span.flag_es_SV_on,
+    span.flag_es_GT_on,
+    span.flag_es_HN_on,
+    span.flag_es_MX_on,
+    span.flag_es_NI_on,
+    span.flag_es_PA_on,
+    span.flag_es_PY_on,
+    span.flag_es_PE_on,
+    span.flag_es_PR_on,
+    span.flag_es_ES_on,
+    span.flag_es_UY_on,
+    span.flag_es_VE_on {
+    background: url( "images/flags/es_on.png" ) no-repeat 0 0;
+}
+
+span.flag_et_off,
+    span.flag_et_EE_off {
+    background: url( "images/flags/et_off.png" ) no-repeat 0 0;
+}
+
+span.flag_et_off:hover,
+    span.flag_et_EE_off:hover {
+    background: url( "images/flags/et_on.png" ) no-repeat 0 0;
+}
+
+span.flag_et_on,
+    span.flag_et_EE_on {
+    background: url( "images/flags/et_on.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_off,
+    span.flag_fi_FI_off {
+    background: url( "images/flags/fi_off.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_off:hover,
+    span.flag_fi_FI_off:hover {
+    background: url( "images/flags/fi_on.png" ) no-repeat 0 0;
+}
+
+span.flag_fi_on,
+    span.flag_fi_FI_on {
+    background: url( "images/flags/fi_on.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_off,
+    span.flag_fr_BE_off,
+    span.flag_fr_CA_off,
+    span.flag_fr_FR_off,
+    span.flag_fr_LU_off,
+    span.flag_fr_CH_off {
+    background: url( "images/flags/fr_off.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_off:hover,
+    span.flag_fr_BE_off:hover,
+    span.flag_fr_CA_off:hover,
+    span.flag_fr_FR_off:hover,
+    span.flag_fr_LU_off:hover,
+    span.flag_fr_CH_off:hover {
+    background: url( "images/flags/fr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_fr_on,
+    span.flag_fr_BE_on,
+    span.flag_fr_CA_on,
+    span.flag_fr_FR_on,
+    span.flag_fr_LU_on,
+    span.flag_fr_CH_on {
+    background: url( "images/flags/fr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_off,
+    span.flag_hi_IN_off {
+    background: url( "images/flags/hi_off.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_off:hover,
+    span.flag_hi_IN_off:hover {
+    background: url( "images/flags/hi_on.png" ) no-repeat 0 0;
+}
+
+span.flag_hi_on,
+    span.flag_hi_IN_on {
+    background: url( "images/flags/hi_on.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_off,
+    span.flag_hr_HR_off {
+    background: url( "images/flags/hr_off.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_off:hover,
+    span.flag_hr_HR_off:hover {
+    background: url( "images/flags/hr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_hr_on,
+    span.flag_hr_HR_on {
+    background: url( "images/flags/hr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_off,
+    span.flag_hu_HU_off {
+    background: url( "images/flags/hu_off.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_off:hover,
+    span.flag_hu_HU_off:hover {
+    background: url( "images/flags/hu_on.png" ) no-repeat 0 0;
+}
+
+span.flag_hu_on,
+    span.flag_hu_HU_on {
+    background: url( "images/flags/hu_on.png" ) no-repeat 0 0;
+}
+
+span.flag_is_off,
+    span.flag_is_IS_off {
+    background: url( "images/flags/is_off.png" ) no-repeat 0 0;
+}
+
+span.flag_is_off:hover,
+    span.flag_is_IS_off:hover {
+    background: url( "images/flags/is_on.png" ) no-repeat 0 0;
+}
+
+span.flag_is_on,
+    span.flag_is_IS_on {
+    background: url( "images/flags/is_on.png" ) no-repeat 0 0;
+}
+
+span.flag_it_off,
+    span.flag_it_IT_off,
+    span.flag_it_CH_off {
+    background: url( "images/flags/it_off.png" ) no-repeat 0 0;
+}
+
+span.flag_it_off:hover,
+    span.flag_it_IT_off:hover,
+    span.flag_it_CH_off:hover {
+    background: url( "images/flags/it_on.png" ) no-repeat 0 0;
+}
+
+span.flag_it_on,
+    span.flag_it_IT_on,
+    span.flag_it_CH_on {
+    background: url( "images/flags/it_on.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_off,
+    span.flag_iw_IL_off {
+    background: url( "images/flags/iw_off.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_off:hover,
+    span.flag_iw_IL_off:hover {
+    background: url( "images/flags/iw_on.png" ) no-repeat 0 0;
+}
+
+span.flag_iw_on,
+    span.flag_iw_IL_on {
+    background: url( "images/flags/iw_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_off,
+    span.flag_ja_JP_off {
+    background: url( "images/flags/ja_off.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_off:hover,
+    span.flag_ja_JP_off:hover {
+    background: url( "images/flags/ja_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ja_on,
+    span.flag_ja_JP_on {
+    background: url( "images/flags/ja_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_off,
+    span.flag_ko_KR_off {
+    background: url( "images/flags/ko_off.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_off:hover,
+    span.flag_ko_KR_off:hover {
+    background: url( "images/flags/ko_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ko_on,
+    span.flag_ko_KR_on {
+    background: url( "images/flags/ko_on.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_off,
+    span.flag_lt_LT_off {
+    background: url( "images/flags/lt_off.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_off:hover,
+    span.flag_lt_LT_off:hover {
+    background: url( "images/flags/lt_on.png" ) no-repeat 0 0;
+}
+
+span.flag_lt_on,
+    span.flag_lt_LT_on {
+    background: url( "images/flags/lt_on.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_off,
+    span.flag_lv_LV_off {
+    background: url( "images/flags/lv_off.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_off:hover,
+    span.flag_lv_LV_off:hover {
+    background: url( "images/flags/lv_on.png" ) no-repeat 0 0;
+}
+
+span.flag_lv_on,
+    span.flag_lv_LV_on {
+    background: url( "images/flags/lv_on.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_off,
+    span.flag_mk_MK_off {
+    background: url( "images/flags/mk_off.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_off:hover,
+    span.flag_mk_MK_off:hover {
+    background: url( "images/flags/mk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_mk_on,
+    span.flag_mk_MK_on {
+    background: url( "images/flags/mk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_nl_off,
+    span.flag_nl_BE_off,
+    span.flag_nl_NL_off {
+    background: url( "images/flags/nl_off.png" ) no-repeat 0 0;
+}
+
+span.flag_nl_off:hover,
+    span.flag_nl_BE_off:hover,
+    span.flag_nl_NL_off:hover {
+    background: url( "images/flags/nl_on.png" ) no-repeat 0 0;
+}
+
+span.flag_nl_on,
+    span.flag_nl_BE_on,
+    span.flag_nl_NL_on {
+    background: url( "images/flags/nl_on.png" ) no-repeat 0 0;
+}
+
+span.flag_no_off,
+    span.flag_no_NO_NY_off,
+    span.flag_no_NO_off {
+    background: url( "images/flags/no_off.png" ) no-repeat 0 0;
+}
+
+span.flag_no_off:hover,
+    span.flag_no_NO_NY_off:hover,
+    span.flag_no_NO_off:hover {
+    background: url( "images/flags/no_on.png" ) no-repeat 0 0;
+}
+
+span.flag_no_on,
+    span.flag_no_NO_NY_on,
+    span.flag_no_NO_on {
+    background: url( "images/flags/no_on.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_off,
+    span.flag_pl_PL_off {
+    background: url( "images/flags/pl_off.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_off:hover,
+    span.flag_pl_PL_off:hover {
+    background: url( "images/flags/pl_on.png" ) no-repeat 0 0;
+}
+
+span.flag_pl_on,
+    span.flag_pl_PL_on {
+    background: url( "images/flags/pl_on.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_off,
+    span.flag_pt_BR_off,
+    span.flag_pt_PT_off {
+    background: url( "images/flags/pt_off.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_off:hover,
+    span.flag_pt_BR_off:hover,
+    span.flag_pt_PT_off:hover {
+    background: url( "images/flags/pt_on.png" ) no-repeat 0 0;
+}
+
+span.flag_pt_on,
+    span.flag_pt_BR_on,
+    span.flag_pt_PT_on {
+    background: url( "images/flags/pt_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_off,
+    span.flag_ro_RO_off {
+    background: url( "images/flags/ro_off.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_off:hover,
+    span.flag_ro_RO_off:hover {
+    background: url( "images/flags/ro_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ro_on,
+    span.flag_ro_RO_on {
+    background: url( "images/flags/ro_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_off,
+    span.flag_ru_RU_off {
+    background: url( "images/flags/ru_off.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_off:hover,
+    span.flag_ru_RU_off:hover {
+    background: url( "images/flags/ru_on.png" ) no-repeat 0 0;
+}
+
+span.flag_ru_on,
+    span.flag_ru_RU_on {
+    background: url( "images/flags/ru_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_off,
+    span.flag_sk_SK_off {
+    background: url( "images/flags/sk_off.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_off:hover,
+    span.flag_sk_SK_off:hover {
+    background: url( "images/flags/sk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sk_on,
+    span.flag_sk_SK_on {
+    background: url( "images/flags/sk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_off,
+    span.flag_sl_SI_off {
+    background: url( "images/flags/sl_off.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_off:hover,
+    span.flag_sl_SI_off:hover {
+    background: url( "images/flags/sl_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sl_on,
+    span.flag_sl_SI_on {
+    background: url( "images/flags/sl_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_off,
+    span.flag_sq_AL_off {
+    background: url( "images/flags/sq_off.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_off:hover,
+    span.flag_sq_AL_off:hover {
+    background: url( "images/flags/sq_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sq_on,
+    span.flag_sq_AL_on {
+    background: url( "images/flags/sq_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_off,
+    span.flag_sr_BA_off,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/sr_off.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_off:hover,
+    span.flag_sr_BA_off:hover,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/sr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sr_on,
+    span.flag_sr_BA_on,
+    span.flag_sr_CS_off {
+    background: url( "images/flags/sr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_off,
+    span.flag_sv_SE_off {
+    background: url( "images/flags/sv_off.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_off:hover,
+    span.flag_sv_SE_off:hover {
+    background: url( "images/flags/sv_on.png" ) no-repeat 0 0;
+}
+
+span.flag_sv_on,
+    span.flag_sv_SE_on {
+    background: url( "images/flags/sv_on.png" ) no-repeat 0 0;
+}
+
+span.flag_th_off,
+    span.flag_th_TH_TH_off,
+    span.flag_th_TH_off {
+    background: url( "images/flags/th_off.png" ) no-repeat 0 0;
+}
+
+span.flag_th_off:hover,
+    span.flag_th_TH_TH_off:hover,
+    span.flag_th_TH_off:hover {
+    background: url( "images/flags/th_on.png" ) no-repeat 0 0;
+}
+
+span.flag_th_on,
+    span.flag_th_TH_TH_on,
+    span.flag_th_TH_on {
+    background: url( "images/flags/th_on.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_off,
+    span.flag_tr_TR_off {
+    background: url( "images/flags/tr_off.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_off:hover,
+    span.flag_tr_TR_off:hover {
+    background: url( "images/flags/tr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_tr_on,
+    span.flag_tr_TR_on {
+    background: url( "images/flags/tr_on.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_off,
+    span.flag_uk_UA_off {
+    background: url( "images/flags/uk_off.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_off:hover,
+    span.flag_uk_UA_off:hover {
+    background: url( "images/flags/uk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_uk_on,
+    span.flag_uk_UA_on {
+    background: url( "images/flags/uk_on.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_off,
+    span.flag_zh_CN_off,
+    span.flag_zh_HK_off,
+    span.flag_zh_TW_off {
+    background: url( "images/flags/zh_off.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_off:hover,
+    span.flag_zh_CN_off:hover,
+    span.flag_zh_HK_off:hover,
+    span.flag_zh_TW_off:hover {
+    background: url( "images/flags/zh_on.png" ) no-repeat 0 0;
+}
+
+span.flag_zh_on,
+    span.flag_zh_CN_on,
+    span.flag_zh_HK_on,
+    span.flag_zh_TW_on {
+    background: url( "images/flags/zh_on.png" ) no-repeat 0 0;
+}

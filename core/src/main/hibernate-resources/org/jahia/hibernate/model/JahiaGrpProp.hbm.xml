@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaGrpProp"
+        table="jahia_grp_prop"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaGrpPropPK"
+        >
+                     <key-property
+                        name="id"
+                        type="java.lang.Integer"
+                        column="id_jahia_grp"
+                        length="11"
+                />
+
+                     <key-property
+                        name="name"
+                        type="java.lang.String"
+                        column="name_jahia_grp_prop"
+                        length="50"
+                />
+
+                     <key-property
+                        name="provider"
+                        type="java.lang.String"
+                        column="provider_jahia_grp_prop"
+                        length="50"
+                />
+
+                     <key-property
+                        name="groupKey"
+                        type="java.lang.String"
+                        column="grpkey_jahia_grp_prop"
+                        length="200"
+                />
+
+        </composite-id>
+
+        <property
+            name="value"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="value_jahia_grp_prop"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaGrpProp.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

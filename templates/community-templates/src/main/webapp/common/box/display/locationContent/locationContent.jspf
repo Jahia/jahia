@@ -1,0 +1,4 @@
+<li>street : <template:field name="locationStreet"/></li>
+<li>zipcode : <template:field name="locationZipCode"/></li>
+<li>town : <template:field name="locationTown"/></li>
+<li>country : <template:field name="locationCountry"/></li>

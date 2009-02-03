@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaResource"
+        table="jahia_resources"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaResourcePK"
+        >
+                     <key-property
+                        name="name"
+                        type="java.lang.String"
+                        column="name_resource"
+                        length="200"
+                />
+
+                     <key-property
+                        name="languageCode"
+                        type="java.lang.String"
+                        column="languagecode_resource"
+                        length="10"
+                />
+
+        </composite-id>
+
+        <property
+            name="value"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="value_resource"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaResource.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

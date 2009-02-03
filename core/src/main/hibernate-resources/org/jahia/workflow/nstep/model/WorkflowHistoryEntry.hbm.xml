@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.workflow.nstep.model.WorkflowHistoryEntry"
+        table="jahia_nstep_workflowhistory"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.Long"
+            unsaved-value="null"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-WorkflowHistoryEntry.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="action"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="action"
+            not-null="true"
+        />
+
+        <property
+            name="author"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="author"
+            not-null="true"
+        />
+
+        <property
+            name="comment"
+            type="text"
+            update="true"
+            insert="true"
+            access="property"
+            column="message"
+            length="1048576"
+            not-null="false"
+        />
+
+        <property
+            name="date"
+            type="timestamp"
+            update="true"
+            insert="true"
+            access="property"
+            column="actionDate"
+            not-null="true"
+        />
+
+        <property
+            name="languageCode"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="languageCode"
+            not-null="true"
+        />
+
+        <property
+            name="objectKey"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="objectKey"
+            not-null="true"
+        />
+
+        <property
+            name="process"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="process"
+            not-null="true"
+        />
+
+        <property
+            name="user"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="username"
+            not-null="true"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-WorkflowHistoryEntry.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

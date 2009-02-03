@@ -1,0 +1,75 @@
+<core_templates = 'http://www.jahia.org/jahia/core_template/nt/1.0'>
+
+[core_templates:faqQA] > jnt:container
+ - question (string,text) i15d
+ - answer (string,richtext) i15d
+
+[core_templates:faqContainer] > jnt:container
+ - faqTitle (string,text) i15d
+ + faqQA (core_templates:faqQA) *
+
+[core_templates:footer] > jnt:container
+ - footer (string,richtext) = "&copy; Copyright 2008 - Jahia Solutions" i15d
+
+[core_templates:basicLink] > jnt:container
+ + link (jnt:internalPageLink,jnt:externalPageLink)
+
+[core_templates:imageLink] > core_templates:basicLink
+ - linkImage (string,file)
+
+[core_templates:note] > jnt:container
+ - noteTitle (string,text) i15d
+ - noteBody (string,richtext) i15d
+
+[core_templates:footerModule] mixin
+  + basicLink (core_templates:basicLink) *
+
+[core_templates:headerModule] mixin
+  + imageLink (core_templates:imageLink) *
+
+[core_template:commentableNews] > jnt:newsContainer, jmix:rssable, jmix:commentable
+
+[core_templates:home] > jnt:page, core_templates:headerModule, core_templates:footerModule
+  + navLink (jnt:navLink) *
+  + columnA_box (jnt:filesBox,jnt:textsBox) *
+  + columnC_box (jnt:linksBox,jnt:textsBox) *
+  + news (core_template:commentableNews) *
+  + footer (core_templates:footer)
+
+[core_templates:double] > jnt:page, core_templates:headerModule, core_templates:footerModule
+  + navLink (jnt:navLink) *
+  + maincontentcolumnB (jnt:mainContentContainer) *
+  + maincontentcolumnC (jnt:mainContentContainer) *
+  + columnB_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
+  + columnC_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
+  + columnA_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
+  + note (core_templates:note) *
+
+[core_templates:faq] > jnt:page, core_templates:headerModule, core_templates:footerModule
+  + navLink (jnt:navLink) *
+  + columnA_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
+  + note (core_templates:note) *
+  + faq (core_templates:faqContainer) *
+
+[core_templates:full] > jnt:page, core_templates:headerModule, core_templates:footerModule
+  + navLink (jnt:navLink) *
+  + maincontent (jnt:mainContentContainer) *
+  + columnB_box (jnt:box) *
+
+[core_templates:layoutmanager] > jnt:page, core_templates:headerModule, core_templates:footerModule
+  + navLink (jnt:navLink) *
+  + columnB_box (jnt:box) *
+
+[core_templates:news] > jnt:page, core_templates:headerModule, core_templates:footerModule
+  + navLink (jnt:navLink) *
+  + news (core_template:commentableNews) *
+  + columnA_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
+  + note (core_templates:note) *
+
+[core_templates:simple] > jnt:page, core_templates:headerModule, core_templates:footerModule
+  + navLink (jnt:navLink) *
+  + columnB_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
+  + maincontent (jnt:mainContentContainer) *
+  + columnA_box (jnt:filesBox,jnt:textsBox,jnt:linksBox) *
+  + note (core_templates:note) *
+

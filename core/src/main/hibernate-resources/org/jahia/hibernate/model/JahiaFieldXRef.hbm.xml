@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaFieldXRef"
+        table="jahia_fieldreference"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaFieldXRefPK"
+        >
+                     <key-property
+                        name="fieldId"
+                        type="int"
+                        column="fieldId"
+                />
+
+                     <key-property
+                        name="language"
+                        type="java.lang.String"
+                        column="language"
+                        length="10"
+                />
+
+                     <key-property
+                        name="workflow"
+                        type="java.lang.Integer"
+                        column="workflow"
+                />
+
+                     <key-property
+                        name="target"
+                        type="java.lang.String"
+                        column="target"
+                        length="255"
+                />
+
+        </composite-id>
+
+        <property
+            name="siteId"
+            type="int"
+            update="true"
+            insert="true"
+            access="property"
+            column="siteId"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaFieldXRef.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

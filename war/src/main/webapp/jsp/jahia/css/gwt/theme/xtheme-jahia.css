@@ -1,0 +1,639 @@
+/*
+ * Ext JS Library 2.0.1
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+
+/*fix jahia-gxt , with:5000px ---> with:100%*/
+ul.x-tab-strip{display:block;width:100%;zoom:1;}
+
+.x-panel {
+    border-style: solid;
+    border-color: #b7cbd8;
+}
+.x-panel-header {
+    color:#333;
+	border:1px solid #b7cbd8;
+    background : #d0dfe8 url(../images/xtheme-jahia-andromeda/panel/white-top-bottom.gif) top left;
+}
+
+.x-panel-body {
+    border-color:#b7cbd8;
+	background-color:#fff;
+}
+
+.x-panel-bbar .x-toolbar {
+    border-color:#b7cbd8;
+}
+
+.x-panel-tbar .x-toolbar {
+    border-color:#b7cbd8;
+}
+
+.x-panel-tbar-noheader .x-toolbar, .x-panel-mc .x-panel-tbar .x-toolbar {
+    border-color:#b7cbd8;
+}
+.x-panel-body-noheader, .x-panel-mc .x-panel-body {
+    border-color:#b7cbd8;
+}
+.x-panel-tl .x-panel-header {
+    color:#333;
+}
+.x-panel-tc {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/top-bottom.gif);
+}
+.x-panel-tl {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/corners-sprite.gif);
+    border-color:#b7cbd8;
+}
+.x-panel-tr {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/corners-sprite.gif);
+}
+.x-panel-bc {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/top-bottom.gif);
+}
+.x-panel-bl {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/corners-sprite.gif);
+}
+.x-panel-br {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/corners-sprite.gif);
+}
+.x-panel-mc {
+    background:#e1e9ee;
+}
+.x-panel-mc .x-panel-body {
+    background:transparent;
+    border: 0 none;
+}
+.x-panel-ml {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/left-right.gif);
+}
+.x-panel-mr {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/left-right.gif);
+}
+
+/* Tools */
+.x-tool {
+    background-image:url(../images/xtheme-jahia-andromeda/panel/tool-sprites.gif);
+}
+
+/* Ghosting */
+.x-panel-ghost {
+    background:#b7cbd8;
+}
+
+.x-panel-ghost ul {
+    border-color:#b0b0b0;
+}
+
+.x-grid-panel .x-panel-mc .x-panel-body {
+    border:1px solid #b7cbd8;
+}
+
+/* Buttons */
+
+.x-btn-left{
+	background-image:url(../images/xtheme-jahia-andromeda/button/btn-sprite.gif);
+}
+.x-btn-right{
+	background-image:url(../images/xtheme-jahia-andromeda/button/btn-sprite.gif);
+}
+.x-btn-center{
+	background-image:url(../images/xtheme-jahia-andromeda/button/btn-sprite.gif);
+}
+
+/* Layout classes */
+
+.x-border-layout-ct {
+    background:#e1e9ee;
+}
+
+.x-accordion-hd {
+	background-image:url(../images/xtheme-jahia-andromeda/panel/light-hd.gif);
+}
+
+.x-layout-collapsed{
+    background-color:#eee;
+    border-color:#b7cbd8;
+}
+.x-layout-collapsed-over{
+	 background-color:#fbfbfb;
+}
+
+
+/* qtips */
+.x-tip .x-tip-top {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+.x-tip .x-tip-top-left {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+.x-tip .x-tip-top-right {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+.x-tip .x-tip-ft {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+.x-tip .x-tip-ft-left {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+.x-tip .x-tip-ft-right {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+.x-tip .x-tip-bd-left {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+.x-tip .x-tip-bd-right {
+	background-image:url(../images/xtheme-jahia-andromeda/qtip/tip-sprite.gif);
+}
+
+/* Toolbars */
+
+.x-toolbar{
+	border-color:#b7cbd8;
+    background:#f0f4f5 url(../images/xtheme-jahia-andromeda/toolbar/bg.gif) repeat-x top left;
+}
+.x-toolbar button {
+    color:#444;
+}
+
+.x-toolbar .x-btn-over .x-btn-left{
+	background-image:url(../images/xtheme-jahia-andromeda/toolbar/tb-btn-sprite.gif);
+}
+.x-toolbar .x-btn-over .x-btn-right{
+	background-image:url(../images/xtheme-jahia-andromeda/toolbar/tb-btn-sprite.gif);
+}
+.x-toolbar .x-btn-over .x-btn-center{
+	background-image:url(../images/xtheme-jahia-andromeda/toolbar/tb-btn-sprite.gif);
+}
+.x-toolbar .x-btn-over button {
+    color:#111;
+}
+.x-toolbar .x-btn-click .x-btn-left, .x-toolbar .x-btn-pressed .x-btn-left, .x-toolbar .x-btn-menu-active .x-btn-left{
+	background-image:url(../images/xtheme-jahia-andromeda/toolbar/tb-btn-sprite.gif);
+}
+.x-toolbar .x-btn-click .x-btn-right, .x-toolbar .x-btn-pressed .x-btn-right, .x-toolbar .x-btn-menu-active .x-btn-right{
+	background-image:url(../images/xtheme-jahia-andromeda/toolbar/tb-btn-sprite.gif);
+}
+
+.x-toolbar .x-btn-click .x-btn-center, .x-toolbar .x-btn-pressed .x-btn-center, .x-toolbar .x-btn-menu-active .x-btn-center{
+	background-image:url(../images/xtheme-jahia-andromeda/toolbar/tb-btn-sprite.gif);
+}
+.x-toolbar .ytb-sep {
+	background-image: url(../images/xtheme-jahia-andromeda/default/grid/grid-split.gif);
+}
+
+/* Tabs */
+
+.x-tab-panel-header, .x-tab-panel-footer {
+	background: #e9eff3;
+	border-color:#b7cbd8;
+}
+
+
+.x-tab-panel-header {
+	border-color:#b7cbd8;
+}
+
+.x-tab-panel-footer {
+	border-color:#b7cbd8;
+}
+
+ul.x-tab-strip-top{
+	background:#dbdbdb url(../images/xtheme-jahia-andromeda/tabs/tab-strip-bg.gif) repeat-x left top;
+	border-color:#b7cbd8;
+    padding-top: 2px;
+}
+
+ul.x-tab-strip-bottom{
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tab-strip-btm-bg.gif);
+	border-color:#b7cbd8;
+}
+
+.x-tab-strip span.x-tab-strip-text {
+	color:#333;
+}
+.x-tab-strip-over span.x-tab-strip-text {
+	color:#111;
+}
+
+.x-tab-strip-active span.x-tab-strip-text {
+	color:#333;
+}
+
+.x-tab-strip-disabled .x-tabs-text {
+	color:#aaaaaa;
+}
+
+.x-tab-strip-top .x-tab-right {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tabs-sprite.gif);
+}
+
+.x-tab-strip-top .x-tab-left {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tabs-sprite.gif);
+}
+.x-tab-strip-top .x-tab-strip-inner {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tabs-sprite.gif);
+}
+
+.x-tab-strip-bottom .x-tab-right {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tab-btm-inactive-right-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-left {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tab-btm-inactive-left-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-right {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tab-btm-right-bg.gif);
+}
+
+.x-tab-strip-bottom .x-tab-strip-active .x-tab-left {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tab-btm-left-bg.gif);
+}
+
+.x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tab-close.gif);
+}
+.x-tab-strip .x-tab-strip-closable a.x-tab-strip-close:hover{
+	background-image:url(../images/xtheme-jahia-andromeda/tabs/tab-close.gif);
+}
+
+.x-tab-panel-body {
+    border-color:#b7cbd8;
+    background:#fff;
+}
+.x-tab-panel-bbar .x-toolbar {
+    border-color: #b7cbd8;
+}
+
+.x-tab-panel-tbar .x-toolbar {
+    border-color: #b7cbd8;
+}
+
+.x-tab-panel-header-plain .x-tab-strip-spacer {
+    border-color:#b7cbd8;
+    background: #e7eef2;
+}
+
+.x-tab-scroller-left {
+    background-image: url(../images/xtheme-jahia-andromeda/tabs/scroll-left.gif);
+    border-color:#aeaeae;
+}
+.x-tab-scroller-right {
+    background-image: url(../images/xtheme-jahia-andromeda/tabs/scroll-right.gif);
+    border-color:#aeaeae;
+}
+
+/* Window */
+
+.x-window-proxy {
+    background:#b7cbd8;
+    border-color:#b0b0b0;
+}
+
+.x-window-tl .x-window-header {
+    color:#555;
+}
+.x-window-tc {
+	background-image:url(../images/xtheme-jahia-andromeda/window/top-bottom.png);
+}
+.x-window-tl {
+	background-image:url(../images/xtheme-jahia-andromeda/window/left-corners.png);
+}
+.x-window-tr {
+	background-image:url(../images/xtheme-jahia-andromeda/window/right-corners.png);
+}
+.x-window-bc {
+	background-image:url(../images/xtheme-jahia-andromeda/window/top-bottom.png);
+}
+.x-window-bl {
+	background-image:url(../images/xtheme-jahia-andromeda/window/left-corners.png);
+}
+.x-window-br {
+	background-image:url(../images/xtheme-jahia-andromeda/window/right-corners.png);
+}
+.x-window-mc {
+    border:1px solid #b7cbd8;
+    background:#e1e9ee;
+}
+
+.x-window-ml {
+	background-image:url(../images/xtheme-jahia-andromeda/window/left-right.png);
+}
+.x-window-mr {
+	background-image:url(../images/xtheme-jahia-andromeda/window/left-right.png);
+}
+.x-panel-ghost .x-window-tl {
+    border-color:#b7cbd8;
+}
+.x-panel-collapsed .x-window-tl {
+    border-color:#b7cbd8;
+}
+
+.x-window-plain .x-window-mc {
+    background: #e1e9ee;
+    border-right:1px solid #eee;
+    border-bottom:1px solid #eee;
+    border-top:1px solid #b7cbd8;
+    border-left:1px solid #b7cbd8;
+}
+
+.x-window-plain .x-window-body {
+    border-left:1px solid #eee;
+    border-top:1px solid #eee;
+    border-bottom:1px solid #b7cbd8;
+    border-right:1px solid #b7cbd8;
+    background:transparent !important;
+}
+
+body.x-body-masked .x-window-mc, body.x-body-masked .x-window-plain .x-window-mc {
+    background-color: #e4e4e4;
+}
+
+
+/* misc */
+.x-html-editor-wrap {
+    border-color:#b7cbd8;
+}
+
+/* Borders go last for specificity */
+.x-panel-noborder .x-panel-body-noborder {
+    border-width:0;
+}
+
+.x-panel-noborder .x-panel-header-noborder {
+    border-width:0;
+    border-bottom:1px solid #b7cbd8;
+}
+
+.x-panel-noborder .x-panel-tbar-noborder .x-toolbar {
+    border-width:0;
+    border-bottom:1px solid #b7cbd8;
+}
+
+.x-panel-noborder .x-panel-bbar-noborder .x-toolbar {
+    border-width:0;
+    border-top:1px solid #b7cbd8;
+}
+
+.x-window-noborder .x-window-mc {
+    border-width:0;
+}
+.x-window-plain .x-window-body-noborder {
+    border-width:0;
+}
+
+.x-tab-panel-noborder .x-tab-panel-body-noborder {
+	border-width:0;
+}
+
+.x-tab-panel-noborder .x-tab-panel-header-noborder {
+	border-top-width:0;
+	border-left-width:0;
+	border-right-width:0;
+}
+
+.x-tab-panel-noborder .x-tab-panel-footer-noborder {
+	border-bottom-width:0;
+	border-left-width:0;
+	border-right-width:0;
+}
+
+
+.x-tab-panel-bbar-noborder .x-toolbar {
+    border-width:0;
+    border-top:1px solid #b7cbd8;
+}
+
+.x-tab-panel-tbar-noborder .x-toolbar {
+    border-width:0;
+    border-bottom:1px solid #b7cbd8;
+}.x-border {
+  border: 1px solid #b7cbd8;
+}
+
+.x-layout-popup {
+  background-color: #F0F0F0;
+  border: 1px solid #b7cbd8;
+}
+
+.my-list {
+	  border: 1px solid #b7cbd8;
+}
+.my-info {
+  background: url(../images/xtheme-jahia-andromeda/info/info-bg.gif) no-repeat;
+}
+
+.my-tbl {
+	border: 1px solid #d4d4d4;
+}.my-treetbl {
+	border: 1px solid #d4d4d4;
+}
+.my-tbl-col {
+  border-right: 1px solid #d4d4d4;
+  background: url(../images/xtheme-jahia-andromeda/gxt/table/vs-column-bg.gif) repeat-x;
+}
+
+/*  */
+.my-tbl .my-tbl-col-over {
+  background: url(../images/xtheme-jahia-andromeda/gxt/table/vs-column-bg.gif) repeat-x 0px -24px;
+}
+
+.my-tbl .my-treetbl-item-over {
+  border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+  background: #efefef url(../images/xtheme-jahia-andromeda/gxt/table/row-over.gif) repeat-x left top;
+}
+.my-treetbl-item-sel {
+  background-image: none;
+  background-color: #dbedf4;
+  border-top: 1px dotted #9EB8ED;
+  border-bottom: 1px dotted #9EB8ED;
+}
+
+.my-tbl .my-tbl-item-over {
+  border-top: 1px solid #b7cbd8;
+  border-bottom: 1px solid #b7cbd8;
+  background: #efefef url(../images/xtheme-jahia-andromeda/gxt/table/row-over.gif) repeat-x left top;
+}
+.my-tbl-item-sel {
+  background-image: none;
+  background-color: #dbedf4;
+  border-top: 1px dotted #b7cbd8;
+  border-bottom: 1px dotted #b7cbd8;
+}
+/* 1573 1597 */
+.my-list-item-over .my-list-item-l {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat left -57px;
+}
+
+.my-list-item-over .my-list-item-icon,.my-list-item-over .my-list-item-check,.my-list-item-over .my-list-item-c
+  {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) repeat-x left -95px;
+}
+
+.my-list-item-over .my-list-item-r {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat right -76px;
+}
+
+.my-list-item-sel .my-list-item-l {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat left 0px;
+}
+
+.my-list-item-sel .my-list-item-icon,.my-list-item-sel .my-list-item-check,.my-list-item-sel .my-list-item-c
+  {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) left -38px;
+}
+
+.my-list-item-sel .my-list-item-r {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat right -19px;
+}
+/* 1924 1946 */
+.my-tree-over .my-tree-left {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat left -57px;
+}
+
+.my-tree-over .my-tree-right {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat right -76px;
+}
+
+.my-tree-over .my-tree-check,.my-tree-over .my-tree-icon,.my-tree-over .my-tree-item-text {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) left -95px;
+}
+
+.my-tree-sel .my-tree-left {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat left 0px;
+}
+
+.my-tree-sel .my-tree-right {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat right -19px;
+}
+
+.my-tree-sel .my-tree-check,.my-tree-sel .my-tree-icon,.my-tree-sel .my-tree-item-text {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) left -38px;
+}
+/* 2059 2079 */
+.my-treetbl-over .my-treetbl-right {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat right -76px;
+}
+
+.my-treetbl-over .my-treetbl-check,.my-treetbl-over .my-treetbl-icon,.my-treetbl-over .my-treetbl-item-text
+  {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) left -95px;
+}
+
+.my-treetbl-sel .my-treetbl-left {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat left 0px;
+}
+
+.my-treetbl-sel .my-treetbl-right {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) no-repeat right -19px;
+}
+
+.my-treetbl-sel .my-treetbl-check,.my-treetbl-sel .my-treetbl-icon,.my-treetbl-sel .my-treetbl-item-text
+  {
+  background: url(../images/xtheme-jahia-andromeda/gxt/shared/select-19-bg.gif) left -38px;
+}
+
+/*date picker*/
+/*487 534*/
+.x-date-picker{border:1px solid #b7cbd8;border-top:0 none;}
+.x-date-picker .x-date-middle,.x-date-picker .x-date-left,.x-date-picker .x-date-right{background:url(../images/xtheme-jahia-andromeda/shared/hd-sprite.gif) repeat-x 0 -83px;}
+.x-date-picker .x-date-right a{background-image:url(../images/xtheme-jahia-andromeda/shared/right-btn.gif) !important;}
+.x-date-picker .x-date-left a{background-image:url(../images/xtheme-jahia-andromeda/shared/left-btn.gif)!important;}
+.x-date-inner th{background:#dfecfb url(../images/xtheme-jahia-andromeda/shared/glass-bg.gif) repeat-x left top;border-bottom:1px solid #b7cbd8;color:#233d6d;}
+.x-date-inner td{border:1px solid #fff;text-align:right;padding:0;}
+.x-date-inner .x-date-selected a{background:#dfecfb url(../images/xtheme-jahia-andromeda/shared/glass-bg.gif) repeat-x left top;border:1px solid #8db2e3;padding:1px 4px;}
+.x-date-inner .x-date-today a{border:1px solid #df492d;}
+.x-date-bottom{padding:4px;border-top:1px solid #b7cbd8;background:#dfecfb url(../images/xtheme-jahia-andromeda/shared/glass-bg.gif) repeat-x left top;}
+.x-date-inner a:hover,.x-date-inner .x-date-disabled a:hover{color:black;background:#ddecfe;}
+.x-date-mp-btns button{background:#fff;color:black;border:1px solid;border-color:#b7cbd8;}
+.x-date-mp-btns{background:#fff url(../images/xtheme-jahia-andromeda/shared/glass-bg.gif) repeat-x left top;}
+.x-date-mp-btns td{border-top:1px solid #c5d2df}
+td.x-date-mp-month a,td.x-date-mp-year a{text-align:center;color:#15428b;}
+td.x-date-mp-month a:hover,td.x-date-mp-year a:hover{color:#15428b;text-decoration:none;cursor:pointer;background:#dbedf4;}
+td.x-date-mp-sel a{background:#fff url(../images/xtheme-jahia-andromeda/shared/glass-bg.gif) repeat-x left top;border:1px solid #b7cbd8;}
+.x-date-mp-ybtn a{background:transparent url(../images/xtheme-jahia-andromeda/panel/tool-sprites.gif) no-repeat;}
+td.x-date-mp-sep{border-right:1px solid #b7cbd8;}
+
+/*995 1078*/
+.x-date-right-icon {
+  background-image: url(../images/xtheme-jahia-andromeda/shared/right-btn.gif);
+}
+.x-date-left-icon {
+  background-image: url(../images/xtheme-jahia-andromeda/shared/left-btn.gif);
+}
+.x-date-days td {
+  background: #DFECFB url(../images/xtheme-jahia-andromeda/shared/glass-bg.gif) repeat-x scroll left top;
+  border-bottom: 1px solid #b7cbd8;
+}
+.x-date-picker .x-date-header {
+  background: url(../images/xtheme-jahia-andromeda/default/shared/hd-sprite.gif) repeat-x 0 -83px;
+}
+.x-date-left {
+  background: transparent url(../images/xtheme-jahia-andromeda/default/shared/hd-sprite.gif) repeat-x scroll 0pt -83px;
+}
+/* 1184 1265 */
+.x-date-right-icon {
+  background-image: url(../images/xtheme-jahia-andromeda/shared/right-btn.gif);
+}
+.x-date-left-icon {
+  background-image: url(../images/xtheme-jahia-andromeda/shared/left-btn.gif);
+}
+.x-date-days td {
+  background: #DFECFB url(../images/xtheme-jahia-andromeda/shared/glass-bg.gif) repeat-x scroll left top;
+  border-bottom: 1px solid #b7cbd8;
+}
+.x-date-picker .x-date-header {
+  background: url(../images/xtheme-jahia-andromeda/shared/hd-sprite.gif) repeat-x 0 -83px;
+}
+.x-date-left {
+  background: transparent url(../images/xtheme-jahia-andromeda/shared/hd-sprite.gif) repeat-x scroll 0pt -83px;
+}
+/* menu */
+.x-menu{border:1px solid #b7cbd8;background:#f0f0f0 url(../images/xtheme-jahia-andromeda/default/menu/menu.gif) repeat-y;}
+.x-menu-item-active{background:#dbedf4 url(../images/xtheme-jahia-andromeda/default/menu/item-over.gif) repeat-x left bottom;border:1px solid #dbedf4}
+.x-menu-item-checked .x-menu-group-item .x-menu-item-icon{background:transparent url(../images/xtheme-jahia-andromeda/default/menu/group-checked.gif) no-repeat center;}
+.x-menu-item-arrow{background:transparent url(../images/xtheme-jahia-andromeda/default/menu/menu-parent.gif) no-repeat right;}
+
+/*folders*/
+.x-tree-node-collapsed .x-tree-node-icon{background-image:url(../images/xtheme-jahia-andromeda/gxt/icons/folder.gif);}
+.tree-folder {
+  background: url(../images/xtheme-jahia-andromeda/gxt/icons/folder-closed.gif) no-repeat 0px 0px;
+}
+.tree-folder-open {
+  background: url(../images/xtheme-jahia-andromeda/gxt/icons/folder.gif) no-repeat 0px 0px;
+}
+.x-tree-node-expanded .x-tree-node-icon{background-image:url(../images/xtheme-jahia-andromeda/gxt/icons/folder-open.gif);}
+
+/*navigation page 308 -317*/
+.x-tbar-page-first{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-first.gif)!important;}
+.x-tbar-page-last{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-last.gif)!important;}
+.x-tbar-page-next{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-next.gif)!important;}
+.x-tbar-page-prev{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-prev.gif)!important;}
+
+.x-item-disabled .x-tbar-page-first{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-first-disabled.gif)!important;}
+.x-item-disabled .x-tbar-page-last{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-last-disabled.gif)!important;}
+.x-item-disabled .x-tbar-page-next{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-next-disabled.gif)!important;}
+.x-item-disabled .x-tbar-page-prev{background-image:url(../images/xtheme-jahia-andromeda/default/grid/page-prev-disabled.gif)!important;}
+
+.gwt-rss-previous {
+    padding-left: 2px;
+    width: 15px;
+    height: 15px;
+    float: left;
+    cursor: pointer;
+    background: transparent url(../images/xtheme-jahia-andromeda/default/grid/page-prev.gif) no-repeat;
+}
+
+.gwt-rss-next {
+    padding-right: 2px;
+    width: 15px;
+    height: 15px;
+    float: right;
+    cursor: pointer;
+    background: transparent url(../images/xtheme-jahia-andromeda/default/grid/page-next.gif) no-repeat;
+}

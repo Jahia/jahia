@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+      <groupId>org.jahia.server</groupId>
+      <artifactId>jahia-root</artifactId>
+      <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jahia.archetypes</groupId>
+  <artifactId>jahia-archetypes</artifactId>
+  <version>1.0</version>
+  <name>Jahia Archetypes</name>
+  <packaging>pom</packaging>  
+  
+  <modules>
+    <module>jahia-templates-archetype</module>
+    <module>jahia-web-templates-archetype</module>
+  </modules>  
+</project>

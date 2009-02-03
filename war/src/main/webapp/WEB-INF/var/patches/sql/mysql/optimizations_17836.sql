@@ -1,0 +1,10 @@
+alter table jahia_acl add hasentries_jahia_acl integer;
+update jahia_acl a set hasentries_jahia_acl=(select count(*) from jahia_acl_entries b where a.id_jahia_acl=b.id_jahia_acl);
+alter table jahia_fields_data drop ismdata_jahia_fields_data;
+alter table jahia_fields_data drop rank_jahia_fields_data ;
+alter table jahia_pages_data modify language_code varchar(10) not null;
+alter table jahia_pages_data drop counter_jahia_pages_data ;
+alter table jahia_pages_data drop doc_jahia_pages_data;
+alter table jahia_pages_data drop creator_jahia_pages_data;
+alter table jahia_obj modify type_jahia_obj varchar(22) not null;
+delete from jahia_link where type='reference';

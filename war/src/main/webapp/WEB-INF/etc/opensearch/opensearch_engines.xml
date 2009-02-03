@@ -1,0 +1,71 @@
+<opensearch>
+
+    <!-- search engine groups -->
+    <searchGroup name="jahia search" searchEngineNames="jahia,jahia-rss,jahia-file-rss" />
+    <searchGroup name="web search" searchEngineNames="amazon,ebay,google,google-news,flickr,liveSearch,wikipedia,yahoo,yahoo-news" />
+    <searchGroup name="web images search" searchEngineNames="flickr" />
+    <searchGroup name="jahia portlets search" searchEngineNames=""/>
+
+    <!-- search engines -->
+    <searchEngine name="amazon" urlType="text/html"><!-- search url result mimetypes : text/html, application/rss+xml, application/xhtml+xml -->
+        <descriptor type="application/opensearchdescription+xml">
+            amazon.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="ebay" urlType="text/html">
+        <descriptor type="application/opensearchdescription+xml">
+            ebay.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="google" urlType="text/html">
+        <descriptor type="application/opensearchdescription+xml">
+            google.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="google-news" urlType="application/rss+xml">
+        <descriptor type="application/opensearchdescription+xml">
+            google-news.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="flickr" urlType="application/rss+xml">
+        <descriptor type="application/opensearchdescription+xml">
+            flickr.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="liveSearch" urlType="application/rss+xml">
+        <descriptor type="application/opensearchdescription+xml">
+            live-search.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="wikipedia" urlType="text/html">
+        <descriptor type="application/opensearchdescription+xml">
+            wikipedia.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="yahoo" urlType="text/html">
+        <descriptor type="application/opensearchdescription+xml">
+            yahoo.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="yahoo-news" urlType="application/rss+xml">
+        <descriptor type="application/opensearchdescription+xml">
+            yahoo-news.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="jahia" urlType="text/html">
+        <descriptor type="application/opensearchdescription+xml">
+            jahia.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="jahia-rss" urlType="application/rss+xml">
+        <descriptor type="application/opensearchdescription+xml">
+            jahia-rss.xml
+        </descriptor>
+    </searchEngine>
+    <searchEngine name="jahia-file-rss" urlType="application/rss+xml">
+        <descriptor type="application/opensearchdescription+xml">
+            jahia-file-rss.xml
+        </descriptor>
+    </searchEngine>
+
+</opensearch>

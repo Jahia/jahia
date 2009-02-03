@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+    
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license
+    
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+
+-->
+
+<template-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.jahia.net/jahia/templates"
+              xsi:schemaLocation="http://www.jahia.net/jahia/templates http://www.jahia.net/shemas/templates_2_0.xsd">
+    <package-name>Jahia TCK templates (Jahia Test Compatibility Kit)</package-name>
+    <extends>Test and training templates</extends>
+    <root-folder>test_templates</root-folder>
+    <provider>http://www.jahia.org</provider>
+    <thumbnail>images/thumbnail/test_templates_tn.gif</thumbnail>
+    <resource-bundle>jahiatemplates.Test_templates</resource-bundle>
+    <definitions-file>definitions.cnd</definitions-file>
+    <definitions-file>definitions.grp</definitions-file>
+    <rules-file>rules.dsrl</rules-file>
+    <templates default="Simple" homepage="TestUnitHome">
+        <template name="TestUnitHome" display-name="template.name.testUnitHome" filename="home/testunitshome.jsp"
+                  visible="false" page-type="test_templates:home"/>
+        <template name="Simple" display-name="template.name.simple" filename="generic.jsp"
+                  page-type="test_templates:generic"/>
+        <template name="Container-types" display-name="template.name.containerTypes"
+                  filename="contentdef/conttype.jsp" page-type="test_templates:contType"
+                  description="description.template.containerTypes"/>
+        <template name="Using-Boxes" display-name="template.name.usingBoxes" filename="contentdef/usingBoxes.jsp"
+                  page-type="test_templates:usingBoxes" description="description.template.usingBoxes"/>
+        <template name="All-fields" display-name="template.name.allFields" filename="contentdef/allfields.jsp"
+                  page-type="test_templates:allFieldsTest" description="description.template.allFields"/>
+        <template name="All-fields-twice" display-name="template.name.allFieldsTwice"
+                  filename="contentdef/allfieldstwice.jsp" page-type="test_templates:allFieldsTwiceTest"
+                  description="description.template.allFieldsTwice"/>
+        <template name="All-selectors" display-name="template.name.allSelectors"
+                  filename="contentdef/allselectors.jsp" page-type="test_templates:allSelectorsTest"
+                  description="description.template.allSelectors"/>
+        <template name="Mixin-Types" display-name="template.name.mixinTypes"
+                  filename="contentdef/mixintypes.jsp" page-type="test_templates:mixinTypesTest"
+                  description="description.template.mixinTypes"/>
+        <template name="Validation" display-name="template.name.validation"
+                  description="description.template.validation" filename="contentdef/validation.jsp"
+                  page-type="test_templates:validation"/>
+        <template name="ContainerAddressing" display-name="template.name.containerAddressing"
+                  filename="contentview/addressing.jsp" page-type="test_templates:addressing"
+                  description="description.template.containerAddressing"/>
+        <template name="ContentExpressions" display-name="template.name.contentExpressions"
+                  filename="contentview/expressions.jsp" page-type="test_templates:expressions"
+                  description="description.template.contentExpressions"/>                  
+        <template name="QueryTags" display-name="template.name.queryTags" filename="contentview/querytags.jsp"
+                  page-type="test_templates:querytags" description="description.template.queryTags"/>
+        <template name="Custom-index-options" display-name="template.name.customIndexOptions"
+                  filename="search/customIndexOptions.jsp" page-type="test_templates:customIndexOptions"
+                  description="description.template.customIndexOptions"/>
+        <template name="SearchBasic" display-name="template.name.searchBasic" filename="search/searchFormBasic.jsp"
+                  page-type="test_templates:generic" description="description.template.searchBasic"/>
+        <template name="SearchDocuments" display-name="template.name.searchDocuments"
+                  filename="search/searchFormDocuments.jsp" page-type="test_templates:generic"
+                  description="description.template.searchDocuments"/>
+        <template name="SearchAllOptions" display-name="template.name.searchAllOptions"
+                  filename="search/searchFormAllOptions.jsp" page-type="test_templates:generic"
+                  description="description.template.searchAllOptions"/>
+        <template name="SearchExample" display-name="template.name.searchExample"
+                  filename="search/searchFormExample.jsp" page-type="test_templates:generic"
+                  description="description.template.searchExample"/>
+        <template name="MultilingualSearch" display-name="template.name.multilingualSearch"
+                  filename="search/multilingual_search.jsp" page-type="test_templates:multilingualSearch"
+                  description="description.template.multilingualSearch"/>
+        <template name="Language-switching" display-name="template.name.languageSwitching"
+                  filename="i18n/displayingLanguageSwitchingLinks.jsp"
+                  page-type="test_templates:displayingLanguageSwitchingLinks"
+                  description="description.template.languageSwitching"/>
+        <template name="Errors" display-name="template.name.errors" filename="errors/errors.jsp"
+                  page-type="test_templates:generic" description="description.template.errors"/>
+        <template name="Pickers" display-name="template.name.pickers" filename="miscellaneous/pickers.jsp"
+                  page-type="test_templates:generic" description="description.template.pickers"/>
+        <template name="Extensions" display-name="template.name.extensions"
+                  filename="contentdef/extensions.jsp" page-type="test_templates:extensions"
+                  description="description.template.extensions"/>
+        <template name="Cache" display-name="template.name.cache"
+                  filename="cache/containercache.jsp" page-type="test_templates:cache"
+                  description="description.template.cache"/>
+        <template name="Cache Tag" display-name="template.name.cachetag"
+                  filename="cache/tagcache.jsp" page-type="test_templates:tagcache"
+                  description="description.template.cachetag"/>
+        <template name="Rules" display-name="template.name.rules" filename="rules/rules.jsp" page-type="test_templates:rules" description="description.template.rules" />
+		<template name="Login" display-name="template.name.login" filename="security/login.jsp" 
+				  page-type="test_templates:login" description="description.template.login"/>
+        <template name="DateUtil" display-name="template.name.dateutil" filename="contentview/dateutil.jsp" 
+                  page-type="test_templates:dateutil" description="description.template.dateutil"/>
+        <template name="Boxtags" display-name="template.name.boxtags" filename="contentview/boxtags.jsp" 
+                  page-type="test_templates:boxtags" description="description.template.boxtags"/>
+        <template name="inherit" display-name="template.name.inherit" filename="templatedev/inherit.jsp" 
+                  page-type="test_templates:inherit" description="description.template.inherit"/>
+        <template name="DisplayTags" display-name="template.name.display" filename="contentview/displayTags.jsp" 
+                  page-type="test_templates:displaytags" description="description.template.display"/>
+        <template name="OpenSearch" display-name="template.name.openSearch" filename="search/opensearch.jsp" 
+                  page-type="test_templates:opensearch" description="description.template.openSearch"/>
+        <template name="ContentFormHandler" display-name="template.name.formhandler" filename="contentedit/formhandler.jsp" 
+                  page-type="test_templates:ContentFormHandler" description="description.template.formhandler"/>                  
+        
+        <!-- remove inherited -->
+        <template name="FAQ" display-name="template.name.faq" filename="faq.jsp" visible="false"
+                  page-type="core_templates:faq"/>
+        <template name="News" display-name="template.name.news" filename="news.jsp" visible="false"
+                  page-type="core_templates:news"/>
+        <template name="Home" display-name="template.name.home" filename="home.jsp" visible="false"
+                  page-type="core_templates:home"/>
+        <template name="Double" display-name="template.name.double" filename="double.jsp" visible="false"
+                  page-type="core_templates:double"/>
+        <template name="Full" display-name="template.name.full" filename="full.jsp" visible="false"
+                  page-type="core_templates:full"/>
+        <template name="LayoutManager" display-name="template.name.layoutManager" filename="layoutManager.jsp"
+                  visible="false" page-type="core_templates:layoutmanager"/>        
+        <template name="Form" display-name="template.name.form" filename="form/form.jsp"
+                  page-type="test_templates:form" description="description.template.form"/>                  
+
+    </templates>
+</template-set>

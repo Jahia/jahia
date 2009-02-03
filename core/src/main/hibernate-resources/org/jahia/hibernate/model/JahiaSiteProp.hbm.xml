@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaSiteProp"
+        table="jahia_site_prop"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="true"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaSitePropPK"
+        >
+                     <key-property
+                        name="id"
+                        type="java.lang.Integer"
+                        column="id_jahia_site"
+                />
+
+                     <key-property
+                        name="name"
+                        type="java.lang.String"
+                        column="name_jahia_site_prop"
+                        length="255"
+                />
+
+        </composite-id>
+
+        <property
+            name="siteId"
+            type="java.lang.Integer"
+            update="false"
+            insert="false"
+            access="property"
+            column="id_jahia_site"
+            unique="false"
+        />
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="false"
+            insert="false"
+            access="property"
+            column="name_jahia_site_prop"
+            unique="false"
+        />
+
+        <property
+            name="value"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="value_jahia_site_prop"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaSiteProp.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

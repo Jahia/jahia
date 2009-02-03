@@ -1,0 +1,15 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
+
+<%@ include file="../../common/declarations.jspf" %>
+<template:container id="mainContent" actionMenuNamePostFix="mainContent">
+
+    <div class="maincontent">
+        <h3><template:field name='mainContentTitle'/></h3>
+
+            <template:field name='mainContentAlign' valueBeanID="mainContentAlign" display="false"/>
+            <template:image file="mainContentImage" cssClassName="${mainContentAlign.defaultValue}"
+                            align="${mainContentAlign.defaultValue}"/>
+            <template:field name="mainContentBody"/>
+    </div>
+    <br class="clear"/>
+</template:container>

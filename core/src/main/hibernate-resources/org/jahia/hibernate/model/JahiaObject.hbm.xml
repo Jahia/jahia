@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaObject"
+        table="jahia_obj"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaObjectPK"
+        >
+                     <key-property
+                        name="id"
+                        type="java.lang.Integer"
+                        column="id_jahia_obj"
+                />
+
+                     <key-property
+                        name="type"
+                        type="java.lang.String"
+                        column="type_jahia_obj"
+                        length="22"
+                />
+
+        </composite-id>
+
+        <property
+            name="siteId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahiaid_jahia_obj"
+            length="11"
+        />
+
+        <property
+            name="timeBPState"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="timebpstate_jahia_obj"
+        />
+
+        <property
+            name="validFromDate"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            access="property"
+            column="validfrom_jahia_obj"
+        />
+
+        <property
+            name="validToDate"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            access="property"
+            column="validto_jahia_obj"
+        />
+
+        <many-to-one
+            name="retentionRule"
+            class="org.jahia.hibernate.model.JahiaRetentionRule"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+        >
+            <column
+                name="retrule_jahia_obj" 
+            />
+        </many-to-one>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaObject.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

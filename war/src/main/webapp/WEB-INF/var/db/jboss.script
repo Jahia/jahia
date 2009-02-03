@@ -1,0 +1,22 @@
+# Jahia JBoss Database configuration file
+
+jahia.database.name     =  HSQL database engine (stand alone)
+jahia.database.driver   =  org.hsqldb.jdbcDriver
+jahia.database.url      =  jdbc:hsqldb:hsql://localhost:1701
+jahia.database.user     =  sa
+jahia.database.pass     =
+jahia.database.transactions = false
+jahia.database.schemascriptdir = sql/schema/hypersonic
+jahia.database.popuplationscriptdir = sql/population
+jahia.database.starthsqlserver=false
+jahia.database.datasource = java:comp/env/jdbc/jetspeed
+#jahia.database.datasource=
+jahia.database.ojbplatform = Hsqldb
+jahia.database.hibernate.dialect = org.hibernate.dialect.HSQLDialect
+jahia.nested_transaction_allowed = false
+jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.HSQLDBDelegate
+jahia.quartz.serializable = false
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.BundleDbPersistenceManager
+jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
+jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
+jahia.jackrabbit.schema = default

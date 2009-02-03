@@ -1,0 +1,29 @@
+<project name="JahiaCluster" default="sync-nodes" basedir=".">
+  <description>
+      This script is used to synchronize the contents of two Tomcat installations. This
+      is useful for development environments where we want to sync changes.
+  </description>
+  <!-- set global properties for this build -->
+  <property name="node1.source.dir" value="c:/java/technologies/jakarta-tomcat"/>
+  <property name="node2.target.dir" value="c:/java/technologies/jakarta-tomcat-node2"/>
+  <property name="verboseCopy" value="false"/>
+  
+  <target name="sync-nodes">
+     <echo message="Synching nodes from ${node1.source.dir} to ${node2.target.dir}"/>     
+     <copy verbose="${verboseCopy}" todir="${node2.target.dir}/">
+       <fileset dir="${node1.source.dir}/">
+         <exclude name="bin/jahia.log*"/>
+         <exclude name="conf/server.xml"/>
+         <exclude name="logs/**"/>
+         <exclude name="work/**"/>
+         <exclude name="webapps/jahia/WEB-INF/etc/config/jahia.properties" />
+         <exclude name="webapps/jahia/WEB-INF/etc/jetspeed/logs/**" />
+         <exclude name="webapps/jahia/WEB-INF/etc/jetspeed/deploy/**" />
+         <exclude name="webapps/jahia/WEB-INF/var/search_indexes/**" />
+         <exclude name="webapps/jahia/WEB-INF/var/new_webapps/**" />
+         <exclude name="webapps/jahia/WEB-INF/var/new_templates/**" />
+       </fileset>
+     </copy>
+  </target>
+
+</project>

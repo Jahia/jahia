@@ -1,0 +1,86 @@
+<community_templates = 'http://www.jahia.org/jahia/community_templates/nt/1.0'>
+
+// Community templates content definitions
+
+[community_templates:faqQA] > jnt:container
+ smallText question
+ bigText answer
+
+[community_templates:faqContainer] > jnt:container
+ smallText faqTitle
+ containerList faqQA (community_templates:faqQA)
+
+[community_templates:logoContainer] > jnt:container
+ file logo (file[mime='image/*'])
+
+[community_templates:basicLink] > jnt:container
+ page link (page[type="internal,external"])
+
+[community_templates:imageLink] > community_templates:basicLink
+ file linkImage (file[mime='image/*'])
+
+[community_templates:headerModule] mixin
+ containerList basicLink (community_templates:basicLink)
+ containerList imageLink (community_templates:imageLink)
+ singleContainer logo (community_templates:logoContainer)
+  
+[community_templates:edito] > jnt:container, jmix:skinnable
+ smallText editoTitle ="Edito"
+ bigText edito
+
+[community_templates:communityNews] > jnt:newsContainer, jmix:commentable
+ sharedSmallText source
+
+[community_templates:footer] > jnt:container
+ bigText footer = "&copy; Copyright 2002-2009 - Jahia Solutions" i15d
+
+[community_templates:note] > jnt:container
+ smallText noteTitle
+ bigText noteBody
+ 
+[community_templates:news] > jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList news (community_templates:communityNews [addListMixin="jmix:rssable"])
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])
+ containerList note (community_templates:note)
+ containerList basicLinkLeft (community_templates:basicLink)
+
+[community_templates:simple] > jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])
+ containerList maincontent (jnt:mainContentContainer)
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox,jnt:IframeBox,jnt:flashBox"])
+ containerList note (community_templates:note)
+  
+[community_templates:home] > jnt:page, community_templates:headerModule
+ containerList maincontentBox (jnt:mainContentContainer)
+ containerList navLink (jnt:navLink)
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])
+ containerList columnC_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:linksBox,jnt:textsBox,jnt:linksBox"])
+ singleContainer footer (community_templates:footer)
+ singleContainer edito (community_templates:edito)
+
+[community_templates:faq] > jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])
+ containerList note (community_templates:note)
+ containerList faq (community_templates:faqContainer)
+
+[community_templates:double] >  jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList maincontentcolumnB (jnt:mainContentContainer)
+ containerList maincontentcolumnC (jnt:mainContentContainer)
+ containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox"])
+ containerList columnC_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox"])
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox"])
+
+[community_templates:full] >  jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList maincontent (jnt:mainContentContainer)
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox,jnt:newsBox"])
+
+[community_templates:webapp] >  jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList webappsmain (jnt:portletContainer [addMixin="jmix:skinnable"])
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])
+ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])

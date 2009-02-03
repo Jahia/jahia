@@ -1,0 +1,44 @@
+<%@ include file="../../common/declarations.jspf" %>
+
+<template:container id="newsContainer" encapsulatingDivCssClassName="news" actionMenuNamePostFix="news"
+                    actionMenuNameLabelKey="news.update">
+    <template:field name='newsDate' display="false" valueBeanID="newsDate"/>
+    <template:getContentObjectCategories valueID="newsContainerCatKeys"
+                                         objectKey="contentContainer_${pageScope.newsContainer.ID}"/>
+    <div class="newsItem"><!--start newsItem -->
+        <h2><template:field name='newsTitle'/></h2>
+
+        <p class="newsInfo">
+            <span class="newsLabelDate"><utility:resourceBundle resourceName="news.date"/>:</span>
+            <span class="newsDate"><fmt:formatDate value="${newsDate}" pattern="dd/MM/yyyy"/> <fmt:formatDate
+                    value="${newsDate}" pattern="HH:mm" var="dateTimeNews"/>
+                <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if></span>
+        </p>
+        <!-- display categories applied on this news -->
+        <c:if test="${!empty newsContainerCatKeys }">
+            <p class="newsMeta">
+                    <span class="categoryLabel"><utility:resourceBundle
+                            resourceName='category' defaultValue='category'/> :</span>
+                <a href="#"><ui:displayCategoryTitle categoryKeys="${newsContainerCatKeys}"/></a>
+            </p>
+        </c:if>
+        <!-- Based on thos categories we retrieve equivalent news -->
+        <jsp:include page="relatedNews.jsp">
+            <jsp:param name="categories" value="${newsContainerCatKeys}"/>
+            <jsp:param name="containerid" value="${newsContainer.ID}"/>
+        </jsp:include>
+        <!-- image and news body -->
+        <div class="newsImg"><template:image file="newsImage"/></div>
+
+        <div class="newsText">
+            <p><template:field name="newsDesc"/>
+        </div>
+        <a class="returnNewsList" href="${requestScope.currentPage.url}" title='<utility:resourceBundle
+            resourceName="backToPreviousPage" defaultValue="Back to previous page"/>'><utility:resourceBundle
+                resourceName='backToPreviousPage'
+                defaultValue='Back to previous page'/></a>
+
+        <div class="clear"></div>
+    </div>
+    <!--stop newsItem -->
+</template:container>

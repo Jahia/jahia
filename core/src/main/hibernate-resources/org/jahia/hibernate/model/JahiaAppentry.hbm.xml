@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaAppentry"
+        table="jahia_appentry"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+
+        <id
+            name="id"
+            column="id_jahia_appentry"
+            type="java.lang.Integer"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaAppentry.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="applicationId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="appid_jahia_appentry"
+            length="11"
+        />
+
+        <property
+            name="definitionName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="defname_jahia_appentry"
+            length="250"
+        />
+        
+        <property
+            name="jahiaAclId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="rights_jahia_appentry"
+            length="11"
+        />
+
+        <property
+            name="resourceKeyName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="reskeyname_jahia_appentry"
+            length="250"
+        />
+
+        <property
+            name="expirationTime"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="expirationTime_jahia_appentry"
+            length="11"
+        />
+
+        <property
+            name="cacheScope"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="cacheScope_jahia_appentry"
+            length="250"
+        />
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaAppentry.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

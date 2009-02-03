@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaAuditLog"
+        table="jahia_audit_log"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+
+        <id
+            name="id"
+            column="id_jahia_audit_log"
+            type="java.lang.Integer"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaAuditLog.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="time"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            access="property"
+            column="time_jahia_audit_log"
+        />
+
+        <property
+            name="username"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="username_jahia_audit_log"
+            length="50"
+        />
+
+        <property
+            name="objecttype"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="objecttype_jahia_audit_log"
+            length="11"
+        />
+
+        <property
+            name="objectid"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="objectid_jahia_audit_log"
+            length="11"
+        />
+
+        <property
+            name="parenttype"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="parenttype_jahia_audit_log"
+            length="11"
+        />
+
+        <property
+            name="parentid"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="parentid_jahia_audit_log"
+            length="11"
+        />
+
+        <property
+            name="operation"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="operation_jahia_audit_log"
+            length="50"
+        />
+
+        <property
+            name="site"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="site_jahia_audit_log"
+            length="50"
+        />
+
+        <property
+            name="content"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="content_jahia_audit_log"
+            length="250"
+        />
+
+        <many-to-one
+            name="parent"
+            class="org.jahia.hibernate.model.JahiaAuditLog"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+        >
+            <column
+                name="parent_id_jahia_audit_log" 
+            />
+        </many-to-one>
+
+        <property
+            name="eventType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="eventType"
+            not-null="false"
+        />
+
+        <property
+            name="eventInformation"
+            type="blob"
+            update="true"
+            insert="true"
+            access="property"
+            column="eventInformation"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaAuditLog.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

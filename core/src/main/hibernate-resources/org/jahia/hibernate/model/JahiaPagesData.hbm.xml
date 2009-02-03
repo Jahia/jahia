@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaPagesData"
+        table="jahia_pages_data"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaPagesDataPK"
+        >
+                     <key-property
+                        name="id"
+                        type="java.lang.Integer"
+                        column="id_jahia_pages_data"
+                        length="11"
+                />
+
+                     <key-property
+                        name="versionId"
+                        type="java.lang.Integer"
+                        column="version_id"
+                        length="11"
+                />
+
+                     <key-property
+                        name="workflowState"
+                        type="java.lang.Integer"
+                        column="workflow_state"
+                        length="11"
+                />
+
+                     <key-property
+                        name="languageCode"
+                        type="java.lang.String"
+                        column="language_code"
+                        length="10"
+                />
+
+        </composite-id>
+
+        <property
+            name="jahiaAclId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="rights_jahia_pages_data"
+        />
+
+        <property
+            name="pageLinkId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="pagelinkid_jahia_pages_data"
+            length="11"
+        />
+
+        <property
+            name="pageType"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="pagetype_jahia_pages_data"
+            length="11"
+        />
+
+        <many-to-one
+            name="pageDefinition"
+            class="org.jahia.hibernate.model.JahiaPagesDef"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+        >
+            <column
+                name="pagedefid_jahia_pages_data" 
+            />
+        </many-to-one>
+
+        <property
+            name="parentID"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="parentid_jahia_pages_data"
+            length="11"
+        />
+
+        <property
+            name="remoteURL"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="remoteurl_jahia_pages_data"
+            length="250"
+        />
+
+        <property
+            name="siteId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahiaid_jahia_pages_data"
+            length="11"
+        />
+
+        <property
+            name="title"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="title_jahia_pages_data"
+            length="250"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaPagesData.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

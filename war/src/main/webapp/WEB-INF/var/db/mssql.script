@@ -1,0 +1,23 @@
+# Jahia MS SQL Server Database configuration file
+
+jahia.database.name     =  SQL Server Microsoft JDBC Drivers
+jahia.database.driver   =  com.microsoft.sqlserver.jdbc.SQLServerDriver
+jahia.database.url      =  jdbc:sqlserver://localhost;databaseName=jahia
+jahia.database.user     =  jahia
+jahia.database.pass     =  jahia
+jahia.database.transactions = false
+jahia.database.schemascriptdir = sql/schema/mssql
+jahia.database.popuplationscriptdir = sql/population
+jahia.database.starthsqlserver = false
+jahia.database.datasource = java:comp/env/jdbc/jetspeed
+#jahia.database.datasource =
+jahia.database.ojbplatform = MsSQLServer
+jahia.database.hibernate.dialect = org.jahia.hibernate.dialect.SQLServerDialect
+jahia.nested_transaction_allowed = false
+jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.MSSQLDelegate
+jahia.quartz.serializable = false
+jahia.quartz.selectWithLockSQL = SELECT * FROM {0}LOCKS WITH (ROWLOCK,UPDLOCK) WHERE LOCK_NAME = ?
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.MSSqlPersistenceManager
+jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
+jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.MSSqlDatabaseJournal
+jahia.jackrabbit.schema = mssql

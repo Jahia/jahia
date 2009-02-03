@@ -1,0 +1,26 @@
+.cropperWrapper{
+	margin:auto;
+	padding:0;
+}
+
+.cropperResize{
+	border: 2px dashed #f00;
+	cursor: nw-resize;
+	background-image:url('cropper-corner.gif');
+	background-position:bottom right;
+	background-repeat:no-repeat;
+}
+
+.cropperMove{
+	cursor:move;
+/*
+	background-image:url('blank.gif');
+	background-position:center center ;
+	background-repeat:repeat;
+*/
+}
+
+.cropperMask{
+	background-color:#000;
+	cursor:pointer;
+}

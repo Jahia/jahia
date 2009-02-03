@@ -1,0 +1,32 @@
+# Jahia MySQL Database configuration file
+
+jahia.database.name     =  MySQL
+jahia.database.driver   =  com.mysql.jdbc.Driver
+jahia.database.url      =  jdbc:mysql://localhost/jahia?useUnicode=true&characterEncoding=UTF-8&useServerPrepStmts=false
+jahia.database.user     =  jahia
+jahia.database.pass     =  jahia
+jahia.database.popuplationscriptdir = sql/population
+jahia.database.starthsqlserver = false
+jahia.database.datasource = java:comp/env/jdbc/jetspeed
+jahia.database.ojbplatform = MySQL
+jahia.database.max_elements_for_in_clause = 9000
+jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+jahia.quartz.serializable = false
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.MySqlPersistenceManager
+jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
+jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
+jahia.jackrabbit.schema = mysql
+
+# comment this to use JTA transactions
+jahia.database.schemascriptdir = sql/schema/mysql
+jahia.database.transactions = false
+jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLDialect
+jahia.transaction_isolation_level = ISOLATION_READ_UNCOMMITTED
+jahia.nested_transaction_allowed = true
+
+# uncomment this to use JTA transactions
+#jahia.database.schemascriptdir = sql/schema/mysql-tx
+#jahia.database.transactions = true
+#jahia.database.hibernate.dialect = org.hibernate.dialect.MySQLInnoDBDialect
+#jahia.transaction_isolation_level = ISOLATION_DEFAULT
+#jahia.nested_transaction_allowed = false

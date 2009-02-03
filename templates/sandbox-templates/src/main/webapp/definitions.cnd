@@ -1,0 +1,57 @@
+<sandbox_templates = 'http://www.jahia.org/jahia/sandbox_templates/nt/1.0'>
+
+// Sandbox templates content definitions
+
+[sandbox_templates:layoutmanagerBoxExtraFields] mixin
+ file logo (file[mime='image/*'])
+ bigText description
+
+[sandbox_templates:layoutmanager] > jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList columnB_box (jnt:box [addMixin="jmix:skinnable,sandbox_templates:layoutmanagerBoxExtraFields", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox,jnt:lastNewsBox,jnt:mainContentsBox,jnt:newsBox,jnt:portletsBox,jnt:rssBox,jnt:flashBox,jnt:fileContentBox,jnt:videoBox,jnt:IframeBox,jnt:eventBox,jnt:mediaBox"])
+
+[sandbox_templates:pressreleaseContainer] > jnt:container
+ smallText pressReleaseTitle
+ smallText pressReleaseIntro
+ bigText pressReleaseBody
+ date pressReleaseDate = now()
+
+[sandbox_templates:pediaarticleCL] > jnt:container
+ smallText articleTitle
+ integer articleLevel
+ bigText articleNote
+ bigText articleBody
+ 
+[sandbox_templates:pediaMainCL] > jnt:container
+ smallText articleHeader
+ bigText articleHeaderNote
+ 
+[sandbox_templates:pediaGlossaryCL] > jnt:container
+ smallText glossaryTerm
+ bigText glossaryDescription
+ 
+[sandbox_templates:pediaMain] > jnt:container
+ smallText articleHeader
+ bigText articleHeaderNote
+
+[sandbox_templates:pediaCommentCL] > jnt:container, jmix:commentable
+ smallText commentContainerInfo
+
+[sandbox_templates:pressrelease] > jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList pressRelease (sandbox_templates:pressreleaseContainer)
+ 
+[sandbox_templates:mediagallery] >  jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+
+[sandbox_templates:pediaarticle] > jnt:page, community_templates:headerModule
+ containerList articles (sandbox_templates:pediaarticleCL)
+ singleContainer pediaMainCL (sandbox_templates:pediaMainCL)
+ singleContainer pediaComment (sandbox_templates:pediaCommentCL)
+ 
+[sandbox_templates:pediaglossary] > jnt:page, community_templates:headerModule
+ containerList pediaGlossaryCL (sandbox_templates:pediaGlossaryCL)
+
+[sandbox_templates:sitemap] > jnt:page, community_templates:headerModule
+ containerList navLink (jnt:navLink)
+ containerList note (community_templates:note)

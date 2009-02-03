@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaCtnDefProperty"
+        table="jahia_ctn_def_properties"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="idJahiaCtnDefProperties"
+            column="id_jahia_ctn_def_properties"
+            type="java.lang.Integer"
+            unsaved-value="null"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaCtnDefProperty.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <many-to-one
+            name="jahiaCtnDef"
+            class="org.jahia.hibernate.model.JahiaCtnDef"
+            cascade="all"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+            column="ctndefid_jahia_ctn_def_prop"
+            not-null="true"
+        />
+
+        <set
+            name="jahiaCtnStructs"
+            lazy="false"
+            inverse="true"
+            cascade="all"
+            sort="unsorted"
+            order-by="rank_jahia_ctn_struct"
+        >
+            <cache 
+                usage="nonstrict-read-write" 
+             />
+
+              <key
+                  column="ctnsubdefid_jahia_ctn_struct"
+              >
+              </key>
+
+              <one-to-many
+                  class="org.jahia.hibernate.model.JahiaCtnStruct"
+              />
+
+        </set>
+
+        <property
+            name="pageDefinitionId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="pagedefid_jahia_ctn_def_prop"
+            length="11"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaCtnDefProperty.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

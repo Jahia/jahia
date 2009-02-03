@@ -1,0 +1,227 @@
+<!--
+
+    
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+    
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license"
+    
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+
+-->
+
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+    <bean id="jahiaAclDAO" class="org.jahia.hibernate.dao.JahiaAclDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaApplicationDefinitionDAO" class="org.jahia.hibernate.dao.JahiaApplicationDefinitionDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaApplicationEntryDAO" class="org.jahia.hibernate.dao.JahiaApplicationEntryDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaApplicationShareDAO" class="org.jahia.hibernate.dao.JahiaApplicationShareDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaBigTextDataDAO" class="org.jahia.hibernate.dao.JahiaBigTextDataDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaContainerListDAO" class="org.jahia.hibernate.dao.JahiaContainerListDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaContainerDAO" class="org.jahia.hibernate.dao.JahiaContainerDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaContainerDefinitionDAO" class="org.jahia.hibernate.dao.JahiaContainerDefinitionDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaContainerStructureDAO" class="org.jahia.hibernate.dao.JahiaContainerStructureDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaFieldsDataDAO" class="org.jahia.hibernate.dao.JahiaFieldsDataDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaFieldsDefinitionDAO" class="org.jahia.hibernate.dao.JahiaFieldsDefinitionDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaLinkDAO" class="org.jahia.hibernate.dao.JahiaLinkDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaObjectDAO" class="org.jahia.hibernate.dao.JahiaObjectDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaPagesDAO" class="org.jahia.hibernate.dao.JahiaPagesDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaPagesDefinitionDAO" class="org.jahia.hibernate.dao.JahiaPagesDefinitionDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaRetentionRuleDAO" class="org.jahia.hibernate.dao.JahiaRetentionRuleDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaRetentionRuleDefDAO" class="org.jahia.hibernate.dao.JahiaRetentionRuleDefDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaSiteDAO" class="org.jahia.hibernate.dao.JahiaSiteDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaSitePropertyDAO" class="org.jahia.hibernate.dao.JahiaSitePropertyDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaGroupDAO" class="org.jahia.hibernate.dao.JahiaGroupDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaGroupAccessDAO" class="org.jahia.hibernate.dao.JahiaGroupAccessDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaUserDAO" class="org.jahia.hibernate.dao.JahiaUserDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaCategoryDAO" class="org.jahia.hibernate.dao.JahiaCategoryDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaCategoryPropertiesDAO" class="org.jahia.hibernate.dao.JahiaCategoryPropertiesDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaAuditLogDAO" class="org.jahia.hibernate.dao.JahiaAuditLogDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaHomepageDAO" class="org.jahia.hibernate.dao.JahiaHomepageDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaLockDAO" class="org.jahia.hibernate.dao.JahiaLockDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaResourceDAO" class="org.jahia.hibernate.dao.JahiaResourceDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaSiteLanguageListDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageListDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaSiteLanguageMappingDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageMappingDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaSlideUriDAO" class="org.jahia.hibernate.dao.JahiaSlideUriDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="jahiaWorkflowDAO" class="org.jahia.hibernate.dao.JahiaWorkflowDAO">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="nstepUserDAO" class="org.jahia.workflow.nstep.dao.hibernate.UserDAOHibernate">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowDAOHibernate">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowStepDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowStepDAOHibernate">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowInstanceDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowInstanceDAOHibernate">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowHistoryDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowHistoryDAOHibernate">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+</beans>

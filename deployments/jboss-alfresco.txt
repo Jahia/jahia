@@ -1,0 +1,70 @@
+Alfresco :
+
+--------- Install and config 
+
+- Follow the instructions at : http://wiki.alfresco.com/wiki/Deploying_WAR_JBoss
+
+deploy alfresco.war in a alfresco.war folder
+
+- edit : <jboss>/server/default/deploy/alfresco.war/WEB-INF/classes/alfresco/repository.properties for database
+
+- create the db
+
+- remove the <jboss>/bin/alf_data dir if it exists (previous install)
+
+- edit the classes/alfresco/file-servers.xml to set the port for smb and ftp :
+
+   <config evaluator="string-compare" condition="FTP Server">
+	  <serverEnable enabled="true"/>
+	  <port>1121</port>
+   </config>
+  
+- edit the classes/alfresco/core-services-context.xml to add a reference In the list dictionaryBootstrap/models : 
+		
+		<value>alfresco/model/jahia.xml</value>
+		
+- add the alfresco/model/jahia.xml
+
+------------- JNDI Configuration
+download jcr-jndi-alfresco
+create alfresco.sar , put the jar in it
+create alfresco.sar/META-INF
+create the file jboss-service.xml :
+
+<server>
+    <mbean code="org.alfresco.jcr.jndi.mbean.JbossJndiJcr" 
+           name="baseJcr.alfresc:service=JBossJndiJcr">
+        <attribute name="JndiName">jcr/baseRepository</attribute>
+        <attribute name="JcrRepositoryName">baseAlfrescoRepository</attribute>
+        <depends>jboss:service=Naming</depends>
+    </mbean>
+</server>
+
+- add the file jcr-api-jndi-context.xml  into alfresco.war/WEB-INF/classes/alfresco/extension/
+
+- remove naming* .jar and jcr-1.0.jar
+
+- remove the file org.hibernate.jdbc.ConnectionWrapper from hibernate-3.2.1.jar :
+zip -d hibernate-3.2.1.jar  org/hibernate/jdbc/ConnectionWrapper.class
+
+
+---------------- Auth
+
+- start jboss, create the users root and @system in alfresco (with admin panel)
+- stop jboss
+
+- take the classes/alfresco/authentication-services-context.xml
+
+- replace the jar lib/acegi-security-0.8.2_patched.jar
+
+- create a login entry in server/default/login-config.xml :
+
+    <application-policy name = "JAASTest">
+       <authentication>
+          <login-module code = "org.jahia.jaas.JahiaLoginModule"
+             flag = "required">
+          </login-module>
+       </authentication>
+    </application-policy>
+    
+    

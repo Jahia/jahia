@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaPagesDefProp"
+        table="jahia_pages_def_prop"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaPagesDefPropPK"
+        >
+                     <key-property
+                        name="id"
+                        type="java.lang.Integer"
+                        column="id_jahia_pages_def_prop"
+                        length="11"
+                />
+
+                     <key-property
+                        name="site"
+                        type="java.lang.Integer"
+                        column="jahiaid_pages_def_prop"
+                        length="11"
+                />
+
+                     <key-property
+                        name="name"
+                        type="java.lang.String"
+                        column="name_pages_def_prop"
+                        length="100"
+                />
+
+        </composite-id>
+
+        <property
+            name="value"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="value_pages_def_prop"
+            length="200"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaPagesDefProp.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

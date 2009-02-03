@@ -1,0 +1,339 @@
+==============================================================================
+ README FOR JAHIA SOURCE CODE
+==============================================================================
+
+ All source code, binaries and documentation is copyrighted (c) 2001-2008 by
+ Jahia Ltd. All Rights Reserved.
+
+ INTRODUCTION
+------------------------------------------------------------------------------
+
+ Welcome to Jahia's source code ! This code is provided under the Jahia Source
+ Code License Agreement. You must comply to the agreement before using this
+ code in any way, including reading it. Sorry for the mumble jumbo but there
+ are people trying to make a living while producing this code and would like
+ to bring more so it helps if people play fair :)
+
+ USING THIS SOURCE CODE (QUICKSTART)
+------------------------------------------------------------------------------
+
+ Requirements : 
+ - JDK 1.5 or later (1.6 is not yet supported for compilation)
+ - Maven 2
+ - Subversion client (for Windows at http://www.collab.net/downloads/subversion/
+   for Mac OS X from http://www.finkproject.org/ or Xcode tools, under 
+   Linux install a subversion client from your package repository). Basically,
+   you need to have an "svn" command available in your PATH so that the build
+   system can calculate the build number
+ - (Optional) JetBrains Intellij IDEA 7.0.3 or later
+
+ Here is quick start steps to use this source code :
+ 
+    1. Make sure you have all the above requirements, especially the Subversion
+       client !
+
+    2. Code to checkout:
+       http://svn.jahia.org/svn/jahia/branches/JAHIA-MAVEN2-ANDROMEDA-BRANCH
+      
+       If you plan to work alongside on the "dark" template side, you probably 
+       need to get the following additional code, for the current releases of 
+       our templates sets, as starting point:
+       http://svn.jahia.org/svn/corporate_portal_templates
+       http://svn.jahia.org/svn/corporate_portal_templates_v2
+       
+       For more information, please check the template developper guide.
+
+    3. Download and Install Maven 2.x (http://maven.apache.org), and set an
+       M2_HOME environment variable pointing at the installation
+       directory. Put M2_HOME/bin folder in path. Also increase the
+       memory for Maven by setting the following environment variable :
+
+         MAVEN_OPTS=-Xmx1024m
+
+    4. Download and Install a Java JDK (http://java.sun.com). Configure the
+       JDK by installing a JAVA_HOME environment variable pointing to it's
+       installation directory.
+       - Under Windows :
+           right-click "My Computer", select "Properties", "Advanced",
+           "Environment", add a variable to the user or system settings with
+           the following value : name=JAVA_HOME, value=YOUR_PATH_TO_THE_JDK
+           where YOUR_PATH_TO_THE_JDK could be something like
+           C:\JDK1.5.0_12 if you've installed Sun's JDK 1.5.0 update 12.
+       - Under Linux :
+           Add the following like to the /etc/profile configuration file
+           (close for example to where the PATH is declared) :
+             JAVA_HOME=YOUR_PATH_TO_THE_JDK
+           You could also add this environment variable to your
+           ~/bash_profile.
+       - Other unix systems :
+           Basically the same as under Linux, set the environement variable
+           JAVA_HOME to point to your JDK installation.
+
+    5. Download and Install GWT 1.5 from http://code.google.com/webtoolkit/download.html. 
+           
+    6. Copy the settings.xml.example file into ${USER_HOME}/.m2 directory and 
+       modify it to your environment. About GWT configurations, you can find more informations:
+        http://gwt-maven.googlecode.com/svn/docs/maven-googlewebtoolkit2-plugin/index.html
+       As there are problems with JSP compilation on path with spaces on Windows environments, it is 
+       recommended you specify a default location for your local repository 
+       that DOESN'T CONTAIN ANY SPACES IN THE PATH, for example : 
+         C:/java/m2repository
+
+    7. In the main directory, type : 
+       mvn install jahia:configure
+     
+       This should compile and deploy into your local repository all of Jahia, deploy and install everything in the
+       application server configured in your settings.xml file.
+   
+       An purely indicative time of initial compilation time (including all 
+       dependency download) is 16 minutes. A "mvn clean install" on the same 
+       machine takes 2 minutes 40 seconds. These times do not include JSP or 
+       GWT compilation.
+
+    8. Point your browser to http://localhost:8080/cms (in case you have not chosen option 10 ).
+    	 Default root password is root1234
+
+    9. Create your first virtual site and enjoy.
+       
+    10.Alternatively if you want to test Jahia's configuration from scratch, simply add the 
+       configwizard-webapp module in your root pom.xml, in order to have something like
+			 
+			 <module>configwizard-webapp</module> 
+			 
+			 and then simply do 
+			 mvn install
+			 
+			 in this case you will have to point your browser to http://localhost:8080/config
+			 the first time then afterwards just head to  http://localhost:8080/cms as usual
+
+       Change to the tomcat/bin & run the servlet container (launch
+       startup.bat or startup.sh depending on your platform).
+
+
+       Follow the instructions on-screen to configure Jahia. Note that at some
+       point it will ask for database settings. Your should have an existing
+       database already setup. We recommend under Linux either PostgreSQL
+       or MySQL. Under Windows the best solution is MySQL.
+
+       Create your first virtual site and enjoy.
+
+ Deploying to other application servers
+------------------------------------------------------------------------------
+ The new "ear" project generates a jahia-*.ear file that can be used to 
+ deploy Jahia onto JEE application servers. The file can be found in the 
+ following directory : 
+ 
+   ear/target
+
+ Using IDEs
+------------------------------------------------------------------------------
+
+  IDEA : 
+  
+    1. IDEA has direct support for Maven 2, so you can simply open the project 
+       using the IDE. 
+       
+       Here are the steps to create the new project : 
+       
+       - Open File -> New Project ...
+       - Select Import project from external model
+       - Click Next
+       - Select Maven 
+       - Click Next
+       - Select directory where source was checked out and check the box
+         named "Automatically synchronize maven structure on startup"
+       - It should find just one project org.jahia.server:jahia-root
+       - Click next
+       - For the project name you can leave the default
+       - Click finish
+       
+       If you have trouble with the above procedure, you can also generate
+       the IDEA project structure using the Maven 2 IDEA plugin this way : 
+       
+         mvn idea
+       
+       You can find the plugin documentation here : 
+       
+       http://maven.apache.org/plugins/maven-idea-plugin/         
+
+  Eclipse : 
+  
+    1. Add a new 'M2_REPO' classpath variable in Eclipse, pointing to your 
+       Maven 2 repository folder (either using Maven or manually):
+       
+        a) Using Maven: execute:
+              mvn -Declipse.workspace=<path-to-eclipse-workspace> eclipse:add-maven-repo
+           where <path-to-eclipse-workspace> is the path to your Eclipse workspace
+           
+        b) Manually: in Eclipse open 
+             Window / Preferences -> Java -> Build Path -> Classpath Variables. 
+           Click on 'New...'
+           and enter M2_REPO as a name of teh variable and full path to your 
+           Maven 2 repository as path value
+           
+    2. In the Jahia root folder execute the following command:
+          mvn eclipse:eclipse
+       This will generate '.project' and '.classpath' files for the seven 
+       projects in Jahia (jackrabbit-core-ext, jackrabbit-server-ext,
+       jahia-api, jahia-ear, jahia-impl, jahia-war, maven-jahia-plugin, etc.)
+       
+    3. Open Eclipse and use import 'Existing Projects into Workspace'. 
+       Using 'Browse...' selecte the Jahia root folder. A list of  available 
+       projects will be shown. Import projects into the workspace.
+
+ Deploying new JARs to maven.jahia.org
+------------------------------------------------------------------------------
+
+ Requirements :
+ - on Windows : putty SSH applications (puttygen.exe)
+ - on Linux/Mac OS X/UNIX : OpenSSH for JAR deployment to maven.jahia.org
+
+ First check if the JAR is not available by googling for it (ex using the 
+ command: 
+   maven2 YOURJAR 
+ as a search criteria). It is better to use a public resource, which will 
+ probably include transitive dependencies.
+
+ You should always remember to send your new JARs to the maven.jahia.org 
+ repository. Here is the procedure on how to do it.
+
+    1. Generate an OpenSSH public/private DSA key pair (on Windows this can be 
+       done with puttygen and export to OpenSSH format)
+       
+    2. Send the public key to the Jahia IT admin and ask for it to be 
+       installed on the maven.jahia.org server
+       
+    3. Use the mvndeploy.bat file on Windows to deploy your JAR, or use the 
+       equivalent command line. Also, if you have a POM for your JAR that 
+       includes dependencies this is a better than letter Maven generate one 
+       for you.
+
+ XDoclet deprecation
+------------------------------------------------------------------------------
+ As XDoclet is a dying project since Java introduced annotations, we no longer
+ support XDoclet in the Maven 2 project structure. We have pre-generated all
+ the *.hbm.xml files. From now on the preferred way of adding Hibernate 
+ configuration is to use Java annotations (not yet integrated in the Maven 2
+ projects), or simply by modifying the *.hbm.xml files by hand. These files
+ can be found in the following location : 
+ 
+   war/src/main/hibernate-resources
+
+ ParamBean refactoring notes
+------------------------------------------------------------------------------
+ A major refactoring of the ParamBean class happened in version 4.5 of Jahia.
+ It allows for unit testing of Jahia, as well as using Jahia's content API
+ as a library, independently of a servlet container.
+
+ The main idea behind this change is to introduce a context object that is
+ used throughout the code that is NOT dependent on the Servlet API, meaning
+ that is does not require the Request/Response/HttpSession objects. This
+ new object is called : ProcessingContext and is a new JavaBean that can
+ be easily created and fully mutable. It is also the parent class of ParamBean
+ and should now always be used in new APIs instead of the ParamBean so that
+ we don't re-introduce dependencies on the Servlet API. Making this new class
+ the parent class of ParamBean, most of the templates should work without
+ modification, but there are a few exceptions documented here.
+
+ Due to this change, people that have developed advanced templates and event
+ listeners will have to modify their implementation. Here are the basic
+ changes :
+
+ jParams.getRequest().get*() -> jParams.get*()
+ ex : jParams.getRequest().getServerName() -> jParams.getServerName()
+      jParams.getRequest().getParameter(String) -> jParams.getParameter(String)
+
+ Session management has also changed, you must now convert this :
+
+ jParams.getSession().getAttribute()
+ to
+ jParams.getSessionState().getAttribute()
+
+ JahiaEvents.getParams() now returns ProcessingContext instead of ParamBean,
+ so you must also change lines that look like this :
+
+ ParamBean paramBean = jahiaEvent.getParams();
+
+ into :
+
+ ProcessingContext processingContext = jahiaEvent.getProcessingContext();
+
+ Another thing you might note is that some accessors have now been
+ deprecated such as :
+
+  ParamBean paramBean = JahiaData.params()
+
+ which should be replaced whenever possible by :
+
+  ProcessingContext processingContext = JahiaData.getProcessingContext()
+
+ We are also introducing with these changes a new factory, that makes it
+ easier to create ParamBean and ProcessingContext objects. Here are
+ examples on how to create these objects using the factory :
+
+  BeanFactory bf = Jahia.getConfigBeanFactory();
+  ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());
+
+  ParamBean paramBean = pcf.getContext(request, response, getStaticServletConfig().getServletContext());
+  ProcessingContext processingContext = pcf.getContext(new BasicSessionState());
+
+ The sessionState argument is for managing sessions just like HttpSessions,
+ or could be null if we want to create a new session. If we are re-using
+ sessions we could do :
+
+  SessionState session = new BasicSessionState();
+  session.setAttribute("test", "value");
+
+  ProcessingContext processingContext = pcf.getContext(session);
+
+  session.removeAttribute("test");
+
+  processingContext = pcf.getContext(session);
+
+ Compiling a single GWT module
+------------------------------------------------------------------------------
+GWT compilation of modules is quite a heavy operation, and it may require a
+lot of time to build an entire build. For this, we have added the possibility
+to only compile a single module by using command line parameters. The syntax
+is the following :
+
+  mvn MAVEN_GOAL -DsingleModule=true -DsingleModuleName=MODULE_NAME
+
+and an example would be :
+
+  mvn install -DsingleModule=true -DsingleModuleName=org.jahia.ajax.gwt.templates.entrypoint.general.edit.Edit
+
+In order to make things even easier, we have provided script and batch files
+for UNIX and Windows, called single_module.sh and single_module.bat. With
+these the above example becomes :
+
+  ./single_module.sh install org.jahia.ajax.gwt.templates.entrypoint.general.edit.Edit
+
+This executes in 1 minute instead of 20 !
+
+Also, if you just don't care about GWT compilation, you can single call :
+
+  mvn install -DsingleModule=true
+
+This will compile only the org.jahia.ajax.gwt.templates.entrypoint.general.edit.Edit
+module. You can also achieve the same result with the simple call :
+
+  ./single_module.sh
+
+This will call the install goal and generate the Edit module. If you still
+want to specify a Maven goal, you can simply do just that :
+
+  ./single_module.sh compile
+
+ Troubleshooting
+------------------------------------------------------------------------------
+
+If you encounter javascript errors, java exceptions related to an AJAX class,
+or any other engine GUI problem, it is likely that you have upgraded your
+Jahia server without emptying the browsers'cache. Before requesting support,
+try the following:
+
+1. Empty the browser cache using the browsers options. The option to empty the cache
+   is usually located in the "privacy options".
+2. Close all browsers windows.
+3. Restart your browser and try again. If the problem persists, please contact us.

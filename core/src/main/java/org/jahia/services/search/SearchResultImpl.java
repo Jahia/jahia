@@ -1,0 +1,203 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license"
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+ package org.jahia.services.search;
+
+import java.security.Principal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.compass.core.CompassHighlighter;
+import org.compass.core.engine.SearchEngineHighlighter;
+import org.jahia.bin.Jahia;
+import org.jahia.content.CoreFilterNames;
+import org.jahia.content.ObjectKey;
+import org.jahia.params.AdvPreviewSettings;
+import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: hollis
+ * Date: 15 f�vr. 2005
+ * Time: 17:48:29
+ * To change this template use File | Settings | File Templates.
+ */
+public class SearchResultImpl implements SearchResult {
+
+    private List<SearchHit> results = new LinkedList<SearchHit>();
+
+    private static org.apache.log4j.Logger logger =
+            org.apache.log4j.Logger.getLogger(SearchResultImpl.class);
+
+    private Map<String, Principal> guestUsers = new HashMap<String, Principal>();
+    private boolean checkAccess = true;
+
+    /**
+     * Constructor without ACL and Time Based publisshing checks
+     */
+    public SearchResultImpl(){
+        this(true);
+    }
+
+    /**
+     *
+     * @param checkAccess if true, apply ACL and Time Based publishing check
+     */
+    public SearchResultImpl(boolean checkAccess){
+        this.checkAccess = checkAccess;
+    }
+
+    public boolean isCheckAccess() {
+        return checkAccess;
+    }
+
+    public void setCheckAccess(boolean checkAccess) {
+        this.checkAccess = checkAccess;
+        
+    }
+
+    public List<SearchHit> results(){
+        return results;
+    }
+
+    public boolean add(SearchHit hit){
+        if ( hit != null && checkAccess(hit) ){
+            results.add(hit);
+        }
+        return true;
+    }
+
+    public boolean checkAccess(SearchHit hit){
+        if (!this.checkAccess){
+            return true;
+        }
+        boolean accessAllowed = true;
+        // acl check
+        String fieldValue = hit.getValue(JahiaSearchConstant.ACL_ID);
+        String siteIdValue = hit.getValue(JahiaSearchConstant.JAHIA_ID);
+        JahiaUser user = Jahia.getThreadParamBean().getUser();
+        if (user == null){
+            user = (JahiaUser) guestUsers.get(siteIdValue);
+            if (user == null){
+                user = ServicesRegistry.getInstance().getJahiaUserManagerService()
+                        .lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+                if (user != null){
+                    guestUsers.put(siteIdValue,user);
+                }
+            }
+        }
+        if ( fieldValue != null ){
+            try {
+                int aclID = Integer.parseInt(fieldValue);
+                final JahiaBaseACL acl = JahiaBaseACL.getACL(aclID);
+                if (!acl.getPermission(user,
+                        JahiaBaseACL.READ_RIGHTS)) {
+                    accessAllowed = false;
+                }
+                fieldValue = hit.getValue(JahiaSearchConstant.OBJECT_KEY);
+                if ( fieldValue != null ){
+                    ObjectKey objectKey = ObjectKey.getInstance(fieldValue);
+                    // Check for expired container
+                    boolean disableTimeBasedPublishingFilter = Jahia.getThreadParamBean()
+                            .isFilterDisabled(CoreFilterNames.
+                            TIME_BASED_PUBLISHING_FILTER);
+                    ProcessingContext context = Jahia.getThreadParamBean();
+                    final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance().getTimeBasedPublishingService();
+                    if ( !disableTimeBasedPublishingFilter ){
+                        if ( ParamBean.NORMAL.equals(context.getOperationMode()) ){
+                            accessAllowed = tbpServ.isValid(objectKey,
+                                   context.getUser(),context.getEntryLoadRequest(),
+                                    context.getOperationMode(),
+                                    (Date)null);
+                        } else if ( ParamBean.PREVIEW.equals(context.getOperationMode()) ){
+                            accessAllowed = tbpServ.isValid(objectKey,
+                                    context.getUser(),context.getEntryLoadRequest(),context.getOperationMode(),
+                                    AdvPreviewSettings.getThreadLocaleInstance());
+                        }
+                    }
+                }
+            } catch ( Exception t){
+                logger.warn("Exception checking hit access", t);
+                return false;
+            }
+        }
+        return accessAllowed;
+    }
+
+    public void remove(int index){
+        try {
+            results.remove(index);
+        } catch ( Exception t ){
+        }
+    }
+
+    /**
+     * Returns an highlighter for the hits.
+     */
+    public SearchEngineHighlighter getHighlighter(){
+        // by default, no highlighter
+        return null;
+    }
+
+    /**
+     * By Default no highlighter, return null
+     *
+     * @param index
+     *            The n'th hit.
+     * @return The highlighter.
+     */
+    public CompassHighlighter highlighter(int index) {
+        return null;
+    }
+    
+    /**
+     * By Default no highlighter, return null
+     *
+     * @param searchHit
+     * @return
+     */
+    public CompassHighlighter highlighter(SearchHit searchHit){
+        return null;
+    }
+
+
+}

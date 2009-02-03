@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+                            http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Provides a tag library with utility tags to use within jahia templates</description>
+    <display-name>Utility Jahia Tag Library</display-name>
+    <tlib-version>2.0</tlib-version>
+    <short-name>utility</short-name>
+    <uri>http://www.jahia.org/tags/utilityLib</uri>
+    <tag>
+        <description>Utility tag in order to use a log4j Logger in a template</description>
+        <name>logger</name>
+        <tag-class>org.jahia.taglibs.utility.LoggerTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>level</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Tag that allows to expose a Java Class as Constant.</description>
+        <name>useConstants</name>
+        <tag-class>org.jahia.taglibs.utility.constants.JahiaUseConstantsTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>className</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Generate a GWT resource bundle Dictionary.</description>
+        <name>gwtResourceBundleDictionary</name>
+        <tag-class>org.jahia.taglibs.utility.i18n.GWTResourceBundleDictionaryTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>moduleType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>elementId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Generate resource bundle to be used by JahiaModule.</description>
+        <name>gwtResourceBundle</name>
+        <tag-class>org.jahia.taglibs.utility.i18n.GWTResourceBundleTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>resourceBundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>resourceName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>aliasResourceName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Generate resource bundle to be used by JahiaModule.</description>
+        <name>gwtAdminResourceBundle</name>
+        <tag-class>org.jahia.taglibs.utility.i18n.GWTAdminResourceBundleTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>resourceName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>aliasResourceName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Generate resource bundle to be used by JahiaModule.</description>
+        <name>gwtEngineResourceBundle</name>
+        <tag-class>org.jahia.taglibs.utility.i18n.GWTEngineResourceBundleTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>resourceName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>aliasResourceName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Displays the content of the current session</description>
+        <name>sessionViewer</name>
+        <tag-class>org.jahia.taglibs.utility.session.SessionViewerTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
+    <tag>
+        <description>Support for resource bundle</description>
+        <name>resourceBundle</name>
+        <tag-class>org.jahia.taglibs.utility.i18n.ResourceBundleTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>resourceBundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>resourceName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>defaultValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>localeLanguage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>localeCountry</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>localeVariant</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>namePostFix</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>First parametric replacement value, if any</description>
+            <name>arg0</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Second parametric replacement value, if any</description>
+            <name>arg1</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Third parametric replacement value, if any</description>
+            <name>arg2</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Fourth parametric replacement value, if any</description>
+            <name>arg3</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Fifth parametric replacement value, if any</description>
+            <name>arg4</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Determines whether characters &lt;,&gt;,&amp;,'," in the resulting string should be converted
+                to their corresponding character entity codes. Default value is false.
+            </description>
+            <name>escape</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Displays the properties of the current site</description>
+        <name>displaySiteProperties</name>
+        <tag-class>org.jahia.taglibs.utility.siteproperties.DisplaySitePropertiesTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>dateFormat</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Displays the properties of the current page</description>
+        <name>displayPageProperties</name>
+        <tag-class>org.jahia.taglibs.utility.pageproperties.DisplayPagePropertiesTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>dateFormat</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Utility date tag in order to convert dates and add days, hours, etc. to an existing date
+        </description>
+        <name>dateUtil</name>
+        <tag-class>org.jahia.taglibs.utility.DateUtilTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>currentDate</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>datePattern</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>valueID</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>days</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>months</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>years</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>hours</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>minutes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>seconds</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>This tag will display the username if none property is passed
+            otherwise it will display the requested property.
+            This tag is designed to work well with the container cache.
+        </description>
+        <name>userProperty</name>
+        <tag-class>org.jahia.taglibs.utility.session.UserPropertyTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>propertyName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag-file>
+        <description>add declaration of GWT common application resource bundles</description>
+        <name>applicationResources</name>
+        <path>/META-INF/tags/ajax/applicationresources.tag</path>
+    </tag-file>
+
+    <tag-file>
+        <description>Resolves the Web path to the specified resource considering template set inheritance (the same way,
+            the ${jahia.includes.webPath[]} works).
+        </description>
+        <name>resolvePath</name>
+        <path>/META-INF/tags/resolvePath.tag</path>
+    </tag-file>
+
+    <tag-file>
+        <description>Tag to retrieve the picto image of a file</description>
+        <name>getPicto</name>
+        <path>/META-INF/tags/getPicto/getPicto.tag</path>
+    </tag-file>
+
+    <tag-file>
+        <description>Retrieves the value of a given request parameter</description>
+        <name>getRequestParameter</name>
+        <path>/META-INF/tags/request/getParameter.tag</path>
+    </tag-file>
+
+</taglib>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaFieldsDef"
+        table="jahia_fields_def"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id_jahia_fields_def"
+            type="java.lang.Integer"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaFieldsDef.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="isMetadata"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="ismdata_jahia_fields_def"
+            not-null="false"
+        />
+
+        <property
+            name="jahiaSiteId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahiaid_jahia_fields_def"
+        />
+
+        <property
+            name="ctnName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="ctnname_jahia_fields_def"
+            length="250"
+        />
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="name_jahia_fields_def"
+            length="250"
+        />
+
+        <map
+            name="properties"
+            table="jahia_fields_def_extprop"
+            lazy="true"
+            sort="unsorted"
+            inverse="true"
+            cascade="save-update"
+        >
+            <cache 
+                usage="nonstrict-read-write" 
+             />
+
+              <key
+                  column="id_jahia_fields_def"
+              >
+              </key>
+
+              <index
+                  column="prop_name"
+                  type="string"
+              />
+
+              <element
+                  column="prop_value"
+                  type="string"
+                  not-null="false"
+                  unique="false"
+              />
+
+        </map>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaFieldsDef.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

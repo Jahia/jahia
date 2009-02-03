@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/jahia" />
+        <property name="username" value="jahia" />
+        <property name="password" value="jahia" />
+        <property name="maxActive"><value>50</value></property>
+        <property name="maxIdle"><value>20</value></property>
+        <property name="maxWait"><value>-1</value></property>
+        <property name="poolPreparedStatements"><value>true</value></property>
+        <property name="maxOpenPreparedStatements"><value>50</value></property>
+        <property name="initialSize"><value>20</value></property>
+    </bean>-->
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/jahia" />
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+        <property name="mappingResources">
+            <list>
+                <value>org/jahia/hibernate/model/JahiaAcl.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaAclEntry.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaAclName.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaAppDef.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaAppdefProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaAppentry.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaAppsShare.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaAuditLog.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaBigTextData.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaCategory.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaCategoryProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaContainer.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaContainerList.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaCtnDef.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaCtndefProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaCtnDefProperty.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaContainerProperty.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaContainerListProperty.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaCtnStruct.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaFieldsData.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaFieldsDef.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaFieldsDefExtprop.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaFieldsProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaGrp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaGrpAccess.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaGrpProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaLink.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaLinkMetadata.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaLock.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaObject.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaPagesData.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaPagesDef.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaPagesDefProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaPagesProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaPwdPolicy.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaPwdPolicyRule.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaPwdPolicyRuleParam.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaResource.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaRetentionRule.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaRetentionRuleDef.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaSite.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaSiteLangList.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaSiteLangMap.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaSiteProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaSitesGrp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaSitesUser.hbm.xml</value>
+                <value>org/jahia/hibernate/model/SubscriptionData.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaUser.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaUserProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaWorkflow.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaLanguagesStates.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaXRef.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaVersion.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaInstalledPatch.hbm.xml</value>
+                <value>org/jahia/hibernate/model/JahiaFieldXRef.hbm.xml</value>
+                <value>org/jahia/workflow/nstep/model/User.hbm.xml</value>
+                <value>org/jahia/workflow/nstep/model/Workflow.hbm.xml</value>
+                <value>org/jahia/workflow/nstep/model/WorkflowStep.hbm.xml</value>
+                <value>org/jahia/workflow/nstep/model/WorkflowInstance.hbm.xml</value>
+                <value>org/jahia/workflow/nstep/model/WorkflowHistoryEntry.hbm.xml</value>
+                <value>org/jahia/hibernate/model/indexingjob/JahiaIndexingJob.hbm.xml</value>
+                <value>org/jahia/hibernate/model/indexingjob/JahiaIndexJobServer.hbm.xml</value>
+                <value>org/jahia/hibernate/model/jahiaserver/JahiaServerProp.hbm.xml</value>
+                <value>org/jahia/hibernate/model/jahiasavedsearch/JahiaSavedSearch.hbm.xml</value>
+                <value>org/jahia/hibernate/model/jahiasavedsearch/JahiaSavedSearchView.hbm.xml</value>                
+                <value>org/jahia/hibernate/model/JahiaPagesUsersProp.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">@HIBERNATE_DIALECT@</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.TreeCacheProvider</prop-->
+                <!-- prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaClusterCacheHibernateProvider</prop-->
+                <!--prop key="hibernate.cache.provider_class">org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider</prop-->
+                <!--prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop-->
+                <prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+                <!-- If you use an invalidation-based cache, make sure you turn the query cache off ! -->
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <!-- put the batch size property to 0 if you need to debug -->
+                <prop key="hibernate.jdbc.batch_size">16</prop>
+                <prop key="hibernate.default_batch_fetch_size">16</prop>
+                <prop key="hibernate.max_fetch_depth">3</prop>
+                <prop key="hibernate.query.substitutions">true 1, false 0</prop>
+                <prop key="hibernate.generate_statistics">false</prop>
+                <prop key="hibernate.cache.use_structured_entries">false</prop>
+                <!-- uncomment this to use JTA transactions.
+                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JTATransactionFactory</prop>
+                <prop key="hibernate.transaction.manager_lookup_class">	org.hibernate.transaction.JOTMTransactionManagerLookup</prop>                
+                -->
+
+                <prop key="activated">${cluster.activated}</prop>
+                <prop key="serverId">${cluster.node.serverId}</prop>
+                <prop key="channelGroupName">JahiaHibernateCluster</prop>
+                <!--<prop key="channelProperties">UDP(mcast_addr=${cluster.hibernate.multicast.ip_address};mcast_port=${cluster.hibernate.multicast.port};ip_ttl=32;ip_mcast=true;mcast_send_buf_size=1000000;mcast_recv_buf_size=1000000):PING(timeout=2000;num_initial_members=2):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true)</prop>-->
+                <prop key="channelProperties">TCP(start_port=${cluster.tcp.hibernate.port};bind_addr=${cluster.tcp.start.ip_address}):TCPPING(initial_hosts=${cluster.tcp.hibernate.nodes.ip_address};port_range=1;timeout=3000;num_initial_members=${cluster.tcp.num_initial_members};up_thread=true;down_thread=true):FD(shun=true;up_thread=true;down_thread=true;timeout=2500;max_tries=5):VERIFY_SUSPECT(timeout=1500;up_thread=false;down_thread=false):pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;up_thread=true;down_thread=true):pbcast.STABLE(desired_avg_gossip=20000;up_thread=false;down_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=false;down_thread=true;up_thread=true):pbcast.STATE_TRANSFER(up_thread=true;down_thread=true)</prop>
+
+                <prop key="freeMemoryLimit">${freeMemoryLimit}</prop>
+                <prop key="cacheClusterUnderlyingImplementation">${cacheClusterUnderlyingImplementation}</prop>
+                <prop key="cacheMaxGroups">${cacheMaxGroups}</prop>
+                <prop key="net.sf.ehcache.configurationResourceName">/ehcache-hibernate.xml</prop>                
+            </props>
+        </property>
+        <property name="eventListeners">
+            <map>
+                <entry key="merge">
+                    <bean class="org.springframework.orm.hibernate3.support.IdTransferringMergeEventListener"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- Uncomment this to use JOTM Transaction Manager with Tomcat and comment the other
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="userTransactionName" value="java:comp/UserTransaction" />
+        <property name="nestedTransactionAllowed" value="@NESTED_TRANSACTION_ALLOWED@" />
+    </bean>
+    -->
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref local="sessionFactory"/>
+        </property>
+        <property name="nestedTransactionAllowed" value="@NESTED_TRANSACTION_ALLOWED@" />
+    </bean>
+</beans>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaPwdPolicyRule"
+        table="jahia_pwd_policy_rules"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="jahia_pwd_policy_rule_id"
+            type="int"
+            unsaved-value="0"
+        >
+            <generator class="org.jahia.hibernate.dao.JahiaIdentifierGenerator">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaPwdPolicyRule.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="action"
+            type="char"
+            update="true"
+            insert="true"
+            access="property"
+            column="action"
+            not-null="true"
+        />
+
+        <property
+            name="condition"
+            type="text"
+            update="true"
+            insert="true"
+            access="property"
+            column="rule_condition"
+            length="1048576"
+            not-null="true"
+        />
+
+        <property
+            name="evaluator"
+            type="char"
+            update="true"
+            insert="true"
+            access="property"
+            column="evaluator"
+            not-null="true"
+        />
+
+        <property
+            name="name"
+            type="string"
+            update="true"
+            insert="true"
+            access="property"
+            column="name"
+            length="255"
+            not-null="true"
+        />
+
+        <list
+            name="parameters"
+            lazy="true"
+            inverse="true"
+            cascade="all-delete-orphan"
+        >
+
+              <key
+                  column="jahia_pwd_policy_rule_id"
+              >
+              </key>
+
+              <index
+                  column="position_index"
+              />
+
+              <one-to-many
+                  class="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam"
+              />
+
+        </list>
+
+        <many-to-one
+            name="policy"
+            class="org.jahia.hibernate.model.JahiaPwdPolicy"
+            cascade="none"
+            outer-join="false"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahia_pwd_policy_id"
+            not-null="true"
+        />
+
+        <property
+            name="position"
+            type="int"
+            update="true"
+            insert="true"
+            access="property"
+            column="position_index"
+            not-null="true"
+        />
+
+        <property
+            name="active"
+            type="boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="active"
+            not-null="true"
+        />
+
+        <property
+            name="lastRule"
+            type="boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="last_rule"
+            not-null="true"
+        />
+
+        <property
+            name="periodical"
+            type="boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="periodical"
+            not-null="true"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaPwdPolicyRule.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

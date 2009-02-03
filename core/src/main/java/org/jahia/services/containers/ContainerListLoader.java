@@ -1,0 +1,994 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license"
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+package org.jahia.services.containers;
+
+import org.jahia.content.ContentContainerKey;
+import org.jahia.content.ContentFieldKey;
+import org.jahia.content.CoreFilterNames;
+import org.jahia.content.ObjectKey;
+import org.jahia.data.containers.*;
+import org.jahia.data.search.JahiaSearchResult;
+import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.model.JahiaAcl;
+import org.jahia.params.AdvPreviewSettings;
+import org.jahia.params.ParamBean;
+import org.jahia.params.ProcessingContext;
+import org.jahia.params.SessionState;
+import org.jahia.registries.JahiaListenersRegistry;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.search.*;
+import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
+import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.utils.OrderedBitSet;
+
+import java.io.Serializable;
+import java.util.*;
+
+/**
+ * this class is used to effectively loads Container List applying filtering, searching and sorting if needed
+ *
+ * User: hollis
+ * Date: 10 mars 2008
+ * Time: 16:15:44
+ * To change this template use File | Settings | File Templates.
+ */
+public class ContainerListLoader implements Serializable {
+
+    private static final long serialVersionUID = -2110579553569562647L;
+
+    private static final org.apache.log4j.Logger logger =
+            org.apache.log4j.Logger.getLogger(ContainerListLoader.class);
+
+    private transient Boolean isValid;
+    private transient Map<String, ContainerSearcher> containerSearchersMap;
+    private transient Map<String, ContainerFilters> containerFiltersMap;
+    private transient Map<String, ContainerSorterInterface> containerSortersMap;
+
+    private String sessionKey;
+
+    protected ContainerListLoader(){
+        containerSearchersMap = new HashMap<String, ContainerSearcher>();
+        containerFiltersMap = new HashMap<String, ContainerFilters>();
+        containerSortersMap = new HashMap<String, ContainerSorterInterface>();
+        isValid = Boolean.TRUE;
+    }
+
+    String getSessionKey() {
+        return sessionKey;
+    }
+
+    void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
+    }
+
+    /**
+     *
+     * @param context
+     * @param cList
+     * @return
+     * @throws JahiaException
+     */
+    public static ContainerListLoader getInstance(  final ProcessingContext context,
+                                                    final JahiaContainerList cList)
+    throws JahiaException {
+
+        if (cList == null || cList.getID()==-1 || context==null){
+            return new ContainerListLoader();
+        }
+        int cListID = cList.getID();
+        String containerListName = cList.getDefinition().getName();
+
+        ContainerListLoader cLoader = null;
+        final SessionState session = context.getSessionState();
+        String sessionKey = null;
+        if (session!=null){
+            sessionKey = cListID + "_"
+                    + context.getPageID() + "_" + containerListName +
+                    "_containerLoader" + "_" + context.getEntryLoadRequest().toString();
+            cLoader = (ContainerListLoader) session.getAttribute(sessionKey);
+        }
+        if (cLoader == null || !cLoader.isValid()){
+            cLoader = new ContainerListLoader();
+        }
+        cLoader.initMaps();
+
+        if (session!=null){
+            cLoader.setSessionKey(sessionKey);
+            session.setAttribute(sessionKey,cLoader);
+        }
+        return cLoader;
+    }
+
+    public boolean isValid(){
+        return (this.isValid != null && this.isValid.booleanValue());
+    }
+
+    void initMaps(){
+        if (this.containerFiltersMap == null){
+            this.containerFiltersMap = new HashMap<String, ContainerFilters>();
+        }
+        if (this.containerSearchersMap == null){
+            this.containerSearchersMap = new HashMap<String, ContainerSearcher>();
+        }
+        if (this.containerSortersMap == null){
+            this.containerSortersMap = new HashMap<String, ContainerSorterInterface>();
+        }
+    }
+    /**
+     * Remove from session if not valid or if no Filter, Searcher or searcher are present.
+     * @param context
+     */
+    public void removeFromSessionIfEmpty(final ProcessingContext context){
+        if (this.containerFiltersMap != null && this.containerFiltersMap.isEmpty()){
+            this.containerFiltersMap = null;
+        }
+        if (this.containerSearchersMap != null && this.containerSearchersMap.isEmpty()){
+            this.containerSearchersMap = null;
+        }
+        if (this.containerSortersMap != null && this.containerSortersMap.isEmpty()){
+            this.containerSortersMap = null;
+        }
+        if (!this.isValid() || (this.containerFiltersMap==null && this.containerSearchersMap==null
+                && this.containerSortersMap==null)){
+            final SessionState session = context.getSessionState();
+            if (session!=null && this.getSessionKey() != null){
+                session.removeAttribute(this.getSessionKey());
+            }
+        }
+    }
+
+    /**
+     * Apply searching, filtering and sorting on the given container list.
+     *
+     * @param loaderContext
+     * @return List of matching ctn ids, sorted and filtered.
+     */
+
+    public List<Integer> doContainerFilterSearchSort(final ContainerListLoaderContext loaderContext) {
+
+        ProcessingContext context = loaderContext.getContext();
+        JahiaContainerList cList = loaderContext.getCList();
+        EntryLoadRequest loadVersion = loaderContext.getLoadVersion();
+
+        try {
+            loaderContext.setLoadingUseSingleSearchQuery(Boolean.valueOf(this.isLoadingUseSingleSearchQuery(loaderContext)));
+            BitSet resultBitSet = null;
+            BitSet filterBitSet = null;
+            JahiaSearchResult searchResult = null;
+            ContainerFilters cFilters = null;
+            boolean resultHasChanged = false;
+
+            // Apply container list search if needed.
+            final ContainerSearcher cSearcher = getCtnListSearcher(loaderContext);
+            String contextID = "";
+            if (cSearcher != null) {
+                searchResult = (JahiaSearchResult) cSearcher.getResult();
+                if ( cSearcher.getContextID() != null && !"".equals(cSearcher.getContextID()) ){
+                    contextID += "_" + cSearcher.getContextID();
+                }
+            }
+            if (searchResult != null) {
+                if (searchResult.bits() != null) {
+                    resultBitSet = (BitSet) searchResult.bits().clone();
+                }
+            }
+
+            // Apply container list filtering if needed.
+            if ((searchResult == null) ||
+                    !(searchResult != null && searchResult.getHitCount() == 0)) {
+                cFilters = getCtnListFilters(loaderContext);
+                if (cFilters != null) {
+                    if ( cFilters.getContextID() != null && !"".equals(cFilters.getContextID()) ){
+                        contextID += "_" + cFilters.getContextID();
+                    }
+                    if (cFilters.bits() != null) {
+                        filterBitSet = (BitSet) cFilters.bits().clone();
+                    }
+                }
+            }
+
+            // Retrieve previous search and filtering bitset from fullyLoadedList
+            final SessionState session = context.getSessionState();
+            BitSet cachedResultBitSet = null;
+            if (session != null) {
+                cachedResultBitSet = (BitSet) session.getAttribute(cList.getID() +
+                        "_searchfiltering_result_bitset" + "_" + context.getEntryLoadRequest().toString()
+                        + contextID);
+            }
+
+            resultHasChanged = ( (cSearcher==null || cSearcher.getUpdateStatus() || cFilters==null ||
+                    (cFilters.getUpdateStatus())) );
+
+            if (resultHasChanged) {
+                if (resultBitSet != null) {
+                    if (filterBitSet != null) {
+                        resultBitSet.and(filterBitSet);
+                        if ( resultBitSet instanceof OrderedBitSet){
+                            ((OrderedBitSet)resultBitSet).setOrdered(false);
+                        }
+                    }
+                } else if (filterBitSet != null) {
+                    resultBitSet = filterBitSet;
+                }
+                resultHasChanged = true;
+            } else {
+                resultBitSet = cachedResultBitSet;
+            }
+
+            if (session != null) {
+                if (resultBitSet != null){
+                    session.setAttribute(cList.getID() + "_searchfiltering_result_bitset" + "_" +
+                        context.getEntryLoadRequest().toString() + contextID, resultBitSet);
+                } else {
+                    session.removeAttribute(cList.getID() + "_searchfiltering_result_bitset" + "_" +
+                        context.getEntryLoadRequest().toString() + contextID);
+                }
+            }
+
+            if (resultBitSet != null && resultBitSet.length() == 0) {
+                return Collections.emptyList();
+            }
+
+            if (resultBitSet instanceof OrderedBitSet){
+                OrderedBitSet orderedBitSet = (OrderedBitSet)resultBitSet;
+                if (orderedBitSet.isOrdered()){
+                    List<Integer> orderedBits = orderedBitSet.getOrderedBits();
+                    List<Integer>result = new ArrayList<Integer>();
+                    result.addAll(orderedBits);
+                    return result;
+                }
+            }
+
+            // Apply Sorting if needed.
+            final ContainerSorterInterface sorter = getContainerSorter(loaderContext,resultHasChanged,resultBitSet);
+            if (sorter != null && sorter.result() != null) {
+                return sorter.result();
+            } else {
+                // it's a fake sorter or sorting failed
+                // so return the list of matching ctn ids, without sorting
+                if (!loaderContext.getLoadingUseSingleSearchQuery().booleanValue()) {
+                    cList.setIsContainersLoaded(false);
+                }    
+                try {
+                    JahiaContainersService jcService = ServicesRegistry.getInstance()
+                            .getJahiaContainersService();
+                    if (resultBitSet == null) {
+                        return jcService.getctnidsInList(cList.getID(), loadVersion);
+                    } else {
+                        return jcService.getCtnIds(
+                                        resultBitSet, loadVersion);
+                    }
+                } catch (Exception t) {
+                    logger.warn(t);
+                }
+            }
+
+        } catch (Exception t) {
+            logger.warn(t, t);
+        }
+        return null; // on any error return null List, so Jahia will return all
+        // containers without search, filtering or sorting of any sort.
+    }
+
+    //--------------------------------------------------------------------------
+
+    /**
+     * Apply container search if needed
+     *
+     * @param loaderContext
+     * @return
+     * @throws JahiaException
+     */
+    private ContainerSearcher getCtnListSearcher(ContainerListLoaderContext loaderContext)
+            throws JahiaException {
+
+        ProcessingContext context = loaderContext.getContext();
+        JahiaContainerList cList = loaderContext.getCList();
+
+        int clistID = cList.getID();
+        String containerListName = "truc";
+        if (cList.getID() != -1) {
+            containerListName = cList.getDefinition().getName();
+        }
+
+        ContainerSearcher cSearcher = null;
+        if ( cList.getQueryBean() != null ){
+            cSearcher = cList.getQueryBean().getSearcher();
+        } else {
+            // keep for backward compatibility. Should be deprecated
+            cSearcher = (ContainerSearcher) context.getAttribute(containerListName
+                    + "_search_handler");
+        }
+
+        String key = clistID + "_"
+                + context.getPageID() + "_" + containerListName +
+                "_search_handler" + "_" + context.getEntryLoadRequest().toString();
+        boolean fakeSearcher = false;
+        if (cSearcher == null || !cSearcher.isQueryValid()){
+            // create a fake searcher
+            String contextID = "";
+            if (cSearcher!=null){
+                contextID = cSearcher.getContextID();
+            }
+            cSearcher = new ContainerSearcher(clistID, "", context.getEntryLoadRequest());
+            cSearcher.setContextID(contextID);
+            cSearcher.setUpdateStatus();
+            if (cSearcher.getContextID() != null
+                    && !"".equals(cSearcher.getContextID())){
+                key += "_" + cSearcher.getContextID();
+            }
+            fakeSearcher = true;
+        } else {
+            ContainerSearcher cachedContainerSearcher = null;
+            if (cSearcher.getContextID() != null
+                    && !"".equals(cSearcher.getContextID())){
+                key += "_" + cSearcher.getContextID();
+            }
+            cachedContainerSearcher = (ContainerSearcher) this.containerSearchersMap.get(key);
+
+            boolean doNewSearch = true;
+
+            ContainerSearcher customSearcher = null;
+            if (!cSearcher.isSiteModeSearching()) {
+                customSearcher = new ContainerSearcher(clistID,
+                        cSearcher.getContainerLevel(),
+                        cSearcher.getQuery(),
+                        cSearcher.getEntryLoadRequest());
+                customSearcher.setContextID(cSearcher.getContextID());
+                customSearcher.setCacheTime(cSearcher.getCacheTime());
+                customSearcher.setLastSearchTime(cSearcher.getLastSearchTime());
+                customSearcher.setLanguageCodes(cSearcher.getLanguageCodes());
+                customSearcher.setSearchResultBuilder(cSearcher.getSearchResultBuilder());
+            } else {
+                customSearcher = cSearcher;
+            }
+            if ( cachedContainerSearcher != null ){
+                customSearcher.setLastSearchTime(cachedContainerSearcher.getLastSearchTime());
+            }
+
+            // detect pagination
+            String pagination = context.getParameter("ctnlistpagination_" + containerListName);
+            if ( "true".equals(pagination) ){
+                // on pagination, do not perform search
+                doNewSearch = false;
+            } else {
+                if (cachedContainerSearcher != null
+                    && (cachedContainerSearcher.getQuery () != null)
+                        && cachedContainerSearcher.getQuery ().equals (customSearcher.getQuery())
+                    && cachedContainerSearcher.getLanguageCodes ().contains (context.getLocale ().
+                    toString ())) {
+                    // check if the container list has been changed the last time the search was performed
+                    long lastSearchTime = cachedContainerSearcher.getLastSearchTime ();
+
+                    if ( System.currentTimeMillis()-lastSearchTime<
+                            customSearcher.getCacheTime() ){
+                        ContainersChangeEventListener listener = (
+                                ContainersChangeEventListener) JahiaListenersRegistry.
+                                getInstance ()
+                                .getListenerByClassName (ContainersChangeEventListener.class.getName ());
+                        if (listener != null) {
+                            long lastCtnListChangeTime = listener.getContainerLastChangeTime();
+                            if (lastCtnListChangeTime <= lastSearchTime) {
+                                cSearcher = cachedContainerSearcher;
+                                cSearcher.resetUpdateStatus (); // to indicate no new search has been launched.
+                                logger.debug ("Container Searcher found in session with same query and ctnlList did not change -> no need to run search again.");
+                                doNewSearch = false;
+                            }
+                        }
+                    }
+                }
+            }
+            if ( !doNewSearch ){
+                // test for search result validity
+                JahiaSearchResult searchResult = (JahiaSearchResult)((JahiaSearcher)customSearcher).getResult();
+                if ( searchResult != null && !searchResult.isValid() ){
+                    doNewSearch = true;
+                }
+            }
+            if (doNewSearch) {
+                customSearcher.search(customSearcher.getQuery(), context);
+                logger.debug("Container Searcher launched new search");
+                cSearcher = customSearcher;
+            } else if (loaderContext.getLoadingUseSingleSearchQuery().booleanValue()) {
+                // as we use cached results, we need to force reloading the containers
+                cList.setIsContainersLoaded(false);
+            }
+        }
+        if (fakeSearcher){
+            this.containerSearchersMap.remove(key);
+        } else {
+            this.containerSearchersMap.put(key,cSearcher);
+        }
+
+        return cSearcher;
+    }
+
+    //--------------------------------------------------------------------------
+
+    /**
+     * Apply container filtering if needed
+     *
+     * @param loaderContext
+     * @return
+     * @throws JahiaException
+     */
+    private ContainerFilters getCtnListFilters(ContainerListLoaderContext loaderContext)
+            throws JahiaException {
+
+        ProcessingContext context = loaderContext.getContext();
+        JahiaContainerList cList = loaderContext.getCList();
+
+        int clistID = cList.getID();
+
+        String containerListName = "truc";
+        if (cList.getID() != -1) {
+            containerListName = cList.getDefinition().getName();
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Started for container list : " + containerListName + "[" + clistID + "]");
+        }
+
+        ContainerFilters cachedContainerFilters = null;
+        ContainerFilters cFilters = null;
+
+        if ( cList.getQueryBean() != null ){
+            cFilters = cList.getQueryBean().getFilter();
+        } else {
+            // keep for backward compatibility. Should be deprecated
+            cFilters = (ContainerFilters) context.getAttribute(containerListName + "_filter_handler");
+        }
+
+        String key = clistID + "_"
+                    + context.getPageID() + "_" + containerListName +
+                "_filter_handler" + "_" + context.getEntryLoadRequest().toString();
+
+        boolean fakeFilter = false;
+        if (cFilters == null || !cFilters.isQueryValid()) {
+            String contextID = "";
+            if(cFilters !=null){
+                contextID = cFilters.getContextID();
+            }
+            // create a fake filter
+            cFilters = new ContainerFilters(clistID, new ArrayList<ContainerFilterInterface>());
+            cFilters.setContextID(contextID);
+            cFilters.setUpdateStatus();
+            fakeFilter = true;
+        } else {
+
+            if ( cFilters.getContextID() != null
+                && !"".equals(cFilters.getContextID())){
+                key += "_" + cFilters.getContextID();
+            }
+            cachedContainerFilters = (ContainerFilters) this.containerFiltersMap.get(key);
+            boolean doNewFiltering = true;
+
+            // We need to create a container filter handler with the correct container list ID!
+            cFilters.setCtnListID(clistID);
+
+            if (cachedContainerFilters != null
+                    && (cachedContainerFilters.getQuery() != null)
+                    && cachedContainerFilters.getQuery().equals(
+                            cFilters.getQuery())
+                    && (cachedContainerFilters.getQueryParameters() != null)
+                    && cachedContainerFilters.getQueryParameters().equals(
+                            cFilters.getQueryParameters())
+            ) {
+                // check if containers has changed the last time the filtering was performed
+                final long lastFilteringTime = cachedContainerFilters.
+                        getLastFilteringTime();
+                final ContainersChangeEventListener listener = (ContainersChangeEventListener) JahiaListenersRegistry.
+                        getInstance().getListenerByClassName(ContainersChangeEventListener.class.getName());
+                if (listener != null) {
+                    final long lastCtnChangeTime = listener.getContainerLastChangeTime();
+                    if (lastCtnChangeTime <= lastFilteringTime) {
+                        cFilters = cachedContainerFilters;
+                        cFilters.resetUpdateStatus(); // to indicate no new filtering has been launched.
+                        logger.debug("Container Filters found in session with same query and ctnlList did not change -> no need to run filtering again.");
+                        doNewFiltering = false;
+                    }
+                }
+            }
+
+            if (doNewFiltering) {
+                cFilters.doFilter();
+                logger.debug("Container Filters launched new filtering");
+            } else if (loaderContext.getLoadingUseSingleSearchQuery().booleanValue()) {
+                // as we use cached results, we need to force reloading the containers
+                cList.setIsContainersLoaded(false);
+            }
+        }
+        if (fakeFilter){
+            this.containerFiltersMap.remove(key);
+        } else {
+            this.containerFiltersMap.put(key,cFilters);
+        }
+        return cFilters;
+    }
+
+    //--------------------------------------------------------------------------
+
+    /**
+     * Apply container sorting if needed
+     *
+     * @param loaderContext
+     * @param resultHasChanged  filteringResultHasChanged, does pre-filtering
+     *                          and searching 's result change ?.
+     * @param resultBitSet      the filtering and search result as BitSet
+     * @return ContainerSorterBean,  the container sort handler
+     */
+    private ContainerSorterInterface getContainerSorter(ContainerListLoaderContext loaderContext,
+                                                        final boolean resultHasChanged,
+                                                        final BitSet resultBitSet)
+            throws JahiaException {
+
+        ProcessingContext context = loaderContext.getContext();
+        JahiaContainerList cList = loaderContext.getCList();
+
+        ContainerSorterInterface cachedSorter = null;
+        ContainerSorterInterface sorter = null;
+
+        String containerListName = "truc";
+        if (cList.getID() != -1) {
+            containerListName = cList.getDefinition().getName();
+        }
+
+        if ( cList.getQueryBean() != null ){
+            sorter = cList.getQueryBean().getSorter();
+        } else {
+            sorter = (ContainerSorterInterface) context.getAttribute(containerListName +
+                    "_sort_handler");
+        }
+
+        String key = cList.getID() + "_"
+                    + context.getPageID() + "_" + containerListName + "_sort_handler" +
+                    "_" + context.getEntryLoadRequest().toString();
+        if ( sorter != null ){
+            if ( sorter.getContextID() != null && !"".equals(sorter.getContextID()) ){
+                key += sorter.getContextID();
+            }
+            cachedSorter = (ContainerSorterInterface) this.containerSortersMap.get(key);
+        } else {
+            this.containerSortersMap.remove(key);
+        }
+        boolean doNewSorting = false;
+        if (sorter == null || !sorter.isValid()) {
+            final String property = cList.getProperty("automatic_sort_handler");
+            final boolean useOptimizedMode = ("true".equals(cList.getProperty("automatic_sort_useOptimizedMode")) 
+                    || cList.getProperty("automatic_sort_useOptimizedMode")==null);
+            final boolean ignoreOptimizedMode = ("true".equals(cList.getProperty("automatic_sort_ignoreOptimizedMode")));
+            if (property != null && !"".equals(property.trim())) {
+                final String[] paramValues = property.split(";");
+                final boolean isMetadata = Boolean.valueOf(paramValues[3]).booleanValue();
+                String fieldName = paramValues[0];
+                List<Integer> fieldDefIDs = ServicesRegistry.getInstance().getJahiaFieldService()
+                        .loadFieldDefinitionIds(fieldName,isMetadata);
+                if (fieldDefIDs != null && !fieldDefIDs.isEmpty()){
+                    try {
+                        JahiaFieldDefinition definition = (JahiaFieldDefinition)
+                                JahiaFieldDefinition.getChildInstance(String.valueOf(fieldDefIDs.get(0).intValue()));
+                        fieldName = definition.getCtnType();
+                    } catch ( Throwable t ){
+                        logger.debug(t);
+                        return null;
+                    }
+                }
+                if (isMetadata) {
+                    sorter = new ContainerMetadataSorterBean(cList.getID(), fieldName,
+                            Boolean.valueOf(paramValues[2]).booleanValue(), context, context.getEntryLoadRequest());
+                    if (ignoreOptimizedMode || !useOptimizedMode){
+                        ((ContainerMetadataSorterBean)sorter).setOptimizedMode(false);
+                    }
+                } else {
+                    sorter = new ContainerSorterBean(cList.getID(), fieldName,
+                            Boolean.valueOf(paramValues[2]).booleanValue(), context.getEntryLoadRequest());
+                    if (ignoreOptimizedMode || !useOptimizedMode){
+                        ((ContainerSorterBean)sorter).setOptimizedMode(false);
+                    }
+                }
+                if ("desc".equals(paramValues[1])) {
+                    sorter.setDescOrdering();
+                }
+                doNewSorting = true;
+            }
+        } else {
+            doNewSorting = true;
+        }
+
+        if (doNewSorting) {
+
+            logger.debug("Found sort hanlder on field(s) [" +
+                    sorter.getSortingFieldNames() + "]");
+
+            // We need to create a container sort handler with the correct container list ID!
+            sorter.setCtnListID(cList.getID());
+
+            if (cachedSorter != null
+                    && !resultHasChanged
+                    && cachedSorter.getEntryLoadRequest().toString().equals(sorter.getEntryLoadRequest().toString())
+                    && cachedSorter.isValid()
+                    && Arrays.equals(cachedSorter.getSortingFieldNames(), sorter.getSortingFieldNames())
+                    && (cachedSorter.isAscOrdering() == sorter.isAscOrdering())
+                    ) {
+                // check if containers has changed since the last time the sorting was performed
+                final long lastSortingTime = cachedSorter.getLastSortingTime();
+                final ContainersChangeEventListener listener = (ContainersChangeEventListener) JahiaListenersRegistry.
+                        getInstance().getListenerByClassName(ContainersChangeEventListener.class.getName());
+                if (listener != null) {
+                    final long lastCtnChangeTime = listener.getContainerLastChangeTime();
+                    if (lastCtnChangeTime <= lastSortingTime) {
+                        sorter = cachedSorter;
+                        sorter.resetUpdateStatus(); // to indicate no new sorting has been launched.
+                        logger.debug("Container Sorter found in session with same sorting field and ctnlList did not change -> no need to run sorting again.");
+                        doNewSorting = false;
+                    }
+                }
+            }
+
+            if (doNewSorting) {
+                sorter.doSort(resultBitSet);
+                logger.debug("Container Sorter launched new sort");
+            } else if (loaderContext.getLoadingUseSingleSearchQuery().booleanValue()) {
+                // as we use cached results, we need to force reloading the containers
+                cList.setIsContainersLoaded(false);
+            }
+
+        }
+        if (sorter != null){
+            this.containerSortersMap.put(key,sorter);
+        } else {
+            this.containerSortersMap.remove(key);
+        }
+        return sorter;
+    }
+
+    /**
+     * 
+     * @param loaderContext
+     * @return
+     * @throws JahiaException
+     */
+    private boolean isLoadingUseSingleSearchQuery(ContainerListLoaderContext loaderContext) throws JahiaException {
+
+        JahiaContainerList cList = loaderContext.getCList();
+        ProcessingContext context = loaderContext.getContext();
+
+//        String containerListName = cList.getDefinition().getName();
+//
+//        ContainerSearcher cSearcher = null;
+//        if ( cList.getQueryBean() != null ){
+//            cSearcher = cList.getQueryBean().getSearcher();
+//        } else {
+//            // keep for backward compatibility. Should be deprecated
+//            cSearcher = (ContainerSearcher) context.getAttribute(containerListName
+//                    + "_search_handler");
+//        }
+//
+//        ContainerFilters cFilters = null;
+//        if ( cList.getQueryBean() != null ){
+//            cFilters = cList.getQueryBean().getFilter();
+//        } else {
+//            // keep for backward compatibility. Should be deprecated
+//            cFilters = (ContainerFilters) context.getAttribute(containerListName + "_filter_handler");
+//        }
+//
+//        ContainerSorterInterface sorter = null;
+//        if ( cList.getQueryBean() != null ){
+//            sorter = cList.getQueryBean().getSorter();
+//        } else {
+//            sorter = (ContainerSorterInterface) context.getAttribute(containerListName +
+//                    "_sort_handler");
+//        }
+//
+        ContainerSearcher cSearcher = null;
+        ContainerFilters cFilters = null;
+        ContainerSorterInterface sorter = null;
+
+        if ( cList.getQueryBean() != null ){
+            cSearcher = cList.getQueryBean().getSearcher();
+            cFilters = cList.getQueryBean().getFilter();
+            sorter = cList.getQueryBean().getSorter();
+        } else {
+            String containerListName = cList.getDefinition().getName();
+
+            // keep for backward compatibility. Should be deprecated
+            cSearcher = (ContainerSearcher) context.getAttribute(containerListName + "_search_handler");
+            cFilters = (ContainerFilters) context.getAttribute(containerListName + "_filter_handler");
+            sorter = (ContainerSorterInterface) context.getAttribute(containerListName + "_sort_handler");
+        }
+        if (cSearcher != null && cFilters == null && sorter == null){
+            return true;
+        } else if(cFilters != null && sorter == null && cSearcher == null){
+            if (cFilters.getContainerFilters().size()==1){
+                ContainerFilterInterface filter = (ContainerFilterInterface)cFilters.getContainerFilters().get(0);
+                if (filter instanceof ContainerSearcherToFilterAdapter){
+                    ContainerSearcherToFilterAdapter containerSearcher = (ContainerSearcherToFilterAdapter)filter;
+                    final JahiaContainerList containerList = cList;
+                    final ContainerListLoaderContext finalLoaderContext = loaderContext;
+                    final int maxHits = getEffectiveMaxHits(containerSearcher.getSearcher()
+                            .getSearchResultBuilder().getMaxHits(),containerList.getMaxSize());
+                    containerSearcher.getSearcher()
+                            .getSearchResultBuilder().setSearchResult(
+                                new SearchResultImpl(false){
+                                    public boolean add(SearchHit hit){
+                                        return processHit(finalLoaderContext, containerList, hit, maxHits, this);
+                                    }
+                                }
+                    );
+                    // deactivate any proxy
+                    containerList.setIsContainersLoaded(true);
+                    containerList.clearContainers();
+                    // set the collector to null so that this is the passed SearchResult will be used as Hit Collector
+                    containerSearcher.getSearcher().getSearchResultBuilder().setHitCollector(null);
+                    return true;
+                } else if (filter instanceof ContainerChainedFilter){
+                    ContainerChainedFilter chainedFilter = (ContainerChainedFilter)filter;
+                    if (chainedFilter.getChain().length==1){
+                        filter = chainedFilter.getChain()[0];
+                        if (filter instanceof ContainerSearcherToFilterAdapter){
+                            ContainerSearcherToFilterAdapter containerSearcher = (ContainerSearcherToFilterAdapter)filter;
+                            final JahiaContainerList containerList = cList;
+                            final ContainerListLoaderContext finalLoaderContext = loaderContext;
+                            final int maxHits = getEffectiveMaxHits(containerSearcher.getSearcher()
+                                    .getSearchResultBuilder().getMaxHits(),containerList.getMaxSize());
+                            containerSearcher.getSearcher()
+                                    .getSearchResultBuilder().setSearchResult(
+                                        new SearchResultImpl(false){
+                                            public boolean add(SearchHit hit){
+                                                return processHit(finalLoaderContext, containerList, hit, maxHits, this);
+                                            }
+                                        }
+                            );
+                            // deactivate any proxy
+                            containerList.setIsContainersLoaded(true);
+                            containerList.clearContainers();
+                            // set the collector to null so that this is the passed SearchResult will be used as Hit Collector
+                            containerSearcher.getSearcher().getSearchResultBuilder().setHitCollector(null);
+                            return true;
+                        }
+                    }
+                }
+            }
+        } else if (sorter != null && cSearcher == null && cFilters == null){
+            if (sorter instanceof ContainerLuceneSorterBean){
+                ContainerLuceneSorterBean luceneSorterBean = (ContainerLuceneSorterBean)sorter;
+                //if (luceneSorterBean.getContainerSearcher().getSearchResultBuilder().getSorter()!= null){
+                    final JahiaContainerList containerList = cList;
+                    final ContainerListLoaderContext finalLoaderContext = loaderContext;
+                    final int maxHits = getEffectiveMaxHits(luceneSorterBean.getContainerSearcher()
+                        .getSearchResultBuilder().getMaxHits(),containerList.getMaxSize());
+                    luceneSorterBean.getContainerSearcher()
+                            .getSearchResultBuilder().setSearchResult(
+                                new SearchResultImpl(false){
+                                    public boolean add(SearchHit hit){
+                                        return processHit(finalLoaderContext, containerList, hit, maxHits, this);
+                                    }
+                                }
+                    );
+                    // deactivate any proxy
+                    containerList.setIsContainersLoaded(true);
+                    containerList.clearContainers();
+                    // set the collector to null so that this is the passed SearchResult will be used as Hit Collector
+                    luceneSorterBean.getContainerSearcher().getSearchResultBuilder().setHitCollector(null);
+                    return true;
+                //}
+            }
+        }
+        return false;
+    }
+
+    private static boolean processHit(ContainerListLoaderContext loaderContext,
+                        JahiaContainerList containerList,
+                        SearchHit hit,
+                        int maxHits, SearchResult searchResult)
+    {
+        boolean result = true;
+
+        int nbContainers = searchResult.results().size();
+        // init the container list pagination
+        JahiaContainerListPagination cListPagination = null;
+        try {
+            Integer lastEditedItemIntId = (Integer)loaderContext.getContext()
+                .getAttribute("ContextualContainerList_"+String.valueOf(containerList.getID()));
+            int lastEditedItemId = 0;
+            if(lastEditedItemIntId!=null){
+                lastEditedItemId = lastEditedItemIntId.intValue();
+            }
+            List<Integer> ctnIds = new ArrayList<Integer>();
+            if (lastEditedItemId>0){
+                List<JahiaContainer> ctns = containerList.getContainersList();
+                if (ctns != null && !ctns.isEmpty()){
+                    for (JahiaContainer ctn : ctns){
+                        ctnIds.add(new Integer(ctn.getID()));
+                    }
+                }
+            }
+
+            // init the container list pagination
+            cListPagination = containerList.getCtnListPagination(false);
+            if (cListPagination !=null){
+                cListPagination = new JahiaContainerListPagination(containerList, loaderContext.getContext(),
+                        cListPagination.getWindowSize(),ctnIds,lastEditedItemId);
+            } else {
+                cListPagination = new JahiaContainerListPagination(containerList, loaderContext.getContext(), -1,
+                        ctnIds,lastEditedItemId);
+            }
+            containerList.setCtnListPagination(cListPagination);
+        } catch ( Exception t ){
+            logger.debug("Error checking container list pagination",t);
+            return false;
+        }
+        int endPos = cListPagination.getSize();
+
+        if (cListPagination.isValid()) {
+            endPos = cListPagination.getLastItemIndex();
+        }
+
+        if ( (nbContainers >= containerList.getMaxSize()) ||
+                (nbContainers > endPos + org.jahia.settings.SettingsBean.getInstance().getPreloadedItemsForPagination()) ){
+            return false;
+        }
+
+        if (nbContainers==maxHits || (nbContainers>0
+                && nbContainers==containerList.getMaxSize())){
+            return false;
+        }
+        try {
+            String ctnKeyVal = hit.getValue(JahiaSearchConstant.OBJECT_KEY);
+            String parentID = hit.getValue(JahiaSearchConstant.PARENT_ID);
+            String aclID = hit.getValue(JahiaSearchConstant.ACL_ID);
+            ObjectKey objectKey = null;
+            if (ctnKeyVal != null) {
+                objectKey = ObjectKey.getInstance(ctnKeyVal);
+                if(objectKey instanceof ContentFieldKey) {
+                   objectKey = new ContentContainerKey(Integer.parseInt(parentID));
+                }
+
+                JahiaContainer jahiaContainer = loadContainer(objectKey.getIdInType(),Integer.parseInt(aclID),
+                        loaderContext);
+                if (jahiaContainer!=null && jahiaContainer.getID()>0){
+                    containerList.addContainer(jahiaContainer);
+                    containerList.setFullSize(containerList.getFullSize()+1);
+                    searchResult.results().add(hit);
+                    nbContainers++;
+                    endPos = cListPagination.getSize();
+
+                    if (cListPagination.isValid()) {
+                        endPos = cListPagination.getLastItemIndex();
+                    }
+                    if ( (nbContainers >= containerList.getMaxSize()) ||
+                            (nbContainers > endPos + org.jahia.settings.SettingsBean.getInstance().getPreloadedItemsForPagination()) ){
+                        return false;
+                    }
+                    if (nbContainers==maxHits || (nbContainers>0
+                            && nbContainers==containerList.getMaxSize())){
+                        return false;
+                    }
+                }
+            }
+        } catch ( Exception t ){
+            logger.debug(t);
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param filterDefinedMaxHits
+     * @param containerListMaxSize
+     * @return
+     */
+    private int getEffectiveMaxHits(int filterDefinedMaxHits, int containerListMaxSize) {
+        int maxHits = containerListMaxSize;
+        if (maxHits<0){
+            return filterDefinedMaxHits;
+        } else if (filterDefinedMaxHits>0 && filterDefinedMaxHits<maxHits){
+            maxHits = filterDefinedMaxHits;
+        }
+        return maxHits;
+    }
+
+    /**
+     * Load a JahiaContainer applying all check
+     * @param ctnID
+     * @param aclID
+     * @return
+     * @throws JahiaException
+     */
+    private static JahiaContainer loadContainer(int ctnID,
+                                         int aclID,
+                                         ContainerListLoaderContext loaderContext)
+    throws JahiaException {
+
+        ProcessingContext context = loaderContext.getContext();
+        EntryLoadRequest loadVersion = loaderContext.getLoadVersion();
+
+        final JahiaContainersService jahiaContainersService = ServicesRegistry.getInstance().getJahiaContainersService();
+        final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance().getTimeBasedPublishingService();
+        JahiaContainer container = null;
+
+        // start check for correct rights.
+        if (context != null) { // no jParams, can't check for rights
+
+            try {
+                // Check for expired container
+                boolean disableTimeBasedPublishingFilter = context.isFilterDisabled(CoreFilterNames.
+                        TIME_BASED_PUBLISHING_FILTER);
+
+                JahiaAcl acl = null;
+                if (aclID == -1){
+                    return null;
+                }
+                acl = ServicesRegistry.getInstance().getJahiaACLManagerService().lookupACL(aclID);
+                if (acl!= null && acl.getPermission(context.getUser(), JahiaBaseACL.READ_RIGHTS)) {
+                    if ( !disableTimeBasedPublishingFilter ){
+                        if ( ParamBean.NORMAL.equals(context.getOperationMode()) ){
+                            if (!tbpServ.isValid(new ContentContainerKey(ctnID),
+                                    context.getUser(),context.getEntryLoadRequest(),context.getOperationMode(),
+                                    (Date)null)){
+                                return null;
+                            }
+                        } else if ( ParamBean.PREVIEW.equals(context.getOperationMode()) ){
+                            if (!tbpServ.isValid(new ContentContainerKey(ctnID),
+                                    context.getUser(),context.getEntryLoadRequest(),context.getOperationMode(),
+                                    AdvPreviewSettings.getThreadLocaleInstance())){
+                                return null;
+                            }
+                        }
+                    }
+                    try {
+                        container = jahiaContainersService.loadContainer(ctnID,
+                                loaderContext.getLoadFlag(), context,
+                                loadVersion, loaderContext.getCachedFieldsInContainer(),
+                                loaderContext.getCachedContainerListsFromContainers(),
+                                loaderContext.getCachedContainerListsFromContainers());
+                    } catch (Exception t) {
+                        String errorMsg = "Error loading container [" + ctnID + "]";
+                        if (loadVersion != null) {
+                            errorMsg += " loadVersion=" + loadVersion.toString();
+                        }
+                        logger.debug(errorMsg);
+
+                    }
+                }
+            } catch (Exception t) {
+                logger.error(t);
+            }
+        }
+        return container;
+    }
+
+}

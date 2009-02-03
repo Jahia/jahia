@@ -1,0 +1,13 @@
+<project>
+  <parent>
+      <groupId>org.jahia.archetypes</groupId>
+      <artifactId>jahia-archetypes</artifactId>
+      <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jahia.archetypes</groupId>
+  <artifactId>jahia-templates-archetype</artifactId>
+  <version>${jahia.package.version}</version>
+  <name>Archetype - jahia-templates-archetype</name>
+  <url>http://maven.apache.org</url>
+</project>

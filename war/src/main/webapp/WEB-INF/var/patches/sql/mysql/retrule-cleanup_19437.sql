@@ -1,0 +1,3 @@
+update jahia_obj set retrule_jahia_obj=null where retrule_jahia_obj in (SELECT id_jahia_retrule FROM jahia_retrule where settings_retrule like '%<inherit-from-parent>true</inherit-from-parent>%');
+delete from jahia_retrule_range where id_retrule_range in (SELECT id_jahia_retrule FROM jahia_retrule where settings_retrule like '%<inherit-from-parent>true</inherit-from-parent>%');
+delete from jahia_retrule where settings_retrule like '%<inherit-from-parent>true</inherit-from-parent>%';

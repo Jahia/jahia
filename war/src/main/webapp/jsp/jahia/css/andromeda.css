@@ -1,0 +1,1621 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+/* space correction  */
+#content td {
+padding:5px;
+}
+#content td.nopadding {
+padding:0px;
+}
+#content ul{
+list-style-position:inside;
+padding-left:2em;
+}
+#content .jahia-admin-gxt td {
+padding:0px;
+}
+#content .jahia-admin-gxt ul{
+list-style-position: inherit;
+padding-left:0;
+}
+.adminmenu td {
+	padding:5px;
+}
+
+/* Utils */
+.clear {
+  clear: both;
+}
+
+/* general */
+body {
+  font-family:Arial, Verdana, Helvetica, sans-serif;
+  background-color:#f1f5fa;
+  font-size:11px!important;
+  padding: 20px;
+  margin: 0;
+}
+
+body.login, #bodyLogin {
+  background:url(images/andromeda/bg-body_community.png) no-repeat 50% 0%;
+  background-color: #FFFFFF;
+  margin:230px auto 0 auto;
+  text-align:center
+}
+
+
+input[type="text"] {
+	font-size: 11px;
+	}
+
+input[type="password"] {
+	font-size: 11px;
+	}
+
+input[type="file"] {
+font-size: 11px;
+}
+
+select
+{
+	 font-size: 11px;
+}
+select[multiple] {
+font-family:"Courier New", Courier, monospace
+}
+#adminLogin label, #adminLogin th, #adminLogin td
+{
+	 font-size: 11px;
+}
+
+/* Copyright */
+#copyright {
+  text-align: center;
+  color: #ADB7BD;
+  padding-top: 7px;
+  width: 100%;
+  float: left;
+}
+
+/* Container structure */
+#mainAdminLayout {
+  margin: auto;
+  width: 960px;
+}
+
+#mainClientLayout {
+  width: 960px;
+  margin:0 auto;
+  text-align:left;
+  font-size:11px;
+}
+
+#mainLoginLayout {
+
+}
+
+#adminLogin {
+	border: 1px solid #b7cbd8;
+	background-color: #ffffff;
+	margin:0 auto;
+	margin-top: 10px;
+	padding: 10px;
+	text-align: center;
+	width: 300px;
+}
+
+
+#topTitle {
+  margin: 12px 20px 20px 20px;
+  height: 20px;
+}
+
+ul.noStyle{
+  margin: 0;
+  padding: 0;
+}
+
+ul.noStyle, ul.noStyle li{
+  list-style: none;
+}
+
+h1 {
+  font-size: 100%;
+  margin: 0;
+  float: left;
+  padding-right: 10px;
+  text-indent: -2000em;
+  display: block;
+  width: 55px;
+  height: 20px;
+  background: url(images/andromeda/logo-jahia.gif) no-repeat 10px 0px ;
+  text-indent: -2000em;
+}
+
+h1.big {
+  background: url(images/andromeda/logo-jahia-big.png) no-repeat;
+  float: none;
+  height: 54px;
+  width: 100px;
+  margin:0 auto;
+  padding:0;
+}
+
+h3.loginIcon{
+  padding: 5px 0 10px 50px;
+  background: url(images/andromeda/icons/key_big.png) no-repeat 40px 0px;
+  color: #D32222;
+  margin:0 auto 5px auto;
+  padding:5px;
+  font-size:12px
+}
+
+a {
+  color: #006699;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #3399CC;
+  text-decoration: none;
+}
+
+
+/**
+ * Section title
+ */
+h2 {
+  font-size: 120%;
+  margin: 2px;
+  display: block;
+  float: left;
+}
+
+h2.add {
+  background: url(images/andromeda/data_add.png) no-repeat;
+  padding: 0 10px 0 20px;
+}
+
+h2.edit {
+  background: url(images/andromeda/data_edit.png) no-repeat;
+  padding: 0 10px 0 20px;
+}
+h2.page {
+  background: url(images/andromeda/data_page.png) no-repeat;
+  padding: 0 10px 0 20px;
+}
+h2.delete {
+  background: url(images/andromeda/data_delete.png) no-repeat;
+  padding: 0 10px 0 20px;
+}
+
+h2.workflow {
+  background: url(images/andromeda/gears.png) no-repeat;
+  padding: 0 10px 0 20px;
+}
+
+h2.template {
+  background: url(images/andromeda/gears.png) no-repeat;
+  padding: 0 10px 0 20px;
+}
+
+h3 {
+  margin-left: 5px;
+}
+
+br.clearFloat{
+  float: left;
+  width: 100%;
+}
+
+.split{
+  border-left: 1px solid #b7cbd8;
+}
+
+.disabled{
+  cursor: pointer;
+  opacity: .5;
+  filter: alpha(opacity=50);
+}
+
+#header{
+  float: left;
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+
+.step {
+  float: right;
+  text-align: right;
+  padding-top: 8px;
+}
+
+
+#mainContent{
+  float: left;
+  width: 100%;
+}
+
+#actionBar {
+  padding-top: 6px;
+  text-align: center;
+}
+
+#actionBar.alignLeft{
+  text-align: left;
+}
+#actionBar.alignCenter{
+  text-align: center;
+}
+.alignCenter{
+  text-align: center;
+}
+
+#copyright {
+  text-align: center;
+  color: #ADB7BD;
+}
+
+#loggedUser {
+  float: right;
+  background: url(images/andromeda/user_logged.png) no-repeat;
+  padding: 2px 20px 0 20px;
+}
+
+#quit {
+  float: right;
+  background: url(images/andromeda/logout.png) no-repeat;
+  padding: 2px 0 0 25px;
+}
+
+.dex-license-wrapper {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  list-style: none;
+  float: right;
+  text-align: right;
+  background: url(images/andromeda/bkg-tab.png) 0 -192px;
+}
+
+.dex-license-wrapper li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: inline-block;
+  display: -moz-inline-box; *
+  display: inline;
+  vertical-align: bottom;
+  cursor: pointer;
+  zoom: 1;
+  height: 32px;
+  color: #333333;
+}
+
+/**
+ * Page navigation
+ */
+ td.dex-langItem-wrapper-empty{
+ background: url(images/andromeda/bkg-tab.png) 0 -192px;
+}
+
+div.dex-langItem-wrapper{
+ background: url(images/andromeda/bkg-tab.png) 0 -192px;
+ float: right;
+ width: 100%;
+}
+
+ul.dex-langItem-wrapper  {
+	float: right;
+	height:32px
+}
+
+.dex-langItem-wrapper li {
+  margin: 0 0 0 10px;
+  padding: 10px 0 0 0;
+  list-style: none;
+  vertical-align: bottom;
+  cursor: pointer;
+  color:#bf2a2f;
+  float:left
+}
+
+.dex-langItem-wrapper li img{
+  vertical-align: middle;
+}
+
+/**
+ * Menu
+ */
+
+.adminmenu {
+	margin: 10px;
+}
+
+.leftMenu {
+  border: 1px solid #b7cbd8;
+  border-left: 0;
+  width: 220px;
+  float: left;
+  display: block;
+  background-color: #ffffff;
+}
+
+.leftMenu ul,.leftMenu li {
+  padding: 0;
+  margin: 0;
+}
+
+.leftMenu ul li,.leftMenu ul {
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+  display: inline-block;
+  width: 100%;
+}
+
+li.section {
+  background: #d8e5ec url(images/andromeda/bkg-section.png) 0 0;
+  color: #2f3c45;
+  font-weight: bold;
+  border-bottom: 1px solid #b7cbd8;
+}
+
+.leftMenu ul li.first {
+  margin-top: 0;
+}
+
+.leftMenu .section a.closed {
+  background: #d8e5ec url(images/andromeda/bkg-accordion.png) no-repeat 0 0;
+}
+
+.leftMenu .section a.closed:hover {
+  background: #d8e5ec url(images/andromeda/bkg-accordion.png) no-repeat 0 -40px;
+}
+
+.leftMenu .section a.open {
+  background: #d8e5ec url(images/andromeda/bkg-accordion.png) no-repeat 0 -160px;
+}
+
+.leftMenu .section a.single {
+  background: #d8e5ec url(images/andromeda/bkg-accordion.png) no-repeat 0 -80px;
+}
+
+.leftMenu .section a.single:hover {
+  background: #d8e5ec url(images/andromeda/bkg-accordion.png) no-repeat 0 -120px;
+}
+
+.leftMenu .section a.singleOpen {
+  background: #d8e5ec url(images/andromeda/bkg-accordion.png) no-repeat 0 -120px;
+}
+
+.leftMenu .section span {
+  padding: 5px 5px 5px 7px;
+  display: block;
+}
+
+.leftMenu ul li.last {
+  border-bottom: 0;
+}
+
+.leftMenu ul li a {
+  display: block;
+  padding: 4px 5px 4px 24px;
+  text-decoration: none;
+}
+
+/* Disabled menu */
+.leftMenu ul li.item span {
+  display: block;
+  padding: 4px 12px 4px 24px;
+  filter: alpha(opacity = 60);
+  -moz-opacity: .60;
+  opacity: .60;
+}
+
+.leftMenu ul li a,.leftMenu ul li a:hover {
+  color: #333333;
+}
+
+li.item a:hover {
+  background-color: #dbedf4;
+}
+
+li.item a.selected {
+  background-color: #dbedf4;
+}
+
+li.section a:hover {
+  background: #d8e5ec url(images/andromeda/bkg-section.png) 0 -40px;
+}
+
+/**
+ * Main content
+ */
+#content {
+  float: left;
+  background-color: #ffffff;
+  display: block;
+  width: 100%;
+  border-top: 1px solid #b7cbd8;
+}
+
+#content.fit {
+  border-left: 1px solid #b7cbd8;
+  border-top: 1px solid #b7cbd8;
+  border-bottom: 1px solid #b7cbd8;
+  width: 720px;
+  float: right;
+}
+
+#content.full {
+  width: 100%;
+  display: block;
+  background-color: #ffffff;
+  border-top: 1px solid #b7cbd8;
+}
+
+.full {
+	background-color: #ffffff;
+}
+
+#content.w2 {
+   width: 733px;
+   margin-bottom: 5px;
+}
+
+#content p {
+  padding: 5px;
+}
+
+#content .head, #content .headtop {
+  background: #d8e5ec url(images/andromeda/bkg-section.png) 0 0;
+  font-weight: bold;
+  height: 23px;
+  border-bottom: 1px solid #b7cbd8;
+}
+
+#content .headtop {
+  border-top: 1px solid #b7cbd8;
+}
+
+#content div.object-title {
+  float: left;
+  padding:5px 5px 0 5px
+}
+
+#content table.object-title td,#content table.object-title th {
+  font-weight: normal;
+  padding:5px 5px 0 5px
+}
+
+#content .object-shared {
+  float: right;
+  padding: 2px;
+}
+
+#content .content-body {
+  background: #f6f8fa url(images/andromeda/bkg-content.png) repeat-x;
+  clear: both;
+}
+
+#content .content-item {
+  clear: both;
+  padding: 5px;
+}
+
+#content .content-item-noborder {
+  clear: both;
+}
+
+#content .content-body-noborder {
+  background: #f6f8fa url(images/andromeda/bkg-content.png) repeat-x 0 -1px;
+}
+
+#content .padded {
+  padding: 10px;
+}
+
+#content .bordered {
+  border-bottom: 1px solid #b7cbd8;
+  border-top: 1px solid #b7cbd8;
+}
+
+#operationMenu {
+  padding: 5px 2px 5px 2px;
+  border-bottom: 1px solid #b7cbd8;
+}
+
+#operationMenu .dex-PushButton {
+  margin-top: 5px;
+}
+
+
+#changeSite {
+  border-bottom: 1px solid #b7cbd8;
+  padding: 0 0 5px 10px;
+  background: #f6f8fa url(images/andromeda/bkg-content-noborder.png) repeat-x;
+}
+
+/**
+ * Tab panel
+ */
+.dex-TabPanel {
+  background-color: #e1e9ee;
+}
+
+.tab-icon {
+  padding: 1px 8px 0 20px;
+}
+
+.dex-TabPanelBottom, .dex-TabPanelBottom-full {
+  float: left;
+  width: 960px;
+  display: block;
+  padding: 4px 0 4px 0;
+  border-bottom: 1px solid #B7CBD8;
+  border-left: 1px solid #B7CBD8;
+  border-right: 1px solid #B7CBD8;
+}
+
+.dex-TabPanelBottom-full{
+  padding: 0 0 0 0;
+}
+
+.dex-TabBar {
+}
+
+.dex-TabBarItem-wrapper {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  zoom: 1;
+  list-style: none;
+  float: left;
+  background: url(images/andromeda/bkg-tab.png) 0 -192px;
+  height: 32px;
+}
+
+.dex-TabBarItem-wrapper li {
+  margin: 0;
+  padding: 0;
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+  display: inline-block;
+   display: -moz-inline-box;
+  *display: inline;
+  vertical-align: bottom;
+  cursor: pointer;
+  zoom: 1;
+  height: 32px;
+  color: #000000;
+}
+
+.dex-TabBarItem-wrapper li a,.dex-TabBarItem-wrapper li span {
+  color: #000000;
+}
+
+.dex-TabBarItem-wrapper li a:hover {
+	color: #000000;
+}
+
+
+.dex-TabBarFirst {
+  width: 5px; /* first tab distance from the left */
+}
+
+
+.dex-TabBarItem,.dex-TabBarItem-selected,.dex-TabBarItem-hover {
+  background-image: url(images/andromeda/bkg-tab.png);
+  background-position: 0 -128px;
+  background-repeat: repeat-x;
+  padding: 0;
+}
+
+.dex-TabBarItem div,.dex-TabBarItem-selected div,.dex-TabBarItem-hover div{
+  background-image: url(images/andromeda/bkg-tab.png);
+  background-position: right -32px;
+  background-repeat: no-repeat;
+
+}
+
+.dex-TabBarItem div div,.dex-TabBarItem-selected div div,.dex-TabBarItem-hover div div{
+  background-image: url(images/andromeda/bkg-tab.png);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  padding: 10px 10px 8px 10px;
+}
+
+.dex-TabBarItem-selected {
+  background-position: 0 -160px;
+}
+
+.dex-TabBarItem-selected div {
+  background-position: right -96px;
+}
+
+.dex-TabBarItem-selected div div {
+  background-position: 0 -64px;
+}
+
+.dex-TabBarItem-hover {
+  background-position: 0 -288px;
+}
+
+.dex-TabBarItem-hover div {
+  background-position: right -256px;
+}
+
+.dex-TabBarItem-hover div div {
+  background-position: 0 -224px;
+}
+
+
+.tabContent {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+ position:relative;
+
+}
+
+/* Sub tab */
+
+.dex-subTabBar {
+	background-color: #f6f8fa;
+	padding: 5px 0 4px 0;
+	border-bottom: 1px solid #b7cbd8;
+	border-top: 1px solid #b7cbd8;
+}
+
+.dex-subTabBarItem-wrapper {
+  margin: 0;
+  padding: 0 0 0 15px;
+  zoom: 1;
+  list-style: none;
+  background: url(images/andromeda/bkg-subtab.gif) 0 -136px;
+  height: 21px;
+}
+
+.dex-subTabBarItem-wrapper li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: inline-block;
+  display: -moz-inline-box;
+  *display: inline;
+  vertical-align: bottom;
+  cursor: pointer;
+  zoom: 1;
+  color: #000000;
+}
+
+.dex-subTabBarItem-wrapper li a {
+  color: #000000;
+  font-size: 11px;
+  text-decoration: none;
+  padding: 4px 22px 2px 15px;
+  display: inline-block;
+  *display: inline;
+}
+
+
+.dex-subTabBarItem,.dex-subTabBarItem-selected,.dex-subTabBarItem-first {
+  background-image: url(images/andromeda/bkg-subtab.gif);
+  background-position: 0 -88px;
+  background-repeat: repeat-x;
+}
+
+.dex-subTabBarItem div,.dex-subTabBarItem-selected div,.dex-subTabBarItem-first div {
+  background-image: url(images/andromeda/bkg-subtab.gif);
+  background-position: right -22px;
+  background-repeat: no-repeat;
+}
+
+.dex-subTabBarItem div div,.dex-subTabBarItem-selected div div,.dex-subTabBarItem-first div div{
+  background-image: url(images/andromeda/bkg-subtab.gif);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  padding: 0 0 2px 0;
+  position: relative;
+  right: 10px;
+}
+
+.dex-subTabBarItem-selected {
+  background-position: 0 -110px;
+}
+
+.dex-subTabBarItem-selected div {
+  background-position: right -66px;
+}
+
+.dex-subTabBarItem-selected div div {
+  background-position: 0 -44px;
+}
+
+.dex-subTabBarItem-first div div {
+  background-position: 0 -158px;
+}
+
+/**
+ * Push button
+ */
+.dex-PushButton {
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: #B7CBD8;
+  background: url(images/andromeda/bkg-button.png) repeat-x 0 0;
+  margin:.25em;
+  display: -moz-inline-box;
+  display: inline-block;
+  vertical-align: text-bottom;
+  max-height: 28px;
+}
+
+.dex-PushButton:hover {
+  background: url(images/andromeda/bkg-button.png) repeat-x 0 -28px;
+}
+
+.dex-PushButton .first-child {
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: #B7CBD8;
+  margin: 0 -1px;
+  *position: relative;
+  *left: -1px;
+  display: block;
+  *display: inline-block;
+}
+
+.dex-PushButton button,.dex-PushButton a {
+	display: block;
+	*display: inline-block;
+	border: none;
+	margin: 0;
+	cursor: pointer;
+}
+
+.dex-PushButton button {
+  background-color: transparent;
+  *overflow: visible;
+  font-size: 93%;
+  line-height: 2;
+  *line-height: 1.7;
+  min-height: 2em;
+  *min-height: auto;
+  border: none;
+
+}
+
+.dex-PushButton a {
+	padding: 0 10px;
+	font-size: 93%;
+	line-height: 1.6;
+	min-height: auto;
+	color: #333333;
+	padding: 5px 10px 5px 26px;
+}
+
+.dex-PushButton a:hover {
+	color: #333333;
+}
+
+.dex-PushButton a.ico-next {
+  padding: 5px 26px 5px 10px;
+}
+
+
+.dex-PushButton a:active,dex-PushButton-big a:active {
+  outline: none;
+}
+
+.dex-PushButton a:focus,dex-PushButton-big a:focus {
+  -moz-outline-style: none;
+}
+
+
+.dex-PushButton-up-hovering {
+  background-position: 0 -28px;
+}
+
+.dex-PushButton-down {
+  background-position: 0 -56px;
+}
+
+.dex-PushButton-down-hovering {
+  background-position: 0 -28px;
+}
+
+.dex-PushButton-down-disabled {
+  filter: alpha(opacity =60);
+  -moz-opacity: .60;
+  opacity: .60;
+}
+
+.dex-PushButton button.ok {
+  background: url(images/andromeda/icons/accept.png) no-repeat 6px 5px;
+}
+
+.disabledButton {
+   padding: 5px 10px 5px 10px;
+}
+
+/**
+ * Administrion big buttons
+ */
+.dex-PushButton-big {
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: #B7CBD8;
+  background: url(images/andromeda/bkg-button-big.png) repeat-x 0 0;
+  margin: auto .25em;
+  display: -moz-inline-box;
+  display: inline-block;
+  vertical-align: text-bottom;
+  width: 297px;
+}
+
+.disabled {
+  filter: alpha(opacity = 60);
+  -moz-opacity: .60;
+  opacity: .60;
+}
+
+.dex-PushButton-big:hover {
+  background: url(images/andromeda/bkg-button-big.png) repeat-x 0 -64px;
+}
+
+.dex-PushButton-big.disabled:hover  {
+  background: url(images/andromeda/bkg-button-big.png) repeat-x 0 0;
+}
+
+.dex-PushButton-big .first-child {
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: #B7CBD8;
+  margin: 0 -1px;
+  *position: relative;
+  *left: -1px;
+  display: block;
+  *display: inline-block;
+   width: 297px;
+}
+
+.dex-PushButton-big a {
+  display: block;
+  *display: inline-block;
+  border: none;
+  margin: 0;
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 93%;
+  line-height: 2;
+  *line-height: 1.7;
+  min-height: 2em;
+  *min-height: auto;
+  color: #333333;
+  padding: 10px 5px 6px 10px;
+  white-space:nowrap;
+}
+
+.dex-PushButton-big a:hover {
+  color: #333333;
+}
+
+.dex-PushButton-big a span {
+  position: relative;
+  top: -10px;
+  padding-left: 10px;
+  font-size: 11px;
+}
+
+/**
+ * Tabs
+ */
+.ico-data {
+  background: url(images/andromeda/icons/data.png) no-repeat;
+}
+
+.ico-tool {
+  background: url(images/andromeda/icons/wrench.png) no-repeat;
+}
+
+.ico-server {
+  background: url(images/andromeda/icons/server.png) no-repeat 0 -1px;
+}
+
+.ico-site {
+  background: url(images/andromeda/icons/window_gear.png) no-repeat  0 -1px;
+}
+.ico-quit {
+  background: url(images/andromeda/logout.png) no-repeat 0 -1px;
+}
+
+
+/* Actions icons (Start) */ /* Virtual site */
+.ico-siteAdd {
+  background: url(images/andromeda/icons/environment_add.png) no-repeat
+  4px 5px;
+}
+
+.ico-siteDelete {
+  background: url(images/andromeda/icons/environment_delete.png) no-repeat
+  4px 5px;
+}
+
+.ico-export {
+  background: url(images/andromeda/icons/export1.png) no-repeat 4px
+  5px;
+}
+
+.ico-import {
+  background: url(images/andromeda/icons/import1.png) no-repeat 4px
+  5px;
+}
+
+/* Actions icons (End) */ /**
+ * Edition object menu
+ */
+.ico-title {
+  background: url(images/andromeda/icons/title.png) no-repeat 4px 3px;
+}
+
+.ico-content {
+  background: url(images/andromeda/icons/content.png) no-repeat 4px 3px;
+}
+
+.ico-image {
+  background: url(images/andromeda/icons/image.png) no-repeat 4px 3px;
+}
+
+.ico-alignment {
+  background: url(images/andromeda/icons/alignment.png) no-repeat 4px 3px;
+}
+
+.ico-back {
+  background: url(images/andromeda/icons/arrow_left_blue.png) no-repeat 4px 6px;
+}
+
+.ico-ok {
+  background: url(images/andromeda/icons/accept.png) no-repeat 4px 5px;
+}
+
+.ico-edit {
+  background: url(images/andromeda/data_edit.png) no-repeat 4px 5px;
+}
+
+.ico-add {
+  background: url(images/andromeda/icons/add2.png) no-repeat 4px 5px;
+}
+
+.ico-cancel {
+  background: url(images/andromeda/icons/cancel.png) no-repeat 4px 5px;
+}
+
+.ico-apply {
+  background: url(images/andromeda/icons/apply.png) no-repeat 4px 6px;
+}
+
+.ico-delete {
+  background: url(images/andromeda/icons/delete.png) no-repeat 4px 5px;
+}
+
+.ico-user {
+  background: url(images/andromeda/icons/user1_into.png) no-repeat 4px 5px;
+}
+
+.ico-group {
+  background: url(images/andromeda/icons/users_into.png) no-repeat 4px 5px;
+}
+
+.ico-next {
+  background: url(images/andromeda/icons/arrow_right_green.png) no-repeat center right;
+  position: relative;
+  right: 3px;
+}
+
+.ico-nav-add {
+  background: url(images/andromeda/icons/nav_add.png) no-repeat  4px 0px;
+}
+
+.ico-nav-first {
+  background: url(images/andromeda/icons/nav_first.png) no-repeat  4px 0px;
+}
+
+.ico-nav-previous {
+  background: url(images/andromeda/icons/nav_previous.png) no-repeat  4px 0px;
+}
+
+.ico-nav-next {
+  background: url(images/andromeda/icons/nav_next.png) no-repeat  4px 0px;
+}
+
+.ico-nav-last {
+  background: url(images/andromeda/icons/nav_last.png) no-repeat  4px 0px;
+}
+
+.ico-flush {
+  background: url(images/andromeda/icons/refresh.png) no-repeat 4px 5px;
+}
+
+.ico-refresh {
+  background: url(images/andromeda/icons/refresh.png) no-repeat 4px 5px;
+}
+
+.ico-note {
+  background: url(images/andromeda/icons/note.png) no-repeat 4px 5px;
+}
+
+.ico-workflow-ok {
+  background: url(images/andromeda/icons/gear_ok.png) no-repeat 4px 5px;
+}
+
+.ico-search {
+  background: url(images/andromeda/icons/find.png) no-repeat 4px 6px;
+}
+
+.ico-workflow {
+  background: url(images/andromeda/gears.png) no-repeat;
+}
+
+.ico-template {
+  background: url(images/andromeda/gears.png) no-repeat;
+}
+
+.ico-user-add {
+	background: url(images/andromeda/icons/user1_add.png) no-repeat 4px 5px;
+	}
+
+.ico-user-reg {
+	background: url(images/andromeda/icons/user1_new.png) no-repeat 4px 5px;
+	}
+
+.ico-user-delete {
+	background: url(images/andromeda/icons/user1_delete.png) no-repeat 4px 5px;
+	}
+
+.ico-user-view {
+	background: url(images/andromeda/icons/user1_view.png) no-repeat 4px 5px;
+}
+
+
+.ico-group-add {
+	background: url(images/andromeda/icons/group_create.png) no-repeat 4px 5px;
+	}
+
+.ico-group-copy {
+	background: url(images/andromeda/icons/group_copy.png) no-repeat 4px 5px;
+	}
+
+.ico-group-remove {
+	background: url(images/andromeda/icons/group_remove.png) no-repeat 4px 5px;
+	}
+
+.ico-group-edit {
+	background: url(images/andromeda/icons/group_edit.png) no-repeat 4px 5px;
+}
+
+.ico-group-view {
+	background: url(images/andromeda/icons/key1.png) no-repeat 4px 5px;
+}
+
+
+.ico-html-editor {
+	background: url(images/andromeda/icons/text_rich_colored.png) no-repeat 4px 5px;
+	}
+
+.ico-html-markup {
+	background: url(images/andromeda/icons/text.png) no-repeat 4px 5px;
+}
+
+.ico-html-setting {
+	background: url(images/andromeda/icons/wrench.png) no-repeat 4px 5px;
+}
+
+
+.ico-log-enable {
+	background: url(images/andromeda/icons/scroll_run.png) no-repeat 4px 5px;
+}
+.ico-log-disable {
+
+	background: url(images/andromeda/icons/scroll_stop.png) no-repeat 4px 5px;
+	}
+
+.ico-log-view {
+	background: url(images/andromeda/icons/scroll_view.png) no-repeat 4px 5px;
+}
+
+.ico-log-flush {
+	background: url(images/andromeda/icons/scroll_delete.png) no-repeat 4px 5px;
+}
+
+.ico-tpl-new {
+	background: url(images/andromeda/icons/briefcase_out.png) no-repeat 4px 6px;
+}
+
+.ico-tpl-add{
+	background: url(images/andromeda/icons/briefcase_add.png) no-repeat 4px 5px;
+}
+.ico-tpl-opts {
+	background: url(images/andromeda/icons/document_gear.png) no-repeat 4px 5px;
+}
+
+.ico-tpl-view {
+	background: url(images/andromeda/icons/briefcase_view.png) no-repeat 4px 5px;
+}
+
+.ico-tpl-delete {
+	background: url(images/andromeda/icons/briefcase_delete.png) no-repeat 4px 5px;
+}
+
+.ico-home-add {
+	background: url(images/andromeda/icons/home_add.png) no-repeat 4px 5px;
+}
+
+.ico-page-select {
+	background: url(images/andromeda/icons/document_into.png) no-repeat 4px 5px;
+}
+.ico-remove-lock {
+	background: url(images/andromeda/icons/lock_delete.png) no-repeat 4px 5px;
+}
+.ico-restore {
+	background: url(images/andromeda/icons/replace2.png) no-repeat 4px 5px;
+	}
+
+
+.ico-app-new {
+	background: url(images/andromeda/icons/application_new.png) no-repeat 4px 5px;
+}
+
+.ico-app-add{
+	background: url(images/andromeda/icons/application_add.png) no-repeat 4px 5px;
+}
+.ico-app-opts {
+	background: url(images/andromeda/icons/application_preferences.png) no-repeat 4px 5px;
+}
+
+.ico-app-scan {
+	background: url(images/andromeda/icons/application_view.png) no-repeat 4px 5px;
+}
+
+.ico-flush{
+	background: url(images/andromeda/icons/garbage.png) no-repeat 4px 5px;
+}
+.ico-flushAll {
+	background: url(images/andromeda/icons/garbage_full.png) no-repeat 4px 5px;
+}
+.ico-mail-test {
+    background: url(images/andromeda/icons/mail_write.png) no-repeat 4px 5px;
+}
+
+
+
+
+/*
+* Form
+*/
+form {
+  padding: 0;
+  margin: 0;
+}
+
+form fieldset {
+  border: 0;
+  display: block;
+  font-family: verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * Table
+ */
+table {
+    font-size: 11px;
+}
+
+.evenOddTable {
+
+}
+
+table.tBorder {
+  border-top: 1px solid #d4d4d4;
+}
+
+table.bBorder {
+  border-bottom: 1px solid #d4d4d4;
+}
+
+table.evenOddTable th,table.evenOddTable td {
+  border-color: #d4d4d4;
+  border-style: solid;
+  margin: 0;
+  padding: 4px;
+}
+
+.evenOddTable th {
+  border-width: 0 1px 0 0;
+  background: #ffffff;
+  color: #666666;
+  background: url(images/andromeda/bkg-th.png) repeat-x top left;
+  font-weight: bold;
+  font-size: 11px;
+  text-align: left;
+}
+
+
+.evenOddTable td {
+  border-width: 1px 1px 0 0;
+}
+
+.evenOddTable.full td {
+  border-width: 1px 0 0 0;
+}
+
+
+.evenOddTable td td {
+  border: 0;
+}
+
+table.evenOddTable td.lastCol {
+  border-right: 0;
+}
+
+table.evenOddTable th.lastCol {
+  border-right: 0;
+}
+
+tr.evenLine {
+  background-color: #FFFFFF;
+}
+
+tr.oddLine {
+  background-color: #f8f8f8;
+}
+
+.evenOddTable .x-panel th, .evenOddTable .x-panel td, .permissions .x-panel th, .permissions .x-panel td {
+  padding: 0 !important;
+}
+
+/**
+* Work in progress
+*/
+#workInProgressOverlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5019;
+  background-color: white;
+  -moz-opacity: 0.7;
+  opacity: .70;
+  filter: alpha(opacity = 70);
+}
+
+#workInProgressOverlay[id] {
+  position: fixed;
+}
+
+#workInProgressOverlay img.imgLoading,#workInProgressOverlay button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 66px;
+  height: 66px;
+  margin-left: -33px;
+  margin-top: -33px;
+}
+
+/**
+* Icon sets
+*/
+.set-server {
+  background: url(images/andromeda/iconSet-server.png) no-repeat;
+}
+.set-server-disabled {
+  background: url(images/andromeda/iconSet-server-grey.png) no-repeat;
+}
+
+.ico-server-site {
+  background-position: 4px -286px;
+}
+
+.ico-server-info {
+  background-position: 4px 2px;
+}
+
+.ico-server-component {
+  background-position: 4px -94px;
+}
+
+.ico-server-category {
+  background-position: 4px -46px;
+}
+
+.ico-server-setting {
+  background-position: 4px -335px;
+}
+
+.ico-server-log {
+  background-position: 4px -238px;
+}
+
+.ico-server-admin {
+  background-position: 4px -190px;
+}
+
+.ico-server-cache {
+  background-position: 4px -430px;
+}
+
+.ico-server-permissions {
+  background-position: 4px -479px;
+}
+
+.ico-server-password {
+  background-position: 4px -383px;
+}
+
+.ico-server-patch {
+  background-position: 4px -144px;
+}
+
+.ico-server-stats {
+  background-position: 4px -526px;
+}
+
+.set-site {
+  background: url(images/andromeda/iconSet-site.png) no-repeat scroll;
+}
+
+.set-site-disabled {
+  background: url(images/andromeda/iconSet-site-grey.png) no-repeat scroll;
+}
+
+.add-lang {
+    background: url(images/andromeda/icons/arrow_up_green.png) no-repeat 4px center;
+    height: 16px;
+    padding-left: 20px;
+}
+
+.sort {
+    background: url(images/andromeda/icons/sort_ascending.png) no-repeat 4px center;
+    height: 16px;
+    padding-left: 20px;
+}
+
+.ico-site-page {
+  background-position: 4px 2px;
+}
+
+.ico-site-user {
+  background-position: 4px -47px;
+}
+
+.ico-site-group {
+  background-position: 4px -93px;
+}
+
+.ico-site-template {
+  background-position: 4px -143px;
+}
+
+.ico-site-search {
+  background-position: 4px -191px;
+}
+
+.ico-site-lang {
+  background-position: 4px -287px;
+}
+
+.ico-site-export {
+  background-position: 4px -334px;
+}
+
+.ico-site-clip {
+  background-position: 4px -382px;
+}
+
+.ico-site-permission {
+  background-position: 4px -430px;
+}
+
+.ico-site-html {
+  background-position: 4px -476px;
+}
+
+.ico-site-integrity {
+  background-position: 4px -525px;
+}
+
+/* Old Jahia Style*/
+.blueColor {
+  font-weight: bold;
+  color: blue !important;
+}
+
+.MarkedForDeleteAndBlueColor {
+  text-decoration: line-through;
+  font-weight: bold;
+  color: blue !important;
+}
+
+.redColor {
+  font-weight: bold;
+  color: red !important;
+}
+
+/* Navigation bar */
+#navigationBar{
+  float: right;
+  margin-right: 0px;
+}
+
+#navigationBar .navigationButton{
+  display: block;
+  padding: 4px 10px 4px 10px;
+}
+
+#navigationBar table tr td {
+  padding: 0;
+}
+
+/* Form table */
+#adminLogin .formTable{
+margin:0 auto;
+clear:both
+}
+
+.formTable{
+  background-color: #DCE9ED;
+  clear:both
+}
+
+.formTable tr th{
+  background-color: #F6F8FA;
+  color: #333333;
+  font-weight: normal;
+  padding: 5px;
+}
+
+.formTable tr th table tr td{
+  background-color: #F6F8FA;
+}
+
+.formTable tr td{
+  background-color: #FFFFFF;
+  padding: 5px;
+}
+.formTable tr td.alone{
+  padding: 0;
+}
+
+.formTable label{
+  padding-bottom: 10px;
+}
+
+.MainDivContainer .DwtListView{
+  width: 500px;
+}
+
+/* Errors and messages */
+.error {
+  color: #FF0000 !important;
+  text-decoration: none;
+  font-style: normal;
+  padding: 5px;
+}
+
+.errorbold {
+  color: #FF0000 !important;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.warning {
+  color: #F48A00 !important;
+  text-decoration: none;
+  font-style: normal;
+  padding: 5px;
+}
+
+/* Stats */
+.pagebanner {
+  margin: 5px;
+}
+
+/* Logs */
+.exportlinks {
+	padding: 5px;
+}
+
+/* icons for shared lang */
+.sharedLanguage{
+}
+
+.sharedLanguageNo:link,
+.sharedLanguageNo:visited,
+.sharedLanguageNo:active {
+    background: url( "images/andromeda/icons/copy-language_off.png" ) no-repeat 0px 0px;
+    text-decoration: none;
+	display:block;
+	height:16px;
+	width:32px
+}
+.sharedLanguageNo:hover {
+    background: url( "images/andromeda/icons/copy-language_over.png" ) no-repeat 0px 0px;
+    text-decoration: none;
+}
+
+.sharedLanguageYes:link,
+.sharedLanguageYes:visited,
+.sharedLanguageYes:active,
+.sharedLanguageYes:hover {
+    background: url( "images/andromeda/icons/copy-language_over.png" ) no-repeat 0px 0px;
+    text-decoration: none;
+	display:block;
+	height:16px;
+	width:32px
+}
+
+.sharedLanguageYesDisabled {
+    background: url( "images/andromeda/icons/copy-language_off.png" ) no-repeat 0px 0px;
+    padding: 1px 0px 1px 31px;
+}
+/* readOnly */
+div#readOnly{
+	border:1px solid #b7cbd8;
+	padding:4px;
+	margin-bottom:5px;
+	height:1%
+}
+#readOnly .dex-PushButton{
+}
+/* Alert */
+.msg-alert-ok{
+color: #0c0;
+font-weight:bold
+}
+.msg-alert-wrong{
+color: #f00;
+font-weight:bold
+}
+.msg-alert-info{
+color: #f90;
+font-weight:bold
+}

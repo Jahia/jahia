@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaRetentionRuleDef"
+        table="jahia_retruledef"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id_jahia_retruledef"
+            type="java.lang.Integer"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaRetentionRuleDef.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="name_retruledef"
+            unique="true"
+        />
+
+        <property
+            name="title"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="title_retruledef"
+        />
+
+        <property
+            name="ruleClassName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="ruleclass_retruledef"
+        />
+
+        <property
+            name="ruleHelperClassName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="rulehelperclass_retruledef"
+        />
+
+        <property
+            name="dateFormat"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="dateformat_retruledef"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaRetentionRuleDef.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

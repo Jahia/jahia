@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="MailService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.mail.MailServiceImpl" parent="jahiaServiceTemplate">
+                <property name="backgroundTaskPeriod" value="10000"/>
+                <property name="mailQueueMaxLength" value="1000"/>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="SubscriptionService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.notification.SubscriptionService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="subscriptionManager" ref="org.jahia.hibernate.manager.SubscriptionManager"/>
+                <property name="mailService" ref="MailService"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="EmailNotificationEventHandlerTemplate" class="org.jahia.services.notification.EmailNotificationEventHandler" abstract="true">
+        <property name="mailService" ref="MailService"/>
+    </bean>
+                        
+    <bean id="NotificationService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.notification.NotificationService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="subscriptionService" ref="SubscriptionService"/>
+                <property name="handlers">
+                    <list>
+                        <bean class="org.jahia.services.notification.ContentPublishedEventHandler" parent="EmailNotificationEventHandlerTemplate"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</beans>

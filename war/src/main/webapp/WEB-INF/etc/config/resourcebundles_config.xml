@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+    <!-- core resources -->
+    <resource-bundle>
+        <key>JahiaEnginesResources</key>
+        <file>JahiaEnginesResources</file>
+    </resource-bundle>
+    <resource-bundle>
+        <key>JahiaAdministrationResources</key>
+        <file>JahiaAdministrationResources</file>
+    </resource-bundle>
+    <resource-bundle>
+        <key>JahiaMessageResources</key>
+        <file>JahiaMessageResources</file>
+    </resource-bundle>
+    <resource-bundle>
+        <key>JahiaTypesResources</key>
+        <file>JahiaTypesResources</file>
+    </resource-bundle>
+    <resource-bundle>
+        <key>CommonTag</key>
+        <file>CommonTag</file>
+    </resource-bundle>
+</registry>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--
+  This is the default production log4j configuration file. For development
+  purposes, we recommend using the log4j.xml file instead, as it is a lot 
+  more verbose.
+-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!--
+    <appender name="Chainsaw" class="org.apache.log4j.net.SocketAppender">
+        <param name="RemoteHost" value="localhost"/>
+        <param name="Port" value="4445"/>
+        <param name="LocationInfo" value="true"/>
+    </appender>
+    -->
+
+    <appender name="ROLL" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="jahia.log"></param>
+        <param name="MaxFileSize" value="1MB"></param>
+        <param name="MaxBackupIndex" value="2"></param>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d: %-5p [%t] %C{1}, %c: %m%n"></param>
+        </layout>
+    </appender>
+
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d: %-5p [%c] - %m%n"></param>
+        </layout>
+    </appender>
+
+    <appender name="jetspeed" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+             <param name="ConversionPattern"
+                    value="%d %-5p [%t] %c.%M:%L - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="REQUEST">
+        <appender-ref ref="ROLL"></appender-ref>
+    </logger>
+    
+    <logger name="SysOut">
+        <appender-ref ref="Console"></appender-ref>
+    </logger>
+
+
+    <category name="org.apache.jetspeed">
+        <priority value="info"/>
+        <appender-ref ref="jetspeed"/>
+    </category>
+
+    <!--
+    <category name="org.apache.log4j.xml">
+        <priority value="debug"/>
+        <appender-ref ref="Chainsaw"/>
+    </category>
+    -->
+
+    <!--
+
+    Uncomment the following if you need to filter on categories,
+    such as class packages
+
+    -->
+
+    <!--
+    <category name="org.jahia.utils.JahiaConsole">
+        <priority value="info"/>
+    </category>
+    -->
+
+
+    <!-- (FH): changing the following level to DEBUG will generate a lot of logs,
+         think twice before changing it! -->
+    <category name="org.jahia.services.cache">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.jahia.services.applications">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.jahia.services.events">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.apache.axis">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.apache.commons">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.apache.commons.httpclient">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.apache.jsp">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.apache.jasper">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.pdfbox">
+        <priority value="error"/>
+    </category>
+
+    <category name="org.springframework">
+        <priority value="info"/>
+    </category>
+
+    <category name="org.jahia.blogs">
+        <priority value="debug"/>
+    </category>
+
+    <category name="org.hibernate">
+        <priority value="warn"/>
+    </category>
+
+    <category name="net.sf.ehcache">
+        <priority value="warn"/>
+    </category>
+
+    <category name="org.jahia.hibernate">
+        <priority value="error"/>
+    </category>
+
+    <root>
+        <level value ="debug"></level>
+        <appender-ref ref="ROLL"></appender-ref>
+        <appender-ref ref="Console"></appender-ref>
+    </root>
+
+</log4j:configuration>

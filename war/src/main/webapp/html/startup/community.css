@@ -1,0 +1,108 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+body,p,td,form,input {
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; 
+    font-size: 10px; 
+    color: #000000; 
+}
+
+a {text-decoration: none; }
+
+.topmenuon { color: #2E3646; }
+.topmenuon:hover { color: #6D788D; }
+.topmenuoff { color: #45449C; font-weight:bold;}
+.topmenuoff:hover { color: #5C5E4C; font-weight:bold;}
+
+.leftmenuon { font-size: 11px; color: #100E80; }
+.leftmenuoff { font-size: 11px; color: #6D788D; }
+.leftmenuoff:hover { color: #100E80; }
+
+.leftsubmenuon { color: #100E80; }
+.leftsubmenuoff { color: #6D788D; }
+.leftsubmenuoff:hover { color: #100E80; }
+
+.topbar { font-family: Arial, Helvetica, sans-serif; color: #062359; }
+.topbar:hover { color: #4C6FB0; }
+
+.path { font-size: 11px; color: #17166E; }
+.path:hover { color: #8382E1; }
+
+.normal { font-size: 9px; color: #45449C; }
+.normal:link { color: #565A5E; }
+.normal:visited { color: #565A5E; }
+.normal:hover { color: #9F9F9F; }
+
+.justnormal { font-size: 9px; color: #45449C; text-align: justify; }
+.justnormal:link { color: #565A5E; }
+.justnormal:visited { color: #565A5E; }
+.justnormal:hover { color: #9F9F9F; }
+
+.bignormal { font-size: 11px; color: #45449C; }
+.bignormal:link { color: #565A5E; }
+.bignormal:visited { color: #565A5E; }
+.bignormal:hover { color: #9F9F9F; }
+
+.grey { font-size: 9px; color: #565A5E; }
+.grey:link { color: #45449C; }
+.grey:visited { color: #45449C; }
+.grey:hover { color: #A09FEA; }
+
+.justgrey { font-size: 9px; color: #565A5E; text-align: justify; }
+.justgrey:link { color: #45449C; }
+.justgrey:visited { color: #45449C; }
+.justgrey:hover { color: #A09FEA; }
+
+.biggrey { font-size: 11px; color: #565A5E; }
+.biggrey:link { color: #45449C; }
+.biggrey:visited { color: #45449C; }
+.biggrey:hover { color: #A09FEA; }
+
+.title { font-size: 13px; color: #23227A; }
+
+.selected { font-size: 11px; color: #ECC111; }
+
+.newstitle { font-size: 14px; font-weight : bold; color: #FFFFFF; }
+
+.portlettitle { font-size: 9px; font-weight : bold; color: #45449C; }
+
+.editmode { font-size: 8px; color: #45449C; }
+
+.input { background-color: #A3AAB7; color: #2E3646;}
+
+.home { color: #D6DADF; text-align: justify; }
+.home:link { color: #565A5E; }
+.home:visited { color: #565A5E; }
+.home:hover { color: #9F9F9F; }
+
+.hometitle{  font-size: 11px; font-weight: bold; color: #16156D }

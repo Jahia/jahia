@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	
+    <bean id="searchIndexProcessPipeline" class="org.jahia.pipelines.impl.GenericPipeline">
+		<property name="name"><value>searchIndexProcessPipeline</value></property>
+        <property name="valves">
+            <list>
+                <bean class="org.jahia.services.search.valves.ContainerSearchIndexProcessValveImpl" />
+                <bean class="org.jahia.services.search.valves.PageSearchIndexProcessValveImpl" />
+                <bean class="org.jahia.services.search.valves.FieldSearchIndexProcessValveImpl" />
+                <bean class="org.jahia.services.search.valves.FieldReferenceSearchIndexProcessValveImpl" />                
+            </list>
+        </property>
+    </bean>
+
+    <bean id="authPipeline" class="org.jahia.pipelines.impl.GenericPipeline">
+        <property name="name" value="authPipeline" />
+        <property name="valves">
+            <list>
+                <bean class="org.jahia.params.valves.HttpBasicAuthValveImpl" />
+                <bean class="org.jahia.params.valves.TokenAuthValveImpl" />
+                <bean class="org.jahia.params.valves.LoginEngineAuthValveImpl" />
+                <bean class="org.jahia.params.valves.UserAliasingEngineAuthValveImpl" />
+                <bean class="org.jahia.params.valves.SessionAuthValveImpl" />
+                <bean class="org.jahia.params.valves.CookieAuthValveImpl" />
+                <bean class="org.jahia.params.valves.ContainerAuthValveImpl" />
+                <bean class="org.jahia.params.valves.JCIFSAuthValveImpl" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="processPipeline" class="org.jahia.pipelines.impl.GenericPipeline">
+        <property name="name" value="processPipeline" />
+        <property name="valves">
+            <list>
+                <bean class="org.jahia.operations.valves.SiteCheckValve" />
+                <bean class="org.jahia.operations.valves.OperationModeCheckValve" />
+                <bean class="org.jahia.operations.valves.PageAccessCheckValve" />
+                <bean class="org.jahia.operations.valves.HistoryValve" />
+                <bean class="org.jahia.operations.valves.UserAgentViewSwitcherValve">
+                    <property name="userAgentMatchingRules">
+                        <map>
+                            <entry key=".*iPhone.*" value="iphone" />
+                            <entry key=".*iPod.*" value="iphone" />
+                        </map>
+                    </property>
+                </bean>
+                <bean class="org.jahia.operations.valves.ThemeValve" />
+                <bean class="org.jahia.operations.valves.PlutoProcessActionValve">
+                    <property name="cacheInstance" ref="JahiaCacheService"/>
+                    <property name="cacheKeyGeneratorService" ref="CacheKeyGeneratorService"/>
+                </bean>
+                <bean class="org.jahia.operations.valves.SkeletonAggregatorValve" >
+                    <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
+                </bean>
+                <bean class="org.jahia.operations.valves.EngineValve" >
+                    <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
+                </bean>
+                <bean class="org.jahia.operations.valves.ResponseOutputValve" />
+                <bean class="org.jahia.operations.valves.SkeletonParseAndStoreValve">
+                    <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

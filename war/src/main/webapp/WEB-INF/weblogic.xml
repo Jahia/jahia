@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<weblogic-web-app
+        xmlns="http://www.bea.com/ns/weblogic/90"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.bea.com/ns/weblogic/90 http://www.bea.com/ns/weblogic/90/weblogic-web-app.xsd">
+    <resource-description>
+        <res-ref-name>jdbc/jahia</res-ref-name>
+        <jndi-name>jdbc/jahia</jndi-name>
+    </resource-description>
+    <resource-description>
+        <res-ref-name>jcr/repository</res-ref-name>
+        <jndi-name>jcr/repository</jndi-name>
+    </resource-description>
+    <resource-description>
+        <res-ref-name>jdbc/jahiaNonTx</res-ref-name>
+        <jndi-name>jdbc/jahiaNonTx</jndi-name>
+    </resource-description>
+    <resource-description>
+        <res-ref-name>jahia/users</res-ref-name>
+        <jndi-name>jahia/users</jndi-name>
+    </resource-description>
+    <jsp-descriptor>
+        <keepgenerated>true</keepgenerated>
+        <precompile>false</precompile>
+        <verbose>true</verbose>
+    </jsp-descriptor>
+    <container-descriptor>
+        <prefer-web-inf-classes>true</prefer-web-inf-classes>
+    </container-descriptor>
+</weblogic-web-app>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaPagesDef"
+        table="jahia_pages_def"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id_jahia_pages_def"
+            type="java.lang.Integer"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaPagesDef.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <many-to-one
+            name="site"
+            class="org.jahia.hibernate.model.JahiaSite"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+        >
+            <column
+                name="jahiaid_jahia_pages_def" 
+            />
+        </many-to-one>
+
+        <property
+            name="name"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="name_jahia_pages_def"
+            length="250"
+        />
+
+        <property
+            name="sourcePath"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="sourcepath_jahia_pages_def"
+            length="250"
+        />
+
+        <property
+            name="visible"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="visible_jahia_pages_def"
+            length="11"
+        />
+
+        <property
+            name="browsable"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="browsable_jahia_pages_def"
+            length="11"
+        />
+
+        <property
+            name="warningMessage"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="warning_msg_jahia_pages_def"
+            length="250"
+        />
+
+        <property
+            name="image"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="img_jahia_pages_def"
+            length="150"
+        />
+
+        <property
+            name="pageType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="pagetype_jahia_pages_def"
+            length="150"
+        />
+
+        <map
+            name="properties"
+            table="jahia_pages_def_prop"
+            lazy="false"
+            sort="unsorted"
+            inverse="true"
+            cascade="delete"
+        >
+            <cache 
+                usage="nonstrict-read-write" 
+             />
+
+              <key
+                  column="id_jahia_pages_def_prop"
+              >
+              </key>
+
+              <index
+                  column="name_pages_def_prop"
+                  type="string"
+              />
+
+              <element
+                  column="value_pages_def_prop"
+                  type="string"
+                  not-null="false"
+                  unique="false"
+              />
+
+        </map>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaPagesDef.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Provides tags for performing search over WCM and DMS content and displaying results</description>
+    <display-name>Jahia Search</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>search</short-name>
+    <uri>http://www.jahia.org/tags/search</uri>
+
+    <tag>
+        <description>Performs the search and exposes search results to be displayed</description>
+        <name>results</name>
+        <tag-class>org.jahia.taglibs.search.ResultsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>countVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                If specified, the results will represent the result of the specified stored query execution,
+                rather than the results of the submitted search parameters
+            </description>
+            <name>storedQuery</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Iterates over search results, exposed by the 'results' tag</description>
+        <name>resultIterator</name>
+        <tag-class>org.jahia.taglibs.search.ResultIteratorTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>
+                If specified, the iteration begins at the item with the specified index.
+                Otherwise iteration begins at the first item (with index 0)
+            </description>
+            <name>begin</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>
+                If specified, the iteration ends at the item with the specified index.
+                Otherwise iteration end at the last item.
+            </description>
+            <name>end</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>
+                Iteration will only process every step items of
+                the collection, starting with the first one.
+            </description>
+            <name>step</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the exported scoped variable for the
+                current item of the iteration. This scoped
+                variable has nested visibility. Its type depends
+                on the object of the underlying collection.
+            </description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the exported scoped variable for the
+                status of the iteration. Object exported is of type
+                javax.servlet.jsp.jstl.core.LoopTagStatus. This scoped variable has nested
+                visibility.
+            </description>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>
+            Uses view settings for the saved search results display, i.e. displayed table columns, default sorting.
+            View settings are based on the current saved search container ID, saved search query ID and the user key.
+            If no settings were provided for the current saved search box yet, uses default view settings, configured in
+            the applicationcontext-savesearch.xml file.
+            This tag should be nested into the 'results' tag and the 'content:container' tag.
+
+            The retrieved view settings will be applied to child 'resultTable' tag or can be exposed into the page scope
+            under the name, provided by 'var' attribute,
+            and can be passed as an attribute 'viewSettings' into the 'resultTable' tag to control the view parameters.
+        </description>
+        <name>resultTableSettings</name>
+        <tag-class>org.jahia.taglibs.search.ResultTableSettingsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>
+                If evaluates to 'true' the button for Customize View engine is shown.
+                For example, to prevent guest user from customizing the view, set the value to:
+                ${jahia.requestInfo.logged}
+                To allow only members of "administrators" group to change the view, set the value to:
+                ${jahia.requestInfo.admin}
+            </description>
+            <name>allowChanges</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>If this tag is not nested into 'content:container' tag this value should be provided to
+                identify the usage context.
+            </description>
+            <name>contextId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The path to the icon to be displayed in the button.</description>
+            <name>icon</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>Tooltip text for the button.</description>
+            <name>title</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the page scope variable o exposet he view settings object.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the page scope variable o exposet he view settings object.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Exposes a descriptor for the specified document property into the page scope.
+            The descriptor comtains information about property type (boolean, text, date, category), if it is
+            constrained with a list of allowed values etc.
+        </description>
+        <name>documentPropertyDescriptor</name>
+        <tag-class>org.jahia.taglibs.search.DocumentPropertyDescriptorTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>The node type name.</description>
+            <name>documentType</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The document property name.</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the page scope variable the descriptor will be exposed under.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <!-- open search -->
+    <tag>
+        <description>create html struture for an open search.</description>
+        <name>opensearch-box</name>
+        <tag-class>org.jahia.taglibs.search.OpenSearchBoxTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>title</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>cssClassName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag-file>
+        <name>created</name>
+        <path>/META-INF/tags/search/created.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>createdBy</name>
+        <path>/META-INF/tags/search/createdBy.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>date</name>
+        <path>/META-INF/tags/search/date.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>documentProperty</name>
+        <path>/META-INF/tags/search/documentProperty.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>documentType</name>
+        <path>/META-INF/tags/search/documentType.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>fileLocation</name>
+        <path>/META-INF/tags/search/fileLocation.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>fileType</name>
+        <path>/META-INF/tags/search/fileType.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>form</name>
+        <path>/META-INF/tags/search/form.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>itemsPerPage</name>
+        <path>/META-INF/tags/search/itemsPerPage.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>language</name>
+        <path>/META-INF/tags/search/language.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>lastModified</name>
+        <path>/META-INF/tags/search/lastModified.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>lastModifiedBy</name>
+        <path>/META-INF/tags/search/lastModifiedBy.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>pagePath</name>
+        <path>/META-INF/tags/search/pagePath.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>rawQuery</name>
+        <path>/META-INF/tags/search/rawQuery.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>resultsPageUrl</name>
+        <path>/META-INF/tags/search/resultsPageUrl.tag</path>
+    </tag-file>
+    <tag-file>
+        <description>
+            Displays the search hits as a table view with sorting and paging support.
+            Must be nested into the 'results' tag.
+            Displayed columns can be customized using the 'columns' attribute (the order of column names is also
+            respected).
+            Another way to customize the view is to nest this tag into a 'resultTableSettings' tag or to provide the
+            settings object as an 'viewSettings' attribute.
+        </description>
+        <name>resultTable</name>
+        <path>/META-INF/tags/search/resultTable.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>term</name>
+        <path>/META-INF/tags/search/term.tag</path>
+    </tag-file>
+
+</taglib>

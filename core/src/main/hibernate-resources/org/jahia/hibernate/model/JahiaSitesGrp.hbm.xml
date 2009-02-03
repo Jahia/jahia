@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaSitesGrp"
+        table="jahia_sites_grps"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaSitesGrpPK"
+        >
+                     <key-property
+                        name="groupName"
+                        type="java.lang.String"
+                        column="grpname_sites_grps"
+                        length="50"
+                />
+
+                    <key-many-to-one
+                        name="site"
+                        class="org.jahia.hibernate.model.JahiaSite"
+                        column="siteid_sites_grps"
+                    />
+
+        </composite-id>
+
+        <many-to-one
+            name="group"
+            class="org.jahia.hibernate.model.JahiaGrp"
+            cascade="none"
+            outer-join="true"
+            update="true"
+            insert="true"
+            access="property"
+            property-ref="key"
+            column="grpid_sites_grps"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaSitesGrp.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

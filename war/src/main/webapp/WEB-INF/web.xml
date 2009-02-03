@@ -1,0 +1,1745 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+    <display-name>Jahia</display-name>
+
+    <context-param>
+        <description>
+            The location of Spring's configuration files used by the listener upon startup
+            of the web application
+        </description>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>WEB-INF/etc/spring/applicationcontext-*.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+            The context path of this Web Application (will be removed with Servlet 2.5).
+        </description>
+        <param-name>contextPath</param-name>
+        <param-value>${jahia.deploy.war.contextPath}</param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+            The default Jahia servlet path that will be used for generating URLs.
+            If you change it, please also add a corresponding servlet mapping for 'Jahia' servlet.
+        </description>
+        <param-name>defaultJahiaServletPath</param-name>
+        <param-value>${jahia.deploy.war.servletPath}</param-value>
+    </context-param>
+
+    <!--
+     <context-param>
+         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+         <param-value>server</param-value>
+     </context-param>
+     -->
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
+        <param-value>en</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>hsqldb.location</param-name>
+        <param-value>/WEB-INF/var/dbdata/hsqldbjahia</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>hsqldb.port</param-name>
+        <param-value>9001</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>hsqldb.silent</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>hsqldb.trace</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>jahia.config</param-name>
+        <param-value>/WEB-INF/etc/config/jahia.properties</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/etc/config/log4j.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>60000</param-value>
+    </context-param>
+
+    <!--
+      Configure the following filters to use NTLM Domain authentification.
+      Also don't forget to uncomment the filter-mapping entry below.
+    -->
+    <filter>
+        <filter-name>NtlmHttpFilter</filter-name>
+        <filter-class>org.jahia.bin.filters.ntlm.NtlmHttpFilter</filter-class>
+
+        <init-param>
+            <param-name>jcifs.smb.client.domain</param-name>
+            <param-value>JAHIA</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jcifs.netbios.wins</param-name>
+            <param-value>192.168.2.3</param-value>
+        </init-param>
+        <init-param>
+            <!-- Use this parameter to deactivate NTLM authentification. If
+                 NTLM authentification is activated, you will only be able
+                 to log on using this method, or by using Basic authentification
+                 if the enableBasic parameter is set to true.
+            -->
+            <param-name>jcifs.http.skipAuthentification</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <!-- Activates HTTP Basic authentification if NTLM is not available
+            -->
+            <param-name>jcifs.http.enableBasic</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <!-- If this parameter is true, it means we will allow BASIC authentification
+                 over regular HTTP connections. If it is false, this means that only
+                 HTTPS session will be accepted for BASIC authentification.
+            -->
+            <param-name>jcifs.http.insecureBasic</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <!-- This parameter controls whether the detected BASIC authentification passed
+                 over to the filter will be used to do an SMB login. Set this to true if
+                 you want to use BASIC authentification to login on your domain controller,
+                 and set to false if you want Jahia to handle the basic authentification.
+            -->
+            <param-name>jcifs.http.useBasic</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+
+    <!-- Filter for displaytag export options -->
+    <filter>
+        <filter-name>ResponseOverrideFilter</filter-name>
+        <filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <filter-class>org.jahia.bin.filters.ResponseCacheControlFilter</filter-class>
+        <init-param>
+            <description>
+                Expires should be the number of seconds from now when a given static resource should expire
+            </description>
+            <param-name>Expires</param-name>
+            <param-value>2592000</param-value>
+        </init-param>
+        <init-param>
+            <description>
+                Never-Expires should be the number of seconds from now when a given static resource should expire.
+                This option is used for resources that are never changed (e.g. GWT or those that contain a version number in the file name).
+            </description>
+            <param-name>Never-Expires</param-name>
+            <param-value>31536000</param-value>
+        </init-param>
+        <init-param>
+            <description>
+                Regular expression pattern for resources, which should be cached by the browser by setting 'Expires'
+                header to the configured value (see 'Expires' init param above).
+            </description>
+            <param-name>cachedResources</param-name>
+            <!-- Cache everything that is not dynamic (see noCachePatternList param) -->
+            <param-value>.*</param-value>
+            <!-- Cache only JS, CCS and images 
+            <param-value>.*/jsp/jahia/.*\.(js|css|gif|png|jpg|ico|htc)(\?.*)?</param-value>
+             -->
+        </init-param>
+        <init-param>
+            <description>
+                Regular expression pattern for resources, which should be cached forever (see 'Never-Expires' init param above).
+                This condition takes precedence over the 'cachedResources' parameter.
+            </description>
+            <param-name>foreverCachedResources</param-name>
+            <!-- Cache GWT '.cache.' resources -->
+            <param-value>.*/gwt/.*\.cache\..*</param-value>
+        </init-param>
+        <init-param>
+            <description>
+                Regular expression pattern of resources, for which no-cache headers will be set.
+                This condition takes precedence over the 'foreverCachedResources' and 'cachedResources' parameters.
+            </description>
+            <param-name>noCacheResources</param-name>
+            <!-- Disable cache for JSPs and '.nocache.' GWT resources -->
+            <param-value>(.*${jahia.deploy.war.servletPath}(/.*)?|.*\.jsp(\?.*)?|.*/gwt/.*\.nocache\..*)</param-value>
+        </init-param>
+    </filter>
+
+    <filter>
+        <filter-name>JcrSessionFilter</filter-name>
+        <filter-class>org.jahia.bin.filters.jcr.JcrSessionFilter</filter-class>
+    </filter>
+
+
+       <filter>
+          <filter-name>UrlRewriteFilter</filter-name>
+          <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+           <init-param>
+               <description>
+           set the amount of seconds the conf file will be checked for reload
+           can be a valid integer (0 denotes check every time,
+           -1 denotes no reload check, default -1)
+               </description>
+               <param-name>confReloadCheckInterval</param-name>
+               <param-value>20</param-value>
+           </init-param>
+           <init-param>
+               <description>
+           sets up log level (will be logged to context log)
+           can be: TRACE, DEBUG, INFO (default), WARN, ERROR, FATAL, log4j, commons,
+           sysout:{level} (ie, sysoutbiggrin/EBUG)
+           if you are having trouble using normal levels use sysoutbiggrin/DEBUG
+           (default WARN)
+               </description>
+               <param-name>logLevel</param-name>
+               <param-value>INFO</param-value>
+           </init-param>
+       </filter>
+
+
+    <filter>
+        <description>Error logging and e-mail alert filter</description>
+        <filter-name>ErrorLoggingFilter</filter-name>
+        <filter-class>org.jahia.bin.errors.ErrorLoggingFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>/jsp/jahia/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>${jahia.deploy.war.servletPath}</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>ResponseCacheControlFilter</filter-name>
+        <url-pattern>${jahia.deploy.war.servletPath}/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+       <filter-name>UrlRewriteFilter</filter-name>
+       <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>JcrSessionFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--
+        Uncomment this to use NTLM.
+        <filter-mapping>
+            <filter-name>NtlmHttpFilter</filter-name>
+            <url-pattern>/*</url-pattern>
+        </filter-mapping>
+    -->
+
+    <!--
+    <filter-mapping>
+        <filter-name>ResponseOverrideFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    -->
+
+    <filter-mapping>
+        <filter-name>ErrorLoggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+    
+    <listener>
+        <listener-class>org.jahia.bin.HypersonicLauncherListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.jahia.bin.listeners.JahiaContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.jahia.bin.listeners.JahiaPortalStartupListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.jahia.bin.JahiaWebAppListener</listener-class>
+    </listener>
+
+    <!-- JavaServer Faces Servlet Configuration -->
+
+    <servlet>
+        <servlet-name>
+            Jahia
+        </servlet-name>
+        <servlet-class>
+            org.jahia.bin.Jahia
+        </servlet-class>
+        <!-- Make sure this is consistant with the servlet mappings below -->
+        <init-param>
+            <param-name>admin_servlet_path</param-name>
+            <param-value>/administration/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>config_servlet_path</param-name>
+            <param-value>/installation/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>webinf_path</param-name>
+            <param-value>/WEB-INF/</param-value>
+        </init-param>
+        <!-- if you have trouble with the JDK detection code, you might want
+             to remove the following parameter. Please note that this is here
+             for a reason, and the versions below are the ones we recommend.
+        -->
+        <init-param>
+            <param-name>supported_jdk_versions</param-name>
+            <param-value>1.5 &lt;= x &lt; 1.7</param-value>
+        </init-param>
+        <init-param>
+            <param-name>config</param-name>
+            <!-- <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>-->
+            <param-value>
+                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
+            </param-value>
+        </init-param>
+        <!-- commented out because we did provide any resource file yet -->
+        <init-param>
+            <param-name>application</param-name>
+            <param-value>ApplicationResources</param-value>
+        </init-param>
+        <load-on-startup>8</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <display-name>Axis Admin Servlet</display-name>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>
+            org.apache.axis.transport.http.AdminServlet
+        </servlet-class>
+        <load-on-startup>100</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <display-name>SOAPMonitorService</display-name>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <servlet-class>
+            org.apache.axis.monitor.SOAPMonitorService
+        </servlet-class>
+        <init-param>
+            <param-name>SOAPMonitorPort</param-name>
+            <param-value>5001</param-value>
+        </init-param>
+        <load-on-startup>100</load-on-startup>
+    </servlet>
+
+    <!-- ====================================================================== -->
+    <!-- R E P O S I T O R Y   S E R V L E T                                    -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <description>
+            This servlet provides other servlets and jsps a common way to access
+            the repository. The repository can be accessed via JNDI, RMI or Webdav.
+        </description>
+        <servlet-name>Repository</servlet-name>
+        <servlet-class>org.apache.jackrabbit.j2ee.RepositoryAccessServlet</servlet-class>
+
+        <init-param>
+            <description>Repository Name that is used to retrieve it via JNDI</description>
+            <param-name>repository-name</param-name>
+            <param-value>java:comp/env/jcr/repository</param-value>
+        </init-param>
+
+        <!--
+        <init-param>
+            <param-name>missing-auth-mapping</param-name>
+            <param-value>anonymous:anonymous</param-value>
+            <description>
+                Defines how a missing authorization header should be handled.
+                1) if this init-param is missing, a 401 response is generated.
+                   This is suiteable for clients (eg. webdav clients) for which
+                   sending a proper authorization header is not possible, if the
+                   server never sended a 401.
+                2) if this init-param is present, but with an empty value,
+                   null-credentials are returned, thus forcing an null login
+                   on the repository
+                3) if this init-param has a 'user:password' value, the respective
+                   simple credentials are generated.
+            </description>
+        </init-param>
+        -->
+
+        <!--
+            JNDI environment variables for creating the initial context
+            (all init parameters starting with java.naming.* will be added to the initial context environment).
+        -->
+        <init-param>
+            <param-name>java.naming.provider.url</param-name>
+            <param-value></param-value>
+        </init-param>
+
+        <!--
+            RMI url, if RMI remoting is needed
+        -->
+        <!--
+        <init-param>
+            <param-name>rmi-uri</param-name>
+            <param-value>///jackrabbit.repository</param-value>
+            <description>The URI for the RMI connection.</description>
+        </init-param>
+        -->
+
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+
+
+    <!-- ====================================================================== -->
+    <!-- W E B D A V  S E R V L E T                                              -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <description>
+            The webdav servlet that connects HTTP request to the repository.
+        </description>
+        <servlet-name>Webdav</servlet-name>
+        <servlet-class>org.apache.jackrabbit.j2ee.JahiaWebdavServlet</servlet-class>
+        <init-param>
+            <description>
+                defines the prefix for spooling resources out of the repository.
+            </description>
+            <param-name>resource-path-prefix</param-name>
+            <param-value>/repository</param-value>
+        </init-param>
+        <!--
+            Optional parameter to define the value of the 'WWW-Authenticate' header
+        -->
+        <!--
+        <init-param>
+            <param-name>authenticate-header</param-name>
+            <param-value>Basic realm="Jackrabbit Webdav Server"</param-value>
+            <description>
+                Defines the value of the 'WWW-Authenticate' header.
+            </description>
+        </init-param>
+        -->
+        <!--
+            Parameter used to configure behaviour of webdav resources such as:
+            - destinction between collections and non-collections
+            - resource filtering
+        -->
+        <init-param>
+            <description>
+                Defines various dav-resource configuration parameters.
+            </description>
+            <param-name>resource-config</param-name>
+            <param-value>/WEB-INF/etc/repository/jackrabbit/webdav-config.xml</param-value>
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+
+    <!-- ====================================================================== -->
+    <!-- W E B D A V  S E R V E R  S E R V L E T                                  -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <description>
+            The webdav servlet that connects HTTP request to the repository.
+        </description>
+        <servlet-name>JCRWebdavServer</servlet-name>
+        <servlet-class>org.apache.jackrabbit.j2ee.JahiaJCRWebdavServerServlet</servlet-class>
+        <!--
+            Optional parameter to define the value of the 'WWW-Authenticate' header
+        -->
+        <!--
+        <init-param>
+            <param-name>authenticate-header</param-name>
+            <param-value>Basic realm="Jackrabbit Webdav Server"</param-value>
+            <description>
+                Defines the value of the 'WWW-Authenticate' header.
+            </description>
+        </init-param>
+        -->
+        <init-param>
+            <description>
+                defines the prefix for spooling resources out of the repository.
+            </description>
+            <param-name>resource-path-prefix</param-name>
+            <param-value>/server</param-value>
+        </init-param>
+        <load-on-startup>5</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Files</servlet-name>
+        <servlet-class>org.jahia.bin.FilesServlet</servlet-class>
+        <load-on-startup>99</load-on-startup>
+    </servlet>
+
+
+    <servlet>
+        <servlet-name>
+            JahiaAdministration
+        </servlet-name>
+        <servlet-class>
+            org.jahia.bin.JahiaAdministration
+        </servlet-class>
+        <init-param>
+            <param-name>config_path</param-name>
+            <param-value>/WEB-INF/etc/config/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>config</param-name>
+            <!-- <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>-->
+            <param-value>
+                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
+            </param-value>
+        </init-param>
+        <!-- commented out because we did provide any resource file yet -->
+        <init-param>
+            <param-name>application</param-name>
+            <param-value>ApplicationResources</param-value>
+        </init-param>
+        <load-on-startup>7</load-on-startup>
+    </servlet>
+
+    <!-- Axis (SOAP) Servlets -->
+    <servlet>
+        <display-name>Apache-Axis Servlet</display-name>
+        <servlet-name>AxisServlet</servlet-name>
+        <servlet-class>
+            org.apache.axis.transport.http.AxisServlet
+        </servlet-class>
+    </servlet>
+
+    <!-- XMLRPCServlet for the blogs -->
+    <servlet>
+        <servlet-name>XMLRPCServlet</servlet-name>
+        <servlet-class>org.jahia.blogs.XMLRPCServlet</servlet-class>
+    </servlet>
+
+    <!-- TrackBackPingServlet accepting trackBack pings -->
+    <servlet>
+        <servlet-name>TrackBackPingServlet</servlet-name>
+        <servlet-class>org.jahia.blogs.TrackBackPingServlet</servlet-class>
+    </servlet>
+
+    <!-- Ajax Struts Servlet -->
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>
+                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
+            </param-value>
+        </init-param>
+        <!-- commented out because we did provide any resource file yet -->
+        <init-param>
+            <param-name>application</param-name>
+            <param-value>ApplicationResources</param-value>
+        </init-param>
+        <!--- start before Jahia to be sure to use JahiaAction for custom struts actions -->
+        <load-on-startup>6</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>GetFile</servlet-name>
+        <servlet-class>org.jahia.bin.GetFile</servlet-class>
+    </servlet>
+
+    <!-- Jahia GWT service-->
+    <servlet>
+        <servlet-name>jahiaBaseGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.commons.server.rpc.JahiaServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>jahiaContentGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.commons.server.rpc.JahiaContentServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>contentDefinitionGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.definitions.server.ContentDefinitionServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>jahiaPdisplayGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>actionMenuGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.templates.components.actionmenus.server.ActionMenuServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>nodeGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.filemanagement.server.JahiaNodeServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>aclGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.aclmanagement.server.ACLServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>fileManagerGWTUploadService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>workflowGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.engines.workflow.server.WorkflowServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>categoryGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.engines.categories.server.CategoryServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>layoutmanagerGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.templates.components.layoutmanager.server.LayoutmanagerServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>toolbarGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.templates.components.toolbar.server.ToolbarServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>jahiaRPCVersioningGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.engines.versioning.server.RPCVersioningServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>userManagerGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.commons.server.rpc.UserManagerServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>sessionManagerGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.commons.server.rpc.SessionManagerServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>openSearchGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.ajax.gwt.templates.components.opensearch.server.JahiaOpenSearchServiceImpl
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>subscriptionGWTService</servlet-name>
+        <servlet-class>org.jahia.ajax.gwt.templates.components.subscription.server.SubscriptionServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>JspPrecompileServlet</servlet-name>
+        <servlet-class>org.jahia.tools.precompile.JspPrecompileServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <description>
+            Error pages servlet, which selects the most appropriate error page to display,
+            depending on the error code, parameters, site-specific pages flag (jahia.properties)
+            and availability of error pages in the template set (otherwise a fallback to standard
+            error pages is done).
+        </description>
+        <servlet-name>ErrorServlet</servlet-name>
+        <servlet-class>org.jahia.bin.errors.ErrorServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+      <servlet-name>ViewCacheServlet</servlet-name>
+      <servlet-class>org.jahia.tools.cache.ViewCacheServlet</servlet-class>
+    </servlet>   
+
+    <!-- ====================================================================== -->
+    <!-- P O R T L E T   S E R V L E T S                                        -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <servlet-name>JahiaContentPortlet</servlet-name>
+        <servlet-class>org.jahia.portlets.PortletServlet</servlet-class>
+        <load-on-startup>10</load-on-startup>
+    </servlet>
+
+    <!-- ====================================================================== -->
+    <!-- J C A P T C H A   S E R V L E T                                        -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <servlet-name>jcaptcha</servlet-name>
+        <servlet-class>org.jahia.bin.ImageCaptchaServlet</servlet-class>
+        <load-on-startup>11</load-on-startup>
+    </servlet>
+
+    <!-- [INSERT FRAGMENT HERE] -->
+
+    <!-- Servlet mappings -->
+
+    <!-- if you change the servlet mappings below, make sure you also change
+         the initialization parameters above since Jahia's servlet cross
+         reference each other
+    -->
+    <!-- Standard Action Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>Jahia</servlet-name>
+        <url-pattern>/do/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Jahia</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Jahia</servlet-name>
+        <url-pattern>${jahia.deploy.war.servletPath}/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JahiaAdministration</servlet-name>
+        <url-pattern>/administration/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetFile</servlet-name>
+        <url-pattern>/getFile</url-pattern>
+    </servlet-mapping>
+
+    <!-- Axis (SOAP) Mappings -->
+    <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/servlet/AxisServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>*.jws</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/services/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <url-pattern>/SOAPMonitor</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/servlet/AdminServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- gwt mapping-->
+    <servlet-mapping>
+        <servlet-name>jahiaBaseGWTService</servlet-name>
+        <url-pattern>/gwt/base/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>jahiaContentGWTService</servlet-name>
+        <url-pattern>/gwt/content/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>contentDefinitionGWTService</servlet-name>
+        <url-pattern>/gwt/contentDefinition/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>actionMenuGWTService</servlet-name>
+        <url-pattern>/gwt/actionmenus/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>nodeGWTService</servlet-name>
+        <url-pattern>/gwt/node/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>aclGWTService</servlet-name>
+        <url-pattern>/gwt/acl/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>categoryGWTService</servlet-name>
+        <url-pattern>/gwt/category/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>fileManagerGWTUploadService</servlet-name>
+        <url-pattern>/gwt/fileupload/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>workflowGWTService</servlet-name>
+        <url-pattern>/gwt/workflow/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>jahiaPdisplayGWTService</servlet-name>
+        <url-pattern>/gwt/pdisplay/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>layoutmanagerGWTService</servlet-name>
+        <url-pattern>/gwt/layoutmanager/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>toolbarGWTService</servlet-name>
+        <url-pattern>/gwt/toolbar/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>jahiaRPCVersioningGWTService</servlet-name>
+        <url-pattern>/gwt/versioning/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>userManagerGWTService</servlet-name>
+        <url-pattern>/gwt/userManager/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>sessionManagerGWTService</servlet-name>
+        <url-pattern>/gwt/sessionManager/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>openSearchGWTService</servlet-name>
+        <url-pattern>/gwt/opensearch/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>subscriptionGWTService</servlet-name>
+        <url-pattern>/gwt/subscription/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Webdav</servlet-name>
+        <url-pattern>/repository/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JCRWebdavServer</servlet-name>
+        <url-pattern>/server/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Files</servlet-name>
+        <url-pattern>/files/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- XMLRPCServlet mapping for the blogs -->
+    <servlet-mapping>
+        <servlet-name>XMLRPCServlet</servlet-name>
+        <url-pattern>/blogs/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- TrackBackPingServlet mapping for the pings -->
+    <servlet-mapping>
+        <servlet-name>TrackBackPingServlet</servlet-name>
+        <url-pattern>/trackbacks/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- Ajax Struts Servlet Mapping -->
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>/ajaxaction/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>JspPrecompileServlet</servlet-name>
+        <url-pattern>/precompileServlet</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>JahiaContentPortlet</servlet-name>
+        <url-pattern>/PlutoInvoker/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ErrorServlet</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ViewCacheServlet</servlet-name>
+        <url-pattern>/viewCache</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>jcaptcha</servlet-name>
+        <url-pattern>/jcaptcha</url-pattern>
+    </servlet-mapping>
+    
+    <!-- Session timeout value is set in minutes. Comment this section out
+         in order to set the timeout time back to the server's value  -->
+    <!--
+    <session-config>
+      <session-timeout>1</session-timeout>
+    </session-config>
+    -->
+
+    <!-- ===================== Default MIME Type Mappings =================== -->
+
+
+    <!-- When serving static resources, Tomcat will automatically generate    -->
+    <!-- a "Content-Type" header based on the resource's filename extension,  -->
+    <!-- based on these mappings.  Additional mappings can be added here (to  -->
+    <!-- apply to all web applications), or in your own application's web.xml -->
+    <!-- deployment descriptor.                                               -->
+    <mime-mapping>
+        <extension>abs</extension>
+        <mime-type>audio/x-mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ai</extension>
+        <mime-type>application/postscript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>aif</extension>
+        <mime-type>audio/x-aiff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>aifc</extension>
+        <mime-type>audio/x-aiff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>aiff</extension>
+        <mime-type>audio/x-aiff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>aim</extension>
+        <mime-type>application/x-aim</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>art</extension>
+        <mime-type>image/x-jg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>asf</extension>
+        <mime-type>video/x-ms-asf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>asx</extension>
+        <mime-type>video/x-ms-asf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>au</extension>
+        <mime-type>audio/basic</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>avi</extension>
+        <mime-type>video/x-msvideo</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>avx</extension>
+        <mime-type>video/x-rad-screenplay</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>bcpio</extension>
+        <mime-type>application/x-bcpio</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>bin</extension>
+        <mime-type>application/octet-stream</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>bmp</extension>
+        <mime-type>image/bmp</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>body</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>cdf</extension>
+        <mime-type>application/x-netcdf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>cer</extension>
+        <mime-type>application/x-x509-ca-cert</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>class</extension>
+        <mime-type>application/java</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>cpio</extension>
+        <mime-type>application/x-cpio</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>csh</extension>
+        <mime-type>application/x-csh</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>css</extension>
+        <mime-type>text/css</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>dib</extension>
+        <mime-type>image/bmp</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>doc</extension>
+        <mime-type>application/msword</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>docx</extension>
+        <mime-type>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>dot</extension>
+        <mime-type>application/msword</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>dtd</extension>
+        <mime-type>application/xml-dtd</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>dv</extension>
+        <mime-type>video/x-dv</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>dvi</extension>
+        <mime-type>application/x-dvi</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>eps</extension>
+        <mime-type>application/postscript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>etx</extension>
+        <mime-type>text/x-setext</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>exe</extension>
+        <mime-type>application/octet-stream</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>gif</extension>
+        <mime-type>image/gif</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>gtar</extension>
+        <mime-type>application/x-gtar</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>gz</extension>
+        <mime-type>application/x-gzip</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>hdf</extension>
+        <mime-type>application/x-hdf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>htc</extension>
+        <mime-type>text/x-component</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>htm</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>html</extension>
+        <mime-type>text/html</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>hqx</extension>
+        <mime-type>application/mac-binhex40</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ico</extension>
+        <mime-type>image/x-icon</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ief</extension>
+        <mime-type>image/ief</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jad</extension>
+        <mime-type>text/vnd.sun.j2me.app-descriptor</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jar</extension>
+        <mime-type>application/java-archive</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>java</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jnlp</extension>
+        <mime-type>application/x-java-jnlp-file</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpe</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpeg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jpg</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>js</extension>
+        <mime-type>text/javascript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jsf</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>jspf</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>kar</extension>
+        <mime-type>audio/midi</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>latex</extension>
+        <mime-type>application/x-latex</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>m3u</extension>
+        <mime-type>audio/x-mpegurl</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mac</extension>
+        <mime-type>image/x-macpaint</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>man</extension>
+        <mime-type>application/x-troff-man</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mathml</extension>
+        <mime-type>application/mathml+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>me</extension>
+        <mime-type>application/x-troff-me</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mid</extension>
+        <mime-type>audio/midi</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>midi</extension>
+        <mime-type>audio/midi</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mif</extension>
+        <mime-type>application/vnd.mif</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mov</extension>
+        <mime-type>video/quicktime</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>movie</extension>
+        <mime-type>video/x-sgi-movie</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mp1</extension>
+        <mime-type>audio/x-mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mp2</extension>
+        <mime-type>audio/mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mp3</extension>
+        <mime-type>audio/mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mp4</extension>
+        <mime-type>video/mp4</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mpa</extension>
+        <mime-type>audio/x-mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mpe</extension>
+        <mime-type>video/mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mpeg</extension>
+        <mime-type>video/mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mpega</extension>
+        <mime-type>audio/x-mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mpg</extension>
+        <mime-type>video/mpeg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mpv2</extension>
+        <mime-type>video/mpeg2</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ms</extension>
+        <mime-type>application/x-troff-ms</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>nc</extension>
+        <mime-type>application/x-netcdf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>oda</extension>
+        <mime-type>application/oda</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Database -->
+        <extension>odb</extension>
+        <mime-type>application/vnd.oasis.opendocument.database</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Chart -->
+        <extension>odc</extension>
+        <mime-type>application/vnd.oasis.opendocument.chart</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Formula -->
+        <extension>odf</extension>
+        <mime-type>application/vnd.oasis.opendocument.formula</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Drawing -->
+        <extension>odg</extension>
+        <mime-type>application/vnd.oasis.opendocument.graphics</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Image -->
+        <extension>odi</extension>
+        <mime-type>application/vnd.oasis.opendocument.image</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Master Document -->
+        <extension>odm</extension>
+        <mime-type>application/vnd.oasis.opendocument.text-master</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Presentation -->
+        <extension>odp</extension>
+        <mime-type>application/vnd.oasis.opendocument.presentation</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Spreadsheet -->
+        <extension>ods</extension>
+        <mime-type>application/vnd.oasis.opendocument.spreadsheet</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Text -->
+        <extension>odt</extension>
+        <mime-type>application/vnd.oasis.opendocument.text</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ogg</extension>
+        <mime-type>application/ogg</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Drawing Template -->
+        <extension>otg</extension>
+        <mime-type>application/vnd.oasis.opendocument.graphics-template</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- HTML Document Template -->
+        <extension>oth</extension>
+        <mime-type>application/vnd.oasis.opendocument.text-web</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Presentation Template -->
+        <extension>otp</extension>
+        <mime-type>application/vnd.oasis.opendocument.presentation-template</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Spreadsheet Template -->
+        <extension>ots</extension>
+        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- OpenDocument Text Template -->
+        <extension>ott</extension>
+        <mime-type>application/vnd.oasis.opendocument.text-template</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pbm</extension>
+        <mime-type>image/x-portable-bitmap</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pct</extension>
+        <mime-type>image/pict</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pdf</extension>
+        <mime-type>application/pdf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pgm</extension>
+        <mime-type>image/x-portable-graymap</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pic</extension>
+        <mime-type>image/pict</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pict</extension>
+        <mime-type>image/pict</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pls</extension>
+        <mime-type>audio/x-scpls</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>png</extension>
+        <mime-type>image/png</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pnm</extension>
+        <mime-type>image/x-portable-anymap</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pnt</extension>
+        <mime-type>image/x-macpaint</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pot</extension>
+        <mime-type>application/vnd.ms-powerpoint</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ppm</extension>
+        <mime-type>image/x-portable-pixmap</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pps</extension>
+        <mime-type>application/vnd.ms-powerpoint</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ppt</extension>
+        <mime-type>application/vnd.ms-powerpoint</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>pptx</extension>
+        <mime-type>application/vnd.openxmlformats-officedocument.presentationml.presentation</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ppz</extension>
+        <mime-type>application/vnd.ms-powerpoint</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ps</extension>
+        <mime-type>application/postscript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>psd</extension>
+        <mime-type>image/x-photoshop</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>qt</extension>
+        <mime-type>video/quicktime</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>qti</extension>
+        <mime-type>image/x-quicktime</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>qtif</extension>
+        <mime-type>image/x-quicktime</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ras</extension>
+        <mime-type>image/x-cmu-raster</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>rdf</extension>
+        <mime-type>application/rdf+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>rgb</extension>
+        <mime-type>image/x-rgb</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>rm</extension>
+        <mime-type>application/vnd.rn-realmedia</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>roff</extension>
+        <mime-type>application/x-troff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>rtf</extension>
+        <mime-type>text/rtf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>rtx</extension>
+        <mime-type>text/richtext</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>sh</extension>
+        <mime-type>application/x-sh</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>shar</extension>
+        <mime-type>application/x-shar</mime-type>
+    </mime-mapping>
+    <!--
+        <mime-mapping>
+            <extension>shtml</extension>
+            <mime-type>text/x-server-parsed-html</mime-type>
+        </mime-mapping>
+    -->
+    <mime-mapping>
+        <extension>smf</extension>
+        <mime-type>audio/x-midi</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>sit</extension>
+        <mime-type>application/x-stuffit</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>snd</extension>
+        <mime-type>audio/basic</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>src</extension>
+        <mime-type>application/x-wais-source</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>sv4cpio</extension>
+        <mime-type>application/x-sv4cpio</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>sv4crc</extension>
+        <mime-type>application/x-sv4crc</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>svg</extension>
+        <mime-type>image/svg+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>svgz</extension>
+        <mime-type>image/svg+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>swf</extension>
+        <mime-type>application/x-shockwave-flash</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>t</extension>
+        <mime-type>application/x-troff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>tar</extension>
+        <mime-type>application/x-tar</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>tcl</extension>
+        <mime-type>application/x-tcl</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>tex</extension>
+        <mime-type>application/x-tex</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>texi</extension>
+        <mime-type>application/x-texinfo</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>texinfo</extension>
+        <mime-type>application/x-texinfo</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>tif</extension>
+        <mime-type>image/tiff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>tiff</extension>
+        <mime-type>image/tiff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>tr</extension>
+        <mime-type>application/x-troff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>tsv</extension>
+        <mime-type>text/tab-separated-values</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>txt</extension>
+        <mime-type>text/plain</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ulw</extension>
+        <mime-type>audio/basic</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ustar</extension>
+        <mime-type>application/x-ustar</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>vrml</extension>
+        <mime-type>model/vrml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>vsd</extension>
+        <mime-type>application/x-visio</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>vxml</extension>
+        <mime-type>application/voicexml+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>wav</extension>
+        <mime-type>audio/x-wav</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- Wireless Bitmap -->
+        <extension>wbmp</extension>
+        <mime-type>image/vnd.wap.wbmp</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- WML Source -->
+        <extension>wml</extension>
+        <mime-type>text/vnd.wap.wml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- Compiled WML -->
+        <extension>wmlc</extension>
+        <mime-type>application/vnd.wap.wmlc</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- WML Script Source -->
+        <extension>wmls</extension>
+        <mime-type>text/vnd.wap.wmlscript</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <!-- Compiled WML Script -->
+        <extension>wmlscriptc</extension>
+        <mime-type>application/vnd.wap.wmlscriptc</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>wmv</extension>
+        <mime-type>video/x-ms-wmv</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>wrl</extension>
+        <mime-type>model/vrml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xbm</extension>
+        <mime-type>image/x-xbitmap</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xht</extension>
+        <mime-type>application/xhtml+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xhtml</extension>
+        <mime-type>application/xhtml+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xlc</extension>
+        <mime-type>application/vnd.ms-excel</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xll</extension>
+        <mime-type>application/vnd.ms-excel</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xlm</extension>
+        <mime-type>application/vnd.ms-excel</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xls</extension>
+        <mime-type>application/vnd.ms-excel</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xlsx</extension>
+        <mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xml</extension>
+        <mime-type>application/xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xpm</extension>
+        <mime-type>image/x-xpixmap</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xsl</extension>
+        <mime-type>application/xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xslt</extension>
+        <mime-type>application/xslt+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xul</extension>
+        <mime-type>application/vnd.mozilla.xul+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xwd</extension>
+        <mime-type>image/x-xwindowdump</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>z</extension>
+        <mime-type>application/x-compress</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>zip</extension>
+        <mime-type>application/zip</mime-type>
+    </mime-mapping>
+
+    <welcome-file-list>
+        <welcome-file>jsp/index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <error-page>
+        <error-code>400</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>401</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <error-code>503</error-code>
+        <location>/error</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/error</location>
+    </error-page>
+
+    <!-- JNDI Db resource -->
+    <resource-ref>
+        <description>DB Connection</description>
+        <res-ref-name>jdbc/jahia</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+    <resource-ref>
+        <description>Non Tx DB Connection</description>
+        <res-ref-name>jdbc/jahiaNonTx</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+    <resource-ref>
+        <description>Repository</description>
+        <res-ref-name>jcr/repository</res-ref-name>
+        <res-type>javax.jcr.Repository</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+    <resource-ref>
+        <description>Jahia service</description>
+        <res-ref-name>jahia/users</res-ref-name>
+        <res-type>org.jahia.api.user.JahiaUserService</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>JAM monitoring report</web-resource-name>
+            <url-pattern>/monitor/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>manager</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>/precompileServlet/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>manager</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>   
+            <url-pattern>/viewCache/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>jahiaManager</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>/jsp/jahia/tools/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>jahiaManager</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>Secured Jahia tools</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>manager</role-name>
+    </security-role>
+
+    <security-role>
+        <role-name>jahiaManager</role-name>
+    </security-role>
+
+    <security-role>
+        <role-name>role1</role-name>
+    </security-role>
+    
+    <security-role>
+        <role-name>role2</role-name>
+    </security-role>
+
+</web-app>

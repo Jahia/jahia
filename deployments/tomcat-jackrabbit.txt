@@ -1,0 +1,70 @@
+This document describes how to install Jahia on Tomcat with Jackrabbit as a shared repository (not embedded into Jahia)
+
+Tomcat : 5.5.23
+Jackrabbit version : 595678
+Jahia : 19258
+JDK : 1.5.0_07
+
+-Install the following JARs in common/endorsed :
+xercesImpl-2.9.1.jar 
+xmlParserAPIs-2.9.1.jar
+
+-Copy these files from jahia/WEB-INF/lib to common/lib :
+
+commons-codec-1.3.jar
+commons-collections-3.1.jar
+commons-discovery-0.2.jar
+commons-httpclient-3.0.jar
+commons-id-0.1-dev.jar
+concurrent-1.3.4.jar
+log4j-1.2.14.jar
+lucene-core-2.2.0.jar
+nekohtml-0.9.5.jar
+PDFBox-0.6.7a-patched.jar
+poi-2.5.1-final-20040804.jar
+slf4j-log4j12-1.3.0.jar
+tm-extractors-0.4.jar
+
+-Move these files from jahia/WEB-INF/lib to common/lib :
+
+jackrabbit-api-1.4-SNAPSHOT.jar
+jackrabbit-core-1.4-SNAPSHOT.jar
+jackrabbit-jcr-commons-1.4-SNAPSHOT.jar
+jackrabbit-jcr-rmi-1.4-SNAPSHOT.jar
+jackrabbit-text-extractors-1.4-SNAPSHOT.jar
+jackrabbit-spi-1.4-SNAPSHOT.jar
+jackrabbit-spi-commons-1.4-SNAPSHOT.jar
+jcr-1.0.jar
+public-api-5.0-SNAPSHOT.jar
+jackrabbit-core-ext-5.0-SNAPSHOT.jar
+geronimo-spec-jta-1.0-M1.jar
+
+-Declare JNDI resources in server.xml file :
+
+<Resource name="jcr/repository"
+          auth="Container"
+          type="javax.jcr.Repository"
+          factory="org.apache.jackrabbit.core.jndi.JahiaBindableRepositoryFactory"
+          configFilePath="..."
+          repHomeDir="..." />
+
+<Resource name="jahia/users"
+          auth="Container"
+          type="org.jahia.api.user.JahiaUserService"
+          factory="org.jahia.api.user.JahiaUserServiceFactory"
+         />
+
+The configFilePath should be the full path of the repository.xml file (default one is packaged with jahia in jahia/WEB-INF/etc/repository, you can point to it or copy it somewhere else).
+The repHomeDir will be the storage area for the repository, it must point to a valid directory.
+If you use the JahiaBindableRepositoryFactory, you can use environment variables in the path, like ${jahiaWebAppRoot}/WEB-INF/etc/repository/repository.xml .
+
+-In jahia.xml file, comment the 2 Resource jcr/repository and jahia/users, and uncomment the 2 Resources references at the end of the file :
+
+    <ResourceLink name="jcr/repository"
+              global="jcr/repository"
+              type="javax.jcr.Repository"/>
+
+    <ResourceLink name="jahia/users"
+              global="jahia/users"
+              type="org.jahia.api.user.JahiaUserService" />
+              

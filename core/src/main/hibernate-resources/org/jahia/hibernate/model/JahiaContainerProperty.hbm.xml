@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaContainerProperty"
+        table="jahia_ctnentries_prop"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaContainerPropertyPK"
+        >
+                     <key-property
+                        name="containerId"
+                        type="java.lang.Integer"
+                        column="ctnid_ctnentries_prop"
+                        length="11"
+                />
+
+                     <key-property
+                        name="name"
+                        type="java.lang.String"
+                        column="name_ctnentries_prop"
+                        length="255"
+                />
+
+        </composite-id>
+
+        <property
+            name="siteId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahiaid_ctnentries_prop"
+            length="11"
+        />
+
+        <property
+            name="value"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="value_ctnentries_prop"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaContainerProperty.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,874 @@
+#
+# This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+# Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+# 
+# As a special exception to the terms and conditions of version 2.0 of
+# the GPL (or any later version), you may redistribute this Program in connection
+# with Free/Libre and Open Source Software ("FLOSS") applications as described
+# in Jahia's FLOSS exception. You should have received a copy of the text
+# describing the FLOSS exception, and it is also available here:
+# http://www.jahia.com/license
+# 
+# Commercial and Supported Versions of the program
+# Alternatively, commercial and supported versions of the program may be used
+# in accordance with the terms contained in a separate written agreement
+# between you and Jahia Limited. If you are unsure which license is appropriate
+# for your use, please contact the sales department at sales@jahia.com.
+
+
+# +---------------------------------------------------------------------------+
+# | Jahia main configuration file.                                            |
+# +---------------------------------------------------------------------------+
+#
+#  This file contains some of the most important settings for configuration
+#  it's behavior.
+#  Other interesting files can be found elsewhere in the WEB-INF/etc
+#  directory, such as WEB-INF/etc/ldap for LDAP connection properties,
+#  or WEB-INF/etc/spring for LDAP connector activation, cache implementation
+#  configuration, Hibernate configuration, etc.
+
+######################################################################
+### Server  ##########################################################
+######################################################################
+# General server information, such as release version, the application
+# server it is running on, as well as the home disk path to the deployed
+# Jahia instance.
+release                                                =
+server                                                 =
+# The server home disk path is application server specific, and is used
+# to deploy and configure new portlets, as well as other specific
+# adjusments such as Tomcat's in-memory realm automatic updating
+# (tomcat-users.xml files).
+serverHomeDiskPath                                     =
+
+
+######################################################################
+### Disk Paths  ######################################################
+######################################################################
+# The following disk paths configure where Jahia will store data on disk,
+# such as temporary files or content files, or even in some cases where
+# it will retrieve additionnal configuration from.
+
+jahiaJspDiskPath                                       =   /jsp/jahia/
+jahiaEnginesDiskPath                                   =   /jsp/jahia/engines/
+jahiaTemplatesDiskPath                                 =   /jsp/jahia/templates/
+jahiaHtmlEditorsDiskPath                               =   /jsp/jahia/htmleditors/
+jahiaJavaScriptDiskPath                                =   /jsp/jahia/javascript/
+
+jahiaFilesDiskPath                                     =   $context/WEB-INF
+jahiaEtcDiskPath                                       =
+jahiaVarDiskPath                                       =
+jahiaFilesBigTextDiskPath                              =
+slideContentDiskPath                                   =   $context/WEB-INF/var/content/slide/
+tmpContentDiskPath                                     =   $context/WEB-INF/var/content/tmp/
+jahiaFilesTemplatesDiskPath                            =
+
+jahiaNewTemplatesDiskPath                              =
+jahiaNewWebAppsDiskPath                                =
+jahiaSharedTemplatesDiskPath                           =
+jahiaImportsDiskPath                                   =
+
+jahiaCasDiskPath                                       =   $context/WEB-INF/etc/cas/
+
+jahiaOutputCacheConfigDiskPath                         =   $context/WEB-INF/etc/outputcache/
+
+classDiskPath                                          =   /WEB-INF/classes/
+componentsDiskPath                                     =   /WEB-INF/classes/components/
+
+
+######################################################################
+### URL's  ###########################################################
+######################################################################
+
+jahiaHostHttpPath                                      =
+jahiaTemplatesHttpPath                                 =
+jahiaEnginesHttpPath                                   =
+jahiaJavaScriptHttpPath                                =
+
+jahiaWebAppsDeployerBaseURL                            =
+
+# This parameter will force the generation of the /site/ URL parameter
+# every time, even when sites are used with hostname resolution. This
+# is useful when using front-end URL rewriting such as Apache's URL
+# rewriting.
+siteIDInURL                                            =   false
+
+# This parameter will control, whether Jahia will check if the sitename and
+# the page-ID are matching, as it is possible to manually modify the page ID
+# in the URL and suddenly a page from a different site would be displayed. If
+# the parameter is set to true, Jahia will throw a 404 error in case of a 
+# site/page mismatch
+performSiteAndPageIDMatchCheck                         =   false
+
+# This parameter will force the generation of the /site/ URL parameter
+# in search Hit page URLs that come from another site than the one on
+# which the search is launched ( Multiple Site search )
+siteIDInSearchHitPageURL                               =   true
+
+######################################################################
+### Mail Service Configuration #######################################
+######################################################################
+# These settings configure how Jahia will send messages for
+# error reports.
+mail_service_activated                                 =   false
+mail_server                                            =
+mail_administrator                                     =
+mail_from                                              =
+mail_paranoia                                          =
+# This parameter allows to control mail regrouping of a repeating exception
+# If a repeating exception occurs more than this maximum, a mail will be
+# sent anyway, just so that we are still informed in case this is the only
+# error sent.
+mail_maxRegroupingOfPreviousException                  = 500
+
+######################################################################
+### Database  ########################################################
+######################################################################
+# Database connection configuration is no longer configured here,
+# but rather through container-managed datasource connection. In Tomcat 
+# these can be found in the following file:
+# <jahia-web-app-dir>/META-INF/context.xml
+db_script                                              =   hypersonic.script
+db_starthsqlserver                                     =   true
+db_max_elements_for_in_clause                          =   1000
+
+######################################################################
+### Characters encoding ##############################################
+######################################################################
+# Global encoding parameter, used to encode content to/from the database
+utf8Encoding                                           =   true
+
+# You may need to change the following values depending on the servlet
+# container you are using. The default values here are designed to work
+# with Tomcat.
+#
+# Default encoding for the output generated by Jahia (Html and Mail) :
+defaultResponseBodyEncoding                            =   UTF-8
+# Default encoding for URI and URLs send to Jahia :
+defaultURIEncoding                                     =   UTF-8
+
+######################################################################
+### Cache settings ###################################################
+######################################################################
+# These settings controls all the caches that are integrated in Jahia,
+# except for the Hibernate ones that are controlled from the
+# WEB-INF/etc/spring/applicationcontext-hibernate.xml configuration
+# file.
+#
+# The entry allow you to specify the amount of free memory you wnat to keep in your jvm
+# If we reach this limit jahia will remove entries of his cahce until if get under this limit
+# this limit must be express in MB size
+freeMemoryLimit = 64MB
+
+# The following setting allows to select the underlying cache implementation used
+# in the Jahia's cluster cache implementations. Possible values are :
+# - jahiaReferenceCache : a cache implementation that uses SoftReferences to
+#   hold references to the cached objects. This cache will free memory in order
+#   to avoid OutOfMemory errors.
+# - jahiaSimpleCache : an LRU cache implementation that uses the freeMemoryLimit
+#   trigger to flush elements from memory
+cacheClusterUnderlyingImplementation = jahiaReferenceCache
+
+# caches may use groups that work like categories on cache entries. By default
+# groups are limited in numbers of 20000, with an LRU (least recently used)
+# algorithm for removing a group. When a group is removed, so are all the
+# cache entries. If you see a lot of messages warning that groups were being
+# flushed and that you Jahia installation has sufficient runtime memory,
+# you should set this value higher. In installations with little memory
+# available, you should keep this value as low as possible.
+cacheMaxGroups = 20000
+
+######################################################################
+### Events       #####################################################
+######################################################################
+# Maximum number of events that can be delayed to the end of
+# processing jobs.
+maxAggregatedEvents                                    =   5000
+
+######################################################################
+### HTML Container Output cache  #####################################
+######################################################################
+# The HTML container cache is an embedded fragment cache, that caches
+# automatically (or specifically using the <container-cache> tag)
+# the output of <container> tags. This cache is very efficient for
+# highly dynamic sites with lots of content, users and personalization
+#
+# The "HTML container output cache" cache html output from <container>
+# and <container-cache> tags.
+# outputContainerCacheActivated is a global control that allows to
+# completely disable all caching for <container> and <container-cache>
+# tags.
+outputContainerCacheActivated                          =   true
+
+
+# the following value is the default expiration date in seconds of container cache entries
+# (for example 2592000secs is 30 days or 604800secs is 7 days)
+# here the value is 4 hours
+
+containerCacheDefaultExpirationDelay = 14400
+
+containerCacheLiveModeOnly = false
+
+######################################################################
+### JMX Settings #####################################################
+######################################################################
+# Jahia contains a JMX (see http://java.sun.com/products/JavaManagement/) server,
+# that is deactivated by default, as it may cause some problems on some application
+# server platforms. The following settings below configure the JMX server.
+org.jahia.jmx.activated                                 = false
+org.jahia.jmx.httpAdaptorActivated                      = false
+org.jahia.jmx.xslProcessorActivated                     = false
+org.jahia.jmx.rmiAdaptorActivated                       = false
+org.jahia.jmx.httpHostName                              = localhost
+org.jahia.jmx.httpPort                                  = 8082
+org.jahia.jmx.httpAuthorizationMode                     = basic
+org.jahia.jmx.httpAuthorizationUser                     = jmx
+org.jahia.jmx.httpAuthorizationPassword                 = jahiajmx
+org.jahia.jmx.httpProcessorNameString                   = Server:name=XSLTProcessor
+# org.jahia.jmx.httpSocketFactoryNameString               =
+org.jahia.jmx.rmiSSLServerSocketFactoryActivated        = false
+org.jahia.jmx.rmiSSLServerSocketFactoryKeyStoreName     =
+org.jahia.jmx.rmiSSLServerSocketFactoryKeyStorePassword =
+org.jahia.jmx.rmiSSLServerSocketFactoryKeyManagerPassword =
+
+######################################################################
+### Template set #####################################################
+######################################################################
+# Default value for template set
+default_templates_set		                        =   Web templates
+# Default setting for the error handling in boxes.
+# Can be overridden in the templates deployment descriptor (templates.xml)
+# for each template set.
+# How should we handle an exception within the box?
+#    'hide' - the whole box content will not be written out into the JSP writer if any error occurs;
+#    'compact' (default) - shows a predefined error message instead of partial box content
+#    						(the message can be overridden using 'errorMessage' attribute);
+#    'full' - shows real exception message with a stacktrace;
+#    'propagate' - propagates the occurred exception to the higher level
+#					(normally ends up with a standard error page) 
+templates.boxes.onError                             	= full
+
+######################################################################
+### Filemanager  #####################################################
+######################################################################
+# Configuration of the file manager that uses Slide as a back-end.
+jahiaFileRepositoryDiskPath                             =
+useFlatFileManager									    =  false
+jahiaFileUploadMaxSize                                  =  104857600
+
+######################################################################
+### Templates Observer  ##############################################
+######################################################################
+# Time in milliseconds between checks for the template deployment
+# descriptor changes in order to restart the JahiaTemplateManagerService.
+# Set to -1 to deactivate changes detection completely.
+# Note, if "developmentMode" option is set to "true", this parameter
+# is ignored and the observer is started with the interval of 5 seconds. 
+templates.observer.interval                            =   60000
+
+######################################################################
+### WebApps Observer  ################################################
+######################################################################
+# The following section configured the service that checks for new
+# web applications (portlets) to deploy.
+jahiaWebAppsAutoDeploy                                 =   1
+# Time in milliseconds between checks in the new_webapps directory for new
+# webapps to deploy. Set to -1 to deactivate file watching completely.
+webapps.observer.interval                              =   60000
+webapps.observer.checkmode                             =   ALL
+# This setting is configured by the configuration wizard to use the
+# appropriate web applications deployer according to the application
+# server platform which Jahia is running on. We recommend you do not
+# modify this value unless it is false. Also currently only the Tomcat
+# implementation is fully tested and supported.
+JahiaWebAppsDeployerService                            =
+
+######################################################################
+### WebApps Dispatcher  ##############################################
+######################################################################
+# If you set this to true then the portlet applications will be able
+# to access session attributes set by the templates.
+webapps.dispatcher.inheritJahiaSessionAttributes       =   false
+
+######################################################################
+### Audit log  #######################################################
+######################################################################
+# Default values for amount of logs to be kept when flushing to a
+# limit. Note that this doesn't mean that the logs cannot be larger
+# than the amount specified, but simply that when limiting them, it
+# will default to this value.
+jahiaMaxLogs                                           =   500
+
+######################################################################
+### Multilingual support   ###########################################
+######################################################################
+# The fall-back language code after we have tried to resolve the
+# current browsing code from :
+# - the session
+# - the browser's settings
+# - the site's language list
+org.jahia.multilang.default_language_code              =   en
+# Should we switch to the user's preferred language after login?
+# Language switch takes place only if the current site has entries
+# in the user's preferred language  
+considerPreferredLanguageAfterLogin                    =   false
+
+######################################################################
+### ACLs   ###########################################################
+######################################################################
+# Specifies whether we should preload ACLs from database on startup.
+org.jahia.acl.preload_active                           =   true
+
+# This variable controls whether all the members of a user group (in Jahia DB
+# not LDAP) are preloaded, when the group is loaded.
+preloadDBGroupMembersActivated                         = true
+
+######################################################################
+### Page properties ##################################################
+######################################################################
+# Specifies the number of page IDs to pre-load upon Jahia's page
+# service startup
+org.jahia.pages.properties.preload_count               =   2000
+
+######################################################################
+### Tidy Configuration file ##########################################
+######################################################################
+# Tidy is an HTML parser that is one of the multiple ones that is
+# used to verify HTML validity.
+# this file must be located in <jahia>/web-inf/etc/config dir.
+tidyConfig                                             =   tidy.properties
+
+######################################################################
+### WebDAV processing options ########################################
+######################################################################
+# Specifies whether we should transform file names because of compatibility
+# problems with Windows WebDAV implementation.
+transformFilenames                                     =   false
+# Same option for directories, set to true by default because there are
+# serious bugs in Windows' WebDAV implementation when using non ISO-8859-1
+# characters.
+transformDirnames                                      =   true
+
+# preload folders when displaying tree
+preloadFolders                                         =   false
+
+######################################################################
+### Content Object titles ############################################
+######################################################################
+# Specifies the size of the titles we should display in site maps
+siteMapTitlesLength                                    =   20
+# Specifies the size of the titles we should display in the workflow
+workflowTitlesLength                                   =   20
+
+######################################################################
+### Marked for deletion Content Object ###############################
+######################################################################
+# Set to true if you want marked for deleted content objects to be
+# loaded as well as staging content
+displayMarkedForDeletedContentObjects                  =   true
+
+######################################################################
+### Jetspeed Portal   ################################################
+######################################################################
+# Configuration for the integrated Jetspeed JSR-168 compatible
+# portal server.
+jetspeedConfig                                         =   WEB-INF/etc/jetspeed/conf/jetspeed.properties
+jetspeedDeploymentDirectory                            =   $context/WEB-INF/etc/jetspeed/deploy
+
+######################################################################
+### Authentification pipeline ########################################
+######################################################################
+#
+# Jahia now uses a pipeline mechanism to process user authentification, which
+# allows developers to extend the system for custom authentification back-ends.
+#
+# You might want to modify the pipeline if you want to extend Jahia's
+# authentification system, for example by adding a JAASAuthValve or something
+# else.
+#
+# Name of the file containing the valve configuration for the authentification
+# pipeline
+authPipelineFileName                                   =   /WEB-INF/etc/config/auth-pipeline.xml
+# Class name for the pipeline implementation to use when creating the
+# authorization pipeline.
+authPipelineClassName                                  =   org.jahia.pipelines.impl.GenericPipeline
+
+######################################################################
+### Process pipeline #################################################
+######################################################################
+#
+# Jahia now uses a pipeline mechanism to process requests, which
+# allows developers to extend the system for custom processing.
+#
+# You might want to modify the pipeline if you want to extend Jahia's
+# processing system
+#
+# Name of the file containing the valve configuration for the processing
+# pipeline
+processPipelineFileName                                   =   /WEB-INF/etc/config/process-pipeline.xml
+# Class name for the pipeline implementation to use when creating the
+# request processing pipeline.
+processPipelineClassName                                  =   org.jahia.pipelines.impl.GenericPipeline
+
+######################################################################
+### Concurrent processing options ####################################
+######################################################################
+#
+# This variable controls how many threads are allowed to do heavy weight
+# processing (page creation not served from the cache)
+maxParallelProcessings                                 = 40
+# This variable controls how long threads are waiting to be able to start
+# generating pages in heavy load situations (value in milliseconds)
+pageGenerationWaitTime                                 = 30000
+# This variable controls the setting of the HTTP Retry-After header, which is sent
+# back to the client with a HTTP status code 503 (Service temporarily unavailable).
+# It could be used also to trigger an automatic reload (value in seconds).
+suggestedRetryTimeAfterTimeout                         = 60
+# This variable controls how long threads are waiting to be able to start
+# generating pages, when load is coming during server startup
+# (value in milliseconds)
+pageGenerationWaitTimeOnStartup                        = 10000
+# This variable controls the setting of the HTTP Retry-After header, which is sent
+# back to the client with a HTTP status code 503 (Service temporarily unavailable),
+# when it was triggered during server startup. It could be used also to trigger
+# an automatic reload (value in seconds).
+suggestedRetryTimeAfterTimeoutOnStartup                = 15
+
+######################################################################
+### Cookie authentification valve config #############################
+######################################################################
+#
+# The cookie authentification valve is a system that uses cookies to store
+# an identifier corresponding to a specific Jahia user, when he selects the
+# "remember me" option in the login engine.
+#
+# Should we use cookie authentification for login ?
+cookieAuthActivated                                    =   true
+#
+# length of cookie identifier key for user. This is the actual value
+# stored in the cookie, so make sure it is long enough to improve security.
+cookieAuthIDLength                                     =   40
+# name of user property under which we store the cookie identifier key in
+# Jahia's database, for matching with the value coming from the cookie.
+cookieAuthUserPropertyName                             =   org.jahia.user.cookieauth.id
+# cookie name. It is a good idea to keep this name a bit cryptic so that
+# even if someone steals the cookie he doesn't necessarily understand it.
+cookieAuthCookieName                                   =   jid
+# age of cookie in seconds. So basically a value of 2592000 is 30 days
+# expiration, which means that if the user doesn't come back to the site during
+# 30 days he will then have to login again. The way the cookie is renewed
+# depends how the cookieAuthRenewalActivated setting is set.
+cookieAuthMaxAgeInSeconds                              =   2592000
+# Cookie renewal means that if a user is recognized using a cookie, the age in
+# seconds will be reset. So it means that every time the user comes in and is
+# recognized using a cookie, the cookie age will be reset to the value defined
+# in cookieAuthMaxAgeInSeconds. If this setting is false, cookies will not be
+# renewed, and after the cookie expires the user will have to login again.
+# For a more natural behavior, it is best to set this setting to true and leave
+# the age in seconds to a value in days.
+cookieAuthRenewalActivated                             =   true
+
+######################################################################
+### Logoff Redirect ##################################################
+######################################################################
+# uncomment this to bypass the usual Jahia logout process and instead redirected the user after logout
+# to a URL of your choice
+#logoutRedirectUrl                                      =   http://www.acme.com/logoff.php
+
+# Uncomment this to perform a forward to the internal page or JSP (the URL is context related) after user logout.
+# This parameter is mutually exclusive with the previous one (logoutRedirectUrl).
+# It will be considered only if the previous one is not set.
+#logoutForwardUrl                                      =   /jsp/afterLogout.jsp
+
+# Jahia was always forwarding the new page URL after logout, but this
+# way the frontend HTML Container cache was not used. So the following
+# setting does a client side redirect on logout to make use of the caches
+# and save resources with not having to render the page after logout.
+doRedirectOnLogout                                     = true
+
+######################################################################
+### Scheduler config  ################################################
+######################################################################
+# Path to scheduler configuration. The scheduler is used notably for processing
+# background jobs such as the XML imports, workflow activation, etc.
+schedulerConfigFile                                    =   $context/WEB-INF/etc/config/quartz.properties
+ramSchedulerConfigFile                                 =   $context/WEB-INF/etc/config/quartz-ram.properties
+
+######################################################################
+### Default site #####################################################
+######################################################################
+# This setting is configured by Jahia, to know which is the default
+# site to display.
+defautSite                                             =
+
+######################################################################
+### Site serverName testing config ###################################
+######################################################################
+# The following configuration parameters mostly concern the generation of the
+# "Exit Administration" button in the administration console. The URL that is
+# generated to go back to a site needs to be tested first, in order to
+# determine if we should generate an URL using the site's serverName or if
+# we should generate an URL using the current host name used for accessing the
+# administration servlet.
+#
+# For example, if for a site we have :
+#    serverName="this.is.an.invalid.hostname",
+#    serverKey="myTestSite"
+# the following parameters will determine the URL that will be tested. So
+# if we have the default, Jahia will try to connect to :
+#    http://this.is.an.invalid.hostname:8080/jahia/jsp/isjahia.jsp
+# and use the connection timeout that we specify. If the connection fails,
+# the URL generated will be :
+#    http://localhost:8080/jahia/Jahia/site/myTestSite
+# The localhost:8080 part may be different if this is not what we are using
+# when connecting to the administration servlet. If we are connected to the
+# administration servlet with :
+#    http://127.0.0.1:7070/cms/administration
+# then the fallback URL for the "Exit Administration" would be :
+#    http://127.0.0.1:7070/cms/Jahia/site/myTestSite
+#
+# The siteServerNameTestURLExpr can access the following variables :
+#  "request" - an HttpServletRequest object
+#  "siteServerName" - a String that contains the siteServerName we want to
+# test.
+# Expressions always start with "${" and end with "}". The expression
+# language supported is JEXL. You can find more information about JEXL
+# here : http://jakarta.apache.org/commons/jexl/
+# Note : you can also change the name/location of the isjahia.jsp file. The
+# only thing this resource must do is set a header called "jahia-version" that
+# must be present for the siteServerName to be properly identified as a Jahia
+# server.
+siteServerNameTestURLExpr                              = ${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/jsp/isjahia.jsp
+# If you are using ESI caching, we cannot use the default port defined in
+# '${request.serverPort}' since this will resolve to Jahia's port instead
+# of the ESI server's port (or the load-balancer's port that forwards to a cluster
+# of ESI servers). Therefore, the '${request.serverPort}' string will be automatically
+# replaced by the first port defined in the esiServerPorts property
+# (defined above in "ESI fragment-based Output cache"). So be careful not to change
+# the '${request.serverPort}' string if you are using ESI caching.
+#
+# Instead of using absolute URLs (e.g. http://www.acme.com:8081/jahia/Jahia/site/mySite/pid/2)
+# for the "Exit Administration" button, as explained above, you can choose to generate
+# relative URLs (e.g. /jahia/Jahia/site/mySite/pid/2) by uncommenting the option below:
+# useRelativeSiteURLs                                   = true
+
+# Url used by jahia to make HTTP request to itself.
+#localAccessUri                                          = http\://localhost\:8080
+
+# Ip address of the server on the local network
+localIp                                                  =
+
+# The following parameter allows for configuration of the connection timeout
+# when testing with the above URL. Don't set this too high as the connection
+# will be attempted everytime an "Exit Administration" button is generated.
+# The timeout value is in milliseconds.
+siteServerNameTestConnectTimeout                       = 500
+
+# The siteURLPortOverride allows to force the generation of siteURLs to a
+# certain port. This will bypass the request.getServerPort() calls, the
+# esiPort x-forward-port request headers and everything else. If it is set
+# to 0, the port override is inactive, but any other positive value will force the
+# generation of the site URL (notably used in the Exit Administration button)
+# to use the port specified here. Be careful when setting this might cause
+# issues with cookies, or if you plan to access Jahia through multiple
+# front-end machines.
+siteURLPortOverride                                    = 0
+
+######################################################################
+### Cluster settings  ################################################
+######################################################################
+
+# Use this setting to activate most of the clustering communicating
+cluster.activated                                      = false
+
+# the serverId MUST be different for each node of the cluster.
+cluster.node.serverId                                  = jahiaServer1
+
+# The processingServer setting specifies whether this instance of Jahia
+# will execute long-running operations such as activation jobs, XML imports,
+# etc. In the current implementation only one cluster node may be a
+# processing server, while all others must have this settings to the
+# value "false".
+processingServer                                       =   true
+
+# The following settings may be changed in order to avoid conflicts with
+# existing multicast IP broadcasts on a network, or to change them to
+# address ranges that are properly routed by the network hardware. The
+# default values comply with the IANA address space
+# (http://www.iana.org/assignments/multicast-addresses).
+# Check out the assignement ranges to see if they may conflict with
+# something that might be present on your network.
+
+# Here a default configuration for UDP Clustering
+
+cluster.service.multicast.ip_address                   = 231.12.21.130
+cluster.service.multicast.port                         = 45000
+cluster.idgenerator.multicast.ip_address               = 231.12.21.150
+cluster.idgenerator.multicast.port                     = 45020
+cluster.esicontentids.multicast.ip_address             = 231.12.21.133
+cluster.esicontentids.multicast.port                   = 45021
+cluster.hibernate.multicast.ip_address                 = 231.12.21.134
+cluster.hibernate.multicast.port                       = 45050
+
+# Here a default configuration for TCP Clustering
+# You will have to comment the UDP configuration and uncomment the tcp ones int the
+# following files :
+#../spring/applicationcontext-dao.xml, ../spring/applicationcontext-hibernate.xml,
+# ../spring/applicationcontext-services.xml
+
+# The example below uses two-nodes cluster: 192.168.1.100 and 192.168.1.200
+# Current node is 192.168.1.100
+#
+# See http://localhost:8080/jahia/html/startup/howto_cluster.html for more details
+#
+## Here your local ip address
+cluster.tcp.start.ip_address                           =   192.168.1.100
+# Here the numbers of all members in the group
+cluster.tcp.num_initial_members                        =   2
+# Here the list of all members ip and port, and local port for each of the four channel
+cluster.tcp.service.nodes.ip_address                   =   192.168.1.100[7840],192.168.1.200[7840]
+cluster.tcp.service.port                               =   7840
+cluster.tcp.idgenerator.nodes.ip_address               =   192.168.1.100[7850],192.168.1.200[7850]
+cluster.tcp.idgenerator.port                           =   7850
+cluster.tcp.esicontentids.nodes.ip_address             =   192.168.1.100[7860],192.168.1.200[7860]
+cluster.tcp.esicontentids.port                         =   7860
+cluster.tcp.hibernate.nodes.ip_address                 =   192.168.1.100[7870],192.168.1.200[7870]
+cluster.tcp.hibernate.port                             =   7870
+
+# For clustered caches, we use batching to avoid sending individual
+# messages for each invalidation. Normally the messages are batched
+# by transaction, but we can also specify a limit that if reached
+# will send the batch anyway, in order to avoid consuming too much
+# memory as well as sending huge messages through the network.
+clusterCacheMaxBatchSize                               = 100000
+
+
+######################################################################
+### Workflow settings  ###############################################
+######################################################################
+# Do we use external (n-step) workflow by default?
+workflowUseExternalByDefault							= true
+# The following setting sets the maximum number of
+# notification emails to send when a workflow occurs. This
+# will limit spamming. Of course this means only a subset of
+# the users will actually be notified. As this might be a problem,
+# the second setting (workflowNotifyAdminOnMaxNotificationReached)
+# specifies whether the Jahia administrator should be notified
+# when this limit is reached.
+workflowMaxNotificationEmails                           = 20
+workflowNotifyAdminOnMaxNotificationReached             = true
+# The following setting configures the template used to build
+# the mail sent to the Jahia administrator if the maximum limit
+# of mails has been reached and if the maximum reached
+# notification setting is activated
+workflowMaxNotificationReachedTemplate                  = workflow_maxnotif.groovy
+# If set to 'true' the workflow status icons will also be displayed for pages with linked
+# workflow type.
+# This option does not apply to oter content objects (containers and container lists).
+# Workflow state icon for containers and container lists will only be shown in case they
+# have an independent worklfow type.    
+workflowDisplayStatusForLinkedPages                     = true
+
+######################################################################
+### Bigtext storage ##################################################
+######################################################################
+# This parameter selects the implementation of the big text storage
+# service, which either enables storage in database or in the file
+# system.
+# Note that you should not change this setting if you already have
+# content in your site as it will not automatically transfer content
+# between the database and the filesystem.
+bigtext.service                                         =
+
+######################################################################
+### Time-based publishing ############################################
+######################################################################
+# This setting can be used to de-activate the displaying of the
+# time-based publishing actions.
+showTimeBasedPublishingIcons                            = true
+
+######################################################################
+### Development Mode #################################################
+######################################################################
+# This setting can be used to deactivate development mode which flush
+# the html cache each time you change the operation mode (live/edit)
+developmentMode                                         = false
+
+######################################################################
+### Read-only Mode #################################################
+######################################################################
+# This setting can be used to activate read-only mode, which will not
+# display the edit/admin tabs and links in the top admin bar
+readOnlyMode                                            = false
+
+######################################################################
+### AES (Advanced Edition Settings) ##################################
+######################################################################
+# These settings control Javascript controls that are displayed on
+# pages. Each one of these will add additional features that will
+# slow-down page generation but show more information about the
+# current status of the page or the status of the server. The
+# default settings are a good balance between features and
+# performance.
+timebased_display                                       = false
+workflow_display                                        = true
+chat_display                                            = true
+process_display                                         = true
+aclDiff_display											= false
+
+# The following setting controls an inline edition feature that
+# allows users in edit mode to modify content directly in the HTML.
+# This is only available for smalltext and bigtext fields.
+inlineEditingActivated                                  = true
+######################################################################
+### Deprecated settings ##############################################
+######################################################################
+# The following settings are deprecated, and will be removed in a future
+# version of Jahia. We recommend you do not modify them, as it will either
+# have no effect or will have adverse effects.
+locksActivated                                          =  true
+### End of deprecated settings #######################################
+
+######################################################################
+### Wizard-inserted properties  ######################################
+######################################################################
+# The following settings were inserted into this file by the
+# configuration wizard and therefore are not documented.
+
+######################################################################
+### custom errorDocument site property  ##############################
+######################################################################
+# this setting enable specific error document pages for each site.
+# if you uncomment this setting, you need to create an errors directory
+# with your specific errorDocument jsp pages in the site directory first!
+#
+site.error.enabled 										= true
+
+######################################################################
+### Connection Timeout For Production Job ############################
+######################################################################
+# This setting allows you to specify the timeout for connecting this
+# jahia instance to a distant jahia when using production job
+# The settings is in milliseconds
+connectionTimeoutForProductionJob                           = 60000
+
+######################################################################
+### hibernate batch loading #######################################
+######################################################################
+# These parameters are used to enable or disable batch loading with hibernate.
+#
+batchLoadingEnabled	                                      = true
+batchLoadingSize		                              = 20
+
+######################################################################
+### container list pagination settings    ############################
+######################################################################
+#
+#
+preloadedItemsForPagination = 100
+
+######################################################################
+### select page engine view    #######################################
+######################################################################
+# Enable or disable the flat view of the Select page engine. If there
+# is a lot (>10'000) pages, the flat view should be disabled for
+# performance reasons. Use the AJAXed tree view instead.
+#
+enableSelectPageFlatView                                = true
+
+######################################################################
+### Session settings #################################################
+######################################################################
+# The editModeSessionTimeout variable controls the session timeout
+# (in seconds, not milliseconds !) for a user that has entered
+# edit mode, compare mode or preview mode. Jahia administrators are
+# encouraged to augment this value so that content editors may spend
+# more time editing a site without suffering from session timeouts.
+# At the same time, the default timeout for "regular" users could be
+# reduced to a lower value (by default 30 minutes on Tomcat) so that
+# less memory is used by session data. In Tomcat, the default session
+# setting is located in the tomcat/conf/web.xml file, under the tag
+# <session-timeout>.
+editModeSessionTimeout                                  = 1800
+
+######################################################################
+### User and Group name validation ###################################
+######################################################################
+# Pattern for the user name validation. The new user name will be
+# tested against this regular expression (see java.util.regex.Pattern)
+# pattern.
+userManagementUserNamePattern                           = [0-9a-z_A-Z\\-\\{\\}\\.@]+
+# Pattern for the user password validation. The new user password will be
+# tested against this regular expression (see java.util.regex.Pattern)
+# pattern.
+userManagementUserPasswordPattern                       = [0-9a-z_A-Z\\-\\{\\}\\.@]+
+# Pattern for the group name validation. The new group name will be
+# tested against this regular expression (see java.util.regex.Pattern)
+# pattern.
+userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
+
+######################################################################
+### Pdisplay #########################################################
+######################################################################
+# "Pdisplay" is a part of the top bar . It allows users with write ACL
+# on the page monitoring jobs. The folowing property allows to set the
+# refresh time value in in milliseconds. -1 means that pdisplay is
+# refreshed only "on mouseover".
+pdisplay.timer.refresh = 5000
+
+######################################################################
+### Nb Max Content Alias Name alloweded    ###########################
+######################################################################
+nbMaxContentAliasName = 10
+
+######################################################################
+### Portlets #########################################################
+######################################################################
+# the following parameter activates AJAX rendering of portlets. This
+# is available only for logged-in users and requires clients to
+# support Javascript.
+portletAJAXRenderingActivated = true
+
+######################################################################
+### Servlet response wrapper behavior control ########################
+######################################################################
+# The following setting controls whether a call to
+# ServletIncludeResponseWrapper.flushBuffer() will actually trigger
+# a buffer flush or not. The default behavior is to activate this,
+# and this settings might be deprecated in a later version of Jahia
+# if this control is not necessary, but we introduced it in order to
+# control this behavior at deployment time.
+wrapperBufferFlushingActivated = true
+# Controls whether the above behavior applies only to Jahia internally
+# or also for wrappers used around portlets.
+wrapperBufferFlushingAlsoForPortlets = true
+
+######################################################################
+### Google analytics settings ########################################
+######################################################################
+# This version of Jahia allows to make sites trackable by google
+# analytics, analytic data can be viewed in jahia in a window inten-
+# ded for this purpose.
+# To get data from the google analytics server, the site should have
+# a preregistered properties such as the gmail account and password
+# used when the google analyitcs account has been created.
+# The following setting controls whether the gmail password will be
+# exported when a site export is triggered.
+# By default, it is set to true, if turned to false then the password
+# will not be exported. Security conscious users might want to turn
+# this off.
+gmailPasswordExported = true

@@ -1,0 +1,638 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+package org.jahia.ajax.gwt.filemanagement.client.util.actions;
+
+import org.jahia.ajax.gwt.tripanelbrowser.client.BrowserLinker;
+import org.jahia.ajax.gwt.filemanagement.client.util.Resources;
+import org.jahia.ajax.gwt.filemanagement.client.util.JCRClientUtils;
+import com.extjs.gxt.ui.client.GXT;
+
+/**
+ * User: rfelden
+ * Date: 7 janv. 2009 - 14:04:14
+ */
+public class ManagerConfigurationFactory {
+
+    public static final String MANAGER_CONFIG = "conf" ;
+    public static final String FILEMANAGER = "filemanager" ;
+    public static final String MASHUPMANAGER = "mashupmanager" ;
+    public static final String FILEPICKER = "filepicker" ;
+    public static final String MASHUPPICKER = "mashuppicker" ;
+    public static final String COMPLETE = "complete" ;
+
+    public static ManagerConfiguration getConfiguration(String config, BrowserLinker linker) {
+        if (config != null) {
+            if (config.contains(FILEMANAGER)) {
+                return getFileManagerConfiguration(linker);
+            }
+            if (config.contains(MASHUPMANAGER)) {
+                return getMashupManagerConfiguration(linker);
+            }
+            if (config.contains(FILEPICKER)) {
+                return getFilePickerConfiguration(linker);
+            }
+            if (config.contains(MASHUPPICKER)) {
+                return getMashupPickerConfiguration(linker);
+            }
+            if (config.contains(COMPLETE)) {
+                return getCompleteManagerConfiguration(linker);
+            }
+        }
+        return getCompleteManagerConfiguration(linker) ;
+    }
+
+    public static ManagerConfiguration getCompleteManagerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration completeManagerConfig = new ManagerConfiguration() ;
+        completeManagerConfig.setEnableTextMenu(true);
+
+        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        file.addItem(newFolder);
+        completeManagerConfig.addItem(newFolder);
+        FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
+        file.addItem(newMashup);
+        completeManagerConfig.addItem(newMashup);
+        FileActionItem upload = ItemCreator.createUploadItem(linker);
+        file.addItem(upload) ;
+        completeManagerConfig.addItem(upload);
+        FileActionItem download = ItemCreator.createDownloadItem(linker);
+        file.addItem(download) ;
+        completeManagerConfig.addItem(download);
+        if (GXT.isIE) {
+            FileActionItem webFolder = ItemCreator.createWebfolderItem(linker);
+            file.addItem(webFolder) ;
+            completeManagerConfig.addItem(webFolder);
+        }
+        file.addItem(new FileActionItemSeparator());
+        completeManagerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem lock = ItemCreator.createLockItem(linker);
+        file.addItem(lock) ;
+        FileActionItem unlock = ItemCreator.createUnlockItem(linker);
+        file.addItem(unlock) ;
+        file.addItem(new FileActionItemSeparator());
+        FileActionItem zip = ItemCreator.createZipItem(linker);
+        file.addItem(zip) ;
+        FileActionItem unzip = ItemCreator.createUnzipItem(linker);
+        file.addItem(unzip) ;
+
+        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        edit.addItem(rename);
+        completeManagerConfig.addItem(rename);
+        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        completeManagerConfig.addItem(remove);
+        edit.addItem(new FileActionItemSeparator());
+        completeManagerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(copy);
+        completeManagerConfig.addItem(copy);
+        FileActionItem cut = ItemCreator.createCutItem(linker);
+        edit.addItem(cut);
+        completeManagerConfig.addItem(cut);
+        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        edit.addItem(paste);
+        completeManagerConfig.addItem(paste);
+
+        FileActionItemGroup remote = new FileActionItemGroup(Resources.getResource("fm_remoteMenu")) ;
+        FileActionItem mount = ItemCreator.createMountItem(linker);
+        remote.addItem(mount);
+        FileActionItem unmount = ItemCreator.createUnmountItem(linker);
+        remote.addItem(unmount);
+
+        FileActionItemGroup image = new FileActionItemGroup(Resources.getResource("fm_imageMenu")) ;
+        FileActionItem crop = ItemCreator.createCropItem(linker);
+        image.addItem(crop);
+        FileActionItem resize = ItemCreator.createResizeItem(linker);
+        image.addItem(resize) ;
+        FileActionItem rotate = ItemCreator.createRotateItem(linker);
+        image.addItem(rotate);
+
+        // add menus to the config as well
+        completeManagerConfig.addGroup(file);
+        completeManagerConfig.addGroup(edit);
+        completeManagerConfig.addGroup(remote);
+        completeManagerConfig.addGroup(image);
+
+        // no columns to add (default)
+
+        // show all repository
+        completeManagerConfig.addTab(JCRClientUtils.WEBSITE_REPOSITORY);
+        completeManagerConfig.addTab(JCRClientUtils.SHARED_REPOSITORY) ;
+        completeManagerConfig.addTab(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
+        completeManagerConfig.addTab(JCRClientUtils.MY_REPOSITORY) ;
+        completeManagerConfig.addTab(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
+        completeManagerConfig.addTab(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
+        completeManagerConfig.addTab(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
+        completeManagerConfig.addTab(JCRClientUtils.GLOBAL_REPOSITORY) ;
+
+        // show the current site (first) tab by default
+
+        // do not hide the left panel (default)
+
+        return completeManagerConfig ;
+    }
+
+    public static ManagerConfiguration getFileManagerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration fileManagerConfig = new ManagerConfiguration() ;
+        fileManagerConfig.setEnableTextMenu(true);
+
+        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        file.addItem(newFolder);
+        fileManagerConfig.addItem(newFolder);
+        FileActionItem upload = ItemCreator.createUploadItem(linker);
+        file.addItem(upload) ;
+        fileManagerConfig.addItem(upload);
+        FileActionItem download = ItemCreator.createDownloadItem(linker);
+        file.addItem(download) ;
+        fileManagerConfig.addItem(download);
+        if (GXT.isIE) {
+            FileActionItem webFolder = ItemCreator.createWebfolderItem(linker);
+            file.addItem(webFolder) ;
+            fileManagerConfig.addItem(webFolder);
+        }
+        file.addItem(new FileActionItemSeparator());
+        fileManagerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem lock = ItemCreator.createLockItem(linker);
+        file.addItem(lock) ;
+        FileActionItem unlock = ItemCreator.createUnlockItem(linker);
+        file.addItem(unlock) ;
+        file.addItem(new FileActionItemSeparator());
+        FileActionItem zip = ItemCreator.createZipItem(linker);
+        file.addItem(zip) ;
+        FileActionItem unzip = ItemCreator.createUnzipItem(linker);
+        file.addItem(unzip) ;
+
+        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        edit.addItem(rename);
+        fileManagerConfig.addItem(rename);
+        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        fileManagerConfig.addItem(remove);
+        edit.addItem(new FileActionItemSeparator());
+        fileManagerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(copy);
+        fileManagerConfig.addItem(copy);
+        FileActionItem cut = ItemCreator.createCutItem(linker);
+        edit.addItem(cut);
+        fileManagerConfig.addItem(cut);
+        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        edit.addItem(paste);
+        fileManagerConfig.addItem(paste);
+
+        FileActionItemGroup remote = new FileActionItemGroup(Resources.getResource("fm_remoteMenu")) ;
+        FileActionItem mount = ItemCreator.createMountItem(linker);
+        remote.addItem(mount);
+        FileActionItem unmount = ItemCreator.createUnmountItem(linker);
+        remote.addItem(unmount);
+
+        FileActionItemGroup image = new FileActionItemGroup(Resources.getResource("fm_imageMenu")) ;
+        FileActionItem crop = ItemCreator.createCropItem(linker);
+        image.addItem(crop);
+        FileActionItem resize = ItemCreator.createResizeItem(linker);
+        image.addItem(resize) ;
+        FileActionItem rotate = ItemCreator.createRotateItem(linker);
+        image.addItem(rotate);
+
+        // add menus to the config as well
+        fileManagerConfig.addGroup(file);
+        fileManagerConfig.addGroup(edit);
+        fileManagerConfig.addGroup(remote);
+        fileManagerConfig.addGroup(image);
+
+        // no columns to add (default)
+
+        // hide the mashup repository and the global repository
+        fileManagerConfig.addTab(JCRClientUtils.WEBSITE_REPOSITORY);
+        fileManagerConfig.addTab(JCRClientUtils.SHARED_REPOSITORY) ;
+        fileManagerConfig.addTab(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
+        fileManagerConfig.addTab(JCRClientUtils.MY_REPOSITORY) ;
+
+        // show the current site (first) tab by default
+
+        // do not hide the left panel (default)
+        fileManagerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
+
+        return fileManagerConfig ;
+    }
+
+    public static ManagerConfiguration getFilePickerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration filePickerConfig = new ManagerConfiguration() ;
+        filePickerConfig.setEnableTextMenu(false);
+
+        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        filePickerConfig.addItem(newFolder);
+        file.addItem(newFolder);
+        FileActionItem upload = ItemCreator.createUploadItem(linker);
+        filePickerConfig.addItem(upload);
+        file.addItem(upload);
+        filePickerConfig.addItem(new FileActionItemSeparator());
+
+        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        filePickerConfig.addItem(rename);
+        edit.addItem(rename);
+        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        filePickerConfig.addItem(remove);
+        edit.addItem(remove);
+        edit.addItem(new FileActionItemSeparator());
+        filePickerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        filePickerConfig.addItem(copy);
+        edit.addItem(copy);
+        FileActionItem cut = ItemCreator.createCutItem(linker);
+        filePickerConfig.addItem(cut);
+        edit.addItem(cut);
+        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        filePickerConfig.addItem(paste);
+        edit.addItem(paste);
+
+        // add menus to the config as well
+        filePickerConfig.addGroup(file);
+        filePickerConfig.addGroup(edit);
+
+        // no columns to add (default)
+
+        // no repository tabs
+
+        // show the current site (first) tab by default
+
+        // hide the left panel
+        filePickerConfig.setHideLeftPanel(true);
+        filePickerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
+
+        return filePickerConfig ;
+    }
+
+    public static ManagerConfiguration getMashupManagerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration mashupManagerConfig = new ManagerConfiguration() ;
+        mashupManagerConfig.setEnableTextMenu(true);
+
+        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        file.addItem(newFolder);
+        mashupManagerConfig.addItem(newFolder);
+        FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
+        file.addItem(newMashup);
+        mashupManagerConfig.addItem(newMashup);
+        mashupManagerConfig.addItem(new FileActionItemSeparator());
+
+        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        edit.addItem(rename);
+        mashupManagerConfig.addItem(rename);
+        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        mashupManagerConfig.addItem(remove);
+        edit.addItem(new FileActionItemSeparator());
+        mashupManagerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(copy);
+        mashupManagerConfig.addItem(copy);
+        FileActionItem cut = ItemCreator.createCutItem(linker);
+        edit.addItem(cut);
+        mashupManagerConfig.addItem(cut);
+        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        edit.addItem(paste);
+        mashupManagerConfig.addItem(paste);
+
+        // add menus to the config as well
+        mashupManagerConfig.addGroup(file);
+        mashupManagerConfig.addGroup(edit);
+
+        // no columns to add (default)
+
+        // show only the mashup repository
+        mashupManagerConfig.addTab(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
+        mashupManagerConfig.addTab(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
+        mashupManagerConfig.addTab(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
+
+        // show the mashup tab by default
+
+        // do not hide the left panel (default)
+
+        mashupManagerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
+        return mashupManagerConfig ;
+    }
+
+    public static ManagerConfiguration getMashupPickerConfiguration(final BrowserLinker linker) {
+        ManagerConfiguration mashupPickerConfig = new ManagerConfiguration() ;
+        mashupPickerConfig.setEnableTextMenu(false);
+
+        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
+        file.addItem(newFolder);
+        mashupPickerConfig.addItem(newFolder);
+        FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
+        file.addItem(newMashup);
+        mashupPickerConfig.addItem(newMashup);
+        mashupPickerConfig.addItem(new FileActionItemSeparator());
+
+        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItem rename = ItemCreator.createRenameItem(linker);
+        edit.addItem(rename);
+        mashupPickerConfig.addItem(rename);
+        FileActionItem remove = ItemCreator.createRemoveItem(linker);
+        edit.addItem(remove);
+        mashupPickerConfig.addItem(remove);
+        edit.addItem(new FileActionItemSeparator());
+        mashupPickerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem copy = ItemCreator.createCopyItem(linker);
+        edit.addItem(copy) ;
+        mashupPickerConfig.addItem(copy);
+        FileActionItem cut = ItemCreator.createCutItem(linker);
+        edit.addItem(cut) ;
+        mashupPickerConfig.addItem(cut);
+        FileActionItem paste = ItemCreator.createPasteItem(linker);
+        edit.addItem(paste) ;
+        mashupPickerConfig.addItem(paste);
+
+        // add menus to the config as well
+        mashupPickerConfig.addGroup(file);
+        mashupPickerConfig.addGroup(edit);
+
+        // only one column here : name
+        mashupPickerConfig.addColumn("name");
+
+        // no tab here
+//        mashupPickerConfig.addTab(JCRClientUtils.MASHUP_REPOSITORY);
+
+        // hide the left panel
+        mashupPickerConfig.setHideLeftPanel(true);
+
+        mashupPickerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
+        return mashupPickerConfig ;
+    }
+
+
+    /**
+     * Item creation methods
+     */
+    private static class ItemCreator {
+
+        private static FileActionItem createRotateItem(final BrowserLinker linker) {
+            FileActionItem rotate = new FileActionItem(Resources.getResource("fm_rotate"), "fm-rotate") {
+                public void onSelection() {
+                    FileActions.rotateImage(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && parentWritable && singleFile && isImage);
+                }
+            } ;
+            return rotate;
+        }
+
+        private static FileActionItem createCropItem(final BrowserLinker linker) {
+            FileActionItem crop = new FileActionItem(Resources.getResource("fm_crop"), "fm-crop") {
+                public void onSelection() {
+                    FileActions.cropImage(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && parentWritable && singleFile && isImage);
+                }
+            } ;
+            return crop;
+        }
+
+        private static FileActionItem createUnzipItem(final BrowserLinker linker) {
+            FileActionItem unzip = new FileActionItem(Resources.getResource("fm_unzip"), "fm-unzip") {
+                public void onSelection() {
+                    FileActions.unzip(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && parentWritable && singleFile && isZip);
+                }
+            } ;
+            return unzip;
+        }
+
+        private static FileActionItem createUnlockItem(final BrowserLinker linker) {
+            FileActionItem unlock = new FileActionItem(Resources.getResource("fm_unlock"), "fm-unlock") {
+                public void onSelection() {
+                    FileActions.lock(false, linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && lockable && writable);
+                }
+            } ;
+            return unlock;
+        }
+
+        private static FileActionItem createWebfolderItem(final BrowserLinker linker) {
+            FileActionItem webFolder = new FileActionItem(Resources.getResource("fm_webfolder"), "fm-webfolder") {
+                public void onSelection() {
+                    FileActions.openWebFolder(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection || tableSelection && singleFolder);
+                }
+            } ;
+            return webFolder;
+        }
+
+        private static FileActionItem createNewFolderItem(final BrowserLinker linker) {
+            FileActionItem newFolder = new FileActionItem(Resources.getResource("fm_newdir"), "fm-newfolder") {
+                public void onSelection() {
+                    FileActions.createFolder(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            } ;
+            return newFolder;
+        }
+
+        private static FileActionItem createCutItem(final BrowserLinker linker) {
+            FileActionItem cut = new FileActionItem(Resources.getResource("fm_cut"), "fm-cut") {
+                public void onSelection() {
+                    FileActions.cut(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && writable) ;
+                }
+            } ;
+            return cut;
+        }
+
+        private static FileActionItem createRemoveItem(final BrowserLinker linker) {
+            FileActionItem remove = new FileActionItem(Resources.getResource("fm_remove"), "fm-remove") {
+                public void onSelection() {
+                    FileActions.remove(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && writable && !isMount) ;
+                }
+            } ;
+            return remove;
+        }
+
+        private static FileActionItem createPasteItem(final BrowserLinker linker) {
+            FileActionItem paste = new FileActionItem(Resources.getResource("fm_paste"), "fm-paste") {
+                public void onSelection() {
+                    FileActions.paste(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed) ;
+                }
+            } ;
+            return paste;
+        }
+
+        private static FileActionItem createCopyItem(final BrowserLinker linker) {
+            FileActionItem copy = new FileActionItem(Resources.getResource("fm_copy"), "fm-copy") {
+                public void onSelection() {
+                    FileActions.copy(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection) ;
+                }
+            } ;
+            return copy;
+        }
+
+        private static FileActionItem createRenameItem(final BrowserLinker linker) {
+            FileActionItem rename = new FileActionItem(Resources.getResource("fm_rename"), "fm-rename") {
+                public void onSelection() {
+                    FileActions.rename(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && writable && (singleFile || singleFolder));
+                }
+            } ;
+            return rename;
+        }
+
+        private static FileActionItem createResizeItem(final BrowserLinker linker) {
+            FileActionItem resize = new FileActionItem(Resources.getResource("fm_resize"), "fm-resize") {
+                public void onSelection() {
+                    FileActions.resizeImage(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && parentWritable && singleFile && isImage);
+                }
+            } ;
+            return resize;
+        }
+
+        private static FileActionItem createMountItem(final BrowserLinker linker) {
+            FileActionItem mount = new FileActionItem(Resources.getResource("fm_mount"), "fm-mount") {
+                public void onSelection() {
+                    FileActions.mountFolder(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(true);
+                }
+            } ;
+            return mount;
+        }
+
+        private static FileActionItem createUnmountItem(final BrowserLinker linker) {
+            FileActionItem mount = new FileActionItem(Resources.getResource("fm_unmount"), "fm-unmount") {
+                public void onSelection() {
+                    FileActions.unmountFolder(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && writable && isMount);
+                }
+            } ;
+            return mount;
+        }
+
+        private static FileActionItem createZipItem(final BrowserLinker linker) {
+            FileActionItem zip = new FileActionItem(Resources.getResource("fm_zip"), "fm-zip") {
+                public void onSelection() {
+                    FileActions.zip(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && parentWritable);
+                }
+            } ;
+            return zip;
+        }
+
+        private static FileActionItem createLockItem(final BrowserLinker linker) {
+            FileActionItem lock = new FileActionItem(Resources.getResource("fm_lock"), "fm-lock") {
+                public void onSelection() {
+                    FileActions.lock(true, linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && lockable && writable);
+                }
+            } ;
+            return lock;
+        }
+
+        private static FileActionItem createDownloadItem(final BrowserLinker linker) {
+            FileActionItem download = new FileActionItem(Resources.getResource("fm_download"), "fm-download") {
+                public void onSelection() {
+                    FileActions.download(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && singleFile);
+                }
+            } ;
+            return download;
+        }
+
+        private static FileActionItem createUploadItem(final BrowserLinker linker) {
+            FileActionItem upload = new FileActionItem(Resources.getResource("fm_upload"), "fm-upload") {
+                public void onSelection() {
+                    FileActions.upload(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            } ;
+            return upload;
+        }
+
+        private static FileActionItem createNewMashupItem(final BrowserLinker linker) {
+            FileActionItem newMashup = new FileActionItem(Resources.getResource("fm_newmashup"), "fm-newmashup") {
+                public void onSelection() {
+                    FileActions.showMashupWizard(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            } ;
+            return newMashup;
+        }
+
+    }
+
+}

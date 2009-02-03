@@ -1,0 +1,16 @@
+<sandbox_web_templates = 'http://www.jahia.org/jahia/sandbox_web_templates/nt/1.0'>
+
+[sandbox_web_templates:home] > jnt:page
+
+[sandbox_web_templates:all] > jnt:page, web_templates:header, web_templates:footer
+containerList banner (web_templates:bannerContainer)
+containerList article (web_templates:articleContainer)
+containerList promoAdvanced (web_templates:promoAdvancedContainer)
+containerList news (web_templates:newsContainer)
+containerList people (jnt:peopleContainer)
+containerList press (web_templates:pressreleaseContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])
+
+[sandbox_web_templates:layoutManager] > jnt:page, web_templates:header, web_templates:footer
+containerList columnA_box (jnt:box [addMixin="jmix:skinnable,sandbox_templates:layoutmanagerBoxExtraFields", availableTypes="jnt:filesBox,jnt:textsBox,jnt:linksBox"])
+

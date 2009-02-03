@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>jackrabbit-ext</artifactId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jackrabbit-server-ext</artifactId>
+  <version>${jahia.package.version}</version>
+  <name>Jahia Jackrabbit Server extensions</name>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+        <groupId>jsr170</groupId>
+        <artifactId>jcr</artifactId>
+        <version>1.0</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-api</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-core</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-jcr-commons</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-text-extractors</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-webapp</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-jcr-rmi</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-webdav</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-jcr-server</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-spi</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-spi-commons</artifactId>
+        <version>${jackrabbit.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-api</artifactId>
+        <version>${jahia.package.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.15</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.3</version>
+      <scope>provided</scope>
+    </dependency>
+      
+  </dependencies>
+
+</project>

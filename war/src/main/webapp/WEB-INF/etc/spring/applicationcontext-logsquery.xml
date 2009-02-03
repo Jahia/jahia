@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+    <bean id="queryLastFirstPublishedContents" class="org.jahia.services.audit.LastFirstPublishedContent" singleton="false">
+        <property name="objectTypes">
+            <list>
+                <value type="java.lang.Integer">2</value><!-- containers -->
+                <value type="java.lang.Integer">4</value><!-- pages -->
+            </list>
+        </property>                    
+    </bean>
+    <bean id="queryLastFirstPublishedContainers" class="org.jahia.services.audit.LastFirstPublishedContent" singleton="false">
+        <property name="objectTypes">
+            <list>
+                <value type="java.lang.Integer">2</value>
+            </list>
+        </property>                    
+    </bean>
+    <bean id="queryLastFirstPublishedPages" class="org.jahia.services.audit.LastFirstPublishedContent" singleton="false">
+        <property name="objectTypes">
+            <list>
+                <value type="java.lang.Integer">4</value>
+            </list>
+        </property>                    
+    </bean>
+
+    <bean id="queryLastPublishedContents" class="org.jahia.services.audit.LastPublishedContent" singleton="false">
+        <property name="objectTypes">
+            <list>
+                <value type="java.lang.Integer">2</value><!-- containers -->
+                <value type="java.lang.Integer">4</value><!-- pages -->
+            </list>
+        </property>                    
+    </bean>
+
+    <bean id="queryLastPublishedContainers" class="org.jahia.services.audit.LastPublishedContent" singleton="false">
+        <property name="objectTypes">
+            <list>
+                <value type="java.lang.Integer">2</value><!-- containers -->
+            </list>
+        </property>                    
+    </bean>
+
+</beans>

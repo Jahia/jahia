@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!-- This is the migration script to move the Jahia project from Maven 1 to Maven 2.
+     At the same time as we change Maven versions, we also move things around to be 
+     more "Maven"-compliant.
+-->     
+<project name="MigrateToMaven2" default="migrate" basedir=".">
+
+    <!--  set global properties for this build  -->
+    <target name="init">
+
+        <!-- setup directories -->
+        <property name="maven1.jahia" value="${basedir}/../JAHIA-ANDROMEDA-BRANCH" />
+        <property name="maven1.esi" value="${basedir}/../esi_server" />
+        <property name="ant.corporate_portal_templates" value="${basedir}/../corporate_portal_templates" />
+        <property name="ant.corporate_portal_templates_v2" value="${basedir}/../corporate_portal_templates_v2" />
+        
+        <property name="maven2.root" value="${basedir}"/>
+        <property name="maven2.api" value="${maven2.root}/api" />
+        <property name="maven2.impl" value="${maven2.root}/impl" />
+        <property name="maven2.war" value="${maven2.root}/war" />
+        <property name="maven2.templates" value="${maven2.root}/templates" />
+        <property name="maven2.esi" value="${maven2.root}/esi" />
+                
+    </target>
+    
+    <target name="migrate-impl-java" depends="init">
+        <!-- First let's copy the source -->
+        <copy todir="${maven2.impl}/src/main/java">
+            <fileset dir="${maven1.jahia}/core/src/java">
+              <exclude name="**/*.bak"/>
+              <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="migrate-impl-resources" depends="init">
+        <copy todir="${maven2.impl}/src/main/resources">
+            <fileset dir="${maven1.jahia}/core/src/conf/java">
+              <exclude name="**/*.bak"/>
+              <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="migrate-webapp" depends="init">
+        <copy todir="${maven2.war}/src/main/webapp">
+            <fileset dir="${maven1.jahia}/core/src/webapp">
+              <exclude name="**/*.bak"/>
+              <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="migrate-apis" depends="init">
+        <!-- PUBLIC API -->
+        <copy todir="${maven2.api}/src/main/java">
+            <fileset dir="${maven1.jahia}/public-api/src/java">
+              <exclude name="**/*.bak"/>
+              <exclude name="**/.svn"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="migrate" depends="migrate-impl-java,migrate-impl-resources,migrate-webapp,migrate-apis">
+    
+    </target>
+    
+    <target name="reset" depends="init">
+    
+        <delete dir="${maven2.impl}/src/main/java" />
+        <delete dir="${maven2.impl}/src/main/resources" />
+        <delete dir="${maven2.war}/src/main/webapp" />
+        <delete dir="${maven2.api}/src/main/java" />
+        
+    </target>
+
+</project>

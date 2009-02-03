@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.workflow.nstep.model.WorkflowInstance"
+        table="jahia_nstep_workflowinstance"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+
+        <id
+            name="id"
+            column="id"
+            type="java.lang.Long"
+            unsaved-value="null"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-WorkflowInstance.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="authorEmail"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="authorEmail"
+            not-null="false"
+        />
+
+        <property
+            name="languageCode"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="languageCode"
+            not-null="true"
+        />
+
+        <property
+            name="objectKey"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="objectKey"
+            not-null="true"
+        />
+
+        <many-to-one
+            name="step"
+            class="org.jahia.workflow.nstep.model.WorkflowStep"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+            column="step"
+        />
+
+        <many-to-one
+            name="user"
+            class="org.jahia.workflow.nstep.model.User"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+            column="user_id"
+        />
+
+        <many-to-one
+            name="workflow"
+            class="org.jahia.workflow.nstep.model.Workflow"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+            column="workflow"
+        />
+
+        <property
+            name="startDate"
+            type="timestamp"
+            update="true"
+            insert="true"
+            access="property"
+            column="startDate"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-WorkflowInstance.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

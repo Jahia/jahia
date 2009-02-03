@@ -1,0 +1,133 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+ul.portletModes {
+	background: url(images/portlets/tabBorder.gif) repeat-x bottom;
+	color: #515C6A;
+	float: right;
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+ul.portletModes li {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	float:left;
+}
+ul.portletModes a,
+ul.portletModes a:link,
+ul.portletModes a:visited {
+	background: url(images/portlets/tabRight.gif) no-repeat right top;
+	text-decoration: none;
+	display:block;
+	color:#bababa;
+}
+
+ul.portletModes a:hover,
+ul.portletModes a:active,
+ul.portletModes .current a,
+ul.portletModes .current a:link,
+ul.portletModes .current a:visited,
+ul.portletModes .current a:hover,
+ul.portletModes .current a:active {
+	background-position: 100% -26px;
+	color:#515c6a;
+}
+
+ul.portletModes span {
+	background: url(images/portlets/tabLeft.gif) no-repeat left top;
+	display:block;
+	padding:2px 5px;
+	border-bottom:1px solid #515c6a
+}
+ul.portletModes span:hover,
+ul.portletModes .current span {
+	background-position: 0% -26px;
+}
+
+ul.windowStates {
+	background: url(images/portlets/tabBorder.gif) repeat-x bottom;
+	color: #515C6A;
+	float: right;
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+ul.windowStates a {
+	background: url(images/portlets/windowStates.gif) no-repeat left top;
+	border-bottom: 1px solid #515C6A;
+	float: left;
+	height: 14px;
+	margin-right: 2px;
+	text-decoration: none;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	width:17px;
+	z-index: 1;
+}
+
+ul.windowStates a span {
+    display:none;
+}
+
+ul.windowStates a.maximized {
+	background-image: url(images/portlets/windowStates_maximized.gif);
+}
+
+ul.windowStates a.minimized {
+	background-image: url(images/portlets/windowStates_minimized.gif);
+}
+
+ul.windowStates a.normal {
+	background-image: url(images/portlets/windowStates_normal.gif);
+}
+
+ul.windowStates a:hover {
+	background-position: 0% -15px;
+}
+ul.windowStates li {
+	display: inline;
+	margin: 0px;
+	padding: 0px;
+}
+
+ul.windowStates li.current a {
+	display: none;
+}
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+ul.windowStates div {
+	float: none;
+}
+/* End IE5-Mac hack */

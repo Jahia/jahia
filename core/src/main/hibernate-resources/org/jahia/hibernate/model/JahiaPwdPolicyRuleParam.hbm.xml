@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam"
+        table="jahia_pwd_policy_rule_params"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="jahia_pwd_policy_rule_param_id"
+            type="int"
+            unsaved-value="0"
+        >
+            <generator class="org.jahia.hibernate.dao.JahiaIdentifierGenerator">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaPwdPolicyRuleParam.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="name"
+            type="string"
+            update="true"
+            insert="true"
+            access="property"
+            column="name"
+            length="50"
+            not-null="true"
+        />
+
+        <property
+            name="position"
+            type="int"
+            update="true"
+            insert="true"
+            access="property"
+            column="position_index"
+            not-null="true"
+        />
+
+        <many-to-one
+            name="rule"
+            class="org.jahia.hibernate.model.JahiaPwdPolicyRule"
+            cascade="none"
+            outer-join="false"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahia_pwd_policy_rule_id"
+            not-null="true"
+        />
+
+        <property
+            name="type"
+            type="char"
+            update="true"
+            insert="true"
+            access="property"
+            column="type"
+            not-null="true"
+        />
+
+        <property
+            name="value"
+            type="string"
+            update="true"
+            insert="true"
+            access="property"
+            column="value"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaPwdPolicyRuleParam.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaXRef"
+        table="jahia_reference"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaXRefPK"
+        >
+                     <key-property
+                        name="pageId"
+                        type="java.lang.Integer"
+                        column="page_id"
+                        length="11"
+                />
+
+                     <key-property
+                        name="refId"
+                        type="java.lang.Integer"
+                        column="ref_id"
+                        length="11"
+                />
+
+                     <key-property
+                        name="refType"
+                        type="java.lang.Integer"
+                        column="ref_type"
+                        length="11"
+                />
+
+        </composite-id>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaXRef.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

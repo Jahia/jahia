@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jahia-root</artifactId>
+  <name>Jahia Project Root</name>
+  <groupId>org.jahia.server</groupId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <inceptionYear>2004</inceptionYear>
+  <!--logo>/images/jahia.gif</logo-->
+
+  <description>Jahia Full Package</description>
+  
+  <properties>
+    <pluto.version>2.0.0-RI</pluto.version>
+    <spring.version>2.5.5</spring.version>
+    <jackrabbit.version>1.5.0</jackrabbit.version>
+    <lucene.version>2.3.2</lucene.version>    
+    <jahia.package.version>6.0-SNAPSHOT</jahia.package.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>jahiaRepository</id>
+      <name>Jahia's Maven Repository</name>
+      <url>http://maven.jahia.org/maven2</url>
+    </repository>
+  </repositories>  
+
+  <modules>
+    <module>maven-jahia-plugin</module>
+    <module>archetypes</module>
+    <module>public-api</module>
+    <module>bridges</module>
+    <module>taglib</module>
+    <module>jackrabbit-ext</module>
+    <module>core</module>
+    <module>gwt</module>
+    <module>templates</module>
+    <module>war</module>
+    <module>ear</module>
+  </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>jahiaRepository</id>
+            <url>scpexe://maven.jahia.org/var/www/vhosts/maven.jahia.org/html/maven2</url>
+        </repository>
+    </distributionManagement>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- put your configurations here -->
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

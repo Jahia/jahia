@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaFieldsData"
+        table="jahia_fields_data"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaFieldsDataPK"
+        >
+                     <key-property
+                        name="id"
+                        type="java.lang.Integer"
+                        column="id_jahia_fields_data"
+                        length="11"
+                />
+
+                     <key-property
+                        name="versionId"
+                        type="java.lang.Integer"
+                        column="version_id"
+                        length="11"
+                />
+
+                     <key-property
+                        name="workflowState"
+                        type="java.lang.Integer"
+                        column="workflow_state"
+                        length="11"
+                />
+
+                     <key-property
+                        name="languageCode"
+                        type="java.lang.String"
+                        column="language_code"
+                        length="10"
+                />
+
+        </composite-id>
+
+        <property
+            name="connectType"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="connecttype_jahia_fields_data"
+            length="11"
+        />
+
+        <property
+            name="containerId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="ctnid_jahia_fields_data"
+            length="11"
+        />
+
+        <many-to-one
+            name="fieldDefinition"
+            class="org.jahia.hibernate.model.JahiaFieldsDef"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+        >
+            <column
+                name="fielddefid_jahia_fields_data" 
+            />
+        </many-to-one>
+
+        <property
+            name="metadataOwnerId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="id_jahia_obj"
+        />
+
+        <property
+            name="metadataOwnerType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="type_jahia_obj"
+            length="22"
+        />
+
+        <property
+            name="jahiaAclId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="rights_jahia_fields_data"
+        />
+
+        <property
+            name="pageId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="pageid_jahia_fields_data"
+        />
+
+        <property
+            name="siteId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahiaid_jahia_fields_data"
+        />
+
+        <property
+            name="type"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="type_jahia_fields_data"
+            length="11"
+        />
+
+        <property
+            name="value"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="value_jahia_fields_data"
+            length="250"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaFieldsData.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

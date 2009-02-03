@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<weblogic-application xmlns="http://www.bea.com/ns/weblogic/90" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <prefer-application-packages>
+        <package-name>org.apache.xerces.*</package-name>
+        <package-name>org.apache.xalan.*</package-name>
+        <package-name>org.apache.oro.*</package-name>
+        <package-name>org.apache.commons.*</package-name>
+        <package-name>org.apache.log4j.*</package-name>
+        <package-name>org.apache.axis.transport.http.*</package-name>
+        <package-name>org.jdom.xpath.*</package-name>
+    </prefer-application-packages>
+
+</weblogic-application> 

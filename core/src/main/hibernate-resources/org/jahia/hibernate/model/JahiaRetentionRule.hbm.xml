@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaRetentionRule"
+        table="jahia_retrule"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id_jahia_retrule"
+            type="java.lang.Integer"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaRetentionRule.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <many-to-one
+            name="retentionRuleDef"
+            class="org.jahia.hibernate.model.JahiaRetentionRuleDef"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+        >
+            <column
+                name="id_jahia_retruledef" 
+            />
+        </many-to-one>
+
+        <property
+            name="inherited"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="inherited_retrule"
+        />
+
+        <property
+            name="enabled"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="enabled_retrule"
+        />
+
+        <property
+            name="title"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="title_retrule"
+        />
+
+        <property
+            name="comment"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="comment_retrule"
+        />
+
+        <property
+            name="shared"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="shared_retrule"
+        />
+
+        <property
+            name="settings"
+            type="text"
+            update="true"
+            insert="true"
+            access="property"
+            column="settings_retrule"
+            length="16777216"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaRetentionRule.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+        <joined-subclass
+            name="org.jahia.hibernate.model.JahiaRangeRetentionRule"
+            table="jahia_retrule_range"
+            dynamic-update="false"
+            dynamic-insert="false"
+        >
+        <key
+            column="id_retrule_range"
+        />
+        <property
+            name="validFromDate"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            access="property"
+            column="validfrom_retrule_range"
+        />
+
+        <property
+            name="validToDate"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            access="property"
+            column="validto_retrule_range"
+        />
+
+        <property
+            name="notifiedValidFromDate"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="notiffromd_retrule_range"
+        />
+
+        <property
+            name="notifiedValidToDate"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="notiftod_retrule_range"
+        />
+
+        </joined-subclass>
+
+    </class>
+
+</hibernate-mapping>

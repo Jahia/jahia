@@ -1,0 +1,19 @@
+<%@ include file="../../common/declarations.jspf" %>
+<template:containerList name="paragraph" id="paragraph" actionMenuNamePostFix="paragraph"
+                        actionMenuNameLabelKey="paragraph.update">
+    <template:container id="paragraphContent">
+        <h3><template:field name='mainContentTitle' /></h3>
+        <div class='<template:field name="insertType"/>-top float<template:field name="insertPosition"/>' style='width:<template:field name="insertWidth"/>px'>
+
+            <div class="<template:field name="insertType"/>-bottom">
+                <template:field name='insertText' />
+            </div>
+        </div>
+        <template:field name='mainContentAlign' valueBeanID="mainContentAlign" display="false"/>
+        <div class="float${mainContentAlign.defaultValue}"><template:image file="mainContentImage"/></div>
+        <div>
+            <template:field name="mainContentBody"/>
+        </div>
+        <div class="clear"></div>
+    </template:container>
+</template:containerList>

@@ -1,0 +1,428 @@
+/**
+ * ====
+ *     
+ *     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ *     Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ *     
+ *     This program is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU General Public License
+ *     as published by the Free Software Foundation; either version 2
+ *     of the License, or (at your option) any later version.
+ *     
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
+ *     
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program; if not, write to the Free Software
+ *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *     
+ *     As a special exception to the terms and conditions of version 2.0 of
+ *     the GPL (or any later version), you may redistribute this Program in connection
+ *     with Free/Libre and Open Source Software ("FLOSS") applications as described
+ *     in Jahia's FLOSS exception. You should have received a copy of the text
+ *     describing the FLOSS exception, and it is also available here:
+ *     http://www.jahia.com/license
+ *     
+ *     Commercial and Supported Versions of the program
+ *     Alternatively, commercial and supported versions of the program may be used
+ *     in accordance with the terms contained in a separate written agreement
+ *     between you and Jahia Limited. If you are unsure which license is appropriate
+ *     for your use, please contact the sales department at sales@jahia.com.
+ * ====
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license"
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+package org.apache.jackrabbit.core.security;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jcr.AccessDeniedException;
+import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.security.auth.Subject;
+
+import org.apache.jackrabbit.core.HierarchyManager;
+import org.apache.jackrabbit.core.ItemId;
+import org.apache.jackrabbit.core.PropertyId;
+import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
+import org.apache.jackrabbit.core.security.authorization.Permission;
+import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
+import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.Path;
+import org.apache.jackrabbit.spi.commons.conversion.DefaultNamePathResolver;
+import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
+import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
+import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
+import org.jahia.api.Constants;
+import org.jahia.api.user.JahiaUserService;
+import org.jahia.jaas.JahiaPrincipal;
+
+/**
+ *
+ * Current ACL policy :
+ *
+ * - If there is a grant ACE defined for the user matching the permission, grant access
+ * - If there is a deny ACE defined for the user matching the permission, deny access
+ * - Go to parent node, repeat
+ * - Then, start again from the leaf
+ * - If there are at least one grant ACEs defined for groups the user belongs to, grant access
+ * - Go to the parent node, repeat
+ * - Deny access
+ *
+ * Created by IntelliJ IDEA.
+ * User: toto
+ * Date: 28 févr. 2006
+ * Time: 17:58:41
+ * To change this template use File | Settings | File Templates.
+ */
+public class JahiaAccessManager implements AccessManager {
+    /**
+     * Subject whose access rights this AccessManager should reflect
+     */
+    protected Subject subject;
+
+    private static Repository repository;
+    private static JahiaUserService userservice;
+
+    /**
+     * hierarchy manager used for ACL-based access control model
+     */
+    protected HierarchyManager hierMgr;
+    private WorkspaceAccessManager wspAccessMgr;
+    private AccessControlProvider acProviderMgr;
+    private boolean initialized;
+    protected String workspaceName;
+
+    protected JahiaPrincipal p;
+
+    private Map<String,Integer> permissions;
+
+    /**
+     * Empty constructor
+     */
+    public JahiaAccessManager() {
+        initialized = false;
+        p = null;
+    }
+
+    public void init(AMContext amContext) throws AccessDeniedException, Exception {
+        init(amContext, null, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void init(AMContext context, AccessControlProvider acProvider, WorkspaceAccessManager wspAccessManager) throws AccessDeniedException, Exception {
+        if (initialized) {
+            throw new IllegalStateException("already initialized");
+        }
+//        super.init(context, acProvider, wspAccessManager);
+
+        subject = context.getSubject();
+        hierMgr = context.getHierarchyManager();
+        workspaceName = context.getWorkspaceName();
+
+        Set principals = subject.getPrincipals(JahiaPrincipal.class);
+        if (!principals.isEmpty()) {
+            p = (JahiaPrincipal) principals.iterator().next();
+        }
+
+        permissions = new HashMap<String,Integer>();
+        permissions.put("jcr:read", Permission.READ);
+        permissions.put("jcr:setProperties", Permission.SET_PROPERTY);
+        permissions.put("jcr:addChildNodes", Permission.ADD_NODE);
+        permissions.put("jcr:removeChildNodes", Permission.REMOVE_NODE);
+        permissions.put("jcr:write", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE);
+        permissions.put("jcr:getAccessControlPolicy", Permission.READ);
+        permissions.put("jcr:setAccessControlPolicy", Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY);
+        permissions.put("jcr:all", Permission.READ + Permission.SET_PROPERTY + Permission.REMOVE_PROPERTY + Permission.ADD_NODE + Permission.REMOVE_NODE);
+
+    }
+
+    public void close() throws Exception {
+    }
+
+    public void checkPermission(ItemId id, int permissions) throws AccessDeniedException, ItemNotFoundException, RepositoryException {
+        if (!isGranted(id, permissions)) {
+            throw new AccessDeniedException("Not sufficient privileges for permissions : " + permissions + " on " + id);
+        }
+    }
+
+    public boolean isGranted(ItemId id, int actions) throws ItemNotFoundException, RepositoryException {
+        int perm = 0;
+        if ((actions & READ) == READ) {
+            perm |= Permission.READ;
+        }
+        if ((actions & WRITE) == WRITE) {
+            if (id.denotesNode()) {
+                // TODO: check again if correct
+                perm |= Permission.SET_PROPERTY;
+                perm |= Permission.ADD_NODE;
+            } else {
+                perm |= Permission.SET_PROPERTY;
+            }
+        }
+        if ((actions & REMOVE) == REMOVE) {
+            perm |= (id.denotesNode()) ? Permission.REMOVE_NODE : Permission.REMOVE_PROPERTY;
+        }
+        Path path = hierMgr.getPath(id);
+        return isGranted(path, perm);
+    }
+
+
+    public boolean isGranted(Path absPath, int permissions) throws RepositoryException {
+        if (p.isSystem()) {
+            return true;
+        }
+
+        Session s = null;
+        try {
+            s = getRepository().login(org.jahia.jaas.JahiaLoginModule.getSystemCredentials());
+            NamespaceResolver nr = new SessionNamespaceResolver(s);
+
+            PathResolver pr = new DefaultNamePathResolver(nr);
+            String jcrPath = pr.getJCRPath(absPath);
+
+            // Always deny write access on system folders
+            if (s.itemExists(jcrPath)) {
+                Item i = s.getItem(jcrPath);
+                if (i.isNode() && permissions != Permission.READ) {
+                    String ntName = ((Node) i).getPrimaryNodeType().getName();
+                    if (ntName.equals(Constants.JAHIANT_SYSTEMFOLDER) || ntName.equals("rep:root")) {
+                        return false;
+                    }
+                }
+            }
+
+            JahiaUserService service = getJahiaUserService();
+
+            // Administrators are always granted
+            if (service.isServerAdmin(p.getName())) {
+                return true;
+            }
+
+            String site = null;
+            
+            int depth = 1;
+            while (!s.itemExists(jcrPath)) {
+                jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
+            }
+
+            Item i = s.getItem(jcrPath);
+            try {
+                while ( !i.isNode() || !((Node)i).isNodeType("jnt:virtualsite") ) {
+                    i = i.getParent();
+                }
+                site = i.getName();
+            } catch (ItemNotFoundException e) {
+            }
+
+            if (service.isAdmin(p.getName(),site)) {
+                return true;
+            }
+
+            return recurseonACPs(jcrPath, s, permissions, site, service);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (s != null) {
+                s.logout();
+            }
+        }
+        return true;
+    }
+
+    public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {
+//        Path p = PathFactoryImpl.getInstance().create(parentPath, childName, true);
+        // check on parent
+        return isGranted(parentPath, permissions);
+    }
+
+    public boolean canRead(Path path) throws RepositoryException {
+        return isGranted(path, Permission.READ);
+    }
+
+    /**
+     * @see AccessManager#canAccess(String)
+     */
+    public boolean canAccess(String workspaceName) throws RepositoryException {
+        return true;
+    }
+
+
+    private Path getPath(ItemId id) throws RepositoryException {
+        Path path = null;
+        try {
+            // Get the path of the node
+            path = hierMgr.getPath(id);
+        } catch (ItemNotFoundException e) {
+            // This might be a property, get the path of the parent node
+            if (!id.denotesNode()) {
+                id = ((PropertyId)id).getParentId();
+                try {
+                    path = hierMgr.getPath(id);
+                } catch (ItemNotFoundException e1) {
+                }
+            }
+        }
+        return path;
+    }
+
+    private boolean recurseonACPs(String jcrPath, Session s, int permissions, String site, JahiaUserService service) throws RepositoryException  {
+        boolean result = false;
+        Set groups = new HashSet();
+        while (jcrPath.length() > 0) {
+            if (s.itemExists(jcrPath)) {
+                Item i = s.getItem(jcrPath);
+                if (i.isNode()) {
+                    Node node = (Node) i;
+                    if (node.isNodeType("mix:accessControlled")) {
+                        // Old JCR-2 specifications
+                        Node acp = node.getProperty("jcr:accessControlPolicy").getNode();
+                        NodeIterator aces = acp.getNode("jcr:acl").getNodes("jcr:ace");
+
+                        while (aces.hasNext()) {
+                            Node ace = aces.nextNode();
+                            String principal = ace.getProperty("jcr:principal").getString();
+                            String type = ace.getProperty("jcr:aceType").getString();
+                            Value[] privileges = ace.getProperty("jcr:privileges").getValues();
+                            for (int j = 0; j < privileges.length; j++) {
+                                Value privilege = privileges[j];
+                                if (match(permissions, privilege.getString())) {
+                                    String principalName = principal.substring(2);
+                                    if (principal.charAt(0) == 'u') {
+                                        if (principalName.equals(p.getName())) {
+                                            return type.equals("GRANT");
+                                        }
+                                    } else {
+                                        if (principalName.equals("guest") || !p.isGuest() && service.isUserMemberOf(p.getName(), principalName, site)) {
+                                            if (!groups.contains(principalName)) {
+                                                result |= type.equals("GRANT");
+                                                groups.add(principalName);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else if (node.hasNode("j:acl")) {
+                        // Jahia specific ACL
+                        Node acl = node.getNode("j:acl");
+                        NodeIterator aces = acl.getNodes("j:ace");
+
+                        while (aces.hasNext()) {
+                            Node ace = aces.nextNode();
+                            String principal = ace.getProperty("j:principal").getString();
+                            String type = ace.getProperty("j:aceType").getString();
+                            Value[] privileges = ace.getProperty("j:privileges").getValues();
+                            for (int j = 0; j < privileges.length; j++) {
+                                Value privilege = privileges[j];
+                                if (match(permissions, privilege.getString())) {
+                                    String principalName = principal.substring(2);
+                                    if (principal.charAt(0) == 'u') {
+                                        if (principalName.equals(p.getName())) {
+                                            return type.equals("GRANT");
+                                        }
+                                    } else {
+                                        if (principalName.equals("guest") || !p.isGuest() && service.isUserMemberOf(p.getName(), principalName, site)) {
+                                            if (!groups.contains(principalName)) {
+                                                result |= type.equals("GRANT");
+                                                groups.add(principalName);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
+                            return result;
+                        }
+                    }
+                }
+                if ("/".equals(jcrPath)) {
+                    return result;
+                } else if (jcrPath.lastIndexOf('/') > 0) {
+                    jcrPath = jcrPath.substring(0,jcrPath.lastIndexOf('/'));
+                } else {
+                    jcrPath = "/";
+                }
+            }
+        }
+        return result;
+    }
+
+
+    public boolean match(int permission, String privilege) {
+        return (permissions.get(privilege) & permission) != 0; 
+    }
+
+    public static synchronized Repository getRepository() throws NamingException {
+        if (repository == null) {
+            String repName = "jcr/repository";
+            Hashtable env = new Hashtable();
+            InitialContext initctx = new InitialContext(env);
+            Context ctx = (Context) initctx.lookup("java:comp/env");
+            repository =  (Repository) ctx.lookup(repName);
+        }
+        return repository;
+    }
+
+    public static synchronized JahiaUserService getJahiaUserService() throws NamingException {
+        if (userservice == null) {
+            String serviceName = "jahia/users";
+            Hashtable env = new Hashtable();
+            InitialContext initctx = new InitialContext(env);
+            try {
+                Context ctx = (Context) initctx.lookup("java:comp/env");
+                userservice = (JahiaUserService) ctx.lookup(serviceName);
+            } catch (NamingException e) {
+                userservice = (JahiaUserService) initctx.lookup("java:jahia/users");
+            }
+        }
+        return userservice;
+    }
+}

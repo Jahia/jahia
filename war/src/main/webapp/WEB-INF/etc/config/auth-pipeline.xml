@@ -1,0 +1,44 @@
+<!--
+Copyright 2004 The Apache Software Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<pipelineDescriptor>
+  <name>AuthPipeline</name>
+  <valveDescriptors>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.HttpBasicAuthValveImpl</className>
+    </valveDescriptor>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.TokenAuthValveImpl</className>
+    </valveDescriptor>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.LoginEngineAuthValveImpl</className>
+    </valveDescriptor>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.UserAliasingEngineAuthValveImpl</className>
+    </valveDescriptor>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.SessionAuthValveImpl</className>
+    </valveDescriptor>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.CookieAuthValveImpl</className>
+    </valveDescriptor>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.ContainerAuthValveImpl</className>
+    </valveDescriptor>
+    <valveDescriptor>
+      <className>org.jahia.params.valves.JCIFSAuthValveImpl</className>
+    </valveDescriptor>
+  </valveDescriptors>
+</pipelineDescriptor>

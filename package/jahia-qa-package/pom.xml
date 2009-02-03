@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>jahia-package</artifactId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jahia-qa-package</artifactId>
+  <version>${jahia.package.version}</version>
+  <name>Jahia QA Package</name>
+  <packaging>pom</packaging>
+    <modules>
+    <module>qa-1</module>
+    <module>qa-2</module> 
+   <module>qa-4</module>
+
+  </modules>
+  
+  <build>
+	        <plugins>
+      <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <exec executable="/home/bamboo/bin/runall.sh" dir="/home/bamboo/bin">
+								</exec>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>            
+
+		</plugins>
+  </build>
+
+
+  
+</project>

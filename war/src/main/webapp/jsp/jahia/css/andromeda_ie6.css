@@ -1,0 +1,146 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+.dex-TabBarItem-wrapper li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: block;
+  display: inline;
+   margin-right: 2px;
+}
+
+.set-server {
+  background: url(images/andromeda/iconSet-server.gif) no-repeat;
+}
+.set-server-disabled {
+  background: url(images/andromeda/iconSet-server-grey.gif) no-repeat;
+}
+
+.ico-server-site {
+  background-position: 4px -286px;
+}
+
+.ico-server-info {
+  background-position: 4px 2px;
+}
+
+.ico-server-component {
+  background-position: 4px -94px;
+}
+
+.ico-server-category {
+  background-position: 4px -46px;
+}
+
+.ico-server-setting {
+  background-position: 4px -335px;
+}
+
+.ico-server-log {
+  background-position: 4px -238px;
+}
+
+.ico-server-admin {
+  background-position: 4px -190px;
+}
+
+.ico-server-cache {
+  background-position: 4px -430px;
+}
+
+.ico-server-permissions {
+  background-position: 4px -479px;
+}
+
+.ico-server-password {
+  background-position: 4px -383px;
+}
+
+.ico-server-patch {
+  background-position: 4px -144px;
+}
+
+.ico-server-stats {
+  background-position: 4px -526px;
+}
+
+.set-site {
+  background: url(images/andromeda/iconSet-site.gif) no-repeat;
+}
+.set-site-disabled {
+  background: url(images/andromeda/iconSet-site-grey.gif) no-repeat;
+}
+.ico-site-page {
+  background-position: 4px 2px;
+}
+
+.ico-site-user {
+  background-position: 4px -47px;
+}
+
+.ico-site-group {
+  background-position: 4px -93px;
+}
+
+.ico-site-template {
+  background-position: 4px -143px;
+}
+
+.ico-site-search {
+  background-position: 4px -191px;
+}
+
+.ico-site-lang {
+  background-position: 4px -287px;
+}
+
+.ico-site-export {
+  background-position: 4px -334px;
+}
+
+.ico-site-clip {
+  background-position: 4px -382px;
+}
+
+.ico-site-permission {
+  background-position: 4px -430px;
+}
+
+.ico-site-html {
+  background-position: 4px -476px;
+}
+
+.ico-site-integrity {
+  background-position: 4px -525px;
+}

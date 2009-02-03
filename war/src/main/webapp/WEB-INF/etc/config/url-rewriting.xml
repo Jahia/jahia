@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<rewrite-rules>
+  <!-- This file allows the definition of URL rewriting rules.
+       For the moment it is only use in the parsing of URLs in
+       bigtext field to resolve URLs that have been copy&
+       pasted from a Jahia site that uses some sort of URL
+       rewriting
+  -->
+  <!--
+  <rule class="org.jahia.services.urlrewriting.RegexpRewriteRule">
+    <original-from-rewritten>
+      <property name="regexp" value="^(.*?)/page"/>
+      <property name="subst" value="$1"/>
+    </original-from-rewritten>
+    <rewritten-from-original>
+      <property name="regexp" value=""/>
+      <property name="subst" value=""/>
+    </rewritten-from-original>
+  </rule>
+  -->
+</rewrite-rules>

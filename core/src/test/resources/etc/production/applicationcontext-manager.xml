@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+    
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license"
+    
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+
+-->
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+    <!--    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">-->
+    <!--        <property name="location">-->
+    <!--            <value>classpath:jdbc.properties</value>-->
+    <!--        </property>-->
+    <!--    </bean>-->
+
+    <!-- Transaction template for Managers, from:
+         http://blog.exis.com/colin/archives/2004/07/31/concise-transaction-definitions-spring-11/ -->
+   <bean id="txProxyTemplate" abstract="true"
+       class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+       <property name="transactionManager">
+           <ref bean="transactionManager"/>
+       </property>
+       <property name="frozen">
+           <value>true</value>
+       </property>
+       <property name="optimize">
+           <value>true</value>
+       </property>
+       <property name="proxyTargetClass">
+           <value>true</value>
+       </property>
+       <property name="transactionAttributes">
+           <props>
+               <prop key="*">PROPAGATION_SUPPORTS,+ObjectRetrievalFailureException</prop>
+               <prop key="save*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="create*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="backup*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="delete*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="remove*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="update*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="acquire*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="release*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="purge*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+               <prop key="activate*">PROPAGATION_REQUIRED,ISOLATION_READ_COMMITTED,+ObjectRetrievalFailureException</prop>
+           </props>
+       </property>
+   </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaSiteManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaSiteManager">
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaSitePropertyManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaSitePropertyManager">
+                <property name="jahiaSitePropertyDAO">
+                    <ref bean="jahiaSitePropertyDAO"/>
+                </property>
+                <property name="jahiaSiteManager">
+                    <ref bean="org.jahia.hibernate.manager.JahiaSiteManager"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaAclManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaAclManager">
+                <property name="jahiaAclDAO">
+                    <ref bean="jahiaAclDAO"/>
+                </property>
+                <property name="jahiaContainerDAO">
+                    <ref bean="jahiaContainerDAO"/>
+                </property>
+                <property name="jahiaContainerListDAO">
+                    <ref bean="jahiaContainerListDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaContainerManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaContainerManager">
+                <property name="jahiaContainerDAO">
+                    <ref bean="jahiaContainerDAO"/>
+                </property>
+                <property name="jahiaAclDAO">
+                    <ref bean="jahiaAclDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="jahiaContainerDefinitionDAO">
+                    <ref bean="jahiaContainerDefinitionDAO"/>
+                </property>
+                <property name="jahiaObjectDAO">
+                    <ref bean="jahiaObjectDAO"/>
+                </property>
+                <property name="cacheService">
+                    <ref bean="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaContainerListManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaContainerListManager">
+                <property name="jahiaContainerListDAO">
+                    <ref bean="jahiaContainerListDAO"/>
+                </property>
+                <property name="jahiaContainerDefinitionDAO">
+                    <ref bean="jahiaContainerDefinitionDAO"/>
+                </property>
+                <property name="jahiaAclDAO">
+                    <ref bean="jahiaAclDAO"/>
+                </property>
+                <property name="jahiaObjectDAO">
+                    <ref bean="jahiaObjectDAO"/>
+                </property>
+                <property name="jahiaPagesDAO">
+                    <ref bean="jahiaPagesDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaContainerDefinitionManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaContainerDefinitionManager">
+                <property name="jahiaContainerDefinitionDAO">
+                    <ref bean="jahiaContainerDefinitionDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="cacheService">
+                    <ref bean="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaContainerStructureManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaContainerStructureManager">
+                <property name="jahiaContainerStructureDAO">
+                    <ref bean="jahiaContainerStructureDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaFieldsDataManager" parent="txProxyTemplate" depends-on="JahiaCacheService">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaFieldsDataManager">
+                <property name="jahiaFieldsDataDAO">
+                    <ref bean="jahiaFieldsDataDAO"/>
+                </property>
+                <property name="jahiaFieldsDefinitionDAO">
+                    <ref bean="jahiaFieldsDefinitionDAO"/>
+                </property>
+                <property name="jahiaAclDAO">
+                    <ref bean="jahiaAclDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="cacheService">
+                    <ref bean="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaFieldsDefinitionManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaFieldsDefinitionManager">
+                <property name="jahiaFieldsDefinitionDAO">
+                    <ref bean="jahiaFieldsDefinitionDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaPagesManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaPagesManager">
+                <property name="jahiaFieldsDataDAO">
+                    <ref bean="jahiaFieldsDataDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="jahiaAclDAO">
+                    <ref bean="jahiaAclDAO"/>
+                </property>
+                <property name="jahiaObjectDAO">
+                    <ref bean="jahiaObjectDAO"/>
+                </property>
+                <property name="jahiaPagesDAO">
+                    <ref bean="jahiaPagesDAO"/>
+                </property>
+                <property name="jahiaPagesDefinitionDAO">
+                    <ref bean="jahiaPagesDefinitionDAO"/>
+                </property>
+                <property name="cacheService">
+                    <ref bean="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaTemplateManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaTemplateManager">
+                <property name="jahiaPagesDefinitionDAO">
+                    <ref bean="jahiaPagesDefinitionDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.hibernate.manager.JahiaLinkManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaLinkManager">
+                <property name="jahiaLinkDAO">
+                    <ref bean="jahiaLinkDAO"/>
+                </property>
+                <property name="cacheService">
+                    <ref bean="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaApplicationManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaApplicationManager">
+                <property name="jahiaApplicationDefinitionDAO">
+                    <ref bean="jahiaApplicationDefinitionDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="jahiaAclDAO">
+                    <ref bean="jahiaAclDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaApplicationShareManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaApplicationShareManager">
+                <property name="jahiaApplicationShareDAO">
+                    <ref bean="jahiaApplicationShareDAO"/>
+                </property>
+                <property name="jahiaApplicationDefinitionDAO">
+                    <ref bean="jahiaApplicationDefinitionDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaGroupManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaGroupManager">
+                <property name="jahiaGroupAccessDAO">
+                    <ref bean="jahiaGroupAccessDAO"/>
+                </property>
+                <property name="jahiaGroupDAO">
+                    <ref bean="jahiaGroupDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="jahiaUserDAO">
+                    <ref bean="jahiaUserDAO"/>
+                </property>
+                <property name="cacheService">
+                    <ref bean="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaUserManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaUserManager">
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="jahiaUserDAO">
+                    <ref bean="jahiaUserDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaCategoryManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaCategoryManager">
+                <property name="jahiaCategoryDAO">
+                    <ref bean="jahiaCategoryDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaCategoryPropertiesManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaCategoryPropertiesManager">
+                <property name="jahiaCategoryPropertiesDAO">
+                    <ref bean="jahiaCategoryPropertiesDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaAuditLogManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaAuditLogManager">
+                <property name="jahiaAuditLogDAO">
+                    <ref bean="jahiaAuditLogDAO"/>
+                </property>
+                <property name="jahiaContainerDAO">
+                    <ref bean="jahiaContainerDAO"/>
+                </property>
+                <property name="jahiaFieldsDataDAO">
+                    <ref bean="jahiaFieldsDataDAO"/>
+                </property>
+                <property name="jahiaContainerListDAO">
+                    <ref bean="jahiaContainerListDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaHomepageManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaHomepageManager">
+                <property name="jahiaHomepageDAO">
+                    <ref bean="jahiaHomepageDAO"/>
+                </property>
+                <property name="jahiaAclDAO">
+                    <ref bean="jahiaAclDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaLockManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaLockManager">
+                <property name="jahiaLockDAO">
+                    <ref bean="jahiaLockDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaObjectManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaObjectManager">
+                <property name="jahiaObjectDAO">
+                    <ref bean="jahiaObjectDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+                <property name="jahiaRetentionRuleDAO">
+                    <ref bean="jahiaRetentionRuleDAO"/>
+                </property>
+                <property name="cacheService">
+                    <ref bean="JahiaCacheService"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaRetentionRuleManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaRetentionRuleManager">
+                <property name="jahiaRetentionRuleDAO">
+                    <ref bean="jahiaRetentionRuleDAO"/>
+                </property>
+                <property name="jahiaObjectDAO">
+                    <ref bean="jahiaObjectDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaRetentionRuleDefManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaRetentionRuleDefManager">
+                <property name="jahiaRetentionRuleDefDAO">
+                    <ref bean="jahiaRetentionRuleDefDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaResourceManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaResourceManager">
+                <property name="jahiaResourceDAO">
+                    <ref bean="jahiaResourceDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaSiteLanguageListManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageListManager">
+                <property name="jahiaSiteLanguageListDAO">
+                    <ref bean="jahiaSiteLanguageListDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager">
+                <property name="jahiaSiteLanguageMappingDAO">
+                    <ref bean="jahiaSiteLanguageMappingDAO"/>
+                </property>
+                <property name="jahiaSiteDAO">
+                    <ref bean="jahiaSiteDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaWorkflowManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaWorkflowManager">
+                <property name="jahiaWorkflowDAO">
+                    <ref bean="jahiaWorkflowDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaBigTextDataManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaBigTextDataManager">
+                <property name="jahiaBigTextDataDAO">
+                    <ref bean="jahiaBigTextDataDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    <bean id="org.jahia.hibernate.manager.JahiaSlideUriManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.hibernate.manager.JahiaSlideUriManager">
+                <property name="jahiaSlideUriDAO">
+                    <ref bean="jahiaSlideUriDAO"/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</beans>

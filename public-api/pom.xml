@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>jahia-root</artifactId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jahia-api</artifactId>
+  <version>${jahia.package.version}</version>
+  <name>Jahia Server API</name>
+  <packaging>jar</packaging>
+    
+  <dependencies>
+    <dependency>
+      <groupId>jsr170</groupId>
+      <artifactId>jcr</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-discovery</groupId>
+      <artifactId>commons-discovery</artifactId>
+      <version>0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-id</groupId>
+      <artifactId>commons-id</artifactId>
+      <version>0.1-dev</version>
+    </dependency>
+  </dependencies>
+    
+</project>

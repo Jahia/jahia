@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+    
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license"
+    
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+
+-->
+
+<preload-classes>
+  <!-- This configuration file is used to preload classes into the
+       default class loader upon Jahia's initialization. You may
+       add classes here if you need but you should NEVER remove any
+       of the pre-packaged classes here, as this might cause serious
+       problems in Jahia's normal execution.
+  -->
+  <class-name>org.jahia.content.ObjectKey</class-name>
+  <class-name>org.jahia.content.ContentObjectKey</class-name>
+  <class-name>org.jahia.content.ContentDefinitionKey</class-name>
+  <class-name>org.jahia.content.ContentFieldKey</class-name>
+  <class-name>org.jahia.content.ContentContainerKey</class-name>
+  <class-name>org.jahia.content.ContentContainerListKey</class-name>
+  <class-name>org.jahia.content.ContentPageKey</class-name>
+  <class-name>org.jahia.content.ContainerDefinitionKey</class-name>
+  <class-name>org.jahia.content.FieldDefinitionKey</class-name>
+  <class-name>org.jahia.content.PageDefinitionKey</class-name>
+  <class-name>org.jahia.content.CategoryKey</class-name>
+
+  <class-name>org.jahia.content.ContentObject</class-name>
+  <class-name>org.jahia.services.fields.ContentField</class-name>
+  <class-name>org.jahia.services.containers.ContentContainer</class-name>
+  <class-name>org.jahia.services.containers.ContentContainerList</class-name>
+  <class-name>org.jahia.services.pages.ContentPage</class-name>
+
+  <class-name>org.jahia.content.ContentDefinition</class-name>
+  <class-name>org.jahia.data.fields.JahiaFieldDefinition</class-name>
+  <class-name>org.jahia.data.containers.JahiaContainerDefinition</class-name>
+  <class-name>org.jahia.services.pages.JahiaPageDefinition</class-name>
+
+  <class-name>org.jahia.data.beans.AbstractJahiaObjectBean</class-name>
+  <class-name>org.jahia.data.beans.CategoryBean</class-name>
+  <class-name>org.jahia.data.beans.ContainerBean</class-name>
+  <class-name>org.jahia.data.beans.ContainerListBean</class-name>
+  <class-name>org.jahia.data.beans.FieldBean</class-name>
+  <class-name>org.jahia.data.beans.PageBean</class-name>
+
+</preload-classes>

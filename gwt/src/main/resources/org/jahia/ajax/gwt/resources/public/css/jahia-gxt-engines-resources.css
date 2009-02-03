@@ -1,0 +1,1132 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+/*Filemanager*/
+.fm-resize {
+    background-image: url( ../images/resize.png ) !important;
+}
+
+.fm-crop {
+    background-image: url( ../images/crop.png ) !important;
+}
+
+.fm-rotate {
+    background-image: url( ../images/rotate.png ) !important;
+}
+
+.fm-tableview {
+    background-image: url( ../images/table.png ) !important;
+}
+
+.fm-treetableview {
+    background-image: url( ../images/treetable.png ) !important;
+}
+
+.fm-iconview {
+    background-image: url( ../images/icons.png ) !important;
+}
+
+.fm-iconview-detailed{
+     background-image: url( ../images/treetable.png ) !important;   
+}
+
+.fm-addFile {
+    background-image: url( ../images/add-file.png ) !important;
+}
+
+.fm-newfolder {
+    background-image: url( ../images/newfolder.png ) !important;
+}
+
+.fm-newmashup {
+    background-image: url( ../images/application_add.png ) !important;
+}
+
+.fm-remove {
+    background-image: url( ../images/remove.png ) !important;
+}
+
+.fm-refresh {
+    background-image: url( ../images/refresh.png ) !important;
+}
+
+.fm-copy {
+    background-image: url( ../images/copy.png ) !important;
+}
+
+.fm-cut {
+    background-image: url( ../images/cut.png ) !important;
+}
+
+.fm-paste {
+    background-image: url( ../images/paste.png ) !important;
+}
+
+.fm-download {
+    background-image: url( ../images/download.png ) !important;
+}
+
+.fm-webfolder {
+    background-image: url( ../images/webfolder.png ) !important;
+}
+
+.fm-upload {
+    background-image: url( ../images/upload.png ) !important;
+}
+
+.fm-mount {
+    background-image: url( ../images/mount.png ) !important;
+}
+
+.fm-unmount {
+    background-image: url( ../images/unmount.png ) !important;
+}
+
+.fm-rename {
+    background-image: url( ../images/rename.png ) !important;
+}
+
+.fm-zip {
+    background-image: url( ../images/zip.png ) !important;
+}
+
+.fm-unzip {
+    background-image: url( ../images/unzip.png ) !important;
+}
+
+.fm-lock {
+    background-image: url( ../images/lock.png ) !important;
+}
+
+.fm-unlock {
+    background-image: url( ../images/unlock.png ) !important;
+}
+
+.fm-resize-bw {
+    background-image: url( ../images/disabled/resize.png ) !important;
+}
+
+.fm-crop-bw {
+    background-image: url( ../images/disabled/crop.png ) !important;
+}
+
+.fm-rotate-bw {
+    background-image: url( ../images/disabled/rotate.png ) !important;
+}
+
+.fm-newfolder-bw {
+    background-image: url( ../images/disabled/newfolder.png ) !important;
+}
+
+.fm-newmashup-bw {
+    background-image: url( ../images/disabled/application_add.png ) !important;
+}
+
+.fm-remove-bw {
+    background-image: url( ../images/disabled/remove.png ) !important;
+}
+
+.fm-refresh-bw {
+    background-image: url( ../images/disabled/refresh.png ) !important;
+}
+
+.fm-copy-bw {
+    background-image: url( ../images/disabled/copy.png ) !important;
+}
+
+.fm-cut-bw {
+    background-image: url( ../images/disabled/cut.png ) !important;
+}
+
+.fm-paste-bw {
+    background-image: url( ../images/disabled/paste.png ) !important;
+}
+
+.fm-download-bw {
+    background-image: url( ../images/disabled/download.png ) !important;
+}
+
+.fm-webfolder-bw {
+    background-image: url( ../images/disabled/webfolder.png ) !important;
+}
+
+.fm-upload-bw {
+    background-image: url( ../images/disabled/upload.png ) !important;
+}
+
+.fm-mount-bw {
+    background-image: url( ../images/disabled/mount.png ) !important;
+}
+
+.fm-unmount-bw {
+    background-image: url( ../images/disabled/unmount.png ) !important;
+}
+
+.fm-rename-bw {
+    background-image: url( ../images/disabled/rename.png ) !important;
+}
+
+.fm-zip-bw {
+    background-image: url( ../images/disabled/zip.png ) !important;
+}
+
+.fm-unzip-bw {
+    background-image: url( ../images/disabled/unzip.png ) !important;
+}
+
+.fm-lock-bw {
+    background-image: url( ../images/disabled/lock.png ) !important;
+}
+
+.fm-unlock-bw {
+    background-image: url( ../images/disabled/unlock.png ) !important;
+}
+
+.fm-myRepository {
+    background-image: url( ../images/home.png ) !important;
+}
+
+.fm-savedSearch {
+    background-image: url( ../images/search.png ) !important;
+}
+
+.fm-myExternalRepository {
+    background-image: url( ../images/ext-repository.png ) !important;
+}
+
+.fm-sharedRepository {
+    background-image: url( ../images/shared-repository.png ) !important;
+}
+
+.fm-websiteRepository {
+    background-image: url( ../images/site-repository.png ) !important;
+}
+
+.fm-mashupRepository {
+    background-image: url( ../images/portlet-repository.png ) !important;
+}
+
+.fm-globalRepository {
+    background-image: url( ../images/repository.png ) !important;
+}
+
+.fm-previewPane {
+    padding: 10px;
+}
+
+.fm-property-adder {
+    padding: 10px;
+}
+
+.fm-bottom-margin {
+    margin-bottom: 5px ;
+}
+
+.fm-label {
+    font-size: 12px;
+}
+
+#images-view {
+    background: white;
+    font: normal 11px tahoma, arial, helvetica, sans-serif;
+}
+
+#images-view .thumb {
+    padding: 3px;
+}
+
+#images-view .thumb img {
+    height: 60px;
+    width: 80px;
+}
+
+#images-view .thumb-wrap {
+    border: 1px solid #ffffff;
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 4px;
+}
+
+#images-view .thumb-wrap span {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+}
+
+#images-view .x-view-over {
+    border: 1px solid #dddddd;
+    background: #efefef url( ../images/default/grid/row-over.gif ) repeat-x left top;
+}
+
+#images-view .x-view-selected {
+    background: #eff5fb no-repeat right bottom;
+    border: 1px solid #99bbe8;
+}
+
+#images-view .x-view-selected .thumb {
+    background: transparent;
+}
+
+#images-view .loading-indicator {
+    font-size: 11px;
+    background-image: url( ../images/default/grid/loading.gif );
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 20px;
+    margin: 10px;
+}
+
+/*filemanagement*/
+.fm-infoPane {
+    padding: 10px;
+}
+
+.fm-previewPane {
+    padding: 10px;
+}
+
+.fm-property-adder {
+    padding: 10px;
+}
+
+.fm-selection-background {
+    background-color: #C7E6EB;
+}
+
+.fm-vertical-align-bottom {
+    vertical-align: bottom;
+}
+
+.um-user {
+    background: url( ../images/user/user1.png ) no-repeat 0 0 !important;
+}
+
+.um-group {
+    background: url( ../images/user/users2.png ) no-repeat 0 0 !important;
+}
+
+.um-adduser {
+    background: url( ../images/user/user1.png ) no-repeat 0 0 !important;
+}
+
+.um-addgroup {
+    background: url( ../images/user/users2.png ) no-repeat 0 0 !important;
+}
+
+#images-view div {
+    border: 0;
+}
+
+/* Process Display */
+.gwt-HTML {
+    font-family: arial, tahoma, helvetica, sans-serif;
+    font-size: 12px;
+    padding: 2px 2px;
+}
+
+.gwt-pdisplay-filter-up {
+    background: url( ../images/icons/funnel_up.png ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-filter-down {
+    background: url( ../images/icons/funnel_down.png ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-icons-info {
+    background: url( ../images/info/about.png ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-icons-error {
+    background: url( ../images/info/errors.gif ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-icons-warning {
+    background: url( ../images/info/warning.png ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-icons-refresh {
+    background: url( ../images/info/refresh.png ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-icons-delete {
+    background: url( ../images/icons/delete.png ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-icons-preferences {
+    background: url( ../images/icons/preferences.png ) no-repeat 0 0 !important;
+}
+
+.gwt-pdisplay-table-row-status-successful {
+    color: green;
+    padding: 2px 21px;
+    background: url( ../images/info/successful.png ) no-repeat;
+}
+
+.gwt-pdisplay-table-row-status-warning {
+    color: orange;
+    padding: 2px 21px;
+    background: url( ../images/info/warning.png ) no-repeat;
+}
+
+.gwt-pdisplay-table-row-status-partial {
+    color: orange;
+    padding: 2px 21px;
+    background: url( ../images/info/warning.png ) no-repeat;
+}
+
+
+.gwt-pdisplay-table-row-status-error {
+    color: red;
+    padding: 2px 21px;
+    background: url( ../images/info/errors.gif ) no-repeat;
+}
+
+.gwt-pdisplay-table-row-status-failed {
+    color: red;
+    padding: 2px 21px;
+    background: url( ../images/info/errors.gif ) no-repeat;
+}
+
+.gwt-pdisplay-table-row-status-executing {
+    padding: 2px 21px;
+    background: url( ../images/info/wait.gif ) no-repeat;
+}
+
+.gwt-pdisplay-table-row-status-pooled {
+    padding: 2px 21px;
+    background: url( ../images/timebasedpublishing/green_clock.png ) no-repeat;
+}
+
+.gwt-pdisplay-table-row-status-interrupted {
+    color: red;
+}
+
+.hasErrorsOrWarnings {
+    color: #ff6600;
+}
+
+/* Page picker */
+.icon-page {
+    background: url( ../images/page.gif ) center center no-repeat;
+}
+
+.normal {
+    color: black;
+}
+
+.in-path {
+    color: gray;
+    font-style: italic;
+}
+
+.gwt-pagepicker-icon-locked {
+    background: url( ../images/icons/lock.png ) !important;
+}
+
+.gwt-pagepicker-icon-inpath {
+    background-image: url( ../images/remove.png ) !important;
+}
+
+/* Workflow */
+/* toolbar */
+.item-field-label {
+    margin-left: 10px;
+    margin-right: 8px;
+}
+
+.item-field {
+    margin-right: 10px;
+}
+
+.wf-selection {
+    background-image: url( ../images/icons/selection.png ) !important;
+}
+
+.wf-selection-select {
+    background-image: url( ../images/icons/select.png ) !important;
+}
+
+.wf-selection-deselect {
+    background-image: url( ../images/icons/deselect.png ) !important;
+}
+
+.wf-add {
+    background-image: url( ../../../css/images/andromeda/icons/add2.png ) !important;
+}
+
+.wf-remove {
+    background-image: url( ../images/icons/remove.png ) !important;
+}
+
+.wf-action {
+    background-image: url( ../images/icons/action.png ) !important;
+}
+
+.wf-action-notify {
+    background-image: url( ../images/icons/notify.png ) !important;
+}
+
+.wf-action-publish {
+    background-image: url( ../images/icons/publish.png ) !important;
+}
+
+.wf-action-first_validate {
+    background-image: url( ../images/icons/validate.png ) !important;
+}
+
+.wf-action-second_validate {
+    background-image: url( ../images/icons/validate.png ) !important;
+}
+
+.wf-action-rollback_to_previous_step {
+    background-image: url( ../images/icons/gear_stop.png ) !important;
+}
+
+.wf-action-rollback_to_author {
+    background-image: url( ../images/icons/gear_forbidden.png ) !important;
+}
+
+.wf-action-unlock, .wf-action-lock {
+    background-image: url( ../images/icons/gear_pause.png ) !important;
+}
+
+.wf-button_ok {
+    background-image: url( ../../../css/images/andromeda/icons/accept.png ) !important;
+}
+
+.wf-button_cancel {
+    background-image: url( ../../../css/images/andromeda/icons/cancel.png ) !important;
+}
+
+.wf-button_info {
+    background-image: url( ../../../css/images/andromeda/icons/briefcase_view.png ) !important;
+}
+
+/* Flags */
+
+.flag_ar {
+    background-image: url( ../../../css/images/flags/ar_on.png ) !important;
+}
+.flag_be {
+    background-image: url( ../../../css/images/flags/be_on.png ) !important;
+}
+.flag_bg {
+    background-image: url( ../../../css/images/flags/bg_on.png ) !important;
+}
+.flag_ca {
+    background-image: url( ../../../css/images/flags/ca_on.png ) !important;
+}
+.flag_ch {
+    background-image: url( ../../../css/images/flags/ch_on.png ) !important;
+}
+.flag_cs {
+    background-image: url( ../../../css/images/flags/cs_on.png ) !important;
+}
+.flag_da {
+    background-image: url( ../../../css/images/flags/da_on.png ) !important;
+}
+.flag_de {
+    background-image: url( ../../../css/images/flags/de_on.png ) !important;
+}
+.flag_el {
+    background-image: url( ../../../css/images/flags/el_on.png ) !important;
+}
+.flag_en {
+    background-image: url( ../../../css/images/flags/en_on.png ) !important;
+}
+.flag_es {
+    background-image: url( ../../../css/images/flags/es_on.png ) !important;
+}
+.flag_et {
+    background-image: url( ../../../css/images/flags/et_on.png ) !important;
+}
+.flag_fi {
+    background-image: url( ../../../css/images/flags/fi_on.png ) !important;
+}
+.flag_fr {
+    background-image: url( ../../../css/images/flags/fr_on.png ) !important;
+}
+.flag_hi {
+    background-image: url( ../../../css/images/flags/hi_on.png ) !important;
+}
+.flag_hr {
+    background-image: url( ../../../css/images/flags/hr_on.png ) !important;
+}
+.flag_hu {
+    background-image: url( ../../../css/images/flags/hu_on.png ) !important;
+}
+.flag_is {
+    background-image: url( ../../../css/images/flags/is_on.png ) !important;
+}
+.flag_it {
+    background-image: url( ../../../css/images/flags/it_on.png ) !important;
+}
+.flag_iw {
+    background-image: url( ../../../css/images/flags/iw_on.png ) !important;
+}
+.flag_ja {
+    background-image: url( ../../../css/images/flags/ja_on.png ) !important;
+}
+.flag_ko {
+    background-image: url( ../../../css/images/flags/ko_on.png ) !important;
+}
+.flag_lt {
+    background-image: url( ../../../css/images/flags/lt_on.png ) !important;
+}
+.flag_lv {
+    background-image: url( ../../../css/images/flags/lv_on.png ) !important;
+}
+.flag_mk {
+    background-image: url( ../../../css/images/flags/mk_on.png ) !important;
+}
+.flag_nl {
+    background-image: url( ../../../css/images/flags/nl_on.png ) !important;
+}
+.flag_no {
+    background-image: url( ../../../css/images/flags/no_on.png ) !important;
+}
+.flag_pl {
+    background-image: url( ../../../css/images/flags/pl_on.png ) !important;
+}
+.flag_pt {
+    background-image: url( ../../../css/images/flags/pt_on.png ) !important;
+}
+.flag_ro {
+    background-image: url( ../../../css/images/flags/ro_on.png ) !important;
+}
+.flag_ru {
+    background-image: url( ../../../css/images/flags/ru_on.png ) !important;
+}
+.flag_sk {
+    background-image: url( ../../../css/images/flags/sk_on.png ) !important;
+}
+.flag_sl {
+    background-image: url( ../../../css/images/flags/sl_on.png ) !important;
+}
+.flag_sq {
+    background-image: url( ../../../css/images/flags/sq_on.png ) !important;
+}
+.flag_sr {
+    background-image: url( ../../../css/images/flags/sr_on.png ) !important;
+}
+.flag_sv {
+    background-image: url( ../../../css/images/flags/sv_on.png ) !important;
+}
+.flag_th {
+    background-image: url( ../../../css/images/flags/th_on.png ) !important;
+}
+.flag_tr {
+    background-image: url( ../../../css/images/flags/tr_on.png ) !important;
+}
+.flag_uk {
+    background-image: url( ../../../css/images/flags/uk_on.png ) !important;
+}
+.flag_us {
+    background-image: url( ../../../css/images/flags/us_on.png ) !important;
+}
+.flag_zh {
+    background-image: url( ../../../css/images/flags/zh_on.png ) !important;
+}
+
+/* content object icons */
+.icon-ContentPage {
+    background: url( ../images/icons/document.gif ) center center no-repeat;
+}
+
+.icon-ContentContainerList {
+    background: url( ../images/icons/containerlist.png ) center center no-repeat;
+}
+
+.icon-ContentContainer {
+    background: url( ../images/icons/container.png ) center center no-repeat;
+}
+
+/* misc */
+.raw-content, .raw-content div {
+    font: 12px arial, tahoma, helvetica, sans-serif;
+}
+
+.bold-font {
+    font-weight: bold !important;
+}
+
+.gxt-fix-topcomponent-position {
+    position: relative !important;
+}
+
+/* validation */
+.validation-1 {
+/*background: url(../images/icons/check.png) center center no-repeat;*/
+}
+
+.validation-s-1 {
+/*background: url(../images/icons/check12.png) center center no-repeat;*/
+}
+
+.validation-2 {
+    background: url( ../images/icons/warning.png ) center center no-repeat;
+}
+
+.validation-s-2 {
+    background: url( ../images/icons/warning12.png ) center center no-repeat;
+}
+
+.validation-0 {
+    background: url( ../images/icons/error.png ) center center no-repeat;
+}
+
+.validation-s-0 {
+    background: url( ../images/icons/error12.png ) center center no-repeat;
+}
+
+.validation-3 {
+    background: url( ../images/icons/lock.png ) center center no-repeat;
+}
+
+/* checkbox space */
+.checkbox-space {
+    padding: 0 0 3px 0;
+    margin: 0;
+    width: 20px;
+}
+
+.workflow-checkbox {
+    padding-left: 3px;
+    padding-right: 1px;
+}
+
+/* workflow icons */
+.workflow-000 {
+    background: url( ../images/workflow/000.png ) center center no-repeat;
+}
+
+.workflow-110 {
+    background: url( ../images/workflow/110.png ) center center no-repeat;
+}
+
+.workflow-111 {
+    background: url( ../images/workflow/111.png ) center center no-repeat;
+}
+
+.workflow-120 {
+    background: url( ../images/workflow/120.png ) center center no-repeat;
+}
+
+.workflow-121 {
+    background: url( ../images/workflow/121.png ) center center no-repeat;
+}
+
+.workflow-130 {
+    background: url( ../images/workflow/130.png ) center center no-repeat;
+}
+
+.workflow-200 {
+    background: url( ../images/workflow/200.png ) center center no-repeat;
+}
+
+.workflow-201 {
+    background: url( ../images/workflow/201.png ) center center no-repeat;
+}
+
+.workflow-210 {
+    background: url( ../images/workflow/210.png ) center center no-repeat;
+}
+
+.workflow-211 {
+    background: url( ../images/workflow/211.png ) center center no-repeat;
+}
+
+.workflow-220 {
+    background: url( ../images/workflow/220.png ) center center no-repeat;
+}
+
+.workflow-221 {
+    background: url( ../images/workflow/221.png ) center center no-repeat;
+}
+
+.workflow-230 {
+    background: url( ../images/workflow/230.png ) center center no-repeat;
+}
+
+.workflow-231 {
+    background: url( ../images/workflow/231.png ) center center no-repeat;
+}
+
+.workflow-240 {
+    background: url( ../images/workflow/240.png ) center center no-repeat;
+}
+
+.workflow-241 {
+    background: url( ../images/workflow/241.png ) center center no-repeat;
+}
+
+.workflow-511 {
+    background: url( ../images/workflow/511.png ) center center no-repeat;
+}
+
+.workflow-600 {
+    background: url( ../images/workflow/600.png ) center center no-repeat;
+}
+
+.workflow-910 {
+    background: url( ../images/workflow/910.png ) center center no-repeat;
+}
+
+.workflow-920 {
+    background: url( ../images/workflow/920.png ) center center no-repeat;
+}
+
+.workflow-930 {
+    background: url( ../images/workflow/930.png ) center center no-repeat;
+}
+
+/* version comparison */
+
+/* unwanted margin from jahia css */
+#wrapper .gwt-versionComparison-mainPanel table {
+    margin: 0 0 0 0;
+}
+
+#versioncomparison {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* version comparison main panel */
+.gwt-versionComparison-mainPanel {
+    overflow: hidden;
+}
+
+/* version comparison title assert */
+.gwt-versionComparison-titleAssert {
+    background: url( ../images/mainitembg.gif ) repeat-x scroll 0 -39px;
+
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    height: 18px;
+    padding: 5px 10px;
+    color: black;
+}
+
+/* content outer container */
+.gwt-versionComparison-versionsOuterContainer {
+}
+
+.gwt-versionComparison-versionsInnerContainer {
+    padding: 20px 20px;
+}
+
+html>body .gwt-versionComparison-versionsInnerContainer {
+    padding: 0 0;
+}
+
+html>body .gwt-versionComparison-versionsPanel {
+    padding: 20px 20px;
+}
+
+/* version comparison versions table */
+.gwt-versionComparison-versionsTable {
+    padding: 0;
+    border: 1px solid #666666;
+}
+
+.gwt-versionComparison-versionsTable th, .gwt-versionComparison-versionsTable td {
+    padding: 2px 10px 2px 4px;
+}
+
+.gwt-versionComparison-versionsTableHeader {
+    font-weight: bold;
+    color: black;
+    border: 1px solid #666666;
+    background-color: #6699CC;
+}
+
+.gwt-versionComparison-versionsTableHeader td {
+    background-color: #6699CC;
+}
+
+.gwt-versionComparison-versionsTableRow-even, .gwt-versionComparison-versionsTableRow-odd {
+    border: 1px solid #666666;
+}
+
+.gwt-versionComparison-versionsTableRow-even {
+    background-color: #DDEEFF;
+}
+
+/* version comparison diff legend */
+.gwt-versionComparison-diffLegend {
+    padding-top: 5px;
+}
+
+.gwt-versionComparison-mainPanel .gwt-TabBarItem .gwt-Label {
+    font-size: 14px;
+}
+
+.gwt-versionComparison-mainPanel .gwt-TabPanelBottom {
+    padding: 15px 15px;
+}
+
+/* version comparison comparisonTabPanel */
+.gwt-versionComparison-comparisonTabPanel {
+
+}
+
+/* version comparison field main panel */
+.gwt-versionComparison-fieldPanel {
+
+}
+
+/* version comparison field title bar */
+.gwt-versionComparison-fieldTitleBar {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 25px !important;
+}
+
+.gwt-versionComparison-fieldTitleBar * {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.gwt-versionComparison-fieldLabel {
+}
+
+.gwt-versionComparison-fieldLabel-application_type_big {
+    background: url( ../images/icons/application_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-big_type_big {
+    background: url( ../images/icons/big_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-Boolean_type_big {
+    background: url( ../images/icons/Boolean_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-category_type_big {
+    background: url( ../images/icons/category_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-colors_big {
+    background: url( ../images/icons/colors_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-date_type_big {
+    background: url( ../images/icons/date_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-file_type_big {
+    background: url( ../images/icons/file_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-Number_type_big {
+    background: url( ../images/icons/Number_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-page_type_big {
+    background: url( ../images/icons/page_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-small_shared_type_big {
+    background: url( ../images/icons/small_shared_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldLabel-small_type_big {
+    background: url( ../images/icons/small_type_big.gif ) no-repeat;
+    height: 24px;
+    padding-left: 27px;
+}
+
+.gwt-versionComparison-fieldContent {
+    border: 1px solid #666666;
+    padding: 5px 5px;
+    background-color: #fff;
+}
+
+.gwt-versionComparison-testLabel {
+    vertical-align: top;
+    height: 100px;
+}
+
+/*categories picker*/
+.gwt-categoriespiker-icon-select {
+    background-image: url( ../images/document_into.png ) !important;
+}
+
+/* date field */
+.jahia-date-field {
+    
+}
+
+/* misc */
+.align-left {
+    text-align: left;
+}
+
+.gxt-button-select {
+    background-image: url( ../images/icons/select.png ) !important;
+}
+
+.gxt-button-clear {
+    background-image: url( ../images/icons/deselect.png ) !important;
+}
+
+/* file types */
+.icon-doc {
+    background-image: url( ../images/icons/icon-doc.png );
+}
+
+.icon-exe {
+    background-image: url( ../images/icons/icon-exe.png );
+}
+
+.icon-file {
+    background-image: url( ../images/icons/icon-file.png );
+}
+
+.icon-dir {
+    background-image: url( ../images/icons/icon-dir.png );
+}
+
+.icon-html {
+    background-image: url( ../images/icons/icon-html.png );
+}
+
+.icon-img {
+    background-image: url( ../images/icons/icon-img.png );
+}
+
+.icon-pdf {
+    background-image: url( ../images/icons/icon-pdf.png );
+}
+
+.icon-ppt {
+    background-image: url( ../images/icons/icon-ppt.png );
+}
+
+.icon-rar {
+    background-image: url( ../images/icons/icon-rar.png );
+}
+
+.icon-sound {
+    background-image: url( ../images/icons/icon-sound.png );
+}
+
+.icon-txt {
+    background-image: url( ../images/icons/icon-txt.png );
+}
+
+.icon-video {
+    background-image: url( ../images/icons/icon-video.png );
+}
+
+.icon-xls {
+    background-image: url( ../images/icons/icon-xls.png );
+}
+
+.icon-zip {
+    background-image: url( ../images/icons/icon-zip.png );
+}
+
+.icon-mashup {
+    background-image: url( ../images/icons/application_type.gif );
+}
+
+.gwt-icon-newapp {
+    background-image: url( ../images/application_add.png );
+}
+
+.ext-ux-wiz-Header {
+    background-color: white;
+}
+
+.ext-ux-wiz-Header-title {
+    font-weight: bold;
+    font-size: 11px;
+    padding: 4px 0px 0px 4px;
+}
+
+.ext-ux-wiz-Header-step {
+    color: #767676;
+    font-size: 11px;
+    text-align: right;
+    padding: 2px 4px 0px 0px;
+}
+
+.ext-ux-wiz-Header-stepIndicator-container {
+    float: right;
+    margin-right: 6px;
+    margin-top: 8px;
+}
+
+.ext-ux-wiz-Header-stepIndicator {
+    margin-left: 28px;
+    float: left;
+}
+
+.directory-entry {
+   clear:both;display:block; width:900px;
+}
+
+.gadget {
+    width: 140px;
+    float: left;
+    text-align: center;
+}
+
+.gadget a img {
+    margin-bottom: 5px;
+}

@@ -1,0 +1,120 @@
+<!--
+
+    
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+    
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license"
+    
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+
+-->
+
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  Application context definition.
+    -->
+<beans>
+
+	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+	
+	
+  <!-- property placeholder post-processor -->
+  <!--
+  <bean id="placeholderConfig"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="/WEB-INF/etc/config/jahia.properties"/>
+  </bean>
+  -->
+  	
+	<!-- configuration bean -->
+	<bean id="jahiaConfigBean" class="org.jahia.bin.JahiaConfig">
+		<property name="settings">
+			<props>
+				<prop key="org.jahia.services.htmlparser.HtmlParser">org.jahia.services.htmlparser.NekoHtmlParser</prop>
+				<!--
+				<prop key="org.jahia.services.htmlparser.HtmlParser">org.jahia.services.htmlparser.TidyHtmlParser</prop>
+				-->
+			</props>
+		</property>
+	</bean>
+
+	<bean id="JCRConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="org.jahia.repository.name">repository</prop>
+				<prop key="org.jahia.repository.config">/WEB-INF/etc/repository/repository.xml</prop>
+				<prop key="org.jahia.repository.homedir">/WEB-INF/var/repository</prop>
+				<prop key="org.jahia.repository.workspace">jahia</prop>
+				<prop key="org.jahia.repository.import-test">/WEB-INF/repository/import-test.xml</prop>
+				<prop key="org.jahia.repository.jaas.config">/WEB-INF/etc/repository/jaas.config</prop>
+				<prop key="org.jahia.repository.extended-nodetypes">/nodetypes/extended_nodetypes.xml</prop>
+			</props>
+		</property>
+	</bean>	
+	
+	<bean id="JCRNamespaces" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="jahiant">http://www.jahia.org/jahia/nt/1.0</prop>
+				<prop key="jahiamix">http://www.jahia.org/jahia/mix/1.0</prop>
+				<prop key="jahiajcr">http://www.jahia.org/jahia/jcr/1.0</prop>
+				<prop key="jahia">http://www.jahia.org/jahia/1.0</prop>
+				<prop key="jahiantmetadata">http://www.jahia.org/jahia/jahiantmetadata/1.0</prop>
+			</props>
+		</property>
+	</bean>	
+
+	<bean id="settings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="org.jahia.services.fileextractor.tmpdir">fileextraction</prop>
+			</props>
+		</property>
+	</bean>	
+
+	<bean id="searchConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="org.jahia.engines.search.searchViewHandler.default">org.jahia.engines.search.AdvSearchViewHandler</prop>
+				<prop key="org.apache.lucene.mergeFactor">10</prop>
+				<prop key="org.apache.lucene.minMergeDocs">10</prop>
+				<prop key="org.apache.lucene.commitLockTimeout">60000</prop>
+				<prop key="org.apache.lucene.writeLockTimeout">6000</prop>
+				<prop key="org.apache.lucene.maxClauseCount">10000</prop>
+				<prop key="org.jahia.services.search.searchIndexRootDir">/WEB-INF/var/search_indexes</prop>
+				<!--
+				<prop key="defaultSearchHandlerClass">org.jahia.services.search.lucene.jdbc.LuceneJDBCSearchHandlerImpl</prop>
+				-->
+				<prop key="defaultSearchHandlerClass">org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl</prop>
+			</props>
+		</property>
+	</bean>	
+
+	<bean id="org.jahia.params.ProcessingContextFactory" class="org.jahia.params.ProcessingContextFactoryImpl" />
+</beans>

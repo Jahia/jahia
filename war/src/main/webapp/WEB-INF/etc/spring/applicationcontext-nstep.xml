@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+    <bean id="nstepWorkflowManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.workflow.nstep.service.impl.WorkflowManagerImpl">
+                <property name="nstepWorkflowDAO" ref="nstepWorkflowDAO" />
+                <property name="nstepWorkflowStepDAO" ref="nstepWorkflowStepDAO" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowInstanceManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.workflow.nstep.service.impl.WorkflowInstanceManagerImpl">
+                <property name="nstepWorkflowDAO" ref="nstepWorkflowDAO" />
+                <property name="nstepUserDAO" ref="nstepUserDAO" />
+                <property name="nstepWorkflowInstanceDAO" ref="nstepWorkflowInstanceDAO" />
+            </bean>
+        </property>
+    </bean>
+    <bean id="nstepWorkflowHistoryManager" parent="txProxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.workflow.nstep.service.impl.WorkflowHistoryManagerImpl">
+                <property name="nstepWorkflowHistoryDAO" ref="nstepWorkflowHistoryDAO" />
+            </bean>
+        </property>
+    </bean>
+</beans>

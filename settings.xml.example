@@ -1,0 +1,120 @@
+<settings>
+
+  <servers>
+    <server>
+      <id>jahiaRepository</id>
+      <username>maven</username>
+      <privateKey>C:/putty/maven.jahia.org.private</privateKey> <!-- not needed if using pageant -->
+    </server>
+  </servers>
+  <profiles>
+       <!-- GWT settings -->
+     <profile>
+       <id>gwt-1.5.2</id>
+       <properties>
+         <google.webtoolkit.home>C:/devel_zone/gwt/gwt-windows-1.5.2</google.webtoolkit.home>
+         <!-- for those who are compiling on linux box without X server, you have to add these parameters
+         You also need to be sure that DISPLAY variable is not defined on your server
+         <google.webtoolkit.extrajvmargs>-Djava.awt.headless=true</google.webtoolkit.extrajvmargs>
+         -->
+       </properties>
+     </profile>
+
+     <profile>
+       <id>configure</id>
+       <properties>
+           <jahia.configure.active>true</jahia.configure.active>
+           <jahia.configure.databaseType>mysql</jahia.configure.databaseType>
+           <jahia.configure.databaseUrl>jdbc:mysql://localhost/jahia?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</jahia.configure.databaseUrl>
+           <jahia.configure.databaseUsername>root</jahia.configure.databaseUsername>
+           <jahia.configure.databasePassword></jahia.configure.databasePassword>
+           <jahia.configure.localIp>192.168.0.1</jahia.configure.localIp>
+           <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
+       </properties>
+     </profile>
+
+     <!-- Deployment settings for Andromeda -->
+     <profile>
+       <!-- Tomcat 5.5 development -->
+       <id>andromeda-deployment-tomcat5-dev</id>
+       <properties>
+         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+         <jahia.deploy.targetServerVersion>5.5</jahia.deploy.targetServerVersion>
+         <jahia.deploy.targetServerDirectory>C:/jahia/apache-tomcat-5.5.26</jahia.deploy.targetServerDirectory>
+         <jahia.deploy.war.dirName>jahia</jahia.deploy.war.dirName>
+         <jahia.deploy.war.contextPath>/jahia</jahia.deploy.war.contextPath>
+         <jahia.deploy.war.servletPath>/Jahia</jahia.deploy.war.servletPath>
+         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+       </properties>
+     </profile>
+     <profile>
+       <!-- Tomcat 5.5 production -->
+       <id>andromeda-deployment-tomcat5-prod</id>
+       <properties>
+         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+         <jahia.deploy.targetServerVersion>5.5</jahia.deploy.targetServerVersion>
+         <jahia.deploy.targetServerDirectory>C:/jahia/apache-tomcat-5.5.26</jahia.deploy.targetServerDirectory>
+         <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
+         <jahia.deploy.war.contextPath>/</jahia.deploy.war.contextPath>
+         <jahia.deploy.war.servletPath>/cms</jahia.deploy.war.servletPath>
+         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+       </properties>
+     </profile>
+     <profile>
+       <!-- Tomcat 6.0 development -->
+       <id>andromeda-deployment-tomcat6-dev</id>
+       <properties>
+         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+         <jahia.deploy.targetServerVersion>6</jahia.deploy.targetServerVersion>
+         <jahia.deploy.targetServerDirectory>C:/jahia/apache-tomcat-6.0.16</jahia.deploy.targetServerDirectory>
+         <jahia.deploy.war.dirName>jahia</jahia.deploy.war.dirName>
+         <jahia.deploy.war.contextPath>/jahia</jahia.deploy.war.contextPath>
+         <jahia.deploy.war.servletPath>/Jahia</jahia.deploy.war.servletPath>
+         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+       </properties>
+     </profile>
+     <profile>
+       <!-- Tomcat 6.0 production -->
+       <id>andromeda-deployment-tomcat6-prod</id>
+       <properties>
+         <jahia.deploy.targetServerType>tomcat</jahia.deploy.targetServerType>
+         <jahia.deploy.targetServerVersion>6</jahia.deploy.targetServerVersion>
+         <jahia.deploy.targetServerDirectory>C:/jahia/apache-tomcat-6.0.16</jahia.deploy.targetServerDirectory>
+         <jahia.deploy.war.dirName>ROOT</jahia.deploy.war.dirName>
+         <jahia.deploy.war.contextPath>/</jahia.deploy.war.contextPath>
+         <jahia.deploy.war.servletPath>/cms</jahia.deploy.war.servletPath>
+         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+       </properties>
+     </profile>
+     
+     <profile>
+       <!-- JBoss 4.2.x development -->
+       <id>andromeda-deployment-jboss42-dev</id>
+       <properties>
+         <jahia.deploy.targetServerType>jboss</jahia.deploy.targetServerType>
+         <jahia.deploy.targetServerVersion>4.2.x</jahia.deploy.targetServerVersion>
+         <jahia.deploy.targetServerDirectory>C:/rd/runtime/andromeda-jboss/jboss-4.2.3.GA</jahia.deploy.targetServerDirectory>
+         <jahia.deploy.war.dirName>jahia.war</jahia.deploy.war.dirName>
+         <jahia.deploy.war.contextPath>/jahia</jahia.deploy.war.contextPath>
+         <jahia.deploy.war.servletPath>/Jahia</jahia.deploy.war.servletPath>
+         <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+       </properties>
+     </profile>
+
+  </profiles>
+  
+  <activeProfiles>
+    <activeProfile>gwt-1.5.2</activeProfile>
+    <activeProfile>andromeda-deployment-tomcat5-dev</activeProfile>
+    <activeProfile>configure</activeProfile>
+    <!-- <activeProfile>jboss-deployment</activeProfile> -->
+    <!-- <activeProfile>eclipse-integration</activeProfile> -->
+  </activeProfiles>         
+
+  <!-- Jahia plugin -->
+  <pluginGroups>
+    <pluginGroup>org.jahia.server</pluginGroup>
+  </pluginGroups>
+
+  <localRepository>C:/java/m2repository</localRepository>
+</settings>

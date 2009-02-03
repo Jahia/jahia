@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.ibm.ejs.models.base.extensions.webappext:WebAppExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.ejs.models.base.extensions.webappext="webappext.xmi" xmi:id="WebAppExtension_1">
+    <webApp href="WEB-INF/web.xml#WebApp_1"/>
+    <jspAttributes xmi:id="AttributJSP_1" name="jdkSourceLevel" value="15"/>
+</com.ibm.ejs.models.base.extensions.webappext:WebAppExtension>

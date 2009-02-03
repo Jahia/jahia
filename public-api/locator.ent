@@ -1,0 +1,6 @@
+<!ENTITY common-dependencies SYSTEM "file:../../common-packagedwebapps/pom-fragments/common-dependencies.ent">	
+<!ENTITY common-topsite SYSTEM "file:../../common-packagedwebapps/pom-fragments/common-topsite.ent">	
+<!ENTITY common-toprepository SYSTEM "file:../../common-packagedwebapps/pom-fragments/common-toprepository.ent">	
+<!ENTITY common-warsite SYSTEM "file:../../common-packagedwebapps/pom-fragments/common-warsite.ent">	
+<!ENTITY common-warrepository SYSTEM "file:../../common-packagedwebapps/pom-fragments/common-warrepository.ent">	
+<!ENTITY jetspeed-version "2.1-dev">

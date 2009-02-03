@@ -1,0 +1,222 @@
+#created on: 20 dec. 2007
+package org.jahia.services.content.automation
+
+#list any import classes here.
+import org.jahia.services.content.JCRStoreProvider
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global ImageService imageService
+global ExtractionService extractionService
+global Logger logger
+global JCRStoreProvider provider
+
+rule "Metadata update / file created"
+    salience -10
+    no-loop
+    when
+        A new node is created
+             - it has the type mix:lastModified
+        The node has a parent
+    then
+        Set the property jcr:createdBy of the node with the name of the current user
+        #Set the property jcr:created of the node with the current time
+        Set the property jcr:lastModifiedBy of the parent with the name of the current user
+        Set the property jcr:lastModified of the parent with the current time
+end
+
+rule "Metadata update / property modified"
+    salience -11
+    no-loop
+    when
+        A property has been set on a node
+             - the node has the type mix:lastModified
+        The property jcr:lastModified has not been modified yet on the node
+    then
+        Set the property jcr:lastModified of the node with the current time
+        Set the property jcr:lastModifiedBy of the node with the name of the current user
+end
+
+rule "Filename"
+    when
+        A new node is created
+             - it has the type jmix:hierarchyNode
+    then
+        Set the property j:filename of the node with the name of the node
+end
+
+rule "Set acl by property"
+    when
+        A property j:applyAcl has been set on a node
+    then
+        Log "Set acl by property"
+		Assign permissions on the node from the property value
+		Remove this property
+end
+
+rule "Image type"
+    salience 50
+    no-loop
+    when
+        A new node is created
+             - the mimetype matches image/.*
+    then
+        Log "Image type"
+        Add the type jmix:image
+        Create an image "thumbnail" of size 150
+        Create an image "thumbnail2" of size 350
+        Set the property j:width of the node with the width of the image
+        Set the property j:height of the node with the height of the image
+end
+
+// Extract all possible data from a file when it's uploaded
+
+rule "Properties extraction"
+    when
+        A file content has been modified
+    then
+        Log "Properties extraction fired"
+        Extract the properties from the file
+end
+
+// These rules check if some data have been extracted, and then assign type and properties
+
+rule "Assign word title properties"
+    when
+        A new node is created
+             - the mimetype is application/msword
+        A variable title has been extracted
+    then
+        Set the property jcr:title of the node with the value of title
+end
+
+rule "Assign word keywords properties"
+    when
+        A new node is created
+             - the mimetype is application/msword
+        A variable keywords has been extracted
+    then
+        Set the property j:keywords of the node with the value of keywords
+end
+
+rule "Assign word comments properties"
+    when
+        A new node is created
+             - the mimetype is application/msword
+        A variable comments has been extracted
+    then
+        Set the property jcr:description of the node with the value of comments
+end
+
+rule "Assign other word properties"
+    when
+        A new node is created
+             - the mimetype is application/msword
+        A variable subject has been extracted
+        A variable pagecount has been extracted
+        A variable wordcount has been extracted
+        A variable charcount has been extracted
+        A variable appname has been extracted
+        A variable codepage has been extracted
+    then
+        Log "Assign word properties fired"
+        Add the type jmix:document
+        Set the property j:subject of the node with the value of subject
+        Set the property j:pageCount of the node with the value of pagecount
+        Set the property j:wordCount of the node with the value of wordcount
+        Set the property j:charCount of the node with the value of charcount
+        Set the property j:appName of the node with the value of appname
+        Set the property j:codePage of the node with the value of codepage
+end
+
+rule "Assign photo properties"
+    when
+        A new node is created
+        A variable Exif_Model has been extracted
+    then
+        Log "Assign photo properties fired"
+        Add the type jmix:photo
+        Set the property j:model of the node with the value of Exif_Model
+end
+
+rule "Assign pdf properties"
+    when
+        A new node is created
+        A variable Producer has been extracted
+    then
+        Log "Assign pdf properties fired"
+        Add the type jmix:document
+        Set the property j:appName of the node with the value of Producer
+end
+
+rule "Test type"
+    when
+        A new node is created
+        - it is in /content/shared/test
+    then
+        Add the type jmix:test
+end
+
+// These 2 rules show how to take some actions based on the user properties
+
+/*
+rule "Assign acl to all my groups"
+    when
+        A new node is created
+        The current user belongs to a group
+    then
+        Log "Assign acl to my group "+groupName
+        Assign permissions "rw" on the node to this group
+end
+*/
+
+/*
+rule "Assign acl to my service"
+    when
+        A new node is created
+        The current user has a property named service
+    then
+        Log "Assign acl to my service" +userProperty.getValue()
+        Assign permissions "rw" on the node to a group matching that property
+end
+*/
+
+// This is an example that shows how to propagate a property to all sub folders and sub files
+// First rule copy the value from the parent when a file is uploaded / modified
+// Second rule propagates a property change to all children
+
+rule "Copy status parent value by new type"
+    when
+        The type jmix:categorizedDocument has been assigned to a node
+        The property j:status is not defined for the node
+        The node has a parent
+        The parent has a property j:status
+    then
+        Log "Copy status parent value by new type"
+        Set the property j:status of the node with the value of that property
+end
+
+rule "Propagate status value to children"
+    when
+        A property j:status has been set on a node
+        The node has a child
+            - it has the extension type jmix:categorizedDocument
+    then
+        Log "Propagate status value to child "+child
+        Set the property j:status of the child with the value of that property
+end
+
+rule "Import file"
+    when
+        A new node is created
+        The node has a parent
+             - it has the extension type jnt:importDropBox
+    then
+        Import the node
+        Log "Import file"
+end

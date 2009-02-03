@@ -1,0 +1,12 @@
+<jcr:accessControl jcr:primaryType="rep:accessControl"
+                   xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+                   xmlns:jcr="http://www.jcp.org/jcr/1.0"
+                   xmlns:j="http://www.jahia.org/jahia/1.0"
+                   xmlns:rep="internal">
+    <j:defaultAcp jcr:primaryType="nt:accessControlPolicy">
+        <jcr:acl jcr:primaryType="nt:acl">
+            <jcr:ace jcr:primaryType="nt:ace" jcr:aceType="GRANT" jcr:principal="g:guest"
+                     jcr:privileges="jcr:read" jcr:protected="true" />
+        </jcr:acl>
+    </j:defaultAcp>
+</jcr:accessControl>

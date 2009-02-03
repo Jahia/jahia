@@ -1,0 +1,537 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+BODY {
+	MARGIN: 0px; BACKGROUND-COLOR: #ffffff
+}
+.backcolor2 {
+	BACKGROUND-COLOR: #999999
+}
+BODY {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+P {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+H3 {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+TD {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+LI {
+	FONT-SIZE: 10px; COLOR: #000000; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+A {
+	COLOR: #006699; TEXT-DECORATION: none
+}
+H1 {
+	FONT-SIZE: 24px; COLOR: #666666; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+H2 {
+	FONT-SIZE: 14px; COLOR: #999999; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+H3 {
+	PADDING-LEFT: 20px; FONT-SIZE: 12px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/triangle.gif); BACKGROUND-REPEAT: no-repeat
+}
+.justify {
+	TEXT-ALIGN: justify
+}
+.right {
+	DISPLAY: block; TEXT-ALIGN: right
+}
+.quicklinkon {
+	PADDING-RIGHT: 15px; PADDING-LEFT: 15px; FONT-SIZE: 9px; COLOR: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #006699
+}
+.quicklinkon A {
+	COLOR: #ffffff
+}
+.quicklinkon A:hover {
+	COLOR: #cccccc
+}
+.quicklink {
+	BORDER-RIGHT: #006699 0px; PADDING-RIGHT: 15px; BORDER-TOP: #006699 1px solid; PADDING-LEFT: 15px; FONT-SIZE: 9px; BORDER-LEFT: #006699 1px solid; COLOR: #666666; BORDER-BOTTOM: #006699 1px solid; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.quicklink A {
+	COLOR: #666666
+}
+.quicklink A:hover {
+	COLOR: #cccccc
+}
+.quicklinklast {
+	FONT-SIZE: 8px; BORDER-LEFT: #006699 1px solid
+}
+.tab_off A {
+	COLOR: #666666
+}
+.tab_on A {
+	COLOR: #666666
+}
+.adminmenu {
+	VERTICAL-ALIGN: middle; WHITE-SPACE: nowrap
+}
+.adminmenu A {
+	COLOR: #666666
+}
+.nowrap {
+	WHITE-SPACE: nowrap
+}
+INPUT {
+	BORDER-RIGHT: #c0c0c0 1px solid; BORDER-TOP: #c0c0c0 1px solid; FONT-SIZE: 10px; BORDER-LEFT: #c0c0c0 1px solid; COLOR: #666666; BORDER-BOTTOM: #c0c0c0 1px solid; FONT-FAMILY: Arial, Helvetica, sans-serif; HEIGHT: 15px
+}
+.topmenuonblue {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_blue_on.gif); BACKGROUND-REPEAT: no-repeat; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenuonblue A {
+	COLOR: #000000
+}
+.topmenuonblue A:hover {
+	COLOR: #006699
+}
+.topmenublue {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; FONT-SIZE: 10px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_off.gif); BACKGROUND-REPEAT: no-repeat; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenublue A {
+	COLOR: #000000
+}
+.topmenublue A:hover {
+	COLOR: #006699
+}
+.menublue .optionsblue {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; FONT-SIZE: 10px; BACKGROUND: #cccccc; PADDING-BOTTOM: 5px; LINE-HEIGHT: 15px; PADDING-TOP: 5px
+}
+.menublue A {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; COLOR: #666666; TEXT-DECORATION: none
+}
+UNKNOWN {
+	COLOR: #ffffff
+}
+.menublue A:hover {
+	BACKGROUND: #006699; COLOR: #ffffff
+}
+.topmenuonorange {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_orange_on.gif); BACKGROUND-REPEAT: no-repeat; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenuonorange A {
+	COLOR: #000000
+}
+.topmenuonorange A:hover {
+	COLOR: #ff7d00
+}
+.topmenuorange {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; FONT-SIZE: 10px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_off.gif); BACKGROUND-REPEAT: no-repeat; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenuorange A {
+	COLOR: #000000
+}
+.topmenuorange A:hover {
+	COLOR: #ff7d00
+}
+.menuorange .optionsorange {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; FONT-SIZE: 10px; BACKGROUND: #cccccc; PADDING-BOTTOM: 5px; LINE-HEIGHT: 15px; PADDING-TOP: 5px
+}
+.menuorange A {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; COLOR: #666666; TEXT-DECORATION: none
+}
+UNKNOWN {
+	COLOR: #ffffff
+}
+.menuorange A:hover {
+	BACKGROUND: #ff7d00; COLOR: #ffffff
+}
+.topmenuongreen {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_green_on.gif); BACKGROUND-REPEAT: no-repeat; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenuongreen A {
+	COLOR: #000000
+}
+.topmenuongreen A:hover {
+	COLOR: #2da02d
+}
+.topmenugreen {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; FONT-SIZE: 10px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_off.gif); BACKGROUND-REPEAT: no-repeat; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenugreen A {
+	COLOR: #000000
+}
+.topmenugreen A:hover {
+	COLOR: #2da02d
+}
+.menugreen .optionsgreen {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; FONT-SIZE: 10px; BACKGROUND: #cccccc; PADDING-BOTTOM: 5px; LINE-HEIGHT: 15px; PADDING-TOP: 5px
+}
+.menugreen A {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; COLOR: #666666; TEXT-DECORATION: none
+}
+UNKNOWN {
+	COLOR: #ffffff
+}
+.menugreen A:hover {
+	BACKGROUND: #2da02d; COLOR: #ffffff
+}
+.topmenuonred {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_red_on.gif); BACKGROUND-REPEAT: no-repeat; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenuonred A {
+	COLOR: #000000
+}
+.topmenuonred A:hover {
+	COLOR: #d50d1f
+}
+.topmenured {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; FONT-SIZE: 10px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_off.gif); BACKGROUND-REPEAT: no-repeat; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenured A {
+	COLOR: #000000
+}
+.topmenured A:hover {
+	COLOR: #d50d1f
+}
+.menured .optionsred {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; FONT-SIZE: 10px; BACKGROUND: #cccccc; PADDING-BOTTOM: 5px; LINE-HEIGHT: 15px; PADDING-TOP: 5px
+}
+.menured A {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; COLOR: #666666; TEXT-DECORATION: none
+}
+UNKNOWN {
+	COLOR: #ffffff
+}
+.menured A:hover {
+	BACKGROUND: #d50d1f; COLOR: #ffffff
+}
+.topmenuon {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_blue_on.gif); BACKGROUND-REPEAT: no-repeat; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenuon A {
+	COLOR: #000000
+}
+.topmenuon A:hover {
+	COLOR: #006699
+}
+.topmenu {
+	BORDER-RIGHT: #ffffff 1px solid; PADDING-RIGHT: 15px; BACKGROUND-POSITION: 0% 100%; PADDING-LEFT: 15px; FONT-SIZE: 10px; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/top_menu_left_off.gif); BACKGROUND-REPEAT: no-repeat; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.topmenu A {
+	COLOR: #000000
+}
+.topmenu A:hover {
+	COLOR: #006699
+}
+.menu .options {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; FONT-SIZE: 10px; BACKGROUND: #cccccc; PADDING-BOTTOM: 5px; LINE-HEIGHT: 15px; PADDING-TOP: 5px
+}
+.menu A {
+	PADDING-RIGHT: 5px; DISPLAY: block; PADDING-LEFT: 5px; COLOR: #666666; TEXT-DECORATION: none
+}
+UNKNOWN {
+	COLOR: #ffffff
+}
+.menu A:hover {
+	BACKGROUND: #006699; COLOR: #ffffff
+}
+.topmenubg {
+	BACKGROUND-COLOR: #cccccc
+}
+.topmenubuttons {
+	PADDING-LEFT: 2px; FONT-SIZE: 10px; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #cccccc
+}
+.color1bg {
+	BACKGROUND-COLOR: #006699
+}
+.languages {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; FONT-SIZE: 10px; COLOR: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; HEIGHT: 15px; BACKGROUND-COLOR: #666666
+}
+.languages A {
+	COLOR: #ffffff
+}
+.languages A:hover {
+	COLOR: #cccccc
+}
+.maintable {
+	BACKGROUND-COLOR: #ffffff
+}
+.maintable10 {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; BACKGROUND-COLOR: #ffffff
+}
+.path {
+	PADDING-RIGHT: 20px; PADDING-LEFT: 10px; FONT-SIZE: 10px; PADDING-BOTTOM: 10px; COLOR: #666666; PADDING-TOP: 10px; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #ffffff
+}
+.path A {
+	COLOR: #666666
+}
+.path A:hover {
+	COLOR: #999999
+}
+.leftpict {
+	BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/leftmenuoff.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat
+}
+.leftpicton {
+	BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/leftmenuoff.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat
+}
+.leftpictcurrent {
+	BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/leftmenuon_blue.gif); WIDTH: 12px; BACKGROUND-REPEAT: no-repeat
+}
+.left {
+	BORDER-RIGHT: #e7e7e7 1px solid; BORDER-TOP: #e7e7e7 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #e7e7e7 1px solid; COLOR: #666666; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #f0f0f0
+}
+.left:hover {
+	BACKGROUND-COLOR: #c5c5c5
+}
+.left A {
+	COLOR: #666666
+}
+.lefton {
+	BORDER-RIGHT: #e7e7e7 1px solid; BORDER-TOP: #e7e7e7 1px solid; FONT-SIZE: 11px; BORDER-LEFT: #e7e7e7 1px solid; COLOR: #666666; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #c5c5c5
+}
+.lefton A {
+	COLOR: #666666
+}
+.lefton A:hover {
+	COLOR: #ffffff
+}
+.leftcurrent {
+	BORDER-RIGHT: #e7e7e7 1px solid; BORDER-TOP: #e7e7e7 1px solid; FONT-SIZE: 10px; BORDER-LEFT: #e7e7e7 1px solid; COLOR: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #006699
+}
+.leftcurrent A {
+	COLOR: #ffffff
+}
+.leftbottom {
+	BORDER-TOP: #e7e7e7 1px solid
+}
+.leftlevel1 {
+	PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; PADDING-TOP: 2px
+}
+.leftlevel2 {
+	PADDING-LEFT: 20px; FONT-SIZE: 10px
+}
+.leftlevel3 {
+	PADDING-LEFT: 35px; FONT-SIZE: 10px
+}
+.leftlevel4 {
+	PADDING-LEFT: 50px; FONT-SIZE: 10px
+}
+.leftlevel5 {
+	PADDING-LEFT: 65px; FONT-SIZE: 10px
+}
+.leftlevel6 {
+	PADDING-LEFT: 80px; FONT-SIZE: 10px
+}
+.verticaleline {
+	BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/verticaleline.gif); WIDTH: 9px; BACKGROUND-REPEAT: repeat-y
+}
+.horizontaleline {
+	DISPLAY: block; BACKGROUND-IMAGE: url(/WebModule/web_css.jsp/../images/horizontaleline.gif); PADDING-TOP: 8px; BACKGROUND-REPEAT: repeat-x; WHITE-SPACE: nowrap
+}
+.footer {
+	FONT-SIZE: 10px; PADDING-BOTTOM: 10px; COLOR: #666666; PADDING-TOP: 10px; FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #ffffff; TEXT-ALIGN: center
+}
+.boxtitletransparent {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; COLOR: #666666; PADDING-TOP: 2px; WHITE-SPACE: nowrap
+}
+.boxtitleborder1 {
+	BORDER-RIGHT: #006699 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #006699 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; BORDER-LEFT: #006699 1px solid; COLOR: #666666; PADDING-TOP: 2px; BORDER-BOTTOM: #006699 1px solid; WHITE-SPACE: nowrap
+}
+.boxtitleborder2 {
+	BORDER-RIGHT: #a8a8a8 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #a8a8a8 1px solid; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; BORDER-LEFT: #a8a8a8 1px solid; COLOR: #666666; PADDING-TOP: 2px; BORDER-BOTTOM: #a8a8a8 1px solid; WHITE-SPACE: nowrap
+}
+.boxtitlecolor1 {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; COLOR: #ffffff; PADDING-TOP: 2px; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #006699
+}
+.boxtitlecolor2 {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 2px; COLOR: #ffffff; PADDING-TOP: 2px; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #a8a8a8
+}
+.boxcontenttransparent {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; PADDING-TOP: 5px
+}
+.boxcontentborder1 {
+	BORDER-RIGHT: #006699 1px solid; PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; BORDER-LEFT: #006699 1px solid; PADDING-TOP: 5px; BORDER-BOTTOM: #006699 1px solid
+}
+.boxcontentborder2 {
+	BORDER-RIGHT: #a8a8a8 1px solid; PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; BORDER-LEFT: #a8a8a8 1px solid; PADDING-TOP: 5px; BORDER-BOTTOM: #a8a8a8 1px solid
+}
+.boxcontentcolor1 {
+	BORDER-RIGHT: #006699 1px solid; PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; BORDER-LEFT: #006699 1px solid; PADDING-TOP: 5px; BORDER-BOTTOM: #006699 1px solid; BACKGROUND-COLOR: #e7e7e7
+}
+.boxcontentcolor2 {
+	BORDER-RIGHT: #a8a8a8 1px solid; PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; BORDER-LEFT: #a8a8a8 1px solid; PADDING-TOP: 5px; BORDER-BOTTOM: #a8a8a8 1px solid; BACKGROUND-COLOR: #e7e7e7
+}
+.bold {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #006699
+}
+.boxtitleparticipant1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #003399; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #c4d2ff; TEXT-ALIGN: left
+}
+.boxtitleparticipant2 {
+	FONT-WEIGHT: bold; FONT-SIZE: 12px; COLOR: #c4d2ff; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #003399; TEXT-ALIGN: left
+}
+.boxEPcontentcolor1 {
+	BORDER-RIGHT: #006699 1px solid; BORDER-LEFT: #006699 1px solid; BORDER-BOTTOM: #006699 1px solid; BACKGROUND-COLOR: #c4d2ff
+}
+.boxEPbordercolor1 {
+	BORDER-RIGHT: #003399 1px solid; BORDER-TOP: #003399 1px solid; BORDER-LEFT: #003399 1px solid; BORDER-BOTTOM: #003399 1px solid
+}
+.boxEPTitlecolor1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; PADDING-BOTTOM: 2px; COLOR: #ffffff; PADDING-TOP: 2px; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #003399; TEXT-ALIGN: left
+}
+.boxEPLinkcolor1 {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #ffffff; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; TEXT-ALIGN: left
+}
+.boxEPPaginationPos {
+	FONT-SIZE: 11px; COLOR: #003399; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; TEXT-ALIGN: left
+}
+.boxEPPaginationNav {
+	FONT-SIZE: 11px; COLOR: #003399; FONT-STYLE: normal; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; TEXT-ALIGN: right
+}
+.EPMetaDataTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; VERTICAL-ALIGN: top; COLOR: #000000; FONT-FAMILY: Arial, Helvetica, sans-serif; WHITE-SPACE: nowrap; TEXT-ALIGN: left
+}
+.EPMetaDataValue {
+	FONT-SIZE: 11px; VERTICAL-ALIGN: top; COLOR: #000000; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-ALIGN: left
+}
+UNKNOWN {
+	COLOR: #000000
+}
+.waMenu A:hover {
+	COLOR: #006699; BACKGROUND-COLOR: #ffffff
+}
+A.waMenu:hover {
+	COLOR: #006699; BACKGROUND-COLOR: #ffffff
+}
+A.waMenuHighlight {
+	COLOR: #be0c2b
+}
+A.waMenuHighlight:hover {
+	BACKGROUND-COLOR: #ffffff
+}
+.waUnderline:link {
+	COLOR: #000000
+}
+.waUnderline:visited {
+	COLOR: #000000
+}
+.waUnderline:active {
+	COLOR: #000000
+}
+.waUnderline:hover {
+	COLOR: #100e80; BACKGROUND-COLOR: #cccccc
+}
+.waTree:link {
+	COLOR: #000000
+}
+.waTree:visited {
+	COLOR: #000000
+}
+.waTree:active {
+	COLOR: #000000
+}
+.waTree:hover {
+	COLOR: #006699
+}
+.waSelected:link {
+	COLOR: #ffffff; BACKGROUND-COLOR: #006699
+}
+.waSelected:visited {
+	COLOR: #ffffff; BACKGROUND-COLOR: #006699
+}
+.waSelected:active {
+	COLOR: #ffffff; BACKGROUND-COLOR: #006699
+}
+.waSelected:hover {
+	COLOR: #ffffff; BACKGROUND-COLOR: #006699
+}
+.waNormal {
+	COLOR: #006699
+}
+.waSmall {
+	FONT-SIZE: 9px; COLOR: #006699
+}
+.waRed {
+	FONT-SIZE: 9px; COLOR: #be0c2b
+}
+.waLargeRed {
+	COLOR: #be0c2b
+}
+.waSmallBoldItalic {
+	FONT-WEIGHT: bold; FONT-SIZE: 9px; COLOR: #006699; FONT-STYLE: italic
+}
+.waSmallItalic {
+	FONT-SIZE: 9px; COLOR: #006699; FONT-STYLE: italic
+}
+.waBG {
+	BACKGROUND-COLOR: #e7e7e7
+}
+.waTrpBG {
+	BACKGROUND-COLOR: #c1c7d0
+}
+.waBoxBG {
+	BACKGROUND-COLOR: #cccccc
+}
+.waBorder {
+	BACKGROUND-COLOR: #999999
+}
+.waInput {
+	FONT-SIZE: 9px; COLOR: #000000; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.waSelect {
+	FONT-SIZE: 11px; COLOR: #000000; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.waSelect:hover {
+	COLOR: #000000
+}
+.waTextarea {
+	FONT-SIZE: 9px; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.nfLink:link {
+	COLOR: #006699; FONT-STYLE: normal
+}
+.nfLink:visited {
+	COLOR: #006699; FONT-STYLE: normal
+}
+.nfLink:visited {
+	COLOR: #006699; FONT-STYLE: normal
+}
+.nfLink:hover {
+	COLOR: #100e80; FONT-STYLE: normal; BACKGROUND-COLOR: #cccccc
+}
+.nfTitle {
+	FONT-WEIGHT: bold; FONT-SIZE: 11px; COLOR: #006699; FONT-STYLE: normal
+}
+.nfDate {
+	FONT-WEIGHT: bold; FONT-SIZE: 9px; COLOR: #006699; FONT-STYLE: normal
+}
+.nfSource {
+	FONT-SIZE: 9px; COLOR: #006699; FONT-STYLE: normal
+}
+.nfMedia {
+	FONT-SIZE: 9px; COLOR: #006699; FONT-STYLE: italic
+}

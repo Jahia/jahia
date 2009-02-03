@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web>
+    <resource-ref>
+        <res-ref-name>jdbc/jahia</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <jndi-name>java:jahiaDS</jndi-name>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>jdbc/jahiaNonTx</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <jndi-name>java:jahiaDS</jndi-name>
+    </resource-ref>    
+    <resource-ref>
+        <res-ref-name>jcr/repository</res-ref-name>
+        <res-type>javax.jcr.Repository</res-type>
+        <jndi-name>java:jcr/local</jndi-name>
+    </resource-ref>
+    <resource-ref>
+        <res-ref-name>jahia/users</res-ref-name>
+        <res-type>org.jahia.api.user.JahiaUserService</res-type>
+        <jndi-name>java:jahia/users</jndi-name>
+    </resource-ref>        
+    
+    <loader-repository>
+        org.jahia:loader=jahia.war 
+        <loader-repository-config>java2ParentDelegation=false</loader-repository-config>
+    </loader-repository>
+</jboss-web>

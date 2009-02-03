@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration SYSTEM "http://jackrabbit.apache.org/dtd/indexing-configuration-1.0.dtd">
+<configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+
+    <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
+
+    <!--
+Sometimes it is useful to include the contents of descendant nodes into a single node to easier search on content that is scattered across multiple nodes.
+Jackrabbit allows you to define index aggregates based on relative path patterns and primary node types.
+The following example creates an index aggregate on nt:file that includes the content of the jcr:content node:
+    -->
+    <!--
+    <aggregate primaryType="nt:file">
+        <include primaryType="nt:resource">*</include>
+    </aggregate>
+    -->
+
+</configuration>

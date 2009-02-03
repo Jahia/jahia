@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean id="coreEngine" class="org.jahia.engines.core.Core_Engine" />
+    <bean id="updateFieldEngine" class="org.jahia.engines.updatefield.UpdateField_Engine" />
+    <bean id="addContainerEngine" class="org.jahia.engines.addcontainer.AddContainer_Engine">
+        <property name="lockRegistry" ref="LockService" />
+    </bean>
+    <bean id="updateContainerEngine" class="org.jahia.engines.updatecontainer.UpdateContainer_Engine" />
+    <bean id="deleteContainerEngine" class="org.jahia.engines.deletecontainer.DeleteContainer_Engine">
+        <property name="pageService" ref="JahiaPageService" />
+    </bean>
+    <bean id="restoreContainerEngine" class="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine" />
+    <bean id="selectDataSourceEngine" class="org.jahia.engines.selectdatasource.SelectDataSource_Engine" />
+    <bean id="xmlSourceEngine" class="org.jahia.engines.xmlsource.XmlSource" />
+    <bean id="viewDataSourceIDEngine" class="org.jahia.engines.viewdatasourceid.ViewDataSourceID_Engine" />
+    <bean id="searchEngine" class="org.jahia.engines.search.Search_Engine" />
+    <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine" />
+    <bean id="logoutEngine" class="org.jahia.engines.logout.Logout_Engine" />
+    <bean id="pagePropertiesEngine" class="org.jahia.engines.pages.PageProperties_Engine" >
+        <property name="cacheService" ref="JahiaCacheService" />
+        <property name="lockService" ref="LockService" />
+    </bean>
+    <bean id="containerListPropertiesEngine" class="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine" />
+    <bean id="siteMapEngine" class="org.jahia.engines.sitemap.SiteMap_Engine" />
+    <bean id="selectPageEngine" class="org.jahia.engines.selectpage.SelectPage_Engine" />
+    <bean id="templateEngine" class="org.jahia.engines.template.Template_Engine" />
+    <bean id="selectUGEngine" class="org.jahia.engines.users.SelectUG_Engine" />
+    <bean id="lockEngine" class="org.jahia.engines.lock.LockEngine" />
+    <bean id="editUserPreferencesEngine" class="org.jahia.engines.users.EditUserPreferences_Engine" />
+    <bean id="newUserRegistrationEngine" class="org.jahia.engines.users.NewUserRegistration_Engine" />
+    <bean id="mySettingsEngine" class="org.jahia.engines.mysettings.MySettingsEngine" />
+    <bean id="clipBoardEngine" class="org.jahia.engines.importexport.ClipboardEngine" >
+        <property name="siteservice" ref="JahiaSitesService" />
+    </bean>
+    <bean id="exportEngine" class="org.jahia.engines.importexport.ExportEngine" />
+    <bean id="categoriesEditEngine" class="org.jahia.engines.categories.CategoriesEdit_Engine" />
+    <bean id="categoriesSelectEngine" class="org.jahia.engines.categories.CategoriesSelect_Engine" />
+    <bean id="applicationEngine" class="org.jahia.engines.applications.Application_Engine" />
+    <bean id="manageApplicationCategoriesEngine" class="org.jahia.engines.applications.ManageApplicationCategoriesEngine" />
+    <bean id="customizeSaveSearchViewEngine" class="org.jahia.engines.search.CustomizeSaveSearchView_Engine" >
+        <property name="searchService" ref="JahiaSearchService" />
+    </bean>
+    <bean id="manageLogsEngine" class="org.jahia.engines.audit.ManageLogs_Engine" />
+    <bean id="appDispatcherEngine" class="org.jahia.engines.applications.FullScreenDispatcherEngine" />
+
+    <bean id="engineRegistry" class="org.jahia.registries.EnginesRegistry">
+        <property name="engineInstances">
+            <list>
+                <ref bean="coreEngine" />
+                <ref bean="updateFieldEngine" />
+                <ref bean="addContainerEngine" />
+                <ref bean="updateContainerEngine" />
+                <ref bean="deleteContainerEngine" />
+                <ref bean="restoreContainerEngine" />
+                <ref bean="selectDataSourceEngine" />
+                <ref bean="xmlSourceEngine" />
+                <ref bean="viewDataSourceIDEngine" />
+                <ref bean="searchEngine" />
+                <ref bean="loginEngine" />
+                <ref bean="logoutEngine" />
+                <ref bean="pagePropertiesEngine" />
+                <ref bean="containerListPropertiesEngine" />
+                <ref bean="siteMapEngine" />
+                <ref bean="selectPageEngine" />
+                <ref bean="templateEngine" />
+                <ref bean="selectUGEngine" />
+                <ref bean="lockEngine" />
+                <ref bean="editUserPreferencesEngine" />
+                <ref bean="newUserRegistrationEngine" />
+                <ref bean="mySettingsEngine" />
+                <ref bean="clipBoardEngine" />
+                <ref bean="exportEngine" />
+                <ref bean="categoriesEditEngine" />
+                <ref bean="categoriesSelectEngine" />
+                <ref bean="applicationEngine" />
+                <ref bean="manageApplicationCategoriesEngine" />
+                <ref bean="customizeSaveSearchViewEngine" />
+                <ref bean="appDispatcherEngine" />
+            </list>
+        </property>
+    </bean>
+</beans>

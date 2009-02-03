@@ -1,0 +1,25 @@
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:container id="promoContainer" >
+
+    <div class="column-item"><!--start column-item -->
+        <div class="columnspace"><!--start columnspace -->
+            <div class="box box-fixed-height"><!--start box -->
+                <template:image file="image" cssClassName="floatleft"/>
+                <div class="box-content">
+                    <h3><template:field name='title'/></h3>
+                    <p><template:field name='abstract'/></p>
+                </div>
+                <template:field name="link" display="false" beanID="promolink"/>
+                <c:if test="${!empty promolink && promolink != ''}">
+                <div class="more">
+                    <span><template:link page="link" maxChar="20"/></span>
+                 </div>
+                </c:if>
+            </div><!--stop box -->
+        <div class="clear"></div>
+        </div><!--stop columnspace -->
+    </div><!--stop column-item -->
+
+    <!-- here we test if the edit mode is active to change a bit the display avoiding layout problems due to action menus -->
+    <c:if test="${requestScope.currentRequest.editMode}"><div class="clear"></div>   </c:if>
+</template:container>

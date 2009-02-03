@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaCtnStruct"
+        table="jahia_ctn_struct"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaCtnStructPK"
+        >
+
+                    <key-many-to-one
+                        name="ctnsubdefid"
+                        class="org.jahia.hibernate.model.JahiaCtnDefProperty"
+                        column="ctnsubdefid_jahia_ctn_struct"
+                    />
+
+                     <key-property
+                        name="objType"
+                        type="java.lang.Integer"
+                        column="objtype_jahia_ctn_struct"
+                        length="11"
+                />
+
+                     <key-property
+                        name="objDefId"
+                        type="java.lang.Integer"
+                        column="objdefid_jahia_ctn_struct"
+                        length="11"
+                />
+
+        </composite-id>
+
+        <property
+            name="rankJahiaCtnStruct"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="rank_jahia_ctn_struct"
+            length="11"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaCtnStruct.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

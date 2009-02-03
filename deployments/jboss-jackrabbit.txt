@@ -1,0 +1,98 @@
+This document describes how to install Jahia on Jboss with Jackrabbit
+
+JBoss : 4.2.3.GA
+Jackrabbit version : 679434
+Jahia : ANDROMEDA
+JDK : 1.5.0_11
+
+1/ Install Jboss
+
+Download and unzip Jboss
+Edit the bin/run.conf or bin/run.bat (on Windows) to set the max permgen space to 128M with the following parameter :
+-XX:PermSize=128M
+
+2/ Deploy Jahia
+Activate the profiles jboss-deployment and one andromeda-deployment-jboss* profile in your settings.xml, 
+and don't forget to adapt the server directory, version, jahia context-path and servlet name in the settings' profile, if you 
+want to use a non-default setting.
+
+Call "mvn clean install" in the jahia root directory.
+
+3/ Create datasource
+a)
+Create a jahia-ds.xml file in server/default/deploy folder. The content of this file is dedicated to 
+your database configuration. You will find a lot of examples in the following directory of your JBoss  
+installation root folder: 
+ 
+jboss/docs/examples/jca 
+ 
+Take one sample files (ie postgres-ds.xml for postgres database), and modify the content of the 
+file with your database connection data. 
+
+In this file replace local-tx-datasource with no-tx-datasource.
+ 
+Replace the jndi-name with the following tag: 
+ 
+<jndi-name>jahiaDS</jndi-name> 
+
+Enter a valid connection url to a Jahia database you already created. Update the system user-name/password (e.g. jahia/jahia).
+
+b)
+Go to the jahia.war/WEB-INF/lib and move the database driver JAR to  server/default/lib.
+
+4/ Modify some files
+a) Rename WEB-INF\etc\config\log4j.xml to WEB-INF\etc\config\log4j.xml.bak
+b) Exchange the header in WEB-INF\portlet.xml with
+<portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
+version="1.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
+http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
+
+??? Please move the server\default\lib\jaxb-impl*.jar to jboss\lib and remove the existing jaxb-impl.jar from there.
+
+5/ Install Jahia
+Start the JBoss server (bin\run.bat or bin\run.sh) and run the Jahia Configuration Wizard by calling 
+http://locahlhost:8080/config in the browser (adapt the URL in case you are not using localhost, a different port or a 
+different webapp context).
+
+At a point you will be asked to restart the server. After stopping the server and before restarting you 
+should install the Jackrabbit repository connector.
+
+6/ Deploy Jackrabbit
+a)
+In server/default/deploy, Create a jcr-ds.xml file :
+
+<connection-factories>
+    <no-tx-connection-factory>
+        <jndi-name>jcr/local</jndi-name>
+        <rar-name>jackrabbit-rar.rar</rar-name>
+        <connection-definition>javax.jcr.Repository</connection-definition>
+        <config-property name="homeDir" type="java.lang.String">${jboss.server.data.dir}${/}jackrabbit</config-property>
+        <config-property name="configFile" type="java.lang.String">classpath:repository.xml</config-property>
+        <config-property name="bindSessionToTransaction" type="java.lang.Boolean">true</config-property>
+    </no-tx-connection-factory>
+</connection-factories>
+
+Update the rar-name with the real name of the deployed RAR folder (should have been deployed to server/default/deploy with the Maven job).
+
+Set the "homeDir" property to any empty folder, where the repository will store its data, or leave the default (=jackrabbit folder in 
+data directory of current JBoss server).
+
+b)
+Copy jahia.war/WEB-INF/etc/repository/jacktrabbit/repository.xml to server/default/deploy/jackrabbit-rar.rar
+and modify it by exchanging java:comp/env/jdbc/jahia with java:jahiaDS.
+
+7/ Security
+
+Add the following lines to server\default\conf\login-config.xml
+
+    <application-policy name="Jackrabbit">
+       <authentication>
+          <login-module code = "org.jahia.jaas.JahiaLoginModule"
+             flag = "required" />
+       </authentication>
+    </application-policy>
+    
+8/ 
+Do not use DummyTransactionManagers - simply comment them out in the TreeCache xml configuration files in WEB-INF\classes

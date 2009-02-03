@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaSite"
+        table="jahia_sites"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id_jahia_sites"
+            type="java.lang.Integer"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaSite.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="title"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="title_jahia_sites"
+            length="100"
+        />
+
+        <property
+            name="servername"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="servername_jahia_sites"
+            length="200"
+        />
+
+        <property
+            name="key"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="key_jahia_sites"
+            length="50"
+            unique="true"
+        />
+
+        <property
+            name="active"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="active_jahia_sites"
+            length="11"
+        />
+
+        <property
+            name="defaultpageid"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="defaultpageid_jahia_sites"
+            length="11"
+        />
+
+        <property
+            name="defaulttemplateid"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="defaulttemplateid_jahia_sites"
+            length="11"
+        />
+
+        <property
+            name="tplDeploymode"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="tpl_deploymode_jahia_sites"
+            length="11"
+        />
+
+        <property
+            name="webappsDeploymode"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="webapps_deploymode_jahia_sites"
+            length="11"
+        />
+
+        <property
+            name="rights"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="rights_jahia_sites"
+            length="11"
+        />
+
+        <property
+            name="descr"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="descr_jahia_sites"
+            length="250"
+        />
+
+        <property
+            name="defaultSite"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="default_site_jahia_sites"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaSite.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,138 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	margin: 10px;
+	color: #838383;
+	background-color: #336699;
+}
+
+#poweredby {
+	color: #3E77B0;
+}
+
+td,th {
+	font-size: 12px;
+}
+
+h3 {
+	font-size: 16px;
+}
+
+h3,a {
+	color: #398EC3;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.version {
+	float: right;
+	text-align: right;
+	font-size: 9px;
+	vertical-align: bottom;
+}
+
+#copyright {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #838383;
+}
+
+.greyed {
+	color: #aaaaaa;
+	font-weight: bold;
+	background-color: #EEEEdd;
+}
+
+.crons {
+	color: #bbccbb;
+	background-color: #ddEEdd;
+}
+
+.button {
+    display: inline;
+}
+
+.button a:link,
+.button a:visited,
+.button div.clicked,
+.button div.disabledButton {
+    text-decoration: none;
+    border: 1px solid;
+    font-size: 11px;
+    cursor: default;
+    font-style: normal;
+    padding: 5px 5px 5px 5px;
+    margin-left: 6px;
+    font-weight: bold;
+    height: 24px;
+    display: inline;
+}
+
+.button a:link,
+.button a:visited,
+.button div.clicked {
+    color: black;
+    border-color: #D0D0D0 #555555 #555555 #D0D0D0;
+    background-image: url( ../css/bg_button_up.gif );
+}
+
+.button div.disabledButton {
+    color: #a1a192;
+    background-color: #f5f4ea;
+    border-color: #a1a192 #a1a192 #a1a192 #a1a192;
+}
+
+.button a:focus,
+.button a:hover {
+    border-top: 1px solid;
+    border-right: 2px solid;
+    border-left: 1px solid;
+    border-bottom: 2px solid;
+    border-color: #D0D0D0 #555555 #555555 #D0D0D0;
+    cursor: default;
+    margin-left: 5px;
+    height: 24px;
+}
+
+.button a:active {
+    background-image: url( ../css/bg_button_down.gif );
+    border: 1px solid;
+    border-color: #555555 #D0D0D0 #D0D0D0 #555555;
+    cursor: default;
+    margin-left: 6px;
+}

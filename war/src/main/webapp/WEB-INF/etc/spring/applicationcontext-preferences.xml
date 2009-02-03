@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+     <!-- Generic provider: JCR -->
+     <bean id="org.jahia.preferences.provider.generic" class="org.jahia.services.preferences.impl.JahiaPreferencesJCRProvider">
+         <property name="providerType" value="org.jahia.preferences.provider.generic"/>
+        <property name="preferenceClass" value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
+        <property name="keyClass" value="org.jahia.services.preferences.generic.GenericJahiaPreferenceKey"/>
+        <property name="valueClass" value="org.jahia.services.preferences.generic.GenericJahiaPreferenceValue"/>
+    </bean>
+
+     <!-- Pageprovider: JCR -->
+     <bean id="org.jahia.preferences.provider.page" class="org.jahia.services.preferences.impl.JahiaPreferencesJCRProvider">
+        <property name="providerType" value="org.jahia.preferences.provider.page"/>
+        <property name="preferenceClass" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
+        <property name="keyClass" value="org.jahia.services.preferences.page.PageJahiaPreferenceKey"/>
+        <property name="valueClass" value="org.jahia.services.preferences.page.PageJahiaPreferenceValue"/>
+    </bean>
+
+    <!-- Layout manager provider: JCR -->
+    <bean id="org.jahia.preferences.provider.layoutmanager" class="org.jahia.services.preferences.impl.JahiaPreferencesJCRProvider">
+        <property name="providerType" value="org.jahia.preferences.provider.layoutmanager"/>
+        <property name="preferenceClass" value="org.jahia.services.preferences.layoutmanager.LayoutmanagerJahiaPreference"/>
+        <property name="keyClass" value="org.jahia.services.preferences.layoutmanager.LayoutmanagerJahiaPreferenceKey"/>
+        <property name="valueClass" value="org.jahia.services.preferences.layoutmanager.LayoutmanagerJahiaPreferenceValue"/>
+    </bean>
+
+    <!-- Toolbar provider: JCR -->
+    <bean id="org.jahia.preferences.provider.toolbar" class="org.jahia.services.preferences.impl.JahiaPreferencesJCRProvider">
+        <property name="providerType" value="org.jahia.preferences.provider.toolbar"/>
+        <property name="preferenceClass" value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreference"/>
+        <property name="keyClass" value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreferenceKey"/>
+        <property name="valueClass" value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreferenceValue"/>
+    </bean>
+
+    <!-- bookmarks provider: JCR -->
+    <bean id="org.jahia.preferences.provider.bookmarks" class="org.jahia.services.preferences.impl.JahiaPreferencesJCRProvider">
+        <property name="providerType" value="org.jahia.preferences.provider.bookmarks"/>
+        <property name="preferenceClass" value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
+        <property name="keyClass" value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceKey"/>
+        <property name="valueClass" value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceValue"/>
+    </bean>
+
+    <!-- widget provider: JCR -->
+    <bean id="org.jahia.preferences.provider.widget" class="org.jahia.services.preferences.impl.JahiaPreferencesJCRProvider">
+        <property name="providerType" value="org.jahia.preferences.provider.widget"/>
+        <property name="preferenceClass" value="org.jahia.services.preferences.widget.WidgetPreference"/>
+        <property name="keyClass" value="org.jahia.services.preferences.widget.WidgetJahiaPreferenceKey"/>
+        <property name="valueClass" value="org.jahia.services.preferences.widget.WidgetJahiaPreferenceValue"/>
+    </bean>
+
+    <!-- portlet provider: JCR -->
+    <bean id="org.jahia.preferences.provider.portlet" class="org.jahia.services.preferences.impl.JahiaPreferencesJCRProvider">
+        <property name="providerType" value="org.jahia.preferences.provider.portlet"/>
+        <property name="preferenceClass" value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
+        <property name="keyClass" value="org.jahia.services.applications.pluto.JahiaPortletPreferenceKey"/>
+        <property name="valueClass" value="org.jahia.services.applications.pluto.JahiaPortletPreferenceValue"/>
+    </bean>
+
+</beans>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaSitesUser"
+        table="jahia_sites_users"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaSitesUserPK"
+        >
+                     <key-property
+                        name="username"
+                        type="java.lang.String"
+                        column="username_sites_users"
+                        length="50"
+                />
+
+                     <key-property
+                        name="siteId"
+                        type="java.lang.Integer"
+                        column="siteid_sites_users"
+                />
+
+        </composite-id>
+
+        <many-to-one
+            name="user"
+            class="org.jahia.hibernate.model.JahiaUser"
+            cascade="none"
+            outer-join="true"
+            update="true"
+            insert="true"
+            access="property"
+            property-ref="key"
+            column="userid_sites_users"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaSitesUser.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,43 @@
+<%@ include file="declarations.jspf" %>
+<div id="headerPart1">
+	<div id="languages"><!--start languages-->
+        <ui:languageSwitchingLinks display="horizontal" linkDisplay="doubleLetter" displayLanguageState="true"/>
+	</div><!--stop languages-->
+	
+	<div id="topshortcuts"><!--start topshortcuts-->
+                    <ul>
+                    <c:if test="${requestScope.currentRequest.logged}">
+                    <li class="topshortcuts-login">
+                        <a class="loginFormTopLogoutShortcuts"href="<template:composePageURL page="logout"/>"><utility:resourceBundle resourceName="logout" defaultValue="Logout"/></a>
+                    </li>
+                    <li>
+                        <span class="currentUser" ><c:out value="${requestScope.currentRequest.currentUserName}"/></span>
+                    </li>
+                    <li>
+                        <a class="loginFormTopMySettingsShortcuts" href="<template:composePageURL page="mySettings"/>" ><utility:resourceBundle resourceName="mySettings.title" defaultValue="My settings"/></a>
+                    </li>
+                    </c:if>
+                    <li class="topshortcuts-print"><a href="#" onclick="window.print();">
+                        <utility:resourceBundle resourceName="print" defaultValue="Print this page"/></a>
+                    </li>
+                    <li class="topshortcuts-typoincrease">
+                        <a href="javascript:ts('body',1)"><utility:resourceBundle resourceName="Up" defaultValue="Up"/></a>
+                    </li>
+                    <li class="topshortcuts-typoreduce">
+                        <a  href="javascript:ts('body',-1)"><utility:resourceBundle resourceName="Down" defaultValue="Down"/></a>
+                    </li>
+                    <li class="topshortcuts-home">
+                        <a href="<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>"><utility:resourceBundle resourceName="Home" defaultValue="Home"/></a>
+                    </li>
+                    <li class="topshortcuts-contact">
+                        <a href="#"><utility:resourceBundle resourceName="Contact" defaultValue="Contact"/></a>
+                    </li>
+                    <li class="topshortcuts-sitemap">
+                        <a href="#"><utility:resourceBundle resourceName="Sitemap" defaultValue="Sitemap"/></a>
+                    </li>
+                    </ul>
+	</div><!--stop topshortcuts-->
+	<div class="clear"></div>
+    <template:include page="common/login.jsp"/>
+    <div class="clear"></div>
+</div>

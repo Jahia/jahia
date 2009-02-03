@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaVersion"
+        table="jahia_version"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="installNumber"
+            column="install_number"
+            type="java.lang.Integer"
+        >
+            <generator class="org.jahia.hibernate.dao.JahiaIdentifierGenerator">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaVersion.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="buildNumber"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="build"
+            length="11"
+        />
+
+        <property
+            name="releaseNumber"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="release_number"
+            length="20"
+        />
+
+        <property
+            name="installationDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            access="property"
+            column="install_date"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaVersion.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="defaultJahiaPasswordPolicy" class="org.jahia.services.pwdpolicy.JahiaPasswordPolicy">
+        <property name="name" value="Default Password Policy"/>
+        <property name="rules">
+            <list>
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!--  Do not allow users to change their passwords -->
+                    <property name="name" value="preventPasswordChange"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="false"/>
+                    <property name="lastRule" value="true"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$PreventUserInitiatedPasswordChange"/>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.passwordChangeNotAllowed"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Minimum password length -->
+                    <property name="name" value="minPwdLength"/>
+                    <property name="active" value="true"/>
+                    <property name="periodical" value="false"/>
+                    <property name="lastRule" value="false"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$MinimumLength"/>
+                    <property name="conditionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="length"/>
+                                <property name="value" value="6"/>
+                            </bean>
+                        </list>
+                    </property>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.minimumLength"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg0"/>
+                                <property name="value" value="params['length']"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Maximum password length -->
+                    <property name="name" value="maxPwdLength"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="false"/>
+                    <property name="lastRule" value="false"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$MaximumLength"/>
+                    <property name="conditionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="length"/>
+                                <property name="value" value="64"/>
+                            </bean>
+                        </list>
+                    </property>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.maximumLength"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg0"/>
+                                <property name="value" value="params['length']"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Number of digits required -->
+                    <property name="name" value="numberOfDigitsRequired"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="false"/>
+                    <property name="lastRule" value="false"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$MinOccurrenceDigits"/>
+                    <property name="conditionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="count"/>
+                                <property name="value" value="1"/>
+                            </bean>
+                        </list>
+                    </property>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.minDigitsRequired"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg0"/>
+                                <property name="value" value="params['count']"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Number of special characters required -->
+                    <property name="name" value="numberOfSpecialCharsRequired"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="false"/>
+                    <property name="lastRule" value="false"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$MinOccurrence"/>
+                    <property name="conditionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="count"/>
+                                <property name="value" value="1"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="characters"/>
+                                <property name="value" value="_*+-&amp;$!@"/>
+                            </bean>
+                        </list>
+                    </property>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.minSpecialCharsRequired"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg0"/>
+                                <property name="value" value="params['count']"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg1"/>
+                                <property name="value" value="params['characters']"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Prevent using password similar to the user name -->
+                    <property name="name" value="preventPwdSimilarToUsername"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="false"/>
+                    <property name="lastRule" value="false"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$SimilarToUsername"/>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.similarToUserName"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Prevent password reuse. Remember last passwords -->
+                    <property name="name" value="preventPwdReuse"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="false"/>
+                    <property name="lastRule" value="false"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$PasswordHistory"/>
+                    <property name="conditionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="count"/>
+                                <property name="value" value="3"/>
+                            </bean>
+                        </list>
+                    </property>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.preventPasswordReuse"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg0"/>
+                                <property name="value" value="params['count']"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Force password change on first login -->
+                    <property name="name" value="forcePwdChangeOnFirstLogin"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="true"/>
+                    <property name="lastRule" value="true"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$FirstLoginEvaluator"/>
+                    <property name="action" value="P"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.changePasswordOnFirstLogin"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Password expires in days -->
+                    <property name="name" value="pwdExpiresInDays"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="true"/>
+                    <property name="lastRule" value="true"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$ExpirationPeriodReached"/>
+                    <property name="conditionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="days"/>
+                                <property name="value" value="90"/>
+                            </bean>
+                        </list>
+                    </property>
+                    <property name="action" value="P"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.expirationPeriodReached"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg0"/>
+                                <property name="value" value="params['days']"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                
+                <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRule">
+                    <!-- Warn if the password is older than -->
+                    <property name="name" value="warnIfPasswordIsOlderThan"/>
+                    <property name="active" value="false"/>
+                    <property name="periodical" value="true"/>
+                    <property name="lastRule" value="false"/>
+                    <property name="evaluator" value="J"/>
+                    <property name="condition" value="org.jahia.services.pwdpolicy.RuleConditions$ExpiresSoon"/>
+                    <property name="conditionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="startAfterDays"/>
+                                <property name="value" value="70"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="maximumAgeDays"/>
+                                <property name="value" value="90"/>
+                            </bean>
+                        </list>
+                    </property>
+                    <property name="action" value="W"/>
+                    <property name="actionParameters">
+                        <list>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="message"/>
+                                <property name="value" value="org.jahia.engines.pwdpolicy.expiresSoon"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg0"/>
+                                <property name="value" value="params['startAfterDays']"/>
+                            </bean>
+                            <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyRuleParam">
+                                <property name="name" value="arg1"/>
+                                <property name="value" value="params['maximumAgeDays']"/>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>

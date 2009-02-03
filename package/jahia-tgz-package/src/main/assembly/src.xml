@@ -1,0 +1,20 @@
+<assembly>
+    <id>${buildNumber}</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/apache-tomcat-6.0.18</directory>
+            <excludes><exclude>**/*.sh</exclude></excludes>
+            <outputDirectory>jahia_ANDROMEDA_r${buildNumber}</outputDirectory>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/apache-tomcat-6.0.18</directory>
+            <includes><include>**/*.sh</include></includes>
+            <fileMode>755</fileMode>
+            <outputDirectory>jahia_ANDROMEDA_r${buildNumber}</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

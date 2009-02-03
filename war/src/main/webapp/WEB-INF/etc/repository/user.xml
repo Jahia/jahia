@@ -1,0 +1,17 @@
+<user jcr:primaryType="jnt:userFolder"
+           xmlns:jcr="http://www.jcp.org/jcr/1.0"
+           xmlns:j="http://www.jahia.org/jahia/1.0"
+           xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" j:applyAcl="self:RW">
+
+    <files jcr:primaryType="jnt:folder">
+        <private jcr:primaryType="jnt:folder" j:applyAcl="g:guest:--" >
+            <imports jcr:primaryType="jnt:importDropBox" />
+        </private>
+    </files>
+
+    <mashups jcr:primaryType="jnt:folder"/>
+
+
+    <preferences jcr:primaryType="jnt:preferences" j:hidden="true" j:applyAcl="g:guest:--" />
+
+</user>

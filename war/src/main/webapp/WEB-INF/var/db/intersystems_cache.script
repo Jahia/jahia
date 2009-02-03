@@ -1,0 +1,21 @@
+# Jahia Intersystems Cach� Database configuration file
+
+jahia.database.name     =  Intersystems Cach�
+jahia.database.driver   =  com.intersys.jdbc.CacheDriver
+jahia.database.url      =  jdbc:Cache://127.0.0.1:1972/jahia
+jahia.database.user     =  jahia
+jahia.database.pass     =  jahia
+jahia.database.transactions = false
+jahia.database.schemascriptdir = sql/schema/cache
+jahia.database.popuplationscriptdir = sql/population
+jahia.database.starthsqlserver = false
+jahia.database.datasource = java:comp/env/jdbc/jetspeed
+#jahia.database.datasource = 
+jahia.database.ojbplatform = 
+jahia.database.hibernate.dialect =
+jahia.nested_transaction_allowed = false
+jahia.quartz.serializable = false
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.BundleDbPersistenceManager
+jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
+jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
+jahia.jackrabbit.schema = default

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+                            http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Provides a tag library which should only be used by Jahia JSP files, but not templates</description>
+    <display-name>Internal Jahia Tag Library</display-name>
+    <tlib-version>2.0</tlib-version>
+    <short-name>internal</short-name>
+    <uri>http://www.jahia.org/tags/internalLib</uri>
+    <tag>
+        <description>Load the Jahia Javascript files</description>
+        <name>JSTools</name>
+        <tag-class>org.jahia.taglibs.internal.utility.JSToolsTag</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+    <tag>
+        <description>Used to set the encoding charset and the content type</description>
+        <name>i18n</name>
+        <tag-class>org.jahia.taglibs.internal.i18n.I18nTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>contentType</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>charSet</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Support for jahia engine resource bundle</description>
+        <name>engineResourceBundle</name>
+        <tag-class>org.jahia.taglibs.internal.i18n.EngineResourceBundleTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>resourceName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>defaultValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Lowest level support for resource bundle messages. This is inspired
+            by the Struts been message tag except that it checks a session
+            variable (org.jahia.services.multilang.currentlocale) to determine
+            if a Locale has been chosen.
+        </description>
+        <name>message</name>
+        <tag-class>org.jahia.taglibs.internal.i18n.MessageTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>key</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Support for jahia Administration Wizard resource bundle</description>
+        <name>adminResourceBundle</name>
+        <tag-class>org.jahia.taglibs.internal.i18n.AdminResourceBundleTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>resourceName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>defaultValue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Display an image flag corresponding to a language code</description>
+        <name>displayLanguageFlag</name>
+        <tag-class>org.jahia.taglibs.internal.uicomponents.DisplayLanguageFlagTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>code</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>href</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>resourceOn</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>resourceOff</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>alt</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Display the language corresponding to a language code</description>
+        <name>displayLanguageCode</name>
+        <tag-class>org.jahia.taglibs.internal.uicomponents.DisplayLanguageCodeTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>code</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>style</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>href</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Write a non localized HTML image tag</description>
+        <name>displayIcon</name>
+        <tag-class>org.jahia.taglibs.internal.uicomponents.DisplayIconTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>src</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>lang</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>alt</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>altKey</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>altBundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>height</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>width</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>resource</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>align</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Displays a rollover button</description>
+        <name>jahiaButton</name>
+        <tag-class>org.jahia.taglibs.internal.uicomponents.JahiaButton</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>img</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>href</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>onclick</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>alt</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>altKey</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>altBundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Init javascript object that contains some jahia parameters as pid required to use Google Web
+            Toolkit.
+        </description>
+        <name>gwtInit</name>
+        <tag-class>org.jahia.taglibs.internal.gwt.GWTInitTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>standalone</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>modules</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Import GWT by its module name.</description>
+        <name>gwtImport</name>
+        <tag-class>org.jahia.taglibs.internal.gwt.GWTImportTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>module</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <!-- pdisplay -->
+    <tag-file>
+        <description>create html struture for pdisplay</description>
+        <name>processDisplay</name>
+        <path>/META-INF/tags/ajax/processdisplay.tag</path>
+    </tag-file>
+    <tag-file>
+        <description>create html struture for job report</description>
+        <name>jobReport</name>
+        <path>/META-INF/tags/ajax/jobreport.tag</path>
+    </tag-file>
+    <tag-file>
+        <description>Displays the file manager engine</description>
+        <name>fileManager</name>
+        <path>/META-INF/tags/ajax/filemanager.tag</path>
+    </tag-file>
+    <tag-file>
+        <description>Displays the workflow manager engine</description>
+        <name>workflowManager</name>
+        <path>/META-INF/tags/ajax/workflow.tag</path>
+    </tag-file>
+    <tag-file>
+        <description>Displays a catagories manager</description>
+        <name>categoryManager</name>
+        <path>/META-INF/tags/ajax/categories-manager.tag</path>
+    </tag-file>
+    <tag-file>
+        <description>Displays a catagories selector</description>
+        <name>categorySelector</name>
+        <path>/META-INF/tags/ajax/categories-picker.tag</path>
+    </tag-file>
+    <tag-file>
+        <description>Displays the file manager engine</description>
+        <name>aclEditor</name>
+        <path>/META-INF/tags/ajax/acleditor.tag</path>
+    </tag-file>
+
+</taglib>

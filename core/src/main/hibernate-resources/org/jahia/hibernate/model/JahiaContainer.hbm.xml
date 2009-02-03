@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaContainer"
+        table="jahia_ctn_entries"
+        lazy="true"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaCtnEntryPK"
+        >
+                     <key-property
+                        name="id"
+                        type="java.lang.Integer"
+                        column="id_jahia_ctn_entries"
+                        length="11"
+                />
+
+                     <key-property
+                        name="versionId"
+                        type="java.lang.Integer"
+                        column="version_id"
+                        length="11"
+                />
+
+                     <key-property
+                        name="workflowState"
+                        type="java.lang.Integer"
+                        column="workflow_state"
+                        length="11"
+                />
+
+        </composite-id>
+
+        <property
+            name="ctnId"
+            type="java.lang.Integer"
+            update="false"
+            insert="false"
+            access="property"
+            column="id_jahia_ctn_entries"
+            unique="false"
+        />
+
+        <many-to-one
+            name="ctndef"
+            class="org.jahia.hibernate.model.JahiaCtnDef"
+            cascade="none"
+            outer-join="auto"
+            update="true"
+            insert="true"
+            access="property"
+        >
+            <column
+                name="ctndefid_jahia_ctn_entries" 
+            />
+        </many-to-one>
+
+        <property
+            name="jahiaAclId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="rights_jahia_ctn_entries"
+        />
+
+        <property
+            name="listid"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="listid_jahia_ctn_entries"
+            length="11"
+        />
+
+        <property
+            name="pageid"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="pageid_jahia_ctn_entries"
+            length="11"
+        />
+
+        <property
+            name="rank"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="rank_jahia_ctn_entries"
+            length="11"
+        />
+
+        <property
+            name="siteId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="jahiaid_jahia_ctn_entries"
+            length="11"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaContainer.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

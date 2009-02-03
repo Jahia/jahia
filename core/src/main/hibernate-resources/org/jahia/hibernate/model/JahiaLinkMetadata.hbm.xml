@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaLinkMetadata"
+        table="jahia_link_metadata"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaLinkMetadataPK"
+        >
+                     <key-property
+                        name="linkId"
+                        type="java.lang.Integer"
+                        column="link_id"
+                        length="11"
+                />
+
+                     <key-property
+                        name="linkPosition"
+                        type="java.lang.String"
+                        column="link_position"
+                        length="20"
+                />
+
+                     <key-property
+                        name="propertyName"
+                        type="java.lang.String"
+                        column="property_name"
+                        length="255"
+                />
+
+        </composite-id>
+
+        <property
+            name="propertyValue"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="property_value"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaLinkMetadata.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

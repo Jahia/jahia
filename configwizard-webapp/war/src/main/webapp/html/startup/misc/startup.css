@@ -1,0 +1,101 @@
+/*GLOBAL WHITESPACE RESET*/
+	html, body,
+	h1, h2, h3, h4, h5, h6,
+	p,
+	table, caption, tr, td, th,
+	ul, ol, li, dl, dt, dd,
+	form, legend, fieldset	{ margin: 0px; padding: 0px;}
+
+/*BASIC ELEMENTS*/
+	p, ul, ol, dl		{ margin: 0.5em 0px;}
+	ul, ol, dd		{ padding-left: 2em;}
+	li ul, li ol		{ padding: 0px 0px 5px 15px;}
+	li	{ margin-bottom : 0.2em; }
+	body			{ font-size: 80%;font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;}
+	table			{ font-size: 100%;} /*IE 5.5 text too big bugfix*/
+	h1			{ font-size: 1.7em; margin: 1.3em 0px 1.3em; font-weight: bold; line-height:normal;}
+	h2			{ font-size: 1.5em; margin: 1.3em 0px 1.3em; font-weight: bold; line-height:normal;}
+	h3			{ font-size: 1.3em; margin: 1.3em 0px 1em; font-weight: bold; line-height:normal;}
+	h4			{ font-size: 1.2em; margin: 1.3em 0px 1em; font-weight: bold; line-height:normal;}
+	h5			{ font-size: 1.1em; margin: 1.3em 0px 1em; font-weight: bold; line-height:normal;}
+	h6			{ font-size:   1em; margin: 1.3em 0px 1em; font-weight: bold; line-height:normal;}
+	p			{ font-size:   1em; }
+	address			{ font-style: normal;}
+	label			{ font-weight: bold;}
+	caption			{ font-weight: bold; text-align:left;}
+	tr, td, th		{ vertical-align:top; text-align:left;}
+/*	img			{ vertical-align:top;}*/
+
+/* avoid link focus border */
+	:focus{
+		outline-style:none;
+	}
+	
+/* input */
+
+	input, textarea, select	 { font-family:Verdana, Arial, Helvetica, sans-serif; font-size:1em; }
+	div.activeInput       { padding:0.3em ; border: solid #7f9db9 1px; background-color:#fff; }
+	div.unactiveInput       { padding:0.3em ; border: solid #7f9db9 1px; background-color:#fff; }
+
+/*SPECIAL ELEMENTS*/
+	img 			{ border: 0px;}
+
+/******************************************************************************
+* Utils
+******************************************************************************/
+
+.clear, .clearBoth 	{
+	clear:both;
+}
+
+br.clear {
+	clear:both;
+	font-family:Arial, Helvetica, sans-serif;
+	line-height:0px;	/* no height ! */
+	font-size:0px;
+}
+.hide {
+	display:none;
+}
+
+
+/******************************************************************************
+* BASIC
+******************************************************************************/
+body {
+
+	background:url(../img/bg-body.png) no-repeat 50% 0%; 
+	background-color:#fff;
+	font-size:80%;
+	margin:0;
+	text-align:center;
+	color:#00506f;
+}
+a img{
+	border:none;
+}
+a, a:link{
+	color:#be2a2e;
+	text-decoration:none;
+}
+a:hover{
+	color:#be2a2e;
+	text-decoration:underline;
+}
+
+
+
+/*PAGE*/
+#page {
+	font-family: Arial, Helvetica, sans-serif;
+	width:600px;
+	margin:0 auto;
+	padding:0;
+	text-align:center;
+}
+#content {
+	margin-top:245px ;
+}
+.wait{
+	margin-top:5px ;
+}

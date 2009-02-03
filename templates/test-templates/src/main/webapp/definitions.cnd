@@ -1,0 +1,281 @@
+<test_templates = 'http://www.jahia.org/jahia/test_template/nt/1.0'>
+
+[test_templates:allFields] > jnt:container
+ smallText smallText
+ sharedSmallText sharedSmallText
+ sharedSmallText sharedSmallTextSingle (choicelist) <'val1','val2','val3'
+ sharedSmallText sharedSmallTextMultiple (choicelist) multiple <'val1','val2','val3'
+ bigText bigText
+ integer integer
+ float float
+ boolean boolean = true
+ color color = '#ffffff'
+ date date
+ page page
+ file file
+ portlet application
+ category category multiple
+
+[test_templates:allFieldsTwice] > test_templates:allFields
+ smallText smallText2nd
+ sharedSmallText sharedSmallText2nd
+ sharedSmallText sharedSmallTextSingle2nd (choicelist) <'val1','val2','val3'
+ sharedSmallText sharedSmallTextMultiple2nd (choicelist) multiple <'val1','val2','val3'
+ bigText bigText2nd
+ integer integer2nd
+ float float2nd
+ boolean boolean2nd = true
+ color color2nd (color) = '#ffffff'
+ date date2nd
+ + page2nd (jnt:pageLink)
+ file file2nd
+ portlet application2nd
+ category category2nd multiple
+   
+[test_templates:textFields] >jnt:container
+ sharedSmallText smallText
+ sharedSmallText smallTextWithDefault = 'default value'
+ sharedSmallText smallTextWithDefaultAsResource = resourceKey(defaultValue) internationalized
+ sharedSmallText smallTextWithDefaultAsFunction = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer')
+ sharedSmallText smallTextWithDefaultAsFunctionReadOnly = useClass('org.jahia.testtemplate.initializer.UsernameValueInitializer') protected
+ sharedSmallText smallTextWithDefaultAsExpression = eval(currentUser.username)
+ sharedSmallText mandatorySmallText mandatory
+ sharedSmallText alphanumericSmallText < '[a-zA-Z1-9]*'
+ smallText smallTextMultiLang
+ sharedSmallText smallTextMultiLangWithDefaultAsExpression = eval(currentUser.username)
+ sharedSmallText smallTextMultiline (text[multiline])
+ sharedSmallText smallTextMultilineWithDefault (text[multiline]) = 'multiline default value'
+ smallText smallTextMultilineMultiLang (text[multiline])
+ smallText smallTextMultilineMultiLangWithDefault (text[multiline]) = resourceKey(defaultValue)
+ bigText richText
+ sharedSmallText dropDown (choicelist) = 'option2' < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
+ sharedSmallText selectBox (choicelist) = option1,option2 multiple < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
+ sharedSmallText dropDownMultiLang (choicelist) = resourceKey(resourceOption2) internationalized < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
+ sharedSmallText selectBoxMultiLang (choicelist) = 'option1', resourceKey(resourceOption2) multiple internationalized < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
+ sharedSmallText dropDownSorted (choicelist[sort='alpha']) = 'option2' < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
+ sharedSmallText selectBoxSorted (choicelist[sort='alpha']) = resourceKey(resourceOption1),option2 multiple < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
+ category category multiple
+ category categoryWithDefault = cat1,cat2 multiple
+ category categoryWithRoot (category[root='cat1']) multiple
+ color color
+ color colorWithBlueDefault = '#3333FF'
+ boolean booleanWithDefault = 'true'
+ boolean booleanWithDefaultAsExpression = eval(currentRequest.windows)
+
+[test_templates:pageFields] > jnt:container
+ page page (page)
+ page pageLinkOnly (page[type="internal,external"])
+ page pagePageOnly (page[type="direct"])
+ page pageSimplePageOnly (page[type="direct",templates="Simple"])
+ page pageInternal (page[type="direct,internal"])
+ page pageLinkInternal (page[type="internal"])
+ page pageLinkSimple (page[type="internal",templates="Simple"])
+ page pageLinkExternal (page[type="external"])
+ page pageNewPageInternalOrLinkExternal (page[type="external",templates="Simple"])
+
+[test_templates:numberFields] > jnt:container
+ integer long
+ integer longWithDefault = 10
+ integer longWithDefaultAsResource = resourceKey(defaultValue)
+ integer longWithDefaultAsExpression = eval(currentPage.ID)
+ integer longBetween1and10 < '[1,10]'
+ integer longDropdown (choicelist) = 3 < '[1,10]', '[21,30]'
+ float double
+ float doubleWithDefault = 0.1
+ float doubleWithDefaultAsResource = resourceKey(defaultValue)
+ float doubleWithDefaultAsExpression = eval(currentSite.id * 10 + 2.5)
+ float doubleBetween1and10 < '[1,10]'
+ float doubleDropdown (choicelist) = '2.5' < '1.5','2','2.5','3','3.5'
+
+[test_templates:textMixin] mixin
+ smallText mixinext
+
+[test_templates:dateMixin] mixin
+ date mixinDate
+
+[test_templates:displayCL] > jnt:container
+ smallText Image
+ smallText File
+ page page
+ smallText RandomPath
+
+[test_templates:formHandlerCL] > jnt:container
+ smallText Name
+ smallText Adress
+ smallText Zip
+ smallText City
+
+[test_templates:dateFields] > jnt:container
+ date date
+ date dateWithDefault = '2008-01-01T12:12:12.000+00:00'
+ date dateWithDefaultAsNow = now()
+ date dateWithDefaultAsExpression = eval(currentRequest.paramBean.cacheExpirationDate)
+ date formattedDate (datetimepicker[format='YYYYMMdd'])
+ date timeWithDefaultAsNow (datetimepicker[format='HH:mm:ss,SSS']) = now()
+ date hourWithDefaultAsNow (datetimepicker[format='hh \'o\'\'clock\' a, zzzz']) = now()
+ date tommorrowSameTime (datetimepicker[format='yyyyy.MMMMM.dd GGG hh:mm aaa']) = eval(now+1000*60*60*24)
+ date maximumDate (datetimepicker[format='dd.MM.yyyy / HH:mm']) = '9999-12-31T23:59:59.999+00:00'
+ 
+[test_templates:fieldsWithIndexOptions] > jnt:container
+ date untokenizedDate indexed='untok' scoreboost=1 analyzer='keyword'
+ date scoreboostedDate indexed='untok' scoreboost=6 analyzer='keyword'
+ integer untokenizedLong indexed='untok' analyzer='keyword'
+ sharedSmallText simpleSmallText analyzer='simple'
+ sharedSmallText nonIndexedSmallText indexed='no'
+ 
+[test_templates:multiSearchLangFields] > jnt:container
+ sharedSmallText Title
+ smallText Text
+ file file
+
+[test_templates:validationFieldsUsingDefinitions] > jnt:container
+ sharedSmallText mandatorySmallText mandatory
+ integer mandatoryLong mandatory
+ sharedSmallText alphanumericSmallText < '[a-zA-Z1-9]*'
+ integer longBetween1and10 < '[1,10]'
+ integer mandatoryLongBetween1and10 mandatory < '[1,10]'
+
+[test_templates:validationFieldsUsingValidator] > jnt:container validator='validationFieldsUsingValidator'
+ sharedSmallText sharedSmallTextmandatorySmallText
+ integer mandatoryLong
+ sharedSmallText alphanumericSmallText
+ integer longBetween1and10
+ integer mandatoryLongBetween1and10
+
+[test_templates:subscribableContent] > jnt:mainContentContainer
+
+[test_templates:subscribableTechWatch] > jnt:container
+ sharedSmallText title
+ sharedSmallText teaser
+ date date = now()
+ page source (page[type="external"])
+
+[test_templates:subscribableArticle] > jnt:container, jmix:subscribable, jmix:commentable
+ smallText title
+ smallText teaser
+ sharedSmallText author
+ bigText content
+ page source (page[type="external"])
+
+[test_templates:allFieldsWithSubSubList] > test_templates:allFields
+ containerList allFields (test_templates:allFields)
+  
+[test_templates:allFieldsWithSubList] > test_templates:allFields   
+ containerList allFieldsWithSubSubList (test_templates:allFieldsWithSubSubList)
+  
+[test_templates:allFieldsWithList] > test_templates:allFields   
+ containerList allFieldsWithSubList (test_templates:allFieldsWithSubList)
+  
+[test_templates:allFieldsTwiceWithSubSubList] > test_templates:allFieldsTwice   
+ containerList allFieldsTwice (test_templates:allFieldsTwice)
+
+[test_templates:allFieldsWithAllSubListTypes] > test_templates:allFields   
+ singleContainer singleSubSubContainer (test_templates:allFields)
+ singleContainer singleMandatorySubSubContainer (test_templates:allFields) mandatory
+ containerList mandatorySubSubContainer (test_templates:allFields) mandatory
+
+[test_templates:allFieldsWithAllListTypes] > test_templates:allFields
+ singleContainer singleSubContainer (test_templates:allFieldsWithAllSubListTypes)
+ singleContainer singleMandatorySubContainer (test_templates:allFields) mandatory
+ containerList mandatorySubContainer (test_templates:allFields) mandatory
+  
+[test_templates:allFieldsTwiceWithSubList] > test_templates:allFieldsTwice   
+ containerList allFieldsTwiceWithSubSubList (test_templates:allFieldsTwiceWithSubSubList)
+  
+[test_templates:allFieldsTwiceWithList] > test_templates:allFieldsTwice   
+ containerList allFieldsTwiceWithSubList (test_templates:allFieldsTwiceWithSubList)
+  
+[test_templates:generic] > jnt:page
+ containerList navLink (jnt:navLink)
+ containerList maincontent (jnt:mainContentContainer)
+  
+[test_templates:login] > jnt:page
+ containerList navLink (jnt:navLink)
+ containerList maincontent (jnt:mainContentContainer)
+  
+[test_templates:dateutil] > jnt:page
+ containerList navLink (jnt:navLink)
+ containerList maincontent (jnt:mainContentContainer)
+  
+[test_templates:boxtags] > test_templates:generic
+ containerList columnB_box (jnt:box)
+  
+[test_templates:inherit] > test_templates:generic
+ containerList columnC_box (jnt:box)
+ containerList news (core_template:commentableNews)
+
+[test_templates:generic_full] > jnt:page
+ containerList navLink (jnt:navLink)
+ containerList maincontent (jnt:mainContentContainer)
+
+[test_templates:displaytags] > test_templates:generic
+ containerList displayCL (test_templates:displayCL)
+  
+[test_templates:ContentFormHandler] > test_templates:generic
+ containerList formHandlerCL (test_templates:formHandlerCL)
+
+[test_templates:home] > test_templates:generic
+  
+[test_templates:allFieldsTest] > test_templates:generic
+ containerList allFieldsWithList (test_templates:allFieldsWithList)
+  
+[test_templates:allFieldsTwiceTest] > test_templates:generic
+ containerList allFieldsTwiceWithList (test_templates:allFieldsTwiceWithList)
+
+[test_templates:allSelectorsTest] > test_templates:generic
+ containerList textFields (test_templates:textFields)
+ containerList dateFields (test_templates:dateFields)
+ containerList numberFields (test_templates:numberFields)
+ containerList pageFields (test_templates:pageFields)
+ containerList maincontentNoWf (jnt:mainContentContainer) workflow='none'
+ containerList maincontentNstep (jnt:mainContentContainer) workflow='nstep-Three Validation Step Workflow'
+
+[test_templates:mixinTypesTest] > test_templates:generic
+ containerList allFields (test_templates:allFields)
+ containerList allFieldsTextMixin (test_templates:allFields [addMixin="test_templates:textMixin"])
+ containerList allFieldsDateMixin (test_templates:allFields [addMixin="test_templates:dateMixin"])
+ containerList allFieldsTextAndDateMixin (test_templates:allFields [addMixin="test_templates:textMixin,test_templates:dateMixin"])
+
+[test_templates:contType] > test_templates:generic
+ singleContainer singleContainer (test_templates:allFieldsWithAllListTypes)
+ singleContainer singleMandatoryContainer (test_templates:allFields) mandatory
+ containerList mandatoryContainer (test_templates:allFields) multiple mandatory
+  
+[test_templates:usingBoxes] > test_templates:generic
+ containerList columnB_box (jnt:box)
+
+[test_templates:displayingLanguageSwitchingLinks] > test_templates:generic
+
+[test_templates:multilingualSearch] > test_templates:generic        
+ containerList multiSearchLangFields (test_templates:multiSearchLangFields)
+
+[test_templates:customIndexOptions] > test_templates:generic
+ singleContainer fieldsWithIndexOptions (test_templates:fieldsWithIndexOptions)
+
+[test_templates:opensearch] > test_templates:generic_full
+
+[test_templates:validation] > test_templates:generic
+ containerList validationFieldsUsingDefinitions (test_templates:validationFieldsUsingDefinitions)
+ containerList validationFieldsUsingValidator (test_templates:validationFieldsUsingValidator)
+  
+[test_templates:extensions] > test_templates:generic
+ containerList subscribableContent (test_templates:subscribableContent [addListMixin="jmix:subscribable"])
+ containerList subscribableTechWatch (test_templates:subscribableTechWatch [addListMixin="jmix:rssable,jmix:subscribable"])
+ containerList subscribableArticle (test_templates:subscribableArticle)
+ 
+[test_templates:addressing] > test_templates:generic
+
+[test_templates:expressions] > test_templates:generic
+
+[test_templates:querytags] > test_templates:allFieldsTest
+
+[test_templates:rules] > test_templates:generic
+
+[test_templates:form] > test_templates:generic
+ containerList maincontent (jnt:mainContentContainer)
+
+[test_templates:cache] > test_templates:generic
+ containerList cachecontent (jnt:mainContentContainer)
+
+[test_templates:tagcache] > test_templates:generic
+ containerList cachecontent (jnt:mainContentContainer)

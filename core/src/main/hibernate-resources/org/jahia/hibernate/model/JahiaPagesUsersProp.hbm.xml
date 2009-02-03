@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaPagesUsersProp"
+        table="jahia_pages_users_prop"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaPagesUsersPropPK"
+        >
+                     <key-property
+                        name="pageId"
+                        type="java.lang.Integer"
+                        column="page_id"
+                        length="11"
+                />
+
+                     <key-property
+                        name="principalKey"
+                        type="java.lang.String"
+                        column="principal_key"
+                        length="70"
+                />
+
+                     <key-property
+                        name="principalType"
+                        type="java.lang.String"
+                        column="principal_type"
+                        length="40"
+                />
+
+                     <key-property
+                        name="propType"
+                        type="java.lang.String"
+                        column="prop_type"
+                        length="40"
+                />
+
+                     <key-property
+                        name="name"
+                        type="java.lang.String"
+                        column="prop_name"
+                        length="150"
+                />
+
+        </composite-id>
+
+        <property
+            name="value"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="prop_value"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaPagesUsersProp.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

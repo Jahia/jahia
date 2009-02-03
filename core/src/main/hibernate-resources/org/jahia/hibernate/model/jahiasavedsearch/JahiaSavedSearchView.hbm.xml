@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.jahiasavedsearch.JahiaSavedSearchView"
+        table="jahia_savedsearchview"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.jahiasavedsearch.JahiaSavedSearchViewPK"
+        >
+                     <key-property
+                        name="searchMode"
+                        type="java.lang.Integer"
+                        column="smode_savedsearchview"
+                />
+
+                     <key-property
+                        name="contextId"
+                        type="java.lang.String"
+                        column="ctnid_savedsearchview"
+                        length="100"
+                />
+
+                     <key-property
+                        name="savedSearchId"
+                        type="java.lang.Integer"
+                        column="searchid_savedsearchview"
+                />
+
+                     <key-property
+                        name="userKey"
+                        type="java.lang.String"
+                        column="userkey_savedsearchview"
+                        length="200"
+                />
+
+        </composite-id>
+
+        <property
+            name="setting"
+            type="text"
+            update="true"
+            insert="true"
+            access="property"
+            column="setting_savedsearchview"
+            length="16777216"
+            not-null="true"
+        />
+
+        <property
+            name="viewName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="name_savedsearchview"
+            length="100"
+            not-null="true"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaSavedSearchView.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+
+    <bean id="abstractGeneratorDAO" abstract="true" class="org.jahia.hibernate.dao.AbstractGeneratorDAO">
+        <property name="idGeneratorDAO" ref="idGeneratorDAO" />
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <bean id="jahiaAclDAO" class="org.jahia.hibernate.dao.JahiaAclDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaAclNamesDAO" class="org.jahia.hibernate.dao.JahiaAclNamesDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaApplicationDefinitionDAO" class="org.jahia.hibernate.dao.JahiaApplicationDefinitionDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaApplicationEntryDAO" class="org.jahia.hibernate.dao.JahiaApplicationEntryDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaApplicationShareDAO" class="org.jahia.hibernate.dao.JahiaApplicationShareDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaAuditLogDAO" class="org.jahia.hibernate.dao.JahiaAuditLogDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaBigTextDataDAO" class="org.jahia.hibernate.dao.JahiaBigTextDataDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaCategoryDAO" class="org.jahia.hibernate.dao.JahiaCategoryDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaContainerDAO" class="org.jahia.hibernate.dao.JahiaContainerDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaContainerDefinitionDAO" class="org.jahia.hibernate.dao.JahiaContainerDefinitionDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaContainerListDAO" class="org.jahia.hibernate.dao.JahiaContainerListDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaContainerStructureDAO" class="org.jahia.hibernate.dao.JahiaContainerStructureDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaFieldsDataDAO" class="org.jahia.hibernate.dao.JahiaFieldsDataDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaFieldsDefinitionDAO" class="org.jahia.hibernate.dao.JahiaFieldsDefinitionDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaLinkDAO" class="org.jahia.hibernate.dao.JahiaLinkDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaObjectDAO" class="org.jahia.hibernate.dao.JahiaObjectDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaPagesDAO" class="org.jahia.hibernate.dao.JahiaPagesDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaPagesDefinitionDAO" class="org.jahia.hibernate.dao.JahiaPagesDefinitionDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaRetentionRuleDAO" class="org.jahia.hibernate.dao.JahiaRetentionRuleDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaRetentionRuleDefDAO" class="org.jahia.hibernate.dao.JahiaRetentionRuleDefDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaSiteDAO" class="org.jahia.hibernate.dao.JahiaSiteDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaSitePropertyDAO" class="org.jahia.hibernate.dao.JahiaSitePropertyDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaGroupDAO" class="org.jahia.hibernate.dao.JahiaGroupDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaGroupAccessDAO" class="org.jahia.hibernate.dao.JahiaGroupAccessDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaUserDAO" class="org.jahia.hibernate.dao.JahiaUserDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaCategoryPropertiesDAO" class="org.jahia.hibernate.dao.JahiaCategoryPropertiesDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaLockDAO" class="org.jahia.hibernate.dao.JahiaLockDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaResourceDAO" class="org.jahia.hibernate.dao.JahiaResourceDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaSiteLanguageListDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageListDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaSiteLanguageMappingDAO" class="org.jahia.hibernate.dao.JahiaSiteLanguageMappingDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaWorkflowDAO" class="org.jahia.hibernate.dao.JahiaWorkflowDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaLanguagesStatesDAO" class="org.jahia.hibernate.dao.JahiaLanguagesStatesDAO" parent="abstractGeneratorDAO"/>
+    <bean id="nstepUserDAO" class="org.jahia.workflow.nstep.dao.hibernate.UserDAOHibernate" parent="abstractGeneratorDAO"/>
+    <bean id="nstepWorkflowDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowDAOHibernate" parent="abstractGeneratorDAO"/>
+    <bean id="nstepWorkflowStepDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowStepDAOHibernate" parent="abstractGeneratorDAO"/>
+    <bean id="nstepWorkflowInstanceDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowInstanceDAOHibernate" parent="abstractGeneratorDAO"/>
+    <bean id="nstepWorkflowHistoryDAO" class="org.jahia.workflow.nstep.dao.hibernate.WorkflowHistoryDAOHibernate" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaIndexingJobDAO" class="org.jahia.hibernate.dao.JahiaIndexingJobDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaIndexJobServerDAO" class="org.jahia.hibernate.dao.JahiaIndexJobServerDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaSavedSearchDAO" class="org.jahia.hibernate.dao.JahiaSavedSearchDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaSavedSearchViewDAO" class="org.jahia.hibernate.dao.JahiaSavedSearchViewDAO">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+    
+    <bean id="jahiaServerPropertiesDAO" class="org.jahia.hibernate.dao.JahiaServerPropertiesDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaVersionDAO" class="org.jahia.hibernate.dao.JahiaVersionDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaInstalledPatchDAO" class="org.jahia.hibernate.dao.JahiaInstalledPatchDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaPagesUsersPropDAO" class="org.jahia.hibernate.dao.JahiaPagesUsersPropDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaFieldXRefDAO" class="org.jahia.hibernate.dao.JahiaFieldXRefDAO" parent="abstractGeneratorDAO"/>
+    <bean id="jahiaPasswordPolicyDAO" class="org.jahia.hibernate.dao.JahiaPasswordPolicyDAO" parent="abstractGeneratorDAO" depends-on="jahiaIdentifierGenerator"/>
+    <bean id="jahiaSubscriptionDAO" class="org.jahia.hibernate.dao.SubscriptionDAO" parent="abstractGeneratorDAO" depends-on="jahiaIdentifierGenerator"/>
+
+    <bean id="idGeneratorDAO" class="org.jahia.hibernate.dao.IDGeneratorDAO" init-method="start" destroy-method="stop">
+        <property name="sessionFactory" ref="sessionFactory" />
+        <property name="clusterActivated" value="${cluster.activated}" />
+        <property name="clusterProperties">
+            <!--<value>UDP(mcast_addr=${cluster.idgenerator.multicast.ip_address};mcast_port=${cluster.idgenerator.multicast.port};ip_ttl=32;ip_mcast=true;mcast_send_buf_size=1000000;mcast_recv_buf_size=1000000):PING(timeout=2000;num_initial_members=2):MERGE2(min_interval=5000;max_interval=10000):FD_SOCK:VERIFY_SUSPECT(timeout=1500):pbcast.NAKACK(gc_lag=50;retransmit_timeout=300,600,1200,2400,4800):pbcast.STABLE(desired_avg_gossip=20000):UNICAST(timeout=5000):FRAG(frag_size=8096;down_thread=false;up_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=true;print_local_addr=true):pbcast.STATE_TRANSFER(up_thread=false;down_thread=false)</value>-->
+            <value>TCP(start_port=${cluster.tcp.idgenerator.port};bind_addr=${cluster.tcp.start.ip_address}):TCPPING(initial_hosts=${cluster.tcp.idgenerator.nodes.ip_address};port_range=1;timeout=3000;num_initial_members=${cluster.tcp.num_initial_members};up_thread=true;down_thread=true):FD(shun=true;up_thread=true;down_thread=true;timeout=2500;max_tries=5):VERIFY_SUSPECT(timeout=1500;up_thread=false;down_thread=false):pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;up_thread=true;down_thread=true):pbcast.STABLE(desired_avg_gossip=20000;up_thread=false;down_thread=false):pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;print_local_addr=false;down_thread=true;up_thread=true):pbcast.STATE_TRANSFER(up_thread=true;down_thread=true)</value>
+
+        </property>
+        <property name="clusterName" value="idGenerator" />
+    		<property name="dbSequences">
+    		  <!-- For DB sequences, the key is the table name, and the value is the column name that we use as initial max values
+    		       The sequence name will be table_name.column_name -->
+    			<map>
+    			  <entry key="org.jahia.hibernate.model.JahiaAcl">
+    					<value>jahia_acl.id_jahia_acl</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaAppDef">
+    					<value>jahia_app_def.id_jahia_app_def</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaAppentry">
+    					<value>jahia_appentry.id_jahia_appentry</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaAuditLog">
+    					<value>jahia_audit_log.id_jahia_audit_log</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaCategory">
+    					<value>jahia_category.id_category</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaCtnDef">
+    					<value>jahia_ctn_def.id_jahia_ctn_def</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaCtnDefProperty">
+    					<value>jahia_ctn_def_properties.id_jahia_ctn_def_properties</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaContainer">
+    					<value>jahia_ctn_entries.id_jahia_ctn_entries</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaContainerList">
+    					<value>jahia_ctn_lists.id_jahia_ctn_lists</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaFieldsData">
+    					<value>jahia_fields_data.id_jahia_fields_data</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaFieldsDef">
+    					<value>jahia_fields_def.id_jahia_fields_def</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaGrp">
+    					<value>jahia_grps.id_jahia_grps</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaLink">
+    					<value>jahia_link.id</value>
+    				</entry>
+    			  <entry key="org.jahia.workflow.nstep.model.Workflow">
+    					<value>jahia_nstep_workflow.id</value>
+    				</entry>
+    			  <entry key="org.jahia.workflow.nstep.model.WorkflowHistoryEntry">
+    					<value>jahia_nstep_workflowhistory.id</value>
+    				</entry>
+    			  <entry key="org.jahia.workflow.nstep.model.WorkflowInstance">
+    					<value>jahia_nstep_workflowinstance.id</value>
+    				</entry>
+    			  <entry key="org.jahia.workflow.nstep.model.WorkflowStep">
+    					<value>jahia_nstep_workflowstep.id</value>
+    				</entry>
+    			  <entry key="org.jahia.workflow.nstep.model.User">
+    					<value>jahia_nstep_workflowuser.id</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaPagesData">
+    					<value>jahia_pages_data.id_jahia_pages_data</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaPagesDef">
+    					<value>jahia_pages_def.id_jahia_pages_def</value>
+    				</entry>
+                  <entry key="org.jahia.hibernate.model.JahiaPwdPolicy">
+                        <value>jahia_pwd_policies.jahia_pwd_policy_id</value>
+                    </entry>
+                  <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRule">
+                        <value>jahia_pwd_policy_rules.jahia_pwd_policy_rule_id</value>
+                    </entry>
+                  <entry key="org.jahia.hibernate.model.JahiaPwdPolicyRuleParam">
+                        <value>jahia_pwd_policy_rule_params.jahia_pwd_policy_rule_param_id</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaRetentionRule">
+    					<value>jahia_retrule.id_jahia_retrule</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaRangeRetentionRule">
+    					<value>jahia_retrule_range.id_retrule_range</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaRetentionRuleDef">
+    					<value>jahia_retruledef.id_jahia_retruledef</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaSiteLangList">
+    					<value>jahia_site_lang_list.id</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaSiteLangMap">
+    					<value>jahia_site_lang_maps.id</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaSite">
+    					<value>jahia_sites.id_jahia_sites</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.JahiaUser">
+    					<value>jahia_users.id_jahia_users</value>
+    				</entry>
+    			  <entry key="org.jahia.hibernate.model.jahiasavedsearch.JahiaSavedSearch">
+    					<value>jahia_savedsearch.id_jahia_savedsearch</value>
+    				</entry>
+                    <entry key="org.jahia.hibernate.model.JahiaVersion">
+                          <value>jahia_version.install_number</value>
+                    </entry>
+                    <entry key="org.jahia.hibernate.model.JahiaInstalledPatch">
+                          <value>jahia_installedpatch.install_number</value>
+                    </entry>
+                    <entry key="org.jahia.hibernate.model.SubscriptionData" value="jahia_subscriptions.id_jahia_subscriptions"/>
+    			</map>
+    		</property>
+    		<property name="simpleSequences">
+    		  <!-- For simple sequence, the key is the sequence name, and the value is the initial value of the sequence -->
+    			<map>
+    				<entry key="sequence1">
+    				  <value>1</value>
+    				</entry>
+    			</map>
+    		</property>
+    </bean>
+    
+
+    <bean id="jahiaIdentifierGenerator" class="org.jahia.hibernate.dao.JahiaIdentifierGenerator"/>
+</beans>

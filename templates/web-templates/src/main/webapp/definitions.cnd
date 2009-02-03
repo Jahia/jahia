@@ -1,0 +1,220 @@
+<web_templates = 'http://www.jahia.org/jahia/web_templates/nt/1.0'>
+
+// from jahia std definition (cf 05-standard-types.cnd)
+// [jnt:newsContainer]
+// [jnt:peopleContainer]
+// [jnt:mainContentContainer]
+
+// Web templates content definitions
+
+[web_templates:basicLinkContainer] > jnt:container
+page            link (page[type="internal,external"])
+
+[web_templates:bottomLinksContainer] > jnt:container
+page            link (page[type="internal"])
+
+[web_templates:bannerContainer] > jnt:container
+file            background
+smallText       title
+smallText       cast
+integer         positionTop
+integer         positionLeft
+
+[web_templates:shortcutsContainer] > jnt:container
+page            link (page[type="external,internal"])
+sharedSmallText target (choicelist) = self < self,new_,parent
+file            icon
+
+[web_templates:promoContainer] > jnt:container
+file            image (file[mime='image/*'])
+page            link
+
+[web_templates:fileContainer] > jnt:fileContainer
+smallText       title
+
+[web_templates:filesBox] > jnt:box
+containerList fileContainer (web_templates:fileContainer)
+
+[web_templates:logoContainer] > jnt:container
+file logo (file[mime='image/*'])
+
+[web_templates:footerContentContainer] > jnt:container
+bigText        footer = "&copy; Copyright 2002-2009 - Jahia Solutions" i15d
+
+[web_templates:pressreleaseContainer] > jnt:container
+smallText pressReleaseTitle
+smallText pressReleaseIntro
+bigText pressReleaseBody
+date pressReleaseDate = now()
+
+[web_templates:peopleContainer] > jnt:container
+ sharedSmallText peopleFirstname
+ sharedSmallText peopleLastname
+ smallText peopleFunction
+ sharedSmallText peopleBusinessUnit (choicelist) <
+    resourceKey(sales),
+    resourceKey(marketing),
+    resourceKey(GA),
+    resourceKey(production),
+    resourceKey(humanressources)
+ sharedSmallText peopleTelephone
+ sharedSmallText peopleCellular
+ sharedSmallText peopleFax
+ sharedSmallText peopleEmail
+ bigText peopleBiography
+ file peoplePicture (file[mime='image/*'])
+
+[web_templates:introContainer] > jnt:container
+bigText       introduction
+
+[web_templates:pressContainer] > jnt:container
+smallText       title
+bigText         body
+date            date
+file            pdfVersion
+
+[web_templates:eventContainer] > jnt:container
+smallText       title
+date            startDate
+date            endDate
+smallText      location
+bigText         body
+
+[web_templates:answerJobContainer] > jnt:container
+sharedSmallText firstname
+sharedSmallText lastname
+sharedSmallText email
+bigText         text
+
+
+
+[web_templates:jobContainer] > jnt:container
+smallText       title
+smallText       reference
+smallText       businessUnit
+sharedSmallText contract (choicelist) <
+    resourceKey(contract1),
+    resourceKey(contract2),
+    resourceKey(contract3),
+    resourceKey(contract4)
+smallText       town
+smallText       country
+smallText       educationLevel
+bigText         description
+bigText         skills
+containerList   jobAnswers (web_templates:answerJobContainer)
+
+[web_templates:publicationContainer] > jnt:container
+smallText       title
+file            file
+file            preview
+smallText      author
+smallText      source
+smallText      date
+bigText         body
+
+[web_templates:lastNewsContainer] > jnt:container
+integer         maxNews = 10
+sharedSmallText display (choicelist) = medium < large,medium,small
+category        filter
+
+// Web templates content extensions
+
+[web_templates:paragraphContainer] > jnt:mainContentContainer
+bigText         insertText
+sharedSmallText insertType (choicelist) = resourceKey(quote) < resourceKey(quote), resourceKey(exergue)
+sharedSmallText insertPosition (choicelist) = resourceKey(left) < resourceKey(left), resourceKey(right)
+integer         insertWidth = "150"
+
+[web_templates:articleContainer] > jnt:container
+smallText       title
+bigText         intro
+containerList   paragraph (web_templates:paragraphContainer)
+
+
+[web_templates:promoAdvancedContainer] > web_templates:promoContainer
+smallText      title
+smallText      abstract
+
+[web_templates:newsContainer] > jnt:newsContainer
+
+// Web templates Box
+
+[web_templates:lastNewsBox] > jnt:box
+ singleContainer lastNewsContainer (web_templates:lastNewsContainer)
+
+[web_templates:contentContainerBox] > jnt:box
+containerList contentContainer(jnt:mainContentContainer)
+
+// Web templates common declaration
+
+[web_templates:layoutmanagerBoxExtraFields] mixin
+file logo (file[mime='image/*'])
+bigText description
+ 	 	
+[web_templates:header] mixin
+containerList   basicLinkHeader (web_templates:basicLinkContainer)
+containerList   navLink (jnt:navLink)
+singleContainer logo (web_templates:logoContainer)
+
+[web_templates:footer] mixin
+singleContainer footerContainerList (web_templates:footerContentContainer)
+containerList   basicLinkFooter (web_templates:basicLinkContainer)
+singleContainer logoFooter (web_templates:logoContainer)
+containerList   bottomLinks (web_templates:bottomLinksContainer)
+
+// Web templates templates definitions
+
+[web_templates:home] > jnt:page, web_templates:header, web_templates:footer
+singleContainer banner (web_templates:bannerContainer)
+containerList   promo (web_templates:promoAdvancedContainer)
+containerList   columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:IframeBox,web_templates:lastNewsBox,jnt:textsBox,web_templates:filesBox"])
+containerList   columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:flashBox,web_templates:lastNewsBox,jnt:fileContentBox,jnt:videoBox"])
+
+[web_templates:simple] > jnt:page, web_templates:header, web_templates:footer
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+containerList maincontent (jnt:mainContentContainer)
+
+[web_templates:article] > jnt:page, web_templates:header, web_templates:footer
+singleContainer article (web_templates:articleContainer [addMixin="jmix:skinnable"])
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:events] > jnt:page, web_templates:header, web_templates:footer
+singleContainer eventsTop (web_templates:introContainer)
+containerList events (web_templates:eventContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:people] > jnt:page, web_templates:header, web_templates:footer
+singleContainer peopleTop (web_templates:introContainer)
+containerList people (web_templates:peopleContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
+
+[web_templates:pressRelease] > jnt:page, web_templates:header, web_templates:footer
+containerList press (web_templates:pressContainer)
+singleContainer pressTop (web_templates:introContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:news] > jnt:page, web_templates:header, web_templates:footer
+singleContainer newsTop (web_templates:introContainer)
+containerList news (web_templates:newsContainer [addMixin="jmix:commentable"])
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
+
+[web_templates:job] > jnt:page, web_templates:header, web_templates:footer
+singleContainer jobTop (web_templates:introContainer)
+containerList job (web_templates:jobContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
+
+[web_templates:publication] > jnt:page, web_templates:header, web_templates:footer
+singleContainer publicationTop (web_templates:introContainer)
+containerList publication (web_templates:publicationContainer)
+containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
+
+[web_templates:full] > jnt:page, web_templates:header, web_templates:footer
+containerList maincontent (jnt:mainContentContainer)
+containerList portlet (jnt:portletContainer [addMixin="jmix:skinnable"])
+containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:IframeBox,jnt:lastNewsBox,jnt:portletsBox,jnt:peopleBox,jnt:fileContentBox,jnt:videoBox"])
+
+[web_templates:layoutManager] > jnt:page, web_templates:header, web_templates:footer
+singleContainer myPortalTop (web_templates:introContainer)
+containerList columnA_box (jnt:box [addMixin="jmix:skinnable,web_templates:layoutmanagerBoxExtraFields", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox"])
+

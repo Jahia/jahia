@@ -1,0 +1,88 @@
+#created on: 20 dec. 2007
+package org.jahia.services.content.automation
+
+#list any import classes here.
+import org.jahia.services.content.JCRStoreProvider
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global JCRStoreProvider provider
+
+rule "Metadata create"
+    salience -10
+    no-loop
+    when
+        A new node is created
+             - it has the type mix:lastModified
+    then
+        Set the property jcr:createdBy of the node with the name of the current user
+        Set the property jcr:created of the node with the current time
+        Set the property jcr:lastModified of the node with the current time
+        Set the property jcr:lastModifiedBy of the node with the name of the current user
+        Get the ancestor "list" of type jnt:containerList
+        Set the property jcr:lastModified of the list with the current time
+        Set the property jcr:lastModifiedBy of the list with the name of the current user
+        Get the ancestor "page" of type jnt:page
+        Set the property jcr:lastModified of the page with the current time
+        Set the property jcr:lastModifiedBy of the page with the name of the current user
+end
+
+rule "Metadata update / property modified"
+    salience -11
+    no-loop
+    when
+        A property has been set on a node
+             - the node has the type mix:lastModified
+        The property jcr:lastModified has not been modified yet on the node
+        The property j:workflowState has not been modified yet on the node
+    then
+        Set the property jcr:lastModified of the node with the current time
+        Set the property jcr:lastModifiedBy of the node with the name of the current user
+        Get the ancestor "list" of type jnt:containerList
+        Set the property jcr:lastModified of the list with the current time
+        Set the property jcr:lastModifiedBy of the list with the name of the current user
+        Get the ancestor "page" of type jnt:page
+        Set the property jcr:lastModified of the page with the current time
+        Set the property jcr:lastModifiedBy of the page with the name of the current user
+end
+
+
+rule "Metadata update / content validated"
+    salience -9
+    no-loop
+    when
+        A property j:workflowState has been set on a node
+             - the node has the type jmix:contentmetadata
+    then
+        Set the property j:lastPublisher of the node with the name of the current user
+        Set the property j:lastPublishingDate of the node with the current time
+        Get the ancestor "list" of type jnt:containerList
+        Set the property j:lastPublishingDate of the list with the current time
+        Set the property j:lastPublisher of the list with the name of the current user
+        Get the ancestor "page" of type jnt:page
+        Set the property j:lastPublishingDate of the page with the current time
+        Set the property j:lastPublisher of the page with the name of the current user
+end
+
+rule "Notification: subscribable content published (container)"
+    when
+        A node has been published
+             - the node has the type jmix:subscribable
+ then
+        Fire contentPublished notification event for node
+end
+
+rule "Notification: subscribable content published (container list)"
+    when
+        A node has been published
+        The node has a parent
+             - it has the extension type jmix:subscribable
+ then
+        Fire contentPublished notification event for node
+end

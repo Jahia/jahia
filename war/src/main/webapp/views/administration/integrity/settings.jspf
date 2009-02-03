@@ -1,0 +1,23 @@
+<table width="100%" border="0" cellpadding="5" cellspacing="0" class="evenOddTable">
+  <tbody>
+      <tr class="oddLine">
+          <th width="30%"><label for="urlIntegrityCheckEnabled"><internal:adminResourceBundle resourceName="org.jahia.admin.integrity.urlIntegrity.label" defaultValue="URL Integrity"/></label></th>
+          <td width="70%"><input type="checkbox" name="urlIntegrityCheckEnabled" id="urlIntegrityCheckEnabled" ${urlIntegrityCheckEnabled ? 'checked="checked"' : ''}/></td>
+      </tr>
+      <tr class="evenLine">
+          <th><label for="waiComplianceCheckEnabled"><internal:adminResourceBundle resourceName="org.jahia.admin.integrity.waiCompliance.label" defaultValue="WAI Compliance"/></label></th>
+          <td>
+            <input type="checkbox" name="waiComplianceCheckEnabled" id="waiComplianceCheckEnabled" ${waiComplianceCheckEnabled ? 'checked="checked"' : ''}/>
+          </td>
+      </tr>
+      <tr class="oddLine">
+          <th><label for="fileLockingEnabled"><internal:adminResourceBundle resourceName="org.jahia.admin.integrity.files.lockOnPublication.label" defaultValue="Lock files on publication"/></label></th>
+          <td>
+            <input type="checkbox" name="fileLockingEnabled" id="fileLockingEnabled" ${fileLockingEnabled ? 'checked="checked"' : ''}/>
+          </td>
+      </tr>
+      <tr class="evenLine">
+          <td colspan="2"><internal:adminResourceBundle resourceName="org.jahia.admin.integrity.permissions.link.label" defaultValue="In order to configure users and group for each integrity check group please use the"/>&nbsp;<a href="<%=JahiaAdministration.composeActionURL(request,response,"sitePermissions","&sub=display&currentGroup=integrity")%>"><internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.mainMenu.label"/></a></td>
+      </tr>
+  </tbody>
+</table>

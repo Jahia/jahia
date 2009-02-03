@@ -1,0 +1,1 @@
+alter table jahia_fields_def drop constraint FK5700E095767D5370;

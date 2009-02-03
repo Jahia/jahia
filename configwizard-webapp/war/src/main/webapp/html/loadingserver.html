@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Loading Server...</title>
+<link rel="stylesheet" href="jahia.css" type="text/css">
+</head>
+<body class="text" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" height="63" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td width="126" height="63"><img src="images/header.gif" width="126" height="63"></td>
+        <td height="63" width="100%" background="images/header_bg.gif">&nbsp;</td>
+    </tr>
+</table>
+<center>
+<b class="text"><Font size="4">Welcome to Jahia.</font></b>
+<br><br>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+<tr>
+<td width="100%" align="center"><img src="images/portal2.gif" width="269" height="227" alt="Jahia Home"></td>
+</tr>
+    <tr>
+        <td align="center" class="text" colspan="2"><b>::&nbsp;&nbsp;Loading Jahia Server...&nbsp;&nbsp;::</b><p><img src="images/wait.gif"></td>
+    </tr>
+</table>
+</center>
+
+    <script language="javascript">
+       function loadFrame() {
+         top.frames[0].location = 'javascript_start.html?' + Math.random();
+         var timer = setTimeout( "loadFrame()", 2000 );
+       }
+
+       loadFrame();
+    </script>
+
+</body>
+</html>

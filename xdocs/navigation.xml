@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <body>
+    <links>
+      <item name="Jahia.org"             href="http://www.jahia.org"/>
+      <item name="Projects"             href="http://projects.jahia.org"/>
+    </links>
+
+    <menu name="Navigation">
+      <item name="Modules" href="modules.html"/>
+    </menu>
+
+  </body>
+</project>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<preload-classes>
+  <!-- This configuration file is used to preload classes into the
+       default class loader upon Jahia's initialization. You may
+       add classes here if you need but you should NEVER remove any
+       of the pre-packaged classes here, as this might cause serious
+       problems in Jahia's normal execution.
+  -->
+  <class-name>org.jahia.content.ObjectKey</class-name>
+  <class-name>org.jahia.content.ContentObjectKey</class-name>
+  <class-name>org.jahia.content.ContentDefinitionKey</class-name>
+  <class-name>org.jahia.content.ContentFieldKey</class-name>
+  <class-name>org.jahia.content.ContentContainerKey</class-name>
+  <class-name>org.jahia.content.ContentContainerListKey</class-name>
+  <class-name>org.jahia.content.ContentPageKey</class-name>
+  <class-name>org.jahia.content.ContainerDefinitionKey</class-name>
+  <class-name>org.jahia.content.FieldDefinitionKey</class-name>
+  <class-name>org.jahia.content.PageDefinitionKey</class-name>
+  <class-name>org.jahia.content.CategoryKey</class-name>
+  <class-name>org.jahia.data.applications.EntryPointObjectKey</class-name>
+
+
+  <class-name>org.jahia.content.ContentObject</class-name>
+  <class-name>org.jahia.services.fields.ContentField</class-name>
+  <class-name>org.jahia.services.containers.ContentContainer</class-name>
+  <class-name>org.jahia.services.containers.ContentContainerList</class-name>
+  <class-name>org.jahia.services.pages.ContentPage</class-name>
+
+  <class-name>org.jahia.content.ContentDefinition</class-name>
+  <class-name>org.jahia.data.fields.JahiaFieldDefinition</class-name>
+  <class-name>org.jahia.data.containers.JahiaContainerDefinition</class-name>
+  <class-name>org.jahia.services.pages.JahiaPageDefinition</class-name>
+
+  <class-name>org.jahia.data.beans.AbstractJahiaObjectBean</class-name>
+  <class-name>org.jahia.data.beans.CategoryBean</class-name>
+  <class-name>org.jahia.data.beans.ContainerBean</class-name>
+  <class-name>org.jahia.data.beans.ContainerListBean</class-name>
+  <class-name>org.jahia.data.beans.FieldBean</class-name>
+  <class-name>org.jahia.data.beans.PageBean</class-name>
+
+</preload-classes>

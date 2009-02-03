@@ -1,0 +1,3314 @@
+/**
+ *
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+#bodywrapper .themeSelector {
+    margin: 0.5em 0;
+}
+
+/*GLOBAL WHITESPACE RESET*/
+html, body,
+    #bodywrapper h1, #bodywrapper h2, #bodywrapper h3, #bodywrapper h4, #bodywrapper h5, #bodywrapper h6,
+    #bodywrapper p, #bodywrapper table, #bodywrapper caption, #bodywrapper tr, #bodywrapper td, #bodywrapper th,
+    #bodywrapper ul, #bodywrapper ol, #bodywrapper li, #bodywrapper dl, #bodywrapper dt, #bodywrapper dd,
+    #bodywrapper form, #bodywrapper legend, #bodywrapper fieldset {
+    margin: 0;
+    padding: 0;
+}
+
+/*BASIC ELEMENTS*/
+#bodywrapper p, #bodywrapper ul, #bodywrapper ol, #bodywrapper dl {
+    margin: 0.5em 0;
+}
+
+#bodywrapper ul, #bodywrapper ol, #bodywrapper dd {
+    padding-left: 2em;
+}
+
+#bodywrapper li ul, #bodywrapper li ol {
+    padding: 0 0 5px 15px;
+}
+
+#bodywrapper li {
+    margin-bottom: 0.2em;
+}
+
+#bodywrapper body {
+    font-size: 80%;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+#bodywrapper table {
+    font-size: 100%;
+}
+
+/*IE 5.5 text too big bugfix*/
+#bodywrapper h1 {
+    font-size: 2em;
+    margin: 0 0 0.5em 0;
+    line-height: normal;
+}
+
+#bodywrapper h2 {
+    font-size: 1.8em;
+    margin: 0 0 0.5em 0;
+    line-height: normal;
+}
+
+#bodywrapper h3 {
+    font-size: 1.6em;
+    margin: 0 0 0.5em 0;
+    line-height: normal;
+}
+
+#bodywrapper h4 {
+    font-size: 1.4em;
+    margin: 0 0 0.5em 0;
+    line-height: normal;
+}
+
+#bodywrapper h5 {
+    font-size: 1.2em;
+    margin: 0 0 0.5em 0;
+    line-height: normal;
+}
+
+#bodywrapper h6 {
+    font-size: 1em;
+    margin: 0 0 0.5em 0;
+    line-height: normal;
+}
+
+#bodywrapper p {
+    font-size: 1em;
+}
+
+#bodywrapper address {
+    font-style: normal;
+}
+
+#bodywrapper label {
+    font-weight: bold;
+}
+
+#bodywrapper caption {
+    font-weight: bold;
+    text-align: left;
+}
+
+#bodywrapper tr, #bodywrapper td, #bodywrapper th {
+    vertical-align: top;
+    text-align: left;
+}
+
+/* Restore correct styles displaying for tags rewrited by GxT */
+#bodywrapper strong, #bodywrapper th {
+    font-weight: bold;
+}
+
+#bodywrapper address, #bodywrapper caption, #bodywrapper cite, #bodywrapper dfn, #bodywrapper em, #bodywrapper var {
+    font-style: italic;
+}
+
+/*Dirty correction for GXT Problem on FCKeditor Hspace and Vspace (solution change Vspace and Hspace in Style margin */
+#bodywrapper p img {
+    margin: 5px;
+}
+
+/* avoid link focus border */
+#bodywrapper :focus {
+    outline-style: none;
+}
+
+/* input */
+
+#bodywrapper input,
+    #bodywrapper textarea,
+    #bodywrapper select {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 1em;
+}
+
+/*SPECIAL ELEMENTS*/
+#bodywrapper img {
+    border: 0;
+}
+
+/******************************************************************************
+* Utils
+******************************************************************************/
+.collapsible {
+    display: none;
+}
+
+#bodywrapper .clear {
+    clear: both;
+}
+
+#bodywrapper br.clear {
+    clear: both;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 0; /* no height ! */
+    font-size: 0;
+}
+
+#bodywrapper .hide, #bodywrapper .hidden {
+    display: none;
+}
+
+#bodywrapper .floatright {
+    float: right;
+    margin: 5px;
+}
+
+#bodywrapper .floatleft {
+    float: left;
+    margin: 5px;
+}
+
+#bodywrapper .layouted {
+    zoom: 1;
+}
+
+/******************************************************************************
+* Basic
+******************************************************************************/
+body {
+    background-color: #f0eee4;
+}
+
+#bodywrapper {
+    width: 100%;
+    background-color: #f0eee4;
+    font-size: 80%;
+    color: #36393d;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 160%;
+}
+
+#bodywrapper a,
+    #bodywrapper a:link,
+    #bodywrapper a:visited {
+    color: #900;
+    text-decoration: underline;
+    background: none;
+}
+
+#bodywrapper a:hover,
+    #bodywrapper a:active {
+    color: #900;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper ul {
+    margin: 1em 0 1em 2em;
+    padding: 0;
+}
+
+#bodywrapper li {
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper ol {
+    margin: 1em 0 1em 2em;
+    padding: 0;
+}
+
+#bodywrapper ol li {
+    margin: 0;
+    padding: 0;
+    background: none;
+}
+
+#bodywrapper dt {
+    font-weight: bold;
+    color: #900
+}
+
+#bodywrapper dd {
+    padding: 0 0 0 0.5em;
+}
+
+#bodywrapper h1 {
+    color: #333;
+    font-weight: normal;
+    font-size: 2.2em;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper h2 {
+    color: #900;
+    font-weight: normal;
+    font-size: 2em;
+    margin: 0 0 0.5em 0;
+    padding: 0;
+}
+
+#bodywrapper h3 {
+    color: #333;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 0 0 0.5em 0;
+    padding: 0;
+}
+
+#bodywrapper h4 {
+    font-size: 1.2em;
+    color: #333;
+    font-weight: bold;
+    margin: 0 0 0.5em 0;
+    padding: 0 0 5px 0;
+    border-bottom: 1px dotted #ccc
+}
+
+#bodywrapper h5 {
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper fieldset {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+}
+
+#bodywrapper legend {
+    text-transform: uppercase;
+    color: #ccc;
+    padding: 0 0.5em;
+    font-weight: bold
+}
+
+#bodywrapper hr {
+    height: 2px;
+    background-color: #ccc;
+    color: #ccc;
+    border: none;
+    margin: 1em 0;
+}
+
+#bodywrapper blockquote {
+}
+
+#bodywrapper input:focus,
+    #bodywrapper textarea:focus,
+    #bodywrapper select:focus {
+    background-color: #eaeaea;
+}
+
+#bodywrapper div.intro {
+    color: #333;
+    line-height: 1.6em;
+    font-size: 1.4em;
+    text-align: justify;
+    border-bottom: 1px dotted #ccc;
+    border-top: 1px dotted #ccc;
+    padding: 0.5em 0.5em;
+    margin: 1em 0;
+}
+
+#bodywrapper div.intro p {
+    padding: 0;
+    margin: 0;
+}
+
+/******************************************************************************
+* Generic
+******************************************************************************/
+#bodywrapper #InsetA,
+    #bodywrapper #InsetB {
+    font-size: 0.9em;
+    line-height: 140%
+}
+
+#bodywrapper .button {
+    background: #fff url( ../img/bg-button.png ) repeat-x bottom left;
+    border: 1px solid #333;
+    color: #333;
+    text-transform: uppercase;
+    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+    text-align: center;
+    font-size: 80%;
+    padding: 2px 15px 3px 15px;
+}
+
+#bodywrapper .button:hover {
+    cursor: pointer;
+    background: #fff url( ../img/bg-button-on.png ) repeat-x top left;
+    color: #900;
+}
+
+#bodywrapper div.bottomanchor {
+    border-top: 1px dotted #ccc;
+    line-height: 1.2em;
+    padding: 0.2em;
+    margin: 1em 0;
+}
+
+#bodywrapper .bottomanchor a,
+    #bodywrapper .bottomanchor a:link,
+    #bodywrapper .bottomanchor a:visited {
+    float: right;
+    margin: 0;
+    font-size: 80%;
+    background: url( ../img/bottomanchor.png ) no-repeat top right;
+    padding-right: 20px;
+}
+
+#bodywrapper .bottomanchor a:hover,
+    #bodywrapper .bottomanchor a:active {
+    cursor: pointer;
+    background: url( ../img/bottomanchor-on.png ) no-repeat top right;
+}
+
+/******************************************************************************
+* LAYOUT Header
+******************************************************************************/
+#bodywrapper #container {
+    width: 960px;
+    margin: 0 auto;
+    overflow: hidden;
+    text-align: left
+}
+
+#bodywrapper #page {
+    padding: 10px;
+    width: 940px;
+    background-color: #fff;
+    margin-bottom: 10px
+}
+
+#bodywrapper #pagepopup {
+    background-color: #fff;
+}
+
+/******************************************************************************
+* header-part1
+******************************************************************************/
+#bodywrapper div#headerPart1 {
+    text-align: right;
+    font-size: 80%;
+    line-height: 2em;
+    line-height: normal;
+    padding: 10px;
+}
+
+#bodywrapper #headerPart1 a,
+    #bodywrapper #headerPart1 a:link,
+    #bodywrapper #headerPart1 a:visited {
+    color: #333;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper #headerPart1 a:hover,
+    #bodywrapper #headerPart1 a:active {
+    color: #333;
+    text-decoration: underline;
+    background: none;
+}
+
+/*topshortcuts*/
+
+#bodywrapper div#topshortcuts {
+    display: inline;
+    float: right;
+}
+
+#bodywrapper #topshortcuts ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#bodywrapper #topshortcuts li {
+    display: inline;
+    padding: 0 5px;
+    background: none;
+}
+
+#bodywrapper #topshortcuts li.topshortcuts-print {
+    background: transparent url( ../img/topshortcuts-print.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper #topshortcuts li.topshortcuts-typoincrease {
+    background: transparent url( ../img/topshortcuts-typoincrease.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper #topshortcuts li.topshortcuts-typoreduce {
+    background: transparent url( ../img/topshortcuts-typoreduce.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper #topshortcuts li.topshortcuts-home {
+    background: transparent url( ../img/topshortcuts-home.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper #topshortcuts li.topshortcuts-contact {
+    background: transparent url( ../img/topshortcuts-contact.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper #topshortcuts li.topshortcuts-sitemap {
+    background: transparent url( ../img/topshortcuts-sitemap.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper #topshortcuts li.topshortcuts-mysettings {
+    background: transparent url( ../img/topshortcuts-mysettings.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper #topshortcuts .topshortcuts-login a {
+    background: transparent url( ../img/topshortcuts-login.png ) no-repeat left top;
+    padding-left: 20px;
+    text-transform: uppercase
+}
+
+#bodywrapper #topshortcuts .topshortcuts-login a:hover {
+    background: transparent url( ../img/topshortcuts-login.png ) no-repeat 0 -13px;
+}
+
+#bodywrapper #topshortcuts .topshortcuts-login a span {
+    background: transparent url( ../img/topshortcuts-login.png ) no-repeat right top;
+    padding-right: 16px;
+}
+
+#bodywrapper #topshortcuts .topshortcuts-login a span:hover {
+    background: transparent url( ../img/topshortcuts-login.png ) no-repeat right -13px;
+    padding-right: 16px;
+}
+
+/*loginFormTop*/
+#bodywrapper #loginFormTop {
+    clear: both;
+    margin: 0.5em;
+    padding: 0.5em;
+}
+
+#bodywrapper #loginFormTop p {
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper p.loginFormTopCheckbox {
+    clear: both;
+    display: block;
+}
+
+#bodywrapper #loginFormTop .text {
+    margin-top: 2px;
+    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    border: 1px solid #ccc;
+    color: #666;
+    height: 15px;
+    width: 150px
+}
+
+#bodywrapper #loginFormTop .text:focus {
+    background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left;
+    color: #333
+}
+
+#bodywrapper #loginFormTop .gobutton {
+    padding-top: 1px;
+    vertical-align: bottom;
+}
+
+/******************************************************************************
+* Box boxloginFormTop
+******************************************************************************/
+#bodywrapper .boxloginFormTop {
+    position: relative;
+    border: 1px solid #ccc;
+    margin: 0.5em 0 0 0;
+    clear: both;
+    background: #ccc url( ../img/box4-header.png ) repeat-x left top;
+    width: 360px;
+    float: right
+}
+
+#bodywrapper .boxloginFormTop-text {
+    margin: 10px 10px 15px 10px;
+    overflow: hidden;
+    height: 1%
+}
+
+#bodywrapper .boxloginFormTop-header {
+    padding-left: 6px;
+    text-align: left;
+    margin: 0;
+}
+
+#bodywrapper h3.boxloginFormTop-header span {
+    padding: 4px;
+    display: block
+}
+
+#bodywrapper .boxloginFormTop-topleft,
+    #bodywrapper .boxloginFormTop-topright,
+    #bodywrapper .boxloginFormTop-bottomleft,
+    #bodywrapper .boxloginFormTop-bottomright {
+    height: 5px;
+    width: 5px;
+    background-repeat: no-repeat;
+    font-size: 2px;
+}
+
+#bodywrapper .boxloginFormTop-bottomleft {
+    position: absolute;
+    bottom: -1px;
+    left: -1px;
+    background: url( ../img/box4-bottomleft.png ) no-repeat bottom left;
+}
+
+#bodywrapper .boxloginFormTop-bottomright {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    background: url( ../img/box4-bottomright.png ) no-repeat bottom right;
+}
+
+#bodywrapper .boxloginFormTop-topleft {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background: url( ../img/box4-topleft.png ) no-repeat top left;
+}
+
+#bodywrapper .boxloginFormTop-topright {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background: url( ../img/box4-topright.png ) no-repeat top right;
+
+}
+
+/*languages*/
+
+#bodywrapper div#languages {
+    float: right;
+    display: inline;
+}
+
+#bodywrapper #languages ul {
+    list-style: none;
+    float: left;
+    display: inline;
+    margin: 0;
+}
+
+#bodywrapper #languages li {
+    display: inline;
+    padding: 0 5px;
+    background: none;
+    text-decoration: underline;
+}
+
+#bodywrapper #languages li.selected {
+    color: #6699ff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+#bodywrapper #languages span table {
+    display: inline;
+}
+
+/******************************************************************************
+* headerPart2
+******************************************************************************/
+#bodywrapper #headerPart2 {
+    clear: both
+}
+
+#bodywrapper #headerPart2popup {
+    clear: both;
+    border-bottom: 5px solid #eaeaea;
+    margin-bottom: 1em;
+}
+
+/*logo*/
+#bodywrapper #headerPart2 #logotop {
+    width: 940px
+}
+
+/*Navigation N1*/
+#bodywrapper div #navigationN1 {
+    clear: both;
+    background: #4c5876 url( ../img/navigationN1Blue-top.png ) no-repeat top left;
+    margin: 0;
+    padding: 0;
+    width: 940px
+}
+
+#bodywrapper #navigationN1 ul {
+    clear: both;
+    list-style-type: none;
+    overflow: hidden;
+    background: transparent url( ../img/navigationN1Blue-bottom.png ) no-repeat bottom left;
+    margin: 0;
+    padding: 0;
+    width: 940px
+}
+
+#bodywrapper #navigationN1 li {
+    display: inline;
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper #navigationN1 li a {
+    background: transparent url( ../img/navigationN1Blue-separator.png ) no-repeat 100% 50%;
+    color: #fff;
+    display: inline;
+    float: left;
+    padding: 6px 15px;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap
+}
+
+#bodywrapper #navigationN1 li a.last {
+    background: none;
+}
+
+#bodywrapper #navigationN1 li a:hover,
+    #bodywrapper #navigationN1 li a.selected, #bodywrapper #navigationN1 li a.inpath {
+    color: #ddd3ca;
+}
+
+/*illustration */
+#bodywrapper #illustration {
+    clear: both;
+    padding: 10px 0 0 0;
+}
+
+#bodywrapper #illustration2 {
+    clear: both;
+    height: 294px;
+    width: 640px;
+    background: transparent url( ../img/illustration2.png ) no-repeat top left;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .illustration2-text {
+    padding: 70px 100px 30px 30px;
+    line-height: normal
+}
+
+#bodywrapper .illustration2-text,
+    #bodywrapper .illustration2-text h2,
+    #bodywrapper .illustration2-text h3,
+    #bodywrapper .illustration2-text h4,
+    #bodywrapper .illustration2-text h5 {
+    color: #fff;
+    margin: 0;
+}
+
+#bodywrapper .illustration2-text a,
+    #bodywrapper .illustration2-text a:link,
+    #bodywrapper .illustration2-text a:visited {
+    color: #fff;
+    text-decoration: underline;
+    background: none;
+}
+
+#bodywrapper .illustration2-text a:hover,
+    #bodywrapper .illustration2-texta:active {
+    color: #fff;
+    text-decoration: none;
+    background: none;
+}
+
+/******************************************************************************
+* LAYOUT CONTENEUR
+******************************************************************************/
+
+#bodywrapper #containerdata {
+    clear: both;
+    background-color: #fff;
+    height: 1%;
+    float: left;
+    width: 940px
+}
+
+/******************************************************************************
+* LAYOUT WRAPPER
+******************************************************************************/
+#bodywrapper #wrapper {
+    float: left;
+    width: 100%;
+    clear: both;
+}
+
+/******************************************************************************
+* LAYOUT CONTENT & INSETS
+******************************************************************************/
+/*3 colums InsetB/content/InsetA */
+#bodywrapper #content {
+    margin: 0 280px;
+    overflow: hidden;
+
+}
+
+/*2 colums InsetB/content  */
+#bodywrapper #content3 {
+    margin: 0 280px 0 0;
+    overflow: hidden;
+}
+
+/*2 colums content/InsetA */
+#bodywrapper #content2 {
+    margin: 0 0 0 280px;
+    overflow: hidden;
+}
+
+/* content alone*/
+#bodywrapper #content4 {
+    margin: 0;
+    overflow: hidden;
+}
+
+/*2 colums InsetC50%/content50%  */
+#bodywrapper #content5 {
+    margin: 0 460px 0 0;
+    overflow: hidden;
+}
+
+#bodywrapper #InsetB {
+    float: left;
+    width: 280px;
+    margin-left: -940px;
+    overflow: hidden;
+    display: block;
+
+}
+
+#bodywrapper #InsetA {
+    float: left;
+    width: 280px;
+    margin-left: -280px;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper #InsetC {
+    float: left;
+    width: 460px;
+    margin-left: -460px;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .space {
+    padding: 10px 0;
+}
+
+#bodywrapper #content .spaceContent {
+    padding: 10px 20px;
+}
+
+#bodywrapper #content2 .spaceContent {
+    padding: 10px 0 10px 20px;
+}
+
+#bodywrapper #content3 .spaceContent {
+    padding: 10px 0 10px 20px;
+}
+
+#bodywrapper #content4 .spaceContent {
+    padding: 10px 0;
+}
+
+#bodywrapper #content5 .spaceContent {
+    padding: 10px 10px 10px 0;
+}
+
+#bodywrapper #InsetC .space {
+    padding: 10px 0 10px 10px;
+}
+
+/******************************************************************************
+* columns LAYOUT
+******************************************************************************/
+/*2columns*/
+#bodywrapper .columns2 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both
+}
+
+#bodywrapper .columns2 .column-item {
+    float: left;
+    width: 50%;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .columns2 .column-item .columnspace {
+    padding: 10px;
+}
+
+/*3columns*/
+#bodywrapper .columns3 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both
+}
+
+#bodywrapper .columns3 .column-item {
+    float: left;
+    width: 33.33%;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .columns3 .column-item .columnspace {
+    padding: 10px;
+}
+
+/*4columns*/
+#bodywrapper .columns4 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both
+}
+
+#bodywrapper .columns4 .column-item {
+    float: left;
+    width: 25%;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .columns4 .column-item .columnspace {
+    padding: 10px;
+}
+
+/*5columns*/
+#bodywrapper .columns5 {
+    float: left;
+    width: 100%;
+    overflow: hidden;
+    clear: both
+}
+
+#bodywrapper .columns5 .column-item {
+    float: left;
+    width: 20%;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper .columns5 .column-item .columnspace {
+    padding: 10px;
+}
+
+/*columns without bottom space*/
+#bodywrapper .nobottomspace .column-item .columnspace {
+    padding: 10px 10px 0 10px;
+}
+
+/******************************************************************************
+* footer
+******************************************************************************/
+#bodywrapper #footer {
+    clear: both;
+}
+
+#bodywrapper #footer a,
+    #bodywrapper #footer a:link,
+    #bodywrapper #footer a:visited {
+    color: #333;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper #footer a:hover,
+    #bodywrapper #footer a:active {
+    color: #900;
+    text-decoration: underline;
+    background: none;
+}
+
+#bodywrapper #footerPart1 {
+    clear: both;
+    text-align: left;
+    font-size: 85%;
+    line-height: 100%;
+    color: #333;
+    overflow: hidden;
+    background-color: #eaeaea;
+}
+
+#bodywrapper #footerPart2 {
+    clear: both;
+    text-align: left;
+    font-size: 85%;
+    line-height: 120%;
+    color: #666;
+    overflow: hidden;
+    padding: 10px;
+}
+
+/*footerPart2 2columns*/
+
+#bodywrapper #footerPart2 .columns2 .column-item1 {
+    float: left;
+    overflow: hidden;
+    display: block;
+    width: 90%;
+}
+
+#bodywrapper #footerPart2 .columns2 .column-item2 {
+    float: left;
+    overflow: hidden;
+    display: block;
+    width: 10%;
+    text-align: center;
+}
+
+#bodywrapper #footerPart3 .columns2 .column-item .columnspace {
+    padding: 0px;
+}
+
+#bodywrapper #footerPart2content {
+
+}
+
+#bodywrapper .rss-footer {
+
+}
+
+#bodywrapper #footerPart3 {
+    clear: both;
+    text-align: left;
+    font-size: 85%;
+    line-height: 100%;
+    color: #333;
+    overflow: hidden;
+    background-color: #eaeaea;
+    padding: 10px;
+}
+
+/*footerPart3 2columns*/
+
+#bodywrapper #footerPart3 .columns2 .column-item1 {
+    float: left;
+    overflow: hidden;
+    display: block;
+    margin-right:15px
+}
+
+#bodywrapper #footerPart3 .columns2 .column-item2 {
+    float: left;
+    overflow: hidden;
+    display: block;
+}
+
+#bodywrapper #footerPart3 .columns2 .column-item .columnspace {
+    padding: 0;
+}
+
+#bodywrapper #footerPart3 .logo-footer {
+    margin: 0.5em 1em;
+    display: block
+}
+
+#bodywrapper #footerPart3 .copyright {
+    margin: 0;
+    padding: 0;
+    display: inline;
+    padding-left: 16px;
+}
+
+/*bottomshortcuts*/
+
+#bodywrapper div#bottomshortcuts {
+    display: inline;
+}
+
+#bodywrapper #bottomshortcuts ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#bodywrapper #bottomshortcuts li {
+    display: inline;
+    background: url( ../img/bottomshortcuts-bullet.png ) no-repeat 100% 50%;
+    padding-right: 10px;
+    margin-right: 10px;
+}
+
+#bodywrapper #bottomshortcuts .last {
+    background: none;
+    padding-right: 0;
+    margin-right: 0;
+}
+
+/******************************************************************************
+* breadcrumb
+******************************************************************************/
+#bodywrapper div#breadcrumb {
+    color: #999;
+}
+
+#bodywrapper #breadcrumb ul {
+    font-size: 90%;
+    margin: 1em 0;
+    padding: 0;
+    list-style: none;
+}
+
+#bodywrapper #breadcrumb li {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    background: none;
+    margin: 0.4em;
+}
+
+#bodywrapper #breadcrumb a,
+    #bodywrapper #breadcrumb a:link,
+    #bodywrapper #breadcrumb a:visited {
+    padding: 0 1em 0 0;
+    margin: 0;
+    background: url( ../img/breadcrumb-separator.png ) no-repeat 100% 50%;
+    color: #999;
+    text-decoration: underline;
+}
+
+#bodywrapper #breadcrumb a:hover,
+    #bodywrapper #breadcrumb a:active {
+    color: #900;
+    text-decoration: underline;
+}
+
+/******************************************************************************
+* navigationN2
+******************************************************************************/
+#bodywrapper .box2-containerN2 .box2-text {
+	padding:15px 0 !important;
+}
+#bodywrapper #navigationN2 ul {
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	position:relative ;
+}
+#bodywrapper #navigationN2 li ul {
+	padding:0 0 0 10px;
+}
+#bodywrapper #navigationN2 li{
+	margin:0;
+	padding:0;
+	position:relative ;
+}
+
+#bodywrapper #navigationN2 a {
+    display: inline ;
+    font-weight:bold;
+    text-decoration: none;
+    color:#000;
+    padding-left:12px ;
+    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50% ;
+}
+
+#bodywrapper #navigationN2 a.inpath {
+    color:#600;
+    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+}
+
+#bodywrapper #navigationN2 a.selected {
+    color:#c03;
+    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+}
+
+#bodywrapper #navigationN2 a:hover{
+	color:#555 ;
+}
+
+#bodywrapper #navigationN2 li .action-menu-icons {
+    position:absolute ;
+    top: 0 ;
+    right : 0 ;
+}
+
+#bodywrapper #navigationN2 li .ContentContainerList {
+    position:relative ;
+}
+
+/******************************************************************************
+* Box
+******************************************************************************/
+
+#bodywrapper .box {
+    clear: both;
+    position: relative;
+    height: 1%;
+    background-color: #fff;
+    padding: 10px;
+    background: url( ../img/box-bg.png ) no-repeat top right;
+    font-size: 90%;
+    line-height: 110%;
+}
+
+#bodywrapper .box {
+    padding-bottom: 2em;
+}
+
+#bodywrapper .box h3 {
+    font-size: 100%;
+    line-height: 110%;
+    font-weight: bold;
+    text-transform: none;
+    margin: 0;
+    padding: 0;
+    display: inline
+}
+
+#bodywrapper .box p {
+    margin: 0;
+}
+
+#bodywrapper .box .floatLeft {
+    float: left;
+    margin: 0 5px 5px 0;
+}
+
+#bodywrapper .box .more {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+}
+
+#bodywrapper .box-fixed-height {
+    height: 6em;
+    overflow: hidden;
+}
+
+#bodywrapper .box-fixed-height .box-content {
+    overflow: hidden;
+    height: 5.5em;
+}
+
+/******************************************************************************
+* Box style1
+******************************************************************************/
+#bodywrapper .box-style1 {
+    background: url( ../img/box-style1-bg.png ) no-repeat top left;
+}
+
+/******************************************************************************
+* Box 2 defaut
+******************************************************************************/
+#bodywrapper .box2 {
+    position: relative;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    clear: both;
+}
+
+#bodywrapper .box2-text {
+    margin: 10px 10px 1em 10px;
+    overflow: hidden;
+    height: 1%
+}
+
+#bodywrapper h3.box2-header {
+    background: #ccc url( ../img/box2-header.png ) repeat-x left top;
+    padding-left: 6px;
+    text-align: left;
+    margin: 0;
+}
+
+#bodywrapper h3.box2-header span {
+    padding: 6px;
+    display: block
+}
+
+#bodywrapper .box2-topleft,
+    #bodywrapper .box2-topright,
+    #bodywrapper .box2-bottomleft,
+    #bodywrapper .box2-bottomright {
+    height: 5px;
+    width: 5px;
+    background-repeat: no-repeat;
+    font-size: 2px;
+}
+
+#bodywrapper .box2-bottomleft {
+    position: absolute;
+    bottom: -1px;
+    left: -1px;
+    background: url( ../img/box2-bottomleft.png );
+}
+
+#bodywrapper .box2-bottomright {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    background: url( ../img/box2-bottomright.png );
+}
+
+#bodywrapper .box2-topleft {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background: url( ../img/box2-topleft.png );
+}
+
+#bodywrapper .box2-topright {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background: url( ../img/box2-topright.png );
+
+}
+
+#bodywrapper .box2-illustration {
+    background: transparent url( ../img/img5.png ) repeat top left;
+    height: 75px;
+}
+
+#bodywrapper .box2-more {
+    font-size: 80%;
+    font-size: 11px;
+    font-weight: bold;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    line-height: 14px;
+    background: transparent url( ../img/box2-more.png ) no-repeat top left;
+    padding: 1px 10px;
+    margin-bottom: 0;
+}
+
+/******************************************************************************
+* Box 2 style1
+******************************************************************************/
+
+#bodywrapper .box2-style1 h3.box2-header {
+    background: #404d6c url( ../img/box2-style1-header.png ) repeat-x left top;
+    color: #fff;
+}
+
+/******************************************************************************
+* Box 3 layout
+******************************************************************************/
+#bodywrapper .box3-container {
+    position: relative;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    clear: both;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper .box3-topleft,
+    #bodywrapper .box3-topright,
+    #bodywrapper .box3-bottomleft,
+    #bodywrapper .box3-bottomright {
+    height: 5px;
+    width: 5px;
+    background-repeat: no-repeat;
+    font-size: 2px;
+}
+
+#bodywrapper .box3-topleft {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background: url( ../img/box3-topleft.png ) no-repeat top left;
+}
+
+#bodywrapper .box3-topright {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background: url( ../img/box3-topright.png ) no-repeat top right;
+}
+
+#bodywrapper .box3-bottomleft {
+    position: absolute;
+    bottom: -1px;
+    left: -1px;
+    background: url( ../img/box3-bottomleft.png ) no-repeat bottom left;
+}
+
+#bodywrapper .box3-bottomright {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    background: url( ../img/box3-bottomright.png ) no-repeat bottom right;
+}
+
+#bodywrapper .box3-text {
+    margin: 10px;
+    overflow: hidden;
+    height: 1%
+}
+
+#bodywrapper .box3-text h3 {
+    color: #900;
+    margin-bottom: 0
+}
+
+/******************************************************************************
+* Box 3 style1
+******************************************************************************/
+#bodywrapper .box3-style1 .box3-container {
+    border: 1px solid #ccc;
+}
+
+#bodywrapper .box3-style1 {
+    background-color: #fff;
+}
+
+/******************************************************************************
+* Box 4 defaut
+******************************************************************************/
+#bodywrapper .box4 {
+    position: relative;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    clear: both;
+    background: #ccc url( ../img/box4-header.png ) repeat-x left top;
+}
+
+#bodywrapper .box4-text {
+    margin: 10px 10px 15px 10px;
+    overflow: hidden;
+    height: 1%
+}
+
+#bodywrapper h3.box4-header {
+    padding-left: 6px;
+    text-align: left;
+    margin: 0;
+}
+
+#bodywrapper h3.box4-header span {
+    padding: 4px;
+    display: block
+}
+
+#bodywrapper .box4-topleft,
+    #bodywrapper .box4-topright,
+    #bodywrapper .box4-bottomleft,
+    #bodywrapper .box4-bottomright {
+    height: 5px;
+    width: 5px;
+    background-repeat: no-repeat;
+    font-size: 2px;
+}
+
+#bodywrapper .box4-bottomleft {
+    position: absolute;
+    bottom: -1px;
+    left: -1px;
+    background: url( ../img/box4-bottomleft.png ) no-repeat bottom left;
+}
+
+#bodywrapper .box4-bottomright {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    background: url( ../img/box4-bottomright.png ) no-repeat bottom right;
+}
+
+#bodywrapper .box4-topleft {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background: url( ../img/box4-topleft.png ) no-repeat top left;
+}
+
+#bodywrapper .box4-topright {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    background: url( ../img/box4-topright.png ) no-repeat top right;
+
+}
+
+
+
+/******************************************************************************
+* Box 4 style1
+******************************************************************************/
+#bodywrapper .box4-style1 {
+    background: #404d6c url( ../img/box4-style1-header.png ) repeat-x left top;
+    color: #fff;
+}
+
+#bodywrapper .box4-style1 h3.box4-header {
+    color: #fff;
+}
+
+/******************************************************************************
+* more info
+******************************************************************************/
+#bodywrapper div.more {
+    float: right;
+    font-size: 11px;
+    font-weight: bold;
+    background: transparent url( ../img/more.png ) no-repeat 0 50%;
+    padding: 0 0 0 12px;
+    margin-bottom: 0;
+    display: block;
+}
+
+#bodywrapper .more span {
+}
+
+/******************************************************************************
+*  News generic
+******************************************************************************/
+#bodywrapper p.newsInfo {
+    font-size: 90%;
+    margin: 0.5em 0;
+    padding: 0.2em;
+    line-height: 1em;
+    font-weight: bold;
+    border-bottom: 1px solid #eaeaea;
+    border-top: 1px solid #eaeaea;
+}
+
+#bodywrapper .newsImg {
+    float: left;
+    margin-right: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsImg img {
+    border: 1px solid #eaeaea;
+    margin-right: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsimg-right {
+    float: right;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsimg-right img {
+    border: 1px solid #eaeaea;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsMeta {
+    clear: both;
+    font-size: 80%;
+    color: #999;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .newsMeta a,
+    #bodywrapper .newsMeta a:link,
+    #bodywrapper .newsMeta a:visited {
+    color: #999;
+    text-decoration: none;
+}
+
+#bodywrapper .newsMeta a:hover,
+    #bodywrapper .newsMeta a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper span.newsLabelName,
+    #bodywrapper span.newsLabelDate,
+    #bodywrapper span.newsLabelLocation {
+    color: #333;
+}
+
+#bodywrapper span.newsName,
+    #bodywrapper span.newsDate,
+    #bodywrapper span.newsLocation {
+    color: #333;
+}
+
+/******************************************************************************
+*  News List
+******************************************************************************/
+#bodywrapper .newsList {
+    clear: both;
+}
+
+#bodywrapper .newsTitle {
+    float: left;
+}
+
+#bodywrapper div.newsRss {
+    float: right;
+    color: #333;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0.4em 0.5em 0.4em 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .newsRss a,
+    #bodywrapper .newsRss a:link,
+    #bodywrapper .newsRss a:visited {
+    color: #900;
+    text-decoration: none;
+    background: none;
+    background: url( ../img/newsrss.png ) no-repeat top right;
+    padding-right: 20px;
+}
+
+#bodywrapper .newsRss a:hover,
+    #bodywrapper .newsRss a:active {
+    color: #900;
+    text-decoration: underline;
+}
+
+#bodywrapper .newsList h3 {
+    margin: 0 0 0.5em 0;
+}
+
+#bodywrapper .newsListItem {
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 1em;
+    clear: both;
+    width: 100%;
+    position: relative
+}
+
+#bodywrapper .newsListItem p {
+    margin-top: 0.5em;
+}
+
+#bodywrapper .newsListItem h4 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 2em;
+    font-weight: normal
+}
+
+#bodywrapper .newsListItem h4 a,
+    #bodywrapper .newsListItem h4 a:link,
+    #bodywrapper .newsListItem h4 a:visited {
+    color: #333;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper .newsListItem h4 a:hover,
+    #bodywrapper .newsListItem h4 a:active {
+    color: #900;
+    text-decoration: underline;
+    background: none;
+}
+
+#bodywrapper .newsListItem .newsResume {
+    text-align: justify;
+    margin: 0;
+}
+
+#bodywrapper .newsListItem .newsMore {
+    font-size: 80%;
+    font-size: 11px;
+    font-weight: bold;
+    float: right;
+    line-height: 14px
+}
+
+/******************************************************************************
+*  News Item
+******************************************************************************/
+#bodywrapper .newsItem.newsResume {
+    font-weight: bold;
+    margin: 0;
+}
+
+#bodywrapper .newsItem .newsInfo {
+    margin-bottom: 2em;
+}
+
+#bodywrapper .relatedNews {
+    width: 30%;
+    float: right;
+    margin: 0.5em;
+}
+
+#bodywrapper .relatedNews h3 {
+    color: #333
+}
+
+#bodywrapper .quote-top {
+    width: 25%;
+    background: #eaeaea url( ../img/quote-top.png ) no-repeat top left;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#bodywrapper .quote-bottom {
+    background: url( ../img/quote-bottom.png ) no-repeat bottom right;
+    padding: 23px 10px 23px 10px;
+}
+
+#bodywrapper .exergue-top {
+    width: 25%;
+    background-color: #eaeaea;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    font-size: 1.1em;
+    border-top: 4px solid #333;
+    font-weight: bold;
+}
+
+#bodywrapper .quote-top-full,
+    #bodywrapper .exergue-top-full {
+    width: 100%;
+    margin: 5px 0;
+    display: block
+}
+
+#bodywrapper .exergue-bottom {
+    padding: 10px;
+}
+
+/******************************************************************************
+*  Events generic
+******************************************************************************/
+#bodywrapper .eventsBody {
+    margin: 0 0 0 60px
+}
+
+#bodywrapper .eventsintro {
+    color: #333;
+    line-height: 1.6em;
+
+    border-bottom: 1px dotted #ccc;
+    border-top: 1px dotted #ccc;
+    padding: 0.5em 0.5em;
+    margin: 1em 0;
+}
+
+#bodywrapper .eventsintro p {
+    float: left;
+    display: inline;
+    margin: 0;
+    font-size: 1.4em;
+    text-align: justify;
+}
+
+#bodywrapper .eventsintro .eventsSort {
+    line-height: 1.6em;
+    float: right;
+}
+
+#bodywrapper div.eventsInfoDate {
+    float: left;
+    width: 46px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+#bodywrapper .eventsMeta {
+    clear: both;
+    font-size: 80%;
+    color: #999;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .eventsMeta a,
+    #bodywrapper .eventsMeta a:link,
+    #bodywrapper .eventsMeta a:visited {
+    color: #999;
+    text-decoration: none;
+}
+
+#bodywrapper .eventsMeta a:hover,
+    #bodywrapper .eventsMeta a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper div.eventsTxtDate {
+    width: 46px;
+    height: 16px;
+    display: block;
+    background: url( ../img/eventstxtdate.png ) no-repeat 50% 0;
+}
+
+#bodywrapper div.eventsTxtDate span {
+    display: none
+}
+
+#bodywrapper div.eventsDate {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    text-align: center;
+    background: url( ../img/eventsdate-bg.png ) no-repeat top right;
+    padding-top: 8px;
+    width: 46px;
+}
+
+#bodywrapper .eventsListItem .day {
+    font-size: 120%;
+    display: block;
+    line-height: 130%;
+    font-weight: bold;
+    color: #900
+}
+
+#bodywrapper .eventsListItem .month {
+    font-size: 70%;
+    display: block;
+    line-height: 90%;
+    color: #666
+}
+
+#bodywrapper .eventsListItem .year {
+    font-size: 85%;
+    display: block;
+    line-height: 90%;
+    background: url( ../img/eventsdatebottom.png ) no-repeat bottom right;
+    padding-bottom: 5px;
+    color: #666
+}
+
+#bodywrapper p.eventsLocation {
+    font-weight: bold;
+    color: #900;
+    font-size: 90%;
+    text-transform: uppercase;
+}
+
+#bodywrapper .eventsImg {
+    float: left;
+    margin-right: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .eventsImg img {
+    border: 1px solid #eaeaea;
+    margin-right: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .eventsimg-right {
+    float: right;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .eventsimg-right img {
+    border: 1px solid #eaeaea;
+    margin-left: 0.5em;
+    padding: 0;
+}
+
+/******************************************************************************
+*  Portraits generic
+******************************************************************************/
+#bodywrapper div.peopleListItem {
+
+    border-bottom: 1px solid #eaeaea;
+    padding: 5px;
+
+}
+
+#bodywrapper div.peoplePhoto {
+    float: left;
+    width: 100px;
+    height: 100px;
+    display: block;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+
+#bodywrapper p.peopleFonction {
+    font-size: 85%;
+    margin: 0
+}
+
+#bodywrapper p.peopleBusinessUnit {
+    font-size: 85%;
+    margin: 0
+}
+
+#bodywrapper .peopleBody {
+    margin: 0 0 0 120px
+}
+
+#bodywrapper .peopleAction {
+    font-size: 85%;
+    color: #900;
+}
+
+#bodywrapper .peopleAction a,
+    #bodywrapper .peopleAction a:link,
+    #bodywrapper .peopleAction a:visited {
+    color: #900;
+    margin-right: 0.5em
+}
+
+#bodywrapper .peopleAction a:hover,
+    #bodywrapper .peopleAction a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper a.peopleEnlarge {
+    background: transparent url( ../img/peopleenlarge.png ) no-repeat 0 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper a.peopleDownload {
+    background: transparent url( ../img/peopledownload.png ) no-repeat 0 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper a.peopleBiographiy {
+    background: transparent url( ../img/peoplebiographiy.png ) no-repeat 0 50%;
+    padding-left: 16px;
+}
+
+/******************************************************************************
+*  News List newsList3
+******************************************************************************/
+#bodywrapper ul.newsList3 {
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper .newsList3 li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    border-bottom: 1px solid #eaeaea;
+    background: url( ../img/newslist3.png ) no-repeat 0.5em 0.2em;
+    padding: 0.2em;
+    padding-left: 30px;
+}
+
+#bodywrapper .newsList3 li:hover {
+    background-color: #eaeaea
+}
+
+#bodywrapper .newsList3 li.lastnews {
+    border: none;
+}
+
+#bodywrapper .newsList3 a,
+    #bodywrapper .newsList3 a:link,
+    #bodywrapper .newsList3 a:visited {
+    color: #333;
+    text-decoration: none;
+}
+
+#bodywrapper .newsList3 a:hover,
+    #bodywrapper .newsList3 a:active {
+    color: #900;
+    text-decoration: underline;
+}
+
+/******************************************************************************
+*  Events List
+******************************************************************************/
+#bodywrapper .eventsList {
+    clear: both;
+}
+
+#bodywrapper .eventsList h3 {
+    margin: 0 0 0.5em 0;
+}
+
+#bodywrapper .eventsListItem {
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 1em;
+    clear: both;
+    width: 100%;
+    position: relative
+}
+
+#bodywrapper .eventsListItem p {
+    margin-top: 0.5em;
+}
+
+#bodywrapper .eventsListItem h4 {
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 2em;
+    font-weight: normal
+}
+
+#bodywrapper .eventsListItem h4 a,
+    #bodywrapper .eventsListItem h4 a:link,
+    #bodywrapper .eventsListItem h4 a:visited {
+    color: #333;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper .eventsListItem h4 a:hover,
+    #bodywrapper .eventsListItem h4 a:active {
+    color: #900;
+    text-decoration: underline;
+    background: none;
+}
+
+#bodywrapper .eventsListItem .eventsResume {
+    text-align: justify;
+    margin: 0;
+}
+
+#bodywrapper .eventsListItem .eventsMore {
+    font-size: 80%;
+    font-size: 11px;
+    font-weight: bold;
+    float: right;
+    line-height: 14px
+}
+
+/******************************************************************************
+*  Events Item
+******************************************************************************/
+#bodywrapper .eventsItem.eventsResume {
+    font-weight: bold;
+    margin: 0;
+}
+
+#bodywrapper .eventsItem .eventsInfo {
+    margin-bottom: 2em;
+}
+
+/*****************************************************************************	*
+*  pressRealese Form
+******************************************************************************/
+#bodywrapper div.pressRealeseForm {
+    clear: both;
+    margin: 1em 0;
+    background: url( ../img/pressform.png ) repeat-x bottom left;
+    border: 1px solid #ccc;
+}
+
+#bodywrapper .pressRealeseForm legend {
+    display: none;
+}
+
+#bodywrapper .pressRealeseForm fieldset {
+    border: none;
+}
+
+#bodywrapper .pressRealeseForm label {
+    float: left;
+    width: 235px;
+    margin: 0 1em 0 1em;
+    padding: 2px;
+    text-align: right;
+}
+
+#bodywrapper .pressRealeseForm .pressdatefrom .field,
+    #bodywrapper .pressRealeseForm .pressdateto .field {
+    width: 120px;
+}
+
+#bodywrapper .pressRealeseForm input[type="text"],
+    #bodywrapper .pressRealeseForm textarea {
+    width: 200px;
+    border: 1px solid #ccc;
+    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+}
+
+#bodywrapper .pressRealeseForm input[type="text"]:focus,
+    #bodywrapper .pressRealeseForm textarea:focus {
+    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+}
+
+#bodywrapper .pressRealeseForm .divButton {
+    text-align: center;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .pressRealeseForm input.button {
+    margin-left: 0.5em;
+}
+
+#bodywrapper .pressRealeseForm {
+
+    margin-bottom: 1em;
+    clear: both;
+    width: 100%;
+    position: relative
+}
+
+/******************************************************************************
+*  pressRealeseList Item
+******************************************************************************/
+#bodywrapper ul.pressRealeseList {
+    margin: 10px 0;
+    padding: 0;
+    background-image: none;
+    height: 1%;
+    list-style: none;
+    clear: both
+
+}
+
+#bodywrapper .pressRealeseList li {
+    margin: 0;
+    padding: 0.2em 0 0.2em 40px;
+    background: url( ../img/pressrealeserist-bg.png ) no-repeat 10px 50%;
+    border-bottom: 1px solid #eaeaea;
+    height: 1%;
+
+}
+
+#bodywrapper .pressRealeseList a,
+    #bodywrapper .pressRealeseList a:link,
+    #bodywrapper .pressRealeseList a:visited {
+    color: #333;
+    text-decoration: none;
+    background: none;
+}
+
+#bodywrapper .pressRealeseList a:hover,
+    #bodywrapper .pressRealeseList a:active {
+    text-decoration: underline;
+    color: #900;
+}
+
+#bodywrapper .pressRealeseList {
+    font-weight: bold
+}
+
+#bodywrapper .pressRealeseList li:hover {
+    background: #eaeaea url( ../img/pressrealeserist-bg-on.png ) no-repeat 10px 50%;
+}
+
+#bodywrapper .pressRealeseList h4 {
+    font-size: 1em;
+    line-height: normal;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    text-transform: none;
+    color: #333;
+    border: none;
+}
+
+#bodywrapper .pressRealeseList .pressRealeseDate,
+    #bodywrapper .pressRealeseList .pressRealeseCategory {
+    line-height: normal;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    font-size: 90%;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #900
+}
+
+#bodywrapper .pressRealeseList .pressRealeseCategory {
+    color: #666
+}
+
+#bodywrapper .pressRealeseList .pressRealeseDate {
+}
+
+/******************************************************************************
+*  Pagination
+******************************************************************************/
+#bodywrapper div.pagination {
+    height: 1%;
+    overflow: hidden;
+    text-transform: uppercase;
+    border-top: 1px solid #ccc;
+    background-color: #eaeaea;
+    padding: 0.5em 0.5em;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .paginationPosition {
+    float: left;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #333;
+}
+
+#bodywrapper .paginationNavigation {
+    float: right;
+    font-size: 0.9em;
+
+}
+
+#bodywrapper .paginationNavigation a:link,
+    #bodywrapper .paginationNavigation a:visited,
+    #bodywrapper .paginationNavigation a:hover,
+    #bodywrapper .paginationNavigation a:active {
+    text-decoration: none;
+    padding: 0.2em 0.5em;
+}
+
+#bodywrapper .paginationNavigation a:hover {
+    background: #900;
+    color: #fff;
+}
+
+#bodywrapper .paginationNavigation .currentPage {
+    background: #900;
+    color: #fff;
+    padding: 0.2em 0.5em;
+}
+
+#bodywrapper .paginationNavigation span {
+    text-decoration: none;
+    color: #666;
+    padding: 0;
+}
+
+/******************************************************************************
+*  AlphabeticalMenu
+******************************************************************************/
+#bodywrapper div.alphabeticalMenu {
+    height: 1%;
+    overflow: hidden;
+    text-transform: uppercase;
+    border-top: 1px solid #ccc;
+    background-color: #eaeaea;
+    padding: 0.5em 0.5em;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .alphabeticalLabel {
+    float: left;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #333;
+}
+
+#bodywrapper .alphabeticalNavigation {
+    float: right;
+    font-size: 0.9em;
+
+}
+
+#bodywrapper .alphabeticalNavigation a:link,
+    #bodywrapper .alphabeticalNavigation a:visited,
+    #bodywrapper .alphabeticalNavigation a:hover,
+    #bodywrapper .alphabeticalNavigation a:active {
+    text-decoration: none;
+    padding: 0.2em 0.5em;
+}
+
+#bodywrapper .alphabeticalNavigation a:hover {
+    background: #900;
+    color: #fff;
+}
+
+#bodywrapper .alphabeticalNavigation .currentPage {
+    background: #900;
+    color: #fff;
+    padding: 0.2em 0.5em;
+}
+
+#bodywrapper .alphabeticalNavigation span {
+    text-decoration: none;
+    color: #666;
+    padding: 0;
+}
+
+/******************************************************************************
+*  formSearchTop
+******************************************************************************/
+#bodywrapper #formSearchTop {
+    margin: 0 0 10px 0;
+    padding: 0;
+    display: block;
+}
+
+#bodywrapper #formSearchTop label {
+    font-weight: normal;
+}
+
+#bodywrapper #formSearchTopA label {
+    display: none
+}
+
+#bodywrapper #formSearchTopA {
+    background: transparent url( ../img/bg-formsearchtop.png ) no-repeat 0 0;
+    margin: 0;
+    padding: 0;
+    width: 280px;
+    height: 36px;
+    display: block;
+}
+
+#bodywrapper #formSearchTop:hover {
+    background: transparent url( ../img/bg-formsearchtop.png ) no-repeat 0 -36px;
+
+}
+
+#bodywrapper #formSearchTop p {
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper #formSearchTop .text {
+    margin: 10px 0 0 20px;
+    background-color: transparent;
+    border: none;
+    color: #666;
+    height: 15px;
+    width: 227px;
+}
+
+#bodywrapper #formSearchTop .gobutton {
+    margin-left: 2px;
+    vertical-align: bottom;
+}
+
+#bodywrapper #formSearchTop p.loginFormTopSection {
+    margin: 0 1.5em;
+    padding: 0;
+    clear: both;
+    font-size: 90%;
+    line-height: normal;
+}
+
+#bodywrapper formSearchTopB {
+    margin-top: 8px;
+}
+
+/******************************************************************************
+*  advanced search form
+******************************************************************************/
+#bodywrapper .advancedSearchForm span.label {
+    display: block;
+    width: 180px;
+    float: left;
+    margin-bottom: 5px;
+}
+#bodywrapper .advancedSearchForm br {
+    clear: left;
+}
+#bodywrapper .advancedSearchForm .dateRange {
+    margin-left: 180px;
+}
+
+/******************************************************************************
+*  links List
+******************************************************************************/
+#bodywrapper ul.links {
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper .links li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    border-bottom: 1px solid #eaeaea
+}
+
+#bodywrapper .links li:hover {
+    background-color: #eaeaea
+}
+
+#bodywrapper li.link {
+    background: url( ../img/link.png ) no-repeat 0.5em 0.6em;
+    padding: 0.5em;
+    padding-left: 30px;
+}
+
+#bodywrapper li.externallink {
+    background: url( ../img/externallink.png ) no-repeat 0.5em 0.5em;
+    padding: 0.5em;
+    padding-left: 30px;
+}
+
+#bodywrapper .links li.lastlink {
+    border-bottom: none
+}
+
+#bodywrapper .links a,
+    #bodywrapper .links a:link,
+    #bodywrapper .links a:visited {
+    text-decoration: none;
+}
+
+#bodywrapper .links a:hover,
+    #bodywrapper .links a:active {
+    text-decoration: underline;
+}
+
+/******************************************************************************
+*  documents List
+******************************************************************************/
+#bodywrapper span.docSize {
+    font-size: 80%;
+    margin-left: 0.2em;
+    font-weight: normal
+}
+
+#bodywrapper ul.document {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: bold
+
+}
+
+#bodywrapper li.document {
+    margin: 0;
+    padding: 0.5em;
+    padding-left: 30px;
+    list-style: none;
+    display: block;
+    border-bottom: 1px solid #eaeaea;
+}
+
+#bodywrapper li.document:hover {
+    background-color: #eaeaea
+}
+
+#bodywrapper li.lastdocument {
+    border-bottom: none
+}
+
+#bodywrapper li.document .resume {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1em;
+    font-size: 0.9em;
+    font-weight: normal
+}
+
+#bodywrapper li.document a,
+    #bodywrapper li.document a:link,
+    #bodywrapper li.document a:visited {
+    text-decoration: none;
+}
+
+#bodywrapper li.document a:hover,
+    #bodywrapper li.document a:active {
+    text-decoration: underline;
+}
+
+/******************************************************************************
+*  summary
+******************************************************************************/
+
+#bodywrapper ul.summary {
+    margin: 0;
+    padding: 0;
+    background-image: none;
+    height: 1%;
+    list-style: none;
+
+}
+
+#bodywrapper .summary li {
+    margin: 0 0 0.5em 0;
+    padding: 0.5em 0;
+    background-image: none;
+    width: 100%;
+    border-bottom: 1px solid #eaeaea
+}
+
+#bodywrapper .summary h4 a,
+    #bodywrapper .summary h4 a:link,
+    #bodywrapper .summary h4 a:visited {
+    text-decoration: none;
+    color: #333
+}
+
+#bodywrapper .summary h4 a:hover,
+    #bodywrapper .summary h4 a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper .summary h4 {
+    font-size: 1em;
+    line-height: normal;
+    margin: 0;
+    padding: 0;
+    border-bottom: none
+}
+
+#bodywrapper .summary img {
+    float: left;
+    margin-right: 0.5em;
+    padding: 0;
+    border: 1px solid #ccc;
+    width: 50px;
+    height: 50px;
+}
+
+#bodywrapper .summary .summaryresume {
+    line-height: normal;
+    font-size: 90%;
+    margin: 0;
+    padding: 0;
+}
+
+/******************************************************************************
+*  Template contact_form
+******************************************************************************/
+#bodywrapper .contactForm  p {
+    clear: both;
+}
+
+#bodywrapper .contactForm {
+    margin: 1em 0 0 0;
+    overflow: hidden;
+}
+
+#bodywrapper .formMarginLeft {
+    margin: 0 0 0 25%;
+}
+
+#bodywrapper .formMarginLeft p {
+    overflow: hidden;
+    margin: 0 1em 0 2em;
+    padding: 2px;
+}
+
+#bodywrapper .formFloatLeft {
+    float: left;
+    padding-right: 0.5em;
+}
+
+#bodywrapper .contactForm fieldset {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .contactForm legend {
+    font-size: 1em;
+    color: #333;
+    padding: 0 0.5em;
+    background: #fff url( ../img/contactformlegend.png ) repeat-x bottom left;
+    border: 1px solid #ccc;
+    display: inline;
+}
+
+#bodywrapper .contactForm label.left {
+    float: left;
+    width: 25%;
+    margin: 0 1em 0 1em;
+    padding: 2px;
+    text-align: right;
+}
+
+#bodywrapper .contactForm input[type="text"],
+    #bodywrapper .contactForm textarea {
+    width: 50%;
+    border: 1px solid #ccc;
+    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+}
+
+#bodywrapper .contactForm input[type="text"]:focus,
+    #bodywrapper .contactForm textarea:focus {
+    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+}
+
+#bodywrapper .divButton {
+    text-align: center;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .contactForm input.button {
+    margin-left: 0.5em;
+}
+
+/******************************************************************************
+*  Template search results
+******************************************************************************/
+#bodywrapper .resultsList ol {
+    margin: 1em 1em 1em 3em;
+}
+
+#bodywrapper .resultsList li {
+    margin-bottom: 1em;
+    border-bottom: 1px solid #ccc;
+}
+
+#bodywrapper .resultsList h4 {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    border-bottom: none;
+}
+
+#bodywrapper .resultsList .resultslistDesc {
+
+}
+
+#bodywrapper .resultsList .resultsListFileType {
+    font-size: 80%;
+    padding: 0.2em;
+    color: #900;
+    background-color: #ccc;
+    display: inline;
+    margin: 0 0.2em;
+}
+
+#bodywrapper .resultsList .resultsListDate {
+    font-size: 80%;
+    color: #333;
+    display: inline;
+    margin: 0 0.2em;
+}
+
+/*****************************************************************************	*
+*  publicationSearchForm Form
+******************************************************************************/
+#bodywrapper div.publicationSearchForm {
+    clear: both;
+    margin: 1em auto;
+    background: url( ../img/pressform.png ) repeat-x bottom left;
+    border: 1px solid #ccc;
+    padding: 0.5em 0;
+}
+
+#bodywrapper .publicationSearchForm legend {
+    display: none;
+}
+
+#bodywrapper .publicationSearchForm fieldset {
+    border: none;
+}
+
+#bodywrapper .publicationSearchForm label {
+    float: left;
+    width: 25%;
+    margin: 0 1em 0 1em;
+    padding: 2px;
+    text-align: right;
+}
+
+#bodywrapper .publicationSearchForm .field {
+    width: 160px;
+}
+
+#bodywrapper .publicationSearchForm input[type="text"],
+    #bodywrapper .publicationSearchForm textarea {
+    width: 315px;
+    border: 1px solid #ccc;
+    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+}
+
+#bodywrapper .publicationSearchForm input[type="text"]:focus,
+    #bodywrapper .publicationSearchForm textarea:focus {
+    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+}
+
+#bodywrapper .publicationSearchForm .divButton {
+    text-align: center;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .publicationSearchForm .contactForm input.button {
+    margin-left: 0.5em;
+}
+
+#bodywrapper .publicationSearchForm {
+    margin-bottom: 1em;
+    clear: both;
+    width: 100%;
+    position: relative
+}
+
+/******************************************************************************
+*  Publication List Title
+******************************************************************************/
+
+#bodywrapper .publicationTitle {
+    float: left;
+}
+
+#bodywrapper div.publicationRss {
+    float: right;
+    color: #333;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0.4em 0.5em 0.4em 0.5em;
+    padding: 0;
+}
+
+#bodywrapper .publicationRss a,
+    #bodywrapper .publicationRss a:link,
+    #bodywrapper .publicationRss a:visited {
+    color: #900;
+    text-decoration: none;
+    background: none;
+    background: url( ../img/newsrss.png ) no-repeat top right;
+    padding-right: 20px;
+}
+
+#bodywrapper .publicationRss a:hover,
+    #bodywrapper .publicationRss a:active {
+    color: #900;
+    text-decoration: underline;
+}
+
+/******************************************************************************
+*  Publication generic
+******************************************************************************/
+#bodywrapper div.publicationListItem {
+    width: 50%;
+    float: left
+}
+
+#bodywrapper div.publicationListSpace {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #eaeaea;
+}
+
+#bodywrapper div.publicationPhoto {
+    float: left;
+    width: 48px;
+    height: 48px;
+    display: block;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
+
+#bodywrapper p.publicationAuthor {
+    font-size: 85%;
+    margin: 0
+}
+
+#bodywrapper p.publicationSource {
+    font-size: 85%;
+    margin: 0
+}
+
+#bodywrapper .publicationDate {
+    font-size: 85%;
+    margin: 0
+}
+
+#bodywrapper p.publicationDescription {
+    font-size: 85%;
+    margin: 0
+}
+
+#bodywrapper .publicationBody {
+    margin: 0 0 0 60px
+}
+
+#bodywrapper .publicationAction {
+    font-size: 85%;
+    color: #333;
+}
+
+#bodywrapper .publicationAction a,
+    #bodywrapper .publicationAction a:link,
+    #bodywrapper .publicationAction a:visited {
+    color: #900;
+    margin-right: 0.5em
+}
+
+#bodywrapper .publicationAction a:hover,
+    #bodywrapper .publicationAction a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper a.publicationDownload {
+    background: transparent url( ../img/publicationdownload.png ) no-repeat 0 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper span.publicationDocSize {
+    font-size: 80%;
+    margin-left: 0.2em;
+    font-weight: normal
+}
+
+/*****************************************************************************	*
+*  jobsSearchForm Form
+******************************************************************************/
+#bodywrapper div.jobsSearchForm {
+    clear: both;
+    margin: 1em auto;
+    background: url( ../img/pressform.png ) repeat-x bottom left;
+    border: 1px solid #ccc;
+    padding: 0.5em 0;
+}
+
+#bodywrapper .jobsSearchForm legend {
+    display: none;
+}
+
+#bodywrapper .jobsSearchForm fieldset {
+    border: none;
+}
+
+#bodywrapper .jobsSearchForm label {
+    float: left;
+    width: 200px;
+    margin: 0 1em 0 1em;
+    padding: 2px;
+    text-align: right;
+}
+
+#bodywrapper .jobsSearchForm .field {
+    width: 25%;
+}
+
+#bodywrapper .jobsSearchForm input[type="text"],
+    #bodywrapper .jobsSearchForm textarea {
+    width: 315px;
+    border: 1px solid #ccc;
+    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+}
+
+#bodywrapper .jobsSearchForm input[type="text"]:focus,
+    #bodywrapper .jobsSearchForm textarea:focus {
+    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+}
+
+#bodywrapper .jobsSearchForm .divButton {
+    text-align: center;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .jobsSearchForm .contactForm input.button {
+    margin-left: 0.5em;
+}
+
+#bodywrapper .jobsSearchForm {
+    margin-bottom: 1em;
+    clear: both;
+    width: 100%;
+    position: relative
+}
+
+/******************************************************************************
+*  job item
+******************************************************************************/
+#bodywrapper .jobLabel {
+    font-weight: bold;
+
+}
+
+#bodywrapper .jobtxt {
+
+}
+
+#bodywrapper .jobInfo {
+    border: 1px solid #ccc;
+    float: right;
+    padding: 10px;
+    margin: 0 0 0.5em 0.5em;
+    width: 200px;
+    font-size: 0.85em;
+}
+
+#bodywrapper .jobAction {
+    font-size: 85%;
+    font-weight: bold;
+    color: #900;
+    margin-top: 15px;
+}
+
+#bodywrapper .jobAction a,
+    #bodywrapper .jobAction a:link,
+    #bodywrapper .jobAction a:visited {
+    color: #900;
+    margin-right: 0.5em
+}
+
+#bodywrapper .jobAction a:hover,
+    #bodywrapper .jobAction a:active {
+    text-decoration: underline;
+}
+
+#bodywrapper a.jobApply {
+    float: right;
+    background: transparent url( ../img/jobapply.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+#bodywrapper a.returnJobsList {
+    float: left;
+    background: transparent url( ../img/returnjobslist.png ) no-repeat 0% 50%;
+    padding-left: 16px;
+}
+
+/*****************************************************************************	*
+*  jobsApplyForm
+******************************************************************************/
+#bodywrapper div.jobsApplyForm {
+    clear: both;
+    margin: 1em auto;
+    background: url( ../img/pressform.png ) repeat-x bottom left;
+    border: 1px solid #ccc;
+    padding: 0.5em 0;
+}
+
+#bodywrapper .jobsApplyForm legend {
+    display: none;
+}
+
+#bodywrapper .jobsApplyForm fieldset {
+    border: none;
+}
+
+#bodywrapper .jobsApplyForm label {
+    float: left;
+    width: 200px;
+    margin: 0 1em 0 1em;
+    padding: 2px;
+    text-align: right;
+}
+
+#bodywrapper .jobsApplyForm .field {
+    width: 25%;
+}
+
+#bodywrapper .jobsApplyForm input[type="text"],
+    #bodywrapper .jobsApplyForm textarea {
+    width: 315px;
+    border: 1px solid #ccc;
+    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+}
+
+#bodywrapper .jobsApplyForm input[type="text"]:focus,
+    #bodywrapper .jobsApplyForm textarea:focus {
+    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+}
+
+#bodywrapper .jobsApplyForm .divButton {
+    text-align: center;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .jobsApplyForm input.button {
+    margin-left: 0.5em;
+}
+
+#bodywrapper .jobsApplyForm {
+    margin-bottom: 1em;
+    clear: both;
+    width: 100%;
+    position: relative
+}
+
+/******************************************************************************
+*  Tabs
+******************************************************************************/
+#bodywrapper .tab,
+    #bodywrapper .tab caption {
+    margin: auto;
+    line-height: 1.9em
+}
+
+#bodywrapper .tab {
+    border-collapse: separate;
+    border-spacing: 1px;
+    empty-cells: hide;
+    margin-bottom: 1em;
+    background-color: #fff
+
+}
+
+#bodywrapper .tab caption {
+    color: #900;
+    font-weight: normal;
+    font-size: 2em;
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper .tab th {
+    color: #333;
+    text-transform: uppercase;
+    font-size: 1em;
+    letter-spacing: 1px;
+    padding-left: 0.5em;
+}
+
+#bodywrapper .tab td {
+    padding-left: 0.5em;
+}
+
+#bodywrapper .tab .odd td {
+    color: #333;
+    background-color: #eaeaea
+}
+
+#bodywrapper .tab .even td {
+    color: #333;
+    background-color: #fff
+}
+
+#bodywrapper .col1 {
+
+}
+
+#bodywrapper .col2 {
+
+}
+
+#bodywrapper .col3 {
+}
+
+#bodywrapper .tab tfoot td {
+    font-size: 0.8em;
+    color: #666;
+    letter-spacing: 1px;
+}
+
+/******************************************************************************
+* Get Flash
+******************************************************************************/
+#bodywrapper .flashcontent {
+    border: 1px solid #900;
+    padding: 10px;
+    margin-bottom: 10px;
+    clear: both;
+    position: relative;
+    height: 1%;
+}
+
+/******************************************************************************
+* Sitemap
+******************************************************************************/
+#bodywrapper div #sitemap {
+    margin: 10px 0;
+}
+
+#bodywrapper #sitemap ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+}
+
+#bodywrapper #sitemap li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#bodywrapper #sitemap a,
+    #bodywrapper #sitemap a:link,
+    #bodywrapper #sitemap a:visited {
+    display: block;
+    text-decoration: none;
+    height: 1%;
+    background: none;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+#bodywrapper #sitemap a:hover,
+    #bodywrapper #sitemap a:active {
+    background: none;
+    color: #900;
+}
+
+#bodywrapper #sitemap .level_1 a,
+    #bodywrapper #sitemap .level_1 a:link,
+    #bodywrapper #sitemap .level_1 a:visited {
+    padding: 0 2px 0 10px;
+    background: #eaeaea url( ../img/bg-sitemap-L1.png ) no-repeat 2px 50%;
+    margin: 1px 0;
+    font-weight: bold;
+    display: block;
+    text-decoration: none;
+    height: 1%;
+    color: #333;
+    margin: 0;
+}
+
+#bodywrapper #sitemap .level_1 a:hover,
+    #bodywrapper #sitemap .level_1 a:active {
+    color: #900;
+}
+
+#bodywrapper #sitemap .level_2 a,
+    #bodywrapper #sitemap .level_2 a:link,
+    #bodywrapper #sitemap .level_2 a:visited {
+    background: none;
+    padding: 0 2px 0 10px;
+    background: url( ../img/bg-sitemap-L2.png ) no-repeat 2px 50%;
+    border-bottom: none;
+    font-weight: bold;
+    line-height: normal;
+}
+
+#bodywrapper #sitemap .level_2 a:hover,
+    #bodywrapper #sitemap .level_2 a:active {
+    color: #900;
+}
+
+#bodywrapper #sitemap .level_3 a,
+    #bodywrapper #sitemap .level_3 a:link,
+    #bodywrapper #sitemap .level_3 a:visited {
+    padding: 0 2px 0 20px;
+    background: url( ../img/bg-sitemap-L3.png ) no-repeat 10px 50%;
+    font-size: 90%;
+    font-weight: bold;
+    line-height: normal;
+}
+
+#bodywrapper #sitemap .level_3 a:hover,
+    #bodywrapper #sitemap .level_3 a:active {
+    color: #900;
+}
+
+#bodywrapper #sitemap .level_4 a,
+    #bodywrapper #sitemap .level_4 a:link,
+    #bodywrapper #sitemap .level_4 a:visited {
+    padding: 0 2px 0 30px;
+    background: url( ../img/bg-sitemap-L4.png ) no-repeat 20px 50%;
+    font-size: 85%;
+    font-weight: bold;
+    line-height: normal;
+}
+
+#bodywrapper #sitemap .level_4 a:hover,
+    #bodywrapper #sitemap .level_4 a:active {
+    color: #900;
+}
+
+#bodywrapper #sitemap .level_5 a,
+    #bodywrapper #sitemap .level_5 a:link,
+    #bodywrapper #sitemap .level_5 a:visited {
+    padding: 0 2px 0 40px;
+    background: url( ../img/bg-sitemap-L5.png ) no-repeat 30px 50%;
+    font-size: 80%;
+    font-weight: normal;
+    line-height: normal;
+}
+
+#bodywrapper #sitemap .level_5 a:hover,
+    #bodywrapper #sitemap .level_5 a:active {
+    color: #900;
+}
+
+/******************************************************************************
+*  video
+******************************************************************************/
+#bodywrapper div.clip {
+    margin-bottom: 0.5em;
+}
+
+/******************************************************************************
+*  Code
+******************************************************************************/
+#bodywrapper code,
+    #bodywrapper .code {
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    color: #333;
+    background-color: #eaeaea;
+    padding: 0 0.5em;
+}
+
+
+/******************************************************************************
+*  loginForm
+******************************************************************************/
+#bodywrapper .loginForm fieldset {
+    border: 1px solid #eaeaea;
+    padding: 0.5em;
+    margin: 0.5em 0;
+}
+
+#bodywrapper .loginForm legend {
+    display: none
+}
+
+#bodywrapper .loginForm h3 {
+    background: url( ../img/login.png ) no-repeat;
+    padding-left: 24px;
+    line-height: 1.6em;
+    margin: 0;
+}
+
+#bodywrapper .loginForm #username,
+    #bodywrapper .loginForm #password {
+    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    margin-top: 2px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #333;
+    width: 95%
+
+}
+
+#bodywrapper .loginForm #username:focus,
+    #bodywrapper .loginForm #password:focus {
+    background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left;
+    color: #333
+}
+
+#bodywrapper .loginForm #remember {
+
+}
+
+#bodywrapper .loginForm .rememberLabel {
+    font-weight: normal;
+    font-size: 80%;
+}
+
+#bodywrapper checkbox #remember {
+    float: left
+}
+
+#bodywrapper .loginForm .button {
+}
+
+/******************************************************************************
+* my settings  GXT
+******************************************************************************/
+#bodywrapper .x-btn {
+}
+
+#bodywrapper .x-btn-left {
+    display: none
+}
+
+#bodywrapper .x-btn-text {
+    color: #333 !important;
+}
+
+#bodywrapper .x-btn-center {
+    background: #fff url( ../img/bg-button.png ) repeat-x bottom left;
+    border: 1px solid #999;
+    color: #333;
+    text-transform: uppercase;
+    font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+    text-align: center;
+    font-size: 80%;
+    padding: 2px 15px 3px 15px;;
+}
+
+#bodywrapper .x-btn-right {
+    display: none
+}
+
+#bodywrapper .x-btn-over .x-btn-center {
+    cursor: pointer;
+    background: #fff url( ../img/bg-button-on.png ) repeat-x top left;
+    color: #900;
+}
+
+#bodywrapper .x-form-item-label {
+    width: 300px !important;
+}
+
+#bodywrapper .x-item-disabled .x-btn-text {
+    color: #666 !important;
+}
+
+#bodywrapper .mySettings-gxt .x-panel-footer {
+    margin-top: 15px;
+}
+
+#bodywrapper .x-form-text {
+    height: 16px;
+}
+
+#bodywrapper .x-form-field {
+    height: 16px;
+}
+
+#bodywrapper input.x-form-field {
+    margin-top: 2px !important;
+    background-color: #fff !important;
+    border: 1px solid #666 !important;
+    background: #fff url( ../img/bg-input.png ) repeat-x top left !important;
+}
+
+#bodywrapper  input.x-form-focus {
+    background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left !important;
+    color: #000000 !important;
+}
+
+#bodywrapper #mysettings {
+    margin: 10px 0 10px 15px;
+}
+
+#bodywrapper .maincontent {
+    margin-top: 20px;
+}
+/******************************************************************************
+*  Preferences
+******************************************************************************/
+#bodywrapper div.preferences{
+border: 1px solid #ccc;
+background-color:#eaeaea;
+padding:5px;
+font-size:90%;
+line-height:100%;
+margin:1em 0;
+}
+#bodywrapper .preferences p{
+margin:0;
+padding:0
+}
+#bodywrapper .preferences h2{
+margin:0;
+padding:0;
+font-size:1.2em;
+font-weight:bold;
+}
+#bodywrapper .preferences .preference-item .preference-label{
+font-weight:bold;
+}

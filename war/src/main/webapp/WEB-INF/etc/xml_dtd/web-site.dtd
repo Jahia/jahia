@@ -1,0 +1,78 @@
+<!ENTITY % HOST "CDATA">
+
+<!ENTITY % PATH "CDATA">
+
+<!ENTITY % WEBPATH "CDATA">
+
+<!ENTITY % NUMBER "CDATA">
+
+<!ENTITY % BOOLEAN "true|false">
+
+<!-- When enabled user dirs/apps will be supported. Each user has his own private web-application (and connected web-application.xml file).
+			The user apps are reached at /~username/ from the server root. -->
+<!ELEMENT user-web-apps (#PCDATA)>
+<!ATTLIST user-web-apps max-inactivity-time CDATA "no shutdown"
+path %PATH; #IMPLIED
+>
+
+<!-- Relative/absolute path to the access-log for this site, this is where incoming requests will be logged. -->
+<!ELEMENT access-log (#PCDATA)>
+<!ATTLIST access-log format CDATA "$ip - $user - [$time] '$request' $status $size"
+path CDATA #IMPLIED
+split (none|hour|day|week|month) "none"
+suffix CDATA #IMPLIED
+>
+
+<!-- The frontend tag describes which IP, port etc that HTTP clients perceive this site to be. This is needed when acting behind a load balancer, firewall etc in order to provide the correct info to web-app code when rewriting URLs etc. -->
+<!ELEMENT frontend (#PCDATA)>
+<!ATTLIST frontend host CDATA #IMPLIED
+port CDATA #IMPLIED
+>
+
+<!-- Specifies SSL-configuration settings. These settings are used if secure="true" is specified on the site.
+			If a 3rd party SSLServerSocketFactory implementation is used then x property tags can be defined to send
+			arbitary arguments to the factory. -->
+<!ELEMENT ssl-config (property*)>
+<!ATTLIST ssl-config factory CDATA "com.evermind.server.JSSESSLServerSocketFactory"
+keystore CDATA #IMPLIED
+keystore-password CDATA #IMPLIED
+needs-client-auth (true|false) "false"
+provider CDATA #IMPLIED
+>
+
+<!-- Reference to a -->
+<!ELEMENT web-app (#PCDATA)>
+<!ATTLIST web-app application CDATA #IMPLIED
+load-on-startup (true|false) "false"
+max-inactivity-time %NUMBER; "no shutdown"
+name CDATA #IMPLIED
+root %WEBPATH; #IMPLIED
+shared (true|false) "false"
+>
+
+<!-- A configuration parameter. -->
+<!ELEMENT property (#PCDATA)>
+<!ATTLIST property name CDATA #IMPLIED
+value CDATA #IMPLIED
+>
+
+<!-- Reference to the default -->
+<!ELEMENT default-web-app (#PCDATA)>
+<!ATTLIST default-web-app application CDATA #IMPLIED
+load-on-startup (true|false) "true"
+max-inactivity-time %NUMBER; #IMPLIED
+name CDATA #IMPLIED
+shared (true|false) "false"
+>
+
+<!-- This file contains the configuration for a web-site. -->
+<!ELEMENT web-site (frontend?, default-web-app, web-app*, user-web-apps?, access-log?, ssl-config?)>
+<!ATTLIST web-site cluster-island CDATA #IMPLIED
+display-name CDATA #IMPLIED
+host %HOST; "[ALL]"
+log-request-info (true|false) "false"
+port %NUMBER; "80"
+secure (true|false) "false"
+virtual-hosts CDATA #IMPLIED
+>
+

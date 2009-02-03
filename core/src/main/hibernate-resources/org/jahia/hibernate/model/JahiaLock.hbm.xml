@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaLock"
+        table="jahia_locks_non_excl"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaLockPK"
+        >
+                     <key-property
+                        name="name"
+                        type="java.lang.String"
+                        column="name_locks"
+                        length="50"
+                />
+
+                     <key-property
+                        name="targetID"
+                        type="java.lang.Integer"
+                        column="targetid_locks"
+                        length="11"
+                />
+
+                     <key-property
+                        name="action"
+                        type="java.lang.String"
+                        column="action_locks"
+                        length="50"
+                />
+
+                     <key-property
+                        name="contextID"
+                        type="java.lang.String"
+                        column="context_locks"
+                        length="80"
+                />
+
+        </composite-id>
+
+        <property
+            name="owner"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="owner_locks"
+            length="50"
+        />
+
+        <property
+            name="timeout"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="timeout_locks"
+        />
+
+        <property
+            name="expirationDate"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            access="property"
+            column="expirationDate_locks"
+        />
+
+        <property
+            name="serverId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="serverid_locks"
+            length="30"
+        />
+
+        <property
+            name="stolen"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="stolen_locks"
+            length="10"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaLock.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

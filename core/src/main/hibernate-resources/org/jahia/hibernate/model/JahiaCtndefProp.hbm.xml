@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaCtndefProp"
+        table="jahia_ctndef_prop"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaCtndefPropPK"
+        >
+                     <key-property
+                        name="idJahiaCtnDef"
+                        type="java.lang.Integer"
+                        column="id_jahia_ctn_def"
+                        length="11"
+                />
+
+                     <key-property
+                        name="nameJahiaCtndefProp"
+                        type="java.lang.String"
+                        column="name_jahia_ctndef_prop"
+                        length="255"
+                />
+
+        </composite-id>
+
+        <property
+            name="valueJahiaCtndefProp"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="value_jahia_ctndef_prop"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaCtndefProp.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

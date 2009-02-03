@@ -1,0 +1,78 @@
+[web_templates:paragraphContainer]
+- mainContentTitle,
+- mainContentBody,
+- mainContentImage,
+- mainContentAlign,
+- insertType,
+- insertPosition,
+- insertOffset,
+- insertText
+
+[web_templates:eventContainer]
+- title,
+- startDate,
+- endDate,
+- location,
+- body
+
+[web_templates:jobContainer]
+- title,
+- reference,
+- businessUnit,
+- contract,
+- educationLevel,
+- town,
+- country,
+- description,
+- skills
+
+[web_templates:newsContainer]
+- newsTitle,
+- newsDate,
+- newsDesc,
+- newsImage,
+- newslink
+
+[web_templates:peopleContainer]
+- peopleCivility,
+- peopleLastname,
+- peopleFirstname,
+- peopleBirthdate,
+- peopleFunction,
+- peopleBusinessUnit,
+- peopleGender,
+- peopleNationality,
+- peopleTelephone,
+- peopleCellular,
+- peopleFax,
+- peopleEmail,
+- peopleBiography,
+- peoplePicture
+
+[web_templates:pressreleaseContainer]
+- pressReleaseTitle,
+- pressReleaseDate,
+- pressReleaseIntro,
+- pressReleaseBody
+
+[web_templates:publicationContainer]
+- title,
+- author,
+- source,
+- date,
+- body,
+- file,
+- preview
+
+[web_templates:fileContainer]
+- title,
+- file,
+- fileDesc,
+- fileDisplayDetails
+
+
+
+
+
+
+

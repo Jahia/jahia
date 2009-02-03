@@ -1,0 +1,16 @@
+<%@ include file="../../common/declarations.jspf" %>
+<ul class="summary">
+    <template:container id="newsContainer" cacheKey="shortNews" displayActionMenu="false" displayExtensions="false">
+        <li class="summary">
+            <!--start newsListItem -->
+            <template:field name="newsImage" valueBeanID="newsImage" display="false"/>
+
+            <div class="summaryImg"><img src="${newsImage.downloadUrl}" alt=""></div>
+            <h4><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}"><template:field
+                    name='newsTitle'/></a></h4>
+            <p class="summaryresume"><template:field name="newsDesc" maxChar="120"/></p>
+            <div class="clear"></div>
+        </li>
+        <!--stop newsListItem -->
+    </template:container>
+</ul>

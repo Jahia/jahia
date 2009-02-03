@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.SubscriptionData"
+        table="jahia_subscriptions"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id_jahia_subscriptions"
+            type="int"
+            unsaved-value="0"
+        >
+            <generator class="org.jahia.hibernate.dao.JahiaIdentifierGenerator">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-SubscriptionData.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="objectKey"
+            type="string"
+            update="true"
+            insert="true"
+            column="object_key"
+            length="40"
+            not-null="false"
+        />
+
+        <property
+            name="includeChildren"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="include_children"
+            not-null="true"
+        />
+
+        <property
+            name="eventType"
+            type="string"
+            update="true"
+            insert="true"
+            column="event_type"
+            length="50"
+            not-null="true"
+        />
+
+        <property
+            name="channel"
+            type="character"
+            update="true"
+            insert="true"
+            column="channel"
+            not-null="true"
+        />
+
+        <property
+            name="type"
+            type="character"
+            update="true"
+            insert="true"
+            column="notification_type"
+            not-null="true"
+        />
+
+        <property
+            name="username"
+            type="string"
+            update="true"
+            insert="true"
+            column="username"
+            length="255"
+            not-null="true"
+        />
+
+        <property
+            name="siteId"
+            type="int"
+            update="true"
+            insert="true"
+            column="site_id"
+            not-null="true"
+        />
+
+        <property
+            name="enabled"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="enabled"
+            not-null="true"
+        />
+
+        <property
+            name="suspended"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="suspended"
+            not-null="true"
+        />
+
+        <property
+            name="confirmationKey"
+            type="string"
+            update="true"
+            insert="true"
+            column="confirmation_key"
+            length="32"
+            not-null="false"
+        />
+
+        <property
+            name="confirmationRequestTimestamp"
+            type="long"
+            update="true"
+            insert="true"
+            column="confirmation_request_timestamp"
+            not-null="false"
+        />
+        
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-SubscriptionData.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

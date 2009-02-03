@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nodeTypes xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:exo="http://www.exoplatform.com/jcr/exo/1.0"
+           xmlns:fn="http://www.w3.org/2004/10/xpath-functions" xmlns:j="http://www.jahia.org/jahia/1.0"
+           xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0"
+           xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+           xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal" xmlns:sv="http://www.jcp.org/jcr/sv/1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xml="http://www.w3.org/XML/1998/namespace">
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="nt:ace" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="true" multiple="false" name="jcr:protected"
+                                onParentVersion="COPY" protected="false" requiredType="Boolean"/>
+            <propertyDefinition autoCreated="false" mandatory="true" multiple="true" name="jcr:privileges"
+                                onParentVersion="COPY" protected="false" requiredType="Name"/>
+            <propertyDefinition autoCreated="false" mandatory="true" multiple="false" name="jcr:principal"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="true" multiple="false" name="jcr:aceType"
+                                onParentVersion="COPY" protected="false" requiredType="String">
+                <valueConstraints>
+                    <valueConstraint>GRANT</valueConstraint>
+                    <valueConstraint>DENY</valueConstraint>
+                </valueConstraints>
+            </propertyDefinition>
+        </propertyDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="true" isMixin="false" name="nt:acl" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="nt:ace" mandatory="false" name="jcr:ace"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="true">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>nt:ace</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="nt:accessControlPolicy" primaryItemName="jcr:acl">
+        <supertypes>
+            <supertype>mix:referenceable</supertype>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false"
+                                name="jcr:parentAccessControlPolicy"
+                                onParentVersion="COPY" protected="false" requiredType="Reference">
+                <valueConstraints>
+                    <valueConstraint>nt:accessControlPolicy</valueConstraint>
+                </valueConstraints>
+            </propertyDefinition>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="true"
+                                name="jcr:additionalAccessControlPolicies" onParentVersion="COPY" protected="false"
+                                requiredType="Reference">
+                <valueConstraints>
+                    <valueConstraint>nt:accessControlPolicy</valueConstraint>
+                </valueConstraints>
+            </propertyDefinition>
+        </propertyDefinitions>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="nt:acl" mandatory="false" name="jcr:acl"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>nt:acl</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="rep:accessControl" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="*"
+                                 onParentVersion="COPY"
+                                 protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>nt:accessControlPolicy</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="true" name="mix:accessControlled" primaryItemName="">
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="true" multiple="false" name="jcr:accessControlPolicy"
+                                onParentVersion="COPY" protected="false" requiredType="Reference">
+                <valueConstraints>
+                    <valueConstraint>nt:accessControlPolicy</valueConstraint>
+                </valueConstraints>
+            </propertyDefinition>
+        </propertyDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="true" name="jmix:metadata" primaryItemName="">
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:keywords"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:description"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:lastAuthor"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:lastModified"
+                                onParentVersion="COPY" protected="false" requiredType="Date"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:author"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:title"
+                                onParentVersion="COPY"
+                                protected="false" requiredType="String"/>
+        </propertyDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:folder" primaryItemName="">
+        <supertypes>
+            <supertype>jmix:metadata</supertype>
+            <supertype>mix:referenceable</supertype>
+            <supertype>nt:folder</supertype>
+        </supertypes>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:systemfolder" primaryItemName="">
+        <supertypes>
+            <supertype>jnt:folder</supertype>
+        </supertypes>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:file" primaryItemName="">
+        <supertypes>
+            <supertype>jmix:metadata</supertype>
+            <supertype>mix:referenceable</supertype>
+            <supertype>nt:file</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="true" name="j:fieldsinuse"
+                                onParentVersion="COPY" protected="false" requiredType="Long"/>
+        </propertyDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:virtualsite" primaryItemName="">
+        <supertypes>
+            <supertype>jnt:systemfolder</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="server"
+                                onParentVersion="COPY"
+                                protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="name"
+                                onParentVersion="COPY"
+                                protected="false" requiredType="String"/>
+        </propertyDefinitions>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="true" defaultPrimaryType="jnt:systemfolder" mandatory="true" name="groups"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:systemfolder</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+            <childNodeDefinition autoCreated="true" defaultPrimaryType="jnt:systemfolder" mandatory="true" name="users"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:systemfolder</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+            <childNodeDefinition autoCreated="true" defaultPrimaryType="jnt:folder" mandatory="true" name="shared"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:folder</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:rule" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:value"
+                                onParentVersion="COPY"
+                                protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="true" multiple="false" name="j:type"
+                                onParentVersion="COPY"
+                                protected="false" requiredType="String"/>
+        </propertyDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:filter" primaryItemName="">
+        <supertypes>
+            <supertype>mix:referenceable</supertype>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="j:rule"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="true">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:rule</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:filters" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="*"
+                                 onParentVersion="COPY"
+                                 protected="false" sameNameSiblings="true">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:filter</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:action" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="*" onParentVersion="COPY"
+                                protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="true" multiple="false" name="j:type"
+                                onParentVersion="COPY"
+                                protected="false" requiredType="String"/>
+        </propertyDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:automation" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:filter"
+                                onParentVersion="COPY" protected="false" requiredType="Reference"/>
+        </propertyDefinitions>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="j:action"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="true">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:action</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:automations" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="*"
+                                 onParentVersion="COPY"
+                                 protected="false" sameNameSiblings="true">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:automation</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="false" name="jnt:system" primaryItemName="">
+        <supertypes>
+            <supertype>nt:base</supertype>
+        </supertypes>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="j:automations"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:automations</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="j:filters"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>jnt:filters</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="true" name="jmix:extension" primaryItemName=""/>
+    <nodeType hasOrderableChildNodes="false" isMixin="true" name="jmix:document" primaryItemName="">
+        <supertypes>
+            <supertype>jmix:extension</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:codePage"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:dictionary"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:security"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:appName"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:subject"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:wordAuthor"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:comments"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:template"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:wordLastAuthor"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:revNumber"
+                                onParentVersion="COPY" protected="false" requiredType="String"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:editTime"
+                                onParentVersion="COPY" protected="false" requiredType="Date"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:lastPrinted"
+                                onParentVersion="COPY" protected="false" requiredType="Date"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:lastModifDate"
+                                onParentVersion="COPY" protected="false" requiredType="Date"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:pageCount"
+                                onParentVersion="COPY" protected="false" requiredType="Long"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:wordCount"
+                                onParentVersion="COPY" protected="false" requiredType="Long"/>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="false" name="j:charCount"
+                                onParentVersion="COPY" protected="false" requiredType="Long"/>
+        </propertyDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="true" name="jmix:image" primaryItemName="">
+        <supertypes>
+            <supertype>jmix:extension</supertype>
+        </supertypes>
+        <childNodeDefinitions>
+            <childNodeDefinition autoCreated="false" defaultPrimaryType="" mandatory="false" name="j:thumbnail"
+                                 onParentVersion="COPY" protected="false" sameNameSiblings="false">
+                <requiredPrimaryTypes>
+                    <requiredPrimaryType>nt:resource</requiredPrimaryType>
+                </requiredPrimaryTypes>
+            </childNodeDefinition>
+        </childNodeDefinitions>
+    </nodeType>
+    <nodeType hasOrderableChildNodes="false" isMixin="true" name="jmix:categorizedDocument" primaryItemName="">
+        <supertypes>
+            <supertype>jmix:extension</supertype>
+        </supertypes>
+        <propertyDefinitions>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="true" name="j:service"
+                                onParentVersion="COPY" protected="false" requiredType="String">
+                <defaultValues>
+                    <defaultValue>###category###service</defaultValue>
+                </defaultValues>
+            </propertyDefinition>
+            <propertyDefinition autoCreated="false" mandatory="false" multiple="true" name="j:project"
+                                onParentVersion="COPY" protected="false" requiredType="String">
+                <defaultValues>
+                    <defaultValue>###category###project</defaultValue>
+                </defaultValues>
+            </propertyDefinition>
+        </propertyDefinitions>
+    </nodeType>
+</nodeTypes>

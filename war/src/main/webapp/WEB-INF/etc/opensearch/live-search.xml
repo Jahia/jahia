@@ -1,0 +1,11 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:referrer="http://a9.com/-/opensearch/extensions/referrer/1.0/">
+  <ShortName>LiveSearch</ShortName>
+  <Description>Live Search</Description>
+  <Tags>live search</Tags>
+  <Image height="16" width="16" type="image/x-icon">http://www.google.com/favicon.ico</Image>
+  <Url type="application/rss+xml" method="GET">
+   <Template><![CDATA[http://search.live.com/results.aspx?q={searchTerms}+site%3aen.wikipedia.org&format=rss]]></Template>
+  </Url>
+  <InputEncoding>UTF-8</InputEncoding>
+  <AdultContent>false</AdultContent>
+</OpenSearchDescription>

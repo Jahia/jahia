@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.indexingjob.JahiaIndexingJob"
+        table="jahia_indexingjobs"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="id"
+            column="id_indexingjob"
+            type="java.lang.String"
+            length="50"
+        >
+            <generator class="uuid.hex">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaIndexingJob.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <discriminator
+            column="classname_indexingjob"
+        />
+
+        <property
+            name="date"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            access="property"
+            column="date_indexingjob"
+        />
+
+        <property
+            name="className"
+            type="java.lang.String"
+            update="false"
+            insert="false"
+            access="property"
+            column="classname_indexingjob"
+            length="100"
+        />
+
+        <property
+            name="indexImmediately"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="indeximmdty_indexingjob"
+        />
+
+        <property
+            name="ruleId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="ruleId_indexingjob"
+        />
+
+        <property
+            name="scheduledFromTime1"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="fromtime1_indexingjob"
+        />
+
+        <property
+            name="scheduledToTime1"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="totime1_indexingjob"
+        />
+
+        <property
+            name="scheduledFromTime2"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="fromtime2_indexingjob"
+        />
+
+        <property
+            name="scheduledToTime2"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="totime2_indexingjob"
+        />
+
+        <property
+            name="scheduledFromTime3"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="fromtime3_indexingjob"
+        />
+
+        <property
+            name="scheduledToTime3"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="totime3_indexingjob"
+        />
+
+        <property
+            name="enabledIndexingServers"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="enableserver_indexingjob"
+            length="100"
+        />
+
+            <!--set
+            name="processedServers"
+            table="jahia_indexjobservers"
+            cascade="all-delete-orphan"
+            sort="unsorted"
+            lazy="true"
+        >
+            <key
+                column="indexjob_id"
+            >
+            </key>
+
+            <composite-element class="org.jahia.hibernate.model.indexingjob.JahiaIndexJobServer">
+            	<parent name="indexingJob" />
+            	<property column="server_id" name="serverId" />
+            	<property column="process_date" name="date" />
+						</composite-element>
+        </set-->
+
+        <subclass
+            name="org.jahia.hibernate.model.indexingjob.JahiaContainerListIndexingJob"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="org.jahia.hibernate.model.indexingjob.JahiaContainerListIndexingJob"
+        >
+        <property
+            name="ctnListId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="ctnlistid_indexingjob"
+        />
+
+	    <!--
+            	To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaContainerListIndexingJob.xml
+		containing the additional properties and place it in your merge dir.
+	    -->
+
+        </subclass>
+        <subclass
+            name="org.jahia.hibernate.model.indexingjob.JahiaContainerIndexingJob"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="org.jahia.hibernate.model.indexingjob.JahiaContainerIndexingJob"
+        >
+        <property
+            name="ctnId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="ctnid_indexingjob"
+        />
+
+	    <!--
+            	To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaContainerIndexingJob.xml
+		containing the additional properties and place it in your merge dir.
+	    -->
+
+        </subclass>
+        <subclass
+            name="org.jahia.hibernate.model.indexingjob.JahiaRemoveFromIndexJob"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="org.jahia.hibernate.model.indexingjob.JahiaRemoveFromIndexJob"
+        >
+        <property
+            name="siteId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="siteid_indexingjob"
+        />
+
+        <property
+            name="keyFieldName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="keyname_indexingjob"
+        />
+
+        <property
+            name="keyFieldValue"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="keyvalue_indexingjob"
+        />
+
+	    <!--
+            	To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaRemoveFromIndexJob.xml
+		containing the additional properties and place it in your merge dir.
+	    -->
+
+        </subclass>
+        <subclass
+            name="org.jahia.hibernate.model.indexingjob.JahiaPageIndexingJob"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="org.jahia.hibernate.model.indexingjob.JahiaPageIndexingJob"
+        >
+        <property
+            name="pageId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="pageid_indexingjob"
+        />
+
+	    <!--
+            	To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaPageIndexingJob.xml
+		containing the additional properties and place it in your merge dir.
+	    -->
+
+        </subclass>
+        <subclass
+            name="org.jahia.hibernate.model.indexingjob.JahiaFieldIndexingJob"
+            dynamic-update="false"
+            dynamic-insert="false"
+            discriminator-value="org.jahia.hibernate.model.indexingjob.JahiaFieldIndexingJob"
+        >
+        <property
+            name="fieldId"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="fieldid_indexingjob"
+        />
+
+	    <!--
+            	To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaFieldIndexingJob.xml
+		containing the additional properties and place it in your merge dir.
+	    -->
+
+        </subclass>
+
+    </class>
+
+</hibernate-mapping>

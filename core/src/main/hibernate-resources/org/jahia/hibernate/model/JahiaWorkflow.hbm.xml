@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaWorkflow"
+        table="jahia_workflow"
+        lazy="false"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <id
+            name="objectkey"
+            column="OBJECTKEY"
+            type="java.lang.String"
+        >
+            <generator class="assigned">
+              <!--  
+                  To add non XDoclet generator parameters, create a file named 
+                  hibernate-generator-params-JahiaWorkflow.xml 
+                  containing the additional parameters and place it in your merge dir. 
+              --> 
+            </generator>
+        </id>
+
+        <property
+            name="mode"
+            type="java.lang.Integer"
+            update="true"
+            insert="true"
+            access="property"
+            column="MODEVALUE"
+            length="11"
+        />
+
+        <property
+            name="externalname"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="EXTERNALNAME"
+            length="255"
+        />
+
+        <property
+            name="externalprocess"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="EXTERNALPROCESS"
+            length="255"
+        />
+
+        <property
+            name="mainObjectkey"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            access="property"
+            column="MAINOBJECTKEY"
+            length="255"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaWorkflow.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

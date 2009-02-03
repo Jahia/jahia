@@ -1,0 +1,422 @@
+/* ------------------------------------------------ */
+/*                 MAIN STRUCT                      */
+/* ------------------------------------------------ */
+
+body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-family: Arial, Verdana, Helvetica, sans-serif;
+    background-color: #f1f5fa;
+    font-size: 11px;
+}
+
+table,td,p {
+	font-size: 11px;
+	font-family: Arial, Verdana, Helvetica, sans-serif;
+	} 
+	
+input[type="text"] { 
+	font-size: 11px;
+	}
+
+input[type="password"] { 
+	font-size: 11px;
+	}
+
+input[type="file"] {
+
+font-size: 11px;
+} 
+
+select
+{
+	 font-size: 11px;
+}	
+
+caption {
+	font-weight: bold;
+	color : #2f3c45;
+}
+
+h1 {
+  font-size: 100%;
+  margin: 0;
+  float: left;
+  text-indent: -2000em;
+  width: 45px;
+  height: 20px;
+  background: url(images/logo-jahia.gif) no-repeat;
+  text-indent: -2000em;
+}
+
+h2 {
+  font-size: 120%;
+  margin-left: 6px;
+  display: block;
+  float: left;
+  line-height: 1.6em;
+  vertical-align: middle;
+}
+
+h4 {
+	font-size: 11px;
+    font-weight: bold;
+}
+
+
+h5 {
+	font-size: 12px;
+    font-weight: bold;
+    color: #444444;
+}
+
+fieldset {
+	border: 1px solid #7f9db9;
+	padding: 10px;
+}
+
+a {
+  color: #006699;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #3399CC;
+  text-decoration: none;
+}
+
+a:active
+{
+  outline: none;
+}
+
+
+#wrapper {
+    width: 710px;
+    margin: auto;
+    text-align: left;
+}
+
+#header {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#pagebody {
+    padding-top: 20px;
+	border: 1px solid #b7cbd8;
+	background-color: #ffffff;
+}
+
+#footer {
+    padding-bottom: 15px;
+}
+
+#header, #pagebody, #footer,#buttons {
+    float: left;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+#header, #pagebody, #footer,#buttons{
+    width: 658px !important;
+    width: 690px;
+}
+
+
+#wrapper, #header,#content, #pagebody, #footer, #copyright, p, h5 {
+    display: block;
+}
+
+/* Copyright */
+#copyright {
+  text-align: center;
+  color: #ADB7BD;
+  padding-top: 7px;
+  width: 100%;
+  float: left;
+}
+
+/* ------------------------------------------------ */
+/*                 TABLE STRUCT                     */
+/* ------------------------------------------------ */
+
+table {
+    margin-bottom: 18px;
+}
+
+table, caption {
+    margin-top: 14px;
+    width: 100%;
+    text-align: left;
+}
+
+caption {
+    margin-bottom: 12px;
+    text-align: justify;
+}
+
+th {
+    display: none;
+}
+
+td {
+    text-align: justify;
+}
+
+.t2 {
+    width: 20%;
+}
+
+.t1 {
+    width: 30%;
+}
+
+.t3 {
+    width: 40%;
+}
+
+.t5 {
+    width: 65%;
+    padding-right: 15px;
+}
+
+.t1, .t3, .t5 {
+    vertical-align: middle;
+}
+
+.label {
+    display: block;
+    padding-bottom: 11px;
+}
+/* -------------------------------------------- */
+
+.required {
+    display: block;
+    padding-left: 17px;
+    padding-top: 12px;
+}
+
+p {
+    margin-bottom: 12px;
+    text-align: justify;
+    margin-top: 12px;
+}
+
+#buttons {
+    display: block;
+     padding-top: 6px;
+  text-align: center;
+}
+
+.step {
+    float: right;
+    text-align: right;
+	padding-top: 8px;
+}
+
+h3 {
+    padding-top: 16px;
+    height: 48px;
+    
+}
+
+h1, h2, h3 {
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+h5 {
+    padding-top: 12px;
+}
+
+select, h4 {
+    display: inline;
+}
+
+.inputtype {
+    width: 220px;
+    text-align: left;
+}
+
+.choix {
+    width: 224px !important;
+    width: 220px;
+}
+
+/* ------------------------------------------------ */
+
+.error {
+    display: block;
+    margin-left: 7px;
+}
+
+.corporate_portal_templates {
+    margin-top: 5px;
+    width: 240px;
+    height: 141px;
+}
+
+#workInProgressOverlay {
+    display:none;
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 5019;
+    background-color:white;
+    -moz-opacity: 0.7;
+    opacity:.70;
+    filter: alpha(opacity=70);
+}
+#workInProgressOverlay[id]{
+    position:fixed;
+}
+#workInProgressOverlay img.imgLoading, #workInProgressOverlay button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 66px;
+    height: 66px;
+    margin-left: -33px;
+    margin-top: -33px;
+}
+
+/**
+ * Push button
+ */
+.dex-PushButton {
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: #B7CBD8;
+  background: url(images/bkg-button.png) repeat-x 0 0;
+  margin: auto .25em;
+  display: -moz-inline-box;
+  display: inline-block;
+  vertical-align: text-bottom;
+  max-height: 28px;
+}
+
+.dex-PushButton:hover {
+  background: url(images/bkg-button.png) repeat-x 0 -28px;
+}
+
+.dex-PushButton .first-child {
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: #B7CBD8;
+  margin: 0 -1px;
+  *position: relative;
+  *left: -1px;
+  display: block;
+  *display: inline-block;
+
+}
+
+.dex-PushButton button,.dex-PushButton a {
+	display: block;
+	*display: inline-block;
+	border: none;
+	margin: 0;
+	cursor: pointer;
+
+}
+
+.dex-PushButton button {
+  background-color: transparent;
+  *overflow: visible;
+  font-size: 93%;
+  line-height: 2;
+  *line-height: 1.7;
+  min-height: 2em;
+  *min-height: auto;
+  border: none;
+}
+
+.dex-PushButton a {
+	padding: 0 10px;
+	font-size: 93%;
+	line-height: 1.6;
+	min-height: auto;
+	color: #333333;
+	padding: 5px 10px 5px 26px;
+}
+
+.disabledButton {
+   padding: 5px 10px 5px 10px;    
+}
+
+.dex-PushButton a:active {
+  outline: none;
+}
+
+.dex-PushButton a:focus {
+  -moz-outline-style: none;
+}
+
+.dex-PushButton a.ico-next {
+  padding: 5px 26px 5px 10px;
+}
+
+.ico-next {
+  background: url(images/nav_next.png) no-repeat center right;
+  position: relative;
+  right: 3px;
+}
+
+.dex-PushButton-up-hovering {
+  background-position: 0 -28px;
+}
+
+.ico-nav-previous {
+  background: url(images/nav_previous.png) no-repeat 4px 6px;
+   margin-left: 4px;
+}
+
+.ico-nav-next {
+  background: url(images/nav_next.png) no-repeat right center;
+  margin-right: 4px;
+}
+
+.ico-nav-save {
+  background: url(images/accept.png) no-repeat 4px center;
+  margin-left: 4px;
+}
+
+#content {
+  background-color: #ffffff;  
+  float: left;
+}
+
+/* Content */
+#content .head {
+  background: #d8e5ec url(images/bkg-section.png) 0 0;
+  font-weight: bold;
+  height: 24px;
+  border-top: 1px solid #b7cbd8;
+  border-left: 1px solid #b7cbd8;
+  border-right: 1px solid #b7cbd8;
+    text-align: left;
+}
+
+#content .object-title {
+  float: left;
+  padding: 5px;
+  color: #2f3c45;
+}
+
+#pagebody {
+	float: left;
+	width: 100%;
+}
+
+.error {
+  color: #FF0000 !important;
+  text-decoration: none;
+  font-style: normal;
+  padding: 5px;
+}
+
+
+
+
+

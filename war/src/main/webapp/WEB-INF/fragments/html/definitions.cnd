@@ -1,0 +1,3 @@
+[jnt:htmlPortlet] > jnt:portlet
+ - html (string, text[multiline])
+

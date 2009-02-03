@@ -1,0 +1,17 @@
+<%@ include file="../../common/declarations.jspf" %>
+<template:container id="mainContent">
+    <h3><template:field name='mainContentTitle' /></h3>
+
+    <p class="maincontent">
+        <template:field name='mainContentAlign' display="false" valueBeanID="mainContentAlign"/>
+        <template:image file="mainContentImage" cssClassName="${mainContentAlign.defaultValue}"
+                                align="${mainContentAlign.defaultValue}"/>
+        <template:field name="mainContentBody"/>
+        (hidden values = <br>
+        - insertText : <template:field name="insertText"/><br>
+        - insertType : <template:field name='insertType' /><br>
+        - insertOffset : <template:field name='insertOffset'/><br>
+        - notes : <template:field name='notes'/><br>)
+    </p>
+    <br class="clear"/>
+</template:container>

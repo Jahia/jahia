@@ -1,0 +1,38 @@
+<editors>
+	<editor>
+		<id>FCKEditor</id>
+		<name>FCK Editor</name>
+		<base-directory>fckeditor</base-directory>
+		<include-file>fckeditor_htmleditor.jsp</include-file>
+		<enable-css>true</enable-css>
+		<rank>1</rank>
+	</editor>
+	<editor>
+		<id>simpletext</id>
+		<name>Simple Text</name>
+		<base-directory>simpletext</base-directory>
+		<include-file>simpletext_htmleditor.jsp</include-file>
+		<enable-css>false</enable-css>
+		<rank>2</rank>
+	</editor>
+
+	<style-sheets>
+		<css>
+			<id>Test_templates</id>
+			<name>Doc templates styles</name>
+			<url>/jsp/jahia/templates/%SITE_NAME%/test_templates/common/css/web.css</url>
+			<stylesdef>/jsp/jahia/templates/%SITE_NAME%/test_templates/common/css/web_css.xml</stylesdef>
+			<shared>false</shared>
+			<allowed-sites>
+				<site-key>testUnitSite</site-key>
+			</allowed-sites>			
+		</css>					
+        <css>
+			<id>FCKEditor</id>
+			<name>FCKEditor default styles</name>
+			<url>/jsp/jahia/htmleditors/fckeditor/editor/css/fck_editorarea.css</url>
+			<stylesdef>/jsp/jahia/htmleditors/fckeditor/fckstyles.xml</stylesdef>
+			<shared>true</shared>
+		</css>
+	</style-sheets>
+</editors>

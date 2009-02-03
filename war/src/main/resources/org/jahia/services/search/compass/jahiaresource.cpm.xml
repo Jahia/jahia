@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE compass-core-mapping PUBLIC "-//Compass/Compass Core Mapping DTD 2.0//EN" "http://www.compass-project.org/dtd/compass-core-mapping-2.0.dtd">
+
+<compass-core-mapping>
+    <resource-contract alias="jahiaFields">
+      <resource-id name="jahia.comp_id" analyzer="lowercasekeyword"/>
+      <resource-property name="jahia.acl_id" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.category_id" analyzer="lowercasekeyword"/>      
+      <resource-property name="jahia.container_alias" analyzer="simple"/>
+      <resource-property name="jahia.content_picking" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.content_type" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.definition_id" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.definition_name" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.definition_property_acl_id" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.definition_property_alias_name" analyzer="simple"/>      
+      <resource-property name="jahia.definition_property_alias_name0" analyzer="simple"/>      
+      <resource-property name="jahia.definition_property_container_list_type" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.definition_property_containerbeanname" analyzer="simple"/>            
+      <resource-property name="jahia.definition_property_jcr:primarytype" analyzer="simple"/>                  
+      <resource-property name="jahia.definition_property_validatorkey" analyzer="simple"/>
+      <resource-property name="jahia.field_id" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.filecontent"/>
+      <resource-property name="jahia.file_content_type" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.file_filename" analyzer="simple"/>
+      <resource-property name="jahia.file_realname" analyzer="simple"/>
+      <resource-property name="jahia.file_size" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.id" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.jahia_id" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.language_code" index="un_tokenized" analyzer="lowercasekeyword"/>
+      <resource-property name="jahia.metadata_created" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.metadata_createdby" analyzer="simple"/>
+      <resource-property name="jahia.metadata_defaultcategory" analyzer="lowercasekeyword"/>
+      <resource-property name="jahia.metadata_lastmodified" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.metadata_lastmodifiedby" analyzer="simple"/>
+      <resource-property name="jahia.metadata_lastpublisher" analyzer="simple"/>      
+      <resource-property name="jahia.metadata_lastpublishingdate" index="un_tokenized" analyzer="keyword"/>              
+      <resource-property name="jahia.metadata_pagepath" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.object_key" index="un_tokenized" analyzer="lowercasekeyword"/>
+      <resource-property name="jahia.object_property_originaluuid" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.page_id" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.parent_id" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.title" boost="1.5"/>      
+      <resource-property name="jahia.version" index="un_tokenized" analyzer="keyword"/>                        
+      <resource-property name="jahia.workflow_state" index="un_tokenized" analyzer="keyword"/>
+      
+      <resource-property name="jahia.containerfield_date" index="un_tokenized" analyzer="keyword"/> 
+    </resource-contract>
+    
+    <resource alias="jahiaSearcher" extends="jahiaFields" sub-index="jahia" analyzer="search"/>
+<!--    
+    <resource alias="jahiaSearcher_da" extends="jahiaFields" sub-index="jahia" analyzer="search_da"/>
+    <resource alias="jahiaSearcher_de" extends="jahiaFields" sub-index="jahia" analyzer="search_de"/>
+    <resource alias="jahiaSearcher_en" extends="jahiaFields" sub-index="jahia" analyzer="search_en"/>
+    <resource alias="jahiaSearcher_es" extends="jahiaFields" sub-index="jahia" analyzer="search_es"/>
+    <resource alias="jahiaSearcher_fi" extends="jahiaFields" sub-index="jahia" analyzer="search_fi"/>
+    <resource alias="jahiaSearcher_fr" extends="jahiaFields" sub-index="jahia" analyzer="search_fr"/>
+    <resource alias="jahiaSearcher_it" extends="jahiaFields" sub-index="jahia" analyzer="search_it"/>
+    <resource alias="jahiaSearcher_nl" extends="jahiaFields" sub-index="jahia" analyzer="search_nl"/>
+    <resource alias="jahiaSearcher_no" extends="jahiaFields" sub-index="jahia" analyzer="search_no"/>
+    <resource alias="jahiaSearcher_pt" extends="jahiaFields" sub-index="jahia" analyzer="search_pt"/>
+    <resource alias="jahiaSearcher_ru" extends="jahiaFields" sub-index="jahia" analyzer="search_ru"/>
+    <resource alias="jahiaSearcher_sv" extends="jahiaFields" sub-index="jahia" analyzer="search_sv"/>
+-->
+    
+    <resource alias="jahiaIndexer" extends="jahiaFields" sub-index="jahia" analyzer="default"/>
+<!--    
+    <resource alias="jahiaIndexer_da" extends="jahiaFields" sub-index="jahia" analyzer="default_da"/>
+    <resource alias="jahiaIndexer_de" extends="jahiaFields" sub-index="jahia" analyzer="default_de"/>
+    <resource alias="jahiaIndexer_en" extends="jahiaFields" sub-index="jahia" analyzer="default_en"/>
+    <resource alias="jahiaIndexer_es" extends="jahiaFields" sub-index="jahia" analyzer="default_es"/>
+    <resource alias="jahiaIndexer_fi" extends="jahiaFields" sub-index="jahia" analyzer="default_fi"/>
+    <resource alias="jahiaIndexer_fr" extends="jahiaFields" sub-index="jahia" analyzer="default_fr"/>
+    <resource alias="jahiaIndexer_it" extends="jahiaFields" sub-index="jahia" analyzer="default_it"/>
+    <resource alias="jahiaIndexer_nl" extends="jahiaFields" sub-index="jahia" analyzer="default_nl"/>
+    <resource alias="jahiaIndexer_no" extends="jahiaFields" sub-index="jahia" analyzer="default_no"/>
+    <resource alias="jahiaIndexer_pt" extends="jahiaFields" sub-index="jahia" analyzer="default_pt"/>
+    <resource alias="jahiaIndexer_ru" extends="jahiaFields" sub-index="jahia" analyzer="default_ru"/>
+    <resource alias="jahiaIndexer_sv" extends="jahiaFields" sub-index="jahia" analyzer="default_sv"/>
+-->
+
+    <resource alias="jahiaHighlighter" extends="jahiaFields" sub-index="jahia" analyzer="highlighting"/>
+<!--    
+    <resource alias="jahiaHighlighter_da" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_da"/>
+    <resource alias="jahiaHighlighter_de" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_de"/>
+    <resource alias="jahiaHighlighter_en" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_en"/>
+    <resource alias="jahiaHighlighter_es" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_es"/>
+    <resource alias="jahiaHighlighter_fi" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_fi"/>
+    <resource alias="jahiaHighlighter_fr" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_fr"/>
+    <resource alias="jahiaHighlighter_it" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_it"/>
+    <resource alias="jahiaHighlighter_nl" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_nl"/>
+    <resource alias="jahiaHighlighter_no" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_no"/>
+    <resource alias="jahiaHighlighter_pt" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_pt"/>
+    <resource alias="jahiaHighlighter_ru" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_ru"/>
+    <resource alias="jahiaHighlighter_sv" extends="jahiaFields" sub-index="jahia" analyzer="highlighting_sv"/>
+-->
+</compass-core-mapping>

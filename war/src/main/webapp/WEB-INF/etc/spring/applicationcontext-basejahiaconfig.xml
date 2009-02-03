@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  Application context definition.
+    -->
+<beans>
+
+	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+
+
+  <!-- property placeholder post-processor -->
+  <!-- jahiaWebAppRoot is built by the SpringSingleton and passed as a system property -->
+  <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="WEB-INF/etc/config/jahia.properties"/>
+  </bean>
+
+  <bean id="pathResolver" class="org.jahia.utils.WebAppPathResolver" />
+
+  <bean id="settingsBean" class="org.jahia.settings.SettingsBean" init-method="load">
+      <constructor-arg index="0">
+          <ref bean="pathResolver" />
+      </constructor-arg>
+      <constructor-arg index="1" type="org.springframework.core.io.Resource">
+          <value>WEB-INF/etc/config/jahia.properties</value>
+      </constructor-arg>
+      <constructor-arg index="2" type="org.springframework.core.io.Resource">
+          <value>WEB-INF/etc/config/license.xml</value>
+      </constructor-arg>
+  </bean>
+
+    <!-- configuration bean -->
+	<bean id="jahiaConfigBean" class="org.jahia.bin.JahiaConfig">
+		<property name="settings">
+			<props>
+                <!--
+				<prop key="org.jahia.services.htmlparser.HtmlParser">org.jahia.services.htmlparser.NekoHtmlParser</prop>
+				-->
+				<prop key="org.jahia.services.htmlparser.HtmlParser">org.jahia.services.htmlparser.TidyHtmlParser</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="JCRConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="org.jahia.repository.name">jahia.repository</prop>
+				<prop key="org.jahia.repository.config">/WEB-INF/etc/repository/repository.xml</prop>
+				<prop key="org.jahia.repository.homedir">/WEB-INF/var/repository</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="JCRNamespaces" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="jahia">http://www.jahia.org/jahia/1.0</prop>
+                <prop key="jahiant">http://www.jahia.org/jahia/nt/1.0</prop>
+                <prop key="jahiamix">http://www.jahia.org/jahia/mix/1.0</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="settings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="org.jahia.services.fileextractor.tmpdir">fileextraction</prop>
+
+        <!-- Time based publishing : -->
+				<!-- the max elapsed time above which a retention rule job must be started again,
+				     if the attached object is in an inconsistent state ( i.e not expired or not published given the rule settings ), default is 5min -->
+				<prop key="org.jahia.services.timebasedpublishing.maxElapsedTime">2h</prop><!--The format of this is ' *w *d *h *m *s ' 
+				                                                                               (representing weeks, days, hours and minutes - where * can be any number)
+                                                                                        Examples: 4d, 5h 30m, 60m and 3w. 
+                                                                                        Note: Your current conversion rates are 1w = 7d and 1d = 24h -->				     
+
+				                                                                                    
+				<!-- the periodical time at which the check for inconsistent state of content publication/expiration should run , default is 10min. -->
+				<prop key="org.jahia.services.timebasedpublishing.checkInterval">12h</prop><!--The format of this is ' *w *d *h *m *s ' -->
+
+        <!-- Versioning : -->
+        <!-- compare difference highlighting style -->
+				<prop key="org.jahia.services.versioning.style.compareAddedDifference">background-color:aqua !important;color:black !important;</prop>
+				<prop key="org.jahia.services.versioning.style.compareChangedDifference">background-color:lime !important;color:black !important;</prop>
+				<prop key="org.jahia.services.versioning.style.compareDeletedDifference">background-color:red !important; text-decoration:line-through !important; color:black !important;</prop>
+			</props>
+		</property>
+	</bean>
+
+    <bean id="searchConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+			<props>
+                <prop key="org.jahia.engines.search.searchViewHandler.default">org.jahia.engines.search.SearchViewHandlerImpl</prop>
+				<prop key="org.jahia.engines.search.searchViewHandler.search">org.jahia.engines.search.SearchViewHandlerImpl</prop>
+				<prop key="org.jahia.engines.search.searchViewHandler.advSearch">org.jahia.engines.search.AdvSearchViewHandler</prop>
+                <prop key="org.jahia.engines.search.searchViewHandler.files">org.jahia.engines.search.FileSearchViewHandler</prop>
+                <prop key="org.jahia.engines.search.searchViewHandler.pages">org.jahia.engines.search.PagesSearchViewHandler</prop>
+
+				<prop key="defaultSearchHandlerClass">org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl</prop>
+				<!--
+				<prop key="defaultSearchHandlerClass">org.jahia.services.search.compass.CompassSearchHandler</prop>
+				-->
+
+				<prop key="maxWarmingSearchers">2</prop><!-- maximum number of searchers to be warmed in parallel -->
+				<prop key="useColdSearcher">true</prop><!-- use cold - not warmed up - searcher -->
+				
+				<prop key="searchMaxLuceneDocs">200000</prop><!-- max lucene documents allowed to evaluate for computing hits. Unlimited = -1. --> 
+				<prop key="searchMaxHits">100</prop><!-- max hits to return when hit are not grouped by page. Unlimited = -1. --> 
+				<prop key="searchMaxPages">100</prop><!-- max different pages. Unlimited = -1. --> 
+				<prop key="searchMaxHitsByPage">10</prop><!-- max different hit by page. Unlimited = -1. -->
+				
+				<prop key="enableJcrSearch">true</prop> 
+              </props>  
+		</property>
+	</bean>
+    <bean id="fieldsToCopyToSearchHit" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>jahia.field_id</value>
+                <value>jahia.object_key</value>
+                <value>jahia.content_type</value>
+                <value>jahia.definition_name</value>
+                <value>jahia.container_alias</value>
+                <value>jahia.page_id</value>
+                <value>jahia.id</value>
+                <value>jahia.language_code</value>
+                <value>jahia.workflow_state</value>
+                <value>jahia.version</value>
+                <value>jahia.jahia_id</value>
+                <value>jahia.acl_id</value>
+                <value>jahia.parent_id</value>
+                <value>jahia.file_realname</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="fieldsToExcludeFromHighlighting" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">                
+            <list>
+                <value>jahia.metadata_creationdate</value>
+                <value>jahia.metadata_lastmodificationdate</value>
+                <value>jahia.metadata_lastpublishingdate</value>
+                <value>jahia.metadata_pagepath</value>
+                <value>jahia.containerfield_date</value>
+            </list>
+        </property>
+    </bean>                
+				
+    <bean id="filterCacheConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="name">FilterCache</prop>
+                <prop key="class">org.jahia.services.search.lucene.fs.LRUCache</prop>
+                <prop key="size">32</prop>
+                <prop key="initialSize">32</prop>
+                <prop key="autowarmCount">16</prop>
+                <prop key="regenerator"></prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="org.jahia.params.ProcessingContextFactory" class="org.jahia.params.ProcessingContextFactoryImpl" />
+
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail_server}" />
+    </bean>
+
+    <bean id="groovyScriptEngine" class="org.jahia.services.events.JahiaGroovyEngine">
+        <constructor-arg>
+            <list>
+                <value>WEB-INF/var/scripts/groovy/</value>
+                <value>jsp/jahia/templates/</value>
+                <value>jsp/jahia/</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="JCRContentUtils" class="org.jahia.services.content.JCRContentUtils">
+        <constructor-arg>
+            <map>
+                <entry key="pdf">
+                    <list>
+                        <value>application/pdf</value>
+                        <value>application/x-pdf</value>
+                    </list>
+                </entry>
+                <entry key="word">
+                    <list>
+                        <value>application/msword</value>
+                        <value>application/vnd.openxmlformats-officedocument.wordprocessingml.document</value>
+                    </list>
+                </entry>
+                <entry key="rtf">
+                    <list>
+                        <value>text/rtf</value>
+                        <value>application/rtf</value>
+                    </list>
+                </entry>
+                <entry key="excel">
+                    <list>
+                        <value>application/vnd.ms-excel</value>
+                        <value>application/ms-excel</value>
+                        <value>application/msexcel</value>
+                        <value>application/x-msexcel</value>
+                        <value>application/x-excel</value>
+                        <value>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</value>
+                    </list>
+                </entry>
+                <entry key="powerpoint">
+                    <list>
+                        <value>application/vnd.ms-powerpoint</value>
+                        <value>application/mspowerpoint</value>
+                        <value>application/vnd.openxmlformats-officedocument.presentationml.presentation</value>
+                    </list>
+                </entry>
+                <entry key="openoffice">
+                    <list>
+                        <value>application/vnd.oasis.opendocument.*</value>
+                    </list>
+                </entry>
+                <entry key="archive">
+                    <list>
+                        <value>application/zip</value>
+                        <value>application/x-tar</value>
+                        <value>application/x-gzip</value>
+                        <value>application/x-gtar</value>
+                        <value>application/x-compressed</value>
+                        <value>application/java-archive</value>
+                    </list>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="fileExtensionIcons" class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="unknown" value="file"/>
+                <entry key="dir" value="dir"/>
+            
+                <entry key="aiff" value="sound"/>
+                <entry key="asf" value="video"/>
+                <entry key="asx" value="video"/>
+                <entry key="avi" value="video"/>
+                <entry key="bmp" value="img"/>
+                <entry key="doc" value="doc"/>
+                <entry key="docm" value="doc"/>
+                <entry key="docx" value="doc"/>
+                <entry key="dot" value="doc"/>
+                <entry key="dotm" value="doc"/>
+                <entry key="dotx" value="doc"/>
+                <entry key="exe" value="exe"/>
+                <entry key="gif" value="img"/>
+                <entry key="gz" value="zip"/>
+                <entry key="htm" value="html"/>
+                <entry key="html" value="html"/>
+                <entry key="ico" value="img"/>
+                <entry key="jar" value="zip"/>
+                <entry key="jpe" value="img"/>
+                <entry key="jpeg" value="img"/>
+                <entry key="jpg" value="img"/>
+                <entry key="m3u" value="sound"/>
+                <entry key="mid" value="sound"/>
+                <entry key="midi" value="sound"/>
+                <entry key="mov" value="video"/>
+                <entry key="mp2" value="sound"/>
+                <entry key="mp3" value="sound"/>
+                <entry key="mp4" value="video"/>
+                <entry key="mpa" value="sound"/>
+                <entry key="mpe" value="video"/>
+                <entry key="mpeg" value="video"/>
+                <entry key="mpega" value="sound"/>
+                <entry key="mpg" value="video"/>
+                <entry key="pdf" value="pdf"/>
+                <entry key="png" value="img"/>
+                <entry key="pot" value="ppt"/>
+                <entry key="potm" value="ppt"/>
+                <entry key="potx" value="ppt"/>
+                <entry key="ppa" value="ppt"/>
+                <entry key="ppam" value="ppt"/>
+                <entry key="pps" value="ppt"/>
+                <entry key="ppsm" value="ppt"/>
+                <entry key="ppsx" value="ppt"/>
+                <entry key="ppt" value="ppt"/>
+                <entry key="pptm" value="ppt"/>
+                <entry key="pptx" value="ppt"/>
+                <entry key="ppz" value="ppt"/>
+                <entry key="rar" value="rar"/>
+                <entry key="rtf" value="doc"/>
+                <entry key="svg" value="img"/>
+                <entry key="svgz" value="img"/>
+                <entry key="text" value="txt"/>
+                <entry key="tgz" value="zip"/>
+                <entry key="tif" value="img"/>
+                <entry key="tiff" value="img"/>
+                <entry key="txt" value="txt"/>
+                <entry key="waw" value="sound"/>
+                <entry key="xhtml" value="html"/>
+                <entry key="xlc" value="xls"/>
+                <entry key="xll" value="xls"/>
+                <entry key="xlm" value="xls"/>
+                <entry key="xls" value="xls"/>
+                <entry key="xlsb" value="xls"/>
+                <entry key="xlsm" value="xls"/>
+                <entry key="xlsx" value="xls"/>
+                <entry key="xlt" value="xls"/>
+                <entry key="xltm" value="xls"/>
+                <entry key="xltx" value="xls"/>
+                <entry key="z" value="zip"/>
+                <entry key="zip" value="zip"/>
+                <entry key="kml" value="gearth"/>
+                <entry key="kmz" value="gearth"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="sharedSessionAttributeNames" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>org.jahia.usermanager.jahiauser</value>
+                <value>org.jahia.usermanager.aliaseduser</value>
+                <value>org.jahia.usermanager.aliasingrootuser</value>
+                <value>org.jahia.advpreview.settings</value>
+                <value>org.jahia.services.sites.jahiasite</value>
+                <value>org.jahia.services.sites.jahiadefaultsite</value>
+                <value>org.jahia.params.lastrequestedpageid</value>
+                <value>org.jahia.params.lastdisplayedpageid</value>
+                <value>org.jahia.engines.lastenginename</value>
+                <value>org.jahia.bin.jahiarunningmode</value>
+                <value>jahia_session_engineMap</value>
+                <value>org.jahia.services.multilang.currentlocale</value>
+                <value>org.jahia.session.backup</value>
+                <value>org.jahia.login.request_uri</value>
+                <value>org.apache.struts.action.LOCALE</value>
+                <value>javax.servlet.jsp.jstl.fmt.locale</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="org.jahia.bin.errors.handler" class="org.jahia.bin.errors.ErrorHandler"/>
+    
+</beans>

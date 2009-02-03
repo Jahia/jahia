@@ -1,0 +1,964 @@
+====
+    
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+    
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+    
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license
+    
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+====
+
+                                   ____.
+                       __/\ ______|    |__/\.     _______
+            __   .____|    |       \   |    +----+       \
+    _______|  /--|    |    |    -   \  _    |    :    -   \_________
+   \\______: :---|    :    :           |    :    |         \________>
+           |__\---\_____________:______:    :____|____:_____\
+                                      /_____|
+
+              . . . i n   j a h i a   w e   t r u s t . . .
+
+
+Jahia 4 Change Log
+
+Last update: 19.03.2004
+
+Jahia 4.0.4
+-----------
+
+Added:
+
+- Page URL keys introduction. We are now closer to having full control of our
+  Jahia URLs.
+- Implemented two caches for page properties, including preloading. Preloading
+  is not yet 100% efficient because it does not store information for pages 
+  that do not have properties. 
+
+
+Bugfix:
+- Portlet deletion raised an exception because it wasn't using the new code 
+  for marking for deletion. Should work better now.
+- Select page now correctly uses Locales.
+- Fixed a bug in language administration.
+- Fixed a problem with "preview" link in filemanager.
+- mark container for delete bugfix cache invalidation.
+- numerous application bugfixes.
+- Fix bug with initial creation of field (can't use field ID during 
+  that time).
+- Search engine bufgix.
+- We no longer store in HTML cache pages that contain URLs with jsessionIDs.
+- Language switch URLs are now correctly generated - when no session exists,
+  there was a problem with the /lang parameter. 
+- Mark container for delete bugfix cache invalidation
+- Changing operation mode changed cache status and this caused problems with
+  URL generations. This is now corrected.
+- Fixed an issue with getObjectName and AuditLog in some specific access
+  rights configurations
+- URLs are no longer generated with session IDs in them when sending workflow
+  notification emails.
+- Added support for ' character in filenames
+- Provided custom Lucene Analyser which differ with the Standard Analyser in 
+  that "_" char is not used as word separator, preventing language locale like 
+  en_US to be split as two words.
+- Fixed error while deleting a site. Problem was that we also cache non-
+  existent sites for performance reasons. The getSites() now only returns 
+  existing sites.
+- Small bugfix in webdav put method
+- Fixed another issue with webdav filenames , added encoding for ' and " 
+  characters
+- Added detection of non utf-8 code in webdav servlet
+- Added parameters in jahia.properties for enabling or disabling transformation
+  of non-ascii characters in webdav filenames
+- Replace special characters in webdav directories
+- Fixed bad encoding in filemanager/rename file
+- Fixed issues with javascript encodings in webdav file manager
+- Apply same response wrapping in JahiaAdministration than we do with Jahia
+  servlet ( fix Manage search blank screen ).
+- Bugfix on people detail view in corporate portal templates set.
+- Retrieving field IDs by container bugfix.
+  
+
+Updates and changes:
+
+- Reimplemented cache limit configuration. Here is how to use this from 
+  the jahia.properties file :
+  By default cache have no limits. If you want to set a size limit for a 
+  cache, use the following syntax :
+    
+     max_cached_CACHENAME = LIMIT
+    
+  where CACHENAME is the name of the cache that corresponds to the 
+  "Server and Cache Status" name in parenthesis, and LIMIT is a number that
+  corresponds to the max number of entries we want to allow in the cache.
+- Made expiration time warning appear in red in configuration wizard.
+- Added request parameter serverPath so that the URL generated by ActiveX 
+  can be cleaned up.
+- Added tidy Cleanup of ActiveX wrong relative URLs
+- File locks on publication default to false.
+- Search engine now correctly indexes text and HTML files.
+- Made the page base service a JahiaInitializableService instead of a 
+  JahiaService, made the init() method comply to the interface, and 
+  reformatted the code.
+- Better support for welcome file ( allowing query string parameters 
+  like index.jsp?user=6... )
+- Update JCSL library to version 1.2.1
+- Changed Jahia-specific deployment format file to include entry point 
+  target type.
+- Added a 'fileLockOnPublication' settings for disabling webdav file 
+  locking on publication
+- Modifications in page properties engine : 
+  - Added i18n error messages when page URL keys are not valid 
+  - Allowed cancel even when content is not valid.
+- Added warning that indicate days left before expiration in Configuration
+  Wizard and Administration.
+- Improving search service to better support display of search results
+- Cleanup of Jahia Taglibs after problems when testing with Sun ONE 
+  Application Server 7 
+- Remove *.jsp mapping from web.xml since this should be already done by the 
+  application server.
+- Added a flush for html cache when renaming a file
+- Made JMX server completely deactivateable.  By default it is not activated, 
+  as this caused problems with Sun ONE App Server 7 that comes with a  Security
+  Manager policy file that doesn't allow to create a MBeanServer.
+- Removed cache hit debug message so that we can trace issues easier. The idea
+  is that we will only log failures.
+- Allow to reset a date to undefined in date fields.
+
+
+Jahia 4.0.3
+-----------
+
+Added:
+
+- Move category GUI implementation.
+- Added FieldChangeEvent listener.
+- Added support for redirect from web applications. Not yet fully tested.
+- Precompilaton of the jsps of the webapps
+- Adding JTA API library so that we can run under Tomcat 5
+- Added mechanism to store last modification date on any category
+ (so that we can use it to invalidate category trees built for navigating 
+ categories when categories are added/modified/removed)
+
+
+Bugfix:
+
+- Lock issue with page field containing <empty> value.
+- lookups were done for users that had "" in their name.
+- Fixed a potential security hole with guest folders
+- Corrected invalidation of ContentContainer cache that was causing
+  problems when validating pages that were staying red despite the 
+  fact that they had been correctly validated in the database.
+- Bugfix ACL preloading in cache ( they were stored with a String
+  key instead of Integer key ).  
+- parse int exception catch
+- Corrected typo on template limit that displayed page limit instead.
+- ContentContainer mark for delete and ContentContainer Cache issue
+- Language Delete bugfix
+- fixed an issue with slide initialization
+- Bugfix in ContentField.getLanguageStates that wasn't optimized properly
+- Corrected invalid SQL request for updating application database table
+- Page HTML cache is now correctly flushed when workflow engine is opened and closed.
+- ContainerFactory bugfixes
+- FieldIDs by Container Cache bug fixe
+- Modified real path resolving to work on Windows platforms too 
+  (by using getRealPath on a forward-slash String).
+- loadContainerInfo no longer throws exception when loading container 
+  that does not exist in the EntryLoadRequest workflow state demanded.
+- fields cache and search indexation after restore and undo bugfix
+- Many versioning bugfixes
+- Modified cache to always call listeners when flush is performed. 
+  Previously only the source of the cache flush was calling it's listeners, 
+  which is probably a bug because we are effectively flushing across the 
+  cluster, not just on one node.
+
+
+Updates and changes:
+
+- Updated to Lucene 1.3 final
+- Update search index after restore version
+- Release lock when switching to versioning
+- allow versioning with admin right
+- Output cache expiration deactivated by default now.
+- JMX adaptors deactivated by default now.
+- Re-activated HTML cache user agent grouping that was not being used. 
+  Also refactored everything into the HtmlCache class (including configuration 
+  loading). The new system no longer stores the recognized user agents in the 
+  XML file, and requires regexps to define a group.
+- retrieve container acl id through cache first
+- Optimized generation of JahiaPageInfo hashcode generation, making sure we
+  only recalculate it when necessary.
+- Output cache expiration deactivated by default now.
+- Various speed optimizations: 
+  - PreparedStatement cache implementation (implemented using SQL object 
+    wrappers) 
+  - Introduced cache for ContentPage objects 
+  - Introduced cache for ContentPage.getLanguageState method (that has an 
+    expiration time of 100ms)
+  - Added several new ACL preloading mechanism :	At startup , preload 
+    all ACL of Jahia Pages Entries, all ACL of Jahia Page Field entries and 
+    Jahia Container List entries	 
+  - Added cache for querying field IDs by Container.
+  - Added cache for already preloaded page ( to avoid preloading all field of
+    a page again and again )
+  - Added JahiaContainerList cache
+  - Added JahiaField cache for staged fields
+  - Added Expression Cache to avoid Jexl expression evaluation time cost
+  - Search Engine Reindexing a site optimization: only open and close the 
+    index file once when reindexing a full site
+  - cache both JahiaContainer in active and staging ( only active where 
+    cached until now )
+  - result of filtering are cached again in session
+  - remove getContainerList() call in declareContainer 
+  - replaced Iterators with get() accessors 
+  - replaced multiple loops with single loops that do more 
+    (less access to list objects) 
+  - replaced String concats with StringBuffer appends.
+  - remove MRU linked list and replaced with algorithms that looks at the date
+    of last access when a put is performed. This slows down PUTs significantly,
+    but also greatly speeds up GET operations, which is the behavior we want 
+    from a cache.
+  - Cache names are stored in a Map instead of a Hashtable
+  - more conversion of SQL statement to SQL prepared statements
+  - Preloading of Page Info ( both active and versioning ) at service startup
+  - Preloading object link entries in cache by reference page  
+  - Added and use cache for Sub Container List IDs by Containers
+  - remove debugging output generation when debug is not activated.
+  - Added Container IDs by Container list cache
+  - improved default site resolving to remove loading of jahia.properties file 
+    on every request.
+  - Added second cache for siteLanguageMappings
+  - replaced new Date() call in CacheEntry with System.currentTimeMillis() 
+    which is twice as fast
+  - added siteCacheByName for server name lookups, and used pattern to also 
+    store cache entries for non-existing site entries.
+- Added Container and Container List Factory Proxy for "lazi load" 
+ ( on request only ) of containers and subContainerLists
+- Temporary deactivation of JahiaField cache because it actually cause trouble
+  with multilanguage, expressions evaluation and other issues  and because 
+  most of optimization concern ContentField cache
+- Added lighter method for loading all container lists on a site 
+- deactivate ExpressionMarker cache use because they must be evaluated 
+  dynamically
+- Flush the cache when the home page title changes.
+- Hide the link to a deleted page on the sitemap.
+- Moved session expiration tag in web.xml to make it compliant with DTD
+- When re-indexing a site, old index is deleted (in case of corruption)
+- Renamed ApplicationContext into WebAppContext
+- Removed unused ApplicationRoleBean
+- Return null instead of exception if a Container is not found in database
+- Perform object links preloading only if the database support embedded 
+  "select" statement
+- Added db embedded select statement support setting in config file 
+- Use cache to synchronize container change event
+
+Removed:
+
+- Deactivate "restore without moving page" option
+- Removed language delete option since it is really complicated and 
+  deactivation should work for most people.
+
+
+Jahia 4.0.2
+-----------
+
+Bugfix:
+
+- Allow access to public files in WebDAV servlet without requirement of login.
+- Corrected small mistake in activeX HTML editor JSP
+- Allow "." character in webdav page titles, collection titles, etc...
+- Check if the user has been deleted from LDAP but is still present in ACL
+  (a case accepted by Jahia because we can't control what goes on in external
+   services)
+- Search engine and multilanguage bugfixes (the issue concerned Lucene and
+  "stop world" filtering)
+- In cluster configuration, flush events were resent over the cluster,
+  which generated infinite looping of the flush event.
+- Bugfix : throw 403 error when we are not allowed to access the page.
+- On ACL Entries Cache flush, all the properties are automatically reloaded
+  from the persistence layer
+- Server and cache status administration page layout cleanup & corrections
+  in resource bundles that were not correct.
+- More container sub pages lock verification: implemented check for container
+  sub page waiting for approval locking mode.
+- Better implementation of LDAP getUserMembership()
+- Implemented checking of container state in page getLanguage state method so
+  that changes in container ranking will properly put the page in staging status.
+- Remove the $$$ token in container List properties engine.  This token is
+  used for multivalue multiple as separator of 2 values.
+
+
+Updates and changes:
+
+- The Jahia prepackaged webapps have been modified in order to support JDO. Some
+  bugfixes have been also corrected.
+- Add autoresize in bigText area
+- New expression marker available in small text field only for multi-values.
+  With this we can now insert expressions in fields in order to build links
+  between content in Jahia systems. This is an early version so it might
+  still have problems, such as looping of content load, etc...
+- New precompilation system : - Added new build target to precompile the JSPs
+  for Tomcat called "jsp-compile". This really speeds up dispatching to JSPs !
+- Renamed included jsp with .inc extention
+- Added missing weblogic specific descriptor that precompiles the JSPs
+- Now possible to configure Log4J from a WAR file using a log4j.properties
+  file inside the classpath, so that deployment as a packaged WAR file is
+  coming closer (still lots to do about Jahia's deployers and storage of
+  files in general).
+- Modified build.xml to include WebLogic specific deployer in the WAR file.
+- New back-end system for HTML editors they may now :
+  - be ranked in order of preference
+  - use classes called "compatibility testers" to test the client browser's
+    capabilities to make more/less HTML editors available depending on the
+    capabilities
+  - made the simple text editor an editor just like the others, no more
+    exceptions. It must though ALWAYS be present in the configuration file,
+    but not necessarily at the same rank.
+- Added check to see if we are deleting the default site and changing to
+  the first other site.
+- Added possibility to specify a request attribute that contains headers to
+  add to the <head> section of an HTML page.
+- Integration of version 1.1 of Apache Commons Database Connection Pool
+  (New DB connection pool configuration file : /etc/config/dbpool.properties)
+- Added statement and result set close upon reuse of statement variable.
+- Add some missing resources in corporates templates
+- Give root as administrator membership on new virtual site.
+- Cache statistics are re-initialized after a flush event
+- Complete refactoring of ParamBean constructor to make it smaller and
+  easier to maintain by splitting it into sub private methods
+- Integration of access handling for deleted pages. They may now only
+  be displayed in COMPARE or PREVIEW mode and ONLY when a user has write
+  access to them. Other modes for pages should remain the same.
+- Implemented Windows 1252 to ISO-8859-1 transcoding for big texts.
+- Removed members of the Jahia Administrators group when display list of users
+  for a site.
+- implemented button in administration to flush all the content object locks
+  in a Jahia system.
+- added feature for reloading page templates after the Page Template
+  Cache has been flushed.
+- New system to allow customization of workflow notification messages as well
+  as grouping by user:
+  - Users now get customized mails depending on their page rights.
+  - No more URL is sent for deleted pages
+  - Added page titles in subject
+  - Added ContentPage object in notification data structure
+- Improved notification of deleted pages to clearly seperate them
+    from the approved pages.
+- Performance optimizations when load container ACL IDs. This is done to
+  correct a performance problem when databases started having lots of container
+  entries.
+- Generic Java language performance optimizations.
+
+Removed:
+
+- Deactivating keyboard shortcuts for formular submission,because it is
+  causing problems by sending the form more than once
+- Remove struts.tld file. The content of element type "taglib" is incomplete
+
+
+
+Jahia 4.0.1
+-----------
+
+Bugfix:
+
+- WebLogic compatibility changes and performance improvements
+- Fix to get WebLogic to handle content type changes correctly
+- Bugfix in group and user manager provider priorities. If no  priority was
+  set we use the ordering of the XML file.
+- MS Word file indexing should work again now.
+- Versioning issues:
+   - when restoring a page or container, do not restore content  page fields
+   - restoring moved pages take care of infinite loop in acl reparenting ACL
+   - ContentObject copyEntry bugfix Sharedlang.
+- Added 250 byte limit check in page field title that checks the length in byte
+  instead of characters because some databases like Oracle seem to store bytes
+  instead of characters for VARCHAR2 types
+- 32-bit overflow corrected in expiration date calculation
+- Permission check for Html Editors and Versioning access
+- Bugfix page link ACL
+- Corrected algorithm to retrieve users that have read and write admins to
+  only retrieve user list from the local ACL instead of request all the users
+  in all the providers which was causing huge slowdowns on some LDAP
+  installations.
+- Corrected method to accept a "null" parameter value for the
+  getUsernameListAlsoGroupUsers method.
+- Upload files / create directory operations are now only available where
+  allowed.
+- Fields in a container that contains a page field should now all be properly
+  activated when the page contained in the field is activated
+- Fix in application engine that should work with new user and group selection
+  popups
+- Corrected small problem in Administration that was adding an UTF-8 too much
+  in the content type string
+- During WebDAV migration, the field title is now properly inserted into the
+  file's DAV displayname property.
+- WebDAV migration changes to remove "+" characters (replaced by spaces),
+  and also to support decoding of character entity &#39; (single quote)
+- Container filtering handle null container
+- Page output cache is now flushed when an engine acquires a lock so that the
+  other user's using the system properly see the locks displayed on the page.
+- Check if shutdown.sh script exist befor running it.
+
+
+Updates and changes:
+
+- MSSQL Server support is back again
+- Auto-resize the textarea
+- Info icons in workflow page tree now flash also when there are warnings.
+- Made all popup windows resizable and adjust window sizes so that most of the
+  content will fit in the popups
+- Reduced the rights select input element to 24 instead of 25 to fit in a
+  height of 768 pixels
+- Users with write permission are now allowed to change application roles
+- Correct page count SQL request to really return only the number of live pages
+- Added a display of the expiration date in the license information page in
+  Jahia administration.
+- preview and compare mode allowed for admin access
+- Versioning allowed if user has write access
+- Modified size of window for user/group selection in application roles
+- Added missing i18n resource keys for application field
+- Optimizations of tree display in the filemanager
+- Introducing new jahia properties to control encoding:
+    defaultResponseBodyEncoding =  ISO-8859-1
+    defaultURIEncoding			=   UTF-8
+    These may need to be set differently depending on the server
+    being used. Also the UTF-8 encoding setting will change the
+    response body encoding to UTF-8 during the configuration wizard.
+- Add a category to debug the templates. The declaration on a template should be:
+  <% org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(getClass()); %>
+- Changed method for initializing context path and servlet path static variables
+  in Jahia servlet init() method. We now use web.xml init parameters
+- Resize user and group field in ACL display
+- Cleaner implementation of default servlet mapping handling. It is now
+  configured in the web.xml deployment descriptor
+- Removing &apos; from TextHtml encoder because it is not supported in HTML 4,
+  only in XHTML 1.0
+- Handle case insentivity in attribute names for categories management
+- Adding Slide code to Jahia source code for better dependency management and
+  removing JARs.
+- Improved support for LDAP groups
+- Updated COS Library to latest version that hopefully supports I18N file names
+- Added tests when displaying hardcoded links in delete container engine so
+  that versioned and deleted content is never displayed.
+- Change absolute URLs to relative for Jahia startup page
+
+
+Removed:
+
+- Removal of transactions in WebDAV that were causing more problems than
+  being helpful
+
+
+Jahia 4.0 (Final)
+-----------------
+
+Bugfix:
+
+- Made generation of JahiaFileField URL to be relative instead of absolute.
+- changed order of service initialization since SlideSiteService has a
+  dependency on SiteUserManagerService that was being launched after it.
+  The latter is now launched just after the UserManagerService.
+- New JahiaFieldDefinition and JahiaContainerDefinition registries that are
+  now clustering aware. Note that there is a known performance issue in this
+  implementation for entries that do not exist in the database.
+- DAV file manager will no longer generate the full tree for the flat view.
+- bugfix for concurrent access to applications from several browsers.
+- Corrected bug with notification blocking content that can not be validated,
+  which is now reverted back to staging mode.
+- Enlarged size of columns expirationdate for table jahia_slide_locks.
+  It was a VARCHAR(15) and that was not enough to store a Java "long" value
+  which needs 20 characters. For safety the column is now a VARCHAR(25).
+- Various small changes to improve the migration process on PostgreSQL
+  databases.
+- Validation correction. We now change the status of content that will
+  not be validated before doing the activation.
+
+
+Updates and changes:
+
+- Small changes in jsp for better Weblogic 7.x support.
+- Updated to Lucene 1.3 RC1.
+- Cleaned up file paths to be platform agnostic.
+- A small change in DAV File access, we lookup the user in the site user
+  manage services instead of the user manager. This makes sure we also take
+  into account users that are shared between sites.
+- Better suppot for Struts application.
+- Added Struts Globals Attribute support as a RequestDispatcherProcessor.
+- Enlarge lock column to 80 to support WebLogic's session IDs.
+- Added cache in JahiaSiteUserManager service database implementation
+  because this service gets called a lot from the WebDAV classes.
+- SiteUserManager will now lookup in all secondary user manager providers
+  including LDAP.
+- Added logging of transactions in WebDAV JDBC Store.
+- Made connection used by JDBC WebDAV Store static.
+- Added internationalized error messages for License error reporting.
+- Added watch on log4j.xml file. We can now reconfigure logging without
+  having to restart Jahia.
+- Synchronizing resource bundles between default and english.
+- Database transfer administration improved to support any kind of
+  data types ( date, timestamp, ... ) .
+- Shortened varchar size in postgres script for slide tables to 255
+  instead of 65k or 4k for performance issues and consitence with
+  other databases.
+
+
+Jahia 4.0 Release Candidate 1
+-----------------------------
+
+New features added:
+
+- New License key system
+- Parsing of hard coded Jahia internal links in bigtext file
+- Categories: content of Jahia (Field, Container, Containerlist, Page) can now
+  be categorized. Introduced the possibility to search for categories by
+  property name and value. A tag has also been introduced to do this
+  from templates. Here is an example of how to use this :
+  <content:categoriesByProperties propertyName="homepage%" propertyValue="15"
+  id="categoryList" />
+  The % character allows for pattern matching and is mapped to LIKE
+  statements in the database code.
+- Added GUI to edit category properties in administration.
+  Added "Categories Browsing" templates to template list.
+- Container Filtering completed for filtering fields with multivalues
+- Introducing JMX Server in Jahia.
+- Added JMS cache remote server implementation.
+  The settings in jahia.properties are :
+  org.jahia.cache.jmsCacheActivated 	     =   false
+  org.jahia.cache.jmsCacheContextProviderURL	= rmi\://localhost\:1099/
+  org.jahia.cache.jmsCacheTopicName 			=   jahiaCache
+  and  they are accessible through the following getters :
+  public boolean isJmsCacheActivated();
+  public String getJmsCacheInitialContextFactory();
+  public String getJmsCacheContextProviderURL();
+  public String getJmsCacheTopicName();
+- Container filtering,search and sort can be done on an entire site or on
+  all site,	for all kinds of containers or for a given container definition.
+- WebDAV Integration (Jakarta Slide): So far the following database
+  have been tested and known to work with Slide:
+  - Oracle
+  - Mysql
+  - Hypersonic
+  - Postgres
+- Added Html Parser Service based on Tidy: Html cleanup and markup
+  filtering with Jahia Text Content
+- Adding new HTML Tree Control tag. This tag is designed to be as generic as
+  possible in order to be as reusable as possible. It offers :
+    - Standard HTML rendering of tree, including controls to expand/collapse
+      nodes, as well as select nodes
+    - Back-end that actually processes users request to modify the tree.
+      It is based on the JTree Swing control in the back-end, but works
+      very well with HTML.
+- Added new JSPEventListener.
+  This is a JahiaEvent listener that offers the possibility to dispatch
+  to a JSP for the event processing. The default JSP is:
+  /jsp/jahia/events/eventlistener.jsp but templates may override this behavior
+  in a site by adding a eventlistener.jsp file that implements custom JSP
+  event processing logic.
+- support of personalized CSS for commercial HTML editor RealObjects
+  edit-on Pro (http://www.realobjects.com/)
+
+
+Bugfix:
+
+- Fix null pointer during install
+- Fixed bug with copy/move on multisites urls
+- Added missing "Undefined" field type.
+- Added code to validate all fields of the container containing the page that
+  we are currently validating.
+- Fixed problem with updatefield engine that caused a problem when opening
+  a link sub-window to select the page to link to.
+- Page template retrieval code from cache was not correct.
+- Fix in web application dispatching.
+- Avoid the NullPointerException on install
+- IE 5.0 compatibility fixes
+- Search indexing and File bugfix
+- Added some resources bundles and fixed typos
+- No more limitation in declaring a same field name with different containers
+- Application role selection is now correctly remembered when switching
+  between tabs in engines.
+
+
+Updates and changes:
+
+- Improved Lucene Search engine for indexing any kind of objects
+- Modifications to Jahia locks:
+  Locks are now stored in database in order to make clustering work with locks
+  Locks now use Cache objects instead of memory maps so that we will be able
+  to flush them when one Jahia in a cluster needs to modify it.
+- Added synchronized around login method to solve problems of high loads
+  generating CommunicationExceptions
+- Modified the MySQL script to change the property columns to type
+  VARCHAR BINARY, which makes string comparisation case SENSITIVE.
+  Unfortunately MySQL doesn't respect the SQL standard here and
+  defaults to case insensitive string comparisons.
+- Field multivalue can be single or multiple select
+- Modifications to activation to allow for partial failure of
+  activation of fields and containers. Basically one field may fail
+  validation but the rest of the fields should still be validated.
+  Same goes for containers.
+- Cleaner implementation of MBean server, and tested on the cache service
+  to dynamically add new bean instances as they are created.
+- Changed TIMESTAMP type to DATE in Oracle scripts as TIMESTAMPS is not
+  supported by Oracle 8i.
+- Moving XML / XSL Jars to non-dist directory because we will not need
+  them when deploying to Tomcat.
+- Field Update engine can now forward to custom JSP file ( instead of
+  default Shared jsp ), using Field Definition Props.
+- Taglibs descriptors cleanup to make them work under WebLogic
+- Reformatted code according to Java standards.
+- Updated Javadoc
+- New JDBCDescriptorsStore that handles transactions much better
+- New GUI for web application role administration
+- Code reformating according to Sun's Java Code Conventions
+- Replaced JahiaConsole with Log4J logger in engines
+- Replaced embedded " characters with alterning " and ' characters in JSPs.
+- Replaced "//" by "/" in administration URL
+- Put javascipt strings in one line on <a> tag.
+
+
+Removed:
+
+- Removed all the redundant casts
+- Removed unused exception declarations
+- Removed UserViewHelper and replaced with a PrincipalViewHelper that is more
+  generic to present users and groups for display and management in rights
+  and roles administration interfaces.
+- Removed cache for search results that was causing strange problems.
+
+
+Jahia 4.0 Beta 1.1
+------------------
+
+Bugfix:
+
+- Fix in the ordering of portlets in the Layout manager.
+- Fix in the restoring of shared fields.
+- Fixed the user management UI that had problems when running under Mozilla.
+
+Updates and changes:
+
+- CSS support with RealObjects edit-on pro
+
+
+Jahia 4.0 Beta 1
+-----------------
+
+New features added:
+
+- Content versioning capabilities: you can now archive and retrieve previous
+  versions of content as well as undelete pages.
+- Container difference highlighting between staging and active mode.
+- Content lock-in/lock-out
+- New Jahia taglibs
+- JSTL Support (http://java.sun.com/products/jsp/jstl/)
+- Support of Microsoft Word files indexing through POI API
+  (http://jakarta.apache.org/poi/).
+  (Doesn't work with all "complex"-saved files yet. To improve parsing
+  success, try doing a "Save As..." on the file before uploading it.)
+- Implementation of LDAP groups.
+- Added search capabilities in group providers.
+- Added mail service to send e-mail from Jahia. This is used by the workflow
+  engine to send notifications.
+- Content can now be requested by container list definition name, and
+  content of container lists on multiple pages can be requested by
+  regrouping under the container list name.
+- Added support for cache expiration in HTML cache.
+  Added output cache expiration date configuration support in jahia.properties
+  as well as in ParamBean.
+  Here is an example of setting a page's cache expiration date (in milliseconds)
+  using standard Struts and JSP tags:
+  <jsp:setProperty name="curParamBean" property="cacheExpirationDelay" value="5000" />
+- Forms can now be very simply built to store content in Jahia containers using
+  the new formContentMapperHandler tag. Example:
+
+  <content:containerList name="addressList" id="myAddressList">
+  <content:formContentMapperHandlerrlistName="myAddressList" submitMarker="submit" />
+  Insert here code to display containers, add containers, etc...
+	<form name="submitToContainerList" method="post">
+	<input type="text" name="firstName">
+	<input type="text" name="lastName">
+	<input type="submit" name="submit" value="Submit">
+    </form>
+  </content:containerList>
+
+- Chinese resource bundle
+- Adding HTML Parser library version 1.3
+  (http://sourceforge.net/projects/htmlparser)
+- Added support for web application caching.
+  This can be done from the administration interface, or from a web
+  application itself. Here is an example of how an application can
+  control the cache using this attribute :
+
+	  request.setAttribute("org.jahia.portletapi.CacheExpirationDelay",
+	  new Long(delayInMilliSeconds);
+
+	  If setting the delay to -1 the cache will never expire, 0 will
+	  deactivate the cache for the web app.
+- Intersystems Cache SQL database script (http://www.intersystems.com/)
+- Added script and jTDS driver for MSSQL Server 6.5, 7.0 & 2000.
+- Added container properties table in database
+- Added database tables for web applications properties, categories and
+  editable resource bundles.
+- Added new columns to tables jahia_grp_prop and jahia_user_prop. This allows
+  us to store user and group properties for LDAP users and groups, in a much
+  nicer way than how we used to.
+  IMPORTANT Note: All Builds PREVIOUS to 4033 must have the user and group
+  property tables modified to this new format.
+- Add new resources for error message (French and English)
+- Added concept of content object actions, which define the list of available
+  operations possible on an object.
+  This list changes depending on the current status of the locks, the rights
+  of the user etc. This makes it easier for the template developer to place
+  these actions on a template without having to know which actions are
+  available for which objects.
+  Here below we present an example of usage of the new action list for a
+  container list bean :
+   <logic:equal name="myAddressList" property="completelyLocked" value="true">
+     container list is completely locked.
+   </logic:equal>
+   container list actions : <br>
+   <logic:iterate name="myAddressList" property="actionURIBeans"
+   id="curActionURIBeanMap">
+	 <bean:define id="curActionURIBean" name="curActionURIBeanMap"
+	 property="value"/>
+	 <a href="<bean:write name='curActionURIBean' property='uri' />">
+	 <bean:write name="curActionURIBean" property="name" />
+	 locked = <bean:write name="curActionURIBean" property="locked" />
+	 authorized = <bean:write name="curActionURIBean" property="authorized" />
+	 </a>
+	 <br>
+   </logic:iterate>
+- Added possibility to test if the actionURIs are empty for a particular
+  content object
+- Update field engine now save only value in editing language
+  (not in all languages with empty string value)
+
+Bugfix:
+
+- Fix to load the container list IDs in staging mode AND active mode when the
+  request is for a staging page display.
+- Level is now used correctly by absoluteContainerList tag
+- Flushing the field properties cache should now work better
+- Real ACL are now created for web applications
+- Search engine now correctly detects that the indexing directory hasn't yet
+  been created and aborts the indexing until the first initial full index is
+  done via the administration. The search service now uses Log4J for logging.
+- Page childs bugfix, resolve sitemap inconsistence.
+- Workflow now only displays approval buttons if the user has the appropriate
+  rights
+- Workflow "notify" and "approve" tabs are now localized
+- Fix error in add users/group to ACL popup URL.
+- Search Index creation bugfix
+- Prevent JahiaTemplateNotFoundException exception to be thrown when deleting
+  a template. This allow Jahia to countinue serving other valid pages.
+- Manage Template disallow deleting template used by archived or active pages.
+  Pages where template was deleted are always accessible through Jahia, giving
+  users the possibility to assign them a new template.
+- Delete all langages not allowed
+- Multiple fix on corporate portal templates
+- Display "rights" tab only when a user has admin permission.
+- Display full error message in exception in search engine. To be corrected
+  later to ignore this problem when we have never indexed a site.
+- page move and mark for delete in multilanguage bugfix.
+- Correct language display issues by making sure that UTF-8 is sent only
+  to browsers that accept it.
+- Workflow Engine allow notify or approve only if page title not null.
+- Site delete now correctly removes users from groups
+- Fix bug that caused pages to be partially caches in the output cache.
+  It was the use of the PrintWriter class for output that was the problem
+  since this class catches all IOExceptions ! We solved the problem by
+  checking if the PrintWriter has cought any errors when retrieving the
+  generated output.
+- Jahia now switch to NORMAL mode , if a page doesn't exist in a given
+  language in EDIT MODE.
+- For EOPro support, we now use mac.js for all browsers under Mac
+  (not only for IE).
+
+
+Updates and changes:
+
+- Extended matching criteria for PDF extension.
+- Update License to version 1.1
+- Added Container Factory to handle container loading in a more accurate way
+- Add 'tabindex' attribute to the input tag in the workflow engine. It is
+  now possible to enter comments by successively pressing TAB key.
+- Added code to auto-login the root user when coming from the configuration
+  wizard
+- Major change in database backend. We no longer use a classical database
+  backend, but store the database connection in the thread's local data
+  so that we may retrieve the connection from anywhere during a request.
+  Added transaction support configuration in database scripts.
+  Added transaction commit in background threads.
+- An error message is now displayed when big text content is not accepted
+  because of invalid html.
+- Added double-click detection javascript on "Ok" and "Apply" buttons in
+  engines.
+- Postgres 7.3 driver. Support connection to Postgres 7.1 and 7.2.
+- Updated French resource bundle.
+- Struts 1.1 Final support.
+- Changed charset in configurationWizard from ISO-8859 to UTF-8
+- Import optimization performed by Eclipse IDE - Cleanup of static method
+  calls performed by Eclipse IDE
+
+Removed:
+
+- Removed bookmark and welcome application.
+- Previous Jahia taglibs are now deprecated.
+
+
+Jahia 4.0 Alpha 2
+-----------------
+
+New features added:
+
+- New "corporate templates" layout and design
+- Struts 1.1 RC1 enabled
+- JSQLConnect script for Microsoft SQL Server.
+  Commercial JSQLConnect driver can be found here :
+  http://www.j-netdirect.com/JSQLConnect/JSQLFeatures.html
+- When a page exists and if it is of type TYPE_URL or TYPE_LINK then the link
+  can be removed.
+- When a page does not exist then it is possible to inhibate the page
+  creation.
+- Added language selection drop-down on first screen of configuration wizard.
+- Added setting to enable inheritance of Jahia session attributes for
+  applications.
+  This way applications have a way to access Jahia's session attributes.
+  This setting can be activated or deactivated in the jahia.properties file.
+- Hypersonic database is now fully embedded in Jahia, no need to launch the
+  external process. The database will now be created in WEB-INF/var/dbdata by
+  default.
+
+Bugfix:
+
+- Cache mode "onlyupdate" now generates URLs with cache on.
+- Make sure the user can be looked up before displaying ACL entry
+  (was a problem when a user was removed from a LDAP repository without Jahia
+  knowing it).
+- Site map page title refreshed when page title change
+- Page engine handle correctly container with multiple field of Page type.
+- Multiple page move is now supported
+- Oracle script has been corrected; code added to catch problem caused by
+  Oracle interpreting empty strings as NULL.
+- Fixed bug that deactivated cache storage in EDIT and PREVIEW mode.
+- Some problems solved with deleting a language when using the administration
+  "manage language" GUI.
+
+Updates and changes:
+
+- Invert the check box for displaying all pages on sitemap
+- New languages are now active by default.
+- Resource bundle is now fully used in corporate portal templates
+- Cleanup up exception reporting (order, nesting, etc..)
+- More detailed database connection error during ConfigurationWizard
+- Page field engine : now uses JahiaTools.text2html for displaying editing
+  page titles.
+- ACL entries are now completely loaded in RAM. If cache is flushed, the whole
+  table is reloaded in RAM. Should be small (usually not more than 100 entries)
+- ContentField are now preloaded for a page, allowing for fast object creation
+  and JahiaField creation that is depending on
+- changed initialization of Jahia ACL service to preload a certain amount of
+  ACLs that can be changed via the jahia.properties setting
+- Site language settings are now cached
+- Changed some database statement to prepared statement in order to improve
+  performance.
+- Augmented the ContentField cache limit to 20000
+- MySQL Connector/J driver is now used for better performances under MySQL
+- Improve flat site map sort method by implementing the Comparator interface
+  instead the Comparable interface.
+- Renamed JahiaPageContent into ContentPage.
+  For template developers : please be aware of these changes that must be done
+  in templates in order for them to work with these renamings.
+- New ObjectKey system to globally address object instances
+- Removed &#032; characters in manage rights engine that were causing problems
+  under Mozilla
+- Improved language selection in configuration wizard and added examples for
+  translation.
+- Updated i18n of Jahia JSP files and ConfigurationWizard.
+
+Under Development:
+
+- Extract/deploy virtual sites
+- Versioning of pages
+- lock-in of staged pages
+
+
+Jahia 4.0 Alpha 1
+-----------------
+
+New features added:
+
+- Multi lingual capabilities: Content may now be stored in multiple languages
+- Staging capabilities: Content may now be staged before going live (edit,
+  preview and live modes)
+- Workflow engine: lightweight three tier workflow with per language validation
+- Java html editors: Integration of 3 Java HTML editors: Editize (trial licence
+- http://www.editize.com),
+  Ekit (http://www.hexidec.com/ekit.php) and EditOn Pro (trial licence -
+  http://www.realobjects.de)
+- Resource bundle support: The application is now available in multiple
+  languages
+- French and English resource bundle provided
+- PDF indexing: Search engine can now index PDF documents
+- log4j support: logging through Jakarta Log4J is now supported
+- Apache Axis (SOAP) libraries added
+- XML extraction with XSL support using Xalan 2.4.1
+- New sitemap engine: Deletion of pages and pages settings are now accessible
+  from sitemap
+- Move page refactoring
+- "save and add new" function: containers may now be added without having to
+  close popups windows
+- New multilanguage shared fields: these fields allow content to be shared
+  between languages
+- New version of installer (Windows): Nullsoft Install System v2.0b0
+- Cache system improved: server status page now allows to flush all Jahia's
+  internal caches
+
+Bugfix:
+
+- Database scripts corrections
+- Change <br> to <br/> for xml compatibility
+- Modified LDAP user so that it always does the login on the LDAP provider,
+  not on the User manager service
+- allow for bigText default values to go over the 250 character boundary.
+- Move page: page moving no longer has problems with ACLs when deleting the
+  pages
+- Primary key added in database scripts for mySql and Postgres
+- Problems with form encode / decode in bigText fields fixed.
+- Usernames can now contain "." and "-" characters (thanks Codeva)
+- Bugfix to improve support for various apps servers
+- Corporate portal templates modified
+
+Removed:
+
+- HTML (Javascript) editor (standard)
+- MS Access (and ODBC-JDBC bridge) support
+
+Under Development:
+
+- Extract/deploy virtual sites
+- Versioning of pages
+- lock-in of staged pages

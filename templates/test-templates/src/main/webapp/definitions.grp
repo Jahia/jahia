@@ -1,0 +1,8 @@
+[test_templates:allFieldsTwice]
+ -sharedSmallText,-smallText,-sharedSmallTextSingle,-sharedSmallTextMultiple,-bigText,-integer,-float,-boolean,-color,-date,+page,-file,+application,-category,-sharedSmallText2nd,-sharedSmallTextSingle2nd,-smallText2nd,-sharedSmallTextMultiple2nd,-bigText2nd,-integer2nd,-float2nd,-boolean2nd,-color2nd,-date2nd,+page2nd,-file2nd,+application2nd,-category2nd
+ 
+[test_templates:subscribableTechWatch]
+ - date,
+ - title,
+ - teaser,
+ + source

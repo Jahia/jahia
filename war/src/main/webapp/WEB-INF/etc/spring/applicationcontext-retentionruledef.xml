@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans>
+	<!--
+    <bean id="baseRetentionRuleDef" class="org.jahia.services.timebasedpublishing.BaseRetentionRuleDef">
+        <property name="name" value="baseRetentionRuleDef" />
+        <property name="title" value="Base retention rule" />
+        <property name="ruleClassName" value="org.jahia.services.timebasedpublishing.BaseRetentionRule" />
+        <property name="ruleHelperClassName" value="org.jahia.services.timebasedpublishing.BaseRetentionRuleHelper" />
+    </bean>
+    -->
+    <bean id="baseRetentionRuleDef" class="org.jahia.services.timebasedpublishing.BaseRetentionRuleDef">
+        <property name="name" value="baseRetentionRuleDef" />
+        <property name="title" value="Base retention rule" />
+        <property name="ruleClassName" value="org.jahia.services.timebasedpublishing.RangeRetentionRule" />
+        <property name="ruleHelperClassName" value="org.jahia.services.timebasedpublishing.RangeRetentionRuleHelper" />
+        <property name="dateFormat" value="dd.MM.yyyy HH:mm" />
+
+    </bean>
+	<bean id="retentionRuleRefs" class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList"> 
+			<list>
+				<ref bean="baseRetentionRuleDef"/>
+				<!--<ref bean="rangeRetentionRuleDef"/>-->
+			</list>
+		</property>			
+	</bean>	
+</beans>

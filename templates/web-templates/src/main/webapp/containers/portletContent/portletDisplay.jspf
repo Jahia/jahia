@@ -1,0 +1,10 @@
+<%@ include file="../../common/declarations.jspf" %>
+<template:container id="portletContainer" actionMenuNamePostFix="portlet" actionMenuNameLabelKey="portlet.update">
+     <template:field name='portlet' beanID="portlet" display="false"/>
+     <c:if test="${!empty portlet.object}">
+         <c:set var="portletWindowBean" value="${portlet.object}"/>
+         <ui:portletModes name="portletWindowBean"/>
+         <br/>
+         <c:out escapeXml="false" value="${portlet.value}"/>
+     </c:if>
+ </template:container>

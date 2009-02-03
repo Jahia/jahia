@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.jahia.server</groupId>
+    <artifactId>jahia-package</artifactId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jahia-windows-package</artifactId>
+  <version>${jahia.package.version}</version>
+  <name>Jahia Windows Package</name>
+  <packaging>pom</packaging>
+      
+  <build>
+  </build>
+        
+</project>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping
+>
+    <class
+        name="org.jahia.hibernate.model.JahiaGrpAccess"
+        table="jahia_grp_access"
+        dynamic-update="false"
+        dynamic-insert="false"
+        select-before-update="false"
+        optimistic-lock="version"
+    >
+        <cache usage="nonstrict-read-write" />
+
+        <composite-id
+            name="comp_id"
+            class="org.jahia.hibernate.model.JahiaGrpAccessPK"
+        >
+                     <key-property
+                        name="memberKey"
+                        type="java.lang.String"
+                        column="id_jahia_member"
+                        length="150"
+                />
+
+                     <key-property
+                        name="groupKey"
+                        type="java.lang.String"
+                        column="id_jahia_grps"
+                        length="150"
+                />
+
+                     <key-property
+                        name="memberType"
+                        type="java.lang.Integer"
+                        column="membertype_grp_access"
+                        length="11"
+                />
+
+        </composite-id>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-JahiaGrpAccess.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>

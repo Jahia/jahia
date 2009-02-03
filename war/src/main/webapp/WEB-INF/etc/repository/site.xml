@@ -1,0 +1,10 @@
+<site jcr:primaryType="jnt:virtualsite" j:applyAcl="g:users:rw"
+           xmlns:jcr="http://www.jcp.org/jcr/1.0"
+           xmlns:j="http://www.jahia.org/jahia/1.0"
+           xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
+
+    <files jcr:primaryType="jnt:folder"/>
+    
+    <mashups jcr:primaryType="jnt:folder"/>
+
+</site>

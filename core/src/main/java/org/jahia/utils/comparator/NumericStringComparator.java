@@ -1,0 +1,274 @@
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license"
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+package org.jahia.utils.comparator;
+
+import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.bin.Jahia;
+import org.jahia.services.categories.Category;
+import org.jahia.hibernate.model.JahiaCategory;
+import org.jahia.hibernate.model.JahiaResource;
+
+import java.util.Comparator;
+import java.text.Collator;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: rincevent
+ * Date: 7 déc. 2006
+ * Time: 17:48:00
+ * To change this template use File | Settings | File Templates.
+ */
+public class NumericStringComparator implements Comparator {
+
+    /**
+     * Compare between two objects, sort by their value
+     *
+     * @param c1
+     * @param c2
+     */
+    public int compare(Object c1, Object c2) throws ClassCastException {
+
+        // System.out.println("Comparing: "+o1+" and "+o2);
+        if (c1 == null) {
+            return 1;
+        } else if (c2 == null) {
+            return -1;
+        }
+
+        String s1;
+        if (c1 instanceof ResourceBundleMarker) {
+            s1 = ((ResourceBundleMarker) c1).getValue();
+
+        } else if (c1.getClass() == Category.class) {
+            final Category cat = (Category) c1;
+            s1 = cat.getTitle(Jahia.getThreadParamBean().getLocale());
+            if (s1 == null || s1.length() == 0) {
+                s1 = cat.getKey();
+            }
+
+        } else if (c1.getClass() == JahiaCategory.class) {
+            final JahiaCategory cat = (JahiaCategory) c1;
+            s1 = cat.getKey();
+
+        } else if (c1.getClass() == JahiaResource.class) {
+            final JahiaResource res = (JahiaResource) c1;
+            s1 = res.getValue();
+
+        } else
+            s1 = c1.toString();
+
+        // Second object c2 processing
+        String s2;
+        if (c2 instanceof ResourceBundleMarker) {
+            s2 = ((ResourceBundleMarker) c2).getValue();
+
+        } else if (c2.getClass() == Category.class) {
+            final Category cat = (Category) c2;
+            s2 = cat.getTitle(Jahia.getThreadParamBean().getLocale());
+            if (s2 == null || s2.length() == 0) {
+                s2 = cat.getKey();
+            }
+
+        } else if (c2.getClass() == JahiaCategory.class) {
+            final JahiaCategory cat = (JahiaCategory) c2;
+            s2 = cat.getKey();
+
+        } else if (c2.getClass() == JahiaResource.class) {
+            final JahiaResource res = (JahiaResource) c2;
+            s2 = res.getValue();
+
+        } else
+            s2 = c2.toString();
+
+        // find the first digit.
+        int idx1 = getFirstDigitIndex(s1);
+        int idx2 = getFirstDigitIndex(s2);
+
+        if ((idx1 == -1) ||
+                (idx2 == -1) ||
+                (!s1.substring(0, idx1).equals(s2.substring(0, idx2)))) {
+            // System.out.println("Shortcutted. ");
+            return Collator.getInstance(Jahia.getThreadParamBean().getLocale()).compare(s1, s2);
+        }
+
+        // find the last digit
+        int edx1 = getLastDigitIndex(s1, idx1);
+        int edx2 = getLastDigitIndex(s2, idx2);
+
+        String sub1 = null;
+        String sub2 = null;
+
+        if (edx1 == -1) {
+            sub1 = s1.substring(idx1);
+        } else {
+            sub1 = s1.substring(idx1, edx1);
+        }
+
+        if (edx2 == -1) {
+            sub2 = s2.substring(idx2);
+        } else {
+            sub2 = s2.substring(idx2, edx2);
+        }
+
+        // deal with zeros at start of each number
+        int zero1 = countZeroes(sub1);
+        int zero2 = countZeroes(sub2);
+
+        sub1 = sub1.substring(zero1);
+        sub2 = sub2.substring(zero2);
+
+        // if equal, then recurse with the rest of the string
+        // need to deal with zeroes so that 00119 appears after 119
+        if (sub1.equals(sub2)) {
+            int ret = 0;
+            if (zero1 > zero2) {
+                ret = 1;
+            } else if (zero1 < zero2) {
+                ret = -1;
+            }
+            // System.out.println("EDXs: "+edx1+" & "+edx2);
+            if (edx1 == -1) {
+                s1 = "";
+            } else {
+                s1 = s1.substring(edx1);
+            }
+            if (edx2 == -1) {
+                s2 = "";
+            } else {
+                s2 = s2.substring(edx2);
+            }
+
+            int comp = s1.compareTo(s2);
+            if (comp != 0) {
+                ret = comp;
+            }
+            // System.out.println("Dealt with rest of string: "+ret);
+            return ret;
+        } else {
+            // if a numerical string is smaller in length than another
+            // then it must be less.
+            if (sub1.length() != sub2.length()) {
+                // System.out.println("Ahah, different length. ");
+                return (sub1.length() < sub2.length()) ? -1 : 1;
+            }
+        }
+
+        // now we get to do the string based numerical thing :)
+        // going to assume that the individual character for the
+        // number has the right order. ie) '9' > '0'
+        // possibly bad in i18n.
+        char[] chr1 = sub1.toCharArray();
+        char[] chr2 = sub2.toCharArray();
+
+        int sz = chr1.length;
+        for (int i = 0; i < sz; i++) {
+            // this should give better speed
+            if (chr1[i] != chr2[i]) {
+                // System.out.println("Length is different. ");
+                return (chr1[i] < chr2[i]) ? -1 : 1;
+            }
+        }
+
+        // System.out.println("Default. Boo. ");
+        return 0;
+    }
+
+    protected int getFirstDigitIndex(String str) {
+        return getFirstDigitIndex(str, 0);
+    }
+
+    protected int getFirstDigitIndex(String str, int start) {
+        return getFirstDigitIndex(str.toCharArray(), start);
+    }
+
+    protected int getFirstDigitIndex(char[] chrs, int start) {
+        int sz = chrs.length;
+
+        for (int i = start; i < sz; i++) {
+            if (Character.isDigit(chrs[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    protected int getLastDigitIndex(String str, int start) {
+        return getLastDigitIndex(str.toCharArray(), start);
+    }
+
+    protected int getLastDigitIndex(char[] chrs, int start) {
+        int sz = chrs.length;
+
+        for (int i = start; i < sz; i++) {
+            if (!Character.isDigit(chrs[i])) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public int countZeroes(String str) {
+        int count = 0;
+
+        // assuming str is small...
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '0') {
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        return count;
+    }
+
+    // UNUSED
+    protected boolean containsOnly(String str, char ch) {
+        return containsOnly(str.toCharArray(), ch);
+    }
+
+    protected boolean containsOnly(char[] chrs, char ch) {
+        int sz = chrs.length;
+
+        for (int i = 0; i < sz; i++) {
+            if (chrs[i] != ch) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

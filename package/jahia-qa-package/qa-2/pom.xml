@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-package</artifactId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-qa2</artifactId>
+    <version>${jahia.package.version}</version>
+    <name>Jahia QA-2 Package</name>
+    <packaging>pom</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>apache-tomcat</artifactId>
+            <version>6.0.18-jahia</version>
+            <type>tar.gz</type>
+        </dependency>
+        <dependency>
+            <groupId>lambdaprobe</groupId>
+            <artifactId>lambdaprobe</artifactId>
+            <version>jahia-version</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-ear</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>pom</type>
+        </dependency>        
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <!-- first QA server processing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>lambdaprobe</groupId>
+                                    <artifactId>lambdaprobe</artifactId>
+                                    <version>jahia-version</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
+                                    <destFileName>probe.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.tomcat</groupId>
+                                    <artifactId>apache-tomcat</artifactId>
+                                    <version>6.0.18-jahia</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <excludes>**/webapps/examples/**,**/webapps/docs/**,**/webapps/ROOT/**</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <configuration>
+                    <targetServerType>tomcat</targetServerType>
+                    <targetServerVersion>6</targetServerVersion>
+                    <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <configuration>
+                    <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
+                    <siteImportLocation>
+	                    <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
+	                    <param>/home/bamboo/bin/siteImport_testSite.zip</param>
+                    </siteImportLocation>
+                    <cluster_activated>false</cluster_activated>
+                    <processingServer>true</processingServer>
+                    <databaseUrl>jdbc:mysql://10.8.37.246/jahia_qa243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                    <databaseUsername>jahia</databaseUsername>
+                    <databasePassword>jahia</databasePassword>
+                    <overwritedb>true</overwritedb>
+                    <cluster_node_serverId>qa-j3</cluster_node_serverId>
+                    <localIp>10.8.37.243</localIp>
+                    <clusterNodes>
+                        <param>10.8.37.244</param>
+                    </clusterNodes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>configure</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <copy file="./src/resources/catalina.bat" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat" overwrite="true"/>
+                                <copy file="./src/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
+                                <copy file="./src/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
+                                <copy file="./src/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/src.xml</descriptor>
+                    </descriptors>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>attached</goal> <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

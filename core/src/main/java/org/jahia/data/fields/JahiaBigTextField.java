@@ -89,8 +89,6 @@ public class JahiaBigTextField extends JahiaField implements
 
     private static final Logger logger = Logger.getLogger(JahiaBigTextField.class);
 
-    protected final StringBuilder buff = new StringBuilder();
-
     public static final String URL_MARKER = "###";
 
     private static final Pattern FILE_PATTERN = Pattern.compile("^(/[a-z]*)?(/((repository/default)|(files))(/.*))");
@@ -430,15 +428,14 @@ public class JahiaBigTextField extends JahiaField implements
 
         String urlKey;
         try {
-            urlKey = URLDecoder.decode(link.substring(link.lastIndexOf('/') + 1), "UTF-8");
+            urlKey = URLDecoder.decode(StringUtils.substringAfterLast(link, "/"), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            urlKey = link.substring(link.lastIndexOf('/') + 1);
+            urlKey = StringUtils.substringAfterLast(link, "/");
         }
 
-        final int index = urlKey.indexOf("?");
-        if (index > -1) {
-            urlKey = urlKey.substring(0, index);
-        }
+        urlKey = StringUtils.substringBefore(StringUtils.substringBefore(
+                urlKey, "?"), "#");
+
         if (logger.isDebugEnabled()) {
             logger.debug("urlKey: " + urlKey);
         }
@@ -557,21 +554,6 @@ public class JahiaBigTextField extends JahiaField implements
                 append(getRawValue()).toString();
     }
 
-    private String getLinkValue(String rawText) {
-        String link = rawText;
-        if (StringUtils.isNotBlank(rawText)
-                && (link.indexOf('"') != -1 || link.indexOf('\'') != -1)) {
-            // retrieve the link value between quotes
-            if (link.indexOf('"') != -1) {
-                link = StringUtils.substringBetween(rawText, "\"");
-            } else if (link.indexOf('\'') != -1) {
-                link = StringUtils.substringBetween(rawText, "'");
-            }
-        }
-
-        return link;
-    }
-
     private String cleanHtml (String bodyContent) {
         // Try to remove all cache/(o|b).*/ and also jessionid
         String cleanBodyContent = bodyContent.replaceAll("cache/(o|b)[a-z]*/", "");
@@ -605,11 +587,11 @@ public class JahiaBigTextField extends JahiaField implements
                             hrefValue = handleCurrentServerPath(processingContext, code, targetURL.getPath(), site.getSiteKey());
                         }
                     } catch (JahiaException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        logger.warn(e.getMessage(), e);
                     }
                 }
             } catch (MalformedURLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.warn(e.getMessage(), e);
             }
         }
         document.replace(href.getValueSegment(), hrefValue);
@@ -620,7 +602,17 @@ public class JahiaBigTextField extends JahiaField implements
         final Matcher matcher = FILE_PATTERN.matcher(hrefValue);
         if (!matcher.matches()) {
             // This is a page
-            String pageId = hrefValue.substring(hrefValue.lastIndexOf("/") + 1, hrefValue.length());
+            String pageId = StringUtils.substringAfterLast(hrefValue, "/");
+            String suffix = null;
+            if (pageId.contains("?")) {
+                suffix = "?" + StringUtils.substringAfter(pageId, "?");
+                pageId = StringUtils.substringBefore(pageId, "?");
+            } else if (pageId.contains("#")) {
+                suffix = "#" + StringUtils.substringAfter(pageId, "#");
+                pageId = StringUtils.substringBefore(pageId, "#");
+            } 
+ 
+            
             // This is a url key is there a site in the url to force appending it ?
             String site = siteKey;
             if (hrefValue.indexOf("/site/") > 0) {
@@ -639,7 +631,7 @@ public class JahiaBigTextField extends JahiaField implements
                 int pid = Integer.parseInt(pageId);
                 internalLinks.add(pid);
                 // This is a pid
-                hrefValue = URL_MARKER + JahiaFieldXRefManager.PAGE + "/lang/" + language + "/pid/" + pid;
+                hrefValue = URL_MARKER + JahiaFieldXRefManager.PAGE + "/lang/" + language + "/pid/" + pid + (suffix != null ? suffix : "");
             } catch (NumberFormatException e) {
                 // This is not a pid this is a url key
                 try {
@@ -647,12 +639,12 @@ public class JahiaBigTextField extends JahiaField implements
                     int urlKey = getPidFromUrlKey(hrefValue, processingContext.getContextPath(), jahiaSite);
                     if (urlKey > 0) {
                         internalLinks.add(urlKey);
-                        hrefValue = URL_MARKER + JahiaFieldXRefManager.PAGE +(site != null ? "/site/" + site : "") + "/lang/" + language + "/pid/" + String.valueOf(urlKey);
+                        hrefValue = URL_MARKER + JahiaFieldXRefManager.PAGE +(site != null ? "/site/" + site : "") + "/lang/" + language + "/pid/" + urlKey + (suffix != null ? suffix : "");
                     } else {
                         // Todo find a way of uses tuckey rewriter rules to decode URL
                     }
                 } catch (JahiaException e1) {
-                    e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.warn(e.getMessage(), e);
                 }
             }
         } else {
@@ -661,7 +653,7 @@ public class JahiaBigTextField extends JahiaField implements
                 hrefValue = URL_MARKER + JahiaFieldXRefManager.FILE +path;
                 files.add(path);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e.getMessage(), e);
             }
         }
         return hrefValue;
@@ -675,6 +667,14 @@ public class JahiaBigTextField extends JahiaField implements
                 String type = values[values.length-2];
                 String pageId = values[values.length-1];
                 if ("pid".equals(type)) {
+                    String suffix = null;
+                    if (pageId.contains("?")) {
+                        suffix = "?" + StringUtils.substringAfter(pageId, "?");
+                        pageId = StringUtils.substringBefore(pageId, "?");
+                    } else if (pageId.contains("#")) {
+                        suffix = "#" + StringUtils.substringAfter(pageId, "#");
+                        pageId = StringUtils.substringBefore(pageId, "#");
+                    } 
                     int pid = Integer.valueOf(pageId);
                     // This is a url key is there a site in the url to force appending it ?
                     String site = null;
@@ -705,7 +705,7 @@ public class JahiaBigTextField extends JahiaField implements
                             site = jahiaSite.getSiteKey();
                         }
                     }
-                    hrefValue = getSiteURL(jahiaSite, pid, false, language, site != null, processingContext);
+                    hrefValue = getSiteURL(jahiaSite, pid, false, language, site != null, processingContext) + (suffix != null ? suffix : "");
                 } else if ("ref".equals(type)) {
                     hrefValue = href.getValue();
                 } else {

@@ -152,7 +152,9 @@ input.wizard {
             <td style="vertical-align: top;" align="left" height="100%">
             <div class="dex-TabPanelBottom">
             <div class="tabContent">
-                <%@include file="/jsp/jahia/administration/include/menu_site.inc"%>
+            <jsp:include page="/jsp/jahia/administration/include/left_menu.jsp">
+                <jsp:param name="mode" value="site"/>
+            </jsp:include>
             </div>
             <div id="content" class="fit">
   <table width="100%" cellpadding="0" cellspacing="0">

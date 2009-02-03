@@ -67,6 +67,7 @@ import org.jahia.admin.AdministrationModulesRegistry;
 import org.jahia.admin.AdministrationModule;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.data.JahiaData;
+import org.jahia.data.beans.MenuItem;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -114,6 +115,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -491,10 +493,13 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         response.setHeader("Pragma", "no-cache");
         //response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
-
+        
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         if (jData != null) {
             final ParamBean jParams = (ParamBean) jData.getProcessingContext();
+            
+            initMenu(request);
+
             try {
                 String htmlContent = ServicesRegistry.getInstance().
                         getJahiaFetcherService().fetchServlet(jParams, destination);
@@ -547,6 +552,43 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         }
     } // end doRedirect
 
+
+    public static void initMenu(HttpServletRequest request) {
+        JahiaData jData = (JahiaData) request
+                .getAttribute("org.jahia.data.JahiaData");
+        if (jData != null) {
+            ParamBean ctx = (ParamBean) jData.getProcessingContext();
+
+            AdministrationModulesRegistry administrationModulesRegistry = (AdministrationModulesRegistry) SpringContextSingleton
+                    .getInstance().getContext().getBean(
+                            "administrationModulesRegistry");
+            ctx.setAttribute("administrationServerModules", getMenuItems(
+                    administrationModulesRegistry.getServerModules(), ctx));
+            ctx.setAttribute("administrationSiteModules", getMenuItems(
+                    administrationModulesRegistry.getSiteModules(), ctx));
+        }
+    }
+
+    private static List<MenuItem> getMenuItems(
+            List<AdministrationModule> modules, ParamBean ctx) {
+        List<MenuItem> menuItems = new LinkedList<MenuItem>();
+        for (AdministrationModule module : modules) {
+            String actionUrl = null;
+            try {
+                actionUrl = module.getActionURL(ctx);
+            } catch (Exception e) {
+                logger.error(
+                        "Error computing an URL for the administraion module '"
+                                + module.getName() + "'", e);
+            }
+            menuItems.add(new MenuItem(module.getName(), actionUrl != null
+                    && module.isEnabled(ctx.getUser(), ctx.getSiteID()), module
+                    .getLabel(), actionUrl, module.getIcon(), module
+                    .getTooltip(), module.isSelected(ctx)));
+        }
+
+        return menuItems;
+    }
 
     //-------------------------------------------------------------------------
     /**

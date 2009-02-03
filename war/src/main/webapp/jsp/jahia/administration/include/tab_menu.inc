@@ -32,7 +32,8 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page import="org.jahia.params.ProcessingContext,
+<%@page import="org.jahia.params.ParamBean,
+                    org.jahia.params.ProcessingContext,
                     org.jahia.services.sites.JahiaSite,
                     org.jahia.services.sites.JahiaSitesService,
                     org.jahia.registries.ServicesRegistry" 

@@ -27,6 +27,12 @@ limitations under the License.
         document.mainForm.submit();
     }
 </script>
+<div id="topTitle">
+    <h1>Jahia</h1>
+
+    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.analytics.ManageAnalytics.label"/>
+        : <% if (currentSite != null) { %><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
+</div>
 
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -40,7 +46,9 @@ limitations under the License.
             <td style="vertical-align: top;" align="left" height="100%">
                 <div class="dex-TabPanelBottom">
                     <div class="tabContent">
-                        <%@include file="/jsp/jahia/administration/include/menu_site.inc" %>
+                        <jsp:include page="/jsp/jahia/administration/include/left_menu.jsp">
+                            <jsp:param name="mode" value="site"/>
+                        </jsp:include>
 
                         <div id="content" class="fit">
                             <div class="head headtop">

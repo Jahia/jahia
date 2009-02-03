@@ -1351,7 +1351,7 @@ tr.oddLine {
   background: url(images/andromeda/iconSet-server-grey.png) no-repeat;
 }
 
-.ico-server-site {
+.ico-server-sites {
   background-position: 4px -286px;
 }
 
@@ -1359,39 +1359,39 @@ tr.oddLine {
   background-position: 4px 2px;
 }
 
-.ico-server-component {
+.ico-server-components {
   background-position: 4px -94px;
 }
 
-.ico-server-category {
+.ico-server-categories {
   background-position: 4px -46px;
 }
 
-.ico-server-setting {
+.ico-server-server {
   background-position: 4px -335px;
 }
 
-.ico-server-log {
+.ico-server-logs {
   background-position: 4px -238px;
 }
 
-.ico-server-admin {
+.ico-server-profile {
   background-position: 4px -190px;
 }
 
-.ico-server-cache {
+.ico-server-status {
   background-position: 4px -430px;
 }
 
-.ico-server-permissions {
+.ico-server-serverPermissions {
   background-position: 4px -479px;
 }
 
-.ico-server-password {
+.ico-server-passwordPolicies {
   background-position: 4px -383px;
 }
 
-.ico-server-patch {
+.ico-server-patches {
   background-position: 4px -144px;
 }
 
@@ -1419,19 +1419,19 @@ tr.oddLine {
     padding-left: 20px;
 }
 
-.ico-site-page {
+.ico-site-pages {
   background-position: 4px 2px;
 }
 
-.ico-site-user {
+.ico-site-users {
   background-position: 4px -47px;
 }
 
-.ico-site-group {
+.ico-site-groups {
   background-position: 4px -93px;
 }
 
-.ico-site-template {
+.ico-site-templates {
   background-position: 4px -143px;
 }
 
@@ -1439,7 +1439,7 @@ tr.oddLine {
   background-position: 4px -191px;
 }
 
-.ico-site-lang {
+.ico-site-languages {
   background-position: 4px -287px;
 }
 
@@ -1451,16 +1451,20 @@ tr.oddLine {
   background-position: 4px -382px;
 }
 
-.ico-site-permission {
+.ico-site-sitePermissions {
   background-position: 4px -430px;
 }
 
-.ico-site-html {
+.ico-site-htmlsettings {
   background-position: 4px -476px;
 }
 
 .ico-site-integrity {
   background-position: 4px -525px;
+}
+
+.ico-site-themes {
+  background-position: 4px -382px;
 }
 
 /* Old Jahia Style*/

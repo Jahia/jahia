@@ -1,5 +1,6 @@
 package org.jahia.admin;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -101,6 +102,17 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
         } else {
             return hasSitePermission(permissionName, user, siteID);
         }
+    }
+    
+    public boolean isSelected(ParamBean ctx) {
+        boolean selected = false;
+        if ("module".equals(urlType)) {
+            selected = StringUtils.equals(getUrlAction(), ctx.getParameter("do"));
+        } else if ("struts".equals(urlType)) {
+            selected = StringUtils.equals(getUrlKey(), ctx.getParameter("group"));
+        }
+        
+        return selected;
     }
 
     public String getActionURL(ParamBean paramBean) throws JahiaException {

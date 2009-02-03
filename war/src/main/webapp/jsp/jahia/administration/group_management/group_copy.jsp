@@ -64,7 +64,9 @@ int stretcherToOpen   = 1; %>
         <td style="vertical-align: top;" align="left" height="100%">
           <div class="dex-TabPanelBottom">
             <div class="tabContent">
-              <%@include file="/jsp/jahia/administration/include/menu_server.inc" %>
+                <jsp:include page="/jsp/jahia/administration/include/left_menu.jsp">
+                    <jsp:param name="mode" value="server"/>
+                </jsp:include>
               <div id="content" class="fit">
                   <div class="head">
                       <div class="object-title">

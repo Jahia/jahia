@@ -48,4 +48,6 @@ public interface AdministrationModule {
 
     public void service(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
+    public boolean isSelected(ParamBean ctx);
+
 }

@@ -82,6 +82,8 @@
     } else {
         stretcherToOpen = configJahia != null && configJahia.booleanValue() ? 0 : 1;
     }
+    
+    pageContext.setAttribute("stretcherToOpen", Integer.valueOf(stretcherToOpen));
 
     ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     final JahiaUser user = jData.getProcessingContext().getUser();
@@ -110,18 +112,46 @@
 <td style="vertical-align: top;" align="left" height="100%">
 <div class="dex-TabPanelBottom">
 
-<% if (stretcherToOpen == 0) { %>
-<%@include file="include/main_menu_server.inc"%>
-<%} %>
-
-<% if (stretcherToOpen > 0) { %>
-
-    <%@include file="include/main_menu_site.inc"%> 
-
-<%
-}
-%>
-
+<div class="tabContent">
+<div id="content" class="full">
+<table border="0" cellspacing="0" cellpadding="10" class="adminmenu">
+<c:forEach items="${stretcherToOpen == 0 ? administrationServerModules : administrationSiteModules}" var="item" varStatus="status">
+    <c:if test="${status.index % 3 == 0}">
+    <tr>
+    </c:if>
+        <td>
+            <c:if test="${item.enabled}">
+                    <span class="dex-PushButton-big">
+                        <span class="first-child">
+                            <a href="${item.link}"><img
+                                    name="${item.name}" src="<%=URL%>images/icons/admin/adromeda/${item.icon}.png" width="32"
+                                    height="32" border="0"><span><internal:adminResourceBundle
+                                    resourceName="${item.label}" defaultValue="${item.label}"/></span></a>
+                        </span>
+                    </span>
+            </c:if>
+            <c:if test="${not item.enabled}">
+                    <span class="dex-PushButton-big disabled">
+                        <span class="first-child" style="cursor: default">
+                            <a href="#${item.name}" onclick="return false;" style="cursor: default;"><img name="${item.name}" src="<%=URL%>images/icons/admin/adromeda/${item.icon}_grey.png" width="32"
+                                             height="32" border="0"><span><internal:adminResourceBundle
+                                    resourceName="${item.label}" defaultValue="${item.label}"/></a></span>
+                        </span>
+                    </span>
+            </c:if>
+        </td>
+        <c:if test="${status.last}">
+            <c:forEach begin="1" end="${2 - status.index % 3}">
+            <td>&nbsp;</td>
+            </c:forEach>
+        </c:if>
+    <c:if test="${status.last || (status.index + 1) % 3 == 0}">
+    </tr>
+    </c:if>
+</c:forEach>
+</table>
+</div>
+</div>
 
 </td>
 </tr>

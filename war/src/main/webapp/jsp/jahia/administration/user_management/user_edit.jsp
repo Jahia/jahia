@@ -160,11 +160,10 @@
 <td style="vertical-align: top;" align="left" height="100%">
 <div class="dex-TabPanelBottom">
 <div class="tabContent">
-<% if (isSuperAdminProp == null) { %>
-<%@include file="/jsp/jahia/administration/include/menu_site.inc" %>
-<% } else { %>
-<%@include file="/jsp/jahia/administration/include/menu_server.inc" %>
-<% } %>
+<% String menuMode = isSuperAdminProp == null ? "site" : "server"; %>
+<jsp:include page="/jsp/jahia/administration/include/left_menu.jsp">
+    <jsp:param name="mode" value="<%= menuMode %>"/>
+</jsp:include>
 
 <div id="content" class="fit">
 <div class="head headtop">

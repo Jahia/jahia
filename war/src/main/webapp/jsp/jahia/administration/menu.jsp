@@ -34,6 +34,7 @@
 --%>
 
 <%@include file="/jsp/jahia/administration/include/header.inc" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page import="java.util.*" %>
 <%@page import="org.jahia.bin.*" %>
 <%@page import="org.jahia.utils.JahiaTools" %>
@@ -121,10 +122,19 @@
     </c:if>
         <td>
             <c:if test="${item.enabled}">
+                <c:if test="${fn:contains(item.icon, '/') || fn:contains(item.icon, '.')}" var="externalIcon">
+                    <c:set var="iconUrl" value="${item.icon}"/>
+                    <c:set var="iconUrlDisabled" value="${item.icon}"/>
+                </c:if>
+                <c:if test="${!externalIcon}">
+                    <c:set var="iconUrl"><%=URL%>images/icons/admin/adromeda/${item.icon}.png</c:set>
+                    <c:set var="iconUrlDisabled"><%=URL%>images/icons/admin/adromeda/${item.icon}_grey.png</c:set>
+                </c:if>
+                
                     <span class="dex-PushButton-big">
                         <span class="first-child">
                             <a href="${item.link}"><img
-                                    name="${item.name}" src="<%=URL%>images/icons/admin/adromeda/${item.icon}.png" width="32"
+                                    name="${item.name}" src="${iconUrl}" width="32"
                                     height="32" border="0"><span><internal:adminResourceBundle
                                     resourceName="${item.label}" defaultValue="${item.label}"/></span></a>
                         </span>
@@ -133,7 +143,7 @@
             <c:if test="${not item.enabled}">
                     <span class="dex-PushButton-big disabled">
                         <span class="first-child" style="cursor: default">
-                            <a href="#${item.name}" onclick="return false;" style="cursor: default;"><img name="${item.name}" src="<%=URL%>images/icons/admin/adromeda/${item.icon}_grey.png" width="32"
+                            <a href="#${item.name}" onclick="return false;" style="cursor: default;"><img name="${item.name}" src="${iconUrlDisabled}" width="32"
                                              height="32" border="0"><span><internal:adminResourceBundle
                                     resourceName="${item.label}" defaultValue="${item.label}"/></a></span>
                         </span>

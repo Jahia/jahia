@@ -97,6 +97,10 @@ public abstract class AbstractAdministrationModule implements AdministrationModu
     }
 
     public boolean isEnabled(JahiaUser user, int siteID) {
+        if (StringUtils.isEmpty(permissionName)) {
+            // no permission check required
+            return true;
+        }
         if (isServerModule()) {
             return hasServerPermission(permissionName, user, siteID);
         } else {

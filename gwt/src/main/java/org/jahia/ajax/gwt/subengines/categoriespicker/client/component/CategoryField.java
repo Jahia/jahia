@@ -86,7 +86,7 @@ public class CategoryField extends TriggerField<String> {
     }
 
     private void displayPicker(List<GWTJahiaCategoryNode> selectedCategories) {
-        final CategoriesPickerPanel catPicker = new CategoriesPickerPanel(selectedCategories, false, null, null);
+        final CategoriesPickerPanel catPicker = new CategoriesPickerPanel(selectedCategories, false, null, null, null);
         final Window w = new Window();
         w.setLayout(new FitLayout());
         w.setModal(true);

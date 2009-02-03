@@ -70,12 +70,14 @@ public class CategoriesTree extends ContentPanel {
     private CategoriesPickerLeftComponent parentComponent;
     private final List<GWTJahiaCategoryNode> selectedCategories;
     private final String categoryLocale;
+    private final boolean autoSelectParent;
 
-    public CategoriesTree (String categoryKey, CategoriesPickerLeftComponent parentComponent, List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale) {
+    public CategoriesTree(String categoryKey, CategoriesPickerLeftComponent parentComponent, List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
         this.categoryKey = categoryKey;
         this.parentComponent = parentComponent;
         this.selectedCategories = selectedCategories;
         this.categoryLocale = categoryLocale;
+        this.autoSelectParent = autoSelectParent;
     }
 
     @Override
@@ -174,7 +176,11 @@ public class CategoriesTree extends ContentPanel {
         // tree
         final Tree tree = new Tree();
         tree.setCheckable(true);
-        tree.setCheckStyle(Tree.CheckCascade.PARENTS);
+        if (autoSelectParent) {
+            tree.setCheckStyle(Tree.CheckCascade.PARENTS);
+        } else {
+            tree.setCheckStyle(Tree.CheckCascade.NONE);
+        }
         tree.setHeight(400);
         binder = new TreeBinder<GWTJahiaCategoryNode>(tree, store);
         binder.setDisplayProperty("name");

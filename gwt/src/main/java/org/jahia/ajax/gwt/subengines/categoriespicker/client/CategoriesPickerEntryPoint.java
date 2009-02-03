@@ -57,7 +57,7 @@ public class CategoriesPickerEntryPoint implements EntryPoint {
         // init panel
         jahiaTypePanel = RootPanel.get(ID);
         if (jahiaTypePanel != null) {
-            jahiaTypePanel.add(new CategoriesPickerPanel(CategoryHelper.getSelectedCategoriesFromHTML(),getReadOnly(),getRootKey(),CategoryHelper.getCategoryLocale()));
+            jahiaTypePanel.add(new CategoriesPickerPanel(CategoryHelper.getSelectedCategoriesFromHTML(),getReadOnly(),getRootKey(),CategoryHelper.getCategoryLocale(),CategoryHelper.getAutoSelectParent()));
         } else {
             Log.debug("Categories selector not found");
         }

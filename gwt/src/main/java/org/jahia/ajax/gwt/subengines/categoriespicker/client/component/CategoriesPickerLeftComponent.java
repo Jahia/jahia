@@ -54,8 +54,8 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
     private CategoriesTree categoriesTree;
     private CategoriesList categoriesList;
 
-    public CategoriesPickerLeftComponent (final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale) {
-        categoriesTree = new CategoriesTree(categoryKey, this,selectedCategories,categoryLocale);
+    public CategoriesPickerLeftComponent(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
+        categoriesTree = new CategoriesTree(categoryKey, this,selectedCategories,categoryLocale,autoSelectParent);
         categoriesTree.setHeaderVisible(false);
         categoriesTree.setBodyBorder(false);
 

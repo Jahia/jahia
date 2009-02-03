@@ -116,7 +116,7 @@ bigText         body
 [web_templates:lastNewsContainer] > jnt:container
 integer         maxNews = 10
 sharedSmallText display (choicelist) = medium < large,medium,small
-category        filter
+category        filter (category[autoSelectParent=false])
 
 // Web templates content extensions
 

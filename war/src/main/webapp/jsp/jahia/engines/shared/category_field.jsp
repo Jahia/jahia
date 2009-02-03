@@ -42,7 +42,6 @@
 <%@ page import="org.jahia.data.fields.JahiaField" %>
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.engines.shared.Category_Field" %>
-<%@ page import="org.jahia.services.categories.Category" %>
 
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -64,5 +63,5 @@
 
 %>
 <internal:gwtImport module="org.jahia.ajax.gwt.subengines.categoriespicker.CategoriesPicker"/>
-<internal:categorySelector selectedCategories="<%=selectedCategories%>" readonly="<%=readOnly%>" locale="<%=elh.getCurrentLanguageCode()%>"/>
+<internal:categorySelector selectedCategories="<%=selectedCategories%>" readonly="<%=readOnly%>" locale="<%=elh.getCurrentLanguageCode()%>" autoSelectParent='<%=theField.getDefinition().getItemDefinition().getSelectorOptions().get("autoSelectParent")%>'/>
 

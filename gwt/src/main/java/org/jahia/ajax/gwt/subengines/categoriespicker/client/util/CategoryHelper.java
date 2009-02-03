@@ -65,6 +65,9 @@ public class CategoryHelper {
     public static native String getCategoryLocale() /*-{
         return $wnd.sLocale;
     }-*/;
+    public static native String getAutoSelectParent() /*-{
+        return $wnd.sAutoSelectParent;
+    }-*/;
     private static native JsArray<CategoryJavaScriptObject> getCategoryOverlayTypes() /*-{
     // Get a reference to the first customer in the JSON array from earlier
     return $wnd.sCategories;

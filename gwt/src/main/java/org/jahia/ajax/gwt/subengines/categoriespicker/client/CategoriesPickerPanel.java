@@ -54,7 +54,7 @@ import java.util.List;
  */
 public class CategoriesPickerPanel extends TriPanelBrowserLayout {
 
-    public CategoriesPickerPanel (final List<GWTJahiaCategoryNode> selectedCategories, final boolean readonly, final String rootKey, String categoryLocale) {
+    public CategoriesPickerPanel(final List<GWTJahiaCategoryNode> selectedCategories, final boolean readonly, final String rootKey, String categoryLocale, String autoSelectParent) {
         super();
         setBorders(false);
         setBodyBorder(false);
@@ -66,8 +66,11 @@ public class CategoriesPickerPanel extends TriPanelBrowserLayout {
         TopRightComponent treeTable = new PickedCategoriesGrid(selectedCategories, readonly);
         LeftComponent selectorsLeftComponent = null;
         Component leftComponent = null;
+        boolean isAutoSelectParent = true;
+        if(autoSelectParent!=null && !"".equalsIgnoreCase(autoSelectParent.trim()))
+        isAutoSelectParent = Boolean.valueOf(autoSelectParent);
         if (!readonly) {
-            selectorsLeftComponent = new CategoriesPickerLeftComponent(rootKey,selectedCategories,categoryLocale);
+            selectorsLeftComponent = new CategoriesPickerLeftComponent(rootKey,selectedCategories,categoryLocale,isAutoSelectParent);
             leftComponent = selectorsLeftComponent.getComponent();
             leftComponent.setWidth("400px");
         }

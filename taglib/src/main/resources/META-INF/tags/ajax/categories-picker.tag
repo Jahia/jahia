@@ -41,6 +41,8 @@ limitations under the License.
               description="a list of the selececCategories" %>
 <%@ attribute name="locale" required="false" rtexprvalue="true" type="java.lang.String"
               description="the locale used for displaying the category title" %>
+<%@ attribute name="autoSelectParent" required="false" rtexprvalue="true" type="java.lang.String"
+              description="allows to control if we have to auto check the parent of a category when selected or not." %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -70,6 +72,9 @@ limitations under the License.
         }
     }%>];
         var sLocale = '${locale}';
+
+        var sAutoSelectParent='${autoSelectParent}';
+
     </script>
 </logic:present>
 <input id="removedCategories" type="hidden" name="removedCategories" value=""/>

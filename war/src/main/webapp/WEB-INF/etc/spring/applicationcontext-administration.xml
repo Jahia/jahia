@@ -284,6 +284,14 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
+    <bean id="jahiaPediaAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+        <property name="urlKey" value="pedia" />
+        <property name="name" value="pedia" />
+        <property name="icon" value="http://www2.jahia.org/files/content/shared/logo-top.png" />
+        <property name="label" value="Jahiapedia" />
+        <property name="urlAction" value="http://www2.jahia.org/cms/home/jahiapedia" />
+    </bean>
+    
     <bean id="administrationModulesRegistry" class="org.jahia.admin.AdministrationModulesRegistry">
         <property name="serverModules">
             <list>
@@ -298,6 +306,9 @@
                 <ref bean="passwordPoliciesAdministrationModule" />
                 <ref bean="patchesAdministrationModule" />
                 <ref bean="infoAdministrationModule" />
+                <!-- 
+                <ref bean="jahiaPediaAdministrationModule"/>
+                 -->
             </list>
         </property>
         <property name="siteModules">

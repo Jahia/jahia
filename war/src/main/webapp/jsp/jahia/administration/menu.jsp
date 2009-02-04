@@ -115,6 +115,39 @@
 
 <div class="tabContent">
 <div id="content" class="full">
+
+<c:if test="${stretcherToOpen == 1 && fn:length(sitesList) > 1}">
+<div id="changeSite">
+    <% if (sitesList.size() > 1) { %>
+    <script language="javascript">
+        function changeSiteNow() {
+        <%
+           int countJS = 0;
+           while(sitesJavaScript.hasNext()) {
+               JahiaSite siteJS = (JahiaSite) sitesJavaScript.next();
+               String siteChangeURL = JahiaAdministration.composeActionURL(request,response,"change","&changesite=" + siteJS.getID() + "#sites");
+        %>
+            if (document.jahiaAdmin.changesite.options[<%=countJS%>].selected) location.href = "<%=siteChangeURL%>";
+        <%
+               countJS++;
+           }
+        %>
+        }
+    </script>
+    <form name="jahiaAdmin">
+        <nobr><b><internal:adminResourceBundle resourceName="org.jahia.admin.selectWebsite.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b>
+            <select name="changesite" onChange="changeSiteNow();">
+                <% while (sitesEnum.hasNext()) {
+                    JahiaSite site = (JahiaSite) sitesEnum.next(); %>
+                <option value="<%=site.getID()%>" <%if (siteID.intValue() == site.getID()) {%> selected <%}%>>
+                    &nbsp;<%=site.getTitle()%>&nbsp;</option>
+                <% }%>
+            </select></nobr>
+    </form>
+    <% } %>
+</div>
+</c:if>
+
 <table border="0" cellspacing="0" cellpadding="10" class="adminmenu">
 <c:forEach items="${stretcherToOpen == 0 ? administrationServerModules : administrationSiteModules}" var="item" varStatus="status">
     <c:if test="${status.index % 3 == 0}">

@@ -36,9 +36,7 @@ package org.jahia.ajax.gwt.engines.filemanager.client.components;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
@@ -311,8 +309,6 @@ public class FileDetails extends BottomRightComponent {
     // PROPERTIES TAB
 
     public void displayProperties() {
-
-
         if (!properties.isProcessed()) {
             if (selectedNodes.size() == 1) {
                 final GWTJahiaNode selectedNode = selectedNodes.get(0);
@@ -343,9 +339,9 @@ public class FileDetails extends BottomRightComponent {
                                         Window.alert("Properties save failed\n\n" + throwable.getLocalizedMessage()) ;
                                         Log.error("failed",throwable);
                                     }
-
                                     public void onSuccess(Object o) {
-                                             getLinker().refreshTable();
+                                        Info.display("", "Properties saved");
+                                        //getLinker().refreshTable();
                                     }
                                 });
                             }
@@ -400,7 +396,8 @@ public class FileDetails extends BottomRightComponent {
                                     }
 
                                     public void onSuccess(Object o) {
-
+                                        Info.display("", "Properties saved");
+                                        //getLinker().refreshTable();
                                     }
                                 });
                             }

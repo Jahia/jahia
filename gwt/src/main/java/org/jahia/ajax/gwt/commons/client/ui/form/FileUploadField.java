@@ -70,6 +70,14 @@ public class FileUploadField extends AdapterField {
         });
     }
 
+    public String getRawValue() {
+        String v = rendered ? getInputEl().getValue() : "";
+        if (v == null || v.equals(emptyText)) {
+          return "";
+        }
+        return v;
+  }
+
     static class Uploader extends HorizontalPanel {
         private String name;
         private String key;

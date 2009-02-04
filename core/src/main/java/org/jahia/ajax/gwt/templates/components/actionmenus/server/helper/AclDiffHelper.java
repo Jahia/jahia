@@ -135,40 +135,68 @@ public class AclDiffHelper {
                 Map<String, String> inheritedRights = new HashMap<String, String>() ;
                 for (GWTJahiaNodeACE ace: acls.getAce()) {
                     String principal = ace.getPrincipal() ;
-                    Map<String, String> permissions = ace.getPermissions() ;
-                    Map<String, String> inheritedPermissions = ace.getInheritedPermissions() ;
                     StringBuilder permBuf = new StringBuilder() ;
                     StringBuilder inhPermBuf = new StringBuilder() ;
                     // build (rwa / rw- / r-- / ---) strings for local and inherited permissions
-                    for (String perm: PERMISSIONS) {
-                        if (permissions != null && permissions.containsKey(perm)) {
-                            logger.error(permissions.get(perm));
-                            if (permissions.get(perm).equalsIgnoreCase("grant")) {
-                                permBuf.append(perm.substring(0, 1)) ;
-                                logger.error(principal +  " can " + perm) ;
+                    String inhFrom = ace.getInheritedFrom() ;
+                    Map<String, String> inheritedPermissions = ace.getInheritedPermissions() ;
+                    if (inhFrom == null || inheritedPermissions == null) {
+                        inhPermBuf.append("   ") ;
+                    } else {
+                        for (String perm: PERMISSIONS) {
+                            if (inheritedPermissions.containsKey(perm)) {
+                                if (inheritedPermissions.get(perm).equalsIgnoreCase("grant")) {
+                                    inhPermBuf.append(perm.substring(0, 1)) ;
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug(principal +  " can " + perm + " (inh)") ;
+                                    }
+                                } else {
+                                    inhPermBuf.append("-") ;
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug(principal +  " cannot " + perm + " (inh)") ;
+                                    }
+                                }
                             } else {
-                                permBuf.append("-") ;
-                                logger.error(principal +  " cannot " + perm) ;
+                                inhPermBuf.append(" ") ;
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug(principal +  " cannot " + perm + " (inh / not found)") ;
+                                }
                             }
-                        } else {
-                            permBuf.append("-") ;
-                            logger.error(principal +  " cannot " + perm + " (not found)") ;
-                        }
-                        if (inheritedPermissions != null && inheritedPermissions.containsKey(perm)) {
-                            if (inheritedPermissions.get(perm).equalsIgnoreCase("grant")) {
-                                inhPermBuf.append(perm.substring(0, 1)) ;
-                                logger.error(principal +  " can " + perm + " (inh)") ;
-                            } else {
-                                inhPermBuf.append("-") ;
-                                logger.error(principal +  " cannot " + perm + " (inh)") ;
-                            }
-                        } else {
-                            inhPermBuf.append("-") ;
-                            logger.error(principal +  " cannot " + perm + " (inh / not found)") ;
                         }
                     }
-                    logger.error(principal + " : " + permBuf.toString()) ;
-                    logger.error(principal + " : " + inhPermBuf.toString()) ;
+                    Map<String, String> permissions = ace.getPermissions() ;
+                    if (ace.isInherited() || permissions == null) {
+                        permBuf.append("   ") ;
+                    } else {
+                        for (String perm: PERMISSIONS) {
+                            if (permissions.containsKey(perm)) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug(permissions.get(perm));
+                                }
+                                if (permissions.get(perm).equalsIgnoreCase("grant")) {
+                                    permBuf.append(perm.substring(0, 1)) ;
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug(principal +  " can " + perm) ;
+                                    }
+                                } else {
+                                    permBuf.append("-") ;
+                                    if (logger.isDebugEnabled()) {
+                                        logger.debug(principal +  " cannot " + perm) ;
+                                    }
+                                }
+                            } else {
+                                // this case should never occur
+                                permBuf.append(" ") ;
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug(principal +  " cannot " + perm + " (not found)") ;
+                                }
+                            }
+                        }
+                    }
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(principal + " : " + permBuf.toString()) ;
+                        logger.debug(principal + " : " + inhPermBuf.toString()) ;
+                    }
                     rights.put(principal, permBuf.toString()) ;
                     inheritedRights.put(principal, inhPermBuf.toString()) ;
                 }

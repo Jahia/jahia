@@ -921,7 +921,7 @@ public class FileManagerWorker {
     private static void setProperties(Node objectNode, List<GWTJahiaNodeProperty> newProps) {
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
-                if (prop != null) {
+                if (prop != null && !prop.getName().equals("*")) {
                     boolean isCategory = SelectorType.CATEGORY == JCRContentUtils
                             .getPropertyDefSelector(((ExtendedNodeType) objectNode
                                     .getDefinition().getDeclaringNodeType())

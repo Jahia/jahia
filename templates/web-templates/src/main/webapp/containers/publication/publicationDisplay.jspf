@@ -1,0 +1,55 @@
+<%@ include file="../../common/declarations.jspf" %>
+
+
+<c:set var="loop" value="0"/>
+<div class="box4-text">
+	<template:container id="publicationContainer" displayActionMenu="false">
+
+	<template:field name='file' valueBeanID="file" display="false"/>
+	<template:field name='preview' valueBeanID="preview" display="false"/>
+	<template:field name='author' valueBeanID="author" display="false"/>
+	<template:field name='source' valueBeanID="source" display="false"/>
+	<template:field name='date' valueBeanID="date" display="false"/>
+
+	<div class="publicationListItem"><!--start publicationListItem -->
+	<ui:actionMenu contentObjectName="publicationContainer" namePostFix="publication" labelKey="publication.update">
+		<div class="publicationListSpace"><!--start publicationListSpace -->
+			<div class="publicationPhoto">
+                <a href="${file.downloadUrl}" >
+                    <c:if test="${!empty preview && preview != ''}"><template:image file="preview"/></c:if>
+                    <c:if test="${!preview.image}"><img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/film.png'/>" alt=""/></c:if>
+                </a>
+            </div>
+
+				<div class="publicationBody"><!--start publicationBody -->
+					    <h5><template:field name="title"/></h5>
+					    <p class="publicationAuthor"><c:if test="${!empty author && author !=''}"><utility:resourceBundle resourceName="web_templates_publicationContainer.author"/>: <template:field name="author"/></c:if></p>
+					    <p class="publicationSource"><c:if test="${!empty source && source != ''}"><utility:resourceBundle resourceName="web_templates_publicationContainer.source"/>: <template:field name="source"/></c:if></p>
+					    <p class="publicationDate"><c:if test="${!empty date && date !=''}"><template:field name="date"/></c:if></p>
+					    <div class="publicationDescription"><template:field name="body"/></div>
+					    <div class="publicationAction">
+					        <c:if test="${file.size > 0}">
+                                <fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.size/1024)}"/>
+                                <a class="publicationDownload" href="${file.downloadUrl}" ><utility:resourceBundle resourceName="web_templates_publicationContainer.download" escape="true"/></a><span class="publicationDocSize">(${num} Ko)</c:if>
+                        </span>
+					</div>
+					<div class="clear"></div>
+				</div><!--stop publicationBody -->
+
+			<div class="clear"></div>
+		</div><!--stop publicationListSpace -->
+		<div class="clear"></div>
+		</ui:actionMenu>
+	</div><!--stop publicationListItem -->
+    <c:choose>
+        <c:when test="${loop == '0'}">
+           <c:set var="loop" value="1"/>
+        </c:when>
+        <c:otherwise>
+            <div class="clear"></div>
+            <c:set var="loop" value="0"/>
+        </c:otherwise>
+    </c:choose>
+
+	</template:container>
+</div>

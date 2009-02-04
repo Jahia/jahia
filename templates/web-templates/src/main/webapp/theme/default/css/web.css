@@ -34,7 +34,6 @@
 #bodywrapper .themeSelector {
     margin: 0.5em 0;
 }
-
 /*GLOBAL WHITESPACE RESET*/
 html, body,
     #bodywrapper h1, #bodywrapper h2, #bodywrapper h3, #bodywrapper h4, #bodywrapper h5, #bodywrapper h6,
@@ -44,102 +43,82 @@ html, body,
     margin: 0px;
     padding: 0px;
 }
-
 /*BASIC ELEMENTS*/
 #bodywrapper p, #bodywrapper ul, #bodywrapper ol, #bodywrapper dl {
     margin: 0.5em 0px;
 }
-
 #bodywrapper ul, #bodywrapper ol, #bodywrapper dd {
     padding-left: 2em;
 }
-
 #bodywrapper li ul, #bodywrapper li ol {
     padding: 0px 0px 5px 15px;
 }
-
 #bodywrapper li {
     margin-bottom: 0.2em;
 }
-
 #bodywrapper body {
     font-size: 80%;
     font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
-
 #bodywrapper table {
     font-size: 100%;
 }
-
 /*IE 5.5 text too big bugfix*/
 #bodywrapper h1 {
     font-size: 2em;
     margin: 0 0 0.5em 0;
     line-height: normal;
 }
-
 #bodywrapper h2 {
     font-size: 1.8em;
     margin: 0 0 0.5em 0;
     line-height: normal;
 }
-
 #bodywrapper h3 {
     font-size: 1.6em;
     margin: 0 0 0.5em 0;
     line-height: normal;
 }
-
 #bodywrapper h4 {
     font-size: 1.4em;
     margin: 0 0 0.5em 0;
     line-height: normal;
 }
-
 #bodywrapper h5 {
     font-size: 1.2em;
     margin: 0 0 0.5em 0;
     line-height: normal;
 }
-
 #bodywrapper h6 {
     font-size: 1em;
     margin: 0 0 0.5em 0;
     line-height: normal;
 }
-
 #bodywrapper p {
     font-size: 1em;
 }
-
 #bodywrapper address {
     font-style: normal;
 }
-
 #bodywrapper label {
     font-weight: bold;
 }
-
 #bodywrapper caption {
     font-weight: bold;
     text-align: left;
 }
-
 #bodywrapper tr, #bodywrapper td, #bodywrapper th {
     vertical-align: top;
     text-align: left;
 }
-
 #bodywrapper img.left {
     padding-right: 5px;
     padding-bottom: 5px;
 }
-
 #bodywrapper img.right {
     padding-left: 5px;
     padding-bottom: 5px;
 }
-
 /* Restore correct styles displaying for tags rewrited by GxT */
 #bodywrapper strong, #bodywrapper th {
     font-weight: bold;
@@ -166,7 +145,6 @@ html, body,
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 1em;
 }
-
 /*SPECIAL ELEMENTS*/
 #bodywrapper img {
     border: 0px;
@@ -354,8 +332,8 @@ body {
 /******************************************************************************
 * Generic
 ******************************************************************************/
-#bodywrapper #InsetA,
-    #bodywrapper #InsetB {
+#bodywrapper #columnA,
+    #bodywrapper #columnB {
     font-size: 0.9em;
     line-height: 140%
 }
@@ -788,40 +766,40 @@ body {
 }
 
 /******************************************************************************
-* LAYOUT CONTENT & INSETS
+* LAYOUT CONTENT & COLUMNS
 ******************************************************************************/
-/*3 colums InsetB/content/InsetA */
+/*3 colums columnB/mainColumn/columnA */
 #bodywrapper #content {
     margin: 0 280px;
     overflow: hidden;
 
 }
 
-/*2 colums InsetB/content  */
+/*2 colums columnB / mainColumn  */
 #bodywrapper #content2 {
     margin: 0 280px 0 0;
     overflow: hidden;
 }
 
-/*2 colums content/InsetA */
+/*2 colums mainColumn/ columnA */
 #bodywrapper #content3 {
     margin: 0 0 0 280px;
     overflow: hidden;
 }
 
-/* content alone*/
+/* mainColumn alone*/
 #bodywrapper #content4 {
     margin: 0;
     overflow: hidden;
 }
 
-/*2 colums InsetC50%/content50%  */
+/*2 colums columnC 50%/ mainColumn 50%  */
 #bodywrapper #content5 {
     margin: 0 460px 0 0;
     overflow: hidden;
 }
 
-#bodywrapper #InsetA {
+#bodywrapper #columnA {
     float: left;
     width: 280px;
     margin-left: -940px;
@@ -830,7 +808,7 @@ body {
 
 }
 
-#bodywrapper #InsetB {
+#bodywrapper #columnB {
     float: left;
     width: 280px;
     margin-left: -280px;
@@ -838,7 +816,7 @@ body {
     display: block;
 }
 
-#bodywrapper #InsetC {
+#bodywrapper #columnC {
     float: left;
     width: 460px;
     margin-left: -460px;
@@ -850,27 +828,27 @@ body {
     padding: 10px 0;
 }
 
-#bodywrapper #content .spaceContent {
+#bodywrapper #content .mainColumn {
     padding: 10px 20px;
 }
 
-#bodywrapper #content2 .spaceContent {
+#bodywrapper #content2 .mainColumn {
     padding: 10px 20px 10px 0;
 }
 
-#bodywrapper #content3 .spaceContent {
+#bodywrapper #content3 .mainColumn {
     padding: 10px 0 10px 20px;
 }
 
-#bodywrapper #content4 .spaceContent {
+#bodywrapper #content4 .mainColumn {
     padding: 10px 0;
 }
 
-#bodywrapper #content5 .spaceContent {
+#bodywrapper #content5 .mainColumn {
     padding: 10px 10px 10px 0;
 }
 
-#bodywrapper #InsetC .space {
+#bodywrapper #columnC .space {
     padding: 10px 0 10px 10px;
 }
 
@@ -1062,11 +1040,12 @@ body {
     display: block
 }
 
-#bodywrapper #footerPart3 .copyright {
+#bodywrapper #footerPart3 #copyright {
     margin: 0;
     padding: 0;
     display: inline;
     padding-left: 16px;
+    float:right;
 }
 
 /*bottomshortcuts*/
@@ -1133,7 +1112,9 @@ body {
 }
 
 /******************************************************************************
+
 * navigationN2
+
 ******************************************************************************/
 
 #bodywrapper div #navigationN2 {
@@ -1142,51 +1123,421 @@ body {
 }
 
 #bodywrapper #navigationN2 ul {
-	margin:0;
-	padding:0;
-	list-style-type:none;
-	position:relative ;
-}
-#bodywrapper #navigationN2 li ul {
-	padding:0 0 0 10px;
-}
-#bodywrapper #navigationN2 li{
-	margin:0;
-	padding:0;
-	position:relative ;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
 }
 
-#bodywrapper #navigationN2 a {
-    display: inline ;
-    font-weight:bold;
+#bodywrapper #navigationN2 li {
+    margin: 0;
+    padding: 0;
+    background: none;
+    line-height: 2em;
+}
+
+#bodywrapper #navigationN2 li li {
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+}
+
+#bodywrapper #navigationN2 a,
+    #bodywrapper #navigationN2 a:link,
+    #bodywrapper #navigationN2 a:visited {
+    display: block;
     text-decoration: none;
-    color:#000;
-    padding-left:12px ;
-    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50% ;
+    height: 1%;
+    background: none;
+    color: #333;
 }
 
-#bodywrapper #navigationN2 a.inpath {
-    color:#600;
-    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+#bodywrapper #navigationN2 a:hover,
+    #bodywrapper #navigationN2 a:active {
+    background: none;
+    color: #900;
 }
 
-#bodywrapper #navigationN2 a.selected {
-    color:#c03;
-    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+#bodywrapper #navigationN2 .level_1 a,
+    #bodywrapper #navigationN2 .level_1 a:link,
+    #bodywrapper #navigationN2 .level_1 a:visited {
+    padding: 0 2px 0 20px;
+    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 10px 50%;
+    border-bottom: 1px solid #ccc;
+    margin: 1px 0;
 }
 
-#bodywrapper #navigationN2 a:hover{
-	color:#555 ;
+#bodywrapper #navigationN2 .level_1 a.inpath,
+    #bodywrapper #navigationN2 .level_1 a.inpath:link,
+    #bodywrapper #navigationN2 .level_1 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_1 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_1 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L1-on.png ) no-repeat 6px 50%;
 }
 
-#bodywrapper #navigationN2 li .action-menu-icons {
-    position:absolute ;
-    top: 0 ;
-    right : 0 ;
+#bodywrapper #navigationN2 .level_1 a:hover,
+    #bodywrapper #navigationN2 .level_1 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L1-selected.png ) no-repeat 10px 50%;
+    background-color: #ddd3ca;
 }
 
-#bodywrapper #navigationN2 li .ContentContainerList {
-    position:relative ;
+#bodywrapper #navigationN2 .level_1 a.selected,
+    #bodywrapper #navigationN2 .level_1 a.selected:link,
+    #bodywrapper #navigationN2 .level_1 a.selected:visited,
+    #bodywrapper #navigationN2 .level_1 a.selected:hover,
+    #bodywrapper #navigationN2 .level_1 a.selected:active {
+    background: url( ../img/bg-navigationN2-L1-selected.png ) no-repeat 10px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_2 a,
+    #bodywrapper #navigationN2 .level_2 a:link,
+    #bodywrapper #navigationN2 .level_2 a:visited {
+    padding: 0 2px 0 40px;
+    background: url( ../img/bg-navigationN2-L2.png ) no-repeat 30px 50%;
+}
+
+#bodywrapper #navigationN2 .level_2 a.inpath,
+    #bodywrapper #navigationN2 .level_2 a.inpath:link,
+    #bodywrapper #navigationN2 .level_2 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_2 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_2 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L2-on.png ) no-repeat 26px 50%;
+}
+
+#bodywrapper #navigationN2 .level_2 a:hover,
+    #bodywrapper #navigationN2 .level_2 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L2-selected.png ) no-repeat 30px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_2 a.selected,
+    #bodywrapper #navigationN2 .level_2 a.selected:link,
+    #bodywrapper #navigationN2 .level_2 a.selected:visited,
+    #bodywrapper #navigationN2 .level_2 a.selected:hover,
+    #bodywrapper #navigationN2 .level_2 a.selected:active {
+    background: url( ../img/bg-navigationN2-L2-selected.png ) no-repeat 30px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_3 a,
+    #bodywrapper #navigationN2 .level_3 a:link,
+    #bodywrapper #navigationN2 .level_3 a:visited {
+    padding: 0 2px 0 60px;
+    background: url( ../img/bg-navigationN2-L3.png ) no-repeat 50px 50%;
+}
+
+#bodywrapper #navigationN2 .level_3 a.inpath,
+    #bodywrapper #navigationN2 .level_3 a.inpath:link,
+    #bodywrapper #navigationN2 .level_3 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_3 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_3 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L3-on.png ) no-repeat 46px 50%;
+}
+
+#bodywrapper #navigationN2 .level_3 a:hover,
+    #bodywrapper #navigationN2 .level_3 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L3-selected.png ) no-repeat 50px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_3 a.selected,
+    #bodywrapper #navigationN2 .level_3 a.selected:link,
+    #bodywrapper #navigationN2 .level_3 a.selected:visited,
+    #bodywrapper #navigationN2 .level_3 a.selected:hover,
+    #bodywrapper #navigationN2 .level_3 a.selected:active {
+    background: url( ../img/bg-navigationN2-L3-selected.png ) no-repeat 50px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_4 a,
+    #bodywrapper #navigationN2 .level_4 a:link,
+    #bodywrapper #navigationN2 .level_4 a:visited {
+    padding: 0 2px 0 80px;
+    background: url( ../img/bg-navigationN2-L4.png ) no-repeat 70px 50%;
+}
+
+#bodywrapper #navigationN2 .level_4 a.inpath,
+    #bodywrapper #navigationN2 .level_4 a.inpath:link,
+    #bodywrapper #navigationN2 .level_4 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_4 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_4 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L4-on.png ) no-repeat 66px 50%;
+}
+
+#bodywrapper #navigationN2 .level_4 a:hover,
+    #bodywrapper #navigationN2 .level_4 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L4-selected.png ) no-repeat 70px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_4 a.selected,
+    #bodywrapper #navigationN2 .level_4 a.selected:link,
+    #bodywrapper #navigationN2 .level_4 a.selected:visited,
+    #bodywrapper #navigationN2 .level_4 a.selected:hover,
+    #bodywrapper #navigationN2 .level_4 a.selected:active {
+    background: url( ../img/bg-navigationN2-L4-selected.png ) no-repeat 70px 50%;
+    color: #c03;
+
+}
+
+#bodywrapper #navigationN2 .level_5 a,
+    #bodywrapper #navigationN2 .level_5 a:link,
+    #bodywrapper #navigationN2 .level_5 a:visited {
+    padding: 0 2px 0 100px;
+    background: url( ../img/bg-navigationN2-L5.png ) no-repeat 90px 50%;
+}
+
+#bodywrapper #navigationN2 .level_5 a.inpath,
+    #bodywrapper #navigationN2 .level_5 a.inpath:link,
+    #bodywrapper #navigationN2 .level_5 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_5 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_5 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L5-on.png ) no-repeat 86px 50%;
+}
+
+#bodywrapper #navigationN2 .level_5 a:hover,
+    #bodywrapper #navigationN2 .level_5 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L5-selected.png ) no-repeat 90px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_5 a.selected,
+    #bodywrapper #navigationN2 .level_5 a.selected:link,
+    #bodywrapper #navigationN2 .level_5 a.selected:visited,
+    #bodywrapper #navigationN2 .level_5 a.selected:hover,
+    #bodywrapper #navigationN2 .level_5 a.selected:active {
+    background: url( ../img/bg-navigationN2-L5-selected.png ) no-repeat 90px 50%;
+    color: #c03;
+}
+
+/******************************************************************************
+
+* navigationN2
+
+******************************************************************************/
+
+#bodywrapper div #navigationN2 {
+    border-top: 5px solid #ddd3ca;
+    margin-bottom: 10px;
+}
+
+#bodywrapper #navigationN2 ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+}
+
+#bodywrapper #navigationN2 li {
+    margin: 0;
+    padding: 0;
+    background: none;
+    line-height: 2.2em;
+}
+
+#bodywrapper #navigationN2 li li {
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+}
+
+#bodywrapper #navigationN2 a,
+    #bodywrapper #navigationN2 a:link,
+    #bodywrapper #navigationN2 a:visited {
+    display: block;
+    text-decoration: none;
+    height: 1%;
+    background: none;
+    color: #333;
+}
+
+#bodywrapper #navigationN2 a:hover,
+    #bodywrapper #navigationN2 a:active {
+    background: none;
+    color: #900;
+}
+
+#bodywrapper #navigationN2 .level_2 a,
+    #bodywrapper #navigationN2 .level_2 a:link,
+    #bodywrapper #navigationN2 .level_2 a:visited {
+    padding: 0 2px 0 20px;
+    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 10px 50%;
+    border-bottom: 1px solid #ccc;
+    margin: 1px 0;
+}
+
+#bodywrapper #navigationN2 .level_2 a.inpath,
+    #bodywrapper #navigationN2 .level_2 a.inpath:link,
+    #bodywrapper #navigationN2 .level_2 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_2 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_2 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L1-on.png ) no-repeat 6px 50%;
+}
+
+#bodywrapper #navigationN2 .level_2 a:hover,
+    #bodywrapper #navigationN2 .level_2 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L1-selected.png ) no-repeat 10px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_2 a.selected,
+    #bodywrapper #navigationN2 .level_2 a.selected:link,
+    #bodywrapper #navigationN2 .level_2 a.selected:visited,
+    #bodywrapper #navigationN2 .level_2 a.selected:hover,
+    #bodywrapper #navigationN2 .level_2 a.selected:active {
+    background: url( ../img/bg-navigationN2-L1-selected.png ) no-repeat 10px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_3 a,
+    #bodywrapper #navigationN2 .level_3 a:link,
+    #bodywrapper #navigationN2 .level_3 a:visited {
+    padding: 0 2px 0 40px;
+    background: url( ../img/bg-navigationN2-L2.png ) no-repeat 30px 50%;
+}
+
+#bodywrapper #navigationN2 .level_3 a.inpath,
+    #bodywrapper #navigationN2 .level_3 a.inpath:link,
+    #bodywrapper #navigationN2 .level_3 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_3 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_3 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L2-on.png ) no-repeat 26px 50%;
+}
+
+#bodywrapper #navigationN2 .level_3 a:hover,
+    #bodywrapper #navigationN2 .level_3 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L2-selected.png ) no-repeat 30px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_3 a.selected,
+    #bodywrapper #navigationN2 .level_3 a.selected:link,
+    #bodywrapper #navigationN2 .level_3 a.selected:visited,
+    #bodywrapper #navigationN2 .level_3 a.selected:hover,
+    #bodywrapper #navigationN2 .level_3 a.selected:active {
+    background: url( ../img/bg-navigationN2-L2-selected.png ) no-repeat 30px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_4 a,
+    #bodywrapper #navigationN2 .level_4 a:link,
+    #bodywrapper #navigationN2 .level_4 a:visited {
+    padding: 0 2px 0 60px;
+    background: url( ../img/bg-navigationN2-L3.png ) no-repeat 50px 50%;
+}
+
+#bodywrapper #navigationN2 .level_4 a.inpath,
+    #bodywrapper #navigationN2 .level_4 a.inpath:link,
+    #bodywrapper #navigationN2 .level_4 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_4 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_4 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L3-on.png ) no-repeat 46px 50%;
+}
+
+#bodywrapper #navigationN2 .level_4 a:hover,
+    #bodywrapper #navigationN2 .level_4 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L3-selected.png ) no-repeat 50px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_4 a.selected,
+    #bodywrapper #navigationN2 .level_4 a.selected:link,
+    #bodywrapper #navigationN2 .level_4 a.selected:visited,
+    #bodywrapper #navigationN2 .level_4 a.selected:hover,
+    #bodywrapper #navigationN2 .level_4 a.selected:active {
+    background: url( ../img/bg-navigationN2-L3-selected.png ) no-repeat 50px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_5 a,
+    #bodywrapper #navigationN2 .level_5 a:link,
+    #bodywrapper #navigationN2 .level_5 a:visited {
+    padding: 0 2px 0 80px;
+    background: url( ../img/bg-navigationN2-L4.png ) no-repeat 70px 50%;
+}
+
+#bodywrapper #navigationN2 .level_5 a.inpath,
+    #bodywrapper #navigationN2 .level_5 a.inpath:link,
+    #bodywrapper #navigationN2 .level_5 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_5 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_5 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L4-on.png ) no-repeat 66px 50%;
+}
+
+#bodywrapper #navigationN2 .level_5 a:hover,
+    #bodywrapper #navigationN2 .level_5 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L4-selected.png ) no-repeat 70px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_5 a.selected,
+    #bodywrapper #navigationN2 .level_5 a.selected:link,
+    #bodywrapper #navigationN2 .level_5 a.selected:visited,
+    #bodywrapper #navigationN2 .level_5 a.selected:hover,
+    #bodywrapper #navigationN2 .level_5 a.selected:active {
+    background: url( ../img/bg-navigationN2-L4-selected.png ) no-repeat 70px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_6 a,
+    #bodywrapper #navigationN2 .level_6 a:link,
+    #bodywrapper #navigationN2 .level_6 a:visited {
+    padding: 0 2px 0 100px;
+    background: url( ../img/bg-navigationN2-L5.png ) no-repeat 90px 50%;
+}
+
+#bodywrapper #navigationN2 .level_6 a.inpath,
+    #bodywrapper #navigationN2 .level_6 a.inpath:link,
+    #bodywrapper #navigationN2 .level_6 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_6 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_6 a.inpath:active {
+
+    font-weight: bold;
+
+    background: #eaeaea url( ../img/bg-navigationN2-L5-on.png ) no-repeat 86px 50%;
+
+}
+
+#bodywrapper #navigationN2 .level_6 a:hover,
+    #bodywrapper #navigationN2 .level_6 a:active {
+
+    color: #900;
+
+    background: url( ../img/bg-navigationN2-L5-selected.png ) no-repeat 90px 50%;
+
+    background-color: #ddd3ca;
+
+}
+
+#bodywrapper #navigationN2 .level_6 a.selected,
+    #bodywrapper #navigationN2 .level_6 a.selected:link,
+    #bodywrapper #navigationN2 .level_6 a.selected:visited,
+    #bodywrapper #navigationN2 .level_6 a.selected:hover,
+    #bodywrapper #navigationN2 .level_6 a.selected:active {
+
+    background: url( ../img/bg-navigationN2-L5-selected.png ) no-repeat 90px 50%;
+
+    color: #c03;
+
 }
 
 /******************************************************************************
@@ -1851,7 +2202,9 @@ body {
     margin-left: 0.5em;
     padding: 0;
 }
-
+#bodywrapper .eventsSort {
+    float:right; margin-top:5px; margin-right:10px;
+}
 /******************************************************************************
 *  Portraits generic
 ******************************************************************************/
@@ -2328,22 +2681,6 @@ body {
 }
 
 /******************************************************************************
-*  advanced search form
-******************************************************************************/
-#bodywrapper .advancedSearchForm span.label {
-    display: block;
-    width: 180px;
-    float: left;
-    margin-bottom: 5px;
-}
-#bodywrapper .advancedSearchForm br {
-    clear: left;
-}
-#bodywrapper .advancedSearchForm .dateRange {
-    margin-left: 180px;
-}
-
-/******************************************************************************
 *  links List
 ******************************************************************************/
 #bodywrapper ul.links {
@@ -2404,7 +2741,10 @@ body {
     padding: 0;
     list-style: none;
 }
-
+#bodywrapper ul.links {
+    margin: 0;
+    padding: 0;
+}
 #bodywrapper li.document {
     margin: 0;
     padding: 0.5em;
@@ -3333,4 +3673,11 @@ font-weight:bold;
 }
 #bodywrapper .preferences .preference-item .preference-label{
 font-weight:bold;
+}
+/******************************************************************************
+*  Calendar in template Events
+******************************************************************************/
+#bodywrapper .box2 .x-date-picker    {
+   margin-left:40px;
+
 }

@@ -1,0 +1,18 @@
+<%@ include file="../../common/declarations.jspf" %>
+
+<template:container id="pressReleaseContainer" cacheKey="resume" displayActionMenu="true">
+    <li class="pressRealeseItem">
+            <template:field name='date' display="false" valueBeanID="datePress"/>
+            <span class="pressRealeseDate"><fmt:formatDate value="${datePress}" pattern="dd/MM/yyyy"/></span>
+            <template:getContentObjectCategories valueID="pressReleaseContainerCatKeys" objectKey="contentContainer_${pageScope.pressReleaseContainer.ID}"/>
+        <c:if test="${!empty pressReleaseContainerCatKeys }">
+            <span class="pressRealeseCategory">
+                <utility:resourceBundle resourceName='category' defaultValue='category'/> : <ui:displayCategoryTitle categoryKeys="${pressReleaseContainerCatKeys}"/>
+            </span>
+        </c:if>
+            <h4><a href="${currentPage.url}/template/pressDetail?queryPath=${pressReleaseContainer.JCRPath}">
+                <template:field name='title'/></a></h4>
+        <div class="clear"></div>
+    </li>
+</template:container>
+

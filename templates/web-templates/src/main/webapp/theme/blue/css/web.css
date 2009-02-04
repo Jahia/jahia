@@ -23,7 +23,7 @@
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -350,8 +350,8 @@ body {
 /******************************************************************************
 * Generic
 ******************************************************************************/
-#bodywrapper #InsetA,
-    #bodywrapper #InsetB {
+#bodywrapper #columnA,
+    #bodywrapper #columnB {
     font-size: 0.9em;
     line-height: 140%
 }
@@ -662,7 +662,7 @@ body {
 
 #bodywrapper #headerPart2popup {
     clear: both;
-    border-bottom: 5px solid #eaeaea;
+    border-bottom: 5px solid #e5e8f2;
     margin-bottom: 1em;
 }
 
@@ -698,7 +698,7 @@ body {
 }
 
 #bodywrapper #navigationN1 li a {
-    background: transparent url( ../img/navigationN1Blue-separator.png ) no-repeat 100% 50%;
+    background: transparent url( ../img/navigationN1Blue-separator.png ) no-repeat 0 50%;
     color: #fff;
     display: inline;
     float: left;
@@ -785,40 +785,40 @@ body {
 }
 
 /******************************************************************************
-* LAYOUT CONTENT & INSETS
+* LAYOUT CONTENT & COLUMNS
 ******************************************************************************/
-/*3 colums InsetB/content/InsetA */
+/*3 colums columnB/mainColumn/columnA */
 #bodywrapper #content {
     margin: 0 280px;
     overflow: hidden;
 
 }
 
-/*2 colums InsetB/content  */
+/*2 colums columnB/mainColumn  */
 #bodywrapper #content3 {
     margin: 0 280px 0 0;
     overflow: hidden;
 }
 
-/*2 colums content/InsetA */
+/*2 colums mainColumn/columnA */
 #bodywrapper #content2 {
     margin: 0 0 0 280px;
     overflow: hidden;
 }
 
-/* content alone*/
+/* mainColumn alone*/
 #bodywrapper #content4 {
     margin: 0;
     overflow: hidden;
 }
 
-/*2 colums InsetC50%/content50%  */
+/*2 colums columnC 50%/mainColumn 50%  */
 #bodywrapper #content5 {
     margin: 0 460px 0 0;
     overflow: hidden;
 }
 
-#bodywrapper #InsetB {
+#bodywrapper #columnB {
     float: left;
     width: 280px;
     margin-left: -940px;
@@ -827,7 +827,7 @@ body {
 
 }
 
-#bodywrapper #InsetA {
+#bodywrapper #columnA {
     float: left;
     width: 280px;
     margin-left: -280px;
@@ -835,7 +835,7 @@ body {
     display: block;
 }
 
-#bodywrapper #InsetC {
+#bodywrapper #comlumnC {
     float: left;
     width: 460px;
     margin-left: -460px;
@@ -847,27 +847,27 @@ body {
     padding: 10px 0;
 }
 
-#bodywrapper #content .spaceContent {
+#bodywrapper #content .mainColumn {
     padding: 10px 20px;
 }
 
-#bodywrapper #content2 .spaceContent {
+#bodywrapper #content2 .mainColumn {
     padding: 10px 0 10px 20px;
 }
 
-#bodywrapper #content3 .spaceContent {
+#bodywrapper #content3 .mainColumn {
     padding: 10px 0 10px 20px;
 }
 
-#bodywrapper #content4 .spaceContent {
+#bodywrapper #content4 .mainColumn {
     padding: 10px 0;
 }
 
-#bodywrapper #content5 .spaceContent {
+#bodywrapper #content5 .mainColumn {
     padding: 10px 10px 10px 0;
 }
 
-#bodywrapper #InsetC .space {
+#bodywrapper #columnC .space {
     padding: 10px 0 10px 10px;
 }
 
@@ -984,7 +984,7 @@ body {
     line-height: 100%;
     color: #333;
     overflow: hidden;
-    background-color: #eaeaea;
+    background-color: #e5e8f2;
 }
 
 #bodywrapper #footerPart2 {
@@ -1033,7 +1033,7 @@ body {
     line-height: 100%;
     color: #333;
     overflow: hidden;
-    background-color: #eaeaea;
+    background-color: #e5e8f2;
     padding: 10px;
 }
 
@@ -1061,11 +1061,12 @@ body {
     display: block
 }
 
-#bodywrapper #footerPart3 .copyright {
+#bodywrapper #footerPart3 #copyright {
     margin: 0;
     padding: 0;
     display: inline;
     padding-left: 16px;
+    float:right;
 }
 
 /*bottomshortcuts*/
@@ -1134,55 +1135,210 @@ body {
 /******************************************************************************
 * navigationN2
 ******************************************************************************/
-#bodywrapper .box2-containerN2 .box2-text {
-	padding:15px 0 !important;
+#bodywrapper div #navigationN2 {
+    border-top: 5px solid #ddd3ca;
+    margin-bottom: 10px;
 }
+
 #bodywrapper #navigationN2 ul {
-	margin:0;
-	padding:0;
-	list-style-type:none;
-	position:relative ;
-}
-#bodywrapper #navigationN2 li ul {
-	padding:0 0 0 10px;
-}
-#bodywrapper #navigationN2 li{
-	margin:0;
-	padding:0;
-	position:relative ;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #fff;
+
 }
 
-#bodywrapper #navigationN2 a {
-    display: inline ;
-    font-weight:bold;
+#bodywrapper #navigationN2 li {
+    margin: 0;
+    padding: 0;
+    background: none;
+    line-height: 2.2em;
+}
+
+#bodywrapper #navigationN2 li li {
+    margin: 0;
+    padding: 0;
+    border-bottom: none;
+}
+
+#bodywrapper #navigationN2 a,
+    #bodywrapper #navigationN2 a:link,
+    #bodywrapper #navigationN2 a:visited {
+    display: block;
     text-decoration: none;
-    color:#000;
-    padding-left:12px ;
-    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50% ;
+    height: 1%;
+    background: none;
+    color: #333;
 }
 
-#bodywrapper #navigationN2 a.inpath {
-    color:#600;
-    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+#bodywrapper #navigationN2 a:hover,
+    #bodywrapper #navigationN2 a:active {
+    background: none;
+    color: #900;
 }
 
-#bodywrapper #navigationN2 a.selected {
-    color:#c03;
-    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+#bodywrapper #navigationN2 .level_1 a,
+    #bodywrapper #navigationN2 .level_1 a:link,
+    #bodywrapper #navigationN2 .level_1 a:visited {
+    padding: 0 2px 0 20px;
+    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 10px 50%;
+    border-bottom: 1px solid #ccc;
+    margin: 1px 0;
 }
 
-#bodywrapper #navigationN2 a:hover{
-	color:#555 ;
+#bodywrapper #navigationN2 .level_1 a.inpath,
+    #bodywrapper #navigationN2 .level_1 a.inpath:link,
+    #bodywrapper #navigationN2 .level_1 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_1 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_1 a.inpath:active {
+    font-weight: bold;
+    background: #eaeaea url( ../img/bg-navigationN2-L1-on.png ) no-repeat 6px 50%;
 }
 
-#bodywrapper #navigationN2 li .action-menu-icons {
-    position:absolute ;
-    top: 0 ;
-    right : 0 ;
+#bodywrapper #navigationN2 .level_1 a:hover,
+    #bodywrapper #navigationN2 .level_1 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L1-selected.png ) no-repeat 10px 50%;
+    background-color: #ddd3ca;
 }
 
-#bodywrapper #navigationN2 li .ContentContainerList {
-    position:relative ;
+#bodywrapper #navigationN2 .level_1 a.selected,
+    #bodywrapper #navigationN2 .level_1 a.selected:link,
+    #bodywrapper #navigationN2 .level_1 a.selected:visited,
+    #bodywrapper #navigationN2 .level_1 a.selected:hover,
+    #bodywrapper #navigationN2 .level_1 a.selected:active {
+    background: url( ../img/bg-navigationN2-L1-selected.png ) no-repeat 10px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_2 a,
+    #bodywrapper #navigationN2 .level_2 a:link,
+    #bodywrapper #navigationN2 .level_2 a:visited {
+    padding: 0 2px 0 40px;
+    background: url( ../img/bg-navigationN2-L2.png ) no-repeat 30px 50%;
+}
+
+#bodywrapper #navigationN2 .level_2 a.inpath,
+    #bodywrapper #navigationN2 .level_2 a.inpath:link,
+    #bodywrapper #navigationN2 .level_2 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_2 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_2 a.inpath:active {
+    font-weight: bold;
+    background: #e5e8f2 url( ../img/bg-navigationN2-L2-on.png ) no-repeat 26px 50%;
+}
+
+#bodywrapper #navigationN2 .level_2 a:hover,
+    #bodywrapper #navigationN2 .level_2 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L2-selected.png ) no-repeat 30px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_2 a.selected,
+    #bodywrapper #navigationN2 .level_2 a.selected:link,
+    #bodywrapper #navigationN2 .level_2 a.selected:visited,
+    #bodywrapper #navigationN2 .level_2 a.selected:hover,
+    #bodywrapper #navigationN2 .level_2 a.selected:active {
+    background: url( ../img/bg-navigationN2-L2-selected.png ) no-repeat 30px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_3 a,
+    #bodywrapper #navigationN2 .level_3 a:link,
+    #bodywrapper #navigationN2 .level_3 a:visited {
+    padding: 0 2px 0 60px;
+    background: url( ../img/bg-navigationN2-L3.png ) no-repeat 50px 50%;
+
+}
+
+#bodywrapper #navigationN2 .level_3 a.inpath,
+    #bodywrapper #navigationN2 .level_3 a.inpath:link,
+    #bodywrapper #navigationN2 .level_3 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_3 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_3 a.inpath:active {
+    font-weight: bold;
+    background: #e5e8f2 url( ../img/bg-navigationN2-L3-on.png ) no-repeat 46px 50%;
+}
+
+#bodywrapper #navigationN2 .level_3 a:hover,
+    #bodywrapper #navigationN2 .level_3 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L3-selected.png ) no-repeat 50px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_3 a.selected,
+    #bodywrapper #navigationN2 .level_3 a.selected:link,
+    #bodywrapper #navigationN2 .level_3 a.selected:visited,
+    #bodywrapper #navigationN2 .level_3 a.selected:hover,
+    #bodywrapper #navigationN2 .level_3 a.selected:active {
+    background: url( ../img/bg-navigationN2-L3-selected.png ) no-repeat 50px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_4 a,
+    #bodywrapper #navigationN2 .level_4 a:link,
+    #bodywrapper #navigationN2 .level_4 a:visited {
+    padding: 0 2px 0 80px;
+    background: url( ../img/bg-navigationN2-L4.png ) no-repeat 70px 50%;
+
+}
+
+#bodywrapper #navigationN2 .level_4 a.inpath,
+    #bodywrapper #navigationN2 .level_4 a.inpath:link,
+    #bodywrapper #navigationN2 .level_4 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_4 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_4 a.inpath:active {
+    font-weight: bold;
+    background: #e5e8f2 url( ../img/bg-navigationN2-L4-on.png ) no-repeat 66px 50%;
+}
+
+#bodywrapper #navigationN2 .level_4 a:hover,
+    #bodywrapper #navigationN2 .level_4 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L4-selected.png ) no-repeat 70px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_4 a.selected,
+    #bodywrapper #navigationN2 .level_4 a.selected:link,
+    #bodywrapper #navigationN2 .level_4 a.selected:visited,
+    #bodywrapper #navigationN2 .level_4 a.selected:hover,
+    #bodywrapper #navigationN2 .level_4 a.selected:active {
+    background: url( ../img/bg-navigationN2-L4-selected.png ) no-repeat 70px 50%;
+    color: #c03;
+}
+
+#bodywrapper #navigationN2 .level_5 a,
+    #bodywrapper #navigationN2 .level_5 a:link,
+    #bodywrapper #navigationN2 .level_5 a:visited {
+    padding: 0 2px 0 100px;
+    background: url( ../img/bg-navigationN2-L5.png ) no-repeat 90px 50%;
+}
+
+#bodywrapper #navigationN2 .level_5 a.inpath,
+    #bodywrapper #navigationN2 .level_5 a.inpath:link,
+    #bodywrapper #navigationN2 .level_5 a.inpath:visited,
+    #bodywrapper #navigationN2 .level_5 a.inpath:hover,
+    #bodywrapper #navigationN2 .level_5 a.inpath:active {
+    font-weight: bold;
+    background: #ebedf4 url( ../img/bg-navigationN2-L5-on.png ) no-repeat 86px 50%;
+}
+
+#bodywrapper #navigationN2 .level_5 a:hover,
+    #bodywrapper #navigationN2 .level_5 a:active {
+    color: #900;
+    background: url( ../img/bg-navigationN2-L5-selected.png ) no-repeat 90px 50%;
+    background-color: #ddd3ca;
+}
+
+#bodywrapper #navigationN2 .level_5 a.selected,
+    #bodywrapper #navigationN2 .level_5 a.selected:link,
+    #bodywrapper #navigationN2 .level_5 a.selected:visited,
+    #bodywrapper #navigationN2 .level_5 a.selected:hover,
+    #bodywrapper #navigationN2 .level_5 a.selected:active {
+    background: url( ../img/bg-navigationN2-L5-selected.png ) no-repeat 90px 50%;
+    color: #c03;
 }
 
 /******************************************************************************
@@ -1397,7 +1553,7 @@ body {
 
 #bodywrapper .box3-text h3 {
     color: #900;
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 /******************************************************************************
@@ -1405,6 +1561,7 @@ body {
 ******************************************************************************/
 #bodywrapper .box3-style1 .box3-container {
     border: 1px solid #ccc;
+    background-color:#ebedf4;
 }
 
 #bodywrapper .box3-style1 {
@@ -1517,8 +1674,8 @@ body {
     padding: 0.2em;
     line-height: 1em;
     font-weight: bold;
-    border-bottom: 1px solid #eaeaea;
-    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #ebedf4;
+    border-top: 1px solid #ebedf4;
 }
 
 #bodywrapper .newsImg {
@@ -1528,7 +1685,7 @@ body {
 }
 
 #bodywrapper .newsImg img {
-    border: 1px solid #eaeaea;
+    border: 1px solid #ebedf4;
     margin-right: 0.5em;
     padding: 0;
 }
@@ -1540,7 +1697,7 @@ body {
 }
 
 #bodywrapper .newsimg-right img {
-    border: 1px solid #eaeaea;
+    border: 1px solid #ebedf4;
     margin-left: 0.5em;
     padding: 0;
 }
@@ -1617,7 +1774,7 @@ body {
 }
 
 #bodywrapper .newsListItem {
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #ebedf4;
     margin-bottom: 1em;
     clear: both;
     width: 100%;
@@ -1688,7 +1845,7 @@ body {
 
 #bodywrapper .quote-top {
     width: 25%;
-    background: #eaeaea url( ../img/quote-top.png ) no-repeat top left;
+    background: #ebedf4 url( ../img/quote-top.png ) no-repeat top left;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 1.1em;
     font-weight: bold;
@@ -1701,7 +1858,7 @@ body {
 
 #bodywrapper .exergue-top {
     width: 25%;
-    background-color: #eaeaea;
+    background-color: #ebedf4;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 1.1em;
     border-top: 4px solid #333;
@@ -1833,7 +1990,7 @@ body {
 }
 
 #bodywrapper .eventsImg img {
-    border: 1px solid #eaeaea;
+    border: 1px solid #ebedf4;
     margin-right: 0.5em;
     padding: 0;
 }
@@ -1845,17 +2002,19 @@ body {
 }
 
 #bodywrapper .eventsimg-right img {
-    border: 1px solid #eaeaea;
+    border: 1px solid #ebedf4;
     margin-left: 0.5em;
     padding: 0;
 }
-
+ #bodywrapper .eventsSort {
+    float:right; margin-top:5px; margin-right:10px;
+}
 /******************************************************************************
 *  Portraits generic
 ******************************************************************************/
 #bodywrapper div.peopleListItem {
 
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #ebedf4;
     padding: 5px;
 
 }
@@ -1928,14 +2087,14 @@ body {
     margin: 0;
     padding: 0;
     font-weight: bold;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #ebedf4;
     background: url( ../img/newslist3.png ) no-repeat 0.5em 0.2em;
     padding: 0.2em;
     padding-left: 30px;
 }
 
 #bodywrapper .newsList3 li:hover {
-    background-color: #eaeaea
+    background-color: #ebedf4
 }
 
 #bodywrapper .newsList3 li.lastnews {
@@ -1967,7 +2126,7 @@ body {
 }
 
 #bodywrapper .eventsListItem {
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #ebedf4;
     margin-bottom: 1em;
     clear: both;
     width: 100%;
@@ -2066,7 +2225,7 @@ body {
 
 #bodywrapper .pressRealeseForm input[type="text"]:focus,
     #bodywrapper .pressRealeseForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #ebedf4 url( ../img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .pressRealeseForm .divButton {
@@ -2103,7 +2262,7 @@ body {
     margin: 0;
     padding: 0.2em 0 0.2em 40px;
     background: url( ../img/pressrealeserist-bg.png ) no-repeat 10px 50%;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #ebedf4;
     height: 1%;
 
 }
@@ -2127,7 +2286,7 @@ body {
 }
 
 #bodywrapper .pressRealeseList li:hover {
-    background: #eaeaea url( ../img/pressrealeserist-bg-on.png ) no-repeat 10px 50%;
+    background: #ebedf4 url( ../img/pressrealeserist-bg-on.png ) no-repeat 10px 50%;
 }
 
 #bodywrapper .pressRealeseList h4 {
@@ -2169,7 +2328,7 @@ body {
     overflow: hidden;
     text-transform: uppercase;
     border-top: 1px solid #ccc;
-    background-color: #eaeaea;
+    background-color: #ebedf4;
     padding: 0.5em 0.5em;
     margin: 0.5em 0;
 }
@@ -2220,7 +2379,7 @@ body {
     overflow: hidden;
     text-transform: uppercase;
     border-top: 1px solid #ccc;
-    background-color: #eaeaea;
+    background-color: #ebedf4;
     padding: 0.5em 0.5em;
     margin: 0.5em 0;
 }
@@ -2326,22 +2485,6 @@ body {
 }
 
 /******************************************************************************
-*  advanced search form
-******************************************************************************/
-#bodywrapper .advancedSearchForm span.label {
-    display: block;
-    width: 180px;
-    float: left;
-    margin-bottom: 5px;
-}
-#bodywrapper .advancedSearchForm br {
-    clear: left;
-}
-#bodywrapper .advancedSearchForm .dateRange {
-    margin-left: 180px;
-}
-
-/******************************************************************************
 *  links List
 ******************************************************************************/
 #bodywrapper ul.links {
@@ -2354,11 +2497,11 @@ body {
     margin: 0;
     padding: 0;
     font-weight: bold;
-    border-bottom: 1px solid #eaeaea
+    border-bottom: 1px solid #ebedf4
 }
 
 #bodywrapper .links li:hover {
-    background-color: #eaeaea
+    background-color: #ebedf4
 }
 
 #bodywrapper li.link {
@@ -2404,6 +2547,10 @@ body {
     font-weight: bold
 
 }
+#bodywrapper ul.links {
+    margin: 0;
+    padding: 0;
+}
 
 #bodywrapper li.document {
     margin: 0;
@@ -2411,11 +2558,11 @@ body {
     padding-left: 30px;
     list-style: none;
     display: block;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #ebedf4;
 }
 
 #bodywrapper li.document:hover {
-    background-color: #eaeaea
+    background-color: #ebedf4
 }
 
 #bodywrapper li.lastdocument {
@@ -2460,7 +2607,7 @@ body {
     padding: 0.5em 0;
     background-image: none;
     width: 100%;
-    border-bottom: 1px solid #eaeaea
+    border-bottom: 1px solid #ebedf4
 }
 
 #bodywrapper .summary h4 a,
@@ -2558,7 +2705,7 @@ body {
 
 #bodywrapper .contactForm input[type="text"]:focus,
     #bodywrapper .contactForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #ebedf4 url( ../img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .divButton {
@@ -2649,7 +2796,7 @@ body {
 
 #bodywrapper .publicationSearchForm input[type="text"]:focus,
     #bodywrapper .publicationSearchForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #ebedf4 url( ../img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .publicationSearchForm .divButton {
@@ -2712,7 +2859,7 @@ body {
 #bodywrapper div.publicationListSpace {
     margin: 5px;
     padding: 5px;
-    border: 1px solid #eaeaea;
+    border: 1px solid #ebedf4;
 }
 
 #bodywrapper div.publicationPhoto {
@@ -2816,7 +2963,7 @@ body {
 
 #bodywrapper .jobsSearchForm input[type="text"]:focus,
     #bodywrapper .jobsSearchForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #ebedf4 url( ../img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsSearchForm .divButton {
@@ -2927,7 +3074,7 @@ body {
 
 #bodywrapper .jobsApplyForm input[type="text"]:focus,
     #bodywrapper .jobsApplyForm textarea:focus {
-    background: #eaeaea url( ../img/bg-input-on.png ) repeat-x top left;
+    background: #ebedf4 url( ../img/bg-input-on.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsApplyForm .divButton {
@@ -2986,7 +3133,7 @@ body {
 
 #bodywrapper .tab .odd td {
     color: #333;
-    background-color: #eaeaea
+    background-color: #ebedf4
 }
 
 #bodywrapper .tab .even td {
@@ -3065,7 +3212,7 @@ body {
     #bodywrapper #sitemap .level_1 a:link,
     #bodywrapper #sitemap .level_1 a:visited {
     padding: 0 2px 0 10px;
-    background: #eaeaea url( ../img/bg-sitemap-L1.png ) no-repeat 2px 50%;
+    background: #ebedf4 url( ../img/bg-sitemap-L1.png ) no-repeat 2px 50%;
     margin: 1px 0;
     font-weight: bold;
     display: block;
@@ -3156,7 +3303,7 @@ body {
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
     color: #333;
-    background-color: #eaeaea;
+    background-color: #ebedf4;
     padding: 0 0.5em;
 }
 
@@ -3165,7 +3312,7 @@ body {
 *  loginForm
 ******************************************************************************/
 #bodywrapper .loginForm fieldset {
-    border: 1px solid #eaeaea;
+    border: 1px solid #ebedf4;
     padding: 0.5em;
     margin: 0.5em 0;
 }
@@ -3293,7 +3440,7 @@ body {
 ******************************************************************************/
 #bodywrapper div.preferences{
 border: 1px solid #ccc;
-background-color:#eaeaea;
+background-color:#ebedf4;
 padding:5px;
 font-size:90%;
 line-height:100%;
@@ -3312,3 +3459,9 @@ font-weight:bold;
 #bodywrapper .preferences .preference-item .preference-label{
 font-weight:bold;
 }
+/******************************************************************************
+*  Calendar in template Events
+******************************************************************************/
+#bodywrapper .box2 .x-date-picker    {
+   margin-left:40px;
+

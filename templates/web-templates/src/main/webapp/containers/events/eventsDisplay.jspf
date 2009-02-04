@@ -1,0 +1,48 @@
+<%@ include file="../../common/declarations.jspf" %>
+
+<template:container id="eventContainer"  actionMenuNamePostFix="event">
+
+        <template:field name="startDate" display="false" beanID="startDate"/>
+        <template:field name="endDate" display="false" beanID="endDate"/>
+        <fmt:parseDate var="startDateP" value="${startDate.value}" pattern="dd.MM.yyyy HH:mm" type="both"/>
+        <fmt:parseDate var="endDateP" value="${endDate.value}" pattern="dd.MM.yyyy HH:mm" type="both"/>
+        <div class="eventsListItem"><!--start eventsListItem -->
+            <div class="eventsInfoDate">
+                <div class="eventsDate">
+                    <span class="day"><fmt:formatDate pattern="dd" value="${startDateP}"/></span>
+                    <span class="month"><fmt:formatDate pattern="MM" value="${startDateP}"/></span>
+                    <span class="year"><fmt:formatDate pattern="yyyy" value="${startDateP}"/></span>
+                </div>
+                <c:if test="${(!empty endDate.value) && (endDate.value ne '')}">
+                    <div class="eventsTxtDate">
+                        <span><utility:resourceBundle
+                            resourceName='to' defaultValue='to'/></span>
+                    </div>
+                    <div class="eventsDate">
+                        <span class="day"><fmt:formatDate pattern="dd" value="${endDateP}"/></span>
+                        <span class="month"><fmt:formatDate pattern="MM" value="${endDateP}"/></span>
+                        <span class="year"><fmt:formatDate pattern="yyyy" value="${endDateP}"/></span>
+                    </div>
+                </c:if>
+            </div>
+            <div class="eventsBody"><!--start eventsBody -->
+                <p class="eventsLocation"><span><template:field name="location"/></span></p>
+                <h4><template:field name="title"/></h4>
+
+                <p class="eventsResume">
+                    <template:field name="body"/></p>
+                <template:getContentObjectCategories valueID="eventsContainerCatKeys"
+                                                     objectKey="contentContainer_${pageScope.eventContainer.ID}"/>
+                <c:if test="${!empty eventsContainerCatKeys }">
+                    <div class="eventsMeta">
+        	    <span class="categoryLabel"><utility:resourceBundle
+                    resourceName='category' defaultValue='category'/>  :</span>
+                        <ui:displayCategoryTitle categoryKeys="${eventsContainerCatKeys}"/>
+                    </div>
+                </c:if>
+            </div>
+            <!--start eventsBody -->
+            <div class="clear"></div>
+        </div>
+
+</template:container>

@@ -33,22 +33,21 @@
 
 package org.jahia.taglibs.jcr.file;
 
-import java.util.Iterator;
-import java.util.Arrays;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.taglibs.AbstractJahiaTag;
+
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.servlet.jsp.JspException;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Tag iterates over all available node types.
  * 
  * @author Sergiy Shyrkov
  */
-public class NodeTypesTag extends BodyTagSupport {
+public class NodeTypesTag extends AbstractJahiaTag {
 
     private String id = "type";
 

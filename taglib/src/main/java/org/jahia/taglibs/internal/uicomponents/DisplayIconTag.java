@@ -33,16 +33,15 @@
 
 package org.jahia.taglibs.internal.uicomponents;
 
-import java.io.IOException;
+import org.jahia.data.JahiaData;
+import org.jahia.params.ProcessingContext;
+import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import java.io.IOException;
 
 /**
  * <p>The Jahia Shared Modification is: Jahia Tag Libs</p>
@@ -74,7 +73,7 @@ import org.jahia.resourcebundle.JahiaResourceBundle;
  *     altBundle=\"mybundle\" altKey=\"com.acme.hugh.label\" /&gt;
  * </attriInfo>"
  */
-public class DisplayIconTag extends BodyTagSupport {
+public class DisplayIconTag extends AbstractJahiaTag {
     public DisplayIconTag () {
         try {
             jbInit();

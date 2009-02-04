@@ -33,8 +33,9 @@
 
 package org.jahia.taglibs.query;
 
+import org.jahia.taglibs.AbstractJahiaTag;
+
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class PropertyValueTag extends BodyTagSupport {
+public class PropertyValueTag extends AbstractJahiaTag {
 
     private SetPropertyTag queryParameterTag = null;
 

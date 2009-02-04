@@ -33,15 +33,14 @@
 
 package org.jahia.taglibs.jcr.file;
 
-import java.util.Iterator;
-import java.util.List;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.struts.taglib.TagUtils;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.taglibs.AbstractJahiaTag;
+
+import javax.servlet.jsp.JspException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +49,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
  * Time: 18:19:44
  * To change this template use File | Settings | File Templates.
  */
-public class PropertiesTag extends BodyTagSupport {
+public class PropertiesTag extends AbstractJahiaTag {
     private String name = "type";
     private String property;
     private String scope;

@@ -71,14 +71,14 @@
 
 package org.jahia.taglibs.internal.uicomponents;
 
-import java.io.IOException;
+import org.jahia.data.JahiaData;
+import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.taglibs.AbstractJahiaTag;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.jahia.data.JahiaData;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import java.io.IOException;
 
 /**
  * <p>The Jahia Shared Modification is: Jahia Tag Libs</p>
@@ -137,7 +137,7 @@ import org.jahia.resourcebundle.JahiaResourceBundle;
    &nbsp;&nbsp;                             alt=\"&lt;%=languageName%>\"/&gt;
  * </attriInfo>"
  */
-public class DisplayLanguageFlagTag extends BodyTagSupport {
+public class DisplayLanguageFlagTag extends AbstractJahiaTag {
 
     /**
      * @param code The language code coresponding to the iso 639 language code

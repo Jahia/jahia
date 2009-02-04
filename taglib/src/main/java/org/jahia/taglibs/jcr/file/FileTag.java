@@ -35,9 +35,9 @@ package org.jahia.taglibs.jcr.file;
 
 import org.apache.struts.taglib.TagUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,7 +46,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Time: 17:56:01
  * To change this template use File | Settings | File Templates.
  */
-public class FileTag extends BodyTagSupport {
+public class FileTag extends AbstractJahiaTag {
     private String name;
     private String property;
     private String scope;

@@ -33,11 +33,11 @@
 
 package org.jahia.taglibs.query;
 
+import org.jahia.services.containers.ContainerQueryBean;
+import org.jahia.taglibs.AbstractJahiaTag;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.jahia.services.containers.ContainerQueryBean;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +47,7 @@ import org.jahia.services.containers.ContainerQueryBean;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class CreateContainerQueryBeanTag extends BodyTagSupport {
+public class CreateContainerQueryBeanTag extends AbstractJahiaTag {
 
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(CreateContainerQueryBeanTag.class);

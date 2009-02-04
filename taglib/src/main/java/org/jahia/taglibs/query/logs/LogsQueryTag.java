@@ -33,13 +33,6 @@
 
 package org.jahia.taglibs.query.logs;
 
-import java.io.IOException;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -48,6 +41,12 @@ import org.jahia.services.audit.LogsQuery;
 import org.jahia.services.audit.LogsQueryByCriteria;
 import org.jahia.services.audit.display.LogEntryItem;
 import org.jahia.services.audit.display.LogsResultList;
+import org.jahia.taglibs.AbstractJahiaTag;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,7 +56,7 @@ import org.jahia.services.audit.display.LogsResultList;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class LogsQueryTag extends BodyTagSupport {
+public class LogsQueryTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(LogsQueryTag.class);

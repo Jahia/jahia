@@ -33,17 +33,17 @@
 
 package org.jahia.taglibs.jcr.file;
 
+import org.apache.struts.taglib.TagUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.apache.struts.taglib.TagUtils;
+import org.jahia.taglibs.AbstractJahiaTag;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.servlet.jsp.JspException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,7 +52,7 @@ import java.util.ArrayList;
  * Time: 5:52:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FileNodeTypesTag extends BodyTagSupport {
+public class FileNodeTypesTag extends AbstractJahiaTag {
 
     private String id = "type";
 

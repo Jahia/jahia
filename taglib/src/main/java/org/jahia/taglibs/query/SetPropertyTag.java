@@ -33,12 +33,11 @@
 
 package org.jahia.taglibs.query;
 
-import java.util.Properties;
+import org.jahia.query.qom.QueryModelTools;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.jahia.query.qom.QueryModelTools;
+import java.util.Properties;
 
 /**
  * This tag is used to set properties to the parent QueryDefinitionTag
@@ -49,7 +48,7 @@ import org.jahia.query.qom.QueryModelTools;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class SetPropertyTag extends BodyTagSupport {
+public class SetPropertyTag extends AbstractJahiaTag {
 
     private QueryDefinitionTag queryModelDefTag = null;
 

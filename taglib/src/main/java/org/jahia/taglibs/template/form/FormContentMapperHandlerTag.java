@@ -57,15 +57,15 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.tools.files.FileUpload;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.jcr.RepositoryException;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -140,7 +140,7 @@ import java.util.Set;
  * </attriInfo>"
  */
 
-public class FormContentMapperHandlerTag extends BodyTagSupport {
+public class FormContentMapperHandlerTag extends AbstractJahiaTag {
 
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(FormContentMapperHandlerTag.class);

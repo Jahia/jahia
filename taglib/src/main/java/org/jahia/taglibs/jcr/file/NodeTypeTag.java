@@ -33,12 +33,12 @@
 
 package org.jahia.taglibs.jcr.file;
 
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.taglibs.AbstractJahiaTag;
+
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +47,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  * Time: 10:58:43
  * To change this template use File | Settings | File Templates.
  */
-public class NodeTypeTag extends BodyTagSupport {
+public class NodeTypeTag extends AbstractJahiaTag {
     private String ntname = "file";
 
     private String id = "type";

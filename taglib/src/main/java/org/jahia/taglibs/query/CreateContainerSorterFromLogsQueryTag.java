@@ -38,10 +38,10 @@ import org.jahia.data.containers.ContainerSorterByLogsQuery;
 import org.jahia.services.audit.LogsQuery;
 import org.jahia.services.containers.ContainerQueryBean;
 import org.jahia.services.containers.ContainerQueryContext;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class CreateContainerSorterFromLogsQueryTag extends BodyTagSupport {
+public class CreateContainerSorterFromLogsQueryTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(CreateContainerSorterFromLogsQueryTag.class);

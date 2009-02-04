@@ -38,12 +38,12 @@ import org.jahia.data.JahiaData;
 import org.jahia.data.beans.AbstractJahiaObjectBean;
 import org.jahia.data.beans.ContentBean;
 import org.jahia.services.audit.display.LogEntryItem;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 
 /**
@@ -54,7 +54,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class LogEntryBeanTag extends BodyTagSupport {
+public class LogEntryBeanTag extends AbstractJahiaTag {
 
     private String beanId;
 

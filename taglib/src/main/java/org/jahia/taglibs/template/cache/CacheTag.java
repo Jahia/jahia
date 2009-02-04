@@ -33,18 +33,6 @@
 
 package org.jahia.taglibs.template.cache;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.apache.struts.taglib.TagUtils;
@@ -59,12 +47,23 @@ import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
 import org.jahia.settings.SettingsBean;
+import org.jahia.taglibs.AbstractJahiaTag;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA. User: rincevent Date: 12 juin 2008 Time: 09:01:00 To change this template use File |
  * Settings | File Templates.
  */
-public class CacheTag extends BodyTagSupport {
+public class CacheTag extends AbstractJahiaTag {
     private static transient Category logger = Logger.getLogger(CacheTag.class);
     private String cacheKey;
     private String cacheKeyName;

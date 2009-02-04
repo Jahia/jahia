@@ -71,15 +71,14 @@
 
 package org.jahia.taglibs.internal.uicomponents;
 
-import java.io.IOException;
-import java.util.Locale;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.TextHtml;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.TextHtml;
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * <p>Title: Jahia Tag Lib</p>
@@ -123,7 +122,7 @@ import org.jahia.utils.TextHtml;
  * &lt;content:displayLanguageCode  code=\"&lt;%=jParams.getLocale().getLanguage()%&gt;\" href=\"&lt;%=jData.gui().drawPageLanguageSwitch(languageCode)%&gt;\"/&gt;
  * </attriInfo>"
  */
-public class DisplayLanguageCodeTag extends BodyTagSupport {
+public class DisplayLanguageCodeTag extends AbstractJahiaTag {
 
     /**
      * @param code The language code coresponding to the iso 639 language code

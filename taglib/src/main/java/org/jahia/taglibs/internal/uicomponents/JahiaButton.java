@@ -36,13 +36,13 @@
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.resourcebundle.JahiaResourceBundle;
-import org.jahia.utils.JahiaConsole;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.i18n.EngineResourceBundleTag;
+import org.jahia.utils.JahiaConsole;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.util.MissingResourceException;
 
@@ -73,7 +73,7 @@ import java.util.MissingResourceException;
  *
  * </attriInfo>"
  */
-public class JahiaButton extends BodyTagSupport {
+public class JahiaButton extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(JahiaButton.class);

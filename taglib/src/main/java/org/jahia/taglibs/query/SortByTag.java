@@ -35,12 +35,12 @@ package org.jahia.taglibs.query;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 import org.jahia.query.qom.PropertyValueImpl;
 import org.jahia.query.qom.QueryObjectModelFactoryImpl;
+import org.jahia.taglibs.AbstractJahiaTag;
+
+import javax.servlet.jsp.JspException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +49,7 @@ import org.jahia.query.qom.QueryObjectModelFactoryImpl;
  * Time: 15:33:24
  * To change this template use File | Settings | File Templates.
  */
-public class SortByTag extends BodyTagSupport {
+public class SortByTag extends AbstractJahiaTag {
 
     private static final long serialVersionUID = 7747723525104918964L;
 

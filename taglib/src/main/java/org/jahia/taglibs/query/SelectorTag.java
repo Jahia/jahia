@@ -34,8 +34,9 @@
 package org.jahia.taglibs.query;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Selector;
+import org.jahia.taglibs.AbstractJahiaTag;
+
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * Tag used to create a Query Object Model Selector.
@@ -48,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class SelectorTag extends BodyTagSupport {
+public class SelectorTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(SelectorTag.class);

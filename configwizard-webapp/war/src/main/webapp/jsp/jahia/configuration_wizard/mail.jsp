@@ -46,6 +46,7 @@ limitations under the License.
         </span>
       </th>
     </tr>
+    <fmt:bundle basename="JahiaAdministrationResources">
     <tr>
       <td headers="t1" class="t5">
         <fmt:message key="org.jahia.admin.server.ManageServer.mailServer.label"/>
@@ -74,12 +75,13 @@ limitations under the License.
       <td headers="t1" class="t5">
         <fmt:message key="org.jahia.admin.server.ManageServer.eventNotificationLevel.label"/>
       </td>
+    </fmt:bundle>
       <td headers="t2" class="t6">
         <select class="choix" name="notificationLevel">
         <option value="Disabled"<% if ((values.get("mail_parano")).equals("Disabled")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.disabled.label"/></option><option value="Standard"<% if ((values.get("mail_parano")).equals("Standard")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.standard.label"/></option><option value="Wary"<% if ((values.get("mail_parano")).equals("Wary")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.wary.label"/></option><option value="Paranoid"<% if ((values.get("mail_parano")).equals("Paranoid")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.paranoid.label"/></option>
-    </select>
-  </td>
-  </tr>
+        </select>
+      </td>
+    </tr>
 </table>
 </div>
 <%@ include file="buttons.inc" %>

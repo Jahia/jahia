@@ -117,11 +117,13 @@ usrProviders = new ArrayList();
                       </td>
                       <td>
                         <table border="0" cellpadding="0" cellspacing="0">
+                        <%-- 
                           <tr>
                             <td>
                               <input name="deleteTemplates" type="checkbox" value="1" checked>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.deleteSiteTemplates.label"/>
                             </td>
                           </tr>
+                          --%>
                           <tr>
                             <td>
                               <input name="deleteFileRepository" type="checkbox" value="1" checked>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.deleteSiteFileRepository.label"/>

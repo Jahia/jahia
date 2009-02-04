@@ -68,6 +68,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.hibernate.model.JahiaAclName;
+import org.jahia.operations.valves.ThemeValve;
 import org.jahia.params.BasicURLGeneratorImpl;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.URLGenerator;
@@ -678,7 +679,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         for (Iterator iterator = settings.keySet().iterator(); iterator.hasNext();) {
             String s1 = (String) iterator.next();
-            if (s1.startsWith("prod_") || s1.startsWith("html_") || s1.startsWith("wai_") || s1.startsWith("url_") || s1.equals("org.jahia.theme.name")) {
+            if (JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY.equals(s1)
+                    || ThemeValve.THEME_ATTRIBUTE_NAME.equals(s1)
+                    || s1.startsWith("prod_") || s1.startsWith("html_")
+                    || s1.startsWith("wai_") || s1.startsWith("url_")) {
                 p.setProperty(s1, settings.getProperty(s1));
             }
         }
@@ -868,10 +872,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     String value = p.getProperty(property);
                     StringTokenizer st = new StringTokenizer(property, ".");
                     String firstKey = st.nextToken();
-                    if (property.equals("org.jahia.theme.name")) {
+                    if (property.equals(ThemeValve.THEME_ATTRIBUTE_NAME)) {
+                        siteSettings = true;
+                        site.getSettings().put(property, value);
+                    } else if (JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY.equals(property)) {
                         siteSettings = true;
                         site.getSettings().put(property, value);
                     }
+
                     if (firstKey.equals("language")) {
                         String lang = st.nextToken();
                         String t = st.nextToken();

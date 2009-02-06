@@ -114,16 +114,16 @@
                 <version>1.0-SNAPSHOT</version>
                 <configuration>
                     <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
-                    <cluster_activated>false</cluster_activated>
+                    <cluster_activated>true</cluster_activated>
                     <siteImportLocation>
                             <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
                             <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                     </siteImportLocation>                    
-		    <processingServer>true</processingServer>
+		    <processingServer>false</processingServer>
                     <databaseUrl>jdbc:mysql://10.8.37.246/jahia_qa244?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>
-                    <overwritedb>true</overwritedb>
+                    <overwritedb>false</overwritedb>
                     <cluster_node_serverId>qa-j4</cluster_node_serverId>
                     <localIp>10.8.37.244</localIp>
                     <clusterNodes>

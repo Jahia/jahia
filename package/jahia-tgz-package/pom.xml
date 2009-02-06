@@ -11,9 +11,9 @@
     <name>New configuration wizard Packaging module</name>
     <packaging>pom</packaging>
     <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/</url>
+        <connection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</connection>
+        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/trunk/</developerConnection>
+        <url>http://10.8.37.111/svn/jahia/trunk/</url>
     </scm>
 
     <dependencies>

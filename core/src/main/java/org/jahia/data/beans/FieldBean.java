@@ -36,6 +36,7 @@ package org.jahia.data.beans;
 import org.jahia.content.ContentObject;
 import org.jahia.content.JahiaObject;
 import org.jahia.data.containers.JahiaContainer;
+import org.jahia.data.fields.JahiaDateField;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
@@ -79,7 +80,6 @@ public class FieldBean extends ContentBean {
 
     private JahiaField jahiaField;
     private ContentField contentField;
-    private ProcessingContext processingContext;
     private Properties properties;
     private Map actionURIs;
     private boolean completelyLocked = false;
@@ -485,6 +485,16 @@ public class FieldBean extends ContentBean {
     public String getJCRPath() throws JahiaException {
         throw new JahiaException("Not implemented yet","Not implemented yet",JahiaException.APPLICATION_ERROR,
             JahiaException.ERROR_SEVERITY);
+    }
+
+    public Date getDateValue() {
+        if (!(jahiaField instanceof JahiaDateField)) {
+            throw new UnsupportedOperationException(
+                    "The field is not an instance of JahiaDateField");
+        }
+        Object value = jahiaField.getObject();
+        return value != null ? new Date(Long.parseLong(value.toString()))
+                : null;
     }
 
 }

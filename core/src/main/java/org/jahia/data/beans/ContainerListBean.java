@@ -85,7 +85,6 @@ public class ContainerListBean extends ContentBean {
 
     private JahiaContainerList jahiaContainerList;
     private ContentContainerList contentContainerList;
-    private ProcessingContext processingContext;
     private List containers;
     private ContainerBean parentContainerBean;
     private Map actionURIs;
@@ -496,7 +495,6 @@ public class ContainerListBean extends ContentBean {
                     final ContentObject clipSource = ContentObject.getContentObjectInstance(ContentObjectKey.getInstance(skey));
                     if (clipSource != null && ((ContentContainer) clipSource).getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()) != null && !clipSource.isMarkedForDelete())
                     {
-                        final JahiaContainerDefinition sDef = ((ContentContainer) clipSource).getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()).getDefinition();
                         final JahiaContainerDefinition dDef = jahiaContainerList.getDefinition();
                         if (importExportService.isCompatible(dDef, (ContentContainer) clipSource, processingContext)) {
                             ContentObject current = jahiaContainerList.getContentContainerList();

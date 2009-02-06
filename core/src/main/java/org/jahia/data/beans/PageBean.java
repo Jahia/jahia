@@ -96,10 +96,8 @@ public class PageBean extends ContentBean {
     private final JahiaContainersService jahiaContainersService = servicesRegistry.getJahiaContainersService();
     private final ImportExportService importExportService = servicesRegistry.getImportExportService();
     private final LockService lockRegistry = servicesRegistry.getLockService();
-    private final JahiaFieldService jahiaFieldService = servicesRegistry.getJahiaFieldService();
 
     private JahiaPage jahiaPage;
-    private ProcessingContext processingContext;
 
     static {
         registerType(ContentPage.class.getName(), PageBean.class.getName());

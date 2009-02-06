@@ -43,7 +43,6 @@ import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerStructure;
-import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
@@ -87,7 +86,6 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
 
     private JahiaContainer jahiaContainer;
     private ContentContainer contentContainer;
-    private ProcessingContext processingContext;
     private Map fields;
     private Map actionURIs;
     private boolean completelyLocked;
@@ -812,39 +810,6 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
 
     public ContentObject getContentObject() {
         return getContentContainer();
-    }
-
-    private boolean isFieldWithCurrentPagePresent() {
-        final Map fieldMap = getFields();
-        final Iterator fieldIter = fieldMap.entrySet().iterator();
-        while (fieldIter.hasNext()) {
-            final Map.Entry curEntry = (Map.Entry) fieldIter.next();
-            final FieldBean curFieldBean = (FieldBean) curEntry.getValue();
-            if (curFieldBean.getFieldType() == FieldTypes.PAGE) {
-                if (curFieldBean.getValue() != null) {
-                    int pageID = -1;
-                    try {
-                        pageID = Integer.parseInt(curFieldBean.getRawValue());
-                    } catch (NumberFormatException nfe) {
-                        logger.debug("NumberFormatException", nfe);
-                    }
-                    if (pageID > 0) {
-                        try {
-                            ContentObject cp = ContentPage.getPage(processingContext.getPageID());
-                            while (cp != null) {
-                                if (cp instanceof ContentPage && cp.getID() == pageID) {
-                                    return true;
-                                }
-                                cp = cp.getParent(null, EntryLoadRequest.STAGED, null);
-                            }
-                        } catch (JahiaException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     public String getJCRPath() throws JahiaException {

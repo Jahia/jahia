@@ -65,6 +65,8 @@ public interface ToolbarServiceAsync {
 
     public void quickValidate(String objectKey, String lang, String action, String comment, AsyncCallback async);
 
+    public void quickAddToBatch(String objectKey, String lang, String action, AsyncCallback async);
+
     public void publishAll(String comment, AsyncCallback async) ;
 
     public void getGAdata(GWTAnalyticsParameter p,AsyncCallback<Map<String, String>> async);

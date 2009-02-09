@@ -43,6 +43,8 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 
 import java.util.List;
+import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,13 +64,11 @@ public interface WorkflowServiceAsync {
 
     public void getAvailableActions(AsyncCallback<List<GWTJahiaLabel>> async);
 
-    public void addToBatch(String action, String key, String lang, AsyncCallback async);
+    public void storeBatch(Map<String, Map<String, Set<String>>> batch, AsyncCallback async);
 
-    public void storeBatch(GWTJahiaWorkflowBatch batch, AsyncCallback async);
+    public void restoreBatch(AsyncCallback<Map<String, Map<String, Set<String>>>> async);
 
-    public void restoreBatch(AsyncCallback<GWTJahiaWorkflowBatch> async);
-
-    public void executeStoredBatch(AsyncCallback async);
+    public void executeStoredBatch(String name, String comment, AsyncCallback async);
 
     public void execute(GWTJahiaWorkflowBatch batch, AsyncCallback async);
 

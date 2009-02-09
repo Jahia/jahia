@@ -728,6 +728,10 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         WorkflowServiceHelper.quickValidate(objectKey, lang, action, comment, retrieveParamBean());
     }
 
+    public void quickAddToBatch(String objectKey, String lang, String action) throws GWTJahiaServiceException {
+        WorkflowServiceHelper.addToBatch(objectKey, lang, action, retrieveParamBean());
+    }
+
     /**
      * Quick validation of the whole site.
      *

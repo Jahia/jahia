@@ -81,13 +81,11 @@ public interface WorkflowService extends RemoteService {
 
     public List<GWTJahiaLabel> getAvailableActions();
 
-    public void addToBatch(String action, String key, String lang);
+    public void storeBatch(Map<String, Map<String, Set<String>>> batch);
 
-    public void storeBatch(GWTJahiaWorkflowBatch batch);
+    public Map<String, Map<String, Set<String>>> restoreBatch();
 
-    public GWTJahiaWorkflowBatch restoreBatch();
-
-    public void executeStoredBatch();
+    public void executeStoredBatch(String name, String comment);
 
     public void execute(GWTJahiaWorkflowBatch batch);
 

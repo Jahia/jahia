@@ -36,6 +36,7 @@ package org.jahia.ajax.gwt.engines.workflow.server.helper;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowHistoryEntry;
+import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowBatch;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaLabel;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
@@ -717,6 +718,36 @@ public class WorkflowServiceHelper {
             logger.error("Quick validate failed", e) ;
         }
     }
+
+    public static void storeBatch(Map<String, Map<String, Set<String>>> batch, ProcessingContext ctx) {
+        ctx.getSessionState().setAttribute("workflowBatch", batch);
+    }
+
+    public static Map<String, Map<String, Set<String>>> restoreBatch(ProcessingContext ctx) {
+        return (Map<String, Map<String, Set<String>>>) ctx.getSessionState().getAttribute("workflowBatch");
+    }
+
+
+    public static void addToBatch(String objectKey, String lang, String action, ProcessingContext ctx) {
+        Map<String, Map<String, Set<String>>> batch = restoreBatch(ctx);
+        if (batch == null) {
+            batch = new HashMap<String, Map<String, Set<String>>>();
+            storeBatch(batch, ctx);
+        }
+        Map<String, Set<String>> m1 = batch.get(action);
+        if (m1 == null) {
+            m1 = new HashMap<String,Set<String>>();
+            batch.put(action,m1);
+        }
+        Set<String> s = m1.get(objectKey);
+        if (s == null) {
+            s = new HashSet<String>();
+            m1.put(objectKey,s);
+        }
+        s.add(lang);
+    }
+
+
 
     public static void publishAll(String comment, ProcessingContext context) {
         try {

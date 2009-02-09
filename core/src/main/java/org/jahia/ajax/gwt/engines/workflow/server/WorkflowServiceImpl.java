@@ -271,37 +271,18 @@ public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         return WorkflowServiceHelper.getAvailableActions(jParams.getLocale());
     }
 
-    public void addToBatch(String action, String key, String lang) {
-        GWTJahiaWorkflowBatch batch = restoreBatch();
-        if (batch == null) {
-            batch = new GWTJahiaWorkflowBatch(new HashMap<String, Map<String, Set<String>>>(),"","");
-            storeBatch(batch);
-        }
-        Map<String, Set<String>> m1 = batch.getBatch().get(action);
-        if (m1 == null) {
-            m1 = new HashMap<String,Set<String>>();
-            batch.getBatch().put(action,m1);
-        }
-        Set<String> s = m1.get(key);
-        if (s == null) {
-            s = new HashSet<String>();
-            m1.put(key,s);
-        }
-        s.add(lang);
+    public void storeBatch(Map<String, Map<String, Set<String>>> batch) {
+        WorkflowServiceHelper.storeBatch(batch, retrieveParamBean());
     }
 
-    public void storeBatch(GWTJahiaWorkflowBatch batch) {
-        retrieveParamBean().getSessionState().setAttribute("workflowBatch", batch);
+    public Map<String, Map<String, Set<String>>> restoreBatch() {
+        return WorkflowServiceHelper.restoreBatch(retrieveParamBean());
     }
 
-    public GWTJahiaWorkflowBatch restoreBatch() {
-        return (GWTJahiaWorkflowBatch) retrieveParamBean().getSessionState().getAttribute("workflowBatch");
-    }
-
-    public void executeStoredBatch() {
-        GWTJahiaWorkflowBatch batch = restoreBatch();
+    public void executeStoredBatch(String name, String comment) {
+        Map<String, Map<String, Set<String>>> batch = restoreBatch();
         if (batch != null) {
-            execute(batch);
+            execute(new GWTJahiaWorkflowBatch(batch, name, comment));
         }
     }
 
@@ -375,7 +356,7 @@ public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             }
             workflowState.setTitleForObjectKey(titleForObjectKey);
         } else {
-            workflowState = new GWTJahiaWorkflowManagerState() ;
+            workflowState = new GWTJahiaWorkflowManagerState(null, null, null, WorkflowServiceHelper.restoreBatch(retrieveParamBean())) ;
         }
         workflowState.setAvailableLanguages(getAvailableLanguages());
         return workflowState ;

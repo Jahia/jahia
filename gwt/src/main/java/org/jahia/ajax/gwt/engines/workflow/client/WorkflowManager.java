@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.tripanelbrowser.client.BrowserLinker;
 import org.jahia.ajax.gwt.tripanelbrowser.client.TriPanelBrowserViewport;
 import org.jahia.ajax.gwt.tripanelbrowser.client.components.*;
 import org.jahia.ajax.gwt.engines.workflow.client.components.*;
+import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowBatch;
 import org.jahia.ajax.gwt.commons.client.rpc.JahiaService;
 import org.jahia.ajax.gwt.commons.client.util.ResourceBundle;
 import com.google.gwt.user.client.Window;
@@ -59,7 +60,7 @@ public class WorkflowManager extends TriPanelBrowserViewport {
         LeftComponent tree = new WorkflowTree(siteKey, startPageId);
         TopRightComponent table = new WorkflowTable() ;
         BottomRightComponent details = new WorkflowDetails() ;
-        TopBar toolbar = new WorkflowToolbar() ;
+        final WorkflowToolbar toolbar = new WorkflowToolbar() ;
         BottomBar statusBar = new WorkflowStatusBar() ;
         
         // setup widgets in layout
@@ -83,6 +84,15 @@ public class WorkflowManager extends TriPanelBrowserViewport {
                 JahiaService.App.getInstance().releaseLocks("workflowLocks", new AsyncCallback() {
                     public void onFailure(Throwable caught) {
                         Window.alert("Could not release locks...\n\n" + caught.getLocalizedMessage()) ;
+                    }
+
+                    public void onSuccess(Object result) {
+                    }
+                });
+
+                WorkflowService.App.getInstance().storeBatch(toolbar.getBatch(), new AsyncCallback() {
+                    public void onFailure(Throwable caught) {
+                        Window.alert("Could not store batch...\n\n" + caught.getLocalizedMessage()) ;
                     }
 
                     public void onSuccess(Object result) {

@@ -286,7 +286,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     if (actionsMap.get(lang).contains(actionLabel.getKey())) {
                         String key = actionLabel.getKey();
                         String label = actionLabel.getLabel();
-                        GWTToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, label);
+                        GWTToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, label, "quick");
                         // add to itemsgroup
                         if (gwtToolbarItem != null) {
                             String minIconStyle = "gwt-toolbar-ItemsGroup-icons-action-" + key + "-min";
@@ -299,6 +299,35 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     }
                 }
             }
+
+//            Map<String, Map<String, Set<String>>> batch = (Map<String, Map<String, Set<String>>>) jahiaData.getProcessingContext().getSessionState().getAttribute("workflowBatch");
+//            boolean foundInBatch = false;
+//            if (batch != null) {
+//                for (Map<String, Set<String>> stringSetMap : batch.values()) {
+//                    if (stringSetMap.containsKey(currentObjectKey.getKey()) && stringSetMap.get(currentObjectKey.getKey()).contains(lang)) {
+//                        foundInBatch = true;
+//                        break;
+//                    }
+//                }
+//            }
+//            if (actionsMap.size() > 0 && actionsMap.containsKey(lang) && !foundInBatch) {
+//                for (GWTJahiaLabel actionLabel : WorkflowServiceHelper.getAvailableActions(processingContext.getLocale())) {
+//                    if (actionsMap.get(lang).contains(actionLabel.getKey())) {
+//                        String key = actionLabel.getKey();
+//                        String label = actionLabel.getLabel();
+//                        GWTToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, "Batch " + label, "batch");
+//                        // add to itemsgroup
+//                        if (gwtToolbarItem != null) {
+//                            String minIconStyle = "gwt-toolbar-ItemsGroup-icons-action-" + key + "-min";
+//                            String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-action-" + key + "-min";
+//                            gwtToolbarItem.setMediumIconStyle(maxIconStyle);
+//                            gwtToolbarItem.setMinIconStyle(minIconStyle);
+//                            // add to group lis
+//                            gwtToolbarItemsList.add(gwtToolbarItem);
+//                        }
+//                    }
+//                }
+//            }
 
             if (ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.actions.publishAll", processingContext.getUser(),
                     JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) > 0) {
@@ -396,7 +425,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @return
      * @throws JahiaException
      */
-    private GWTToolbarItem createQuickWorkflowItem(String objectKey, String language, String action, String label) throws JahiaException {
+    private GWTToolbarItem createQuickWorkflowItem(String objectKey, String language, String action, String label, String mode) throws JahiaException {
         if (objectKey != null && objectKey.length() > 0 && action != null && action.length() > 0) {
 
             // create the toolitem
@@ -421,6 +450,10 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             gwtProperty = new GWTProperty();
             gwtProperty.setName("label");
             gwtProperty.setValue(label);
+            gwtToolbarItem.addProperty(gwtProperty);
+            gwtProperty = new GWTProperty();
+            gwtProperty.setName("mode");
+            gwtProperty.setValue(mode);
             gwtToolbarItem.addProperty(gwtProperty);
 
             return gwtToolbarItem;

@@ -13,6 +13,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.api.user.JahiaUserService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.jaas.JahiaLoginModule;
 
 import javax.jcr.*;
 import javax.naming.Referenceable;
@@ -86,7 +87,9 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         repository = createRepository();
 
         JahiaAccessManager.setRepository(repository);
-        JahiaAccessManager.setUserService(new SpringJahiaUserService());
+        SpringJahiaUserService service = new SpringJahiaUserService();
+        JahiaAccessManager.setUserService(service);
+        JahiaLoginModule.setUserService(service);
 
         hook = new Thread() {
             public void run() {

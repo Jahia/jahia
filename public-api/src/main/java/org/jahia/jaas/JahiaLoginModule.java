@@ -66,6 +66,8 @@ public class JahiaLoginModule implements LoginModule {
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
     private static Map systemPass = new HashMap();
 
+    private static JahiaUserService userService;
+
     private Subject subject;
     private Principal user = null;
     private CallbackHandler callbackHandler;
@@ -103,7 +105,7 @@ public class JahiaLoginModule implements LoginModule {
                     user = new JahiaPrincipal(GUEST, false, true);
                 } else {
                     String key = new String(pass);
-                    if (key.equals(systemPass.get(name)) || getJahiaUserService().checkPassword(name,key)) {
+                    if (key.equals(systemPass.get(name)) || getUserService().checkPassword(name,key)) {
 //                        systemPass.remove(key);
                         user = new JahiaPrincipal(name);
                     }
@@ -170,16 +172,23 @@ public class JahiaLoginModule implements LoginModule {
         return new SimpleCredentials(username, getSystemPass(username).toCharArray());
     }
 
-    public JahiaUserService getJahiaUserService() throws NamingException {
-        String serviceName = "jahia/users";
-        Hashtable env = new Hashtable();
-        InitialContext initctx = new InitialContext(env);
-        try {
-            Context ctx = (Context) initctx.lookup("java:comp/env");
-            return (JahiaUserService) ctx.lookup(serviceName);
-        } catch (NamingException e) {
-            return (JahiaUserService) initctx.lookup("java:jahia/users");
-        }
+//    public JahiaUserService getJahiaUserService() throws NamingException {
+//        String serviceName = "jahia/users";
+//        Hashtable env = new Hashtable();
+//        InitialContext initctx = new InitialContext(env);
+//        try {
+//            Context ctx = (Context) initctx.lookup("java:comp/env");
+//            return (JahiaUserService) ctx.lookup(serviceName);
+//        } catch (NamingException e) {
+//            return (JahiaUserService) initctx.lookup("java:jahia/users");
+//        }
+//    }
+
+    public static JahiaUserService getUserService() {
+        return userService;
     }
 
+    public static void setUserService(JahiaUserService userService) {
+        JahiaLoginModule.userService = userService;
+    }
 }

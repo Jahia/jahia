@@ -120,7 +120,7 @@
                             <param>/home/bamboo/bin/siteImport_testSite.zip</param>
                     </siteImportLocation>                    
 		    <processingServer>false</processingServer>
-                    <databaseUrl>jdbc:mysql://10.8.37.246/jahia_qa244?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                    <databaseUrl>jdbc:mysql://10.8.37.246/jahia_qa243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>
                     <overwritedb>false</overwritedb>

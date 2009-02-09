@@ -609,11 +609,15 @@ public abstract class FieldsEditHelperAbstract implements FieldsEditHelper {
         }
         if (theFieldValue == null || theFieldValue.length() == 0 || theFieldValue.startsWith("<jahia")) return false;
         while (fieldEnum.hasNext()) {
-            final JahiaField field = (JahiaField) fieldEnum.next();
+            final JahiaField field = fieldEnum.next();
             String value = field.getValue();
             if (field.getType() == FieldTypes.BIGTEXT) {
                 value = StringUtils.replace(value, "\r", "");
                 value = StringUtils.replace(value, "\n", "");
+                value = StringUtils.replace(value, "<BODY>", "");
+                value = StringUtils.replace(value, "</BODY>", "");
+                value = StringUtils.replace(value, "<body>", "");
+                value = StringUtils.replace(value, "</body>", "");
                 value = value.trim();
             }
             if (oldValue != null && !oldValue.equals(value)) {

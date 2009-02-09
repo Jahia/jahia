@@ -116,10 +116,9 @@
                     <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
                     <cluster_activated>true</cluster_activated>
                     <siteImportLocation>
-                            <param>/home/bamboo/bin/siteImport_DemoSite.zip</param>
-                            <param>/home/bamboo/bin/siteImport_testSite.zip</param>
+                    <!-- As it is not the processing node, we are not going to feed it any imports -->
                     </siteImportLocation>                    
-		    <processingServer>false</processingServer>
+            		    <processingServer>false</processingServer>
                     <databaseUrl>jdbc:mysql://10.8.37.246/jahia_qa243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>

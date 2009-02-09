@@ -63,7 +63,7 @@ public class VFSContentStoreProvider extends JCRStoreProvider {
         this.root = root;
     }
 
-    protected synchronized Repository getRepository(){
+    public synchronized Repository getRepository(){
         if (repo == null) {
             repo = new VFSRepositoryImpl(root);
             if (rmibind != null) {

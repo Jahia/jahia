@@ -355,9 +355,7 @@ public class JCRStoreProvider {
         }
     }
 
-
-
-    protected synchronized Repository getRepository(){
+    public synchronized Repository getRepository(){
         if (repo == null) {
             if (repositoryName != null) {
                 Repository r = getRepositoryByJNDI();
@@ -374,6 +372,10 @@ public class JCRStoreProvider {
             }
         }
         return repo;
+    }
+
+    public void setRepository(Repository repo) {
+        this.repo = repo;
     }
 
     protected Repository getRepositoryByJNDI() {

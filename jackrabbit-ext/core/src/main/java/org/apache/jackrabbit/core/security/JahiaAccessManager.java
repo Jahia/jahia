@@ -401,28 +401,18 @@ public class JahiaAccessManager implements AccessManager {
     }
 
     public static synchronized Repository getRepository() throws NamingException {
-        if (repository == null) {
-            String repName = "jcr/repository";
-            Hashtable env = new Hashtable();
-            InitialContext initctx = new InitialContext(env);
-            Context ctx = (Context) initctx.lookup("java:comp/env");
-            repository =  (Repository) ctx.lookup(repName);
-        }
         return repository;
     }
 
     public static synchronized JahiaUserService getJahiaUserService() throws NamingException {
-        if (userservice == null) {
-            String serviceName = "jahia/users";
-            Hashtable env = new Hashtable();
-            InitialContext initctx = new InitialContext(env);
-            try {
-                Context ctx = (Context) initctx.lookup("java:comp/env");
-                userservice = (JahiaUserService) ctx.lookup(serviceName);
-            } catch (NamingException e) {
-                userservice = (JahiaUserService) initctx.lookup("java:jahia/users");
-            }
-        }
         return userservice;
+    }
+
+    public static void setRepository(Repository arepository) {
+        repository = arepository;
+    }
+
+    public static void setUserService(JahiaUserService service) {
+        userservice = service;
     }
 }

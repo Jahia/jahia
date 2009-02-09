@@ -49,18 +49,6 @@
             driverClassName="@DRIVER@" url="@URL@" defaultAutoCommit="true" 
             maxActive="20" maxIdle="30" maxWait="10000" accessToUnderlyingConnectionAllowed="true" />
 
-    <Resource name="jcr/repository"
-              auth="Container"
-              type="javax.jcr.Repository"
-              factory="org.apache.jackrabbit.core.jndi.JahiaBindableRepositoryFactory"
-              configFilePath="${jahiaWebAppRoot}/WEB-INF/etc/repository/jackrabbit/repository.xml"
-              repHomeDir="${jahiaWebAppRoot}/WEB-INF/var/repository" />
-
-    <Resource name="jahia/users"
-              auth="Container"
-              type="org.jahia.api.user.JahiaUserService"
-              factory="org.jahia.api.user.JahiaUserServiceFactory"
-             />
 <!--
     <ResourceLink name="jcr/repository"
               global="jcr/repository"

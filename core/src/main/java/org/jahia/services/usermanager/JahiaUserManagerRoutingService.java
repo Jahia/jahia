@@ -59,6 +59,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.sites.JahiaSite;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 
 /**
  * <p>Title: Manages routing of user management processes to the corresponding
@@ -144,93 +145,6 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
     public void start() throws JahiaInitializationException {
         findDefaultProvider();
         sortedProviders.addAll(providersTable.values ());
-        // initialize jndi user service
-        String serviceName = null;
-        Context ctx = null;
-        try {
-            serviceName = "jahia/users";
-            Hashtable env = new Hashtable();
-            InitialContext initctx = new InitialContext(env);
-            ctx = (Context) initctx.lookup("java:comp/env");
-            JahiaUserServiceProxy proxy = null;
-            try {
-                proxy = (JahiaUserServiceProxy) ctx.lookup(serviceName);
-            } catch (NamingException e) {
-                proxy = new JahiaUserServiceProxy();
-                initctx.createSubcontext("java:jahia");
-                initctx.bind("java:jahia/users",proxy);
-            }
-
-            proxy.setService(new JahiaUserService() {
-                public boolean checkPassword(String username, String password) {
-                    JahiaUser user = lookupUser(username);
-                    if (user != null) {
-                        return user.verifyPassword(password);
-                    }
-                    return false;
-                }
-
-                public boolean isServerAdmin(String username) {
-                    JahiaUser user = lookupUser(username);
-                    if (user != null) {
-                        JahiaGroup admingroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(0, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-                        return admingroup.isMember(user);
-                    }
-                    return false;
-                }
-
-                public boolean isAdmin(String username, String site) {
-                    JahiaSite s = null;
-                    try {
-                        s = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(site);
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    if (s == null ) {
-                        return false;
-                    }
-                    JahiaUser user = lookupUser(username);
-                    if (user != null) {
-                        JahiaGroup admingroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(s.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-                        return admingroup.isMember(user);
-                    }
-                    return false;
-                }
-
-                public boolean isUserMemberOf(String username, String groupname, String site) {
-                    JahiaSite s = null;
-                    if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
-                        return true;
-                    }
-                    if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !GUEST_USERNAME.equals(username)) {
-                        return true;
-                    }
-                    int siteId = 0;
-                    try {
-                        s = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(site);
-                        if (s != null) { 
-                            siteId = s.getID();
-                        }
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    JahiaUser user = lookupUser(username);
-                    JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, groupname);
-                    return (user != null) && (group != null) && group.isMember(user);
-                }
-
-                public List getUserMembership(String username) {
-                    return new ArrayList();
-                }
-
-                public List getGroupMembers(String groupname) {
-                    return new ArrayList();
-                }
-            });
-        } catch (NamingException e) {
-            logger.error(e.getMessage(), e);
-        }
-
     }
 
     public void stop() throws JahiaException {

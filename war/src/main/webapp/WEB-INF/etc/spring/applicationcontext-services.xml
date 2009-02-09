@@ -666,7 +666,13 @@
 
     <bean id="DefaulJCRStoreProvider" class="org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider" parent="AbstractJCRStoreProvider">
         <property name="key" value="default"/>
-        <property name="repositoryName" value="java:comp/env/jcr/repository"/>
+        <property name="repository">
+            <bean class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop">
+                <property name="configFile" value="${jahiaWebAppRoot}/WEB-INF/etc/repository/jackrabbit/repository.xml"/>
+                <property name="homeDir" value="${jahiaWebAppRoot}/WEB-INF/var/repository"/>
+                <property name="userService" ref="JahiaUserManagerService"/>
+            </bean>
+        </property>
         <property name="mountPoint" value="/"/>
         <property name="webdavPath" value="${jahia.deploy.war.contextPath}/repository/default"/>
         <property name="rmibind" value="jackrabbit"/>

@@ -53,7 +53,7 @@ public class JahiaContentStoreProvider extends JCRStoreProvider {
 
     private ProcessingContextFactory processingContextFactory;
 
-    protected synchronized Repository getRepository(){
+    public synchronized Repository getRepository(){
         if (repo == null) {
             RepositoryImpl repoImpl = new RepositoryImpl();
 

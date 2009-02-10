@@ -38,7 +38,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 	<head>
-		<title>Jahia File Manager</title>
+		<title>Jahia Document Manager</title>
 	
 	
 <link rel="stylesheet" type="text/css" media="screen" href="<%= request.getContextPath() %>/jsp/jahia/engines/gwtfilemanager/javascript/uvumi-crop.css"/>

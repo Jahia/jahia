@@ -113,10 +113,10 @@ public class ThemeService extends JahiaService {
     private String loadCSS(String cssFielPath) {
         String returnCss="";
         if (cssFielPath !=null && cssFielPath.endsWith("print.css")) {
-            returnCss="<link rel=\"stylesheet\" media=\"print\" type=\"text/css\" href=\"" + cssFielPath + "\">";
+            returnCss="<link rel=\"stylesheet\" media=\"print\" type=\"text/css\" href=\"" + cssFielPath + "\"/>";
         }
         else {
-            returnCss="<link rel=\"stylesheet\" type=\"text/css\" href=\"" + cssFielPath + "\">";
+            returnCss="<link rel=\"stylesheet\" type=\"text/css\" href=\"" + cssFielPath + "\"/>";
         }
         return returnCss;
     }

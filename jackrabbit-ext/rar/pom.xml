@@ -3,11 +3,10 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jackrabbit-ext</artifactId>
-        <version>1.0</version>
+        <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jackrabbit-rar</artifactId>
-    <version>${jahia.package.version}</version>
     <name>Jahia Jackrabbit JCA connector</name>
     <packaging>rar</packaging>
 
@@ -20,38 +19,38 @@
             <value>jboss</value>
           </property>
         </activation>
-        <dependencyManagement>            
+        <dependencyManagement>
           <dependencies>
             <dependency>
               <groupId>org.apache.jackrabbit</groupId>
               <artifactId>jackrabbit-jcr-rmi</artifactId>
               <version>${jackrabbit.version}</version>
-              <scope>provided</scope>            
-            </dependency>            
+              <scope>provided</scope>
+            </dependency>
             <dependency>
               <groupId>org.apache.jackrabbit</groupId>
               <artifactId>jackrabbit-jcr-server</artifactId>
               <version>${jackrabbit.version}</version>
-              <scope>provided</scope>            
-            </dependency>                        
+              <scope>provided</scope>
+            </dependency>
             <dependency>
               <groupId>org.apache.jackrabbit</groupId>
               <artifactId>jackrabbit-jcr-servlet</artifactId>
               <version>${jackrabbit.version}</version>
-              <scope>provided</scope>            
-            </dependency>                        
+              <scope>provided</scope>
+            </dependency>
             <dependency>
               <groupId>org.apache.jackrabbit</groupId>
               <artifactId>jackrabbit-webapp</artifactId>
               <version>${jackrabbit.version}</version>
-              <scope>provided</scope>            
-            </dependency>                        
+              <scope>provided</scope>
+            </dependency>
             <dependency>
               <groupId>org.apache.jackrabbit</groupId>
               <artifactId>jackrabbit-webdav</artifactId>
               <version>${jackrabbit.version}</version>
-              <scope>provided</scope>            
-            </dependency>                                                            
+              <scope>provided</scope>
+            </dependency>
           </dependencies>
         </dependencyManagement>
       </profile>

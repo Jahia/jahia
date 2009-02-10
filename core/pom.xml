@@ -3,11 +3,10 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>1.0</version>
+        <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-impl</artifactId>
-    <version>${jahia.package.version}</version>
     <name>Jahia Server Implementation</name>
     <packaging>jar</packaging>
     <repositories>
@@ -40,22 +39,10 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-      			<id>octo-forge-snapshots</id>
-      			<name>Snapshots for OCTO projects (J-CAPTCHA)</name>
-      			<url>http://forge.octo.com/archiva/repository/forge-snapshots/</url>
-      			<releases>
-        				<enabled>false</enabled>
-      			</releases>
-      			<snapshots>
-        				<enabled>true</enabled>
-      			</snapshots>
-    		</repository>
     </repositories>
     <scm>
         <connection>scm:svn:https://jahia.mine.nu/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/core</connection>
-        <developerConnection>scm:svn:http://svn.jahia.org/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/core
-        </developerConnection>
+        <developerConnection>scm:svn:http://svn.jahia.org/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/core</developerConnection>
         <url>http://svn.jahia.org/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/core</url>
     </scm>
     <pluginRepositories>
@@ -1294,11 +1281,10 @@
         </dependency>-->
 
         <dependency>
-					<groupId>com.octo.captcha</groupId>
-					<artifactId>jcaptcha</artifactId>
-					<version>1.0-SNAPSHOT</version>
-			  </dependency>
-
+            <groupId>com.octo.captcha</groupId>
+            <artifactId>jcaptcha</artifactId>
+            <version>1.0-all</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>

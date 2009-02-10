@@ -3,11 +3,10 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>1.0</version>
+        <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>jahia-ear</artifactId>
-    <version>${jahia.package.version}</version>
     <name>Jahia EAR</name>
     <packaging>ear</packaging>
 
@@ -187,7 +186,7 @@
             <groupId>org.apache.portals.bridges</groupId>
             <artifactId>portals-bridges-common</artifactId>
             <version>1.0.4</version>
-        </dependency>        
+        </dependency>
 
     </dependencies>
     <build>
@@ -200,7 +199,7 @@
                     <configuration>
                         <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
                     </configuration>
-                    
+
                     <modules>
                         <webModule>
                             <groupId>org.jahia.server</groupId>

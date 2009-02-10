@@ -4,24 +4,23 @@
   <parent>
         <artifactId>jahia-templates</artifactId>
         <groupId>org.jahia.templates</groupId>
-        <version>1.0</version>
+        <version>6.0-SNAPSHOT</version>
     </parent>
   <groupId>org.jahia.templates</groupId>
   <artifactId>web-templates</artifactId>
   <name>Web templates</name>
-  <version>${jahia.package.version}</version>
   <packaging>war</packaging>
   <url>www.jahia.org</url>
 
   <description>These are the custom templates (web-templates) for running on a Jahia server.</description>
- 
+
   <repositories>
     <repository>
       <id>jahiaRepository</id>
       <name>Jahia's Maven Repository</name>
       <url>http://maven.jahia.org/maven2</url>
     </repository>
-  </repositories> 
+  </repositories>
 
   <profiles>
     <profile>
@@ -32,7 +31,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-eclipse-plugin</artifactId>
             <configuration>
-              <wtpversion>1.5</wtpversion>  
+              <wtpversion>1.5</wtpversion>
               <additionalProjectnatures>
                 <projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
                 <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
@@ -47,14 +46,14 @@
                   <name>org.eclipse.wst.validation.validationbuilder</name>
                   <arguments></arguments>
                 </buildCommand>
-              </additionalBuildcommands>  
+              </additionalBuildcommands>
             </configuration>
           </plugin>
         </plugins>
-      </build>  
+      </build>
     </profile>
   </profiles>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.jahia.server</groupId>
@@ -67,6 +66,6 @@
       <artifactId>jahia-taglib</artifactId>
       <version>${jahia.package.version}</version>
       <scope>provided</scope>
-    </dependency>    
+    </dependency>
   </dependencies>
 </project>

@@ -3,14 +3,13 @@
   <parent>
     <groupId>org.jahia.server</groupId>
     <artifactId>jahia-root</artifactId>
-    <version>1.0</version>
+    <version>6.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jahia-taglib</artifactId>
-  <version>${jahia.package.version}</version>
   <name>Jahia Tag libraries</name>
   <packaging>jar</packaging>
-    
+
   <dependencies>
       <!--Cross project dependencies-->
       <dependency>
@@ -36,13 +35,13 @@
           <artifactId>portlet-api</artifactId>
           <version>2.0</version>
           <scope>provided</scope>
-      </dependency>     
+      </dependency>
   </dependencies>
-  
+
   <build>
     <resources>
       <resource>
-         <directory>src/main/java</directory>      
+         <directory>src/main/java</directory>
       </resource>
       <resource>
         <directory>src/main/resources</directory>
@@ -52,8 +51,8 @@
           <include>**/*.tagf</include>
         </includes>
       </resource>
-    </resources>  
-    
+    </resources>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -64,7 +63,7 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
@@ -85,7 +84,7 @@
             </buildCommand>
           </additionalBuildcommands>
         </configuration>
-      </plugin>           
-    </plugins>    
-  </build>  
+      </plugin>
+    </plugins>
+  </build>
 </project>

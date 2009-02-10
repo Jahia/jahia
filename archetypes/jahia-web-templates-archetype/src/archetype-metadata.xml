@@ -43,7 +43,7 @@
       <defaultValue>http://www.myorganization.org</defaultValue>
     </requiredProperty>
     <requiredProperty key="jahiaPackageVersion">
-      <defaultValue>6.0-SNAPSHOT</defaultValue>
+      <defaultValue>6.0-CE</defaultValue>
     </requiredProperty>    
   </requiredProperties>
 </archetype-descriptor>

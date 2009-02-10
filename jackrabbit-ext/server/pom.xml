@@ -3,11 +3,10 @@
   <parent>
     <groupId>org.jahia.server</groupId>
     <artifactId>jackrabbit-ext</artifactId>
-    <version>1.0</version>
+    <version>6.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jackrabbit-server-ext</artifactId>
-  <version>${jahia.package.version}</version>
   <name>Jahia Jackrabbit Server extensions</name>
   <packaging>jar</packaging>
 
@@ -93,7 +92,7 @@
       <version>2.3</version>
       <scope>provided</scope>
     </dependency>
-      
+
   </dependencies>
 
 </project>

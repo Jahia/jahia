@@ -3,12 +3,11 @@
     <parent>
         <groupId>org.jahia.server</groupId>
         <artifactId>jahia-root</artifactId>
-        <version>1.0</version>
+        <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jahia.templates</groupId>
     <artifactId>jahia-templates</artifactId>
-    <version>1.0</version>
     <name>Jahia Templates</name>
     <packaging>pom</packaging>
 
@@ -25,18 +24,18 @@
             <artifactId>jahia-taglib</artifactId>
             <version>${jahia.package.version}</version>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>
     </dependencies>
     <profiles>
       <profile>
         <id>eclipse-integration</id>
         <build>
-          <plugins>    
+          <plugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-eclipse-plugin</artifactId>
               <configuration>
-                <wtpversion>1.5</wtpversion>  
+                <wtpversion>1.5</wtpversion>
                 <additionalProjectnatures>
                   <projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
                   <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
@@ -51,13 +50,13 @@
                     <name>org.eclipse.wst.validation.validationbuilder</name>
                     <arguments></arguments>
                   </buildCommand>
-                </additionalBuildcommands>  
+                </additionalBuildcommands>
               </configuration>
-            </plugin>   
-          </plugins>      
-        </build>  
+            </plugin>
+          </plugins>
+        </build>
       </profile>
-    </profiles>    
+    </profiles>
 
     <modules>
         <module>core-templates</module>

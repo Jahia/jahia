@@ -3,20 +3,19 @@
   <parent>
     <groupId>org.jahia.server</groupId>
     <artifactId>jahia-package</artifactId>
-    <version>1.0</version>
+    <version>6.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jahia-qa-package</artifactId>
-  <version>${jahia.package.version}</version>
   <name>Jahia QA Package</name>
   <packaging>pom</packaging>
     <modules>
     <module>qa-1</module>
-    <module>qa-2</module> 
+    <module>qa-2</module>
    <module>qa-4</module>
 
   </modules>
-  
+
   <build>
 	        <plugins>
       <plugin>
@@ -37,11 +36,11 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>            
+            </plugin>
 
 		</plugins>
   </build>
 
 
-  
+
 </project>

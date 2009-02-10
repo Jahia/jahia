@@ -3,13 +3,12 @@
   <parent>
     <groupId>org.jahia.server</groupId>
     <artifactId>jahia-root</artifactId>
-    <version>1.0</version>
+    <version>6.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jahia-war</artifactId>
   <name>Jahia WAR</name>
   <packaging>war</packaging>
-  <version>${jahia.package.version}</version>
 
   <properties>
       <singleModuleName>org.jahia.ajax.gwt.templates.entrypoint.general.edit.Edit</singleModuleName>
@@ -177,7 +176,7 @@
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-eclipse-plugin</artifactId>
               <configuration>
-                <wtpversion>1.5</wtpversion>  
+                <wtpversion>1.5</wtpversion>
                 <additionalProjectnatures>
                   <projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
                   <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
@@ -192,11 +191,11 @@
                     <name>org.eclipse.wst.validation.validationbuilder</name>
                     <arguments></arguments>
                   </buildCommand>
-                </additionalBuildcommands>  
+                </additionalBuildcommands>
               </configuration>
             </plugin>
           </plugins>
-        </build>  
+        </build>
       </profile>
 
       <profile>
@@ -314,7 +313,7 @@
         </profile>
 
     </profiles>
-    
+
   <dependencies>
     <dependency>
       <groupId>org.jahia.server</groupId>
@@ -330,7 +329,7 @@
       <groupId>org.jahia.server</groupId>
       <artifactId>jahia-taglib</artifactId>
       <version>${jahia.package.version}</version>
-    </dependency>      
+    </dependency>
     <dependency>
       <groupId>org.jahia.server</groupId>
       <artifactId>jahia-gwt</artifactId>
@@ -582,7 +581,7 @@
             <dependentWarExcludes>**</dependentWarExcludes>
           </configuration>
       </plugin>
-      
+
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
@@ -672,7 +671,7 @@
                 </execution>
             </executions>
         </plugin>
-      
+
     </plugins>
 
     <resources>

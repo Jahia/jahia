@@ -332,5 +332,8 @@ public class SiteBean {
         return jahiaSite.getJCRPath(this.processingContext);
     }
     
+   public String getExternalUrl() {
+       return processingContext.getSiteURL(jahiaSite, -1, false, true, false);
+   }
    
 }

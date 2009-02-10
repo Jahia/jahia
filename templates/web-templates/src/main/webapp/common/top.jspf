@@ -21,16 +21,16 @@
                         <utility:resourceBundle resourceName="web_templates.print" defaultValue="Print this page"/></a>
                     </li>
                     <li class="topshortcuts-typoincrease">
-                        <a href="javascript:ts('body',1)"><utility:resourceBundle resourceName="web_templates.up" defaultValue="Up"/></a>
+                        <a href="javascript:ts('body',1)"><utility:resourceBundle resourceName="web_templates.up" defaultValue="Increase fonts size"/></a>
                     </li>
                     <li class="topshortcuts-typoreduce">
-                        <a  href="javascript:ts('body',-1)"><utility:resourceBundle resourceName="web_templates.down" defaultValue="web_templates.Down"/></a>
+                        <a  href="javascript:ts('body',-1)"><utility:resourceBundle resourceName="web_templates.down" defaultValue="Decrease fonts size"/></a>
                     </li>
                     <li class="topshortcuts-home">
                         <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>'><utility:resourceBundle resourceName="web_templates.home" defaultValue="Home"/></a>
                     </li>
                     <li class="topshortcuts-sitemap">
-                        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>/engineName/sitemap'><utility:resourceBundle resourceName="Sitemap" defaultValue="Sitemap"/></a>
+                        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>/engineName/sitemap'><utility:resourceBundle resourceName="web_templates.sitemap" defaultValue="Sitemap"/></a>
                     </li>
                     </ul>
 	</div><!--stop topshortcuts-->

@@ -37,47 +37,85 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 
 
-<%@include file="/jsp/jahia/administration/include/header.inc"%>
-<%@page import   = "java.util.*,org.jahia.data.templates.*"%>
-<%@page import="org.jahia.bin.*"%>
+<%@include file="/jsp/jahia/administration/include/header.inc" %>
+<%@page import="java.util.*,org.jahia.data.templates.*" %>
+<%@page import="org.jahia.bin.*" %>
+<%@ page import="org.jahia.operations.valves.ThemeValve" %>
 <%
 
-    String requestURI 	= (String)request.getAttribute("requestURI");
-    JahiaSite site = (JahiaSite)request.getAttribute("site");
+    String requestURI = (String) request.getAttribute("requestURI");
+    JahiaSite site = (JahiaSite) request.getAttribute("site");
 
 %>
+
 <div id="topTitle">
-  <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.themes.ManageThemes.label"/> : <% if ( currentSite!= null ){ %><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>&nbsp;&nbsp;<%} %></h2>
+    <h1>Jahia</h1>
+
+    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.themes.ManageThemes.label"/>
+        : <% if (currentSite != null) { %><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>
+        &nbsp;&nbsp;<%} %></h2>
 </div>
 <div id="main">
-  <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
-    <tbody>
-      <tr>
-        <td style="vertical-align: top;" align="left">
-          <%@include file="/jsp/jahia/administration/include/tab_menu.inc" %>
-        </td>
-      </tr>
-      <tr>
-        <td style="vertical-align: top;" align="left" height="100%">
-          <div class="dex-TabPanelBottom">
-            <div class="tabContent">
-            <jsp:include page="/jsp/jahia/administration/include/left_menu.jsp">
-                <jsp:param name="mode" value="site"/>
-            </jsp:include>
-              <div id="content" class="fit">
-                <div class="head">
-                  <div class="object-title">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.themes.ManageThemes.label"/>&nbsp;
-                  </div>
-                </div>
-                <div class="content-body">
-            <internal:adminResourceBundle resourceName='org.jahia.admin.siteThemeSelector' defaultValue="Theme for site"/>:
-            <ui:themeSelector scope="site"/>
-        </td>
-    </tr>
+    <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <td style="vertical-align: top;" align="left">
+                <%@include file="/jsp/jahia/administration/include/tab_menu.inc" %>
+            </td>
+        </tr>
+        <tr>
+            <td style="vertical-align: top;" align="left" height="100%">
+                <div class="dex-TabPanelBottom">
+                    <div class="tabContent">
+                        <jsp:include page="/jsp/jahia/administration/include/left_menu.jsp">
+                            <jsp:param name="mode" value="site"/>
+                        </jsp:include>
+                        <div id="content" class="fit">
+                            <div class="head">
+                                <div class="object-title">
+                                    <internal:adminResourceBundle
+                                            resourceName="org.jahia.admin.themes.ManageThemes.label"/>&nbsp;
+                                </div>
+                            </div>
+                            <div class="content-body">
+
+                                <ui:themeSelector scope="site"/>
+                                 <br><br>
+                            </div>
+                            <div class="content-body">
+            <%
+                if (request.getParameter("jahiaThemeSelector") != null ) {
+            %>
+                              <span style="padding: 5px;display:block;border-bottom: 1px solid #B7CBD8;">
+            <internal:adminResourceBundle resourceName='org.jahia.admin.changeTheme'
+                                          defaultValue="New theme selected "/> :
+                    </span>
+
+
+                                    <%=request.getParameter("jahiaThemeSelector")%>
+                                    <%
+                }
+            %>
+
+            </td>
+        </tr>
 
     </table>
 </div>
-
-<%@include file="/jsp/jahia/administration/include/footer.inc"%>
+<div id="actionBar">
+          <span class="dex-PushButton">
+            <span class="first-child">
+              <a class="ico-back"
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle
+                      resourceName="org.jahia.admin.backToMenu.label"/></a>
+            </span>
+          </span>
+          <span class="dex-PushButton">
+            <span class="first-child">
+              <a class="ico-ok" href="#"
+                 onclick="document.jahiathemeSelectorFormsite.submit()"><internal:adminResourceBundle
+                      resourceName="org.jahia.admin.saveChanges.label"/></a>
+            </span>
+          </span>
+</div>
+<%@include file="/jsp/jahia/administration/include/footer.inc" %>

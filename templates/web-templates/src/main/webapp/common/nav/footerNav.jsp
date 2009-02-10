@@ -41,7 +41,7 @@
         <template:container id="bottomLinkContainer" displayActionMenu="false">
             <div class="column-item"><!--start column-item -->
                 <div class="columnspace"><!--start columnspace -->
-                    <div id="mapshortcuts"><!--start bottomshortcuts-->
+                    <div class="mapshortcuts"><!--start bottomshortcuts-->
                         <ui:actionMenu contentObjectName="bottomLinkContainer" namePostFix="bottomLink"
                                                        labelKey="bottomLink.update">
                         <template:field name="link" valueBeanID="links" display="false"/>

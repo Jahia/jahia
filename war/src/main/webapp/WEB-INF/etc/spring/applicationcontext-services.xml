@@ -671,6 +671,7 @@
                 <property name="configFile" value="${jahiaWebAppRoot}/WEB-INF/etc/repository/jackrabbit/repository.xml"/>
                 <property name="homeDir" value="${jahiaWebAppRoot}/WEB-INF/var/repository"/>
                 <property name="userService" ref="JahiaUserManagerService"/>
+                <property name="servletContextAttributeName" value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" />
             </bean>
         </property>
         <property name="mountPoint" value="/"/>

@@ -363,12 +363,20 @@
         <servlet-name>Repository</servlet-name>
         <servlet-class>org.apache.jackrabbit.j2ee.RepositoryAccessServlet</servlet-class>
 
+
+        <init-param>
+            <description>Repository Name that is used to retrieve it via a servlet context attribute</description>
+            <param-name>repository.context.attribute.name</param-name>
+            <param-value>org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository</param-value>
+        </init-param>
+
+        <!--
         <init-param>
             <description>Repository Name that is used to retrieve it via JNDI</description>
             <param-name>repository-name</param-name>
             <param-value>java:comp/env/jcr/repository</param-value>
         </init-param>
-
+        -->
         <!--
         <init-param>
             <param-name>missing-auth-mapping</param-name>
@@ -392,11 +400,12 @@
             JNDI environment variables for creating the initial context
             (all init parameters starting with java.naming.* will be added to the initial context environment).
         -->
+        <!--
         <init-param>
             <param-name>java.naming.provider.url</param-name>
             <param-value></param-value>
         </init-param>
-
+        -->
         <!--
             RMI url, if RMI remoting is needed
         -->
@@ -1664,20 +1673,6 @@
         <description>Non Tx DB Connection</description>
         <res-ref-name>jdbc/jahiaNonTx</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-    </resource-ref>
-
-    <resource-ref>
-        <description>Repository</description>
-        <res-ref-name>jcr/repository</res-ref-name>
-        <res-type>javax.jcr.Repository</res-type>
-        <res-auth>Container</res-auth>
-    </resource-ref>
-
-    <resource-ref>
-        <description>Jahia service</description>
-        <res-ref-name>jahia/users</res-ref-name>
-        <res-type>org.jahia.api.user.JahiaUserService</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
 

@@ -14,10 +14,12 @@ import org.jahia.api.user.JahiaUserService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaLoginModule;
+import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
 import javax.naming.Referenceable;
 import javax.naming.Reference;
+import javax.servlet.ServletContext;
 import java.io.Serializable;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -31,7 +33,7 @@ import java.util.ArrayList;
  * Time: 11:21:20 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository {
+public class SpringJackrabbitRepository extends AbstractRepository implements JackrabbitRepository, ServletContextAware {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (SpringJackrabbitRepository.class);
 
@@ -42,6 +44,8 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     private String configFile;
     private String homeDir;
     private JahiaUserManagerService userService;
+    private String servletContextAttributeName;
+    private ServletContext servletContext;
 
     public String getConfigFile() {
         return configFile;
@@ -67,6 +71,18 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         this.userService = userService;
     }
 
+    public String getServletContextAttributeName() {
+        return servletContextAttributeName;
+    }
+
+    public void setServletContextAttributeName(String servletContextAttributeName) {
+        this.servletContextAttributeName = servletContextAttributeName;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
     /**
      * Creates a repository instance based on the contained JNDI reference.
      * Can be overridden by subclasses to return different repositories.
@@ -90,6 +106,11 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         SpringJahiaUserService service = new SpringJahiaUserService();
         JahiaAccessManager.setUserService(service);
         JahiaLoginModule.setUserService(service);
+
+        if ((servletContextAttributeName != null) &&
+            (servletContext != null)) {
+            servletContext.setAttribute(servletContextAttributeName, this);
+        }
 
         hook = new Thread() {
             public void run() {

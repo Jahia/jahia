@@ -48,6 +48,7 @@
 <%@ page import="org.jahia.services.usermanager.JahiaUser"%>
 <%@ page import="java.util.*"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <jsp:useBean id="engineTitle" class="java.lang.String" scope="request"/>
@@ -152,6 +153,7 @@ static {
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
 final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
 final String engineUrl = (String) engineMap.get("engineUrl");
+pageContext.setAttribute("engineUrl", engineUrl);
 final String theScreen = (String) engineMap.get("screen");
 final String copyright=Jahia.COPYRIGHT;
 
@@ -215,7 +217,7 @@ jahia.config = {
 <div id="userShell">
   <!-- wrapper (start) -->
   <div id="main<%if(jspSource != null && ("login".equals(jspSource) || "bad_login".equals(jspSource))){%>Login<%}else{%>Client<%}%>Layout">
-    <form name="mainForm" method="post" action="<%=engineUrl%>">
+    <form name="mainForm" method="post" action="${fn:escapeXml(engineUrl)}">
       <% if (results != null) { %>
         <div id="readOnly" class="msg-alert-info">
           <internal:engineResourceBundle resourceName="org.jahia.engines.readOnlyMode.label"/>: <%=LockKey.getFriendlyMessage(lockKey, jParams)%>

@@ -164,15 +164,15 @@ public class GWTInitializer {
 
 
         // add locale settings
-        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.getLanguage()).append("\">\n");
+        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(locale.getLanguage()).append("\"/>\n");
 
         // add jahia parameter dictonary
         buf.append("<script type='text/javascript'>\n");
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
         String context = request.getContextPath();
-        buf.append(" <link href=\"").append(context).append("/jsp/jahia/gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/css/jahia-ext-all.css\" rel=\"stylesheet\"/>");
-        buf.append(" <link href=\"").append(context).append("/jsp/jahia/css/gwt/theme/xtheme-jahia.css\" rel=\"stylesheet\"/>");
+        buf.append(" <link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/css/jahia-ext-all.css\" rel=\"stylesheet\"/>");
+        buf.append(" <link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/css/gwt/theme/xtheme-jahia.css\" rel=\"stylesheet\"/>");
 
         /*toolbar set optim.*/
         return buf.toString();

@@ -138,11 +138,10 @@ stretcherToOpen   = 0; %>
                 <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
                   <thead>
                     <tr>
-                      <th<%if(importsInfos.size()==1){ %> style="display:none;"<%} %>width="5%">&nbsp;
-                      </th>
+                      <th<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> width="5%">&nbsp;</th>
                       <th width="95%">
                         <internal:adminResourceBundle resourceName="org.jahia.admin.name.label"/>
-                      </th><!--<th	width="15%"><internal:adminResourceBundle resourceName="org.jahia.admin.edit.label"/></th>--><!--<th	width="15%"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.export.label"/></th>-->
+                      </th>
                     </tr>
                   </thead>
                   <form name="main">
@@ -162,7 +161,7 @@ stretcherToOpen   = 0; %>
                       }
                       lineCounter++; %>
                       <tr class="<%=lineClass%>">
-                        <td<%if(importsInfos.size()==1){ %> style="display:none;"<%} %>><input type="checkbox" name="<%=file.getName()%>selected" value="on"<% if (infos.get("selected")!=null) { %>checked<% } %>>
+                        <td<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> align="center"><input type="checkbox" name="<%=file.getName()%>selected" value="on"<% if (infos.get("selected")!=null) { %>checked<% } %>>
                         </td>
                         <td>
                           <% if ("site".equals(fileType)) { %>

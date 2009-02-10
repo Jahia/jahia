@@ -40,6 +40,7 @@ import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
 import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.ajax.gwt.templates.components.toolbar.client.bean.GWTToolbarItem;
+import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.Constants;
 import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.mygwt.provider.JahiaProviderFactory;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.factory.ItemsGroupFactory;
 import org.jahia.content.ContentObjectKey;
@@ -58,6 +59,7 @@ import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceKey;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.toolbar.resolver.impl.URLPropertyResolver;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 
 import java.util.ArrayList;
@@ -262,18 +264,27 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 if (warns>0) {
                     GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
                     gwtToolbarItem.setTitle(vals.size()+" warnings");
-                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
                     gwtToolbarItem.setDisplayTitle(true);
-                    
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
+                    
+                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
+                    gwtToolbarItem.addProperty(new GWTProperty(Constants.WIDTH, "1020"));
+                    gwtToolbarItem.addProperty(new GWTProperty(Constants.HEIGHT, "730"));
+                    gwtToolbarItem.addProperty(new GWTProperty(Constants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
+                    
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
                 if (errors>0) {
                     GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
                     gwtToolbarItem.setTitle(vals.size()+" errors");
-                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
+
+                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
+                    gwtToolbarItem.addProperty(new GWTProperty(Constants.WIDTH, "1020"));
+                    gwtToolbarItem.addProperty(new GWTProperty(Constants.HEIGHT, "730"));
+                    gwtToolbarItem.addProperty(new GWTProperty(Constants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
+                    
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
             }

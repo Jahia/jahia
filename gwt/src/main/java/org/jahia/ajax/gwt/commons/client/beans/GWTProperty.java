@@ -42,12 +42,25 @@ import java.io.Serializable;
  * Time: 15:21:59
  */
 public class GWTProperty implements Serializable {
+
     private String name;
     private String value;
 
     public GWTProperty() {
+        super();
     }
 
+    /**
+     * Initializes an instance of this class.
+     * @param name
+     * @param value
+     */
+    public GWTProperty(String name, String value) {
+        this();
+        this.name = name;
+        this.value = value;
+    }
+    
     public String getName() {
         return name;
     }

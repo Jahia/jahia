@@ -668,8 +668,8 @@
         <property name="key" value="default"/>
         <property name="repository">
             <bean class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop">
-                <property name="configFile" value="${jahiaWebAppRoot}/WEB-INF/etc/repository/jackrabbit/repository.xml"/>
-                <property name="homeDir" value="${jahiaWebAppRoot}/WEB-INF/var/repository"/>
+                <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
+                <property name="homeDir" value="WEB-INF/var/repository"/>
                 <property name="userService" ref="JahiaUserManagerService"/>
                 <property name="servletContextAttributeName" value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" />
             </bean>

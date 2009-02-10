@@ -15,6 +15,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaLoginModule;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.naming.Referenceable;
@@ -41,25 +42,25 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     private transient Thread hook;
 
-    private String configFile;
-    private String homeDir;
+    private Resource configFile;
+    private Resource homeDir;
     private JahiaUserManagerService userService;
     private String servletContextAttributeName;
     private ServletContext servletContext;
 
-    public String getConfigFile() {
+    public Resource getConfigFile() {
         return configFile;
     }
 
-    public void setConfigFile(String configFile) {
+    public void setConfigFile(Resource configFile) {
         this.configFile = configFile;
     }
 
-    public String getHomeDir() {
+    public Resource getHomeDir() {
         return homeDir;
     }
 
-    public void setHomeDir(String homeDir) {
+    public void setHomeDir(Resource homeDir) {
         this.homeDir = homeDir;
     }
 
@@ -92,13 +93,13 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
      * @throws RepositoryException if the repository could not be created
      */
     protected JackrabbitRepository createRepository()
-            throws RepositoryException {
-        RepositoryConfig config = RepositoryConfig.create(configFile, homeDir);
+            throws RepositoryException, IOException {
+        RepositoryConfig config = RepositoryConfig.create(configFile.getFile().toString(), homeDir.getFile().toString());
         return RepositoryImpl.create(config);
     }
 
 
-    public void start() throws RepositoryException {
+    public void start() throws RepositoryException, IOException {
 
         repository = createRepository();
 

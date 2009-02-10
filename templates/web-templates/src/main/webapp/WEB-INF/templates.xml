@@ -46,17 +46,17 @@
         <search-results>searchresult.jsp</search-results>
     </common-pages>
     <templates default="simple" homepage="Home">
-        <template name="Home" display-name="Home page" filename="home.jsp" page-type="web_templates:home"/>
-        <template name="simple" display-name="Simple" filename="simple.jsp" page-type="web_templates:simple"/>
-        <template name="article" display-name="Article" filename="article.jsp" page-type="web_templates:article"/>
-        <template name="events" display-name="Events" filename="events.jsp" page-type="web_templates:events"/>
-        <template name="people" display-name="Portraits" filename="people.jsp" page-type="web_templates:people"/>
-        <template name="press" display-name="Press releases" filename="pressRelease.jsp" page-type="web_templates:pressRelease"/>
-        <template name="news" display-name="News" filename="news.jsp" page-type="web_templates:news"/>
-        <template name="job" display-name="Job offers" filename="job.jsp" page-type="web_templates:job"/>
-        <template name="full" display-name="Full" filename="full.jsp" page-type="web_templates:full"/>
-        <template name="publication" display-name="Publications" filename="publication.jsp" page-type="web_templates:publication"/>
-        <template name="layout" display-name="My portal" filename="layoutManager.jsp" page-type="web_templates:layoutManager"/>
+        <template name="Home" display-name="template.name.home" filename="home.jsp" page-type="web_templates:home"/>
+        <template name="simple" display-name="template.name.simple" filename="simple.jsp" page-type="web_templates:simple"/>
+        <template name="article" display-name="template.name.article" filename="article.jsp" page-type="web_templates:article" description="description.template.article"/>
+        <template name="events" display-name="template.name.events" filename="events.jsp" page-type="web_templates:events" description="description.template.events"/>
+        <template name="people" display-name="template.name.portraits" filename="people.jsp" page-type="web_templates:people" description="description.template.portraits"/>
+        <template name="press" display-name="template.name.pressReleases" filename="pressRelease.jsp" page-type="web_templates:pressRelease" description="description.template.pressReleases"/>
+        <template name="news" display-name="template.name.news" filename="news.jsp" page-type="web_templates:news" description="description.template.news"/>
+        <template name="job" display-name="template.name.job" filename="job.jsp" page-type="web_templates:job" description="description.template.job"/>
+        <template name="full" display-name="template.name.full" filename="full.jsp" page-type="web_templates:full" description="description.template.full"/>
+        <template name="publication" display-name="template.name.publications" filename="publication.jsp" page-type="web_templates:publication" description="description.template.publications"/>
+        <template name="layout" display-name="template.name.myPortal" filename="layoutManager.jsp" page-type="web_templates:layoutManager" description="description.template.myPortal"/>
     </templates>
 </template-set>
 

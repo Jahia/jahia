@@ -1,53 +1,35 @@
-/*
- * Copyright 2002-2008 Jahia Ltd
- *
- * Licensed under the JAHIA COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (JCDDL),
- * Version 1.0 (the "License"), or (at your option) any later version; you may
- * not use this file except in compliance with the License. You should have
- * received a copy of the License along with this program; if not, you may obtain
- * a copy of the License at
- *
- *  http://www.jahia.org/license/
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */// $Id: JahiaConfigurationWizard.java 21495 2008-07-22 14:17:03Z bpapez $
-//
-//  JahiaConfigurationWizard
-//
-//  25.01.2001  AK  added in jahia.
-//  26.01.2001  AK  replace sessions by context attributes, fixe some bugs,
-//                  create a real wizard with previous steps and next steps :o)
-//  29.01.2001  AK  fix database check resulting bug, change method to reset
-//                  jahia servlet re-init settings, and change context attributes
-//                  by adding package in attribute names.
-//  10.01.2001  AK  include design.
-//  26.02.2001  AK  prepare upgrade manager workplace.
-//  21.03.2001  AK  change backup method. flatfile and jahiafiles.
-//  22.03.2001  AK  detect data on database when installing.
-//  28.03.2001  AK  completely change the properties system.
-//  30.03.2001  AK  move database methods to org.jahia.admin.DatabaseConnection
-//                  and move database scripts methods to jahia.admin.DatabaseScripts
-//  16.05.2001  NK  create a default site at install.
-//  13.08.2001  AK  fix jahia files path checking bug.
-//  14.08.2001 n AK  fix all jahia files dependencies.
-//  15.08.2001  AK  transform "database treatment" (appear if the database is
-//                  not empty when the installation is performed) to a internal
-//                  developer only feature.
-//
-//  23.08.2001  AK  version 2.0
-//                  . quality improvement in this servlet and jsp files
-//                  . better exception management
-//                  . code improvement for quality and readability
-//                  . transfer getServerInformations() method as a jahia util
-//                  . complete and fix javadoc
-//                  . rename *installation* in *configuration wizard*
-//                  . put some constants in web.xml file for better changes
-//
-
+/**
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
 
 package org.jahia.bin;
 

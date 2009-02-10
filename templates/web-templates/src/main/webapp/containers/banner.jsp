@@ -39,8 +39,9 @@
 <template:containerList name="banner" id="banner" actionMenuNamePostFix="banner" actionMenuNameLabelKey="banner">
     <template:container id="bannerContainer" >
     <template:field name='background' valueBeanID="background" display="false"/>
+
     <div id="illustration2" style="background:transparent url(${background.downloadUrl}) no-repeat top left;">
-        <div class="illustration2-text" >
+        <div class="illustration2-text" style='margin-top:<template:field name="positionTop"/>px; margin-left:<template:field name="positionLeft"/>px'>
             <h2><template:field name="title"/></h2>
             <p><template:field name="cast"/></p>
         <div class="clear"></div></div>

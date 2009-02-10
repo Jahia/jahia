@@ -83,12 +83,12 @@
     </query:containerQuery>
 
     <c:if test="${display == 'small'}">
-        <%@ include file="../../../containers/newsContent/smallNewsDisplay.jspf" %>
+        <%@ include file="../../../containers/news/smallNewsDisplay.jspf" %>
     </c:if>
     <c:if test="${display == 'medium'}">
-        <%@ include file="../../../containers/newsContent/mediumNewsDisplay.jspf" %>
+        <%@ include file="../../../containers/news/mediumNewsDisplay.jspf" %>
     </c:if>
     <c:if test="${display == 'large'}">
-        <%@ include file="../../../containers/newsContent/largeNewsDisplay.jspf" %>
+        <%@ include file="../../../containers/news/largeNewsDisplay.jspf" %>
     </c:if>
 </template:containerList>

@@ -698,7 +698,7 @@ body {
 }
 
 #bodywrapper #navigationN1 li a {
-    background: transparent url( ../img/navigationN1Blue-separator.png ) no-repeat 0 50%;
+    background: transparent url( ../img/navigationN1Blue-separator.png ) no-repeat 100% 50%;
     color: #fff;
     display: inline;
     float: left;

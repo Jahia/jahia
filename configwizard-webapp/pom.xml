@@ -7,7 +7,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>configwizard-main</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <name>New configuration wizard main module</name>
     <version>${jahia.package.version}</version>
     <packaging>pom</packaging>

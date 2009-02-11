@@ -107,7 +107,10 @@ public class FileListContextMenu extends Menu {
                         isMount = topTableSelection.get(0).getNodeTypes().contains("jnt:vfsMountPoint") ;
                     }
                     isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(leftTreeSelection) ;
-                    isZip = topTableSelection.get(0).getExt().equalsIgnoreCase("zip") ;
+                    int extIndex = topTableSelection.get(0).getName().lastIndexOf(".") ;
+                    if (extIndex > 0 && topTableSelection.get(0).getName().substring(extIndex).equalsIgnoreCase(".zip")) {
+                        isZip = true ;
+                    }
                     isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
                 }
                 for (FileActionItemGroup group: config.getGroupedItems()) {

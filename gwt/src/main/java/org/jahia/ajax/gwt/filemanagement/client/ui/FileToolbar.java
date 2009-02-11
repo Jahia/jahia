@@ -168,7 +168,10 @@ public class FileToolbar extends TopBar {
                     isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0).getParent()) ;
                 }
             }
-            isZip = topTableSelection.get(0).getExt().equalsIgnoreCase("zip") ;
+            int extIndex = topTableSelection.get(0).getName().lastIndexOf(".") ;
+            if (extIndex > 0 && topTableSelection.get(0).getName().substring(extIndex).equalsIgnoreCase(".zip")) {
+                isZip = true ;
+            }
             isImage = topTableSelection.get(0).getNodeTypes().contains("jmix:image") ;
         }
         for (FileActionItemGroup group: configuration.getGroupedItems()) {

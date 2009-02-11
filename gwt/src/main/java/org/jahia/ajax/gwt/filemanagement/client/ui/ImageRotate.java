@@ -79,7 +79,13 @@ public class ImageRotate extends Window {
 
         final TextField<String> newname = new TextField<String>();
         newname.setName("newname");
-        newname.setValue(n.getName().replaceAll("." + n.getExt(), "_rotate" + "." + n.getExt()));
+        int extIndex = n.getName().lastIndexOf(".") ;
+        if (extIndex > 0) {
+            String dotExt = n.getName().substring(extIndex) ;
+            newname.setValue(n.getName().replaceAll(dotExt, "_rotate" + dotExt));
+        } else {
+            newname.setValue(n.getName() + "_rotate");
+        }
         newname.setFieldLabel(Resources.getResource("fm_newname"));
         form.add(newname);
 

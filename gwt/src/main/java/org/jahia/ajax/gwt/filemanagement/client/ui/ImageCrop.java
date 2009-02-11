@@ -79,7 +79,10 @@ public class ImageCrop extends Window {
             w = w * 350 / h;
             h = 350;
         }
-        
+
+        if (w < 328) {
+            w = 328 ;
+        }
         setSize(w + 12, h + 105);
 
         setLayout(new FlowLayout()) ;
@@ -114,7 +117,13 @@ public class ImageCrop extends Window {
         form.setInsetBorder(false);
         form.setBorders(false);
         newname.setName("newname");
-        newname.setValue(n.getName().replaceAll("." + n.getExt(), "_crop" + "." + n.getExt()));
+        int extIndex = n.getName().lastIndexOf(".") ;
+        if (extIndex > 0) {
+            String dotExt = n.getName().substring(extIndex) ;
+            newname.setValue(n.getName().replaceAll(dotExt, "_crop" + dotExt));
+        } else {
+            newname.setValue(n.getName() + "_crop");
+        }
         newname.setFieldLabel(Resources.getResource("fm_newname"));
         form.add(newname);
 

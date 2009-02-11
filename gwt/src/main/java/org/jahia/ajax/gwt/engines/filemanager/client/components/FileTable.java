@@ -186,11 +186,7 @@ public class FileTable extends TopRightComponent {
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
             public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
-                if (modelData.getExt() == null || modelData.getExt().equals("zzzzzz")) {
-                    return "<img src='../../css/gwt/images/xtheme-jahia-andromeda/gxt/icons/folder-closed.gif'>" ;
-                } else {
-                    return new StringBuilder("<img src='../images/types/gwt/").append(modelData.getExt()).append(".png'>").toString() ;
-                }
+                return new StringBuilder("<img src='../images/types/gwt/").append(modelData.getExt()).append(".png'>").toString() ;
             }
         });
         col.setSortable(true);

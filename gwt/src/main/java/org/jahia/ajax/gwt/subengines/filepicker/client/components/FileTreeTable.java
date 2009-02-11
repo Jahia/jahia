@@ -164,11 +164,7 @@ public class FileTreeTable extends TopRightComponent {
         binder.setDisplayProperty("displayName");
         binder.setIconProvider(new ModelStringProvider<GWTJahiaNode>() {
             public String getStringValue(GWTJahiaNode modelData, String s) {
-                if (modelData.getExt() == null || modelData.getExt().equals("zzzzzz")) {
-                    return null ;
-                } else {
-                    return modelData.getExt() ;
-                }
+                return modelData.getExt() ;
             }
         });
 

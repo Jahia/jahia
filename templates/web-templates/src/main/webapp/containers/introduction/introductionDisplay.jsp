@@ -35,10 +35,10 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 <div class="intro">
-<template:containerList name="myPortalTop" id="myPortalTopContainerList" actionMenuNamePostFix="myPortalTop"
-                       actionMenuNameLabelKey="introduction">
-    <template:container id="mainContent">
-        <template:field name='introduction'/>
-    </template:container>
-</template:containerList>
+    <template:containerList name="introduction" id="introductionContainerList" actionMenuNamePostFix="introduction"
+                           actionMenuNameLabelKey="introduction">
+        <template:container id="mainContent">
+            <template:field name='introduction' />
+        </template:container>
+    </template:containerList>
 </div>

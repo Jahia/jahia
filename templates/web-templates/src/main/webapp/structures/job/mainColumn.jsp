@@ -43,7 +43,7 @@
     <div class="mainColumn"><!--start spaceContent -->
                 <template:include page="common/breadcrumb.jsp"/>
         <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></h2>
-        <template:include page="containers/job/jobTopDisplay.jsp"/>
+        <template:include page="containers/introduction/introductionDisplay.jsp"/>
 
 <!--start jobsSearchForm -->
 		<div class="jobsSearchForm">

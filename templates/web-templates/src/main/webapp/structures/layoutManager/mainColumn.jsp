@@ -41,7 +41,7 @@
         <a href="javascript:jahiaportal_returnToPortal();">
             <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></h2>
         </a>
-        <template:include page="containers/myPortal/myPortalTopDisplay.jsp"/>
+        <template:include page="containers/introduction/introductionDisplay.jsp"/>
 
         <template:layoutManagerArea/>
 

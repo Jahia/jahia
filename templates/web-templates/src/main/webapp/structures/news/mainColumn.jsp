@@ -43,7 +43,7 @@
     <div class="mainColumn"><!--start spaceContent -->
         <template:include page="common/breadcrumb.jsp"/>
         <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></h2>
-        <template:include page="containers/news/newsTopDisplay.jsp"/>
+        <template:include page="containers/introduction/introductionDisplay.jsp"/>
 
         <div class="box4 "><!--start box 4 default-->
             <div class="box4-topright"></div>

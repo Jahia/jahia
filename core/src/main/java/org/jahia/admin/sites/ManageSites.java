@@ -370,10 +370,10 @@ public class ManageSites extends AbstractAdministrationModule {
         request.setAttribute("warningMsg", warningMsg);
         request.setAttribute("defaultSite", defaultSite);
         request.setAttribute("newAdminOnly", Boolean.valueOf(grantedSites.size() <= 0));
-        String enforePasswordPolicy = newJahiaSite.getSettings().getProperty(
+        String enforcePasswordPolicy = newJahiaSite.getSettings().getProperty(
                 JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
         request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                enforePasswordPolicy != null ? enforePasswordPolicy
+                enforcePasswordPolicy != null ? enforcePasswordPolicy
                         : "false");
 
         try {
@@ -1271,10 +1271,10 @@ public class ManageSites extends AbstractAdministrationModule {
             Boolean versioningEnabled = Boolean.valueOf(site.isVersioningEnabled());
             Boolean stagingEnabled = Boolean.valueOf(site.isStagingEnabled());
 
-            String enforePasswordPolicy = site.getSettings().getProperty(
+            String enforcePasswordPolicy = site.getSettings().getProperty(
                     JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
             request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
-                    enforePasswordPolicy != null ? enforePasswordPolicy
+                    enforcePasswordPolicy != null ? enforcePasswordPolicy
                             : "false");
 
 
@@ -1378,8 +1378,8 @@ public class ManageSites extends AbstractAdministrationModule {
             JahiaTemplatesPackage tmplPack = templateMgr
                     .getTemplatePackage(selectedTmplSet);
 
-            String enforePasswordPolicy = site.getSettings().getProperty(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
-            request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY, enforePasswordPolicy != null ? enforePasswordPolicy : "false");
+            String enforcePasswordPolicy = site.getSettings().getProperty(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
+            request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY, enforcePasswordPolicy != null ? enforcePasswordPolicy : "false");
 
             Boolean defaultSite = Boolean.FALSE;
             if (request.getAttribute("defaultSite") == null) {

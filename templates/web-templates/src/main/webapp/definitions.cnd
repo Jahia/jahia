@@ -57,11 +57,6 @@ file logo (file[mime='image/*'])
 [web_templates:footerContentContainer] > jnt:container
 bigText        footer = "&copy; Copyright 2002-2009 - Jahia Solutions" i15d
 
-[web_templates:pressreleaseContainer] > jnt:container, web_templates:title
-smallText pressReleaseIntro
-bigText pressReleaseBody
-date pressReleaseDate = now()
-
 [web_templates:peopleContainer] > jnt:container
  sharedSmallText peopleFirstname
  sharedSmallText peopleLastname primary
@@ -182,6 +177,7 @@ containerList people (web_templates:peopleContainer)
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
 
 [web_templates:pressRelease] > jnt:page, web_templates:introduction
+containerList press (web_templates:pressContainer)
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
 
 [web_templates:news] > jnt:page,web_templates:navigation, web_templates:introduction

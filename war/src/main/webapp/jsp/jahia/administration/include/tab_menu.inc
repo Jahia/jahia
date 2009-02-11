@@ -38,15 +38,24 @@
                     org.jahia.services.sites.JahiaSitesService,
                     org.jahia.registries.ServicesRegistry" 
 %><%
-    Integer siteID = jData.getProcessingContext().getSiteID();
     JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
-    if (siteID == null) {
-        siteID = -1;
+    JahiaSite theSite = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
+    if (theSite != null && theSite.getID() == -1) {
+        theSite = null;
     }
-    JahiaSite theSite = siteID.intValue() > 0 ? ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID.intValue()) : null;
+    Integer siteID = null;
+    if (theSite == null) {
+        siteID = jData.getProcessingContext().getSiteID();
+        if (siteID != null && siteID.intValue() > 0) {
+            theSite = siteService.getSite(siteID.intValue());
+        }
+    }
+        
     if (theSite == null && siteService.getNbSites() > 0) {
-        theSite = siteService.getSites().next();
+        theSite = siteService.getDefaultSite();
     }
+    siteID = theSite != null ? theSite.getID() : null;
+    
     //Boolean configJahia = (Boolean) request.getAttribute("configJahia");
     Integer daysLeft = (Integer) request.getAttribute("daysLeft");
 %>

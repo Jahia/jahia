@@ -73,7 +73,7 @@ usrProviders = new ArrayList();
                     <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.doYouWantToContinue.label"/>
                   </div>
                 </div>
-                <form method="POST" action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processdelete&siteid=" + siteID.intValue())%>' name="mainForm">
+                <form method="post" action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processdelete&siteid=" + request.getParameter("siteid"))%>' name="mainForm">
                   <p class="errorbold">
                     <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.pleaseBeCareful.label"/>
                   </p>
@@ -149,7 +149,7 @@ usrProviders = new ArrayList();
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + siteID.intValue())%>'><internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/></a>
+              <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + request.getParameter("siteid"))%>'><internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">

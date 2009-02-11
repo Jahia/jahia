@@ -1140,13 +1140,18 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
             try {
                 contentPage = ServicesRegistry.getInstance().getJahiaPageService()
                         .lookupContentPage(I, false);
-                if (contentPage.getJahiaID() != site.getID())
+                if (contentPage.getJahiaID() != site.getID()) {
                     contentPage = site.getHomeContentPage(); // site has changed , we cannot use the old page
+                    session.setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, Integer.valueOf(contentPage.getID()));
+                }
             } catch (Exception t) {
                 logger.debug(t.getMessage(), t);
             }
         } else {
             contentPage = site.getHomeContentPage();
+            if (contentPage != null) {
+                session.setAttribute(ProcessingContext.SESSION_LAST_REQUESTED_PAGE_ID, Integer.valueOf(contentPage.getID()));
+            }
         }
 
         // start the chrono...

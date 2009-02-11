@@ -310,12 +310,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
             final ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());
             try {
                 // build jParam
-                if (mode != null) {
-                    jParams = pcf.getContext(request, response, context, createExtraParam(mode, pid));
-                } else {
-                    logger.debug("Operation mode is not specified.");
-                    jParams = pcf.getContext(request, response, context);
-                }
+                jParams = pcf.getContext(request, response, context, createExtraParam(mode != null ? mode : ProcessingContext.NORMAL, pid));
                 request.setAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN, jParams);
                 return jParams;
             } catch (org.jahia.exceptions.JahiaSiteNotFoundException e) {

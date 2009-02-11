@@ -994,7 +994,7 @@ public class WAIValidator {
                     serial.reset();
                 }
             }
-            if (node.getClass() == HTMLImageElementImpl.class) {
+            if (node.getClass() == HTMLImageElementImpl.class && node.hasAttributes() && node.getAttributes().getNamedItem("src") != null) {
                 final String src = node.getAttributes().getNamedItem("src").getNodeValue();
                 final boolean shrinkImage = width > 0 && height > 0;
                 if (!shrinkImage) buff.append("<div class='imageWrapper'>");

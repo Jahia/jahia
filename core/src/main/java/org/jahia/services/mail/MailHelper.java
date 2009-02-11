@@ -143,7 +143,7 @@ public class MailHelper {
             }
         }
 
-        return name;
+        return name != null ? name : user.getUsername();
     }
 
     /**

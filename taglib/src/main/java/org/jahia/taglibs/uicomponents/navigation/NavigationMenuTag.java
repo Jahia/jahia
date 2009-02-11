@@ -435,7 +435,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }*/
 
         if (!editMenuAtEnd) {
-            if (editMode && !hideActionMenus && (level >= reqLevel - 1 || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
                 String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
                 if (actionMenuDisplay != null) {
                     if (begin) {
@@ -600,7 +600,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }
 
         if (editMenuAtEnd) {
-            if (editMode && !hideActionMenus && (level >= reqLevel - 1 || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
                 String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
                 if (actionMenuDisplay != null) {
                     if (begin) {

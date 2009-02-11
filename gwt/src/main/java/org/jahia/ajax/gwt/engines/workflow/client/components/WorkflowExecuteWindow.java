@@ -103,9 +103,9 @@ public class WorkflowExecuteWindow extends Window {
         if (!((WorkflowTable)linker.getTopRightObject()).getChecked().isEmpty()) {
             ((WorkflowToolbar)linker.getTopObject()).addToBatch();
         }
-        if (((WorkflowToolbar)linker.getTopObject()).getBatch().isEmpty()) {
-            execute.setEnabled(false);
-        }
+        // this cleans empty entries in the batch map
+        ((WorkflowToolbar)linker.getTopObject()).cleanBatch();
+        execute.setEnabled(!((WorkflowToolbar)linker.getTopObject()).getBatch().isEmpty());
         show();
         setSize(350, 160);
     }
@@ -119,6 +119,7 @@ public class WorkflowExecuteWindow extends Window {
             }
 
             public void onSuccess(Object o) {
+                ((WorkflowToolbar)linker.getTopObject()).clearBatch() ;
                 close();
                 WindowUtil.close() ;
             }

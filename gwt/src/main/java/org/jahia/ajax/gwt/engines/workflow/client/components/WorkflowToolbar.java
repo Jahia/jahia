@@ -66,12 +66,7 @@ import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowManagerState;
 import org.jahia.ajax.gwt.tripanelbrowser.client.components.TopBar;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Toolbar for the workflow manager.
@@ -227,6 +222,35 @@ public class WorkflowToolbar extends TopBar {
 
     public Map<String, Map<String, Set<String>>> getBatch() {
         return batch ;
+    }
+
+    public void cleanBatch() {
+        List<String> keysToRemove = new ArrayList<String>() ;
+        List<String> actionsToRemove = new ArrayList<String>() ;
+        for (String action: batch.keySet()) {
+            keysToRemove.clear();
+            Map<String, Set<String>> keys = batch.get(action) ;
+            for (String key: keys.keySet()) {
+                if (keys.get(key).isEmpty()) {
+                    Log.debug("should remove key : " + key) ;
+                    keysToRemove.add(key) ;
+                }
+            }
+            for (String key: keysToRemove) {
+                keys.remove(key) ;
+            }
+            if (keys.isEmpty()) {
+                Log.debug("should remove action : " + action) ;
+                actionsToRemove.add(action) ;
+            }
+        }
+        for (String action: actionsToRemove) {
+            batch.remove(action) ;
+        }
+    }
+
+    public void clearBatch() {
+        batch.clear();
     }
 
     /**

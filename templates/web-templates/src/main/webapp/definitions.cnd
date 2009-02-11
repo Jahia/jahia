@@ -15,7 +15,7 @@ page            link (page[type="internal"])
 
 [web_templates:bannerContainer] > jnt:container
 file            background
-smallText       title
+smallText       title primary
 smallText       cast
 integer         positionTop
 integer         positionLeft
@@ -30,7 +30,7 @@ file            image (file[mime='image/*'])
 page            link
 
 [web_templates:fileContainer] > jnt:fileContainer
-smallText       title
+smallText       title  primary
 
 [web_templates:filesBox] > jnt:box
 containerList fileContainer (web_templates:fileContainer)
@@ -42,14 +42,14 @@ file logo (file[mime='image/*'])
 bigText        footer = "&copy; Copyright 2002-2009 - Jahia Solutions" i15d
 
 [web_templates:pressreleaseContainer] > jnt:container
-smallText pressReleaseTitle
+smallText pressReleaseTitle primary
 smallText pressReleaseIntro
 bigText pressReleaseBody
 date pressReleaseDate = now()
 
 [web_templates:peopleContainer] > jnt:container
  sharedSmallText peopleFirstname
- sharedSmallText peopleLastname
+ sharedSmallText peopleLastname primary
  smallText peopleFunction
  sharedSmallText peopleBusinessUnit (choicelist) <
     resourceKey(sales),
@@ -65,16 +65,16 @@ date pressReleaseDate = now()
  file peoplePicture (file[mime='image/*'])
 
 [web_templates:introContainer] > jnt:container
-bigText       introduction
+bigText       introduction primary
 
 [web_templates:pressContainer] > jnt:container
-smallText       title
+smallText       title primary
 bigText         body
 date            date
 file            pdfVersion
 
 [web_templates:eventContainer] > jnt:container
-smallText       title
+smallText       title primary
 date            startDate
 date            endDate
 smallText      location
@@ -82,14 +82,14 @@ bigText         body
 
 [web_templates:answerJobContainer] > jnt:container
 sharedSmallText firstname
-sharedSmallText lastname
+sharedSmallText lastname primary
 sharedSmallText email
 bigText         text
 
 
 
 [web_templates:jobContainer] > jnt:container
-smallText       title
+smallText       title primary
 smallText       reference
 smallText       businessUnit
 sharedSmallText contract (choicelist) <
@@ -105,7 +105,7 @@ bigText         skills
 containerList   jobAnswers (web_templates:answerJobContainer)
 
 [web_templates:publicationContainer] > jnt:container
-smallText       title
+smallText       title primary
 file            file
 file            preview
 smallText      author
@@ -127,13 +127,13 @@ sharedSmallText insertPosition (choicelist) = resourceKey(left) < resourceKey(le
 integer         insertWidth = "150"
 
 [web_templates:articleContainer] > jnt:container
-smallText       title
+smallText       title primary
 bigText         intro
 containerList   paragraph (web_templates:paragraphContainer)
 
 
 [web_templates:promoAdvancedContainer] > web_templates:promoContainer
-smallText      title
+smallText      title primary
 smallText      abstract
 
 [web_templates:newsContainer] > jnt:newsContainer
@@ -155,7 +155,6 @@ bigText description
 [web_templates:header] mixin
 containerList   basicLinkHeader (web_templates:basicLinkContainer)
 containerList   navLink (jnt:navLink)
-singleContainer logo (web_templates:logoContainer)
 
 [web_templates:footer] mixin
 singleContainer footerContainerList (web_templates:footerContentContainer)
@@ -166,6 +165,7 @@ containerList   bottomLinks (web_templates:bottomLinksContainer)
 // Web templates templates definitions
 
 [web_templates:home] > jnt:page, web_templates:header, web_templates:footer
+singleContainer logo (web_templates:logoContainer)
 singleContainer banner (web_templates:bannerContainer)
 containerList   promo (web_templates:promoAdvancedContainer)
 containerList   columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:IframeBox,web_templates:lastNewsBox,jnt:textsBox,web_templates:filesBox"])

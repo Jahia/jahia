@@ -255,7 +255,7 @@ public class ToolbarManager {
     private void createToolbarUI(GWTToolbars gwtToolbars) {
 
         final List<GWTToolbar> toolbarList = gwtToolbars.getToolbarList();
-        if (toolbarList != null || toolbarList.isEmpty()) {
+        if (toolbarList != null && !toolbarList.isEmpty()) {
             // init the ui
             if (!toolbarsPanelsLoaded) {
                 initToolbarsPanels();

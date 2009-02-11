@@ -105,7 +105,10 @@
 
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.information.label" aliasResourceName="fm_information"/>
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.label" aliasResourceName="fm_properties"/>
+    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.roles.label" aliasResourceName="fm_roles"/>
+    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.modes.label" aliasResourceName="fm_modes"/>
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.authorizations.label" aliasResourceName="fm_authorizations"/>
+
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.label" aliasResourceName="fm_usages"/>
 
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.info.name.label" aliasResourceName="fm_info_name"/>

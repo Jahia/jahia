@@ -58,6 +58,10 @@ public final class JCRClientUtils {
     public final static String SHARED_MASHUP_REPOSITORY = "sharedMashupRepository" ;
     public final static String WEBSITE_MASHUP_REPOSITORY = "websiteMashupRepository" ;
 
+    public final static String AUTHORIZATIONS_ACL = "default" ;
+    public final static String MODES_ACL = "modes" ;
+    public final static String ROLES_ACL = "roles" ;
+
     public final static String ALL_MASHUPS = "mashups" ;
 
     public final static String GLOBAL_REPOSITORY = "globalRepository" ;

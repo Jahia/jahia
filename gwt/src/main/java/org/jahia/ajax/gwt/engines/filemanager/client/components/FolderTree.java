@@ -88,7 +88,7 @@ public class FolderTree extends LeftComponent {
      */
     public FolderTree(ManagerConfiguration config) {
 
-        for (String repoId: config.getTabs()) {
+        for (String repoId: config.getAccordionPanels()) {
             repositories.add(new RepositoryTab(this, service, repoId, JCRClientUtils.REPO_LABELS.get(repoId), config)) ;
         }
 
@@ -169,7 +169,7 @@ public class FolderTree extends LeftComponent {
         m_component.setBorders(true);
         for (RepositoryTab tab: repositories) {
             m_component.add(tab) ;
-            if (tab.getRepositoryType().equals(config.getSelectedTab())) {
+            if (tab.getRepositoryType().equals(config.getSelectedAccordion())) {
                 tab.setExpanded(true);
             }
             tab.addListener(Events.Expand, accordionListener) ;

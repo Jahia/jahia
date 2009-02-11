@@ -148,14 +148,15 @@ public class ManagerConfigurationFactory {
         // no columns to add (default)
 
         // show all repository
-        completeManagerConfig.addTab(JCRClientUtils.WEBSITE_REPOSITORY);
-        completeManagerConfig.addTab(JCRClientUtils.SHARED_REPOSITORY) ;
-        completeManagerConfig.addTab(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
-        completeManagerConfig.addTab(JCRClientUtils.MY_REPOSITORY) ;
-        completeManagerConfig.addTab(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
-        completeManagerConfig.addTab(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
-        completeManagerConfig.addTab(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
-        completeManagerConfig.addTab(JCRClientUtils.GLOBAL_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
+        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
+        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY) ;
+
 
         // show the current site (first) tab by default
 
@@ -237,10 +238,10 @@ public class ManagerConfigurationFactory {
         // no columns to add (default)
 
         // hide the mashup repository and the global repository
-        fileManagerConfig.addTab(JCRClientUtils.WEBSITE_REPOSITORY);
-        fileManagerConfig.addTab(JCRClientUtils.SHARED_REPOSITORY) ;
-        fileManagerConfig.addTab(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
-        fileManagerConfig.addTab(JCRClientUtils.MY_REPOSITORY) ;
+        fileManagerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
+        fileManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY) ;
+        fileManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
+        fileManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY) ;
 
         // show the current site (first) tab by default
 
@@ -338,9 +339,15 @@ public class ManagerConfigurationFactory {
         // no columns to add (default)
 
         // show only the mashup repository
-        mashupManagerConfig.addTab(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
-        mashupManagerConfig.addTab(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
-        mashupManagerConfig.addTab(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
+        mashupManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
+        mashupManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
+        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
+        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
+
+        mashupManagerConfig.addTab(JCRClientUtils.ROLES_ACL) ;
+        mashupManagerConfig.addTab(JCRClientUtils.MODES_ACL) ;
+        mashupManagerConfig.addTab(JCRClientUtils.AUTHORIZATIONS_ACL) ;
+
 
         // show the mashup tab by default
 

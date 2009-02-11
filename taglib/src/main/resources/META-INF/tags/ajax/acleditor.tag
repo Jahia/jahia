@@ -63,5 +63,6 @@
                                      aliasResourceName="um_adduser"/>
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
                                      aliasResourceName="um_addgroup"/>
+    
 
 </template:gwtJahiaModule>

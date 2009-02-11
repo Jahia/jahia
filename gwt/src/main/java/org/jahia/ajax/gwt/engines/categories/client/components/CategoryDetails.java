@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Events;
@@ -53,6 +54,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.Observable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -244,7 +246,7 @@ public class CategoryDetails extends BottomRightComponent {
 
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         aclEditor = new AclEditor(gwtJahiaNodeACL, true);
-                        final Button saveButton = aclEditor.getSaveButton();
+                        final TextToolItem saveButton = aclEditor.getSaveButton();
 
                         // add selection lister on save button
                         saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {

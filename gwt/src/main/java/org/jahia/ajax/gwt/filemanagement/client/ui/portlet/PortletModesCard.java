@@ -34,7 +34,8 @@
 package org.jahia.ajax.gwt.filemanagement.client.ui.portlet;
 
 import org.jahia.ajax.gwt.aclmanagement.client.ui.AclEditor;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import org.jahia.ajax.gwt.filemanagement.client.util.JCRClientUtils;
+import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 
 /**
  * User: ktlili
@@ -60,12 +61,12 @@ public class PortletModesCard extends MashupWizardCard {
     public void createUI() {
         removeAll();
         modeMappingEditor = new AclEditor(getPortletWizardWindow().getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition().getBaseAcl(), false);
-        modeMappingEditor.setAclGroup("modes");
-        Button saveButton = modeMappingEditor.getSaveButton();
+        modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
+        TextToolItem saveButton = modeMappingEditor.getSaveButton();
         saveButton.setVisible(false);
 
 
-        Button restoreButton = modeMappingEditor.getRestoreButton();
+        TextToolItem restoreButton = modeMappingEditor.getRestoreButton();
         restoreButton.setVisible(false);
         add(modeMappingEditor.renderNewAclPanel());
 

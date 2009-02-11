@@ -38,6 +38,7 @@ import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.aclmanagement.client.ui.AclEditor;
 import org.jahia.ajax.gwt.aclmanagement.client.ACLService;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -81,7 +82,7 @@ public class ACLEditorEntryPoint {
                     aclEditor = new AclEditor(result, false);
                     aclEditor.setCanBreakInheritance(true);
                     aclEditor.setReadOnly(readOnly);
-                    final Button saveButton = aclEditor.getSaveButton();
+                    final Widget saveButton = aclEditor.getSaveButton();
                     saveButton.setVisible(false);
                     ContentPanel w = aclEditor.renderNewAclPanel();
                     w.setHeight("500px");

@@ -307,6 +307,19 @@
     margin: 10px;
 }
 
+/*common*/
+.gwt-icons-delete {
+    background-image: url( ../images/icons/remove.png ) !important;
+}
+
+.gwt-icons-restore {
+    background-image: url( ../images/actions/restore.png ) !important;
+}
+
+.gwt-icons-save {
+    background-image: url( ../images/icons/tick.png) !important;
+}
+
 /*filemanagement*/
 .fm-infoPane {
     padding: 10px;

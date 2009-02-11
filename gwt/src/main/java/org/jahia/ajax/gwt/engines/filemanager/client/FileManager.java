@@ -74,7 +74,7 @@ public class FileManager extends TriPanelBrowserViewport {
         // construction of the UI components
         LeftComponent tree = new FolderTree(config);
         final FilesView filesViews = new FilesView(config);
-        BottomRightComponent tabs = new FileDetails();
+        BottomRightComponent tabs = new FileDetails(config);
         TopBar toolbar = new FileToolbar(config) {
             protected void setListView() {
                 filesViews.switchToListView();

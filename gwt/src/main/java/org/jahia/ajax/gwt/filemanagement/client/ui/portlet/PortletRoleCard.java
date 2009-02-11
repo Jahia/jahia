@@ -34,9 +34,11 @@
 package org.jahia.ajax.gwt.filemanagement.client.ui.portlet;
 
 import org.jahia.ajax.gwt.aclmanagement.client.ui.AclEditor;
+import org.jahia.ajax.gwt.filemanagement.client.util.JCRClientUtils;
 
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * User: ktlili
@@ -60,11 +62,11 @@ public class PortletRoleCard extends MashupWizardCard {
     public void createUI() {
         removeAll();
         roleMappingEditor = new AclEditor(getPortletWizardWindow().getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition().getBaseAcl(), false);
-        roleMappingEditor.setAclGroup("roles");
-        Button saveButton = roleMappingEditor.getSaveButton();
+        roleMappingEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
+        Widget saveButton = roleMappingEditor.getSaveButton();
         saveButton.setVisible(false);
 
-        Button restoreButton = roleMappingEditor.getRestoreButton();
+        Widget restoreButton = roleMappingEditor.getRestoreButton();
         restoreButton.setVisible(false);
 
         ContentPanel aclPanel = roleMappingEditor.renderNewAclPanel();

@@ -179,7 +179,7 @@ limitations under the License.
                 <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>
             </th>
             <th width="3%">
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.default.label"/>
+                &nbsp;
             </th>
             <th width="30%">
                 <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.templateSet.label"/>

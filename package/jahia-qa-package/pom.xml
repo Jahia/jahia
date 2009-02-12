@@ -44,7 +44,7 @@
                 <version>1.0-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <phase>test</phase>
+                        <phase>integration-test</phase>
                         <configuration>
                             <startupWait>true</startupWait>
                         </configuration>
@@ -60,7 +60,7 @@
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>test</phase>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>report-only</goal>
                         </goals>

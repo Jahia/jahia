@@ -41,6 +41,7 @@ public class ImportTest extends XMLTestCase {
     @Override
     protected void setUp() throws Exception {
         site = TestHelper.createSite("testSite");
+        ctx = Jahia.getThreadParamBean();
         assertNotNull(site);
 
     }

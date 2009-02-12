@@ -182,6 +182,7 @@
     }
 
     String pageURLKey = pageBean.getUrlKey();
+    final boolean hideFromNavigationMenu = pageBean.isHideFromNavigationMenu();
     String remoteURL = pageBean.getRemoteURL(processingLocale.toString());
     if (remoteURL == null) {
         remoteURL = "http://";
@@ -234,6 +235,11 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
     final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
     if (aclService.getSiteActionPermission(LockPrerequisites.URLKEY, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0) {
         displayURLKeyInput = false;
+    }
+
+    boolean displayHideFromNavigationMenuInput = true;
+    if (aclService.getSiteActionPermission(LockPrerequisites.HIDE_FROM_NAVIGATION_MENU, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0) {
+        displayHideFromNavigationMenuInput = false;
     }
 
 %>
@@ -497,9 +503,21 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     </td>
 </tr>
 <% } %>
+<% if (displayHideFromNavigationMenuInput) { %>
+<tr>
+    <th>
+        <internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.hideFromNavigationMenu.label"/><br/>
+    </th>
+    <td>
+        <input type="checkbox" name="hideFromNavigationMenu" <% if (hideFromNavigationMenu) { %> checked="checked" <% } %> />
+    </td>
+</tr>
+<% } %>
 <tr>
 <th valign="top">
-    Page type
+    <internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.pageType.label"/>
 </th>
 <td>
 <table>
@@ -555,7 +573,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <% if (isNewPage) { %>
         <!-- Create a new page -->
         <input id="directPageRadio" type="radio" name="operation"
-               value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation())) { %>
+               value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation()) || Page_Field.RESET_LINK.equals(pageBean.getOperation())) { %>
                checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false;">&nbsp;
         <% } else { %>
         <input id="directPageRadio" type="radio" name="operation"

@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -527,6 +527,12 @@ public class Page_Field implements FieldSubEngine {
                     JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) {
                 result = setPageURLKeyIfValidAndNotEmpty(jParams, engineMap);
             }
+
+            if (aclService.getSiteActionPermission(LockPrerequisites.HIDE_FROM_NAVIGATION_MENU, jParams.getUser(),
+                    JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) {
+                setHideFromNavigationMenu(jParams, engineMap);
+            }
+
         } else if (LINK_URL.equals(operation)) {
             String remoteURL = jParams.getParameter("remote_url");
 
@@ -677,6 +683,9 @@ public class Page_Field implements FieldSubEngine {
                     jahiaPage.getContentPage().setPageKey(urlKey);
                 }
 
+                final boolean hideFromNavigationMenu = pageBean.isHideFromNavigationMenu();
+                jahiaPage.getContentPage().setProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU, String.valueOf(hideFromNavigationMenu));
+
 //                if (CREATE_PAGE.equals(operation)) {
 //                    jahiaPage = ServicesRegistry.getInstance().getJahiaPageService().
 //                            createPage(pageBean.getSiteID(),
@@ -738,6 +747,12 @@ public class Page_Field implements FieldSubEngine {
             if (pageKeyHasChanged) {
                 jahiaPage.getContentPage().setPageKey(urlKey);
                 jahiaPage.getContentPage().setUnversionedChanged();
+            }
+
+            final boolean hideFromNavigationMenu = pageBean.isHideFromNavigationMenu();
+            final boolean oldHideFromNavigationMenu = Boolean.valueOf(jahiaPage.getProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU));
+            if (hideFromNavigationMenu != oldHideFromNavigationMenu) {
+                jahiaPage.getContentPage().setProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU, String.valueOf(hideFromNavigationMenu));
             }
 
             contentPage = ServicesRegistry.getInstance().getJahiaPageService().
@@ -812,7 +827,7 @@ public class Page_Field implements FieldSubEngine {
                 retRule = null;
                 ObjectKey tbpObjectKey = tbpService.getParentObjectKeyForTimeBasedPublishing(
                         contentPage.getObjectKey(), jParams.getUser(), jParams.getEntryLoadRequest(), jParams
-                        .getOperationMode(), true);
+                                .getOperationMode(), true);
 
                 if (tbpObjectKey != null) {
                     if (oldParentFieldID != -1) {
@@ -1230,9 +1245,14 @@ public class Page_Field implements FieldSubEngine {
                         null,
                         theField.getID());
 
-                final PageProperty pageProp = jahiaPage.getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
-                if (pageProp != null) {
-                    pageBean.setUrlKey(pageProp.getValue());
+                final PageProperty urlKeyProp = jahiaPage.getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
+                if (urlKeyProp != null) {
+                    pageBean.setUrlKey(urlKeyProp.getValue());
+                }
+
+                final PageProperty hideFromMenuProp = jahiaPage.getPageLocalProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU);
+                if (hideFromMenuProp != null) {
+                    pageBean.setHideFromNavigationMenu(Boolean.valueOf(hideFromMenuProp.getValue()));
                 }
 
                 if (contentPage.getPageType(jParams.getEntryLoadRequest()) != -1) {
@@ -1292,6 +1312,14 @@ public class Page_Field implements FieldSubEngine {
             return false;
         }
         return true;
+    }
+
+    private void setHideFromNavigationMenu(final ProcessingContext jParams,
+                                           final Map engineMap) {
+        final boolean hideFromNavigationMenu = jParams.getParameter("hideFromNavigationMenu") != null;
+        final JahiaPageEngineTempBean pageTempBean = (JahiaPageEngineTempBean) engineMap.get("pageTempBean");
+        engineMap.put("hideFromNavigationMenu", hideFromNavigationMenu);
+        pageTempBean.setHideFromNavigationMenu(hideFromNavigationMenu);
     }
 
 }

@@ -360,6 +360,7 @@
                                 <value>org.jahia.actions.sites.*.engines.actions.publishAll</value>
                                 <value>org.jahia.actions.sites.*.engines.actions.immediateCron</value>
                                 <value>org.jahia.actions.sites.*.engines.actions.urlKey</value>
+                                <value>org.jahia.actions.sites.*.engines.actions.hideFromNavigationMenu</value>
                             </list>
                         </entry>
                         <entry key="languages">

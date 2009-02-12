@@ -73,6 +73,7 @@ public class LockPrerequisites {
     public static final String PUBLISH_ALL = "engines.actions.publishAll";
     public static final String IMMEDIATE_CRON = "engines.actions.immediateCron";
     public static final String URLKEY = "engines.actions.urlKey";
+    public static final String HIDE_FROM_NAVIGATION_MENU = "engines.actions.hideFromNavigationMenu";
 
     public static final String CONTENT_PICKER = "engines.importexport.ManageContentPicker";
     public static final String VERSIONNING = "engines.versioning.PagesVersioningAction";

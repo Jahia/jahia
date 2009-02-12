@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -33,12 +33,12 @@
 
 package org.jahia.engines.shared;
 
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jahia.services.pages.JahiaPage;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * For use in the Page_Field engine, to handle every page parameters without changing/creating
@@ -46,19 +46,20 @@ import java.io.Serializable;
  */
 public class JahiaPageEngineTempBean implements Serializable {
 
-    private	int id;
-    private	int siteID;
-    private	int parentID;
+    private int id;
+    private int siteID;
+    private int parentID;
     private int pageType;
-    private	Map<String, String> titles = new HashMap<String, String>();
-    private	int pageTemplateID;
+    private Map<String, String> titles = new HashMap<String, String>();
+    private int pageTemplateID;
     private Map<String, String> remoteURLs = new HashMap<String, String>();
-    private	int pageLinkID;
-    private	String creator;
+    private int pageLinkID;
+    private String creator;
     private int linkFieldID;
     private String operation = Page_Field.RESET_LINK;
     private boolean sharedTitle;
     private boolean deleteOldContainer = true;
+    private boolean hideFromNavigationMenu = false;
     private String urlKey;
 
     public JahiaPageEngineTempBean(int id,
@@ -80,47 +81,72 @@ public class JahiaPageEngineTempBean implements Serializable {
     } // end constructor
 
     //------------------------------------------------------------------------
-    public int getID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
 
-    /** get the site ID
+    /**
+     * get the site ID
      *
-     * @return  Return the Jahia site ID.
+     * @return Return the Jahia site ID.
      */
     public int getSiteID() {
         return siteID;
     }
 
     //------------------------------------------------------------------------
-    public int getParentID() { return parentID; }
+    public int getParentID() {
+        return parentID;
+    }
 
     //------------------------------------------------------------------------
-    public int getPageType() { return pageType; }
+    public int getPageType() {
+        return pageType;
+    }
 
     //------------------------------------------------------------------------
-    public String getTitle(String languageCode) { return (String)titles.get(languageCode); }
+    public String getTitle(String languageCode) {
+        return titles.get(languageCode);
+    }
 
     //------------------------------------------------------------------------
-    public int getPageTemplateID() { return pageTemplateID; }
+    public int getPageTemplateID() {
+        return pageTemplateID;
+    }
 
     //------------------------------------------------------------------------
-    public String getRemoteURL(String languageCode) { return (String)remoteURLs.get(languageCode); }
+    public String getRemoteURL(String languageCode) {
+        return remoteURLs.get(languageCode);
+    }
 
-    public Map<String, String> getRemoteURLs() { return remoteURLs; }
-
-    //------------------------------------------------------------------------
-    public int getPageLinkID() { return pageLinkID; }
-
-    //------------------------------------------------------------------------
-    public String getCreator() { return creator; }
+    public Map<String, String> getRemoteURLs() {
+        return remoteURLs;
+    }
 
     //------------------------------------------------------------------------
-    public int getLinkFieldID() { return linkFieldID; }
+    public int getPageLinkID() {
+        return pageLinkID;
+    }
 
     //------------------------------------------------------------------------
-    public void setSiteID(int siteID) { this.siteID = siteID; }
+    public String getCreator() {
+        return creator;
+    }
 
     //------------------------------------------------------------------------
-    public void setParentID(int parentID) { this.parentID = parentID; }
+    public int getLinkFieldID() {
+        return linkFieldID;
+    }
+
+    //------------------------------------------------------------------------
+    public void setSiteID(int siteID) {
+        this.siteID = siteID;
+    }
+
+    //------------------------------------------------------------------------
+    public void setParentID(int parentID) {
+        this.parentID = parentID;
+    }
 
     //------------------------------------------------------------------------
     public void setPageType(int pageType) {
@@ -128,11 +154,11 @@ public class JahiaPageEngineTempBean implements Serializable {
     }
 
     //------------------------------------------------------------------------
-    public void setTitle(String languageCode,String title) {
+    public void setTitle(String languageCode, String title) {
         if (languageCode == null || title == null) {
             return;
         }
-        this.titles.put(languageCode,title);
+        this.titles.put(languageCode, title);
     }
 
     //------------------------------------------------------------------------
@@ -150,7 +176,7 @@ public class JahiaPageEngineTempBean implements Serializable {
         if (languageCode == null || remoteURL == null) {
             return;
         }
-        this.remoteURLs.put(languageCode,remoteURL);
+        this.remoteURLs.put(languageCode, remoteURL);
     }
 
     //------------------------------------------------------------------------
@@ -161,7 +187,7 @@ public class JahiaPageEngineTempBean implements Serializable {
     public void setRemoteURLs(Map<String, String> remoteURLs) {
         this.remoteURLs = remoteURLs;
     }
-    
+
     //------------------------------------------------------------------------
     public void setPageLinkID(int pageLinkID) {
         this.pageLinkID = pageLinkID;
@@ -196,11 +222,11 @@ public class JahiaPageEngineTempBean implements Serializable {
         return sharedTitle;
     }
 
-    public boolean deleteOldContainer(){
+    public boolean deleteOldContainer() {
         return this.deleteOldContainer;
     }
 
-    public void setDeleteOldContainer(boolean value){
+    public void setDeleteOldContainer(boolean value) {
         this.deleteOldContainer = value;
     }
 
@@ -212,10 +238,18 @@ public class JahiaPageEngineTempBean implements Serializable {
         this.urlKey = urlKey;
     }
 
+    public boolean isHideFromNavigationMenu() {
+        return hideFromNavigationMenu;
+    }
+
+    public void setHideFromNavigationMenu(boolean hideFromNavigationMenu) {
+        this.hideFromNavigationMenu = hideFromNavigationMenu;
+    }
+
     public String toString() {
 
         final StringBuffer pageAttribute =
-                new StringBuffer ("JahiaPageEngineTempBean detail :\n");
+                new StringBuffer("JahiaPageEngineTempBean detail :\n");
         pageAttribute.append("- siteID         : [").append(siteID).append("]\n");
         pageAttribute.append("- parentID       : [").append(parentID).append("]\n");
         String typeName = pageType == -1 ? "No type defined" : JahiaPage.PAGE_TYPE_NAMES[pageType];
@@ -230,7 +264,7 @@ public class JahiaPageEngineTempBean implements Serializable {
         pageAttribute.append("- titles         : [");
         final Iterator<String> titlesEnum = titles.values().iterator();
         while (titlesEnum.hasNext()) {
-            pageAttribute.append((String)titlesEnum.next());
+            pageAttribute.append(titlesEnum.next());
             if (titlesEnum.hasNext()) {
                 pageAttribute.append(", ");
             }

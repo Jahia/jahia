@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -31,7 +31,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.services.pages;
+package org.jahia.services.pages;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -56,18 +56,19 @@ public class PageProperty implements Serializable {
     private final static String SHARED_LANGUAGE_MARKER = "shared";
 
     public final static String PAGE_URL_KEY_PROPNAME = "pageURLKey";
+    public final static String HIDE_FROM_NAVIGATION_MENU = "hideFromNavigationMenu";
 
     private int pageID;
     private String name;
     // The following hashmas' key is a language code, and the value is
     // a string representing the value for the property. If the key is SHARED_LANGUAGE_MARKER
     // then this entry is matched for any languages.
-    private Map languageValues;
+    private Map<String, String> languageValues;
 
-    public PageProperty (int pageID, String name) {
+    public PageProperty(int pageID, String name) {
         this.pageID = pageID;
         this.name = name;
-        languageValues = new HashMap();
+        languageValues = new HashMap<String, String>();
     }
 
     /**
@@ -75,7 +76,7 @@ public class PageProperty implements Serializable {
      *
      * @return an integer corresponding to the page ID of this property
      */
-    public int getPageID () {
+    public int getPageID() {
         return pageID;
     }
 
@@ -84,7 +85,7 @@ public class PageProperty implements Serializable {
      *
      * @return a string containing the name of the property
      */
-    public String getName () {
+    public String getName() {
         return name;
     }
 
@@ -95,8 +96,8 @@ public class PageProperty implements Serializable {
      *
      * @return a String containing the property default value.
      */
-    public String getValue () {
-        return getValue (SHARED_LANGUAGE_MARKER);
+    public String getValue() {
+        return getValue(SHARED_LANGUAGE_MARKER);
     }
 
     /**
@@ -107,18 +108,17 @@ public class PageProperty implements Serializable {
      *
      * @param languageCode the RFC 3066 language code for which to retrieve the
      *                     property value.
-     *
      * @return a String containing the value of the property for the given
      *         language, or the default value, or an empty String if neither values
      *         could be found.
      */
-    public String getValue (String languageCode) {
-        if (languageValues.containsKey (languageCode)) {
-            return (String) languageValues.get (languageCode);
+    public String getValue(String languageCode) {
+        if (languageValues.containsKey(languageCode)) {
+            return languageValues.get(languageCode);
         }
 
-        if (languageValues.containsKey (SHARED_LANGUAGE_MARKER)) {
-            return (String) languageValues.get (SHARED_LANGUAGE_MARKER);
+        if (languageValues.containsKey(SHARED_LANGUAGE_MARKER)) {
+            return languageValues.get(SHARED_LANGUAGE_MARKER);
         }
 
         return "";
@@ -132,8 +132,8 @@ public class PageProperty implements Serializable {
      * @param value the String value for the property (must convert to String
      *              if coming from a non string value)
      */
-    public void setValue (String value) {
-        setValue (value, SHARED_LANGUAGE_MARKER);
+    public void setValue(String value) {
+        setValue(value, SHARED_LANGUAGE_MARKER);
     }
 
     /**
@@ -144,8 +144,8 @@ public class PageProperty implements Serializable {
      * @param languageCode the RFC 3066 language code for which to stored the
      *                     property.
      */
-    public void setValue (String value, String languageCode) {
-        languageValues.put (languageCode, value);
+    public void setValue(String value, String languageCode) {
+        languageValues.put(languageCode, value);
     }
 
     /**
@@ -155,9 +155,9 @@ public class PageProperty implements Serializable {
      * @return an iterator of String object that correspond to the available
      *         languages in this property.
      */
-    public Iterator getLanguageCodes () {
-        Set languagesCodeSet = languageValues.entrySet ();
-        return languagesCodeSet.iterator ();
+    public Iterator getLanguageCodes() {
+        Set languagesCodeSet = languageValues.entrySet();
+        return languagesCodeSet.iterator();
     }
 
 }

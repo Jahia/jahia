@@ -101,6 +101,20 @@
        </properties>
      </profile>
 
+      <profile>
+        <!-- Websphere 6.1 development -->
+        <id>andromeda-deployment-websphere61-dev</id>
+        <properties>
+          <jahia.deploy.targetServerType>websphere</jahia.deploy.targetServerType>
+          <jahia.deploy.targetServerVersion>6.1.x</jahia.deploy.targetServerVersion>
+          <jahia.deploy.targetServerDirectory>/Users/loom/java/deployments/websphere</jahia.deploy.targetServerDirectory>
+          <jahia.deploy.war.dirName>jahia.war</jahia.deploy.war.dirName>
+          <jahia.deploy.war.contextPath></jahia.deploy.war.contextPath>
+          <jahia.deploy.war.servletPath>/cms</jahia.deploy.war.servletPath>
+          <jahia.debug.address>socket:hostname=localhost,port=8000</jahia.debug.address>
+        </properties>
+      </profile>
+
   </profiles>
   
   <activeProfiles>

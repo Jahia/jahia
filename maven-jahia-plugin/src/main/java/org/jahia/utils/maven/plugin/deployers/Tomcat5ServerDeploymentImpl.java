@@ -87,7 +87,7 @@ public class Tomcat5ServerDeploymentImpl implements ServerDeploymentInterface {
         File targetDirectory = new File(targetServerDirectory, getSharedLibraryDirectory(serverVersion));
         File targetEndorsedDirectory = new File(targetServerDirectory, getEndorsedLibraryDirectory(serverVersion));
         while (libraryPathIterator.hasNext()) {
-            File currentLibraryPath = (File) libraryPathIterator.next();
+            File currentLibraryPath = libraryPathIterator.next();
             if (currentLibraryPath.getName().contains("jaxb-api")) {
                 FileUtils.copyFileToDirectory(currentLibraryPath, targetEndorsedDirectory);   
             } else {
@@ -104,7 +104,7 @@ public class Tomcat5ServerDeploymentImpl implements ServerDeploymentInterface {
         File targetDirectory = new File(targetServerDirectory, getSharedLibraryDirectory(serverVersion));
         File targetEndorsedDirectory = new File(targetServerDirectory, getEndorsedLibraryDirectory(serverVersion));
         while (libraryPathIterator.hasNext()) {
-            File currentLibraryPath = (File) libraryPathIterator.next();
+            File currentLibraryPath = libraryPathIterator.next();
             if (currentLibraryPath.getName().contains("jaxb-api")) {
                 File targetFile = new File(targetEndorsedDirectory, currentLibraryPath.getName());
                 targetFile.delete();

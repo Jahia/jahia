@@ -56,6 +56,8 @@ public class ServerDeploymentFactory {
         ServerDeploymentInterface jbossImplementation = new JBossServerDeploymentImpl();
         instance.addImplementation("jboss4.0.x", jbossImplementation);
         instance.addImplementation("jboss4.2.x", jbossImplementation);
+        ServerDeploymentInterface websphereImplementation = new WebsphereServerDeploymentImpl();
+        instance.addImplementation("websphere6.1.x", websphereImplementation);
     }
 
     public static ServerDeploymentFactory getInstance() {

@@ -54,11 +54,11 @@ import org.jahia.services.search.JahiaSearchService;
 import org.jahia.registries.ServicesRegistry;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Administrator
+ * RSS feed producer for the Jahia search provider.
+ * 
+ * @author Khue NGuyen
  * Date: 6 oct. 2007
  * Time: 10:27:42
- * To change this template use File | Settings | File Templates.
  */
 public class FeedWriter {
 
@@ -103,8 +103,11 @@ public class FeedWriter {
                     if (entry != null){
                         entries.add(entry);
                     }
-                } catch ( Throwable t ){
-                    logger.debug("Exception occured creating SyndEntry from hit " + hit.getURL());
+                } catch ( Exception e ){
+                    logger.warn(
+                            "Exception occured creating SyndEntry from hit "
+                                    + hit.getURL() + ". Cause: "
+                                    + e.getMessage(), e);
                 }
             }
             feed.setEntries(entries);
@@ -113,8 +116,7 @@ public class FeedWriter {
             writer.close();
         }
         catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("ERROR: "+ex.getMessage());
+            logger.error(ex.getMessage(), ex);
         }
     }
 
@@ -208,8 +210,7 @@ public class FeedWriter {
                 ok = true;
             }
             catch (Exception ex) {
-                ex.printStackTrace();
-                System.out.println("ERROR: "+ex.getMessage());
+                logger.error(ex.getMessage(), ex);
             }
         }
 

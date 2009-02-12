@@ -2,14 +2,17 @@
 <template:containerList name="paragraph" id="paragraph" actionMenuNamePostFix="paragraph"
                         actionMenuNameLabelKey="paragraph.update">
     <template:container id="paragraphContent">
+        <template:field name="insertPosition"  inlineEditingActivated="false" valueBeanID="insertPosition" display="false"/>
+        <template:field name="insertType" inlineEditingActivated="false" display="false" valueBeanID="insertType"/>
         <h3><template:field name='mainContentTitle' /></h3>
-        <div class='<template:field name="insertType"/>-top float<template:field name="insertPosition"/>' style='width:<template:field name="insertWidth"/>px'>
+        <div class='${insertType.defaultValue}-top float${insertPosition.defaultValue}'
+             style='width:<template:field name="insertWidth" inlineEditingActivated="false"/>px'>
 
-            <div class="<template:field name="insertType"/>-bottom">
+            <div class="<template:field name="insertType" inlineEditingActivated="false"/>-bottom">
                 <template:field name='insertText' />
             </div>
         </div>
-        <template:field name='mainContentAlign' valueBeanID="mainContentAlign" display="false"/>
+        <template:field name='mainContentAlign' valueBeanID="mainContentAlign" display="false" inlineEditingActivated="false"/>
         <div class="float${mainContentAlign.defaultValue}"><template:image file="mainContentImage"/></div>
         <div>
             <template:field name="mainContentBody"/>

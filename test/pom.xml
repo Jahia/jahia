@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-root</artifactId>
+        <version>6.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-test</artifactId>
+    <name>Jahia test package</name>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <!--Cross project dependencies-->
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>${jahia.package.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

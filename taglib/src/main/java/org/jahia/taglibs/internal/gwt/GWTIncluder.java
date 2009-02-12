@@ -85,6 +85,7 @@ public class GWTIncluder {
     private static void includeCommonMessages(StringBuilder ret,
             PageContext pageContext) {
 
+        // TODO find a better way of automatically including resources, required by GWT modules
         String workInProgressTitle = null;
         String workInProgressProgressText = null;
 

@@ -29,6 +29,19 @@ public class TestMojo extends AbstractMojo {
      */
     protected String testURL;
 
+
+    /**
+     * Server type
+     * @parameter default-value="true"
+     */
+    protected boolean startupWait;
+
+    /**
+     * Server type
+     * @parameter default-value="60"
+     */
+    protected int startupTimeout;
+
     /**
      * @parameter expression="${project}"
      * @readonly
@@ -42,7 +55,28 @@ public class TestMojo extends AbstractMojo {
             List<String> targets = new ArrayList<String>();
             String url1 = testURL + "/test";
             getLog().info("Get tests from : "+url1);
-            URLConnection conn = new URL(url1).openConnection();
+            URLConnection conn = null;
+
+            if (startupWait) {
+                getLog().info("Waiting for jahia startup");
+                for (int i=startupTimeout; i>0; i--) {
+                    try {
+                        conn = new URL(url1).openConnection();
+                        conn.connect();
+                        break;
+                    } catch (IOException e) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                        System.out.print(".");
+                    }
+                }
+            } else {
+                conn = new URL(url1).openConnection();
+            }
+
             InputStream is = conn.getInputStream();
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             String line = null;

@@ -196,9 +196,7 @@
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
                     <earSourceDirectory>src/main/resources</earSourceDirectory>
-                    <configuration>
-                        <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
-                    </configuration>
+                    <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
 
                     <modules>
                         <webModule>

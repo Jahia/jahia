@@ -41,6 +41,7 @@
     <module>taglib</module>
     <module>jackrabbit-ext</module>
     <module>core</module>
+    <module>test</module>
     <module>gwt</module>
     <module>templates</module>
     <module>war</module>

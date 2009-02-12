@@ -34,6 +34,12 @@
             <version>${jahia.package.version}</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-test</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -72,6 +78,26 @@
 
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
+                            <overWriteReleases>true</overWriteReleases>
+                            <overWriteSnapshots>true</overWriteSnapshots>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-testjar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-test</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
                             <overWriteReleases>true</overWriteReleases>
                             <overWriteSnapshots>true</overWriteSnapshots>
                         </configuration>
@@ -135,11 +161,7 @@
                     <databasePassword>jahia</databasePassword>
                     <overwritedb>true</overwritedb>
                     <storeFilesInDB>true</storeFilesInDB>
-                    <cluster_node_serverId>qa-j5</cluster_node_serverId>
                     <localIp>10.8.37.245</localIp>
-                    <clusterNodes>
-                        <param>10.8.37.244</param>
-                    </clusterNodes>
                 </configuration>
                 <executions>
                     <execution>

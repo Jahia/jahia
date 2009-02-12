@@ -232,13 +232,7 @@
                             </table>
                         </td>
                       </tr>
-                    <%} else {%>
-                      <tr class="evenLine">
-                        <td colspan="2">
-                          <internal:engineResourceBundle resourceName="org.jahia.engines.application.portlets.user.attributes.notPossible" defaultValue="Can't map attributes for Jahia Webapp. Mapping attributes is only allowed for portlet jsr168"/>
-                        </td>
-                      </tr>
-                    <%}%>
+                    <%}%>          
                   </tbody>
                 </table>
               </div>

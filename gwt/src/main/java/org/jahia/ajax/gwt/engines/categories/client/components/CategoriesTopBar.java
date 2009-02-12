@@ -154,6 +154,9 @@ public class CategoriesTopBar extends TopBar {
         topTableSingleSelectionButtons.add(newCategory);
         topTableSingleSelectionButtons.add(updateInfo);
         topTableSingleSelectionButtons.add(updateACL);
+
+        // nothing is selected at init
+        handleNewSelection(null,null);
     }
 
     /**

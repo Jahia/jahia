@@ -20,6 +20,7 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  * @goal test
  * @requiresDependencyResolution runtime
+ * @aggregator false
  */
 public class TestMojo extends AbstractMojo {
 
@@ -29,6 +30,11 @@ public class TestMojo extends AbstractMojo {
      */
     protected String testURL;
 
+    /**
+     * Server type
+     * @parameter expression="${test}"
+     */
+    protected String test;
 
     /**
      * Server type
@@ -51,6 +57,14 @@ public class TestMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (test == null) {
+            executeAllTests();
+        } else {
+            executeTest(test);
+        }
+    }
+
+    private void executeAllTests() {
         try {
             List<String> targets = new ArrayList<String>();
             String url1 = testURL + "/test";
@@ -87,22 +101,32 @@ public class TestMojo extends AbstractMojo {
             is.close();
 
             for (String s : targets) {
-                String testUrl = testURL + "/test/" + s;
-                getLog().info("Execute : "+testUrl);
-                conn = new URL(testUrl).openConnection();
-                is = conn.getInputStream();
-                File out = project.getBasedir();
-                out = new File(out,"target/surefire-reports");
-                if (!out.exists()) {
-                    out.mkdirs();
-                }
-                FileOutputStream os = new FileOutputStream(new File(out, "TEST-"+ s + ".xml"));
-                IOUtils.copy(is, os);
-                is.close();
-                os.close();
+                executeTest(s);
             }
             getLog().info("Done.");
-            
+
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    private void executeTest(String test) {
+        try {
+            URLConnection conn;
+            InputStream is;
+            String testUrl = testURL + "/test/" + test;
+            getLog().info("Execute : "+testUrl);
+            conn = new URL(testUrl).openConnection();
+            is = conn.getInputStream();
+            File out = project.getBasedir();
+            out = new File(out,"target/surefire-reports");
+            if (!out.exists()) {
+                out.mkdirs();
+            }
+            FileOutputStream os = new FileOutputStream(new File(out, "TEST-"+ test + ".xml"));
+            IOUtils.copy(is, os);
+            is.close();
+            os.close();
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

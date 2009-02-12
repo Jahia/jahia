@@ -134,6 +134,7 @@
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>
                     <overwritedb>true</overwritedb>
+                    <storeFilesInDB>true</storeFilesInDB>
                     <cluster_node_serverId>qa-j5</cluster_node_serverId>
                     <localIp>10.8.37.245</localIp>
                     <clusterNodes>

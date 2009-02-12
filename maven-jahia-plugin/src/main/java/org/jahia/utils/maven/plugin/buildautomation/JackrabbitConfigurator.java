@@ -69,6 +69,8 @@ public class JackrabbitConfigurator {
                 String fileContent = fileContentBuf.toString();
 
                 String storeFilesInDB = getValue(values,"storeFilesInDB");
+
+
                 if("".equals(storeFilesInDB)) {
                     fileContent = fileContent.replaceAll("\\@EXTERNAL_BLOBS\\@", "true");
                 } else {

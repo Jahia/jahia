@@ -341,6 +341,14 @@ public class ConfigureMojo extends AbstractManagementMojo
      */
     protected String developmentMode;
 
+     /**
+     * properties storeFilesInDB
+     *
+     * @parameter  default-value="true"
+     */
+    protected String storeFilesInDB;
+
+
     JahiaPropertiesBean jahiaPropertiesBean;
     DatabaseConnection db = new DatabaseConnection();
     File webappDir;
@@ -384,6 +392,7 @@ public class ConfigureMojo extends AbstractManagementMojo
         SpringManagerConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/spring/applicationcontext-manager.xml", dbProps);
         SpringHibernateConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/spring/applicationcontext-hibernate.xml", dbProps);
         QuartzConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/config/quartz.properties", dbProps);
+        getLog().info(" value of files storage :"+storeFilesInDB);
         JackrabbitConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/repository/jackrabbit/repository.xml", dbProps, jahiaPropertiesBean.getCluster_activated(), jahiaPropertiesBean.getCluster_node_serverId());
         JahiaXmlConfigurator.updateDataSourceConfiguration(webappPath + "/META-INF/context.xml", dbProps, databaseUsername, databasePassword, databaseUrl);
 
@@ -439,6 +448,7 @@ public class ConfigureMojo extends AbstractManagementMojo
         databaseScript = new File(webappDir + "/WEB-INF/var/db/" + databaseType + ".script");
         try {
             dbProps.load(new FileInputStream(databaseScript));
+            dbProps.put("storeFilesInDB",storeFilesInDB);
         } catch (IOException e) {
             getLog().error("Error in loading database settings because of "+e);
         }

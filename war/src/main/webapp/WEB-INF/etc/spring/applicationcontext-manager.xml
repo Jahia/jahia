@@ -84,6 +84,9 @@
                             <entry key="g:users:*" value="RWA"/>
                           </map>
                         </entry>
+                        <entry key="org.jahia.actions.sites.*.toolbar.subscriptions">
+                          <map/>
+                        </entry>
                         <entry key="org.jahia.actions.sites.*.htmlsettings.toolbar.Full">
                             <map/>
                         </entry>

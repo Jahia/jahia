@@ -17,6 +17,9 @@
 
         <toolbar name="statistics" ref-type="org.jahia.toolbar.statistics" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
+
+        <toolbar name="subscriptions" ref-type="org.jahia.toolbar.subscriptions" state="top" draggable="true" displayed="false"
+                 mandatory="false" display-title="true"/>
     </display>
     <!-- define toolbar -->
     <custom-toolbar>
@@ -87,6 +90,12 @@
         <toolbar type="org.jahia.toolbar.widgets">
             <title-resourcebundle-key key="toolbar.widget"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.widgets"/>
+        </toolbar>
+
+        <!-- subscriptions -->
+        <toolbar type="org.jahia.toolbar.subscriptions">
+            <title-resourcebundle-key key="toolbar.subscriptions.toolbar.title"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Subscriptions"/>
         </toolbar>
     </custom-toolbar>
     <!-- defines itemsgroup-->
@@ -275,6 +284,11 @@
         <!-- language switcher -->
         <itemsgroup type="org.jahia.toolbar.itemsgroup.LanguageSwitcher" layout="button-label">
             <item ref-type="org.jahia.toolbar.item.LanguageSwitcher"/>
+        </itemsgroup>
+        
+        <!-- subscriptions -->
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.Subscriptions" layout="button-label">
+            <item ref-type="org.jahia.toolbar.item.Subscriptions"/>
         </itemsgroup>
     </custom-itemsgroup>
     <!-- defines items-->
@@ -757,5 +771,14 @@
 
         <!-- language switcher -->
         <item type="org.jahia.toolbar.item.LanguageSwitcher"/>
+
+        <!-- subscriptions -->
+        <item type="org.jahia.toolbar.item.Subscriptions">
+            <title-resourcebundle-key key="toolbar.subscriptions.button.page.title"/>
+            <description-resourcebundle-key key="toolbar.subscriptions.button.page.description"/>
+            <icon-style min="gwt-toolbar-ItemsGroup-icons-subscriptions-min"
+                        max="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
+            <property name="events" value="contentPublished,commentAdded"/>
+        </item>
     </custom-item>
 </toolbars>

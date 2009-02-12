@@ -83,7 +83,7 @@ public class FileListContextMenu extends Menu {
                 boolean isLockable = false;
                 boolean isSingleFile = false;
                 boolean isSingleFolder = false;
-                boolean isPasteAllowed = false ;
+                boolean isPasteAllowed = isTreeSelection ? CopyPasteEngine.getInstance().canCopyTo(leftTreeSelection) : false ;
                 boolean isZip = false ;
                 boolean isImage = false ;
                 boolean isTableSelection = false ;
@@ -106,7 +106,9 @@ public class FileListContextMenu extends Menu {
                     if (isSingleFolder) {
                         isMount = topTableSelection.get(0).getNodeTypes().contains("jnt:vfsMountPoint") ;
                     }
-                    isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(leftTreeSelection) ;
+                    if (!isTreeSelection) {
+                        isPasteAllowed = CopyPasteEngine.getInstance().canCopyTo(topTableSelection.get(0)) ;
+                    }
                     int extIndex = topTableSelection.get(0).getName().lastIndexOf(".") ;
                     if (extIndex > 0 && topTableSelection.get(0).getName().substring(extIndex).equalsIgnoreCase(".zip")) {
                         isZip = true ;

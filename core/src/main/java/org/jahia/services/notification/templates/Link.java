@@ -33,6 +33,8 @@
 
 package org.jahia.services.notification.templates;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * The link information bean, exposed into the Groovy template scope.
  * 
@@ -70,6 +72,11 @@ public class Link {
 
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

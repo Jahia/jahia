@@ -43,7 +43,7 @@
     <div class="mainColumn"><!--start spaceContent -->
 
         <h2><utility:resourceBundle resourceName="web_templates.sitemap"/></h2>
-        <ui:sitemap enableDescription="true" />
+        <ui:sitemap enableDescription="true" showRoot="true"/>
     </div>
     <!--stop space content-->
 </div>

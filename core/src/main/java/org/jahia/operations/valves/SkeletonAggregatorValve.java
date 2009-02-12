@@ -302,10 +302,12 @@ public class SkeletonAggregatorValve implements Valve {
                                                 s != null ? s : "");
                                     } else if (variableName.equals(THEME_VARIABLE)) {
                                         final String jahiaThemeCurrent = (String) processingContext.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + processingContext.getSite().getID());
-                                        logger.debug("Try to apply theme : "+jahiaThemeCurrent);
-                                        outputDocument.replace(segment.getBegin(),
-                                                segment.getElement().getEndTag().getEnd(),
-                                                ThemeService.getInstance().getCssLinks(processingContext, processingContext.getSite(), jahiaThemeCurrent));
+                                        if (jahiaThemeCurrent != null) {
+                                            logger.debug("Try to apply theme : "+jahiaThemeCurrent);
+                                            outputDocument.replace(segment.getBegin(),
+                                                    segment.getElement().getEndTag().getEnd(),
+                                                    ThemeService.getInstance().getCssLinks(processingContext, processingContext.getSite(), jahiaThemeCurrent));
+                                        }
                                     } else if (variableName.equals(GWT_VARIABLE)) {
                                         outputDocument.replace(segment.getBegin(),
                                                 segment.getElement().getEndTag().getEnd(),

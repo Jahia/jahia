@@ -147,6 +147,24 @@ public class MyOracleFileSystem extends DbFileSystem {
         // class loader that the Oracle driver was loaded with
         try {
             blobClass = con.getClass().getClassLoader().loadClass("oracle.sql.BLOB");
+        } catch (ClassNotFoundException cnfe) {
+            // if we couldn't find the class there, we look locally. This fallback is necessary for this code to
+            // work properly under Websphere and IBM JVM. It seems that under Websphere the above connection comes
+            // from the System classloader.
+            log.warn("Class oracle.sql.BLOB not found in java.sql.Connection classloader, will search in local classloader");
+            if (log.isDebugEnabled()) {
+                log.debug("Details of class not found", cnfe);
+            }
+            try {
+                blobClass = Class.forName("oracle.sql.BLOB");
+            } catch (ClassNotFoundException cnfe2) {
+                String msg = "failed to load/introspect oracle.sql.BLOB";
+                log.error(msg, cnfe2);
+                throw new FileSystemException(msg, cnfe2);
+            }
+
+        }
+        try {
             durationSessionConstant =
                     new Integer(blobClass.getField("DURATION_SESSION").getInt(null));
             modeReadWriteConstant =

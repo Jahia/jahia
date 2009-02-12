@@ -212,7 +212,7 @@
  file flashSourceFlashContainer
  sharedSmallText widthFlashContainer
  sharedSmallText heightFlashContainer
- sharedSmallText flashPlayerFlashContainer
+ sharedSmallText flashPlayerFlashContainer = '9'
  sharedSmallText idFlashContainer
  sharedSmallText nameFlashContainer
  sharedSmallText swliveconnectFlashContainer (choicelist) < 'true', 'false'

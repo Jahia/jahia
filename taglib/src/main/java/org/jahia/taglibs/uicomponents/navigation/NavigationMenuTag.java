@@ -58,6 +58,7 @@ import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.pages.PageProperty;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.internal.gwt.GWTIncluder;
 import org.jahia.taglibs.template.container.ContainerTag;
@@ -471,6 +472,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 JahiaContainer linkContainer = (JahiaContainer) linkContainerEnum.next();
                 JahiaPage link = (JahiaPage) linkContainer.getFieldObject(pageFieldName);
                 dependencies.add(new ContentContainerKey(linkContainer.getID()));
+                final PageProperty hideFromMenuProp = link.getPageLocalProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU);
+                if (hideFromMenuProp != null && Boolean.valueOf(hideFromMenuProp.getValue())) {
+                    continue;
+                }
                 if (requiredTitle) {
                     if (!ContainerTag.hasContainerAllRequiredFields(linkContainer, pageFieldName, jParams)) {
                         continue;

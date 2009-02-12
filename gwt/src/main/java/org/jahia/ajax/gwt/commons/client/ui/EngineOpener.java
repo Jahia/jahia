@@ -33,6 +33,8 @@
 
 package org.jahia.ajax.gwt.commons.client.ui;
 
+import org.jahia.ajax.gwt.commons.client.util.ResourceBundle;
+
 
 /**
  * Utility class for opening engine popup windows.
@@ -57,15 +59,22 @@ public class EngineOpener {
     }
 
     public static void openEngine(String url, String windowName, String windowParams) {
-        closePreviousEngine();
-        open(url, windowName, windowParams);
+        if (closePreviousEngine(ResourceBundle
+                .getNotEmptyResource(
+                        "org.jahia.engines.confirmWindowClose",
+                        "Opening a new engine window will close the currently opened one. Do you want to continue?"))) {
+            open(url, windowName, windowParams);
+        }
     }
 
-    private static native void closePreviousEngine() /*-{
+    private static native boolean closePreviousEngine(String confirmationMessage) /*-{
         if (!$wnd.jahia) {
             $wnd.jahia = new Object();
         }
         if ($wnd.jahia.engineWindow && !$wnd.jahia.engineWindow.closed) {
+            if (!$wnd.confirm(confirmationMessage)) {
+                return false;
+            } 
             try {
                 $wnd.jahia.engineWindow.close();
                 if ($wnd.jahia.engineWindow && $wnd.jahia.engineWindow.closed) {
@@ -76,6 +85,7 @@ public class EngineOpener {
                 $wnd.alert('error: ' + e);
             }
         }
+        return true;
     }-*/;
 
     private static native void open(String url, String engineName, String params) /*-{

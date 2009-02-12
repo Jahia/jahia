@@ -169,7 +169,7 @@ singleContainer article (web_templates:articleContainer [addMixin="jmix:skinnabl
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
 
 [web_templates:events] > jnt:page,web_templates:navigation, web_templates:introduction
-containerList events (web_templates:eventContainer)
+containerList events (web_templates:eventContainer [addListMixin="jmix:subscribable"])
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
 
 [web_templates:people] > jnt:page,web_templates:navigation, web_templates:introduction

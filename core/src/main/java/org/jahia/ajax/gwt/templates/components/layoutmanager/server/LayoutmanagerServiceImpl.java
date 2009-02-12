@@ -292,7 +292,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
                     layoutItems.add(createGWTLayoutItem(preference));
                 }
             } else {
-                logger.error("No preferences for principalKey: " + preferenceKey + "--> load default config");
+                logger.debug("No preferences for principalKey: " + preferenceKey + "--> load default config");
                 layoutItems = getDefaultLayoutItems(jahiaPageContext);
             }
 

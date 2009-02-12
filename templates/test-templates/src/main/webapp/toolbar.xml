@@ -76,7 +76,7 @@
             <description-resourcebundle-key key="toolbar.subscriptions.button.page.description"/>
             <icon-style min="gwt-toolbar-ItemsGroup-icons-subscriptions-min"
                         max="gwt-toolbar-ItemsGroup-icons-subscriptions-normal"/>
-            <property name="action" value="page"/>
+            <property name="events" value="contentPublished,commentAdded"/>
         </item>
     </custom-item>
 </toolbars>

@@ -35,7 +35,10 @@ package org.jahia.services.notification.templates;
 
 import groovy.lang.Binding;
 
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.notification.Subscription;
@@ -98,9 +101,29 @@ public class NotificationMessageBuilder extends
                 "notifications/events/body.txt");
     }
 
+    protected List<Link> getUpdatedPages() {
+        List<Link> pages = new LinkedList<Link>();
+        Set<Integer> pageIds = new HashSet<Integer>();
+        for (NotificationEvent event : events) {
+            if (event.getPageId() > 0 && !pageIds.contains(event.getPageId())) {
+                pageIds.add(event.getPageId());
+                String url = getPageUrl(event.getPageId());
+                pages.add(new Link(event.getPageTitle() != null ? event
+                        .getPageTitle() : "link", url, getServerUrl() + url));
+            }
+        }
+
+        return pages;
+    }
+
     @Override
     protected void populateBinding(Binding binding) {
         super.populateBinding(binding);
         binding.setVariable("events", events);
+        List<Link> pages = getUpdatedPages();
+        binding.setVariable("targetPages", pages);
+        if (!pages.isEmpty()) {
+            binding.setVariable("targetPage", pages.get(0));
+        }
     }
 }

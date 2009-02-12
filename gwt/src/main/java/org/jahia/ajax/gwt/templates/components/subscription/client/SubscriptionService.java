@@ -80,7 +80,7 @@ public interface SubscriptionService extends RemoteService {
      * 
      * @param subscriptions
      *            list of subscriptions to check the status the event type
-     * @return Returns the status of the specified user subscriptions
+     * @return the status of the specified user subscriptions
      */
     List<SubscriptionInfo> requestSubscriptionStatus(
             List<SubscriptionInfo> subscriptions);
@@ -114,4 +114,12 @@ public interface SubscriptionService extends RemoteService {
      */
     SubscriptionStatus unsubscribe(String objectKey, String eventType);
 
+    /**
+     * Updates the status for the specified user subscriptions.
+     * 
+     * @param subscriptions
+     *            the user subscriptions to be updated
+     * @return the result of the operation
+     */
+    Boolean updateSubscriptionStatus(List<SubscriptionInfo> subscriptions);
 }

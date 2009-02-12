@@ -20,17 +20,15 @@
         </property>
     </bean>
 
-    <bean id="EmailNotificationEventHandlerTemplate" class="org.jahia.services.notification.EmailNotificationEventHandler" abstract="true">
-        <property name="mailService" ref="MailService"/>
-    </bean>
-                        
     <bean id="NotificationService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.notification.NotificationService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="subscriptionService" ref="SubscriptionService"/>
                 <property name="handlers">
                     <list>
-                        <bean class="org.jahia.services.notification.ContentPublishedEventHandler" parent="EmailNotificationEventHandlerTemplate"/>
+                        <bean class="org.jahia.services.notification.EmailNotificationEventHandler">
+                            <property name="mailService" ref="MailService"/>
+                        </bean>
                     </list>
                 </property>
             </bean>

@@ -35,18 +35,32 @@ package org.jahia.services.notification;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.jahia.services.mail.MailHelper;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.Subscription.Channel;
+import org.jahia.services.notification.templates.NotificationMessageBuilder;
+import org.jahia.services.notification.templates.TemplateUtils;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Handles behavior for notification type events.
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class EmailNotificationEventHandler extends
-        BaseNotificationEventHandler {
+public class EmailNotificationEventHandler extends BaseNotificationEventHandler {
+
+    private static Logger logger = Logger
+            .getLogger(EmailNotificationEventHandler.class);
 
     private MailService mailService;
+
+    /**
+     * Initializes an instance of this class.
+     */
+    public EmailNotificationEventHandler() {
+        this(new Condition[] {});
+    }
 
     /**
      * Initializes an instance of this class.
@@ -72,6 +86,35 @@ public abstract class EmailNotificationEventHandler extends
 
     protected MailService getMailService() {
         return mailService;
+    }
+
+    @Override
+    protected void handleEvents(Subscription subscription,
+            List<NotificationEvent> events) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Handling notification events: " + events
+                    + " for subscriber: " + subscription);
+        }
+
+        JahiaUser user = TemplateUtils.getSubscriber(subscription);
+        if (user != null) {
+            final String emailAddress = MailHelper.getEmailAddress(user);
+            if (emailAddress != null
+                    && !MailHelper.areEmailNotificationsDisabled(user)) {
+                getMailService().sendTemplateMessage(
+                        new NotificationMessageBuilder(events, subscription,
+                                user, emailAddress));
+            } else {
+                logger.info("The user '" + user.getUsername()
+                        + "' has either disabled e-mail notifications "
+                        + "or has not provided an e-mail address."
+                        + " Skip sending notification.");
+            }
+        } else {
+            logger.warn("Cannot find user for the subscription: "
+                    + subscription + ". Skip sending notification.");
+        }
     }
 
     public void setMailService(MailService mailService) {

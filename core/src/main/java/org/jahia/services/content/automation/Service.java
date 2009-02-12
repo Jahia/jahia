@@ -344,6 +344,7 @@ public class Service {
             if (jcrNode instanceof JahiaContentNodeImpl) {
                 JahiaContentNodeImpl contentNode = (JahiaContentNodeImpl) jcrNode;
                 event.setSiteId(contentNode.getContentObject().getSiteID());
+                event.setPageId(contentNode.getContentObject().getPageID());
                 event.setObjectKey(contentNode.getContentObject()
                         .getObjectKey().getKey());
                 if (jcrNode instanceof JahiaContainerNodeImpl) {

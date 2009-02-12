@@ -55,6 +55,10 @@ import org.jahia.settings.SettingsBean;
 public class SubscriptionServiceImpl extends AbstractJahiaGWTServiceImpl
         implements SubscriptionService {
 
+    private static org.jahia.services.notification.SubscriptionService getSubscriptionService() {
+        return ServicesRegistry.getInstance().getSubscriptionService();
+    }
+
     private int getSiteId() {
         ProcessingContext ctx = retrieveParamBean();
         int siteId = ctx.getSiteID();
@@ -76,9 +80,8 @@ public class SubscriptionServiceImpl extends AbstractJahiaGWTServiceImpl
         } else if (MailHelper.getEmailAddress(user) == null) {
             status = SubscriptionStatus.NO_EMAIL_ADDRESS;
         } else {
-            status = ServicesRegistry.getInstance().getSubscriptionService()
-                    .isSubscribed(objectKey, eventType, user.getUsername(),
-                            getSiteId()) ? SubscriptionStatus.SUBSCRIBED
+            status = getSubscriptionService().isSubscribed(objectKey,
+                    eventType, user.getUsername(), getSiteId()) ? SubscriptionStatus.SUBSCRIBED
                     : SubscriptionStatus.NOT_SUBSCRIBED;
         }
 
@@ -108,12 +111,11 @@ public class SubscriptionServiceImpl extends AbstractJahiaGWTServiceImpl
                 subscription.setStatus(SubscriptionStatus.UNAUTHORIZED);
             }
         } else {
+            org.jahia.services.notification.SubscriptionService subscriptionService = getSubscriptionService();
             for (SubscriptionInfo subscription : subscriptions) {
-                Subscription subscriptionData = ServicesRegistry.getInstance()
-                        .getSubscriptionService().getSubscription(
-                                subscription.getSource(),
-                                subscription.getEvent(), user.getUsername(),
-                                getSiteId());
+                Subscription subscriptionData = subscriptionService
+                        .getSubscription(subscription.getSource(), subscription
+                                .getEvent(), user.getUsername(), getSiteId());
                 if (subscriptionData != null) {
                     subscription.setStatus(SubscriptionStatus.SUBSCRIBED);
                     subscription.setIncludeChildren(subscriptionData
@@ -166,4 +168,32 @@ public class SubscriptionServiceImpl extends AbstractJahiaGWTServiceImpl
         }
         return status;
     }
+
+    public Boolean updateSubscriptionStatus(List<SubscriptionInfo> subscriptions) {
+        JahiaUser user = getUser();
+        if (JahiaUserManagerService.isGuest(user)) {
+            return false;
+        } else {
+            org.jahia.services.notification.SubscriptionService subscriptionService = getSubscriptionService();
+            for (SubscriptionInfo subscription : subscriptions) {
+                if (SubscriptionStatus.SUBSCRIBED == subscription.getStatus()) {
+                    subscriptionService.subscribe(subscription.getSource(),
+                            subscription.isIncludeChildren(), subscription
+                                    .getEvent(), user.getUsername(),
+                            getSiteId());
+                } else if (SubscriptionStatus.NOT_SUBSCRIBED == subscription
+                        .getStatus()) {
+                    subscriptionService.unsubscribe(subscription.getSource(),
+                            subscription.getEvent(), user.getUsername(),
+                            getSiteId());
+                } else {
+                    throw new IllegalArgumentException(
+                            "Unsupported subscription status '"
+                                    + subscription.getStatus() + "'");
+                }
+            }
+        }
+        return true;
+    }
+
 }

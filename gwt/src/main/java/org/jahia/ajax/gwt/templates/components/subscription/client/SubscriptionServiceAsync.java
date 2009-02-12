@@ -56,4 +56,8 @@ public interface SubscriptionServiceAsync {
 
     void unsubscribe(String objectKey, String eventType,
             AsyncCallback<SubscriptionStatus> callback);
+
+    void updateSubscriptionStatus(List<SubscriptionInfo> subscriptions,
+            AsyncCallback<Boolean> callback);
+
 }

@@ -41,9 +41,18 @@
 <body>
 <h2>Content update alert</h2>
 <p>Dear ${subscriber.fullName},</p>
-<p>the content, you were subscribed to, has changed.<br>
-<% if (watchedContentLink != null) { %>
-<p>Please visit it under: <a href="${watchedContentLink.absoluteUrl}">Updated content</a></p>
+<p>the content, you were subscribed to, has changed.</p>
+<% if (!targetPages.isEmpty() || watchedContentLink != null) { %>
+<p>Updated pages:
+<ul>
+<% if (!targetPages.isEmpty()) { 
+targetPages.each() {%>
+    <li><a href="${it.absoluteUrl}">${it.absoluteUrl}</a></li>
+<%}} else { %>
+    <li><a href="${watchedContentLink.absoluteUrl}">Updated content</a></li>
+<% } %>
+</ul>
+</p>
 <% } %>
 
 <p>Sincerely Yours<br>Portal Team</p>

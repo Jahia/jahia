@@ -80,6 +80,12 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     private static Logger logger = Logger.getLogger(MessageBuilder.class);
 
+    public static String getPageUrl(int pageId, JahiaSite site) {
+        return pageId > 0 ? getSiteUrl(site) + "/"
+                + ProcessingContext.PAGE_ID_PARAMETER + "/" + pageId
+                : getSiteUrl(site);
+    }
+
     public static String getServerUrl(int siteId) {
         return getServerUrl(TemplateUtils.getSite(siteId));
     }
@@ -186,6 +192,10 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return html;
     }
 
+    protected String getPageUrl(int pageId) {
+        return getPageUrl(pageId, getSite());
+    }
+
     protected Locale getPreferredLocale() {
         if (preferredLocale == null) {
             preferredLocale = MailHelper.getPreferredLocale(subscriber, siteId);
@@ -258,8 +268,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         }
 
         if (watchedObject != null) {
-            String url = watchedObject.getPageID() > 0 ? getSiteUrl() + "/pid/"
-                    + watchedObject.getPageID() : getSiteUrl();
+            String url = getPageUrl(watchedObject.getPageID(), getSite());
             lnk = new Link("Watched content", url, getServerUrl() + url);
         }
 
@@ -300,17 +309,20 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
                         .getPersonalizedEmailAddress(subscriberEmail,
                                 subscriber), subscriber));
         binding.setVariable("locale", getPreferredLocale());
-        JahiaTemplatesPackage templatePackage = null; 
+        JahiaTemplatesPackage templatePackage = null;
         if (templatePackageName != null) {
             templatePackage = ServicesRegistry.getInstance()
                     .getJahiaTemplateManagerService().getTemplatePackage(
                             templatePackageName);
         }
-        I18nBundlesBean i18nBundles = new I18nBundlesBean(getPreferredLocale(), templatePackage);
+        I18nBundlesBean i18nBundles = new I18nBundlesBean(getPreferredLocale(),
+                templatePackage);
         binding.setVariable("i18nBundles", i18nBundles);
         binding.setVariable("i18nBundles", i18nBundles);
         if (templatePackageName != null) {
-            String resourceBundleName = templatePackage != null ? templatePackage.getResourceBundleName() : null;
+            String resourceBundleName = templatePackage != null ? templatePackage
+                    .getResourceBundleName()
+                    : null;
             binding
                     .setVariable(
                             "i18n",

@@ -34,8 +34,15 @@
 Dear ${subscriber.fullName},
 
 the content, you were subscribed to, has changed.
-<% if (watchedContentLink != null) { %>
-Please visit it under: ${watchedContentLink.absoluteUrl}
+<% if (!targetPages.isEmpty() || watchedContentLink != null) { %>
+
+Updated pages:
+<% if (!targetPages.isEmpty()) { 
+targetPages.each() {%>
+    ${it.absoluteUrl}
+<%}} else { %>
+    ${watchedContentLink.absoluteUrl}
+<% } %>
 <% } %>
 
 Sincerely Yours

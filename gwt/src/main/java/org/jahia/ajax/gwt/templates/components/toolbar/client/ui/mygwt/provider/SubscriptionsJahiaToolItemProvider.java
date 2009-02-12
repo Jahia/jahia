@@ -36,6 +36,7 @@ package org.jahia.ajax.gwt.templates.components.toolbar.client.ui.mygwt.provider
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
 import org.jahia.ajax.gwt.commons.client.util.ResourceBundle;
 import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.templates.components.subscription.client.SubscriptionInfo;
@@ -62,7 +63,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * TODO Comment me
+ * Toolbar items provider for subscription services.
  * 
  * @author Sergiy Shyrkov
  */
@@ -70,6 +71,8 @@ public class SubscriptionsJahiaToolItemProvider extends
         AbstractJahiaToolItemProvider {
 
     private Button cancel;
+
+    private LayoutContainer eventsContainer;
 
     private GWTJahiaPageContext pageContext;
 
@@ -101,8 +104,18 @@ public class SubscriptionsJahiaToolItemProvider extends
             public void componentSelected(ComponentEvent event) {
 
                 List<SubscriptionInfo> subscriptions = new LinkedList<SubscriptionInfo>();
-                subscriptions.add(new SubscriptionInfo("ContentPage_"
-                        + pageContext.getPid(), "contentPublished"));
+                String source = "ContentPage_" + pageContext.getPid();
+                GWTProperty eventsProperty = gwtToolbarItem.getProperties()
+                        .get("events");
+                String[] events = eventsProperty != null
+                        && eventsProperty.getValue() != null
+                        && eventsProperty.getValue().length() > 0 ? eventsProperty
+                        .getValue().split(",")
+                        : new String[] { "contentPublished" };
+
+                for (int i = 0; i < events.length; i++) {
+                    subscriptions.add(new SubscriptionInfo(source, events[i]));
+                }
 
                 service.requestSubscriptionStatus(subscriptions,
                         new AsyncCallback<List<SubscriptionInfo>>() {
@@ -112,6 +125,7 @@ public class SubscriptionsJahiaToolItemProvider extends
                                 mb.setIcon(MessageBox.ERROR);
                                 mb.setTitle("Error");
                                 mb.setMessage(caught.toString());
+                                mb.show();
                             }
 
                             public void onSuccess(List<SubscriptionInfo> result) {
@@ -136,16 +150,15 @@ public class SubscriptionsJahiaToolItemProvider extends
         panel.setButtonAlign(HorizontalAlignment.CENTER);
         panel.setLayout(new FlowLayout());
 
-        LayoutContainer main = new LayoutContainer(new ColumnLayout());
-        main.setWidth(400);
+        eventsContainer = new LayoutContainer(new ColumnLayout());
+        eventsContainer.setWidth(450);
 
         final LayoutContainer left = new LayoutContainer(new FlowLayout());
 
         for (SubscriptionInfo subscriptionInfo : subscriptions) {
             CheckBox cb = new CheckBox();
             cb.setBoxLabel(ResourceBundle.getNotEmptyResource(subscriptionInfo
-                    .getEvent(), "Be notified of "
-                    + subscriptionInfo.getEvent() + " events"));
+                    .getEvent(), subscriptionInfo.getEvent()));
             cb.setName(subscriptionInfo.getEvent());
             cb
                     .setValue(subscriptionInfo.getStatus() == SubscriptionStatus.SUBSCRIBED);
@@ -163,21 +176,21 @@ public class SubscriptionsJahiaToolItemProvider extends
             right.add(cb);
         }
 
-        main.add(left, new ColumnData(.65));
-        main.add(right, new ColumnData(.35));
+        eventsContainer.add(left, new ColumnData(.60));
+        eventsContainer.add(right, new ColumnData(.40));
 
-        panel.add(main);
+        panel.add(eventsContainer);
 
         window.add(panel);
         window.setHeading(ResourceBundle.getNotEmptyResource(
                 "subscriptions.windowTitle",
-                "Subscribe to the following events on current page"));
+                "Subscribe to following events on the current page"));
 
         save = new Button(ResourceBundle.getNotEmptyResource("save", "Save"));
         save.addSelectionListener(new SelectionListener<ComponentEvent>() {
 
             public void componentSelected(ComponentEvent event) {
-                MessageBox.alert("Saving...", "To be implemented soon...", null);
+                updateSubscriptions();
             }
         });
 
@@ -185,7 +198,7 @@ public class SubscriptionsJahiaToolItemProvider extends
                 "Cancel"));
         cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
-                window.hide();
+                window.close();
             }
         });
 
@@ -194,5 +207,49 @@ public class SubscriptionsJahiaToolItemProvider extends
 
         window.recalculate();
         window.show();
+    }
+
+    private void updateSubscriptions() {
+        List<SubscriptionInfo> subscriptions = new LinkedList<SubscriptionInfo>();
+        String source = "ContentPage_" + pageContext.getPid();
+        LayoutContainer leftColumn = (LayoutContainer) eventsContainer
+                .getItem(0);
+        LayoutContainer rightColumn = (LayoutContainer) eventsContainer
+                .getItem(1);
+        int count = leftColumn.getItemCount();
+        for (int i = 0; i < count; i++) {
+            CheckBox cbEvent = (CheckBox) leftColumn.getItem(i);
+            CheckBox cbIncludeChildren = (CheckBox) rightColumn.getItem(i);
+            subscriptions.add(new SubscriptionInfo(source, cbIncludeChildren
+                    .getValue(), cbEvent.getName(),
+                    cbEvent.getValue() ? SubscriptionStatus.SUBSCRIBED
+                            : SubscriptionStatus.NOT_SUBSCRIBED));
+        }
+
+        service.updateSubscriptionStatus(subscriptions,
+                new AsyncCallback<Boolean>() {
+                    public void onFailure(Throwable caught) {
+                        MessageBox mb = new MessageBox();
+                        mb.setType(MessageBoxType.ALERT);
+                        mb.setIcon(MessageBox.ERROR);
+                        mb.setTitle("Error");
+                        mb.setMessage(caught.toString());
+                        mb.show();
+                    }
+
+                    public void onSuccess(Boolean success) {
+                        MessageBox mb = new MessageBox();
+                        mb.setType(MessageBoxType.ALERT);
+                        mb
+                                .setIcon(success ? MessageBox.INFO
+                                        : MessageBox.ERROR);
+                        mb.setTitle(success ? "Info" : "Error");
+                        mb
+                                .setMessage(success ? "Subscriptions updated sucessfully"
+                                        : "Unable to update subscriptions status");
+                        window.close();
+                        mb.show();
+                    }
+                });
     }
 }

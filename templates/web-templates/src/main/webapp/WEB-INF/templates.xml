@@ -36,10 +36,10 @@
 
 <template-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.jahia.net/jahia/templates" xsi:schemaLocation="http://www.jahia.net/jahia/templates http://www.jahia.net/shemas/templates_2_0.xsd">
     <package-name>Web templates</package-name>
-    <root-folder>web-templates</root-folder>
+    <root-folder>web_templates</root-folder>
     <provider>www.jahia.org</provider>
     <thumbnail>images/preview.gif</thumbnail>
-    <resource-bundle>jahiatemplates.Web-templates</resource-bundle>
+    <resource-bundle>jahiatemplates.Web_templates</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
     <definitions-file>definitions.grp</definitions-file>
     <common-pages>

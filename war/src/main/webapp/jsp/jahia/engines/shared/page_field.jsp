@@ -34,8 +34,6 @@
 --%>
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="org.jahia.bin.Jahia" %>
 <%@ page import="org.jahia.content.ContentObject" %>
 <%@ page import="org.jahia.data.JahiaData" %>
 <%@ page import="org.jahia.data.beans.JahiaBean" %>
@@ -51,658 +49,663 @@
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@ page import="org.jahia.services.acl.JahiaACLManagerService" %>
 <%@ page import="org.jahia.services.acl.JahiaBaseACL" %>
+<%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeDefinition" %>
+<%@ page import="org.jahia.services.lock.LockPrerequisites" %>
 <%@ page import="org.jahia.services.pages.*" %>
 <%@ page import="org.jahia.services.sites.SiteLanguageSettings" %>
-<%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="org.jahia.utils.LanguageCodeConverters" %>
 <%@ page import="javax.servlet.jsp.JspWriter" %>
 <%@ page import="javax.servlet.jsp.PageContext" %>
 <%@ page import="java.io.IOException" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.jahia.services.acl.JahiaACLManagerService" %>
-<%@ page import="org.jahia.services.lock.LockPrerequisites" %>
-<%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeDefinition" %>
+<%@ page import="org.jahia.bin.Jahia" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%!
-private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("jsp.jahia.engines.shared.Page_Field");
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("jsp.jahia.engines.shared.Page_Field");
 
-/**
- * utility method
- * @param s the long string
- * @return a List of string
- */
-private List getStringToList(final String s) {
-  final List vlist = new ArrayList();
-  final StringTokenizer tok = new StringTokenizer(s, ",");
-  while (tok.hasMoreTokens()) {
-      final String v = tok.nextToken().trim();
-      vlist.add(v);
-  }
-  return vlist;
-}
+    private void drawTimeBasedPublishingStatusIcon(ContentObject contentObject, ProcessingContext jParams, PageContext pageContext)
+            throws IOException {
+        if (contentObject == null) {
+            return;
+        }
+        JspWriter out = pageContext.getOut();
+        final String contextPath = Jahia.getContextPath();
+        final String actionURL = contextPath + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
+                jParams.getPageID() + "&key=" + contentObject.getObjectKey();
 
-private void drawTimeBasedPublishingStatusIcon(ContentObject contentObject, ProcessingContext jParams, PageContext pageContext)
-        throws IOException {
-  if (contentObject == null) {
-      return;
-  }
-  JspWriter out = pageContext.getOut();
-  final String contextPath = Jahia.getContextPath();
-  final String actionURL = contextPath + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
-          jParams.getPageID() + "&key=" + contentObject.getObjectKey();
-
-  String serverURL = actionURL + "&displayDialog=true";
-  String dialogTitle = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dialogTitle",
-          jParams, jParams.getLocale(), "Informational");
-  StringBuffer cmdBuffer = new StringBuffer("handleTimeBasedPublishing(event,'");
-  cmdBuffer.append(serverURL).append("','");
-  cmdBuffer.append(contentObject.getObjectKey()).append("',").append("'/op/edit/pid/")
-          .append(jParams.getPageID()).append("','").append(dialogTitle).append("')");
-  out.print("<img class=\"timeBasedPublishingState\" id=\"");
-  out.print("img_");
-  out.print(contentObject.getObjectKey());
-  out.print("\" border=\"0\" src=\"");
-  out.print(actionURL);
-  out.print("\" onclick=\"");
-  out.print(cmdBuffer.toString());
-  out.print("\" />\n");
-}
+        String serverURL = actionURL + "&displayDialog=true";
+        String dialogTitle = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dialogTitle",
+                jParams, jParams.getLocale(), "Informational");
+        StringBuffer cmdBuffer = new StringBuffer("handleTimeBasedPublishing(event,'");
+        cmdBuffer.append(serverURL).append("','");
+        cmdBuffer.append(contentObject.getObjectKey()).append("',").append("'/op/edit/pid/")
+                .append(jParams.getPageID()).append("','").append(dialogTitle).append("')");
+        out.print("<img class=\"timeBasedPublishingState\" id=\"");
+        out.print("img_");
+        out.print(contentObject.getObjectKey());
+        out.print("\" border=\"0\" src=\"");
+        out.print(actionURL);
+        out.print("\" onclick=\"");
+        out.print(cmdBuffer.toString());
+        out.print("\" />\n");
+    }
 
 
-public boolean areValuesTheSameInAllActiveLanguages(final JahiaPageEngineTempBean pageBean,
-                                                    final String langCode) {
-  if (pageBean.getTitles().size() > 1) {
-    final Iterator titles = pageBean.getTitles().values().iterator();
-    final String theTitle = pageBean.getTitle(langCode);
-    if (theTitle == null || theTitle.length() == 0 || theTitle.startsWith("<jahia")) {
+    public boolean areValuesTheSameInAllActiveLanguages(final JahiaPageEngineTempBean pageBean,
+                                                        final String langCode) {
+        if (pageBean.getTitles().size() > 1) {
+            final Iterator titles = pageBean.getTitles().values().iterator();
+            final String theTitle = pageBean.getTitle(langCode);
+            if (theTitle == null || theTitle.length() == 0 || theTitle.startsWith("<jahia")) {
+                return false;
+            }
+            String oldValue = null;
+            while (titles.hasNext()) {
+                final String title = (String) titles.next();
+                if (oldValue != null && !oldValue.equals(title)) {
+                    return false;
+                }
+                oldValue = title;
+            }
+            return true;
+        }
         return false;
     }
-    String oldValue = null;
-    while (titles.hasNext()) {
-      final String title = (String) titles.next();
-      if (oldValue != null && !oldValue.equals(title)) {
-          return false;
-      }
-      oldValue = title;
-    }
-    return true;
-  }
-  return false;
-}
 %>
 
 <%
-final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
-final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
-pageContext.setAttribute("jahia", new JahiaBean(jParams));
-final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
-if (elh != null) {
-    jParams.setCurrentLocale(elh.getCurrentLocale());
-}
-final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
-final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + ".theField");
-final Boolean templateNotFound = (Boolean) engineMap.get("templateNotFound");
+    final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
+    final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
+    pageContext.setAttribute("jahia", new JahiaBean(jParams));
+    final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+    EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
+    if (elh != null) {
+        jParams.setCurrentLocale(elh.getCurrentLocale());
+    }
+    final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
+    final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + ".theField");
+    final Boolean templateNotFound = (Boolean) engineMap.get("templateNotFound");
 
-Map pageBeans = (Map) session.getAttribute("Page_Field.PageBeans");
-if (pageBeans == null) {
-    pageBeans = new HashMap();
-}
-final JahiaPageEngineTempBean pageBean =
-        (JahiaPageEngineTempBean) pageBeans.get(theField.getDefinition().getName());
+    Map pageBeans = (Map) session.getAttribute("Page_Field.PageBeans");
+    if (pageBeans == null) {
+        pageBeans = new HashMap();
+    }
+    final JahiaPageEngineTempBean pageBean =
+            (JahiaPageEngineTempBean) pageBeans.get(theField.getDefinition().getName());
 
-logger.debug("pageBean: " + pageBean);
+    logger.debug("pageBean: " + pageBean);
 
-final JahiaPageBaseService jahiaPageBaseService = JahiaPageBaseService.getInstance();
-final Locale processingLocale = (Locale) engineMap.get(JahiaEngine.PROCESSING_LOCALE);
-String title = pageBean.getTitle(processingLocale.toString());
-if (title == null) {
-    title = "";
-}
-List tVlist = new ArrayList();// List of templates constraint requested
+    final JahiaPageBaseService jahiaPageBaseService = JahiaPageBaseService.getInstance();
+    final Locale processingLocale = (Locale) engineMap.get(JahiaEngine.PROCESSING_LOCALE);
+    String title = pageBean.getTitle(processingLocale.toString());
+    if (title == null) {
+        title = "";
+    }
+    List<String> tVlist = new ArrayList<String>();// List of templates constraint requested
 
 // Set the flags corresponding to the page options to display
-final boolean isNewPage = theField.getObject() == null;
+    final boolean isNewPage = theField.getObject() == null;
 
 // added to support specific behaviors of engine addPage actions
-boolean isDirectPage = true;//default
-boolean isExternalLink = true; //default
-boolean isInternalLink = true; //default
+    boolean isDirectPage = true;//default
+    boolean isExternalLink = true; //default
+    boolean isInternalLink = true; //default
 
-final String header = request.getHeader("User-agent");
-final boolean isIE7 = header != null && header.indexOf("MSIE 7") != -1;
+    final ContentPage contentPage = jahiaPageBaseService.lookupContentPage(theField.getPageID(), false);
+    if (contentPage != null) {
+        ExtendedNodeDefinition def = theField.getDefinition().getNodeDefinition();
 
-final ContentPage contentPage = jahiaPageBaseService.lookupContentPage(theField.getPageID(), false);
-if (contentPage != null) {
-    ExtendedNodeDefinition def = theField.getDefinition().getNodeDefinition();
+        String types = def.getSelectorOptions().get("type");
+        if (types != null) {
+            if (!types.contains("direct")) isDirectPage = false;
+            if (!types.contains("external")) isExternalLink = false;
+            if (!types.contains("internal")) isInternalLink = false;
+        }
 
-    String types = def.getSelectorOptions().get("type");
-    if (types != null) {
-        if (!types.contains("direct")) isDirectPage = false;
-        if (!types.contains("external")) isExternalLink = false;
-        if (!types.contains("internal")) isInternalLink = false;
+        String templates = def.getSelectorOptions().get("templates");
+        if (templates != null) {
+            tVlist = new ArrayList<String>(Arrays.asList(templates.split(",")));
+        }
+
+        // field type definition always prevails over the current value.
+        // added to support new feature: check of defaultvalue in declarations
+        // syntax accepted: move, internal or external, pageonly and linkonly. the 2 last are exclusive
+        // the webdesigner can also limit the template choice by a list of templates names surrounded by brackets
+
+        logger.debug("external=" + isExternalLink);
+        logger.debug("internal=" + isInternalLink);
+        logger.debug("direct=" + isDirectPage);
     }
 
-    String templates = def.getSelectorOptions().get("templates");
-    if (templates != null) {
-        tVlist = new ArrayList(Arrays.asList(templates.split(",")));
+    String pageURLKey = pageBean.getUrlKey();
+    String remoteURL = pageBean.getRemoteURL(processingLocale.toString());
+    if (remoteURL == null) {
+        remoteURL = "http://";
     }
-
-    // field type definition always prevails over the current value.
-    // added to support new feature: check of defaultvalue in declarations
-    // syntax accepted: move, internal or external, pageonly and linkonly. the 2 last are exclusive
-    // the webdesigner can also limit the template choice by a list of templates names surrounded by brackets
-
-    logger.debug("external=" + isExternalLink);
-    logger.debug("internal=" + isInternalLink);
-    logger.debug("direct=" + isDirectPage);
-}
-
-String pageURLKey = pageBean.getUrlKey();
-String remoteURL = pageBean.getRemoteURL(processingLocale.toString());
-if (remoteURL == null){
-    remoteURL = "http://";
-}
 // Get titles for the selected page engine.
-int sourcePageID = pageBean.getPageLinkID();
-String sourceTitle = null;
-if (sourcePageID != -1) {
-    final ContentPage sourceContentPage = jahiaPageBaseService.lookupContentPage(sourcePageID, false);
-    Map titles = sourceContentPage.getTitles(ContentPage.LAST_UPDATED_TITLES);
-    if (titles != null)
-        sourceTitle = (String) titles.get(processingLocale.toString());
-    if (!isInternalLink) pageURLKey = sourceContentPage.getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
-}
+    int sourcePageID = pageBean.getPageLinkID();
+    String sourceTitle = null;
+    if (sourcePageID != -1) {
+        final ContentPage sourceContentPage = jahiaPageBaseService.lookupContentPage(sourcePageID, false);
+        Map titles = sourceContentPage.getTitles(ContentPage.LAST_UPDATED_TITLES);
+        if (titles != null)
+            sourceTitle = (String) titles.get(processingLocale.toString());
+        if (!isInternalLink) pageURLKey = sourceContentPage.getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
+    }
 
-if (pageURLKey == null) {
-    pageURLKey = "";
-}
+    if (pageURLKey == null) {
+        pageURLKey = "";
+    }
 
-boolean allSameTitles = areValuesTheSameInAllActiveLanguages(pageBean, jParams.getLocale().toString());
+    boolean allSameTitles = areValuesTheSameInAllActiveLanguages(pageBean, jParams.getLocale().toString());
 
-if (sourceTitle != null && "".equals(title)) {
-    title = sourceTitle;
-}
+    if (sourceTitle != null && "".equals(title)) {
+        title = sourceTitle;
+    }
 
-logger.debug("sourcePageID: " + sourcePageID);
+    logger.debug("sourcePageID: " + sourcePageID);
 
 /* originally the test allowed for changing the page type in UPDATE
 final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
         !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation());
 */
 
-boolean canDisplayTemplateSelection = true;
-if (!isNewPage && !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) {
-    canDisplayTemplateSelection = false;
-}
+    boolean canDisplayTemplateSelection = true;
+    if (!isNewPage && !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) {
+        canDisplayTemplateSelection = false;
+    }
 
-final boolean canChangeType = !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation());
+    final boolean canChangeType = !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation());
 
 // A change type page warning is displayed if it is not a new page, a page of
 // direct type and if the user has change the type in the engine GUI.
-final boolean hasDirectTypeChange = !isNewPage &&
-        ((JahiaPage) theField.getObject()).getPageType() == ContentPage.TYPE_DIRECT &&
-        !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation()) ? true : false;
+    final boolean hasDirectTypeChange = !isNewPage &&
+            ((JahiaPage) theField.getObject()).getPageType() == ContentPage.TYPE_DIRECT &&
+            !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation()) ? true : false;
 
-ContentObject timeBasedPublishingObject = (ContentObject) request.getAttribute("Page_Field.enableTimeBasedPublishingStatus");
-boolean enableTimeBasedPublishing = (timeBasedPublishingObject != null);
+    ContentObject timeBasedPublishingObject = (ContentObject) request.getAttribute("Page_Field.enableTimeBasedPublishingStatus");
+    boolean enableTimeBasedPublishing = (timeBasedPublishingObject != null);
 
-boolean displayURLKeyInput = true;
-final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-if (aclService.getSiteActionPermission(LockPrerequisites.URLKEY, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0) {
-    displayURLKeyInput = false;
-}
+    boolean displayURLKeyInput = true;
+    final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
+    if (aclService.getSiteActionPermission(LockPrerequisites.URLKEY, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0) {
+        displayURLKeyInput = false;
+    }
 
 %>
 <script type="text/javascript">
-var operation="link"
-function setPid(pid) {
-    handleActionChanges("edit&operation="+operation+"&shouldSetPageLinkID=true&pageSelected="+pid, pid);
-}
-function getPageOffsetLeft(el) {
-  var x;
-  // Return the x coordinate of an element relative to the page.
-  x = el.offsetLeft - 5;
-  if (el.offsetParent != null)
-      x += getPageOffsetLeft(el.offsetParent);
-  return x;
-}
+    var operation = "link";
 
-function callSelectPageMove() {
-    // Inhibate the engine pop up close
-    document.mainForm.pageURLKey.disabled = false;
-    operation="<%=SelectPage_Engine.MOVE_OPERATION%>";
-<%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.MOVE_OPERATION,
+    function setPid(pid) {
+        handleActionChanges("edit&operation=" + operation + "&shouldSetPageLinkID=true&pageSelected=" + pid, pid);
+    }
+    function getPageOffsetLeft(el) {
+        var x;
+        // Return the x coordinate of an element relative to the page.
+        x = el.offsetLeft - 5;
+        if (el.offsetParent != null)
+            x += getPageOffsetLeft(el.offsetParent);
+        return x;
+    }
+
+    function callSelectPageMove() {
+        // Inhibate the engine pop up close
+        document.mainForm.pageURLKey.disabled = false;
+        operation = "<%=SelectPage_Engine.MOVE_OPERATION%>";
+    <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.MOVE_OPERATION,
 pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
-}
-
-function callSelectPageLink() {
-  // Inhibate the engine pop up close
-  if (typeof document.mainForm.pageURLKey != 'undefined'){
-    document.mainForm.pageURLKey.disabled = "disabled";
-  }
-operation="<%=SelectPage_Engine.LINK_OPERATION%>";
-  <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.LINK_OPERATION, pageBean.getParentID(), pageBean.getID(), "setPid", -1, -1)%>
-}
-
-function titleInputEvent() {
-  if (document.getElementById('noValueRadio')) {
-    if (document.getElementById('noValueRadio').checked) {
-      document.mainForm.operation[0].checked = true;
     }
-  }
-}
 
-function setPageURL() {
-  document.mainForm.pageURLKey.disabled = "disabled";
-  var token = "?";
-  if (document.mainForm.action.indexOf("?") > -1) {
-    token = "&";
-  }
-  document.mainForm.action += token + "loadedFromSession=true" + "&operation=<%=Page_Field.LINK_URL%>";
-}
-
-function check() {
-
-  // Test if checked
-  checked = false;
-  if (document.mainForm.operation.length > 1) {
-    for (var i = 0; i < document.mainForm.operation.length; i++) {
-      if (document.mainForm.operation[i].checked) {
-        checked = true;
-      }
+    function callSelectPageLink() {
+        // Inhibate the engine pop up close
+        if (typeof document.mainForm.pageURLKey != 'undefined') {
+            document.mainForm.pageURLKey.disabled = "disabled";
+        }
+        operation = "<%=SelectPage_Engine.LINK_OPERATION%>";
+    <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.LINK_OPERATION, pageBean.getParentID(), pageBean.getID(), "setPid", -1, -1)%>
     }
-  } else {
-    // if operation == 1 then we have to test differently.
-    if (document.mainForm.operation.checked) {
-      checked = true;
+
+    function titleInputEvent() {
+        if (document.getElementById('noValueRadio')) {
+            if (document.getElementById('noValueRadio').checked) {
+                document.mainForm.operation[0].checked = true;
+            }
+        }
     }
-  }
-  if (!checked) return false;
 
-  // now here we will test if the move page or the link page
-  // target page IDs are valid or not.
+    function setPageURL() {
+        document.mainForm.pageURLKey.disabled = "disabled";
+        var token = "?";
+        if (document.mainForm.action.indexOf("?") > -1) {
+            token = "&";
+        }
+        document.mainForm.action += token + "loadedFromSession=true" + "&operation=<%=Page_Field.LINK_URL%>";
+    }
 
-  // first we test for any of the cases, when both options
-  // are available to the user
-  if ((document.getElementById('movePageRadio') != null) &&
-      (document.getElementById('linkPageRadio') != null)) {
-      if (document.getElementById('movePageRadio').checked || document.getElementById('linkPageRadio').checked) {
-        <% if ((Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) && sourcePageID <= 0) { %>
-          return false;
-        <% } else { %>
-          return true;
-        <% } %>
-      }
-  }
+    function check() {
 
-  // from now on we have either the move or the link
-  // option present on the display, but not both
-  // (that case was already covered in the previous
-  // test)
+        // Test if checked
+        checked = false;
+        if (document.mainForm.operation.length > 1) {
+            for (var i = 0; i < document.mainForm.operation.length; i++) {
+                if (document.mainForm.operation[i].checked) {
+                    checked = true;
+                }
+            }
+        } else {
+            // if operation == 1 then we have to test differently.
+            if (document.mainForm.operation.checked) {
+                checked = true;
+            }
+        }
+        if (!checked) return false;
 
-  // now let's test only the move case if it is present.
-  if (document.getElementById('movePageRadio') != null) {
-    if (document.getElementById('movePageRadio').checked) {
-      <% if ((Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) && sourcePageID <= 0) { %>
-        return false;
-      <%} else { %>
+        // now here we will test if the move page or the link page
+        // target page IDs are valid or not.
+
+        // first we test for any of the cases, when both options
+        // are available to the user
+        if ((document.getElementById('movePageRadio') != null) &&
+            (document.getElementById('linkPageRadio') != null)) {
+            if (document.getElementById('movePageRadio').checked || document.getElementById('linkPageRadio').checked) {
+            <% if ((Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) && sourcePageID <= 0) { %>
+                return false;
+            <% } else { %>
+                return true;
+            <% } %>
+            }
+        }
+
+        // from now on we have either the move or the link
+        // option present on the display, but not both
+        // (that case was already covered in the previous
+        // test)
+
+        // now let's test only the move case if it is present.
+        if (document.getElementById('movePageRadio') != null) {
+            if (document.getElementById('movePageRadio').checked) {
+            <% if ((Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) && sourcePageID <= 0) { %>
+                return false;
+            <%} else { %>
+                return true;
+            <% } %>
+            }
+        }
+
+        if (document.getElementById('linkPageRadio') != null) {
+            if (document.getElementById('linkPageRadio').checked) {
+            <% if ((Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) && sourcePageID <= 0) { %>
+                return false;
+            <% } else { %>
+                return true;
+            <% } %>
+            }
+        }
         return true;
-      <% } %>
     }
-  }
 
-  if (document.getElementById('linkPageRadio') != null) {
-    if (document.getElementById('linkPageRadio').checked) {
-      <% if ((Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) && sourcePageID <= 0) { %>
-        return false;
-      <% } else { %>
-        return true;
-      <% } %>
+    function handleActionChanges(param) {
+        saveContent();
+        var sep = "?";
+        if (document.mainForm.action.indexOf("?") > 0) {
+            sep = "&";
+        }
+        document.mainForm.action += sep + "screen=" + param;
+        teleportCaptainFlam(document.mainForm);
     }
-  }
-  return true;
-}
 
-function handleActionChanges(param) {
-  saveContent();
-  var sep = "?";
-  if (document.mainForm.action.indexOf("?") > 0) {
-    sep = "&";
-  }
-  document.mainForm.action += sep + "screen=" + param;
-  teleportCaptainFlam(document.mainForm);
-}
-
-function switchIcons(callingElementID, inputElementID) {
-  var element = document.getElementById(inputElementID);
-  var callingElement = document.getElementById(callingElementID);
-  if (element) {
-    var theValue = element.value;
-    if (theValue == "true") {
-      theValue = "false";
-      callingElement.className = "sharedLanguageNo";
-      callingElement.title = '<internal:engineResourceBundle resourceName="org.jahia.applyToSingleLanguage.label"/>';
-    } else {
-      theValue = "true";
-      callingElement.className = "sharedLanguageYes";
-      callingElement.title = '<internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>';
+    function switchIcons(callingElementID, inputElementID) {
+        var element = document.getElementById(inputElementID);
+        var callingElement = document.getElementById(callingElementID);
+        if (element) {
+            var theValue = element.value;
+            if (theValue == "true") {
+                theValue = "false";
+                callingElement.className = "sharedLanguageNo";
+                callingElement.title = '<internal:engineResourceBundle resourceName="org.jahia.applyToSingleLanguage.label"/>';
+            } else {
+                theValue = "true";
+                callingElement.className = "sharedLanguageYes";
+                callingElement.title = '<internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>';
+            }
+            element.value = theValue;
+        }
     }
-    element.value = theValue;
-  }
-}
 </script>
 <div class="head">
-  <table cellpadding="0" cellspacing="0" border="0" width="100%" class="object-title">
-    <tr>
-      <th width="100%">    
-        <% if (isNewPage) { %>
-          <% if (!isDirectPage) { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkCreation.label"/>
-          <% } else { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.jahiaPageCreation.label"/>
-          <% } %>
-        <% } else { %>
-          <% if (!isDirectPage) { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkEdition.label"/>
-          <% } else { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.jahiaPageEdition.label"/>
-          <% } %>
-        <% } %>
-      </th>
-      <% if (jParams.getSite().getLanguageSettings(true).size() > 1 &&  ServicesRegistry.getInstance().getJahiaACLManagerService().hasWriteAccesOnAllLangs(jParams)) { %>
-      <td nowrap="nowrap">
-        <internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
-      </td>
-      <td>
-        <% if (allSameTitles) { %>
-          <a id="switchIcons_<%=pageBean.getID()%>" href="javascript:switchIcons('switchIcons_<%=pageBean.getID()%>', 'shared_title');" title='<internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
-        <% } else { %>
-          <a id="switchIcons_<%=pageBean.getID()%>" href="javascript:switchIcons('switchIcons_<%=pageBean.getID()%>', 'shared_title');" title='<internal:engineResourceBundle resourceName="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
-        <% } %>
-        <input id="shared_title" type="hidden" name="shared_title" value="<%=allSameTitles || pageBean.isSharedTitle()%>"/>
-      </td>
-      <% } %>
-    </tr>
-  </table>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" class="object-title">
+        <tr>
+            <th width="100%">
+                <% if (isNewPage) { %>
+                <% if (!isDirectPage) { %>
+                <internal:engineResourceBundle
+                        resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkCreation.label"/>
+                <% } else { %>
+                <internal:engineResourceBundle
+                        resourceName="org.jahia.engines.shared.Page_Field.jahiaPageCreation.label"/>
+                <% } %>
+                <% } else { %>
+                <% if (!isDirectPage) { %>
+                <internal:engineResourceBundle
+                        resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkEdition.label"/>
+                <% } else { %>
+                <internal:engineResourceBundle
+                        resourceName="org.jahia.engines.shared.Page_Field.jahiaPageEdition.label"/>
+                <% } %>
+                <% } %>
+            </th>
+            <% if (jParams.getSite().getLanguageSettings(true).size() > 1 && ServicesRegistry.getInstance().getJahiaACLManagerService().hasWriteAccesOnAllLangs(jParams)) { %>
+            <td nowrap="nowrap">
+                <internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
+            </td>
+            <td>
+                <% if (allSameTitles) { %>
+                <a id="switchIcons_<%=pageBean.getID()%>"
+                   href="javascript:switchIcons('switchIcons_<%=pageBean.getID()%>', 'shared_title');"
+                   title='<internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>'
+                   class="sharedLanguageYes">&nbsp;</a>
+                <% } else { %>
+                <a id="switchIcons_<%=pageBean.getID()%>"
+                   href="javascript:switchIcons('switchIcons_<%=pageBean.getID()%>', 'shared_title');"
+                   title='<internal:engineResourceBundle resourceName="org.jahia.applyToSingleLanguage.label"/>'
+                   class="sharedLanguageNo">&nbsp;</a>
+                <% } %>
+                <input id="shared_title" type="hidden" name="shared_title"
+                       value="<%=allSameTitles || pageBean.isSharedTitle()%>"/>
+            </td>
+            <% } %>
+        </tr>
+    </table>
 </div>
 
 <% if (hasDirectTypeChange) { %>
-  <p class="error">
+<p class="error">
     <internal:engineResourceBundle resourceName="org.jahia.warning.label"/> !!
     <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.ifThisPageIsChanged.label"/>.
-  </p>
+</p>
 <% } %>
 <logic:present name="engineMessages">
-  <p class="errorbold">
-    <internal:engineResourceBundle resourceName="org.jahia.engines.shared.BigText_Field.error.label"/>:
-  </p>
-  <ul>
-    <logic:iterate name="engineMessages" property="messages" id="curMessage">
-      <li class="error"><internal:message name="curMessage"/></li>
-    </logic:iterate>
-  </ul>
+    <p class="errorbold">
+        <internal:engineResourceBundle resourceName="org.jahia.engines.shared.BigText_Field.error.label"/>:
+    </p>
+    <ul>
+        <logic:iterate name="engineMessages" property="messages" id="curMessage">
+            <li class="error"><internal:message name="curMessage"/></li>
+        </logic:iterate>
+    </ul>
 </logic:present>
 <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
-  <tr>
+<tr>
     <th width="100">
-      <% if (pageBean == null) { %>
+        <% if (pageBean == null) { %>
         <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.noTempPageBean.label"/>.
-      <% } %>
-      <% if (!isDirectPage) { %>
+        <% } %>
+        <% if (!isDirectPage) { %>
         <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkTitle.label"/>
-      <% } else { %>
+        <% } else { %>
         <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.jahiaPageTitle.label"/>
-      <% } %>
+        <% } %>
     </th>
     <td>
-      <%
-      final JahiaContainer theContainer = (JahiaContainer) engineMap.get("theContainer");
-      if (EngineValidationHelper.isFieldMandatory(theContainer, theField, jParams)) {
-      %>
+        <%
+            final JahiaContainer theContainer = (JahiaContainer) engineMap.get("theContainer");
+            if (EngineValidationHelper.isFieldMandatory(theContainer, theField, jParams)) {
+        %>
         <span class="errorbold">(*)</span>
         <input id="go" type="hidden" name="go"/>
-      <% } %>
-      <div id="errorMsg"></div>
-      <input type="text" size="80" name="page_title" onkeyup="titleInputEvent()" onchange="titleInputEvent()" value="<%=title%>" maxlength="250">
+        <% } %>
+        <div id="errorMsg"></div>
+        <input type="text" size="80" name="page_title" onkeyup="titleInputEvent();" onchange="titleInputEvent();"
+               value="<%=title%>" maxlength="250">
     </td>
-  </tr>
+</tr>
 <%
-final List localeList = new ArrayList();
-final List siteLanguageSettings = jParams.getSite().getLanguageSettings();
-if (siteLanguageSettings != null) {
-  for (int i = 0; i < siteLanguageSettings.size(); i++) {
-    final SiteLanguageSettings curSetting = (SiteLanguageSettings) siteLanguageSettings.get(i);
-    if (curSetting.isActivated()) {
-      final Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
-      final boolean canEdit = ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.languages." +
-              tempLocale.toString(),
-              jParams.getUser(),
-              JahiaBaseACL.READ_RIGHTS,
-              jParams.getSiteID()) > 0;
-      if (canEdit) localeList.add(tempLocale);
+    final List<Locale> localeList = new ArrayList<Locale>();
+    final List<SiteLanguageSettings> siteLanguageSettings = jParams.getSite().getLanguageSettings();
+    if (siteLanguageSettings != null) {
+        for (SiteLanguageSettings curSetting : siteLanguageSettings) {
+            if (curSetting.isActivated()) {
+                final Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
+                final boolean canEdit = ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.languages." +
+                        tempLocale.toString(),
+                        jParams.getUser(),
+                        JahiaBaseACL.READ_RIGHTS,
+                        jParams.getSiteID()) > 0;
+                if (canEdit) localeList.add(tempLocale);
+            }
+        }
     }
-  }
-}
 
-if (displayURLKeyInput && isDirectPage) { %>
-  <tr>
+    if (displayURLKeyInput && isDirectPage) { %>
+<tr>
     <th>
-      <%if (localeList.size() > 1) { %>
-        <internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared.label"/><br/>
-      <% } else { %>
-        <internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/><br/>
-      <% } %>
+        <%if (localeList.size() > 1) { %>
+        <internal:engineResourceBundle
+                resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared.label"/><br/>
+        <% } else { %>
+        <internal:engineResourceBundle
+                resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/><br/>
+        <% } %>
     </th>
     <td>
-      <input type="text" size="80" name="pageURLKey" value="<%=pageURLKey%>" <% if (!canDisplayTemplateSelection || Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) { %>disabled="disabled" <% } %>/>
+        <input type="text" size="80" name="pageURLKey" value="<%=pageURLKey%>"
+               <% if (!canDisplayTemplateSelection || Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) { %>disabled="disabled" <% } %>/>
     </td>
-  </tr>
+</tr>
 <% } %>
 <tr>
-  <th valign="top">
+<th valign="top">
     Page type
-  </th>
-  <td>
-    <table>
-    <%
+</th>
+<td>
+<table>
+<%
     // Is it a new page field ?
     // Is it not external or internal link neither moving
 
     if (isDirectPage) {
-      final Iterator templateList;
+        final Iterator templateList;
 
-      //check for templates requested
-      boolean checkedTemplates = false;
-      if (tVlist.size() > 0) {
-        Iterator tlist = (Iterator) engineMap.get("templateList");
-        List all = new ArrayList();
-        List constraint = new ArrayList();
-        int checkcount = tVlist.size();
-        while (tlist.hasNext()) {
-          JahiaPageDefinition t = (JahiaPageDefinition) tlist.next();
-          all.add(t);
-          String templatename = t.getName();
-            if (tVlist.contains(templatename)) {
-            logger.debug("found requested templates:" + templatename);
-            checkcount--;
-            constraint.add(t);
-          }
-        }
-        if (checkcount == 0) {
-          checkedTemplates = true;
-          logger.debug("all templates contraints checked");
-          templateList = constraint.iterator();
-        } else if (checkcount > 0 && constraint.size() > 0) {
-          logger.warn("some templates requested in constraint are not present!");
-          templateList = constraint.iterator();
-        } else {
-          templateList = all.iterator();
-        }
-      } else {
-        templateList = (Iterator) engineMap.get("templateList");
-      }
-    %>
-      <tr>
-        <%if (canDisplayTemplateSelection) {
-          if (!templateList.hasNext()) { %>
-            <td colspan="2">
-              &nbsp;The&nbsp;user&nbsp;<%=jParams.getUser().getUsername()%>&nbsp;has&nbsp;no&nbsp;templates&nbsp;access&nbsp;
-              Cannot create a new page or change template.
-            </td>
-          <% } else { %>
-            <td valign="top">
-              <% if (isNewPage) { %>
-                <!-- Create a new page -->
-                <input id="directPageRadio" type="radio" name="operation" value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation())) { %> checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false">&nbsp;
-              <% } else { %>
-                <input id="directPageRadio" type="radio" name="operation" value="<%=Page_Field.UPDATE_PAGE%>"<% if (Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) { %> checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false">&nbsp;
-              <% } %>
-            </td>
-            <td>
-              <label>
-                <% if (isNewPage) { %>
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.createPageTemplate.label"/>
-                <% } else { %>
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.changePageTemplate.label"/>
-                <% } %>
-              </label>
-              <br />
-              <select name="template_id" onfocus="if (operation[0]) operation[0].checked = true">
-                <% while (templateList.hasNext()) {
-                    JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateList.next();
-                    pageContext.setAttribute("pageTemplate", theTemplate); 
-                    if (!checkedTemplates || tVlist.contains(theTemplate.getName())) {
-                  %>
-                  <option value="<%=theTemplate.getID()%>"<% if (theTemplate.getID() == pageBean.getPageTemplateID()) { %> selected="selected"<% } %> title="<c:out value='${jahia.i18n[pageTemplate.description]}'/>"><c:out value="${jahia.i18n[pageTemplate.displayName]}"/></option>
-                  <% }
+        //check for templates requested
+        boolean checkedTemplates = false;
+        if (tVlist.size() > 0) {
+            Iterator tlist = (Iterator) engineMap.get("templateList");
+            List<JahiaPageDefinition> all = new ArrayList<JahiaPageDefinition>();
+            List<JahiaPageDefinition> constraint = new ArrayList<JahiaPageDefinition>();
+            int checkcount = tVlist.size();
+            while (tlist.hasNext()) {
+                JahiaPageDefinition t = (JahiaPageDefinition) tlist.next();
+                all.add(t);
+                String templatename = t.getName();
+                if (tVlist.contains(templatename)) {
+                    logger.debug("found requested templates:" + templatename);
+                    checkcount--;
+                    constraint.add(t);
                 }
-                if (templateNotFound.booleanValue()) { %>
-                  <option value="-1" selected="selected">Template not found !!! Deleted ?</option>
-                <% } %>
-              </select>
-            </td>
-            <%
-          }
-        }%>
-      </tr>
-      <%if (isNewPage) {%>
-      <tr>
-        <td valign="top">
-          <!-- Move an existing a new page -->
-          <input id="movePageRadio" type="radio" name="operation" value="<%=Page_Field.MOVE_PAGE%>" onclick="callSelectPageMove()"<% if (Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) { %> checked="checked"<% } %>>&nbsp;
-        </td>
-        <td>
-          <label><internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.moveExistingPage.label"/></label>
-          <br />
-          <a href="javascript:callSelectPageMove()"><internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.selectPageToMove.label"/></a>
-          <input type="hidden" name="moveSourcePageID" value="<%=sourcePageID%>"/>
-          <% if (Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) {
-            if (sourcePageID != -1) { %>
-              <ul>
-                <li>
-                  <%=sourceTitle%>&nbsp;(<internal:engineResourceBundle resourceName="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>)
-                </li>
-              </ul>
-            <% } else { %>
-              <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
-            <%}
-          } %>
-        </td>
-      </tr>
+            }
+            if (checkcount == 0) {
+                checkedTemplates = true;
+                logger.debug("all templates contraints checked");
+                templateList = constraint.iterator();
+            } else if (checkcount > 0 && constraint.size() > 0) {
+                logger.warn("some templates requested in constraint are not present!");
+                templateList = constraint.iterator();
+            } else {
+                templateList = all.iterator();
+            }
+        } else {
+            templateList = (Iterator) engineMap.get("templateList");
+        }
+%>
+<tr>
     <%
-      }
+        if (canDisplayTemplateSelection) {
+            if (!templateList.hasNext()) {
+    %>
+    <td colspan="2">
+        &nbsp;The&nbsp;user&nbsp;<%=jParams.getUser().getUsername()%>&nbsp;has&nbsp;no&nbsp;templates&nbsp;access&nbsp;
+        Cannot create a new page or change template.
+    </td>
+    <% } else { %>
+    <td valign="top">
+        <% if (isNewPage) { %>
+        <!-- Create a new page -->
+        <input id="directPageRadio" type="radio" name="operation"
+               value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation())) { %>
+               checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false;">&nbsp;
+        <% } else { %>
+        <input id="directPageRadio" type="radio" name="operation"
+               value="<%=Page_Field.UPDATE_PAGE%>"<% if (Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) { %>
+               checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false;">&nbsp;
+        <% } %>
+    </td>
+    <td>
+        <label>
+            <% if (isNewPage) { %>
+            <internal:engineResourceBundle
+                    resourceName="org.jahia.engines.shared.Page_Field.createPageTemplate.label"/>
+            <% } else { %>
+            <internal:engineResourceBundle
+                    resourceName="org.jahia.engines.shared.Page_Field.changePageTemplate.label"/>
+            <% } %>
+        </label>
+        <br/>
+        <select name="template_id" onfocus="if (operation[0]) operation[0].checked = true;">
+            <% while (templateList.hasNext()) {
+                JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateList.next();
+                pageContext.setAttribute("pageTemplate", theTemplate);
+                if (!checkedTemplates || tVlist.contains(theTemplate.getName())) {
+            %>
+            <option value="<%=theTemplate.getID()%>"<% if (theTemplate.getID() == pageBean.getPageTemplateID()) { %>
+                    selected="selected"<% } %>
+                    title="<c:out value='${jahia.i18n[pageTemplate.description]}'/>"><c:out
+                    value="${jahia.i18n[pageTemplate.displayName]}"/></option>
+            <% }
+            }
+                if (templateNotFound) { %>
+            <option value="-1" selected="selected">Template not found !!! Deleted ?</option>
+            <% } %>
+        </select>
+    </td>
+    <%
+            }
+        }%>
+</tr>
+<%if (isNewPage) {%>
+<tr>
+    <td valign="top">
+        <!-- Move an existing a new page -->
+        <input id="movePageRadio" type="radio" name="operation" value="<%=Page_Field.MOVE_PAGE%>"
+               onclick="callSelectPageMove();"<% if (Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) { %>
+               checked="checked"<% } %>>&nbsp;
+    </td>
+    <td>
+        <label><internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.moveExistingPage.label"/></label>
+        <br/>
+        <a href="javascript:callSelectPageMove()"><internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.selectPageToMove.label"/></a>
+        <input type="hidden" name="moveSourcePageID" value="<%=sourcePageID%>"/>
+        <% if (Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) {
+            if (sourcePageID != -1) { %>
+        <ul>
+            <li>
+                <%=sourceTitle%>&nbsp;(<internal:engineResourceBundle
+                    resourceName="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>)
+            </li>
+        </ul>
+        <% } else { %>
+        <internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
+        <%
+                }
+            }
+        %>
+    </td>
+</tr>
+<%
+        }
     }
 
     // Prevent changes if the actual page displayed in core engine is the same as
     // the actual edited page field
     if (canChangeType) {
-      // test internal condition
-      if (isInternalLink) { %>
-        <tr>
-          <td valign="top">
-            <input id="linkPageRadio" type="radio" name="operation" value="<%=Page_Field.LINK_JAHIA_PAGE%>" onclick="callSelectPageLink()"<% if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) { %> checked="checked"<% } %>>&nbsp;
-          </td>
-          <td>
-            <label><internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/></label>
-            <br />
-            <a href="javascript:callSelectPageLink()"><internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.selectPageToLink.label"/></a>
-            <input type="hidden" name="linkSourcePageID" value="<%=sourcePageID%>"/>
-            <%
-            if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) {
-              if (sourcePageID != -1) { %>
-                <ul>
-                  <li>
-                    <%drawTimeBasedPublishingStatusIcon(timeBasedPublishingObject, jParams, pageContext);%>
-                    &nbsp;<%=sourceTitle%>&nbsp;(<internal:engineResourceBundle resourceName="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>)
-                  </li>
-                </ul>
-              <% } else { %>
-                <internal:engineResourceBundle  resourceName="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
-              <% } %>
-            <% } %>
-          </td>
-        </tr>
-      <% } %>
-      <% if (isExternalLink) { %>
-        <!-- Create a link to an external web site -->
-        <tr>
-          <td valign="top">
-            <input id="remoteURLRadio" type="radio" name="operation" value="<%=Page_Field.LINK_URL%>" <% if (Page_Field.LINK_URL.equals(pageBean.getOperation())) { %> checked="checked"<% } %> <% if (!isNewPage) { %> onfocus="setPageURL()" <% } %> onclick="document.mainForm.pageURLKey.disabled = 'disabled'">&nbsp;
-          </td>
-          <td>
-            <label><internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/></label>
-            <br />
-            <!-- option 1 if linkonly page, 3 if page does not exist. -->
-            <input <% if (isNewPage) { %> onfocus="operation[<%= !isDirectPage ? 1 : 3 %>].checked = true"<% } %> type="text" name="remote_url" size="50" value="<%=remoteURL%>" maxlength="250">
-            <!-- Reset the link -->
-          </td>
-        </tr>
-      <%}
-
-      if (isNewPage || ((JahiaPage) theField.getObject()).getPageType() != ContentPage.TYPE_DIRECT) { %>
-        <tr>
-          <td valign="top">
-            <input id="noValueRadio" type="radio" name="operation" onfocus="document.mainForm.page_title.value = '';document.mainForm.pageURLKey.disabled = 'disabled';" value="<%=Page_Field.RESET_LINK%>"<%if (Page_Field.RESET_LINK.equals(pageBean.getOperation())) {%> checked="checked"<% } %>>
-          </td>
-          <td>
-            <label>
-              <% if (isNewPage) { %>
-                <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.differPageCreation.label"/>
-              <% } else { %>
-                <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.removePageLink.label"/>
-              <% } %>
-            </label>
-            <br />
-            <% if (isNewPage) { %>
-              <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.differPageCreationBody.label"/>.
-            <% } else { %>
-              <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.removePageLinkBody.label"/>.
-            <% } %>
-          </td>
-        </tr>
-      <%}
-    } %>
-    </table>
+        // test internal condition
+        if (isInternalLink) { %>
+<tr>
+    <td valign="top">
+        <input id="linkPageRadio" type="radio" name="operation" value="<%=Page_Field.LINK_JAHIA_PAGE%>"
+               onclick="callSelectPageLink();"<% if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) { %>
+               checked="checked"<% } %>>&nbsp;
     </td>
-  </tr>
+    <td>
+        <label><internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/></label>
+        <br/>
+        <a href="javascript:callSelectPageLink()"><internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.selectPageToLink.label"/></a>
+        <input type="hidden" name="linkSourcePageID" value="<%=sourcePageID%>"/>
+        <%
+            if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) {
+                if (sourcePageID != -1) { %>
+        <ul>
+            <li>
+                <%drawTimeBasedPublishingStatusIcon(timeBasedPublishingObject, jParams, pageContext);%>
+                &nbsp;<%=sourceTitle%>&nbsp;(<internal:engineResourceBundle
+                    resourceName="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>)
+            </li>
+        </ul>
+        <% } else { %>
+        <internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
+        <% } %>
+        <% } %>
+    </td>
+</tr>
+<% } %>
+<% if (isExternalLink) { %>
+<!-- Create a link to an external web site -->
+<tr>
+    <td valign="top">
+        <input id="remoteURLRadio" type="radio" name="operation"
+               value="<%=Page_Field.LINK_URL%>" <% if (Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>
+               checked="checked"<% } %> <% if (!isNewPage) { %> onfocus="setPageURL();" <% } %>
+               onclick="document.mainForm.pageURLKey.disabled = 'disabled';">&nbsp;
+    </td>
+    <td>
+        <label><internal:engineResourceBundle
+                resourceName="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/></label>
+        <br/>
+        <!-- option 1 if linkonly page, 3 if page does not exist. -->
+        <input <% if (isNewPage) { %>
+                onfocus="operation[<%= !isDirectPage ? 1 : 3 %>].checked = true;"<% } %> type="text"
+                name="remote_url" size="50" value="<%=remoteURL%>" maxlength="250">
+        <!-- Reset the link -->
+    </td>
+</tr>
+<% } %>
+<% } %>
+</table>
+</td>
+</tr>
 </table>
 
 <script type="text/javascript">
-  function setfocus() {
-    document.mainForm.elements["page_title"].select();
-  }
-  setfocus();
+    function setfocus() {
+        document.mainForm.elements["page_title"].select();
+    }
+    setfocus();
 </script>
 
 <% if (!isDirectPage && Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) && sourcePageID == -1) {
     pageBean.setOperation(Page_Field.RESET_LINK);
 %>
 <script type="text/javascript">
-  document.getElementById("noValueRadio").checked = true;
-  document.getElementById("noValueRadio").select();
+    document.getElementById("noValueRadio").checked = true;
+    document.getElementById("noValueRadio").select();
 </script>
 <% } %>

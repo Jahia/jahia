@@ -501,6 +501,12 @@
         <load-on-startup>99</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>Test</servlet-name>
+        <servlet-class>org.jahia.bin.TestServlet</servlet-class>
+        <load-on-startup>99</load-on-startup>
+    </servlet>
+
 
     <servlet>
         <servlet-name>
@@ -850,6 +856,10 @@
     <servlet-mapping>
         <servlet-name>Files</servlet-name>
         <url-pattern>/files/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Test</servlet-name>
+        <url-pattern>/test/*</url-pattern>
     </servlet-mapping>
 
     <!-- XMLRPCServlet mapping for the blogs -->

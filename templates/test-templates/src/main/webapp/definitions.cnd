@@ -117,9 +117,9 @@
  date maximumDate (datetimepicker[format='dd.MM.yyyy / HH:mm']) = '9999-12-31T23:59:59.999+00:00'
  
 [test_templates:fieldsWithIndexOptions] > jnt:container
- date untokenizedDate indexed='untok' scoreboost=1 analyzer='keyword'
- date scoreboostedDate indexed='untok' scoreboost=6 analyzer='keyword'
- integer untokenizedLong indexed='untok' analyzer='keyword'
+ date untokenizedDate indexed='untokenized' scoreboost=1 analyzer='keyword'
+ date scoreboostedDate indexed='untokenized' scoreboost=6 analyzer='keyword'
+ integer untokenizedLong indexed='untokenized' analyzer='keyword'
  sharedSmallText simpleSmallText analyzer='simple'
  sharedSmallText nonIndexedSmallText indexed='no'
  

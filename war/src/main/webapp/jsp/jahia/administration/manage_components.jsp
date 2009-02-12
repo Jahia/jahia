@@ -178,7 +178,7 @@ stretcherToOpen   = 0; %>
                           <%=app.getContext() %>
                         </td>
                         <td class="lastCol">
-                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.editProperties.label"/>"><img src="<%=URL%>images/icons/admin/adromeda/edit.png" alt="<internal:adminResourceBundle resourceName='org.jahia.admin.edit.label'/>" title="<internal:adminResourceBundle resourceName='org.jahia.admin.edit.label'/>" width="16" height="16" border="0"/></a>&nbsp;<a href="javascript:doDelete(<%=app.getID()%>)" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.delete.label"/>"><img src="<%=URL%>images/icons/admin/adromeda/delete.png" alt="<internal:adminResourceBundle resourceName='org.jahia.admin.delete.label'/>" title="<internal:adminResourceBundle resourceName='org.jahia.admin.delete.label'/>" width="16" height="16" border="0"/></a>
+                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.editProperties.label"/>"><img src="<%=URL%>images/icons/admin/adromeda/edit.png" alt="<internal:adminResourceBundle resourceName='org.jahia.admin.edit.label'/>" title="<internal:adminResourceBundle resourceName='org.jahia.admin.edit.label'/>" width="16" height="16" border="0"/></a>
                         </td>
                       </tr>
                       <script type="text/javascript">

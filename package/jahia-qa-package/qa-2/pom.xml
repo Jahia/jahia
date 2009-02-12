@@ -23,6 +23,12 @@
             <type>war</type>
         </dependency>
         <dependency>
+            <groupId>testsuite-jahia</groupId>
+            <artifactId>testsuite-jahia</artifactId>
+            <version>1.0</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-ear</artifactId>
             <version>${jahia.package.version}</version>
@@ -55,6 +61,16 @@
                                     <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
                                     <destFileName>probe.war</destFileName>
                                 </artifactItem>
+																<artifactItem>
+                                    <groupId>testsuite-jahia</groupId>
+                                    <artifactId>testsuite-jahia</artifactId>
+                                    <version>1.0</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
+                                    <destFileName>testsuite-jahia.war</destFileName>
+                                </artifactItem>
+                                
                             </artifactItems>
                             <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
                             <overWriteReleases>true</overWriteReleases>

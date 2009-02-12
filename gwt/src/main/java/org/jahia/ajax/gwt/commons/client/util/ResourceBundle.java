@@ -62,7 +62,7 @@ public class ResourceBundle {
      */
     public static String getResource(String jahiaModuleType, String elementId, String key) {
         try {
-            //Log.debug("Dictonary name: " + jahiaModuleType + "_rb_" + elementId);
+            //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
             Dictionary jahiaParamDictionary = Dictionary.getDictionary(jahiaModuleType.toLowerCase() + "_rb_" + elementId.toLowerCase());
             return jahiaParamDictionary.get(key);
         } catch (Exception e) {
@@ -79,7 +79,7 @@ public class ResourceBundle {
      */
     public static String getResource(String key) {
         try {
-            //Log.debug("Dictonary name: " + jahiaModuleType + "_rb_" + elementId);
+            //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
             Dictionary jahiaParamDictionary = Dictionary.getDictionary(RESOURCE_BUNDLE_MODULE_TYPE.toLowerCase()
                     + "_rb_" + APPLICATION_RESOURCE_ELEMENT_ID.toLowerCase());
             return jahiaParamDictionary.get(key);

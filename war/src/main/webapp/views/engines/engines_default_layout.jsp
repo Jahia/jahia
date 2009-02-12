@@ -56,8 +56,6 @@
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <jsp:useBean id="javaScriptPath" class="java.lang.String" scope="request"/>
-
-<internal:i18n/>
 <%
     JahiaEngineCommonDataInterface jahiaEngineCommonData =
             (JahiaEngineCommonDataInterface) request.getAttribute(JahiaEngineCommonData.JAHIA_ENGINE_COMMON_DATA);

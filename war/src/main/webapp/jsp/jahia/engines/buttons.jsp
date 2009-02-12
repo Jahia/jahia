@@ -40,7 +40,6 @@
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult" %>
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
-<internal:i18n/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%
 final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");

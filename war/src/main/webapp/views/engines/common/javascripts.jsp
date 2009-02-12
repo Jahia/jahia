@@ -35,7 +35,6 @@
 
 <%@ page language="java" %>
 <%@include file="/views/engines/common/taglibs.jsp" %>
-<internal:i18n />
 
 <script type="text/javascript">
 <!--

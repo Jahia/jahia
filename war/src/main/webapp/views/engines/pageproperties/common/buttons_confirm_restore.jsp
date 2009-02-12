@@ -40,7 +40,6 @@
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-<internal:i18n/>
 <jsp:useBean id="confirmRestoreNav" class="java.lang.String" scope="request"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%

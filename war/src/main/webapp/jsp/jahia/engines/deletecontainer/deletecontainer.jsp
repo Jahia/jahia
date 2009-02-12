@@ -58,7 +58,6 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper" %>
 <%@ page import="org.jahia.engines.JahiaEngine" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-<internal:i18n/>
 
 <%
 final Logger logger = Logger.getLogger("deletecontainer.jsp") ;

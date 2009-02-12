@@ -107,8 +107,6 @@ private static String getIconClassName(final int type, final boolean small) {
 }
 %>
 
-<internal:i18n/>
-
 <!-- Begin ContainerEdit.jsp -->
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <jsp:useBean id="engineTitle" class="java.lang.String" scope="request"/>

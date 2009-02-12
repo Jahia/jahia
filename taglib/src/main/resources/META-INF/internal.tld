@@ -16,23 +16,6 @@
         <body-content>JSP</body-content>
     </tag>
     <tag>
-        <description>Used to set the encoding charset and the content type</description>
-        <name>i18n</name>
-        <tag-class>org.jahia.taglibs.internal.i18n.I18nTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>contentType</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>charSet</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <description>Support for jahia engine resource bundle</description>
         <name>engineResourceBundle</name>
         <tag-class>org.jahia.taglibs.internal.i18n.EngineResourceBundleTag</tag-class>

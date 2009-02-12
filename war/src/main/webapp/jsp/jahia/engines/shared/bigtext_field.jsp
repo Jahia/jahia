@@ -55,7 +55,6 @@
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
-<internal:i18n/>
 <%!
     private static final Pattern siteNamePattern = Pattern.compile("%SITE_NAME%");
 %>

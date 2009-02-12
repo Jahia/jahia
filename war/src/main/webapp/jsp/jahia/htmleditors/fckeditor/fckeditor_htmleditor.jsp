@@ -46,7 +46,6 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<internal:i18n/>
 <%!
 private static boolean isAuthorizedForToolbar(String toolbarSetName, ParamBean jParams) {
     return ServicesRegistry.getInstance().getJahiaACLManagerService().getPermission("org.jahia.actions.sites." + jParams.getSiteID()

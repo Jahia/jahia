@@ -48,7 +48,6 @@
 <%@ page import="org.hibernate.stat.SecondLevelCacheStatistics" %>
 <%@ page import="org.hibernate.stat.EntityStatistics" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
-<internal:i18n />
 
 <%
     Long freeMemoryInBytes       =  (Long) request.getAttribute("freeMemoryInBytes");

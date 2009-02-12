@@ -38,7 +38,6 @@
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-<internal:i18n/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final JahiaField theField = (JahiaField) engineMap.get("theField");

@@ -43,7 +43,6 @@
 <%@ page import="org.jahia.registries.ServicesRegistry"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
-<internal:i18n/>
 <%
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
 final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");

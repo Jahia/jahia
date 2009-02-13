@@ -118,5 +118,13 @@ overflow:hidden
     border: 1px solid #ffffff;
     border-right-color: #b7cbd8;
     border-bottom-color: #b7cbd8;
+}
 
+/*mockups for edit mode when containerLists are empty*/
+
+.mockup-teasers {
+display:block;
+width:641px;
+height:214px;
+background: url( ../img/mockup/bk_teasers.gif) top left no-repeat;
 }

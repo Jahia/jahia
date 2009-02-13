@@ -116,3 +116,12 @@ overflow:hidden
 #bodywrapper .containerListWrap:hover {
     border: 1px solid #0C96F3!important;
 }
+
+/*mockups for edit mode when containerLists are empty*/
+
+.mockup-teasers {
+display:block;
+width:641px;
+height:214px;
+background: url( ../img/mockup/bk_teasers.gif) top left no-repeat;
+}

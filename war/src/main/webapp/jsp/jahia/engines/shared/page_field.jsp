@@ -574,7 +574,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <% if (isNewPage) { %>
         <!-- Create a new page -->
         <input id="directPageRadio" type="radio" name="operation"
-               value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation()) || Page_Field.RESET_LINK.equals(pageBean.getOperation())) { %>
+               value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation())) { %>
                checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false;">&nbsp;
         <% } else { %>
         <input id="directPageRadio" type="radio" name="operation"

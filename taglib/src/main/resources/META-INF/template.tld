@@ -817,6 +817,11 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>emptyContainerDivCssClassName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Allows to retrieve a specific container displayed on the current page, knowing its ID</description>

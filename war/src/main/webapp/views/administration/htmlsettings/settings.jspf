@@ -16,6 +16,8 @@
           <td>
             <input type="checkbox" name="markupFiltering" id="markupFiltering" ${markupFilteringEnabled ? 'checked="checked"' : ''}/>&nbsp;
             <input type="text" name="markupFilteringTags" id="markupFilteringTags" style="width: 90%" value="${markupFilteringTags}"/>
+            <c:set var="info"><internal:adminResourceBundle resourceName="org.jahia.admin.htmlsettings.markupFiltering.info" defaultValue="Please provde a comma-separated list of HTML tags to remove."/></c:set>
+            <a href="#preview" onclick="jahia.alert(null, '${info}'); return false;"><img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/about.gif" alt="preview"/></a>
           </td>
       </tr>
   </tbody>

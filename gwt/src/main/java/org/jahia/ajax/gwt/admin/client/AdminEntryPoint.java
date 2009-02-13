@@ -36,6 +36,7 @@ package org.jahia.ajax.gwt.admin.client;
 import org.jahia.ajax.gwt.aclmanagement.client.ui.AclNameEditor;
 import org.jahia.ajax.gwt.commons.client.util.JahiaGWT;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.EntryPoint;
 
 /**
@@ -48,5 +49,17 @@ public class AdminEntryPoint implements EntryPoint {
     public void onModuleLoad() {
         JahiaGWT.init();
         AclNameEditor.initACLNameEditors();
+        exposeFunctions();
     }
+
+    private native void exposeFunctions() /*-{
+        if (!$wnd.jahia) {
+            $wnd.jahia = new Object();
+        }
+        $wnd.jahia.alert = function (title, message) {@org.jahia.ajax.gwt.admin.client.AdminEntryPoint::alert(Ljava/lang/String;Ljava/lang/String;)(title, message); };
+    }-*/;
+    
+    public static void alert(String title, String message) {
+        MessageBox.alert(title != null ? title : "Info", message, null);
+    } 
 }

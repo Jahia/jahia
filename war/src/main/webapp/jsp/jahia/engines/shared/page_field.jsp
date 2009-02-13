@@ -510,14 +510,15 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                 resourceName="org.jahia.engines.shared.Page_Field.hideFromNavigationMenu.label"/><br/>
     </th>
     <td>
-        <input type="checkbox" name="hideFromNavigationMenu" <% if (hideFromNavigationMenu) { %> checked="checked" <% } %> />
+        <input type="checkbox" name="hideFromNavigationMenu" <% if (hideFromNavigationMenu) { %>
+               checked="checked" <% } %> />
     </td>
 </tr>
 <% } %>
 <tr>
 <th valign="top">
     <internal:engineResourceBundle
-                resourceName="org.jahia.engines.shared.Page_Field.pageType.label"/>
+            resourceName="org.jahia.engines.shared.Page_Field.pageType.label"/>
 </th>
 <td>
 <table>
@@ -703,6 +704,31 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                 onfocus="operation[<%= !isDirectPage ? 1 : 3 %>].checked = true;"<% } %> type="text"
                 name="remote_url" size="50" value="<%=remoteURL%>" maxlength="250">
         <!-- Reset the link -->
+    </td>
+</tr>
+<% } %>
+<% if (isNewPage || ((JahiaPage) theField.getObject()).getPageType() != ContentPage.TYPE_DIRECT) { %>
+<tr>
+    <td valign="top">
+        <input id="noValueRadio" type="radio" name="operation"
+               onfocus="document.mainForm.page_title.value = '';document.mainForm.pageURLKey.disabled = 'disabled';"
+               value="<%=Page_Field.RESET_LINK%>"<%if (Page_Field.RESET_LINK.equals(pageBean.getOperation())) {%>
+               checked="checked"<% } %>>
+    </td>
+    <td>
+        <label>
+            <% if (isNewPage) { %>
+            <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.differPageCreation.label"/>
+            <% } else { %>
+            <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.removePageLink.label"/>
+            <% } %>
+        </label>
+        <br/>
+        <% if (isNewPage) { %>
+        <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.differPageCreationBody.label"/>.
+        <% } else { %>
+        <internal:engineResourceBundle resourceName="org.jahia.engines.shared.Page_Field.removePageLinkBody.label"/>.
+        <% } %>
     </td>
 </tr>
 <% } %>

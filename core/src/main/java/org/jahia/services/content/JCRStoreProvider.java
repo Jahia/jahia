@@ -588,14 +588,20 @@ public class JCRStoreProvider {
                     try {
                         f.getNode(username);
                     } catch (PathNotFoundException e) {
-                        if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                            session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                            session.move(f.getPath()+"/user", f.getPath()+"/"+username);
-                        } else {
-                            Node userNode = f.addNode(username, Constants.JAHIANT_USER_FOLDER);
-                            JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
+                        synchronized (this) {
+                            try {
+                                if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
+                                    session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                    session.move(f.getPath()+"/user", f.getPath()+"/"+username);
+                                } else {
+                                    Node userNode = f.addNode(username, Constants.JAHIANT_USER_FOLDER);
+                                    JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
+                                }
+                                session.save();
+                            } catch (RepositoryException e1) {
+                                logger.error("Cannot save", e1);
+                            }
                         }
-                        session.save();
                     }
                 }
             } catch (IOException e) {

@@ -608,7 +608,7 @@ public class JCRStoreService extends JahiaService {
                 // should gather results
                 return new QueryResultWrapper(entry.getKey(),entry.getValue().execute(), user);
             }
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("No statement "+statement);
         }
 
         public String getStatement() {

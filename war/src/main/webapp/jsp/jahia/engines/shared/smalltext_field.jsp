@@ -473,7 +473,7 @@
 %>
 <textarea id="field_<%=theField.getID()%>" name="_<%=theField.getID()%>" rows="3" cols="100" style="width:98%" <% if ( readOnly ){%> readonly="readonly"<% } %>><%=val%></textarea>
 <%} else { %>
-<input id="field_<%=theField.getID()%>" name="_<%=theField.getID()%>" style="width:98%" type="text" maxlength="250" value="<%=val%>"
+<input id="field_<%=theField.getID()%>" name="_<%=theField.getID()%>" style="width:550px" type="text" maxlength="250" value="<%=val%>"
 <% if ( readOnly ){%> readonly="readonly"<% } %> >
 <%
 }

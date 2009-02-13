@@ -30,6 +30,7 @@
            <jahia.configure.databasePassword></jahia.configure.databasePassword>
            <jahia.configure.localIp>192.168.0.1</jahia.configure.localIp>
            <jahia.deploy.processingServer>true</jahia.deploy.processingServer>
+           <jahia.test.url>http://localhost:8080/jahia</jahia.test.url>
        </properties>
      </profile>
 

@@ -377,7 +377,7 @@
         <%
             Set groups = (Set) request.getAttribute("groups");
             if (groups.size() > 0) {
-                String[] textPattern = {"Principal", "Provider, 6", "Name, 15", "Properties, 20"};
+                String[] textPattern = jUser.isRoot() ? new String [] {"Principal", "Provider, 6", "Name, 15", "SiteTitle, 15", "Properties, 20"} : new String [] {"Principal", "Provider, 6", "Name, 15", "Properties, 20"};
                 PrincipalViewHelper principalViewHelper = new PrincipalViewHelper(textPattern);
         %>
         <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageGroups.groupList.label"/>

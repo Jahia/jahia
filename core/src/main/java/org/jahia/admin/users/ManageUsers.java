@@ -797,7 +797,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         while (en.hasNext()) {
             String gname = (String) en.next();
             JahiaGroup g = jahiaGroupManagerService.lookupGroup(gname);
-            if (g != null && (g.getSiteID() == site)) {
+            if (g != null && (usr.isRoot() || g.getSiteID() == site)) {
                 groups.add(g);
             }
         }

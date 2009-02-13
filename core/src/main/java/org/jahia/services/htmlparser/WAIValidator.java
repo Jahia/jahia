@@ -75,7 +75,7 @@ import org.xml.sax.InputSource;
 
 /**
  * This class is used to validate an HTML fragment against the WAI (Accessiweb
- * Section 508) rules. All the 55 "Bronze" criterias can be found here: <br/>
+ * Section 508) rules. All the 55 "Bronze" criteria can be found here: <br/>
  * <a href="http://www.accessiweb.org/fr/Label%5FAccessibilite/criteres%5Faccessiweb/55%5Faccessiweb%5Fbronze/"
  * target="_blank">Accessiweb</a>
  *
@@ -97,7 +97,7 @@ public class WAIValidator {
     private String inputHTML;
 
     /**
-     * Private construcotr: use getInstance() instead
+     * Private constructor: use getInstance() instead
      */
     private WAIValidator() {
     }
@@ -190,8 +190,8 @@ public class WAIValidator {
      * Validates an HTML fragment starting from any Node.
      *
      * @param node The starting Node.
-     * @return A list of ValidationError Objects, the list will be emtpy in case
-     *         no errors occured.
+     * @return A list of ValidationError Objects, the list will be empty in case
+     *         no errors occurred.
      */
     protected List validateHtml(Node node) {
         final List errors = new ArrayList();
@@ -319,7 +319,7 @@ public class WAIValidator {
      * Validates a link Element.
      *
      * @param node The HTMLAnchorElement.
-     * @return ValidationError or null if no error occured.
+     * @return ValidationError or null if no error occurred.
      */
     protected ValidationError validateLink(HTMLAnchorElement node) throws DOMException {
         final Node href = node.getAttributes().getNamedItem("href");
@@ -403,7 +403,7 @@ public class WAIValidator {
      * Validates an Img Element.
      *
      * @param node The HTMLImageElement.
-     * @return ValidationError or null if no error occured.
+     * @return ValidationError or null if no error occurred.
      */
     protected ValidationError validateImage(final HTMLImageElement node) {
         logger.debug("validateImage");
@@ -468,7 +468,7 @@ public class WAIValidator {
      * Validates an Area Element.
      *
      * @param node The HTMLAreaElement.
-     * @return ValidationError or null if no error occured.
+     * @return ValidationError or null if no error occurred.
      */
     protected ValidationError validateAreaShape(final HTMLAreaElement node) {
         logger.debug("validateAreaShape");
@@ -858,7 +858,7 @@ public class WAIValidator {
      * Validates a Frame Element.
      *
      * @param node The HTMLFrameElement.
-     * @return ValidationError or null if no error occured.
+     * @return ValidationError or null if no error occurred.
      */
     protected ValidationError validateFrame(final HTMLFrameElement node) {
         logger.debug("validateFrame");

@@ -332,6 +332,32 @@ want to specify a Maven goal, you can simply do just that :
 
   ./single_module.sh compile
 
+ Developing and running unit tests
+------------------------------------------------------------------------------
+Tests are all packaged in the test module. They are intended to be executed in a live jahia context, and are able to
+test any stuff on the server side, from a simple DAO to a high end service.
+
+Adding a new test simply consist in adding a TestCase class in the test module. All tests commited in the test module
+will be executed automatically after each build on the Bamboo server.
+
+To manually run the tests :
+
+- Go to the test module, execute :
+
+mvn install jahia:deploy
+( note that class hotswap is also working for this module, test code change won't require a jahia restart )
+
+- Startup your jahia
+
+- Execute :
+
+All tests : mvn jahia:test surefire-report:report-only
+or one single test : mvn -Dtest=org.jahia.services.stuff.MyTest jahia:test surefire-report:report-only
+
+The plugin will use the url set in the parameter " <jahia.test.url> " in your settings.xml file
+
+- Open the file target/site/surefire-report.html and look at the result.
+
  Troubleshooting
 ------------------------------------------------------------------------------
 

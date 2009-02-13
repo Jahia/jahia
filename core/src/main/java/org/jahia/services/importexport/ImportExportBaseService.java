@@ -41,7 +41,6 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.apache.webdav.lib.WebdavResource;
@@ -57,12 +56,10 @@ import org.jahia.content.ContentObject;
 import org.jahia.content.StructuralRelationship;
 import org.jahia.content.TreeOperationResult;
 import org.jahia.data.containers.JahiaContainerDefinition;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.importexport.ManageImportExport;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.exceptions.JahiaTemplateServiceException;
 import org.jahia.hibernate.manager.JahiaSiteLanguageListManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaAcl;
@@ -91,8 +88,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteLanguageMapping;
 import org.jahia.services.sites.SiteLanguageSettings;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import static org.jahia.services.templates.JahiaTemplateManagerService.MULTIPLE_PACKAGE_HANDLER;
 import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.usermanager.JahiaDBUser;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -104,7 +99,6 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
-import org.jahia.utils.zip.FilteredDirectoryWalker;
 import org.jahia.utils.zip.PathFilter;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipOutputStream;
@@ -136,18 +130,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Service used to perform all import/export operations for content and documents.
  * User: toto
  * Date: 9 dÔøΩc. 2004
  * Time: 15:01:31
- * To change this template use File | Settings | File Templates.
  */
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 
-    private static final String[] CLASSES_JAR_PATTERN = {"classes.jar"};
-
-    private static Logger logger = Logger
-            .getLogger(ImportExportBaseService.class);
+    private static Logger logger = Logger.getLogger(ImportExportBaseService.class);
 
     private static ImportExportBaseService instance;
 
@@ -1728,7 +1718,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         sitename = sitename.substring(sitename.lastIndexOf('/') + 1);
 
-        String folder = baseTarget + "repository/default/content/users/" + username + "/private/imports";
+        String folder = baseTarget + "repository/default/content/users/" + username + "/files/private/imports";
         HttpURL folderURL = new HttpURL(folder);
         WebdavResource folderRes = new WebdavResource(folderURL, credentials, WebdavResource.DEFAULT, 0);
         int code = folderRes.getStatusCode();

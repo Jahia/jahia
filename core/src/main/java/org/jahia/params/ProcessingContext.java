@@ -1879,6 +1879,9 @@ public class ProcessingContext {
         if (aContentPage == null) {
             theUrl.append(getSiteURLPart(getSite().getSiteKey()));
         } else if (aContentPage != null) { /* && this.isForceAppendSiteKey() && aContentPage.getSiteID() != getSite().getID()) {*/
+            if (getSiteByHostName() != null && !aContentPage.getSite().getSiteKey().equals(getSiteByHostName().getSiteKey())) {
+                return getSiteURL(aContentPage.getSite(), pageID, false, opMode, languageCode, false);
+            }
             // this case can happens when a page from another site is listened in the search result
             // when a search is done on several site
             theUrl.append(this.getSiteURLPart(aContentPage.getSite().getSiteKey()));

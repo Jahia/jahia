@@ -3,9 +3,12 @@ package org.jahia.bin;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.BasicSessionState;
+import org.jahia.params.ParamBean;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
+import org.jahia.services.applications.ServletIncludeResponseWrapper;
+import org.jahia.exceptions.JahiaException;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
@@ -13,8 +16,17 @@ import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.ServletException;
 import java.io.*;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.jar.JarFile;
+import java.util.jar.JarEntry;
+import java.util.Enumeration;
+
+import junit.framework.TestCase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,14 +47,27 @@ public class TestServlet  extends HttpServlet {
 
         final ProcessingContextFactory pcf = (ProcessingContextFactory) SpringContextSingleton.
                 getInstance().getContext().getBean(ProcessingContextFactory.class.getName());
-        ProcessingContext ctx = pcf.getContext(new BasicSessionState("123"));
+        ProcessingContext ctx = null;
 
-        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
-        ctx.setTheUser(admin);
+        try {
+            // should send response wrapper !
+            ctx = pcf.getContext(httpServletRequest, httpServletResponse, getServletContext());
+        } catch (JahiaException e) {
+            ctx = pcf.getContext(new BasicSessionState("123"));
+        }
 
-        if (httpServletRequest.getPathInfo() != null) {
+        try {
+            ctx.setOperationMode(ParamBean.EDIT);
+            JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+            ctx.setTheUser(admin);
+        } catch (JahiaException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        String pathInfo = httpServletRequest.getPathInfo();
+        if (pathInfo != null) {
             // Execute one test
-            String className = httpServletRequest.getPathInfo().substring(1);
+            String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
             try {
                 XMLJUnitResultFormatter unitResultFormatter = new XMLJUnitResultFormatter();
                 unitResultFormatter.setOutput(httpServletResponse.getOutputStream());
@@ -53,17 +78,27 @@ public class TestServlet  extends HttpServlet {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         } else {
-            // Return the lists of available tests
-            InputStream is = getClass().getClassLoader().getResourceAsStream("Test.properties");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String line;
             PrintWriter pw = httpServletResponse.getWriter();
-            try {
-                while ((line = reader.readLine()) != null) {
-                    pw.println(line);
+            // Return the lists of available tests
+            URLConnection url = getClass().getClassLoader().getResource("Test.properties").openConnection();
+            if (url instanceof JarURLConnection) {
+                JarFile file = ((JarURLConnection) getClass().getClassLoader().getResource("Test.properties").openConnection()).getJarFile();
+                Enumeration<JarEntry> en = file.entries();
+                while (en.hasMoreElements()) {
+                    JarEntry jarEntry = en.nextElement();
+                    String n = jarEntry.getName();
+                    if (n.endsWith(".class")) {
+                        try {
+                            Class c = Class.forName(n.replace('/','.').substring(0, n.lastIndexOf('.')));
+                            if (TestCase.class.isAssignableFrom(c)) {
+                                pw.println(c.getName());
+                            }
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        }
+
+                    }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
 

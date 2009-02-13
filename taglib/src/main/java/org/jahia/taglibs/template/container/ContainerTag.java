@@ -334,6 +334,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                     } else {
                         addContainerListDependency(containerList.getID());
                     }
+                    // If no container in containerList, and emptyContainerDivCssClassName is set, add a <div></div> to show a sample of content using css.
                     if (ProcessingContext.EDIT.equals(context.getOperationMode()) && emptyContainerDivCssClassName != null && emptyContainerDivCssClassName.length() > 0) {
                         try {
                             pageContext.getOut().print("<div class=\"" + emptyContainerDivCssClassName + "\"></div>");

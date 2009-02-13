@@ -96,7 +96,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.webdav.JahiaWebdavBaseService;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.zip.ExclusionWildcardFilter;
 import org.jahia.utils.zip.PathFilter;
@@ -928,7 +927,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         logger.error("Cannot update site", e);
                     }
                 }
-                String pkgName = p.getProperty("templatePackageName");
 
                 JahiaSiteLanguageListManager listManager = (JahiaSiteLanguageListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageListManager.class.getName());
                 for (Iterator iterator = m.keySet().iterator(); iterator.hasNext();) {
@@ -985,7 +983,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private JCRNodeWrapper ensureDir(String name, ProcessingContext jParams, JahiaSite site, Map<String, String> pathMapping) {
-        JCRNodeWrapper dir = JahiaWebdavBaseService.getInstance().getDAVFileAccess(name, jParams.getUser());
+        JCRNodeWrapper dir = JCRStoreService.getInstance().getFileNode(name, jParams.getUser());
         if (!dir.isValid()) {
             int endIndex = name.lastIndexOf('/');
             if (endIndex == -1) {
@@ -997,7 +995,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 return null;
             }
             if (Constants.JAHIANT_VIRTUALSITES_FOLDER.equals(parentDir.getPrimaryNodeTypeName())) {
-                dir = JahiaWebdavBaseService.getInstance().getDAVFileAccess(parentDir.getPath() + "/" + site.getSiteKey(), jParams.getUser());
+                dir = JCRStoreService.getInstance().getFileNode(parentDir.getPath() + "/" + site.getSiteKey(), jParams.getUser());
             } else {
                 try {
                     parentDir.createCollection(name.substring(name.lastIndexOf('/') + 1));
@@ -1012,14 +1010,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                     }
                 }
-                dir = JahiaWebdavBaseService.getInstance().getDAVFileAccess(name, jParams.getUser());
+                dir = JCRStoreService.getInstance().getFileNode(name, jParams.getUser());
                 logger.debug("Folder created " + name);
             }
         } else {
             String current = name;
 
             while (current.lastIndexOf('/') > 0) {
-                JCRNodeWrapper currentNode = JahiaWebdavBaseService.getInstance().getDAVFileAccess(current, jParams.getUser());
+                JCRNodeWrapper currentNode = JCRStoreService.getInstance().getFileNode(current, jParams.getUser());
 
                 if (Constants.JAHIANT_VIRTUALSITE.equals(currentNode.getPrimaryNodeTypeName())) {
                     if (currentNode.getName().equals(site.getSiteKey())) {

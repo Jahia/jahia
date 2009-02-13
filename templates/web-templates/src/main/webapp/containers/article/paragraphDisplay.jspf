@@ -8,7 +8,7 @@
         <div class='${insertType.defaultValue}-top float${insertPosition.defaultValue}'
              style='width:<template:field name="insertWidth" inlineEditingActivated="false"/>px'>
 
-            <div class="<template:field name="insertType" inlineEditingActivated="false"/>-bottom">
+            <div class="${insertType.defaultValue}-bottom">
                 <template:field name='insertText' />
             </div>
         </div>

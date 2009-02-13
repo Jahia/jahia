@@ -140,6 +140,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
     private boolean displaySkins = true;
     private boolean displayExtensions = true;
     private String expiration;
+    private String emptyContainerDivCssClassName = null;
 
     private String varStatus;
 
@@ -267,14 +268,18 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
         this.varStatus = varStatus;
     }
 
+    public void setEmptyContainerDivCssClassName(String emptyContainerDivCssClassName) {
+        this.emptyContainerDivCssClassName = emptyContainerDivCssClassName;
+    }
+
     public int doStartTag() throws JspException {
         pushTag();
         if (cacheKeyName != null) {
             cacheKey = TagUtils.getInstance().lookup(pageContext, cacheKeyName, cacheKeyProperty, cacheKeyScope).toString();
         }
-        if (super.getParent() != null && super.getParent().getParent() != null &&
-                super.getParent().getParent() instanceof RandomContainerTag)
+        if (super.getParent() != null && super.getParent().getParent() != null && super.getParent().getParent() instanceof RandomContainerTag) {
             random = true;
+        }
         oldCacheTag = (ContainerCache) pageContext.getAttribute(CACHETAG);
         pageContext.setAttribute(CACHETAG, this);
         initLoop = true;
@@ -301,10 +306,11 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
 
             if (cListTag instanceof AbsoluteContainerListTag) {
                 cacheKey = cacheKey + "___absolute___";
-
             }
             containerList = cListTag.getContainerList();
-            if (containerList == null) return SKIP_BODY;
+            if (containerList == null) {
+                return SKIP_BODY;
+            }
 
             if (initLoop) {
                 // here is stuff we need to do only once...
@@ -323,9 +329,18 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                     }
                 } else {
                     this.counter = 0;
-                    if (!cacheKey.endsWith("___absolute___"))
+                    if (!cacheKey.endsWith("___absolute___")) {
                         this.display = false;
-                    else addContainerListDependency(containerList.getID());
+                    } else {
+                        addContainerListDependency(containerList.getID());
+                    }
+                    if (ProcessingContext.EDIT.equals(context.getOperationMode()) && emptyContainerDivCssClassName != null && emptyContainerDivCssClassName.length() > 0) {
+                        try {
+                            pageContext.getOut().print("<div class=\"" + emptyContainerDivCssClassName + "\">");
+                        } catch (IOException e) {
+                            logger.error(e, e);
+                        }
+                    }
                 }
                 containers = containerList.getContainers();
                 initLoop = false;

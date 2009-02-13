@@ -6,9 +6,7 @@
             <div class="box box-fixed-height"><!--start box -->
                 <template:image file="image" cssClassName="floatleft"/>
                 <div class="box-content">
-
                     <h3><template:field name='title'/></h3>
-
                     <p><template:field name='abstract'/></p>
                 </div>
                 <div class="more"><span> <template:link page="link" maxChar="20"/><a href="#">Read more </a></span>

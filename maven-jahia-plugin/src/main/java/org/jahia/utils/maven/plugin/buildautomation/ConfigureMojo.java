@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -33,15 +33,20 @@
 
 package org.jahia.utils.maven.plugin.buildautomation;
 
-import org.jahia.utils.maven.plugin.AbstractManagementMojo;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.commons.codec.binary.Base64;
+import org.jahia.utils.maven.plugin.AbstractManagementMojo;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,10 +71,25 @@ public class ConfigureMojo extends AbstractManagementMojo
     // Now for the build automation parameters
 
     /**
-     * @parameter   expression="${jahia.configure.deploymentMode}"
+     * @parameter expression="${jahia.configure.deploymentMode}"
      * can be clustered or standalone
      */
     protected String deploymentMode;
+
+
+    /**
+     * @parameter expression="${jahia.configure.configureBeforePackaging}" default-value="false"
+     * activates the configuration before the packaging of the WAR file, to allow to build a WAR file already
+     * configured.
+     */
+    protected boolean configureBeforePackaging;
+
+
+    /**
+     * @parameter expression="${basedir}/src/main/webapp"
+     * The source directory for the webapp resource when the configureBeforePackaging setting is activated.
+     */
+    protected String sourceWebAppDir;
 
 
     //The following are jahia.properties values that are not present in the skeleton but that
@@ -78,190 +98,189 @@ public class ConfigureMojo extends AbstractManagementMojo
     /**
      * properties file path
      *
-     * @parameter  default-value="$context/WEB-INF/var/content/filemanager/"
-     *
+     * @parameter default-value="$context/WEB-INF/var/content/filemanager/"
      */
     protected String jahiaFileRepositoryDiskPath;
 
     /**
      * properties file path
      *
-     * @parameter  default-value="Testing_release"
+     * @parameter default-value="Testing_release"
      */
     protected String release;
     /**
      * properties file path
      *
-     * @parameter  default-value="Tomcat"
+     * @parameter default-value="Tomcat"
      */
-    protected String  server ;
+    protected String server;
     /**
      * properties file path
      *
-     * @parameter  default-value="${jahia.configure.localIp}"
+     * @parameter default-value="${jahia.configure.localIp}"
      */
-    protected String    localIp        ;
+    protected String localIp;
     /**
      * properties file path
      *
-     * @parameter  default-value="$context/WEB-INF/etc/"
+     * @parameter default-value="$context/WEB-INF/etc/"
      */
-    protected String   jahiaEtcDiskPath   ;
+    protected String jahiaEtcDiskPath;
     /**
      * properties file path
      *
-     * @parameter  default-value="$context/WEB-INF/var/"
+     * @parameter default-value="$context/WEB-INF/var/"
      */
-    protected String   jahiaVarDiskPath    ;
+    protected String jahiaVarDiskPath;
     /**
      * properties file path
      *
-     * @parameter     default-value="$context/WEB-INF/var/new_templates/"
+     * @parameter default-value="$context/WEB-INF/var/new_templates/"
      */
-    protected String   jahiaNewTemplatesDiskPath;
+    protected String jahiaNewTemplatesDiskPath;
     /**
      * properties file path
      *
-     * @parameter  default-value="$context/WEB-INF/var/new_webapps/"
+     * @parameter default-value="$context/WEB-INF/var/new_webapps/"
      */
-    protected String jahiaNewWebAppsDiskPath ;
+    protected String jahiaNewWebAppsDiskPath;
     /**
      * properties file path
      *
-     * @parameter   default-value="$context/WEB-INF/var/shared_templates/"
+     * @parameter default-value="$context/WEB-INF/var/shared_templates/"
      */
-    protected String jahiaSharedTemplatesDiskPath    ;
+    protected String jahiaSharedTemplatesDiskPath;
     /**
      * properties file path
      *
      * @parameter default-value="$webContext/jsp/jahia/templates/"
      */
-    protected String jahiaTemplatesHttpPath   ;
+    protected String jahiaTemplatesHttpPath;
     /**
      * properties file path
      *
-     * @parameter     default-value="$webContext/jsp/jahia/engines/"
+     * @parameter default-value="$webContext/jsp/jahia/engines/"
      */
-    protected String jahiaEnginesHttpPath   ;
+    protected String jahiaEnginesHttpPath;
     /**
      * properties file path
      *
      * @parameter default-value="$webContext/jsp/jahia/javascript/jahia.js"
      */
-    protected String jahiaJavaScriptHttpPath ;
+    protected String jahiaJavaScriptHttpPath;
     /**
      * properties file path
      *
-     * @parameter   default-value="http\\://localhost\\:8080/manager"
+     * @parameter default-value="http\\://localhost\\:8080/manager"
      */
-    protected String  jahiaWebAppsDeployerBaseURL   ;
+    protected String jahiaWebAppsDeployerBaseURL;
     /**
      * properties file path
      *
-     * @parameter    default-value="java\\:comp/env/jdbc/jahia"
+     * @parameter default-value="java\\:comp/env/jdbc/jahia"
      */
-    protected String  datasource_name  ;
+    protected String datasource_name;
     /**
      * properties file path
      *
-     * @parameter  default-value="false"
+     * @parameter default-value="false"
      */
-    protected String  outputCacheActivated   ;
+    protected String outputCacheActivated;
     /**
      * properties file path
      *
-     * @parameter   default-value="-1"
+     * @parameter default-value="-1"
      */
-    protected String  outputCacheDefaultExpirationDelay     ;
+    protected String outputCacheDefaultExpirationDelay;
     /**
      * properties file path
      *
-     * @parameter   default-value="false"
+     * @parameter default-value="false"
      */
-    protected String outputCacheExpirationOnly    ;
+    protected String outputCacheExpirationOnly;
     /**
      * properties file path
      *
-     * @parameter  default-value="true"
+     * @parameter default-value="true"
      */
-    protected String  outputContainerCacheActivated   ;
+    protected String outputContainerCacheActivated;
     /**
      * properties file path
      *
-     * @parameter     default-value="14400"
+     * @parameter default-value="14400"
      */
-    protected String containerCacheDefaultExpirationDelay  ;
+    protected String containerCacheDefaultExpirationDelay;
     /**
      * properties file path
      *
-     * @parameter      default-value="false"
+     * @parameter default-value="false"
      */
-    protected String containerCacheLiveModeOnly  ;
+    protected String containerCacheLiveModeOnly;
     /**
      * properties file path
      *
-     * @parameter     default-value="false"
+     * @parameter default-value="false"
      */
-    protected String  esiCacheActivated     ;
+    protected String esiCacheActivated;
     /**
      * properties file path
      *
      * @parameter default-value="org.jahia.services.webapps_deployer.JahiaTomcatWebAppsDeployerBaseService"
      */
-    protected String Jahia_WebApps_Deployer_Service  ;
+    protected String Jahia_WebApps_Deployer_Service;
     /**
      * properties file path
      *
-     * @parameter    default-value="mySite"
+     * @parameter default-value="mySite"
      */
     protected String defautSite;
     /**
      * properties file path
      *
-     * @parameter   default-value="false"
+     * @parameter default-value="false"
      */
-    protected String cluster_activated ;
+    protected String cluster_activated;
     /**
      * properties file path
      *
-     * @parameter  expression="${jahia.configure.cluster_node_serverId}" default-value="Jahia1"
+     * @parameter expression="${jahia.configure.cluster_node_serverId}" default-value="Jahia1"
      */
     protected String cluster_node_serverId;
     /**
      * properties jahiaRootPassword
      *
-     * @parameter  expression="${jahia.configure.jahiaRootPassword}" default-value="root1234"
+     * @parameter expression="${jahia.configure.jahiaRootPassword}" default-value="root1234"
      */
     protected String jahiaRootPassword;
     /**
      * properties file path
      *
-     * @parameter   expression="${jahia.deploy.processingServer}"
+     * @parameter expression="${jahia.deploy.processingServer}"
      */
-    protected String  processingServer;
+    protected String processingServer;
     /**
      * properties file path
      *
-     * @parameter  default-value="DBJahiaText"
+     * @parameter default-value="DBJahiaText"
      */
-    protected String  bigtext_service   ;
+    protected String bigtext_service;
     /**
      * properties file path
      *
-     * @parameter  default-value="$context/WEB-INF/var/templates/"
+     * @parameter default-value="$context/WEB-INF/var/templates/"
      */
     protected String jahiaFilesTemplatesDiskPath;
     /**
      * properties file path
      *
-     * @parameter  default-value="$context/WEB-INF/var/imports/"
+     * @parameter default-value="$context/WEB-INF/var/imports/"
      */
     protected String jahiaImportsDiskPath;
 
     /**
      * properties file path
      *
-     * @parameter  default-value="$context/WEB-INF/var/content/bigtext/"
+     * @parameter default-value="$context/WEB-INF/var/content/bigtext/"
      */
     protected String jahiaFilesBigTextDiskPath;
 
@@ -306,7 +325,7 @@ public class ConfigureMojo extends AbstractManagementMojo
      *
      * @parameter
      */
-    protected List  siteImportLocation;
+    protected List siteImportLocation;
 
 
     /**
@@ -320,31 +339,30 @@ public class ConfigureMojo extends AbstractManagementMojo
      * List of nodes in the cluster.
      *
      * @parameter expression="${jahia.configure.overwritedb}"  default-value="true"
-     *
+     * <p/>
      * This property is here for instance when we are in a clustered mode we don not want the database scripts to be
      * executed for every node
-     *
      */
-    protected String   overwritedb;
+    protected String overwritedb;
 
     /**
      * properties db_starthsqlserver
      *
-     * @parameter  default-value="true"
+     * @parameter default-value="true"
      */
     protected String db_starthsqlserver;
 
     /**
      * properties db_starthsqlserver
      *
-     * @parameter  default-value="true"
+     * @parameter default-value="true"
      */
     protected String developmentMode;
 
-     /**
+    /**
      * properties storeFilesInDB
      *
-     * @parameter  default-value="true"
+     * @parameter default-value="true"
      */
     protected String storeFilesInDB;
 
@@ -355,56 +373,63 @@ public class ConfigureMojo extends AbstractManagementMojo
     Properties dbProps;
     File databaseScript;
     JahiaPropertiesConfigurator jahiaPropertiesConfigurator;
+
     public void doExecute() throws MojoExecutionException, MojoFailureException {
         if (active) {
-            setProperties();
-            if(cluster_activated.equals("true")){
-                deployOnCluster();
-            }else{
-                getLog().info("Deployed in standalone for server in "+webappDir);
+            try {
+                setProperties();
+                if (cluster_activated.equals("true")) {
+                    deployOnCluster();
+                } else {
+                    getLog().info("Deployed in standalone for server in " + webappDir);
+                }
+                jahiaPropertiesConfigurator.generateJahiaProperties();
+            } catch (IOException ioe) {
+                throw new MojoExecutionException("Error while configuring Jahia", ioe);
             }
-            jahiaPropertiesConfigurator.generateJahiaProperties();
         }
     }
 
     private void deployOnCluster() throws MojoExecutionException, MojoFailureException {
-        getLog().info(" Deploying in cluster for server in "+webappDir);
+        getLog().info(" Deploying in cluster for server in " + webappDir);
         jahiaPropertiesBean.setClusterNodes(clusterNodes);
         jahiaPropertiesBean.setProcessingServer(processingServer);
     }
+
     private void cleanDatabase() {
         //if it is a mysql, try to drop the database and create a new one  your user must have full rights on this database
-        int begindatabasename=databaseUrl.indexOf("/",13);
-        int enddatabaseName=databaseUrl.indexOf("?",begindatabasename);
-        String databaseName= "`" + databaseUrl.substring(begindatabasename+1,enddatabaseName) + "`";  //because of the last '/' we added +1
+        int begindatabasename = databaseUrl.indexOf("/", 13);
+        int enddatabaseName = databaseUrl.indexOf("?", begindatabasename);
+        String databaseName = "`" + databaseUrl.substring(begindatabasename + 1, enddatabaseName) + "`";  //because of the last '/' we added +1
         try {
 
-            db.query("drop  database if exists "+databaseName);
-            db.query("create database "+databaseName);
-            db.query("alter database "+databaseName+" charset utf8");
+            db.query("drop  database if exists " + databaseName);
+            db.query("create database " + databaseName);
+            db.query("alter database " + databaseName + " charset utf8");
         } catch (Throwable t) {
             // ignore because if this fails it's ok
-            getLog().info("error in " + databaseName + " because of"+t);
+            getLog().info("error in " + databaseName + " because of" + t);
         }
     }
 
-    private void updateConfigurationFiles(String webappPath, Properties dbProps) {
-        SpringManagerConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/spring/applicationcontext-manager.xml", dbProps);
-        SpringHibernateConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/spring/applicationcontext-hibernate.xml", dbProps);
-        QuartzConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/config/quartz.properties", dbProps);
-        getLog().info(" value of files storage :"+storeFilesInDB);
-        JackrabbitConfigurator.updateDataSourceConfiguration(webappPath + "/WEB-INF/etc/repository/jackrabbit/repository.xml", dbProps, jahiaPropertiesBean.getCluster_activated(), jahiaPropertiesBean.getCluster_node_serverId());
-        JahiaXmlConfigurator.updateDataSourceConfiguration(webappPath + "/META-INF/context.xml", dbProps, databaseUsername, databasePassword, databaseUrl);
+    private void updateConfigurationFiles(String sourceWebAppPath, String webappPath, Properties dbProps) throws IOException {
+        SpringManagerConfigurator.updateConfiguration(sourceWebAppPath + "/WEB-INF/etc/spring/applicationcontext-manager.xml",
+                webappPath + "/WEB-INF/etc/spring/applicationcontext-manager.xml", dbProps);
+        SpringHibernateConfigurator.updateConfiguration(sourceWebAppPath + "/WEB-INF/etc/spring/applicationcontext-hibernate.xml", webappPath + "/WEB-INF/etc/spring/applicationcontext-hibernate.xml", dbProps);
+        QuartzConfigurator.updateConfiguration(sourceWebAppPath + "/WEB-INF/etc/config/quartz.properties", webappPath + "/WEB-INF/etc/config/quartz.properties", dbProps);
+        getLog().info("Store files in database is :" + storeFilesInDB);
+        JackrabbitConfigurator.updateConfiguration(sourceWebAppPath + "/WEB-INF/etc/repository/jackrabbit/repository.xml", webappPath + "/WEB-INF/etc/repository/jackrabbit/repository.xml", dbProps, jahiaPropertiesBean.getCluster_activated(), jahiaPropertiesBean.getCluster_node_serverId());
+        JahiaXmlConfigurator.updateConfiguration(sourceWebAppPath + "/META-INF/context.xml", webappPath + "/META-INF/context.xml", dbProps, databaseUsername, databasePassword, databaseUrl);
 
-        if(cluster_activated.equals("true")){
-            IndexationPolicyConfigurator.updateDataSourceConfigurationForCluster(webappPath + "/WEB-INF/etc/spring/applicationcontext-indexationpolicy.xml");
+        if (cluster_activated.equals("true")) {
+            IndexationPolicyConfigurator.updateConfigurationForCluster(sourceWebAppPath + "/WEB-INF/etc/spring/applicationcontext-indexationpolicy.xml", webappPath + "/WEB-INF/etc/spring/applicationcontext-indexationpolicy.xml");
         }
     }
 
-    private void setProperties() {
+    private void setProperties() throws IOException {
 
         //create the bean that will contain all the necessary information for the building of the Jahia.properties file
-        jahiaPropertiesBean= new JahiaPropertiesBean();
+        jahiaPropertiesBean = new JahiaPropertiesBean();
         jahiaPropertiesBean.setBigtext_service(bigtext_service);
         jahiaPropertiesBean.setCluster_activated(cluster_activated);
         jahiaPropertiesBean.setCluster_node_serverId(cluster_node_serverId);
@@ -443,37 +468,43 @@ public class ConfigureMojo extends AbstractManagementMojo
 
         //now set the common properties to both a clustered environment and a standalone one
         webappDir = getWebappDeploymentDir();
+        String sourceWebappPath = webappDir.toString();
+        if (configureBeforePackaging) {
+            sourceWebappPath = sourceWebAppDir;
+            getLog().info("Configuration before WAR packaging is active, will look for configuration files in directory " + sourceWebappPath + " and store the modified files in " + webappDir);
+        }
+
         dbProps = new Properties();
         //database script always ends with a .script
-        databaseScript = new File(webappDir + "/WEB-INF/var/db/" + databaseType + ".script");
+        databaseScript = new File(sourceWebappPath + "/WEB-INF/var/db/" + databaseType + ".script");
         try {
             dbProps.load(new FileInputStream(databaseScript));
-            dbProps.put("storeFilesInDB",storeFilesInDB);
+            dbProps.put("storeFilesInDB", storeFilesInDB);
         } catch (IOException e) {
-            getLog().error("Error in loading database settings because of "+e);
+            getLog().error("Error in loading database settings because of " + e);
         }
-        if(!databaseType.equals("hypersonic")){
+        if (!databaseType.equals("hypersonic")) {
             db_starthsqlserver = "false";
             jahiaPropertiesBean.setDb_StartHsqlServer(db_starthsqlserver);
             //create dbdata folder as this one is created by hypersonic at launch
 
         }
-        jahiaPropertiesConfigurator = new JahiaPropertiesConfigurator(webappDir.getPath(), jahiaPropertiesBean);
+        jahiaPropertiesConfigurator = new JahiaPropertiesConfigurator(sourceWebappPath, webappDir.getPath(), jahiaPropertiesBean);
 
         getLog().info("updating Jackrabbit, Spring and Quartz configuration files");
 
         //updates jackrabbit, quartz and spring files
-        updateConfigurationFiles(webappDir.getPath(), dbProps);
+        updateConfigurationFiles(sourceWebappPath, webappDir.getPath(), dbProps);
         getLog().info("creating database tables and copying license file");
         try {
-            copyLicense(webappDir.getPath() + "/WEB-INF/etc/config/licenses/license-free.xml", webappDir.getPath() + "/WEB-INF/etc/config/license.xml");
-            if(overwritedb.equals("true")){
+            copyLicense(sourceWebappPath + "/WEB-INF/etc/config/licenses/license-free.xml", webappDir.getPath() + "/WEB-INF/etc/config/license.xml");
+            if (overwritedb.equals("true")) {
                 if (!databaseScript.exists()) {
-                    getLog().info("cannot find script in "+databaseScript.getPath());
-                    throw new MojoExecutionException("Cannot find script for database "+databaseType);
+                    getLog().info("cannot find script in " + databaseScript.getPath());
+                    throw new MojoExecutionException("Cannot find script for database " + databaseType);
                 }
                 db.databaseOpen(dbProps.getProperty("jahia.database.driver"), databaseUrl, databaseUsername, databasePassword);
-                if(databaseType.equals("mysql")){
+                if (databaseType.equals("mysql")) {
                     getLog().info("database is mysql trying to drop it and create a new one");
                     cleanDatabase();
                     //you have to reopen the database connection as before you just dropped the database
@@ -483,53 +514,55 @@ public class ConfigureMojo extends AbstractManagementMojo
                 insertDBCustomContent();
             }
 
-            deleteTomcatFiles();
-            if(siteImportLocation!=null){
-                getLog().info("copying site Export to tomcat's import location from  to "+webappDir + "/WEB-INF/var/imports");
-                importSites();
-            }else{
-                getLog().info("no site import found ");
+            if (!configureBeforePackaging) {
+                deleteTomcatFiles();
+                if (siteImportLocation != null) {
+                    getLog().info("copying site Export to tomcat's import location from  to " + webappDir + "/WEB-INF/var/imports");
+                    importSites();
+                } else {
+                    getLog().info("no site import found ");
+                }
             }
 
         } catch (Exception e) {
-            getLog().error("exception in setting the properties because of "+e);
+            getLog().error("exception in setting the properties because of " + e, e);
         }
     }
 
-    private void importSites(){
-        for (int i= 0;i<siteImportLocation.size();i++){
+    private void importSites() {
+        for (int i = 0; i < siteImportLocation.size(); i++) {
             try {
-                copy((String)siteImportLocation.get(i), webappDir + "/WEB-INF/var/imports");
+                copy((String) siteImportLocation.get(i), webappDir + "/WEB-INF/var/imports");
             } catch (IOException e) {
-                getLog().error("error in copying sitImport file "+e);
+                getLog().error("error in copying sitImport file " + e);
             }
         }
     }
 
 
-    private void deleteTomcatFiles(){
+    private void deleteTomcatFiles() {
 
-        boolean delete1 =deleteDir(new File(targetServerDirectory+"/temp"));
-        boolean delete2 =deleteDir(new File(targetServerDirectory+"/work"));
+        boolean delete1 = deleteDir(new File(targetServerDirectory + "/temp"));
+        boolean delete2 = deleteDir(new File(targetServerDirectory + "/work"));
         boolean delete3 = deleteDir(new File(webappDir + "/WEB-INF/var/repository"));
-        if(delete1&&delete2&&delete3){
+        if (delete1 && delete2 && delete3) {
             getLog().info("finished deleting tomcat /temp /work and /var/repository files");
-            (new File(targetServerDirectory+"/temp")).mkdir();
-            (new File(targetServerDirectory+"/work")).mkdir();
+            (new File(targetServerDirectory + "/temp")).mkdir();
+            (new File(targetServerDirectory + "/work")).mkdir();
             (new File(webappDir + "/WEB-INF/var/repository")).mkdir();
         }
     }
 
-    private  boolean deleteDir(File dir) {
+    private boolean deleteDir(File dir) {
 
         //There is only one file in var/repository that we do not want to delete which is  indexing_configuration.xml
         if (dir.isDirectory()) {
             String[] children = dir.list();
             //getLog().info("name is "+dir.getName());
-            for (int i=0; i<children.length; i++) {
+            for (int i = 0; i < children.length; i++) {
                 boolean success = deleteDir(new File(dir, children[i]));
                 if (!success) {
-                    getLog().info("no sucess in deleting"+children[i]);
+                    getLog().info("no sucess in deleting" + children[i]);
                     return false;
                 }
             }
@@ -542,7 +575,7 @@ public class ConfigureMojo extends AbstractManagementMojo
     }
 
     //copy method for the licence for instance
-    private  void copyLicense(String fromFileName, String toFileName)
+    private void copyLicense(String fromFileName, String toFileName)
             throws IOException {
         File fromFile = new File(fromFileName);
         File toFile = new File(toFileName);
@@ -557,7 +590,7 @@ public class ConfigureMojo extends AbstractManagementMojo
             throw new IOException("FileCopy: " + "source file is unreadable: "
                     + fromFileName);
 
-        if (toFile.isDirectory()){
+        if (toFile.isDirectory()) {
             toFile = new File(toFile, fromFile.getName());
 
         }
@@ -602,7 +635,7 @@ public class ConfigureMojo extends AbstractManagementMojo
             throw new IOException("FileCopy: " + "source file is unreadable: "
                     + fromFileName);
         toFile.mkdir();
-        if (toFile.isDirectory()){
+        if (toFile.isDirectory()) {
             toFile = new File(toFile, fromFile.getName());
 
         }
@@ -630,6 +663,7 @@ public class ConfigureMojo extends AbstractManagementMojo
                 }
         }
     }
+
     private void createDBTables(File dbScript) throws Exception {
 
         List sqlStatements;
@@ -658,7 +692,7 @@ public class ConfigureMojo extends AbstractManagementMojo
                     db.query("DROP TABLE " + tableName);
                 } catch (Throwable t) {
                     // ignore because if this fails it's ok
-                    getLog().debug("Drop failed on " + tableName + " because of "+t+" but that's acceptable...");
+                    getLog().debug("Drop failed on " + tableName + " because of " + t + " but that's acceptable...");
                 }
             }
             try {
@@ -673,7 +707,7 @@ public class ConfigureMojo extends AbstractManagementMojo
                     getLog().error("Error while trying to execute query : " + line, e);
 // continue to propagate the exception upwards.
                     throw e;
-                } else if(upperCaseLine.startsWith("CREATE INDEX")){
+                } else if (upperCaseLine.startsWith("CREATE INDEX")) {
                     getLog().warn("Error while trying to execute query : " + line, e);
                 }
             }
@@ -694,39 +728,39 @@ public class ConfigureMojo extends AbstractManagementMojo
 // get two keys...
         final String rootName = "root";
 
-        final String password =encryptPassword(jahiaRootPassword);   //root1234
-        getLog().info("Encrypted root password for jahia is " +jahiaRootPassword);
+        final String password = encryptPassword(jahiaRootPassword);   //root1234
+        getLog().info("Encrypted root password for jahia is " + jahiaRootPassword);
         final int siteID0 = 0;
         final String rootKey = rootName + ":" + siteID0;
         final String grpKey0 = "administrators" + ":" + siteID0;
 
 // query insert root user...
         db.queryPreparedStatement("INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(0,?,?,?)",
-                new Object[] { rootName, password, rootKey } );
+                new Object[]{rootName, password, rootKey});
 
 // query insert root first name...
         db.queryPreparedStatement("INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'firstname', ?, 'jahia',?)",
-                new Object[] { "root", rootKey } );
+                new Object[]{"root", rootKey});
 
 // query insert root last name...
         db.queryPreparedStatement("INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'lastname', ?, 'jahia',?)",
-                new Object[] { "", rootKey } );
+                new Object[]{"", rootKey});
 
 // query insert root e-mail address...
         db.queryPreparedStatement("INSERT INTO jahia_user_prop(id_jahia_users, name_jahia_user_prop, value_jahia_user_prop, provider_jahia_user_prop, userkey_jahia_user_prop) VALUES(0, 'email', ?, 'jahia',?)",
-                new Object[] { (String) "", rootKey } );
+                new Object[]{(String) "", rootKey});
 
 // query insert administrators group...
         db.queryPreparedStatement("INSERT INTO jahia_grps(id_jahia_grps, name_jahia_grps, key_jahia_grps, siteid_jahia_grps) VALUES(?,?,?,null)",
-                new Object[] { new Integer(siteID0), "administrators", grpKey0 } );
+                new Object[]{new Integer(siteID0), "administrators", grpKey0});
 
 // query insert administrators group access...
         db.queryPreparedStatement("INSERT INTO jahia_grp_access(id_jahia_member, id_jahia_grps, membertype_grp_access) VALUES(?,?,1)",
-                new Object[] { rootKey,grpKey0 } );
+                new Object[]{rootKey, grpKey0});
 
 // create guest user
         db.queryPreparedStatement("INSERT INTO jahia_users(id_jahia_users, name_jahia_users, password_jahia_users, key_jahia_users) VALUES(1,?,?,?)",
-                new Object[] {"guest", "*", "guest:0" } );
+                new Object[]{"guest", "*", "guest:0"});
 
 //db.queryPreparedStatement("INSERT INTO jahia_version(install_number, build, release_number, install_date) VALUES(0, ?,?,?)",
 //new Object[] { new Integer(Jahia.getBuildNumber()), Jahia.getReleaseNumber() + "." + Jahia.getPatchNumber(), new Timestamp(System.currentTimeMillis()) } );
@@ -734,23 +768,23 @@ public class ConfigureMojo extends AbstractManagementMojo
 // end insertDBCustomContent()
 
 
-    public String encryptPassword (String password) {
+    public String encryptPassword(String password) {
         if (password == null) {
             return null;
         }
 
-        if (password.length () == 0) {
+        if (password.length() == 0) {
             return null;
         }
 
         String result = null;
 
         try {
-            MessageDigest md = MessageDigest.getInstance ("SHA-1");
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
             if (md != null) {
-                md.reset ();
-                md.update (password.getBytes ());
-                result = new String (Base64.encodeBase64 (md.digest ()));
+                md.reset();
+                md.update(password.getBytes());
+                result = new String(Base64.encodeBase64(md.digest()));
             }
             md = null;
         } catch (NoSuchAlgorithmException ex) {

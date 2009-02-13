@@ -312,6 +312,39 @@
             </build>
         </profile>
 
+        <profile>
+            <id>configure-before-packaging</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                        <configuration>
+                            <!-- do not change these three nor remove them -->
+                            <targetServerDirectory>${project.build.directory}</targetServerDirectory>
+                            <webAppDirName>/${project.build.finalName}</webAppDirName>
+                            <configureBeforePackaging>true</configureBeforePackaging>
+                            <!-- these following could be removed to configure them from settings.xml -->
+                            <cluster_activated>false</cluster_activated>
+                            <processingServer>true</processingServer>
+                            <overwritedb>true</overwritedb>
+                            <storeFilesInDB>true</storeFilesInDB>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>configure</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
   <dependencies>

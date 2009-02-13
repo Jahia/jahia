@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -34,6 +34,7 @@
 package org.jahia.utils.maven.plugin.buildautomation;
 
 import java.util.List;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,15 +47,18 @@ public class JahiaPropertiesConfigurator {
 
 
     private PropertiesManager properties;
-    String jahiaPath;
+    String sourceJahiaPath;
+    String targetJahiaPath;
     JahiaPropertiesBean jahiaPropertiesBean;
-    public JahiaPropertiesConfigurator(String jahiaPath, JahiaPropertiesBean jahiaPropertiesBean) {
-        this.jahiaPath = jahiaPath;
-        this.jahiaPropertiesBean =  jahiaPropertiesBean;
+
+    public JahiaPropertiesConfigurator(String sourceJahiaPath, String targetJahiaPath, JahiaPropertiesBean jahiaPropertiesBean) {
+        this.sourceJahiaPath = sourceJahiaPath;
+        this.targetJahiaPath = targetJahiaPath;
+        this.jahiaPropertiesBean = jahiaPropertiesBean;
     }
 
-    public  void generateJahiaProperties() {
-        properties =new PropertiesManager(jahiaPath + "/WEB-INF/etc/config/jahia.skeleton");
+    public void generateJahiaProperties() throws IOException {
+        properties = new PropertiesManager(sourceJahiaPath + "/WEB-INF/etc/config/jahia.skeleton", targetJahiaPath + "/WEB-INF/etc/config/jahia.skeleton");
         properties.setProperty("release", jahiaPropertiesBean.getRelease());
         properties.setProperty("server", jahiaPropertiesBean.getServer());
 //        properties.setProperty("serverHomeDiskPath", targetServerDirectory);
@@ -88,10 +92,10 @@ public class JahiaPropertiesConfigurator {
         properties.setProperty("localIp", jahiaPropertiesBean.getLocalIp());
         properties.setProperty("cluster.node.serverId", jahiaPropertiesBean.getCluster_node_serverId());
         properties.setProperty("db_script", jahiaPropertiesBean.getDb_script());
-        properties.setProperty("db_starthsqlserver",jahiaPropertiesBean.getDb_starthsqlserver());
-        properties.setProperty("developmentMode",jahiaPropertiesBean.getDevelopmentMode());
+        properties.setProperty("db_starthsqlserver", jahiaPropertiesBean.getDb_starthsqlserver());
+        properties.setProperty("developmentMode", jahiaPropertiesBean.getDevelopmentMode());
 
-        if(jahiaPropertiesBean.getCluster_activated().equals("true")){
+        if (jahiaPropertiesBean.getCluster_activated().equals("true")) {
             addClusterNodes(jahiaPropertiesBean.getClusterNodes());
 
         }
@@ -99,39 +103,39 @@ public class JahiaPropertiesConfigurator {
         properties.setProperty("cluster.node.serverId", jahiaPropertiesBean.getCluster_node_serverId());
         properties.setProperty("mail_paranoia", "Disabled");
 
-        properties.storeProperties(jahiaPath + "/WEB-INF/etc/config/jahia.properties");
+        properties.storeProperties(sourceJahiaPath + "/WEB-INF/etc/config/jahia.skeleton", targetJahiaPath + "/WEB-INF/etc/config/jahia.properties");
     }
+
     private void addClusterNodes(List clusterNodes) {
 
-            properties.setProperty("cluster.tcp.start.ip_address", jahiaPropertiesBean.getLocalIp());
-            String   clusterTtcpServiceNodesIp_address ="";
-            String   clustertcpidgeneratornodesip_address ="";
-            String   clustertcpesicontentidsnodesip_address ="";
-            String   clustertcphibernatenodesip_address="";
-            for (int i= 0;i<clusterNodes.size();i++){
+        properties.setProperty("cluster.tcp.start.ip_address", jahiaPropertiesBean.getLocalIp());
+        String clusterTtcpServiceNodesIp_address = "";
+        String clustertcpidgeneratornodesip_address = "";
+        String clustertcpesicontentidsnodesip_address = "";
+        String clustertcphibernatenodesip_address = "";
+        for (int i = 0; i < clusterNodes.size(); i++) {
 
-                if(i==clusterNodes.size()-1){
-                    clusterTtcpServiceNodesIp_address= clusterTtcpServiceNodesIp_address+(String)clusterNodes.get(i)+"[7840]";
-                    clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address +(String)clusterNodes.get(i)+"[7850]"    ;
-                    clustertcpesicontentidsnodesip_address =clustertcpesicontentidsnodesip_address +(String)clusterNodes.get(i)+"[7860]";
-                    clustertcphibernatenodesip_address=clustertcphibernatenodesip_address +(String)clusterNodes.get(i)+"[7870]";
-                }
-                else{
+            if (i == clusterNodes.size() - 1) {
+                clusterTtcpServiceNodesIp_address = clusterTtcpServiceNodesIp_address + (String) clusterNodes.get(i) + "[7840]";
+                clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address + (String) clusterNodes.get(i) + "[7850]";
+                clustertcpesicontentidsnodesip_address = clustertcpesicontentidsnodesip_address + (String) clusterNodes.get(i) + "[7860]";
+                clustertcphibernatenodesip_address = clustertcphibernatenodesip_address + (String) clusterNodes.get(i) + "[7870]";
+            } else {
 
-                    clusterTtcpServiceNodesIp_address= clusterTtcpServiceNodesIp_address+(String)clusterNodes.get(i)+"[7840],";
-                    clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address +(String)clusterNodes.get(i)+"[7850],"    ;
-                    clustertcpesicontentidsnodesip_address =clustertcpesicontentidsnodesip_address +(String)clusterNodes.get(i)+"[7860],";
-                    clustertcphibernatenodesip_address=clustertcphibernatenodesip_address +(String)clusterNodes.get(i)+"[7870],";
-                }
-
-
+                clusterTtcpServiceNodesIp_address = clusterTtcpServiceNodesIp_address + (String) clusterNodes.get(i) + "[7840],";
+                clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address + (String) clusterNodes.get(i) + "[7850],";
+                clustertcpesicontentidsnodesip_address = clustertcpesicontentidsnodesip_address + (String) clusterNodes.get(i) + "[7860],";
+                clustertcphibernatenodesip_address = clustertcphibernatenodesip_address + (String) clusterNodes.get(i) + "[7870],";
             }
 
-            properties.setProperty("cluster.tcp.service.nodes.ip_address", clusterTtcpServiceNodesIp_address);
-            properties.setProperty("cluster.tcp.idgenerator.nodes.ip_address", clustertcpidgeneratornodesip_address);
-            properties.setProperty("cluster.tcp.esicontentids.nodes.ip_address", clustertcpesicontentidsnodesip_address);
-            properties.setProperty("cluster.tcp.hibernate.nodes.ip_address", clustertcphibernatenodesip_address);
-            properties.setProperty("processingServer",jahiaPropertiesBean.getProcessingServer());
+
         }
+
+        properties.setProperty("cluster.tcp.service.nodes.ip_address", clusterTtcpServiceNodesIp_address);
+        properties.setProperty("cluster.tcp.idgenerator.nodes.ip_address", clustertcpidgeneratornodesip_address);
+        properties.setProperty("cluster.tcp.esicontentids.nodes.ip_address", clustertcpesicontentidsnodesip_address);
+        properties.setProperty("cluster.tcp.hibernate.nodes.ip_address", clustertcphibernatenodesip_address);
+        properties.setProperty("processingServer", jahiaPropertiesBean.getProcessingServer());
+    }
 
 }

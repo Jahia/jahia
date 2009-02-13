@@ -123,6 +123,14 @@
     <activeProfile>configure</activeProfile>
     <!-- <activeProfile>jboss-deployment</activeProfile> -->
     <!-- <activeProfile>eclipse-integration</activeProfile> -->
+
+    <!--
+     Activating the configure-before-packaging profile will trigger
+     the jahia:configure goal to configure Jahia BEFORE building the
+     WAR and EAR files, this way you can build a configuration to be
+     deployed on JEE application servers.
+    -->
+    <!--activeProfile>configure-before-packaging</activeProfile-->
   </activeProfiles>         
 
   <!-- Jahia plugin -->

@@ -2,7 +2,7 @@
  README FOR JAHIA SOURCE CODE
 ==============================================================================
 
- All source code, binaries and documentation is copyrighted (c) 2001-2008 by
+ All source code, binaries and documentation is copyrighted (c) 2001-2009 by
  Jahia Ltd. All Rights Reserved.
 
  INTRODUCTION
@@ -119,7 +119,14 @@
 
  Deploying to other application servers
 ------------------------------------------------------------------------------
- The new "ear" project generates a jahia-*.ear file that can be used to 
+ In order to deploy to other application servers, you will want to configure
+ Jahia before deployment. In order to do so, you should copy the
+ settings.xml.example file into your user home directory in the .m2 directory
+ and configure it. You should also uncomment the configure-before-packaging
+ profile that will make sure the configuration is stored inside the generated
+ WAR and EAR files.
+
+ The new "ear" project generates a jahia-*.ear file that can be used to
  deploy Jahia onto JEE application servers. The file can be found in the 
  following directory : 
  

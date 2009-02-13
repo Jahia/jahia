@@ -128,3 +128,59 @@ width:641px;
 height:214px;
 background: url( ../img/mockup/bk_teasers.gif) top left no-repeat;
 }
+.mockup-article {
+display:block;
+width:641px;
+height:560px;
+background: url( ../img/mockup/bk_article.gif) top left no-repeat;
+}
+
+.mockup-boxfiles {
+display:block;
+width:285px;
+height:277px;
+background: url( ../img/mockup/bk_boxfiles.gif) top left no-repeat;
+}
+.mockup-enventlist {
+display:block;
+width:641px;
+height:547px;
+background: url( ../img/mockup/bk_eventlist.gif) top left no-repeat;
+}
+.mockup-introduction {
+display:block;
+width:641px;
+height:226px;
+background: url( ../img/mockup/bk_eventlist.gif) top left no-repeat;
+}
+
+.mockup-menu {
+display:block;
+width:641px;
+height:157px;
+background: url( ../img/mockup/bk_menu.gif) top left no-repeat;
+}
+.mockup-newslist {
+display:block;
+width:641px;
+height:551px;
+background: url( ../img/mockup/bk_newslist.gif) top left no-repeat;
+}
+.mockup-people {
+display:block;
+width:641px;
+height:220px;
+background: url( ../img/mockup/bk_people.gif) top left no-repeat;
+}
+.mockup-pressreleases {
+display:block;
+width:641px;
+height:255px;
+background: url( ../img/mockup/bk_people.gif) top left no-repeat;
+}
+.mockup-publication {
+display:block;
+width:641px;
+height:255px;
+background: url( ../img/mockup/bk_publication.gif) top left no-repeat;
+}

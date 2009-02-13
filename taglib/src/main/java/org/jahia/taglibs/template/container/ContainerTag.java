@@ -336,7 +336,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                     }
                     if (ProcessingContext.EDIT.equals(context.getOperationMode()) && emptyContainerDivCssClassName != null && emptyContainerDivCssClassName.length() > 0) {
                         try {
-                            pageContext.getOut().print("<div class=\"" + emptyContainerDivCssClassName + "\">");
+                            pageContext.getOut().print("<div class=\"" + emptyContainerDivCssClassName + "\"></div>");
                         } catch (IOException e) {
                             logger.error(e, e);
                         }

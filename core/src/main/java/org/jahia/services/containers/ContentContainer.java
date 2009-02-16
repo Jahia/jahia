@@ -81,6 +81,8 @@ import java.util.*;
 public class ContentContainer extends ContentObject
     implements PageReferenceableInterface, TimeBasedPublishingJahiaObject, Cloneable, Serializable {
 
+    private static final long serialVersionUID = -3972455571793209458L;
+
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(ContentContainer.class);
 

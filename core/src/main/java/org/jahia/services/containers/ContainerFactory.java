@@ -166,7 +166,8 @@ public class ContainerFactory {
                                                      final EntryLoadRequest loadRequest,
                                                      final Map<Integer, List<Integer>> cachedFieldsFromContainers,
                                                      final Map<Integer, List<Integer>> cachedContainersFromContainerLists,
-                                                     final Map<Integer, List<Integer>> cachedContainerListsFromContainers)
+                                                     final Map<Integer, List<Integer>> cachedContainerListsFromContainers,
+                                                     final String listViewId)
             throws JahiaException {
         if (cList == null) {
             return null;
@@ -194,6 +195,7 @@ public class ContainerFactory {
                 ContainerListLoader listLoader = ContainerListLoader.getInstance(jParams,cList);
                 ContainerListLoaderContext listLoaderContext = new ContainerListLoaderContext(jParams,loadRequest,cList,
                         LoadFlags.ALL,cachedContainersFromContainerLists,null,null);
+                listLoaderContext.setListViewId(listViewId);
                 List<Integer> ctnids = listLoader.doContainerFilterSearchSort(listLoaderContext);
                 listLoader.removeFromSessionIfEmpty(jParams);
 
@@ -209,9 +211,9 @@ public class ContainerFactory {
                     cList.setIsContainersLoaded(true);
                     ctnids = loadContainerListWithContainers(cList, ctnids, loadFlag, jParams, loadRequest,
                             cachedFieldsFromContainers, cachedContainersFromContainerLists,
-                            cachedContainerListsFromContainers, currentUser);
+                            cachedContainerListsFromContainers, currentUser, listViewId);
                 } else {
-                    ctnids = repaginateContainerListWithContainers(cList, ctnids, jParams, currentUser);
+                    ctnids = repaginateContainerListWithContainers(cList, ctnids, jParams, currentUser, listViewId);
                 }
                 final SessionState session = jParams.getSessionState();
                 if (session != null) {
@@ -314,6 +316,9 @@ public class ContainerFactory {
      * @param loadVersion
      * @param cachedFieldsInContainer
      * @param cachedContainersFromContainerLists
+     * @param cachedContainersListsFromContainers
+     * @param currentUser
+     * @param listViewId   
      *
      * @throws JahiaException
      */
@@ -326,7 +331,8 @@ public class ContainerFactory {
             final Map<Integer, List<Integer>> cachedFieldsInContainer,
             final Map<Integer, List<Integer>> cachedContainersFromContainerLists,
             final Map<Integer, List<Integer>> cachedContainerListsFromContainers,
-            final JahiaUser currentUser)
+            final JahiaUser currentUser,
+            final String listViewId)
             throws JahiaException {
 
         if (theContainerList == null) {
@@ -358,10 +364,10 @@ public class ContainerFactory {
                 JahiaContainerListPagination cListPagination = theContainerList.getCtnListPagination(false);
                 if (cListPagination !=null){
                     cListPagination = new JahiaContainerListPagination(theContainerList, jParams,
-                            cListPagination.getWindowSize(),new ArrayList<Integer>(ctnids), lastEditedItemId);
+                            cListPagination.getWindowSize(),new ArrayList<Integer>(ctnids), lastEditedItemId, listViewId);
                 } else {
                     cListPagination = new JahiaContainerListPagination(theContainerList, jParams, -1,
-                            new ArrayList<Integer>(ctnids),lastEditedItemId);
+                            new ArrayList<Integer>(ctnids),lastEditedItemId, listViewId);
                 }
                 theContainerList.setCtnListPagination(cListPagination);
 
@@ -385,20 +391,14 @@ public class ContainerFactory {
                 }
 
                 List<Integer> v = new ArrayList<Integer>();
-                int size = ctnids.size();
-                Integer ctnID = null;
-                int aclID = 0;
-                JahiaAcl acl = null;
-                JahiaContainer container = null;
-                for (int i = 0; i < size; i++) {
+                for (int i = 0, size = ctnids.size(); i < size; i++) {
                     try {
-                        ctnID = (Integer) ctnids.get(i);
-                        if ( ctnACLRetriever != null ){
-                            aclID = ctnACLRetriever.getACL(ctnID.intValue(),i);
-                        } else {
-                            aclID = jahiaContainersService.getContainerACLID(ctnID.intValue());
-                        }
-                        acl = null;
+                        Integer ctnID = ctnids.get(i);
+                        int aclID = ctnACLRetriever != null ? ctnACLRetriever
+                                .getACL(ctnID.intValue(), i)
+                                : jahiaContainersService
+                                        .getContainerACLID(ctnID.intValue());                        
+                        JahiaAcl acl = null;
                         if (aclID == -1){
                             continue;
                         }
@@ -422,27 +422,30 @@ public class ContainerFactory {
                                 }
                             }
                             try {
-                                container = jahiaContainersService.loadContainer(ctnID.intValue(), loadFlag, jParams,
+                                JahiaContainer container = jahiaContainersService.loadContainer(ctnID.intValue(), loadFlag, jParams,
                                         loadVersion,
                                         cachedFieldsInContainer,
                                         cachedContainersFromContainerLists,
                                         cachedContainerListsFromContainers);
+                                if (container != null && container.getID() != -1 && !v.contains(ctnID)) {
+                                    v.add(ctnID);
+                                    loadedContainers.put(ctnID,container);
+                                } else {
+                                    continue;
+                                }
                             } catch (Exception t) {
                                 String errorMsg = "Error loading container [" + ctnID.intValue() + "]";
                                 if (loadVersion != null) {
                                     errorMsg += " loadVersion=" + loadVersion.toString();
                                 }
                                 logger.debug(errorMsg);
+                            }
 
-                            }
-                            if (container != null && container.getID() != -1 && !v.contains(ctnID)) {
-                                v.add(ctnID);
-                                loadedContainers.put(ctnID,container);
-                            } else {
-                                continue;
-                            }
                             if (acl.getPermission(currentUser, JahiaBaseACL.WRITE_RIGHTS)) {
-                                if ( ctnID.intValue() != -1 && !res.contains(ctnID)) res.add(ctnID);
+                                if (ctnID.intValue() != -1
+                                        && !res.contains(ctnID)) {
+                                    res.add(ctnID);
+                                }
                             }
                             if ( (v.size() >= theContainerList.getMaxSize()) ||
                                     (v.size() > endPos + org.jahia.settings.SettingsBean.getInstance().getPreloadedItemsForPagination()) ){
@@ -464,9 +467,9 @@ public class ContainerFactory {
         JahiaContainerListPagination cListPagination = theContainerList.getCtnListPagination(false);
         if (cListPagination !=null){
             cListPagination = new JahiaContainerListPagination(theContainerList, jParams,
-                    cListPagination.getWindowSize(),new ArrayList<Integer>(ctnids), lastEditedItemId);
+                    cListPagination.getWindowSize(),new ArrayList<Integer>(ctnids), lastEditedItemId, listViewId);
         } else {
-            cListPagination = new JahiaContainerListPagination(theContainerList, jParams, -1,new ArrayList<Integer>(ctnids), lastEditedItemId);
+            cListPagination = new JahiaContainerListPagination(theContainerList, jParams, -1,new ArrayList<Integer>(ctnids), lastEditedItemId, listViewId);
         }
         theContainerList.setCtnListPagination(cListPagination);
 
@@ -521,6 +524,7 @@ public class ContainerFactory {
      * @param ctnids
      * @param jParams
      * @param currentUser
+     * @param listViewId
      * @return
      * @throws JahiaException
      */
@@ -528,7 +532,8 @@ public class ContainerFactory {
             final JahiaContainerList theContainerList,
             List<Integer> ctnids,
             final ProcessingContext jParams,
-            final JahiaUser currentUser)
+            final JahiaUser currentUser,
+            final String listViewId)
             throws JahiaException {
 
         if (theContainerList == null){
@@ -563,9 +568,9 @@ public class ContainerFactory {
         JahiaContainerListPagination cListPagination = theContainerList.getCtnListPagination(false);
         if (cListPagination !=null){
             cListPagination = new JahiaContainerListPagination(theContainerList, jParams,
-                    cListPagination.getWindowSize(),res,lastEditedItemId);
+                    cListPagination.getWindowSize(),res,lastEditedItemId, listViewId);
         } else {
-            cListPagination = new JahiaContainerListPagination(theContainerList, jParams, -1,res, lastEditedItemId);
+            cListPagination = new JahiaContainerListPagination(theContainerList, jParams, -1,res, lastEditedItemId, listViewId);
         }
         theContainerList.setCtnListPagination(cListPagination);
 

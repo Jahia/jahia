@@ -108,27 +108,10 @@ public class ContainerListLoader implements Serializable {
         if (cList == null || cList.getID()==-1 || context==null){
             return new ContainerListLoader();
         }
-        int cListID = cList.getID();
-        String containerListName = cList.getDefinition().getName();
 
-        ContainerListLoader cLoader = null;
-        final SessionState session = context.getSessionState();
-        String sessionKey = null;
-        if (session!=null){
-            sessionKey = cListID + "_"
-                    + context.getPageID() + "_" + containerListName +
-                    "_containerLoader" + "_" + context.getEntryLoadRequest().toString();
-            cLoader = (ContainerListLoader) session.getAttribute(sessionKey);
-        }
-        if (cLoader == null || !cLoader.isValid()){
-            cLoader = new ContainerListLoader();
-        }
+        ContainerListLoader cLoader = new ContainerListLoader();
         cLoader.initMaps();
 
-        if (session!=null){
-            cLoader.setSessionKey(sessionKey);
-            session.setAttribute(sessionKey,cLoader);
-        }
         return cLoader;
     }
 
@@ -179,7 +162,6 @@ public class ContainerListLoader implements Serializable {
 
     public List<Integer> doContainerFilterSearchSort(final ContainerListLoaderContext loaderContext) {
 
-        ProcessingContext context = loaderContext.getContext();
         JahiaContainerList cList = loaderContext.getCList();
         EntryLoadRequest loadVersion = loaderContext.getLoadVersion();
 
@@ -189,7 +171,6 @@ public class ContainerListLoader implements Serializable {
             BitSet filterBitSet = null;
             JahiaSearchResult searchResult = null;
             ContainerFilters cFilters = null;
-            boolean resultHasChanged = false;
 
             // Apply container list search if needed.
             final ContainerSearcher cSearcher = getCtnListSearcher(loaderContext);
@@ -219,20 +200,6 @@ public class ContainerListLoader implements Serializable {
                     }
                 }
             }
-
-            // Retrieve previous search and filtering bitset from fullyLoadedList
-            final SessionState session = context.getSessionState();
-            BitSet cachedResultBitSet = null;
-            if (session != null) {
-                cachedResultBitSet = (BitSet) session.getAttribute(cList.getID() +
-                        "_searchfiltering_result_bitset" + "_" + context.getEntryLoadRequest().toString()
-                        + contextID);
-            }
-
-            resultHasChanged = ( (cSearcher==null || cSearcher.getUpdateStatus() || cFilters==null ||
-                    (cFilters.getUpdateStatus())) );
-
-            if (resultHasChanged) {
                 if (resultBitSet != null) {
                     if (filterBitSet != null) {
                         resultBitSet.and(filterBitSet);
@@ -243,20 +210,6 @@ public class ContainerListLoader implements Serializable {
                 } else if (filterBitSet != null) {
                     resultBitSet = filterBitSet;
                 }
-                resultHasChanged = true;
-            } else {
-                resultBitSet = cachedResultBitSet;
-            }
-
-            if (session != null) {
-                if (resultBitSet != null){
-                    session.setAttribute(cList.getID() + "_searchfiltering_result_bitset" + "_" +
-                        context.getEntryLoadRequest().toString() + contextID, resultBitSet);
-                } else {
-                    session.removeAttribute(cList.getID() + "_searchfiltering_result_bitset" + "_" +
-                        context.getEntryLoadRequest().toString() + contextID);
-                }
-            }
 
             if (resultBitSet != null && resultBitSet.length() == 0) {
                 return Collections.emptyList();
@@ -273,7 +226,7 @@ public class ContainerListLoader implements Serializable {
             }
 
             // Apply Sorting if needed.
-            final ContainerSorterInterface sorter = getContainerSorter(loaderContext,resultHasChanged,resultBitSet);
+            final ContainerSorterInterface sorter = getContainerSorter(loaderContext,resultBitSet);
             if (sorter != null && sorter.result() != null) {
                 return sorter.result();
             } else {
@@ -324,14 +277,7 @@ public class ContainerListLoader implements Serializable {
             containerListName = cList.getDefinition().getName();
         }
 
-        ContainerSearcher cSearcher = null;
-        if ( cList.getQueryBean() != null ){
-            cSearcher = cList.getQueryBean().getSearcher();
-        } else {
-            // keep for backward compatibility. Should be deprecated
-            cSearcher = (ContainerSearcher) context.getAttribute(containerListName
-                    + "_search_handler");
-        }
+        ContainerSearcher cSearcher = cList.getQueryBean() != null ? cList.getQueryBean().getSearcher() : null;
 
         String key = clistID + "_"
                 + context.getPageID() + "_" + containerListName +
@@ -463,14 +409,7 @@ public class ContainerListLoader implements Serializable {
         }
 
         ContainerFilters cachedContainerFilters = null;
-        ContainerFilters cFilters = null;
-
-        if ( cList.getQueryBean() != null ){
-            cFilters = cList.getQueryBean().getFilter();
-        } else {
-            // keep for backward compatibility. Should be deprecated
-            cFilters = (ContainerFilters) context.getAttribute(containerListName + "_filter_handler");
-        }
+        ContainerFilters cFilters = cList.getQueryBean() != null ? cList.getQueryBean().getFilter() : null;
 
         String key = clistID + "_"
                     + context.getPageID() + "_" + containerListName +
@@ -545,13 +484,10 @@ public class ContainerListLoader implements Serializable {
      * Apply container sorting if needed
      *
      * @param loaderContext
-     * @param resultHasChanged  filteringResultHasChanged, does pre-filtering
-     *                          and searching 's result change ?.
      * @param resultBitSet      the filtering and search result as BitSet
      * @return ContainerSorterBean,  the container sort handler
      */
     private ContainerSorterInterface getContainerSorter(ContainerListLoaderContext loaderContext,
-                                                        final boolean resultHasChanged,
                                                         final BitSet resultBitSet)
             throws JahiaException {
 
@@ -559,20 +495,13 @@ public class ContainerListLoader implements Serializable {
         JahiaContainerList cList = loaderContext.getCList();
 
         ContainerSorterInterface cachedSorter = null;
-        ContainerSorterInterface sorter = null;
 
         String containerListName = "truc";
         if (cList.getID() != -1) {
             containerListName = cList.getDefinition().getName();
         }
-
-        if ( cList.getQueryBean() != null ){
-            sorter = cList.getQueryBean().getSorter();
-        } else {
-            sorter = (ContainerSorterInterface) context.getAttribute(containerListName +
-                    "_sort_handler");
-        }
-
+        ContainerSorterInterface sorter = cList.getQueryBean() != null ? cList.getQueryBean().getSorter() : null;
+        
         String key = cList.getID() + "_"
                     + context.getPageID() + "_" + containerListName + "_sort_handler" +
                     "_" + context.getEntryLoadRequest().toString();
@@ -637,7 +566,6 @@ public class ContainerListLoader implements Serializable {
             sorter.setCtnListID(cList.getID());
 
             if (cachedSorter != null
-                    && !resultHasChanged
                     && cachedSorter.getEntryLoadRequest().toString().equals(sorter.getEntryLoadRequest().toString())
                     && cachedSorter.isValid()
                     && Arrays.equals(cachedSorter.getSortingFieldNames(), sorter.getSortingFieldNames())
@@ -684,8 +612,7 @@ public class ContainerListLoader implements Serializable {
     private boolean isLoadingUseSingleSearchQuery(ContainerListLoaderContext loaderContext) throws JahiaException {
 
         JahiaContainerList cList = loaderContext.getCList();
-        ProcessingContext context = loaderContext.getContext();
-
+//        ProcessingContext context = loaderContext.getContext();
 //        String containerListName = cList.getDefinition().getName();
 //
 //        ContainerSearcher cSearcher = null;
@@ -721,13 +648,6 @@ public class ContainerListLoader implements Serializable {
             cSearcher = cList.getQueryBean().getSearcher();
             cFilters = cList.getQueryBean().getFilter();
             sorter = cList.getQueryBean().getSorter();
-        } else {
-            String containerListName = cList.getDefinition().getName();
-
-            // keep for backward compatibility. Should be deprecated
-            cSearcher = (ContainerSearcher) context.getAttribute(containerListName + "_search_handler");
-            cFilters = (ContainerFilters) context.getAttribute(containerListName + "_filter_handler");
-            sorter = (ContainerSorterInterface) context.getAttribute(containerListName + "_sort_handler");
         }
         if (cSearcher != null && cFilters == null && sorter == null){
             return true;
@@ -841,10 +761,10 @@ public class ContainerListLoader implements Serializable {
             cListPagination = containerList.getCtnListPagination(false);
             if (cListPagination !=null){
                 cListPagination = new JahiaContainerListPagination(containerList, loaderContext.getContext(),
-                        cListPagination.getWindowSize(),ctnIds,lastEditedItemId);
+                        cListPagination.getWindowSize(),ctnIds,lastEditedItemId, loaderContext.getListViewId());
             } else {
                 cListPagination = new JahiaContainerListPagination(containerList, loaderContext.getContext(), -1,
-                        ctnIds,lastEditedItemId);
+                        ctnIds,lastEditedItemId, loaderContext.getListViewId());
             }
             containerList.setCtnListPagination(cListPagination);
         } catch ( Exception t ){

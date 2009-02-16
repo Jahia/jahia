@@ -110,7 +110,7 @@ public class RelativeContainerListTag extends ContainerListTag {
 
     // reads the container list from a container set
     protected JahiaContainerList getContainerList( JahiaData jData, String listName ) throws JahiaException {
-        JahiaContainerList containerList = jData.containers().getRelativeContainerList(listName, this.levelNb);
+        JahiaContainerList containerList = jData.containers().getRelativeContainerList(listName, this.levelNb, getId());
         if ( containerList != null ){
             containerList.setMaxSize(getMaxSize());
         }

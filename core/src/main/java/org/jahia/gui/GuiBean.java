@@ -40,7 +40,11 @@
 
 package org.jahia.gui;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
+import java.util.Enumeration;
+import java.util.Iterator;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
@@ -72,9 +76,6 @@ import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.JahiaTools;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
 
 /**
  * Modified and cleaned by Xavier Lawrence
@@ -738,12 +739,13 @@ public class GuiBean {
     public String drawContainerListNextWindowPageURL(final JahiaContainerList theContainerList,
                                                      final int pageStep,
                                                      final int newWindowSize,
-                                                     final boolean scrollingValueOnly)
+                                                     final boolean scrollingValueOnly,
+                                                     final String listViewId)
 
             throws JahiaException {
         return drawContainerListWindowPageURL(theContainerList, pageStep,
                 newWindowSize,
-                scrollingValueOnly);
+                scrollingValueOnly, listViewId);
     }
 
     /**
@@ -762,11 +764,12 @@ public class GuiBean {
     public String drawContainerListPreviousWindowPageURL(final JahiaContainerList theContainerList,
                                                          final int pageStep,
                                                          final int newWindowSize,
-                                                         final boolean scrollingValueOnly)
+                                                         final boolean scrollingValueOnly,
+                                                         final String listViewId)
             throws JahiaException {
         return drawContainerListWindowPageURL(theContainerList, -pageStep,
                 newWindowSize,
-                scrollingValueOnly);
+                scrollingValueOnly, listViewId);
     }
 
     /**
@@ -787,7 +790,8 @@ public class GuiBean {
     public String drawContainerListWindowPageURL(final JahiaContainerList theContainerList,
                                                  final int pageStep,
                                                  final int newWindowSize,
-                                                 final boolean scrollingValueOnly)
+                                                 final boolean scrollingValueOnly,
+                                                 final String listViewId)
             throws JahiaException {
 
         if (theContainerList == null) {
@@ -826,7 +830,9 @@ public class GuiBean {
         // we now have all the correct values, let's build the URL...
 
         final StringBuffer paramName = new StringBuffer();
-        paramName.append("ctnscroll_").append(theContainerList.getDefinition().getName());
+        paramName.append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER)
+                 .append(listViewId != null ? listViewId + "_" : "")
+                 .append(theContainerList.getDefinition().getName());
         final StringBuffer paramValue = new StringBuffer();
         paramValue.append(Integer.toString(windowSize)).append("_").
                 append(Integer.toString(windowOffset));
@@ -854,7 +860,8 @@ public class GuiBean {
      */
     public String drawContainerListWindowPageURL(final JahiaContainerList containerList,
                                                  final int pageStep,
-                                                 final boolean scrollingValueOnly)
+                                                 final boolean scrollingValueOnly,
+                                                 final String listViewId)
 
             throws JahiaException {
 
@@ -864,7 +871,9 @@ public class GuiBean {
         }
 
         final StringBuffer paramName = new StringBuffer();
-        paramName.append("ctnscroll_").append(containerList.getDefinition().getName());
+        paramName.append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER)
+                .append(listViewId != null ? listViewId + "_" : "")
+                .append(containerList.getDefinition().getName());
         final StringBuffer paramValue = new StringBuffer();
         paramValue.append(Integer.toString(containerList.getCtnListPagination().getWindowSize())).
                 append("_").append(Integer.toString((pageStep - 1) * containerList.getCtnListPagination().
@@ -1090,11 +1099,11 @@ public class GuiBean {
             throws JahiaException {
         if (jParams != null) {
 
-            final Iterator thePath = getPage().getContentPagePath(
-                    jParams.getOperationMode(), getUser());
+            final Iterator<ContentPage> thePath = getContentPage().getContentPagePath(
+                    jParams.getEntryLoadRequest(), jParams.getOperationMode(), getUser());
             boolean foundTarget = false;
             while (thePath.hasNext()) {
-                final ContentPage aPage = (ContentPage) thePath.next();
+                final ContentPage aPage = thePath.next();
                 if (!foundTarget) {
                     foundTarget = (aPage.getID() == getPage().getID());
                 }
@@ -1116,11 +1125,13 @@ public class GuiBean {
     public boolean isPageInPath(final int destPageID, final int levels)
             throws JahiaException {
         if (jParams != null) {
-            final Iterator thePath = getPage().getContentPagePath(
-                    levels, jParams.getOperationMode(), getUser());
+            final Iterator<ContentPage> thePath = getContentPage()
+                    .getContentPagePath(levels, jParams.getEntryLoadRequest(),
+                            jParams.getOperationMode(), getUser(),
+                            JahiaPageService.PAGEPATH_SHOW_ALL);
             boolean foundTarget = false;
             while (thePath.hasNext()) {
-                final ContentPage aPage = (ContentPage) thePath.next();
+                final ContentPage aPage = thePath.next();
                 if (!foundTarget) {
                     foundTarget = (aPage.getID() == getPage().getID());
                 }
@@ -1204,10 +1215,10 @@ public class GuiBean {
      */
     public static boolean isIe(final HttpServletRequest req) {
         final String userAgent;
-        final Iterator userAgentValues = new EnumerationIterator(req.getHeaders("user-agent"));
-        if (userAgentValues.hasNext()) {
+        final Enumeration<?> userAgentValues = req.getHeaders("user-agent");
+        if (userAgentValues.hasMoreElements()) {
             // we only take the first value.
-            userAgent = (String) userAgentValues.next();
+            userAgent = (String) userAgentValues.nextElement();
         } else {
             userAgent = null;
         }
@@ -1386,8 +1397,8 @@ public class GuiBean {
      */
     public int getLevelID(final int level)
             throws JahiaException {
-        final Iterator thePath = getPage().getContentPagePath(
-                jParams.getOperationMode(), getUser());
+        final Iterator<ContentPage> thePath = getContentPage().getContentPagePath(
+                jParams.getEntryLoadRequest(), jParams.getOperationMode(), getUser());
         int count_loop = 0;
         while (thePath.hasNext()) {
             final ContentPage aPage = (ContentPage) thePath.next();
@@ -1409,8 +1420,8 @@ public class GuiBean {
      *                        path.
      */
     public int getLevel() throws JahiaException {
-        final Iterator thePath = getPage().getContentPagePath(
-                jParams.getOperationMode(), getUser());
+        final Iterator<ContentPage> thePath = getContentPage().getContentPagePath(
+                jParams.getEntryLoadRequest(), jParams.getOperationMode(), getUser());
         int count_loop = 0;
         while (thePath.hasNext()) {
             final ContentPage aPage = (ContentPage) thePath.next();
@@ -1471,5 +1482,9 @@ public class GuiBean {
 
     private JahiaPage getPage() {
         return jParams != null ? jParams.getPage() : null;
+    }
+    
+    private ContentPage getContentPage() {
+        return jParams != null ? jParams.getContentPage() : null;
     }
 }

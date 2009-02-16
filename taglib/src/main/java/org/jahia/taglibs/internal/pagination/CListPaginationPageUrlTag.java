@@ -39,6 +39,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerListPagination;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.internal.uicomponents.AbstractButtonTag;
 import org.jahia.taglibs.template.containerlist.ContainerListTag;
 
@@ -75,11 +76,13 @@ import org.jahia.taglibs.template.containerlist.ContainerListTag;
  *
  * */
 
+@SuppressWarnings("serial")
 public class CListPaginationPageUrlTag extends AbstractButtonTag {
 
     private JahiaContainerList containerList = null;
     private JahiaContainerListPagination cPagination = null;
     private CListPaginationTag cPaginationTag = null;
+    private ContainerListTag parent = null;
 
     private String title = "";
     private String style = "";
@@ -159,7 +162,7 @@ public class CListPaginationPageUrlTag extends AbstractButtonTag {
         if ( cPaginationTag == null ){
             return false;
         }
-        ContainerListTag parent = (ContainerListTag) findAncestorWithClass(this,ContainerListTag.class);
+        parent = (ContainerListTag) findAncestorWithClass(this,ContainerListTag.class);
         if (parent != null) {
             this.containerList = parent.getContainerList();
             if ( this.containerList != null ){
@@ -176,14 +179,15 @@ public class CListPaginationPageUrlTag extends AbstractButtonTag {
     public String getLauncher(JahiaData jData) throws JahiaException {
         this.title = String.valueOf(cPaginationTag.getPageNumber());
 
-        String value = jData.gui().drawContainerListWindowPageURL( containerList, cPaginationTag.getPageNumber(), this.method.equals("post") );
+        String value = jData.gui().drawContainerListWindowPageURL( containerList, cPaginationTag.getPageNumber(), this.method.equals("post"), parent.getId());
         if ( value != null && this.method.equals("post") )
         {
             StringBuffer buff = new StringBuffer("javascript:changePage(document.");
             buff.append(getFormName());
             buff.append(",document.");
             buff.append(getFormName());
-            buff.append(".ctnscroll_");
+            buff.append(".").append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER);
+            buff.append(parent.getId() != null ? parent.getId() + "_" : "");
             buff.append(containerList.getDefinition().getName());
             buff.append(",'");
             buff.append(value);
@@ -197,6 +201,7 @@ public class CListPaginationPageUrlTag extends AbstractButtonTag {
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
         containerList = null;
+        parent = null;
         cPagination = null;
         cPaginationTag = null;
 

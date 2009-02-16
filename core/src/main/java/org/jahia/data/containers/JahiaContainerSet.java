@@ -196,13 +196,17 @@ public class JahiaContainerSet implements Map {
      * adds a container list to the set.
      *
      * @param        aContainerList  the JahiaContainerList to add
+     * @param        listViewId   the container list ID in the tag for supporting 
+     *                                    different views of the same list  
      * @see          org.jahia.data.containers.JahiaContainerList
      *
      * @throws org.jahia.exceptions.JahiaException
      */
-    private void addContainerList(JahiaContainerList aContainerList) throws JahiaException {
-        containerLists.put(aContainerList.getDefinition().getName(),
-                aContainerList);
+    private void addContainerList(JahiaContainerList aContainerList, String listViewId) throws JahiaException {
+        containerLists.put((listViewId != null
+                && !listViewId.isEmpty() ? listViewId + "_"
+                : "")
+                + aContainerList.getDefinition().getName(), aContainerList);
     } // end addContainerList
 
     /**
@@ -265,7 +269,7 @@ public class JahiaContainerSet implements Map {
                 // okay, it seems the definition already exists.
                 // now has it the same data than in the database (title, type, defaultval) ?
 
-                Map<String, String> props = aDef.getProperties();
+                Map<Object, Object> props = aDef.getProperties();
                 Properties declaredProps = (Properties) this.declaredFieldDefProps.get(fieldName);
 
                 boolean propsHaveChanged = ((props == null && declaredProps != null && !declaredProps.isEmpty()) ||
@@ -322,7 +326,7 @@ public class JahiaContainerSet implements Map {
                         // the synchronizeData method handles all this for us... pfew :)
                         logger.debug("Setting data for pageDef " +
                                 pageDefID);
-                        aDef.setProperties((Map)this.declaredFieldDefProps.get(fieldName));
+                        aDef.setProperties(this.declaredFieldDefProps.get(fieldName));
                         aDef.setCtnType(containerType);
                         JahiaFieldDefinitionsRegistry.getInstance().
                                 setDefinition(aDef);
@@ -345,7 +349,7 @@ public class JahiaContainerSet implements Map {
                         page.getJahiaID(),
                         fieldName, subDefs);
                 aDef.setCtnType(containerType);
-                aDef.setProperties((Map)this.declaredFieldDefProps.get(fieldName));
+                aDef.setProperties(this.declaredFieldDefProps.get(fieldName));
 
                 JahiaFieldDefinitionsRegistry.getInstance().setDefinition(aDef);
             }
@@ -668,7 +672,7 @@ public class JahiaContainerSet implements Map {
                     // since we might be in the case of a sub container list and
                     // these can only be instantiated when the parent container
                     // is created.
-                    addContainerList(fakeContainerList);
+                    addContainerList(fakeContainerList, null);
                 }
             }
         }
@@ -1127,8 +1131,7 @@ public class JahiaContainerSet implements Map {
 
         if (checkDeclared(containerName)) {
             JahiaContainerList theContainerList = (JahiaContainerList)
-                    containerLists.get(
-                            containerName);
+                    containerLists.get(containerName);
             if (theContainerList != null) {
                 JahiaContainer theContainer = theContainerList.getContainer(
                         index);
@@ -1189,7 +1192,7 @@ public class JahiaContainerSet implements Map {
     /***
      * gets a containerlist through its name
      *
-     * @param        containerName   the countainer list name
+     * @param        containerName   the container list name
      * @return a JahiaContainerList object
      * @see          org.jahia.data.containers.JahiaContainerList
      *
@@ -1197,6 +1200,24 @@ public class JahiaContainerSet implements Map {
      *
      */
     public JahiaContainerList getContainerList(String containerName)
+            throws JahiaException {
+     return getContainerList(containerName, null);   
+    }
+    
+    //-------------------------------------------------------------------------
+    /***
+     * gets a containerlist through its name
+     *
+     * @param        containerName   the container list name
+     * @param        listViewId   the container list ID in the tag for supporting 
+     *                                    different views of the same list 
+     * @return a JahiaContainerList object
+     * @see          org.jahia.data.containers.JahiaContainerList
+     *
+     * @exception JahiaException if container list not found
+     *
+     */
+    public JahiaContainerList getContainerList(String containerName, String listViewId)
             throws JahiaException {
         String n = null;
         try {
@@ -1223,7 +1244,10 @@ public class JahiaContainerSet implements Map {
 
         if (checkDeclared(containerName)) {
             JahiaContainerList theContainerList = (JahiaContainerList)
-                    containerLists.get(containerName);
+                    containerLists.get((listViewId != null
+                            && !listViewId.isEmpty() ? listViewId + "_"
+                                    : "")
+                                    + containerName);
             boolean bypass = false;
             if (theContainerList == null) {
                 int clistID = jahiaContainersService.getContainerListID(containerName,
@@ -1261,7 +1285,7 @@ public class JahiaContainerSet implements Map {
                 // container list again !!!!!!
 
                 theContainerList = ensureContainerList(containerDefinition,
-                        page.getID(), 0);
+                        page.getID(), 0, listViewId);
                 }
             }
 
@@ -1275,7 +1299,7 @@ public class JahiaContainerSet implements Map {
                             this.cachedContainersFromContainerLists,
                             this.cachedContainerListsFromContainers);
                 }*/
-                addContainerList(theContainerList);
+                addContainerList(theContainerList, listViewId);
             }
             return theContainerList;
         } else {
@@ -1291,15 +1315,31 @@ public class JahiaContainerSet implements Map {
     /***
      * gets a containerlist through its ID
      *
-     * @param        listID     the countainer list ID
+     * @param        listID     the container list ID
      * @return a JahiaContainerList object, may return null
      * @see          org.jahia.data.containers.JahiaContainerList
      *
      */
     public JahiaContainerList getContainerList(int listID) throws JahiaException {
+        return getContainerList(listID, null);
+    }
+    /***
+     * gets a containerlist through its ID
+     *
+     * @param        listID     the container list ID
+     * @param        listViewId     the ID in containerList-tag to support multiple views of same list in a page
+     * @return a JahiaContainerList object, may return null
+     * @see          org.jahia.data.containers.JahiaContainerList
+     *
+     */
+    public JahiaContainerList getContainerList(int listID, String listViewId) throws JahiaException {
 
-        for (JahiaContainerList aList : containerLists.values()) {
-            if (aList.getID() == listID) {
+        for (Map.Entry<String, JahiaContainerList> entry : containerLists.entrySet()) {
+            JahiaContainerList aList = entry.getValue(); 
+            if (aList.getID() == listID
+                    && (listViewId == null
+                            || listViewId.isEmpty() || entry.getKey()
+                            .startsWith(listViewId + "_"))) {
                 if (!aList.isContainersLoaded()) {
                     // When requesting an archived loadRequest
                     EntryLoadRequest loadRequest =
@@ -1321,7 +1361,7 @@ public class JahiaContainerSet implements Map {
                                     processingContext, loadRequest,
                                     this.cachedFieldsFromContainers,
                                     this.cachedContainersFromContainerLists,
-                                    this.cachedContainerListsFromContainers);
+                                    this.cachedContainerListsFromContainers, listViewId);
                 }
                 return aList;
             }
@@ -1343,7 +1383,27 @@ public class JahiaContainerSet implements Map {
      * of a sub container list !
      */
     public JahiaContainerList getAbsoluteContainerList(String containerName,
-                                                       int pageID)
+            int pageID) throws JahiaException {
+        return getAbsoluteContainerList(containerName, pageID, null);
+    }
+    
+    //-------------------------------------------------------------------------
+    /***
+     * gets a container list in another page (absolute page reference by its id)
+     *
+     * @param        containerName   the container list name
+     * @param        pageID          the page ID
+     * @param        listViewId   the container list ID in the tag for supporting 
+     *                                    different views of the same list  
+     * @return a JahiaContainerList object, or null if nothing found
+     * @see          org.jahia.data.containers.JahiaContainerList
+     *
+     * !!! Warning : this method can return a null value !!!
+     * !!! Warning 2 : this method should *NEVER* be called with the name
+     * of a sub container list !
+     */
+    public JahiaContainerList getAbsoluteContainerList(String containerName,
+                                                       int pageID, String listViewId)
             throws JahiaException {
 
         // quick check for a valid pageID
@@ -1451,7 +1511,7 @@ public class JahiaContainerSet implements Map {
                 // let's update cross reference list
                 absoluteContainerListAccesses.add(new Integer(theContainerList.getID()));
             } else {
-                addContainerList(theContainerList);                
+                addContainerList(theContainerList, listViewId);                
             }
         }    
         return theContainerList;
@@ -1539,7 +1599,7 @@ public class JahiaContainerSet implements Map {
         
         return theContainerList;
     }
-    
+
     /**
      * Retrieves an absolutely referenced container list by its name and page URL key.
      *
@@ -1554,7 +1614,26 @@ public class JahiaContainerSet implements Map {
         return getAbsoluteContainerList(containerName, ServicesRegistry
                 .getInstance().getJahiaPageService()
                 .getPageIDByURLKeyAndSiteID(pageUrlKey,
-                        page.getSiteID()));
+                        page.getSiteID()), null);
+    }       
+    
+    /**
+     * Retrieves an absolutely referenced container list by its name and page URL key.
+     *
+     * @param        containerName   the container list name
+     * @param        pageUrlKey      the page URL key
+     * @param        listViewId   the container list ID in the tag for supporting 
+     *                                    different views of the same list   
+     * @return a JahiaContainerList object, or null if nothing found
+     * @see          org.jahia.data.containers.JahiaContainerList
+     */
+    public JahiaContainerList getAbsoluteContainerList(String containerName,
+                                                       String pageUrlKey, String listViewId)
+            throws JahiaException {
+        return getAbsoluteContainerList(containerName, ServicesRegistry
+                .getInstance().getJahiaPageService()
+                .getPageIDByURLKeyAndSiteID(pageUrlKey,
+                        page.getSiteID()), listViewId);
     }    
 
     //-------------------------------------------------------------------------
@@ -1566,13 +1645,15 @@ public class JahiaContainerSet implements Map {
      * @param        levelNb         the numbers of level to go up in the
      *                               site structure;
      *                               -1 = Home Page
+     * @param        listViewId   the container list ID in the tag for supporting 
+     *                                    different views of the same list 
      * @return a JahiaContainerList object, or null if nothing found
      * @see          org.jahia.data.containers.JahiaContainerList
      *
      * !!! Warning : this method can return a null value !!!
      */
     public JahiaContainerList getRelativeContainerList(String containerName,
-                                                       int levelNb)
+                                                       int levelNb, String listViewId)
             throws JahiaException {
         logger.debug("into relative....................");
         int pageID = ServicesRegistry.getInstance().getJahiaPageService().
@@ -1580,7 +1661,7 @@ public class JahiaContainerSet implements Map {
                         page.getID(), levelNb, processingContext);
         logger.debug(".........page id found : " + pageID);
         if (pageID != -1) {
-            return getAbsoluteContainerList(containerName, pageID);
+            return getAbsoluteContainerList(containerName, pageID, listViewId);
         } else {
             return null;
         }
@@ -1668,7 +1749,7 @@ public class JahiaContainerSet implements Map {
         return containerLists.size();
     }
 
-    public JahiaContainerList ensureContainerList(JahiaContainerDefinition def, int page, int parent) throws JahiaException {
+    public JahiaContainerList ensureContainerList(JahiaContainerDefinition def, int page, int parent, String listViewId) throws JahiaException {
         synchronized (JahiaContainerSet.CLASS_NAME) {
             int id = -1;
             if (parent == 0) {
@@ -1718,7 +1799,7 @@ public class JahiaContainerSet implements Map {
                 } catch (final Throwable t) {
                    logger.error("Error in getContainerList", t);
                 }
-                this.addContainerList(list);
+                this.addContainerList(list, listViewId);
 
                 ensureMandatoryContainer(list, def.getContainerListType());
             }

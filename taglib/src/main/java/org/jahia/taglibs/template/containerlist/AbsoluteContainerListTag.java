@@ -146,9 +146,9 @@ public class AbsoluteContainerListTag extends ContainerListTag {
             id = jData.gui().getLevelID(pageLevel);
         }
         if (id == -1  && pageKey != null) {
-            containerList = jData.containers().getAbsoluteContainerList(listName, pageKey);
+            containerList = jData.containers().getAbsoluteContainerList(listName, pageKey, getId());
         } else {
-            containerList = jData.containers().getAbsoluteContainerList(listName, id);
+            containerList = jData.containers().getAbsoluteContainerList(listName, id, getId());
         }
         if ( containerList != null ){
             containerList.setMaxSize(this.getMaxSize());

@@ -33,6 +33,8 @@
 
 package org.jahia.taglibs.internal.pagination;
 
+import javax.servlet.jsp.JspException;
+
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.data.containers.JahiaContainerList;
@@ -41,9 +43,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.resourcebundle.ResourceBundleMarker;
 import org.jahia.taglibs.internal.uicomponents.AbstractButtonTag;
 import org.jahia.taglibs.template.containerlist.ContainerListTag;
-
-import javax.servlet.jsp.JspException;
-import java.util.Iterator;
 
 /**
  * <p>Title: This tag generates a next window button for scrollable container lists</p>
@@ -93,8 +92,9 @@ import java.util.Iterator;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class NextWindowButtonTag extends AbstractButtonTag {
-
+    private ContainerListTag parent = null;
     private JahiaContainerList containerList = null;
     private String title = "Next&gt;&gt;";
     private String style = "";
@@ -250,14 +250,13 @@ public class NextWindowButtonTag extends AbstractButtonTag {
 
     public boolean testRights(JahiaData jData) {
         // retrieves the current container list
-        ContainerListTag parent = (ContainerListTag) findAncestorWithClass(this,
+        parent = (ContainerListTag) findAncestorWithClass(this,
                 ContainerListTag.class);
         if (parent != null) {
             containerList = parent.getContainerList();
         }
         if (containerList != null) {
-            Iterator containers = containerList.getContainers();
-            return (containers.hasNext());
+            return (containerList.getContainers().hasNext());
         }
         return false;
     }
@@ -266,14 +265,15 @@ public class NextWindowButtonTag extends AbstractButtonTag {
             throws JahiaException {
         String value = jData.gui().drawContainerListNextWindowPageURL(
                 containerList, windowStepInt, windowSizeInt,
-                this.method.equals("post"));
+                this.method.equals("post"), parent.getId());
         if (value != null && this.method.equals("post")) {
             StringBuffer buff = new StringBuffer(
                     "javascript:changePage(document.");
             buff.append(getFormName());
             buff.append(",document.");
             buff.append(getFormName());
-            buff.append(".ctnscroll_");
+            buff.append(".").append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER);
+            buff.append(parent.getId() != null ? parent.getId() + "_" : "");
             buff.append(containerList.getDefinition().getName());
             buff.append(",'");
             buff.append(value);
@@ -288,6 +288,7 @@ public class NextWindowButtonTag extends AbstractButtonTag {
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
         containerList = null;
+        parent = null;
         title = "Next&gt;&gt;";
         style = "";
         method = "get";

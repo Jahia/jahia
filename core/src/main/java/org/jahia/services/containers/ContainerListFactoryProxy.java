@@ -59,6 +59,8 @@ public class ContainerListFactoryProxy {
     private Map<Integer, List<Integer>> cachedFieldsFromContainers;
     private Map<Integer, List<Integer>> cachedContainersFromContainerLists;
     private Map<Integer, List<Integer>> cachedContainerListsFromContainers;
+    
+    private String listViewId;
 
     //--------------------------------------------------------------------------
     /**
@@ -119,11 +121,19 @@ public class ContainerListFactoryProxy {
             ContainerFactory.getInstance().fullyLoadContainerList(containerList,
                     loadFlag, jParams, currentLoadRequest, cachedFieldsFromContainers,
                     this.cachedContainersFromContainerLists,
-                    this.cachedContainerListsFromContainers);
+                    this.cachedContainerListsFromContainers, getlistViewId());
             containerList.setIsContainersLoaded(true);
         } catch (JahiaException je) {
             logger.debug("Exception occured when loading Container List ["
                     + containerList.getID() + "]", je);
         }
+    }
+
+    public String getlistViewId() {
+        return listViewId;
+    }
+
+    public void setlistViewId(String listViewId) {
+        this.listViewId = listViewId;
     }
 }

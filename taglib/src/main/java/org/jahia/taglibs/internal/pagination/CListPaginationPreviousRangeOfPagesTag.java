@@ -39,6 +39,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerListPagination;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.internal.uicomponents.AbstractButtonTag;
 import org.jahia.taglibs.template.containerlist.ContainerListTag;
 
@@ -59,11 +60,13 @@ import org.jahia.taglibs.template.containerlist.ContainerListTag;
  *
  * */
 
+@SuppressWarnings("serial")
 public class CListPaginationPreviousRangeOfPagesTag extends AbstractButtonTag {
 
     private JahiaContainerList containerList = null;
     private JahiaContainerListPagination cPagination = null;
     private CListPaginationTag cPaginationTag = null;
+    private ContainerListTag parent = null;
 
     private String title = "&lt;&lt;Previous";
     private String style = "";
@@ -146,7 +149,7 @@ public class CListPaginationPreviousRangeOfPagesTag extends AbstractButtonTag {
         if ( cPaginationTag.getNbStepPerPage()<=0 ){
             return false;
         }
-        ContainerListTag parent = (ContainerListTag) findAncestorWithClass(this,ContainerListTag.class);
+        parent = (ContainerListTag) findAncestorWithClass(this,ContainerListTag.class);
         if (parent != null) {
             this.containerList = parent.getContainerList();
             if ( this.containerList != null ){
@@ -168,12 +171,11 @@ public class CListPaginationPreviousRangeOfPagesTag extends AbstractButtonTag {
         //JahiaConsole.println("CListPaginationPreviousRangeOfPagesTag.getLauncher","Stop Page :" + cPaginationTag.getStopPageIndex());
         //JahiaConsole.println("CListPaginationPreviousRangeOfPagesTag.getLauncher","Total Pages :" + this.cPagination.getNbPages());
 
-        if ( (cPaginationTag.getPageNumber()==cPaginationTag.getStartPageIndex())
-             && (cPaginationTag.getStartPageIndex()>1) ){
+        if ( cPaginationTag.getStartPageIndex()>1 ){
 
             //JahiaConsole.println("CListPaginationPreviousRangeOfPagesTag.getLauncher","Yes starting generate next[X] button");
 
-            value = jData.gui().drawContainerListPreviousWindowPageURL( containerList, cPagination.getCurrentPageIndex()-cPaginationTag.getStartPageIndex()+1, this.cPagination.getWindowSize(), this.method.equals("post") );
+            value = jData.gui().drawContainerListPreviousWindowPageURL( containerList, cPagination.getCurrentPageIndex()-cPaginationTag.getStartPageIndex()+1, this.cPagination.getWindowSize(), this.method.equals("post"), parent.getId() );
             //JahiaConsole.println("CListPaginationPreviousRangeOfPagesTag.getLauncher","Values is :" + value);
 
             if ( value != null && this.method.equals("post") )
@@ -182,7 +184,8 @@ public class CListPaginationPreviousRangeOfPagesTag extends AbstractButtonTag {
                 buff.append(getFormName());
                 buff.append(",document.");
                 buff.append(getFormName());
-                buff.append(".ctnscroll_");
+                buff.append(".").append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER);
+                buff.append(parent.getId() != null ? parent.getId() + "_" : "");
                 buff.append(containerList.getDefinition().getName());
                 buff.append(",'");
                 buff.append(value);
@@ -197,6 +200,7 @@ public class CListPaginationPreviousRangeOfPagesTag extends AbstractButtonTag {
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
         containerList = null;
+        parent = null;
         cPagination = null;
         cPaginationTag = null;
 

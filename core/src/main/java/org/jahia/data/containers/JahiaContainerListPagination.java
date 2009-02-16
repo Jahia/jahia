@@ -113,7 +113,7 @@ public class JahiaContainerListPagination {
      *
      * windowSize and windowOffset are computed from request parameters :
      * <pre>
-     *		"ctnscroll_" + containerListName
+     *		ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER + containerListName
      * </pre>
      *
      * Or if not present, loaded from container list scrolling properties :
@@ -132,7 +132,7 @@ public class JahiaContainerListPagination {
                                           ProcessingContext jParams,
                                           int newWindowSize )
     throws JahiaException {
-        init(theContainerList,jParams,newWindowSize,null,0);
+        init(theContainerList,jParams,newWindowSize,null,0, null);
     }
 
     //-------------------------------------------------------------------------
@@ -141,7 +141,7 @@ public class JahiaContainerListPagination {
      *
      * windowSize and windowOffset are computed from request parameters :
      * <pre>
-     *		"ctnscroll_" + containerListName
+     *		ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER + containerListName
      * </pre>
      *
      * Or if not present, loaded from container list scrolling properties :
@@ -158,21 +158,20 @@ public class JahiaContainerListPagination {
      * @param lazyCtnIds The list of lazy container Ids. This is required to help positioning the pagination to the last (Edited Container Item)
      * Not usefull for display.
      * @param lastItemId The id of the last edited container. Used to reposition the pagination to the last edited container.
+     * @param listViewId This is the ID used in the containerList tag to allow muplitple views of the same list in a page
      * @throws JahiaException
      */
     public JahiaContainerListPagination(  JahiaContainerList theContainerList,
                                           ProcessingContext jParams,
-                                          int newWindowSize, List<Integer> lazyCtnIds, int lastItemId )
+                                          int newWindowSize, List<Integer> lazyCtnIds, int lastItemId, String listViewId)
     throws JahiaException {
-        init(theContainerList,jParams,newWindowSize,lazyCtnIds,lastItemId);
+        init(theContainerList,jParams,newWindowSize,lazyCtnIds,lastItemId, listViewId);
     }
 
     private void init(JahiaContainerList theContainerList,
                       ProcessingContext jParams,
-                      int newWindowSize, List<Integer> lazyCtnIds, int lastItemId)
+                      int newWindowSize, List<Integer> lazyCtnIds, int lastItemId, String listViewId)
     throws JahiaException {
-        //JahiaConsole.println(CLASS_NAME+".Constructor(ctnlist,jparams,newWindowSize)","Started for ctnlist [" + theContainerList.getID() + "] - " + theContainerList.getDefinition().getName());
-
         if ( theContainerList == null )
         {
             return;
@@ -192,7 +191,7 @@ public class JahiaContainerListPagination {
         if (theContainerList.getID() > 1) {
             JahiaContainerDefinition ctnDef = theContainerList.getDefinition();
             Properties ctnDefProps = ctnDef.getProperties();
-            if (ctnDefProps.size() > 0) {
+            if (!ctnDefProps.isEmpty()) {
                 try {
                     if (ctnDefProps.getProperty("windowSize") != null) {
                         defWindowSize = Integer.parseInt(ctnDefProps.getProperty("windowSize"));
@@ -205,34 +204,53 @@ public class JahiaContainerListPagination {
                 }
             }
         }
-        //JahiaConsole.println(CLASS_NAME+".Constructor","defWindowSize : " + defWindowSize);
-        //JahiaConsole.println(CLASS_NAME+".Constructor","defWindowOffset : " + defWindowOffset);
+
         if ( (defWindowSize >= 1) &&
              (defWindowOffset >= 0) ) {
             windowSize = defWindowSize;
             windowOffset = defWindowOffset;
         }
 
-        //JahiaConsole.println(CLASS_NAME+".Constructor","windowSize : " + windowSize);
-        //JahiaConsole.println(CLASS_NAME+".Constructor","windowOffset : " + windowOffset);
-
         if (jParams != null) {
             String containerListName = "truc";
             if (theContainerList.getID() != -1) {
                 containerListName = theContainerList.getDefinition().getName();
             }
-            String scrollStr = jParams.getParameter("ctnscroll_" + containerListName);
+
+            // Check for customized window size
+            String shortListName = getShortListName(containerListName);
+            String custWindowSize = jParams.getParameter(getWindowSizeKey(shortListName, listViewId));
+            try {
+                if (custWindowSize != null) {
+                    int val = Integer.parseInt(custWindowSize);
+                    if (val > 0) {
+                        windowSize = val;
+                    }
+                }
+            } catch ( Exception t ){
+            }
+
+            // Check for customized window offset
+            String custWindowOffset = jParams.getParameter(getWindowOffsetKey(shortListName, listViewId));
+            try {
+                if (custWindowOffset != null) {
+                    int val = Integer.parseInt(custWindowOffset);
+                    if (val >= 0) {
+                        windowOffset = val;
+                        windowOffsetTakenFromParameter = true;
+                    }
+                }
+            } catch ( Exception t ){
+            }            
+            
+            String scrollStr = jParams
+                    .getParameter(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER
+                            + (listViewId != null ? listViewId + "_"
+                                    : "") + containerListName);
             if (scrollStr != null) {
                 // we have an window scrolling code for this container list.
-
-                /*
-                JahiaConsole.println(CLASS_NAME+".Constructor",
-                                     "Found window parameters for container list " +
-                                     containerListName);
-				*/
                 int separatorPos = scrollStr.indexOf("_");
-                if ((separatorPos != -1) &&
-                    (separatorPos + 1 < scrollStr.length())) {
+                if (separatorPos != -1 && (separatorPos + 1 < scrollStr.length())) {
                     // seperator is present, looks like a valid parameter. We
                     // must still test if we have two integer values.
                     String windowSizeStr = scrollStr.substring(0, separatorPos);
@@ -252,45 +270,6 @@ public class JahiaContainerListPagination {
                     }
                 }
             }
-
-            // Check for customized window size
-            String custWindowSize = jParams.getParameter(containerListName + "_windowsize");
-            try {
-                if (custWindowSize != null) {
-                    int val = Integer.parseInt(custWindowSize);
-                    if (val > 0) {
-                        windowSize = val;
-                    }
-                }
-            } catch ( Exception t ){
-            }
-
-            // Check for customized window offset
-            String custWindowOffset = jParams.getParameter(containerListName + "_windowoffset");
-            try {
-                if (custWindowOffset != null) {
-                    int val = Integer.parseInt(custWindowOffset);
-                    if (val >= 0) {
-                        windowOffset = val;
-                        windowOffsetTakenFromParameter = true;
-                    }
-                }
-            } catch ( Exception t ){
-            }
-        }
-        if (!windowOffsetTakenFromParameter){
-            Integer val = (Integer)jParams.getSessionState().getAttribute("ContainerList_" + theContainerList.getID()
-                + "_windowoffset");
-            if (val!=null){
-                windowOffset = val.intValue();
-            }
-        }
-        if ( windowOffset > 0 ){
-            jParams.getSessionState().setAttribute("ContainerList_" + theContainerList.getID()
-                + "_windowoffset", new Integer(windowOffset));
-        } else {
-            jParams.getSessionState().removeAttribute("ContainerList_" + theContainerList.getID()
-                + "_windowoffset");
         }
 
         // set the new window size if needed
@@ -343,7 +322,28 @@ public class JahiaContainerListPagination {
             }
         }        
     }
-
+    private String getShortListName(String containerListName) {
+        String shortListName = containerListName;
+        int index = containerListName.lastIndexOf("_");
+        if (index > -1) {
+            shortListName = containerListName.substring(index + 1);
+        }
+        return shortListName;
+    }
+    private String getWindowSizeKey(String containerListName,
+            String listViewId) {
+        return (listViewId != null && !listViewId.isEmpty() ? listViewId
+                + "_"
+                : "")
+                + containerListName + "_windowsize";
+    }
+    private String getWindowOffsetKey(String containerListName,
+            String listViewId) {
+        return (listViewId != null && !listViewId.isEmpty() ? listViewId
+                + "_"
+                : "")
+                + containerListName + "_windowoffset";
+    }
     //-------------------------------------------------------------------------
     /**
      * Return the total number of items ( containers ).
@@ -555,8 +555,6 @@ public class JahiaContainerListPagination {
 
             // Compute current page index.
             this.currentPageIndex = ( this.windowOffset / this.windowSize ) + 1;
-
-            //JahiaConsole.println(CLASS_NAME+".paginate","Current page index : " + this.currentPageIndex);
 
             // Compute the first and last item indexes
             if ( this.currentPageIndex == 1 )

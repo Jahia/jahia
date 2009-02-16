@@ -33,8 +33,33 @@
 
 package org.jahia.taglibs.template.containerlist;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.portlet.PortletConfig;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.templates.components.actionmenus.client.ui.actions.ActionMenuIcon;
@@ -42,17 +67,17 @@ import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerListKey;
 import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaData;
-import org.jahia.data.events.JahiaEvent;
-import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.beans.ContainerListBean;
+import org.jahia.data.beans.PaginationBean;
 import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.data.containers.JahiaContainer;
+import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerListPagination;
-import org.jahia.data.containers.JahiaContainerDefinition;
-import org.jahia.data.fields.LoadFlags;
-import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.FieldTypes;
+import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.data.fields.LoadFlags;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -71,21 +96,8 @@ import org.jahia.taglibs.template.container.ContainerTag;
 import org.jahia.taglibs.uicomponents.actionmenu.ActionMenuOutputter;
 import org.jahia.taglibs.utility.Utils;
 
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.portlet.PortletConfig;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.*;
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 /**
  * Class ContainerListTag : initializes Jahia in order to display a container list.
@@ -137,8 +149,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     private int windowOffset = -1;
     private int nbStepPerPage = -1;
     private int maxSize = Integer.MAX_VALUE;
-    private boolean displayPagination = true;
-    private boolean displayPaginationAtEndOfList = true;
+    private String displayPagination = PaginationBean.PAGINATION_AT_BOTTOM;
 
     private boolean displayActionMenu = true;
     private boolean displayActionMenuAtBottom = false;
@@ -166,6 +177,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
      * description="id attribute for this tag.
      * <p><attriInfo>Inherited from javax.servlet.jsp.tagext.TagSupport</attriInfo>"
      */
+
 
     /**
      * @jsp:attribute name="name" required="true" rtexprvalue="true"
@@ -263,11 +275,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         this.nbStepPerPage = nbStepPerPage;
     }
 
-    public void setDisplayPaginationAtEndOfList(boolean displayPaginationAtEndOfList) {
-        this.displayPaginationAtEndOfList = displayPaginationAtEndOfList;
-    }
-
-    public void setDisplayPagination(boolean displayPagination) {
+    public void setDisplayPagination(String displayPagination) {
         this.displayPagination = displayPagination;
     }
 
@@ -311,10 +319,12 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         this.enforceDefinedSort = enforceDefinedSort;
     }
 
-
-
-
     public int doStartTag() throws JspException {
+        if (getName() == null || getName().isEmpty()) {
+            logger.error("Container name must be set in containerList tag...");
+            return SKIP_BODY;
+        }
+        
         pushTag();
         if (monitorLogger.isDebugEnabled()) {
             mon = MonitorFactory.start("org.jahia.taglibs.container.ContainerListTag/" + getName());
@@ -325,110 +335,26 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         ServletRequest request = pageContext.getRequest();
         jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
-        JahiaContainer parentContainer;
-
         ContainerTag parentContainerTag = (ContainerTag) findAncestorWithClass(this, ContainerTag.class, request);
-        final ContainerBean parentContainerBean;
-        if (parentContainerTag != null) {
-            parentContainerBean = parentContainerTag.getContainerBean();
-        } else {
-            parentContainerBean = null;
-        }
+        final JahiaContainer parentContainer = parentContainerTag != null ? parentContainerTag.getContainer() : (JahiaContainer) request.getAttribute("parentContainer");
 
-        if (parentContainerBean != null && getName() != null && !getName().equals("")) {
-            parentContainer = parentContainerBean.getJahiaContainer();
+        if (parentContainer != null) {
             try {
                 this.parentListName = parentContainer.getDefinition().getName();
-                retrieveContainerList(parentContainer);
-                if (this.containerList == null) {
-                    logger.debug("ContainerList is null: " + getName());
-                    displayActionMenu = false;
+                if (!retrieveContainerList(parentContainer)) {
                     return SKIP_BODY;
                 }
-                // Output a warning in html and in console if this container list is not a subdefintion of its parent
-                checkSubdefinition(jData.getProcessingContext());
             } catch (JahiaException je) {
                 logger.error("Error while retrieving container list for parent container " + parentContainer.getID(), je);
             }
-        }
-
-        if (this.containerList == null && getName() != null && !getName().equals("")) {
-            // but we must also test the case where this containerList is enclosed
-            // in a parent containerList in which case we just trickle down the
-            // state of the parent list...
-            ContainerListTag parentContainerListTag = (ContainerListTag) findAncestorWithClass(this, ContainerListTag.class, request);
-            if (parentContainerListTag != null) {
-                this.parentListName = parentContainerListTag.getName();
-                // we are in an embedded containerList tag, let's check in which
-                // pass we are...
-
-                // this.listName = Utils.buildUniqueName(parentListName, this.listName);
-                parentContainerTag = (ContainerTag) findAncestorWithClass(this, ContainerTag.class, request);
-                try {
-                    // this is not right we must attach the right instance of the container to the parent container...
-                    if (parentContainerTag != null) {
-                        parentContainer = parentContainerTag.getContainer();
-                        if (parentContainer != null) {
-                            retrieveContainerList(parentContainer);
-                            if (this.containerList == null) {
-                                logger.debug("ContainerList is null: " + getName());
-                                displayActionMenu = false;
-                                return SKIP_BODY;
-                            }
-                            // Output a warning in html and in console if this container list is not a subdefintion of its parent
-                            checkSubdefinition(jData.getProcessingContext());
-                        } else {
-                            logger.error("Parent container not found...");
-                        }
-                    } else {
-                        logger.error("Parent container tag not found...");
-                    }
-                } catch (JahiaException je) {
-                    logger.error("Error:", je);
+        } else {
+            // we found no parent, let's try to load a top-level container list.
+            try {
+                if (!retrieveContainerList()) {
+                    return SKIP_BODY;
                 }
-            } else if (request.getAttribute("parentContainer")!=null) {
-                try {
-                    parentContainer = (JahiaContainer) request.getAttribute("parentContainer");
-                    retrieveContainerList(parentContainer);
-                    if (this.containerList == null) {
-                        logger.debug("ContainerList is null: " + getName());
-                        displayActionMenu = false;
-                        return SKIP_BODY;
-                    }
-                    // Output a warning in html and in console if this container list is not a subdefintion of its parent
-                    checkSubdefinition(jData.getProcessingContext());
-                } catch (JahiaException je) {
-                    logger.error("Error:", je);
-                }                
-            } else {
-                // we found no parent, let's try to load a top-level container
-                // list.
-                try {
-                    this.containerList = getContainerList(jData, getName());
-                    if (this.containerList == null || containerList.getID() == 0) {
-                        logger.debug("ContainerList is null: " + getName());
-                        displayActionMenu = false;
-                        return SKIP_BODY;
-                    }
-                    this.containerList.setMaxSize(maxSize);
-                    JahiaContainerListPagination pagination = this.containerList.getCtnListPagination(false);
-                    if ((pagination == null || !pagination.isValid() || pagination.getWindowSize() != this.windowSize)) {
-                        final String listName = this.containerList.getDefinition().getName();
-                        if (jData.getProcessingContext().getParameter(listName + "_windowsize") == null) {
-                            jData.getProcessingContext().setParameter(listName + "_windowsize", String.valueOf(this.windowSize));
-                            this.containerList.setIsContainersLoaded(false);
-                        }
-                    }
-                    if ((pagination == null || !pagination.isValid() || pagination.getWindowOffset() != this.windowOffset)) {
-                        final String listName = this.containerList.getDefinition().getName();
-                        if (jData.getProcessingContext().getParameter(listName + "_windowoffset") == null) {
-                            jData.getProcessingContext().setParameter(listName + "_windowoffset", String.valueOf(this.windowOffset));
-                            this.containerList.setIsContainersLoaded(false);
-                        }
-                    }
-                } catch (JahiaException je) {
-                    logger.error("Error:", je);
-                }
+            } catch (JahiaException je) {
+                logger.error("Error:", je);
             }
         }
         if (getId() != null) {
@@ -486,9 +412,11 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
             }
         }
         boolean shouldWeDisplayActionMenus = displayActionMenu && ProcessingContext.EDIT.equals(jData.getProcessingContext().getOpMode());
-        if (shouldWeDisplayActionMenus && (this.containerList != null || (this.id != null && this.id.length() > 0))) {
-            try {
-                final StringBuilder buff = new StringBuilder();
+        try {
+            final StringBuilder buff = new StringBuilder();
+            if (shouldWeDisplayActionMenus
+                    && (this.containerList != null || (this.id != null && this.id
+                            .length() > 0))) {
                 final StringBuilder menu = new StringBuilder();
                 if (actionMenuCssClassName != null) {
                     menu.append("<div class=\"").append(actionMenuCssClassName).append("\">");
@@ -518,20 +446,47 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                         displayActionMenu = false;
                     }
                 }
-
-                final JspWriter out = pageContext.getOut();
-                if (displayPagination && !displayPaginationAtEndOfList) {
-                    out.println(displayPagination());
-                }
-
-                out.println(buff.toString());
-            } catch (Exception e) {
-                logger.error("Error in containerList tag", e);
             }
+            if (displayPagination.contains(PaginationBean.PAGINATION_ON_TOP)) {
+                buff.append(displayPagination());
+            }
+            final JspWriter out = pageContext.getOut();
+            out.println(buff.toString());
+        } catch (Exception e) {
+            logger.error("Error in containerList tag", e);
         }
         return EVAL_BODY_BUFFERED;
     }
+    private void setSizeAndOffsetSettings () {
+        getContainerList().setMaxSize(getMaxSize());
+        JahiaContainerListPagination pagination = getContainerList()
+                .getCtnListPagination(false);
+        if (pagination == null || !pagination.isValid()
+                || pagination.getWindowSize() != getWindowSize()) {
+            if (jData.getProcessingContext().getParameter(getWindowSizeKey()) == null) {
+                jData.getProcessingContext().setParameter(getWindowSizeKey(),
+                        String.valueOf(getWindowSize()));
+                getContainerList().setIsContainersLoaded(false);
+            }
+        }
+        if (pagination == null || !pagination.isValid()
+                || pagination.getWindowOffset() != getWindowOffset()) {
+            if (jData.getProcessingContext().getParameter(getWindowOffsetKey()) == null) {
+                jData.getProcessingContext().setParameter(getWindowOffsetKey(),
+                        String.valueOf(getWindowOffset()));
+                getContainerList().setIsContainersLoaded(false);
+            }
+        }
+    }
+    
+    public String getWindowSizeKey () {
+        return (getId() != null && !getId().isEmpty() ? getId() + "_": "") + getName() + "_windowsize";
+    }
 
+    public String getWindowOffsetKey () {
+        return (getId() != null && !getId().isEmpty() ? getId() + "_": "") + getName() + "_windowoffset";
+    }
+    
     private void saveSort (boolean ignoreOptimizedMode, String fieldName, int fieldType, String useOptimizedMode, boolean isMetaData) throws JahiaException {
         String sort = "asc";
         if (sortOrder != null && sortOrder.trim().toLowerCase().startsWith("desc")) {
@@ -589,47 +544,39 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         }
     }
 
-    private void retrieveContainerList(JahiaContainer parentContainer) throws JahiaException {
-        this.containerList = parentContainer.getContainerList(this.listName);
-        if (this.containerList == null) {
+    private boolean retrieveContainerList(JahiaContainer parentContainer) throws JahiaException {
+        JahiaContainerList list = parentContainer.getContainerList(getName());
+        if (list == null) {
             // might be in a portlet
             PortletConfig portletConfig = (PortletConfig) pageContext.getRequest().getAttribute("javax.portlet.config");
             if (portletConfig != null) {
-                this.listName = Utils.buildUniqueName(portletConfig.getPortletName(), this.listName);
-                this.containerList = parentContainer.getContainerList(this.listName);
+                String uniqueName = Utils.buildUniqueName(portletConfig.getPortletName(), getName());
+                list = parentContainer.getContainerList(uniqueName);
             }
-            if (this.containerList == null) {
+            if (list == null) {
                 /** todo FIXME this should be deprecated but is left
                  * here because some databases might be corrupted.
                  */
-                this.listName = Utils.buildUniqueName(parentListName, this.listName);
-                logger.warn("Using legacy method to find sub-container list " + this.listName);
-                this.containerList = parentContainer.getContainerList(this.listName);
+                String uniqueName = Utils.buildUniqueName(parentListName, getName());
+                logger.warn("Using legacy method to find sub-container list " + uniqueName);
+                list = parentContainer.getContainerList(uniqueName);
             }
         }
-        if (this.containerList != null && containerList.getID() == 0) {
-            this.containerList = jData.containers().ensureContainerList(containerList.getDefinition(), parentContainer.getPageID(), parentContainer.getID());
+        if (list != null && list.getID() == 0) {
+            list = jData.containers().ensureContainerList(containerList.getDefinition(), parentContainer.getPageID(), parentContainer.getID(), getId());
         }
-        if (this.containerList != null) {
-            this.containerList.setMaxSize(maxSize);
+        if (list != null) {
+            list.getFactoryProxy().setlistViewId(getId());
+            setContainerList(list);
+            setSizeAndOffsetSettings();
+            // Output a warning in html and in console if this container list is not a subdefintion of its parent
+            checkSubdefinition(jData.getProcessingContext());
+        } else {
+            logger.debug("ContainerList is null: " + getName());
+            displayActionMenu = false;
+            return false;
         }
-        if (this.containerList != null) {
-            JahiaContainerListPagination pagination = this.containerList.getCtnListPagination(false);
-            if ((pagination == null || !pagination.isValid() || pagination.getWindowSize() != this.windowSize)) {
-                final String listName = this.containerList.getDefinition().getName();
-                if (jData.getProcessingContext().getParameter(listName + "_windowsize") == null) {
-                    jData.getProcessingContext().setParameter(listName + "_windowsize", String.valueOf(this.windowSize));
-                    this.containerList.setIsContainersLoaded(false);
-                }
-            }
-            if ((pagination == null || !pagination.isValid() || pagination.getWindowOffset() != this.windowOffset)) {
-                final String listName = this.containerList.getDefinition().getName();
-                if (jData.getProcessingContext().getParameter(listName + "_windowoffset") == null) {
-                    jData.getProcessingContext().setParameter(listName + "_windowoffset", String.valueOf(this.windowOffset));
-                    this.containerList.setIsContainersLoaded(false);
-                }
-            }
-        }
+        return true;
     }
 
     // Body is evaluated one time, so just writes it on standard output
@@ -660,7 +607,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
         }
         try {
-            if (displayPagination && displayPaginationAtEndOfList) {
+            if (displayPagination.contains(PaginationBean.PAGINATION_AT_BOTTOM)) {
                 buf.append(displayPagination());
             }
 
@@ -676,8 +623,19 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     // reads the container list from a container set
-    protected JahiaContainerList getContainerList(JahiaData jData, String listName) throws JahiaException {
-        return jData.containers().getContainerList(listName);
+    protected boolean retrieveContainerList() throws JahiaException {
+        JahiaContainerList list = jData.containers().getContainerList(
+                getName(), getId());
+        if (list != null && list.getID() != 0) {
+            list.getFactoryProxy().setlistViewId(getId());
+            setContainerList(list);
+            setSizeAndOffsetSettings();
+        } else {
+                logger.debug("ContainerList is null: " + getName());
+                displayActionMenu = false;
+                return false;
+        }
+        return true;
     }
 
     public int doEndTag() throws JspException {
@@ -708,7 +666,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                                             String currentScrollingValue)
             throws JahiaException {
         StringBuffer buff = new StringBuffer("<input type='hidden' name='");
-        buff.append("ctnscroll_");
+        buff.append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER);
+        buff.append(getId() != null ? getId() + "_" : "");
         buff.append(containerList.getDefinition().getName());
         buff.append("' value='");
         buff.append(currentScrollingValue);
@@ -728,16 +687,13 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                                          int nbStepPerPage,
                                          int windowSize) throws JahiaException {
 
-        if ((pageNumber == (stopPageIndex)) && (stopPageIndex < nbPages)) {
+        if (stopPageIndex < nbPages) {
             final StringBuffer buf = new StringBuffer();
-            final String url;
-            if (startPageIndex > 1) {
-                url = jData.gui().drawContainerListNextWindowPageURL(
-                        containerList, stopPageIndex + 1 - currentPageIndex, windowSize, false);
-            } else {
-                url = jData.gui().drawContainerListNextWindowPageURL(
-                        containerList, nbStepPerPage + 1 - currentPageIndex, windowSize, false);
-            }
+
+            final String url = jData.gui().drawContainerListNextWindowPageURL(
+                    containerList,
+                    (startPageIndex > 1 ? stopPageIndex : nbStepPerPage) + 1
+                            - currentPageIndex, windowSize, false, getId());
 
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"nextRangeOfPages\" href=\"");
@@ -756,10 +712,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                                              int startPageIndex,
                                              int currentPageIndex,
                                              int windowSize) throws JahiaException {
-        if ((pageNumber == startPageIndex) && (startPageIndex > 1)) {
+        if (startPageIndex > 1) {
             final StringBuffer buf = new StringBuffer();
             final String url = jData.gui().drawContainerListPreviousWindowPageURL(containerList,
-                    currentPageIndex - startPageIndex + 1, windowSize, false);
+                    currentPageIndex - startPageIndex + 1, windowSize, false, getId());
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"previousRangeOfPages\" href=\"");
                 buf.append(url);
@@ -777,7 +733,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (containerList == null) return "";
         final Iterator<JahiaContainer> containers = containerList.getContainers();
         if (containers.hasNext()) {
-            final String url = jData.gui().drawContainerListPreviousWindowPageURL(containerList, 1, windowSize, false);
+            final String url = jData.gui().drawContainerListPreviousWindowPageURL(containerList, 1, windowSize, false, getId());
             final StringBuffer buf = new StringBuffer();
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"previousLink\" href=\"");
@@ -798,7 +754,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (containerList == null) return "";
         final Iterator<JahiaContainer> containers = containerList.getContainers();
         if (containers.hasNext()) {
-            final String url = jData.gui().drawContainerListNextWindowPageURL(containerList, 1, windowSize, false);
+            final String url = jData.gui().drawContainerListNextWindowPageURL(containerList, 1, windowSize, false, getId());
             final StringBuffer buf = new StringBuffer();
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"nextLink\" href=\"");
@@ -819,7 +775,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (pageNumber == currentPageIndex) {
             return String.valueOf(pageNumber);
         }
-        final String url = jData.gui().drawContainerListWindowPageURL(containerList, pageNumber, false);
+        final String url = jData.gui().drawContainerListWindowPageURL(containerList, pageNumber, false, getId());
         final StringBuffer buff = new StringBuffer();
         if (url != null && url.length() > 0) {
             buff.append("<a class=\"paginationPageUrl\" href=\"");
@@ -893,7 +849,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                 buff.append("\n");
                 buff.append(previousRangeOfPages);
                 buff.append("\n");
-                final List<Integer> pages = pagination.getPages();
+                final List<Integer> pages = startPageIndex == 1 && stopPageIndex == pagination.getNbPages() ? pagination.getPages() : pagination.getPages().subList(startPageIndex-1, stopPageIndex);
                 for (Integer pageNb : pages) {
                     if (pageNb == pagination.getCurrentPageIndex()) {
                         buff.append("<span class=\"currentPage\">");
@@ -936,8 +892,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
         windowSize = -1; // -1 means functionality is deactivated by default
         windowOffset = -1;
-        displayPagination = true;
-        displayPaginationAtEndOfList = true;
+        displayPagination = PaginationBean.PAGINATION_AT_BOTTOM;
 
         jData = null;
 
@@ -1035,5 +990,17 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         }
         request.removeAttribute("skinned");
         return new StringBuilder(stringWriter.getBuffer().toString());
+    }
+    
+    public int getWindowSize() {
+        return windowSize;
+    }
+
+    public int getWindowOffset() {
+        return windowOffset;
+    }
+    
+    private void setContainerList(JahiaContainerList containerList) {
+        this.containerList = containerList;
     }
 }

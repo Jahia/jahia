@@ -42,6 +42,7 @@ import java.util.StringTokenizer;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplayWindowSizeComboBoxTag extends AbstractJahiaTag {
 
     private static final org.apache.log4j.Logger logger =
@@ -71,7 +72,7 @@ public class DisplayWindowSizeComboBoxTag extends AbstractJahiaTag {
     public int doStartTag() {
         try {
             final ServletRequest request = pageContext.getRequest();
-            final String windowSizeParam = request.getParameter(listName + "_windowsize");
+            final String windowSizeParam = request.getParameter(getWindowSizeKey());
 
             final int listWindowSize;
             if (windowSizeParam == null) {
@@ -82,8 +83,7 @@ public class DisplayWindowSizeComboBoxTag extends AbstractJahiaTag {
 
             final StringBuffer buff = new StringBuffer();
             buff.append("<select name=\"");
-            buff.append(listName);
-            buff.append("_windowsize");
+            buff.append(getWindowSizeKey());
             buff.append("\" onchange=\"document.");
             buff.append(form);
             buff.append(".submit()\"");
@@ -134,5 +134,12 @@ public class DisplayWindowSizeComboBoxTag extends AbstractJahiaTag {
         }
         return result;
     }
-
+    
+    public String getWindowSizeKey () {
+        return (getId() != null && !getId().isEmpty() ? getId() + "_": "") + getName() + "_windowsize";
+    }
+    
+    public String getName() {
+        return listName;
+    }
 }

@@ -2260,7 +2260,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
                 lookupContentPage(theList.
                         getPageID(), true);
         if (sourceContentPage != null) {
-            int pageDefID = sourceContentPage.getPageTemplateID(EntryLoadRequest.STAGED);
             Iterator<JahiaContainerStructure> structure = theList.getDefinition().getStructure(
                     JahiaContainerStructure.JAHIA_FIELD);
             while (structure.hasNext()) {

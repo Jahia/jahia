@@ -96,7 +96,7 @@ public class JahiaContainerList implements Cloneable, Serializable {
 
     private ContainerListFactoryProxy cListFactoryProxy;
 
-    //-------------------------------------------------------------------------
+     //-------------------------------------------------------------------------
     public JahiaContainerList(  int     ID,
                                 int     parentEntryID,
                                 int     pageID,
@@ -118,6 +118,10 @@ public class JahiaContainerList implements Cloneable, Serializable {
      */
     public void setFactoryProxy(ContainerListFactoryProxy cListFactoryProxy){
         this.cListFactoryProxy = cListFactoryProxy;
+    }
+    
+    public ContainerListFactoryProxy getFactoryProxy() {
+        return cListFactoryProxy;
     }
 
     public JahiaContainerList() {

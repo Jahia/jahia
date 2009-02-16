@@ -58,6 +58,15 @@ public class ContainerListLoaderContext {
     private int loadFlag;
     private JahiaContainerList cList;
     private Boolean isLoadingUseSingleSearchQuery = Boolean.FALSE;
+    private String listViewId;
+
+    public String getListViewId() {
+        return listViewId;
+    }
+
+    public void setListViewId(String listViewId) {
+        this.listViewId = listViewId;
+    }
 
     /**
      *

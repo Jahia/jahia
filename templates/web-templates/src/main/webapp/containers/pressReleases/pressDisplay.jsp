@@ -58,7 +58,7 @@
                                               tabindex="7"/>
                 </div>
             </fieldset>
-            <input type="hidden" name="web_templates_press_windowsize" value="5">
+            <input type="hidden" name="pressContainer_press_windowsize" value="5">
         </template:jahiaPageForm>
     </div>
     <!--stop pressRealeseForm -->

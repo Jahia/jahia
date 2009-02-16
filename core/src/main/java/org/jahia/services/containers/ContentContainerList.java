@@ -33,7 +33,6 @@
 
 package org.jahia.services.containers;
 
-import org.apache.jackrabbit.spi.Name;
 import org.jahia.bin.Jahia;
 import org.jahia.content.*;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
@@ -72,6 +71,8 @@ import java.util.*;
 
 public class ContentContainerList extends ContentObject
         implements PageReferenceableInterface, TimeBasedPublishingJahiaObject {
+
+    private static final long serialVersionUID = -7633231207254186056L;
 
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (ContentContainerList.class);

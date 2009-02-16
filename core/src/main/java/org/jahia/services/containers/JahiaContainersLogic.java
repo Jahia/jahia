@@ -76,11 +76,11 @@ public class JahiaContainersLogic {
      *
      * @see org.jahia.data.containers.JahiaContainerList
      */
-    public void logic_sort_container_tree (List theTree)
+    public void logic_sort_container_tree (List<JahiaContainerList> theTree)
             throws JahiaException {
         // build dependencies between container lists
         for (int i = 0; i < theTree.size (); i++) {
-            JahiaContainerList theList = (JahiaContainerList) theTree.get(i);
+            JahiaContainerList theList = theTree.get(i);
             if (theList.getParentEntryID () != 0) {
                 if (logic_add_container_list_to_container (theList, theList.getParentEntryID (),
                         theTree)) {
@@ -104,7 +104,7 @@ public class JahiaContainersLogic {
     private boolean logic_add_container_list_to_container (
             JahiaContainerList theContainerList,
             int thectnid,
-            List theTree)
+            List<JahiaContainerList> theTree)
             throws JahiaException {
         JahiaContainer theContainer = logic_find_container_in_list (thectnid,
                 theTree.iterator());
@@ -129,14 +129,14 @@ public class JahiaContainersLogic {
      * @param thectnid the container id
      */
     private JahiaContainer logic_find_container_in_list (int thectnid,
-                                                         Iterator containerLists) {
+                                                         Iterator<JahiaContainerList> containerLists) {
         while (containerLists.hasNext ()) {
-            JahiaContainerList theContainerList = (JahiaContainerList) containerLists.next ();
-            Iterator containers = theContainerList.getContainers ();
+            JahiaContainerList theContainerList = containerLists.next ();
+            Iterator<JahiaContainer> containers = theContainerList.getContainers ();
             while (containers.hasNext ()) {
-                JahiaContainer theContainer = (JahiaContainer) containers.next ();
+                JahiaContainer theContainer = containers.next ();
                 if (theContainer.getID () != thectnid) {
-                    Iterator listInContainer = theContainer.getContainerLists ();
+                    Iterator<JahiaContainerList> listInContainer = theContainer.getContainerLists ();
                     while (listInContainer.hasNext ()) {
                         JahiaContainer tmpContainer = logic_find_container_in_list (thectnid,
                                 listInContainer);

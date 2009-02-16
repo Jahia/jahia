@@ -35,6 +35,7 @@ package org.jahia.taglibs.internal.pagination;
 
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerListPagination;
+import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.containerlist.ContainerListTag;
 
@@ -89,6 +90,7 @@ import java.io.IOException;
 * </attriInfo>"
 
  */
+@SuppressWarnings("serial")
 public class CListPaginationCurrentPageScrollingValue extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
@@ -157,7 +159,8 @@ public class CListPaginationCurrentPageScrollingValue extends AbstractJahiaTag {
         {
             try {
                 StringBuffer buff = new StringBuffer("<input type='hidden' name='");
-                buff.append("ctnscroll_");
+                buff.append(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER);
+                buff.append(containerListTag.getId() != null ? containerListTag.getId() + "_" : "");
                 buff.append(containerList.getDefinition().getName());
                 buff.append("' value='");
                 buff.append(value);

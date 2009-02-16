@@ -957,7 +957,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>displayUpdateFieldUrl</name>
+            <name>removeHtmlTags</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>

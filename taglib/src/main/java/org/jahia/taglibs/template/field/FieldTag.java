@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -59,6 +59,7 @@ import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.taglibs.template.container.ContainerCache;
 import org.jahia.taglibs.template.container.ContainerTag;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.JahiaTools;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -93,8 +94,9 @@ public class FieldTag extends AbstractFieldTag {
     private String continueString = "...";
     private String namePostFix;
     private boolean displayUpdateFieldUrl = false;
+    private boolean removeHtmlTags = false;
 
-    private static long uniqueValue = 0; // used by GWT jahiaType tag.
+    //private static long uniqueValue = 0; // used by GWT jahiaType tag.    TODO: see next todo
 
     public void setContainerName(String containerName) {
         this.containerName = containerName;
@@ -144,9 +146,8 @@ public class FieldTag extends AbstractFieldTag {
         this.namePostFix = namePostFix;
     }
 
-    // todo workaround, remove attr
-    public void setDisplayUpdateFieldUrl(boolean displayUpdateFieldUrl) {
-        this.displayUpdateFieldUrl = false ;
+    public void setRemoveHtmlTags(boolean removeHtmlTags) {
+        this.removeHtmlTags = removeHtmlTags;
     }
 
     public int doStartTag() throws JspException {
@@ -188,7 +189,7 @@ public class FieldTag extends AbstractFieldTag {
                 return SKIP_BODY;
             }
             switch (theField.getType()) {
-                case FieldTypes.APPLICATION :
+                case FieldTypes.APPLICATION:
                     final String appId = theField.getValue();
                     final boolean appIdSet = appId != null && appId.length() > 0;
                     if (appIdSet) {
@@ -201,7 +202,7 @@ public class FieldTag extends AbstractFieldTag {
                                 ((ContainerTag) ancestor).setExpiration("1");
                             }
                         }
-                    }   
+                    }
                     break;
             }
 
@@ -233,6 +234,7 @@ public class FieldTag extends AbstractFieldTag {
         name = null;
         namePostFix = null;
         displayUpdateFieldUrl = false;
+        removeHtmlTags = false;
         popTag();
         return EVAL_PAGE;
     }
@@ -371,7 +373,13 @@ public class FieldTag extends AbstractFieldTag {
                             pageContext.setAttribute(valueBeanID, bean);
 
                         } else {
-                            final ResourceBean bean = new ResourceBean(null, value, value);
+                            final String textValue;
+                            if (removeHtmlTags) {
+                                textValue = JahiaTools.removeTags(value);
+                            } else {
+                                textValue = value;
+                            }
+                            final ResourceBean bean = new ResourceBean(null, textValue, textValue);
                             pageContext.setAttribute(valueBeanID, bean);
                         }
                     }
@@ -514,7 +522,7 @@ public class FieldTag extends AbstractFieldTag {
         final String textValueNoRBMarker = getValueFromResourceBundleMarker(textValue);
         final String truncatedValue = getTruncatedValue(textValueNoRBMarker);
         final boolean textValueExists = truncatedValue != null && truncatedValue.length() > 0;
-        final boolean createDiv = (textValueExists || defaultValueSet) && (cssClassName != null && cssClassName.length() > 0);
+        final boolean createDiv = !removeHtmlTags && (textValueExists || defaultValueSet) && (cssClassName != null && cssClassName.length() > 0);
 
         if (createDiv) {
             buff.append("<div class=\"");
@@ -534,6 +542,9 @@ public class FieldTag extends AbstractFieldTag {
             buff.append("</div>");
         }
 
+        if (removeHtmlTags) {
+            return JahiaTools.removeTags(buff.toString());
+        }
         return buff.toString();
     }
 
@@ -609,23 +620,27 @@ public class FieldTag extends AbstractFieldTag {
             resultingValue = value;
         }
 
+        if (removeHtmlTags) {  // No inline editing when we do not want any HTML markup in the generated value
+            return resultingValue;
+        }
+
         if (processingContext == null) {
             logger.warn("ProcessingContext is null, ignoring contentEditable feature. ");
             return resultingValue;
         }
         if (!resultingValue.startsWith("<jahia-")) {
             if (theField.getType() == FieldTypes.BIGTEXT ||
-                theField.getType() == FieldTypes.SMALLTEXT ||
-                theField.getType() == FieldTypes.SMALLTEXT_SHARED_LANG) {
+                    theField.getType() == FieldTypes.SMALLTEXT ||
+                    theField.getType() == FieldTypes.SMALLTEXT_SHARED_LANG) {
                 if (processingContext.settings().isInlineEditingActivated() &&
-                    ParamBean.EDIT.equals(processingContext.getOperationMode()) &&
-                    inlineEditingActivated &&
-                    theField.checkWriteAccess(processingContext.getUser())) {
+                        ParamBean.EDIT.equals(processingContext.getOperationMode()) &&
+                        inlineEditingActivated &&
+                        theField.checkWriteAccess(processingContext.getUser())) {
                     resultingValue = "<div class=\"editableContent\" onclick=\"onClickEditableContent(this, '" +
                             theField.getctnid() + "', '" + theField.getID() +
                             "')\" onblur=\"onBlurEditableContent(this, '" + theField.getctnid() + "', '" + theField.getID() + "')\">" +
                             resultingValue + "</div>";
-                    /* couldn't make this version work, maybe we can try again ?
+                    /* TODO: couldn't make this version work, maybe we can try again ?
                     resultingValue = "<div id=\""+ uniqueValue++ +"\" containerID=\""+theField.getctnid()+
                             "\" fieldID=\""+theField.getID()+"\" " +
                             JahiaType.JAHIA_TYPE + "=\"" + JahiaType.INLINE_EDITING + "\">" + resultingValue + "</div>";
@@ -646,25 +661,24 @@ public class FieldTag extends AbstractFieldTag {
     protected String getTruncatedValue(final String initialValue) {
         if (initialValue == null) return defaultValue;
         String endvalue = initialValue;
-        if (endvalue != null) {
-            String tmp = StringUtils.replace(endvalue, "\r", "");
-            tmp = StringUtils.replace(tmp, "\n", "");
-            tmp = tmp.trim();
-            if (tmp.startsWith("<p>")) {
-                String result = tmp.substring(3);
-                if (result.endsWith("</p>")) {
-                    result = result.substring(0, result.length() - 4);
-                }
-                endvalue = result;
+        String tmp = StringUtils.replace(endvalue, "\r", "");
+        tmp = StringUtils.replace(tmp, "\n", "");
+        tmp = tmp.trim();
+        if (tmp.startsWith("<p>")) {
+            String result = tmp.substring(3);
+            if (result.endsWith("</p>")) {
+                result = result.substring(0, result.length() - 4);
             }
+            endvalue = result;
         }
         if (maxChar >= 0 || maxWord >= 0) {
 
             if (maxChar >= 0) {
                 endvalue = (new TextExtractor(new Source(endvalue))).toString();
                 if (endvalue.length() > maxChar) {
-                    endvalue = endvalue.substring(0,maxChar)+continueString;
+                    endvalue = endvalue.substring(0, maxChar) + continueString;
                 }
+                
             } else {
                 //maxWord
                 //remove HTML Tags

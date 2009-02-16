@@ -174,14 +174,14 @@ public class ValidationHelper {
                         validationsForCurrentObject.put(lang, new GWTJahiaNodeOperationResult()) ;
                     }
                     GWTJahiaNodeOperationResult currentValidation = validationsForCurrentObject.get(lang) ;
-                    if (res.getClass() == WAIValidForActivationResults.class) {
+                    if (res instanceof WAIValidForActivationResults) {
 //                        if (!hasWAIBypassRole && failedForLanguageOnly && !isUserAnAdminMember) {
 //                            if (currentValidation.getValidationStatus()) {
 //                                currentValidation.setValidationStatus(false);
 //                            }
 //                        }
                         currentValidation.addErrorOrWarning(getValidationResult(res, lang, jParams, GWTJahiaNodeOperationResultItem.ERROR, GWTJahiaNodeOperationResultItem.WAI));
-                    } else if (res.getClass() == URLIntegrityValidForActivationResults.class) {
+                    } else if (res instanceof URLIntegrityValidForActivationResults) {
 //                        if (!hasIntegrityBypassRole && failedForLanguageOnly && !isUserAnAdminMember) {
 //                            if (currentValidation.getValidationStatus()) {
 //                                currentValidation.setValidationStatus(false);

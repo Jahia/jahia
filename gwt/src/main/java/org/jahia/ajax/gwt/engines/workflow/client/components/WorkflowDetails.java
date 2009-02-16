@@ -143,11 +143,8 @@ public class WorkflowDetails extends BottomRightComponent {
             Map<String, GWTJahiaNodeOperationResult> valid = selection.getValidation() ;
             for (String lang: valid.keySet()) {
                 GWTJahiaNodeOperationResult validForLang = valid.get(lang) ;
-
                 if (!validForLang.getErrorsAndWarnings().isEmpty()) {
-                    Button button = new Button(lang);
-                    button.setIconStyle("flag_" + lang);
-                    flowPanel.add(button);
+                    flowPanel.add(new HTML("<div><span class=\"flag_" + lang + "\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;" + lang + "</span></div>"));
                     StringBuilder sbWars = new StringBuilder("<ul>");
                     StringBuilder sbErrs = new StringBuilder("<ul>");
                     for (GWTJahiaNodeOperationResultItem err : validForLang.getErrorsAndWarnings()) {

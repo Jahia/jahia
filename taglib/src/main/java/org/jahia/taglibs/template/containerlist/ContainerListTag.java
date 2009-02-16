@@ -153,7 +153,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
     private boolean displayActionMenu = true;
     private boolean displayActionMenuAtBottom = false;
-    private boolean displayAddContainerURL = false ;
     private boolean displaySkins = true;
     private boolean displayExtensions = true;
     private String actionMenuNamePostFix;
@@ -277,11 +276,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
     public void setDisplayPagination(String displayPagination) {
         this.displayPagination = displayPagination;
-    }
-
-    // todo temporary hack, remove the attribute
-    public void setDisplayAddContainerURL(boolean displayAddContainerURL) {
-        this.displayAddContainerURL = false ;
     }
 
     /**
@@ -898,7 +892,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
         parentListName = "";
         displayActionMenu = true;
-        displayAddContainerURL = true;
         displaySkins = true;
         displayExtensions = true;
         actionMenuNamePostFix = null;

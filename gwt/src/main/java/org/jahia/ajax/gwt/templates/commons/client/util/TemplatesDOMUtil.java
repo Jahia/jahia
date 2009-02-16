@@ -127,7 +127,7 @@ public class TemplatesDOMUtil extends DOMUtil {
         for (Element current : list) {
             String jahiaType = DOM.getElementAttribute(current, JahiaType.JAHIA_TYPE);
             String id = DOM.getElementAttribute(current, "id");
-            if (jahiaType != null && id != null) {
+            if (jahiaType != null && jahiaType.length() > 0 && id != null && id.length() > 0) {
                 if (!elementsByJahiaType.containsKey(jahiaType)) {
                     elementsByJahiaType.put(jahiaType, new ArrayList<RootPanel>());
                 }
@@ -173,7 +173,7 @@ public class TemplatesDOMUtil extends DOMUtil {
         List<Element> list = new ArrayList<Element>();
         int nb = DOM.getChildCount(parent);
         String type = DOM.getElementAttribute(parent, JahiaType.JAHIA_TYPE);
-        if (type != null) {
+        if (type != null && type.length() > 0) {
             list.add(parent);
         }
         for (int i = 0; i < nb; i++) {

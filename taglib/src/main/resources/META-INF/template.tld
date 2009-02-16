@@ -116,12 +116,6 @@
             <type>boolean</type>
         </attribute>
         <attribute>
-            <name>displayAddContainerURL</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -367,12 +361,6 @@
             <type>boolean</type>
         </attribute>
         <attribute>
-            <name>displayAddContainerURL</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -498,12 +486,6 @@
             <type>boolean</type>
         </attribute>
         <attribute>
-            <name>displayAddContainerURL</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -609,12 +591,6 @@
         </attribute>
         <attribute>
             <name>displayPagination</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>displayAddContainerURL</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>

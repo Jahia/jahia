@@ -1,6 +1,5 @@
+<%@page language="java" contentType="text/html;charset=UTF-8" %>
 <%--
-
-    
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
     Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
     
@@ -32,25 +31,33 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@page language="java" contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Custom 404 error page</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/templates/test_templates/common/css/styles.css" type="text/css"/>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/jsp/jahia/templates/test_templates/common/css/styles.css"
+          type="text/css"/>
 </head>
 
 <body>
 
 <center>
-<div id="columnB" style="text-align: left; padding-top: 50px">
-    <h3>Custom 404 error page</h3>
-        <p><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
-        <p><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a href="javascript:history.back()"><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;<utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
-</div>
+    <div id="columnB" style="text-align: left; padding-top: 50px">
+        <h3>Custom 404 error page</h3>
+
+        <p><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+                                   resourceName="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
+
+        <p><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+                                   resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a
+                href="javascript:history.back()"><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+                                                                         resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;<utility:resourceBundle
+                resourceBundle="JahiaEnginesResources"
+                resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
+    </div>
 </center>
 </body>
 </html>

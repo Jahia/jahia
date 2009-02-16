@@ -47,6 +47,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * @jsp:tag name="randomcontainer" body-content="tagdependent"
  */
 
+@SuppressWarnings("serial")
 public class RandomContainerTag extends AbstractJahiaTag {
 
 

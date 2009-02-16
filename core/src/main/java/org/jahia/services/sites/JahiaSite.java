@@ -83,6 +83,8 @@ import java.util.*;
  */
 public class JahiaSite implements ACLResourceInterface, Serializable {
 
+    private static final long serialVersionUID = 5114861205251079794L;
+
     public static final String PROPERTY_ENFORCE_PASSWORD_POLICY = "enforcePasswordPolicy";
 
     private static org.apache.log4j.Logger logger =

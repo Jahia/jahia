@@ -33,11 +33,9 @@
 
 package org.jahia.services.captcha;
 
-import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
-import com.octo.captcha.service.image.ImageCaptchaService;
-import com.octo.captcha.engine.image.gimpy.DefaultGimpyEngine;
-import com.octo.captcha.engine.image.gimpy.SimpleListImageCaptchaEngine;
 import org.jahia.hibernate.manager.SpringContextSingleton;
+
+import com.octo.captcha.service.image.ImageCaptchaService;
 
 /**
  * Captcha Service based on the J-Captcha implementation

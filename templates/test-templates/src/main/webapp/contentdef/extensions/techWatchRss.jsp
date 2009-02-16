@@ -48,8 +48,8 @@
                             displaySkins="false" displayExtensions="false">
             <template:container id="myContainer" displayActionMenu="false" displayContainerAnchor="false"
                                displaySkins="false" displayExtensions="false" cacheKey="myrss">
-                <template:field name="title" valueBeanID="title" display="false"/>
-                <template:field name="teaser" valueBeanID="teaser" display="false"/>
+                <template:field name="title" valueBeanID="title" display="false" removeHtmlTags="true"/>
+                <template:field name="teaser" valueBeanID="teaser" display="false" removeHtmlTags="true"/>
                 <template:field name="date" valueBeanID="date" display="false"/>
                 <item>
                     <title><c:out value="${title}"/></title>

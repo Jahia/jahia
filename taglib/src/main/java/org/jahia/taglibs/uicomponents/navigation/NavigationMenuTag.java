@@ -472,8 +472,8 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 JahiaContainer linkContainer = (JahiaContainer) linkContainerEnum.next();
                 JahiaPage link = (JahiaPage) linkContainer.getFieldObject(pageFieldName);
                 dependencies.add(new ContentContainerKey(linkContainer.getID()));
-                if (jParams.getOperationMode().equals(ProcessingContext.NORMAL) ||
-                        jParams.getOperationMode().equals(ProcessingContext.PREVIEW)) {
+                if ((jParams.getOperationMode().equals(ProcessingContext.NORMAL) ||
+                        jParams.getOperationMode().equals(ProcessingContext.PREVIEW)) && link != null) {
                     final PageProperty hideFromMenuProp = link.getPageLocalProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU);
                     if (hideFromMenuProp != null && Boolean.valueOf(hideFromMenuProp.getValue())) {
                         continue;

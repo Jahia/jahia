@@ -277,9 +277,6 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
         if (cacheKeyName != null) {
             cacheKey = TagUtils.getInstance().lookup(pageContext, cacheKeyName, cacheKeyProperty, cacheKeyScope).toString();
         }
-        if (super.getParent() != null && super.getParent().getParent() != null && super.getParent().getParent() instanceof RandomContainerTag) {
-            random = true;
-        }
         oldCacheTag = (ContainerCache) pageContext.getAttribute(CACHETAG);
         pageContext.setAttribute(CACHETAG, this);
         initLoop = true;
@@ -304,6 +301,10 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
         if (getSrcBeanId() == null && containerSupport instanceof ContainerListTag) {
             ContainerListTag cListTag = (ContainerListTag) containerSupport;
 
+            if (cListTag.getParent() != null &&
+                    cListTag.getParent() instanceof RandomContainerTag) {
+                random = true;            
+            }
             if (cListTag instanceof AbsoluteContainerListTag) {
                 cacheKey = cacheKey + "___absolute___";
             }

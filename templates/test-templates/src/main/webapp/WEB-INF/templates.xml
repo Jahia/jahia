@@ -82,6 +82,8 @@
                   description="description.template.customIndexOptions"/>
         <template name="SearchBasic" display-name="template.name.searchBasic" filename="search/searchFormBasic.jsp"
                   page-type="test_templates:generic" description="description.template.searchBasic"/>
+        <template name="SearchDefault" display-name="template.name.searchDefault" filename="search/searchFormDefault.jsp"
+                  page-type="test_templates:generic" description="description.template.searchDefault"/>
         <template name="SearchDocuments" display-name="template.name.searchDocuments"
                   filename="search/searchFormDocuments.jsp" page-type="test_templates:generic"
                   description="description.template.searchDocuments"/>

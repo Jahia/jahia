@@ -136,7 +136,7 @@ public class DisplayWindowSizeComboBoxTag extends AbstractJahiaTag {
     }
     
     public String getWindowSizeKey () {
-        return (getId() != null && !getId().isEmpty() ? getId() + "_": "") + getName() + "_windowsize";
+        return (getId() != null && getId().length() > 0 ? getId() + "_": "") + getName() + "_windowsize";
     }
     
     public String getName() {

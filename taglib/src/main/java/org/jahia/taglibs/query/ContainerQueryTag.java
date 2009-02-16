@@ -211,13 +211,4 @@ public class ContainerQueryTag extends QueryDefinitionTag  {
         
         return result;
     }
-
-    // reads the container list from a container set
-    protected JahiaContainerList getContainerList (JahiaData jData,
-                                                   String listName)
-        throws JahiaException {
-
-        return jData.containers().getContainerList(listName);
-    }
-
 }

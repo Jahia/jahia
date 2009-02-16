@@ -43,6 +43,10 @@ package org.jahia.data.beans;
  */
 
 public class PaginationBean {
+    
+    public static final String PAGINATION_ON_TOP = "top";
+    public static final String PAGINATION_AT_BOTTOM = "bottom";
+    
     private int pageNumber = 0;
     private boolean currentPageFlag = false;
 

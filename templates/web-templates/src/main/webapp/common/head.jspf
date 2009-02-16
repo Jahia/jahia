@@ -5,6 +5,6 @@
 <template:themeDisplay defaultTheme="default"/>
 
 <%// JS Script for Flash Player %>
-<script type="text/javascript" src='<utility:resolvePath value='theme/${requestScope.currentTheme}/scripts/swfobject.js'/>'></script>
-<script type="text/javascript" src='<utility:resolvePath value='theme/${requestScope.currentTheme}/scripts/textsizer.js'/>'></script>
-<script type="text/javascript" src='<utility:resolvePath value='theme/${requestScope.currentTheme}/scripts/collapse.js'/>'></script>
+<script type="text/javascript" src='<utility:resolvePath value='javascript/swfobject.js'/>'></script>
+<script type="text/javascript" src='<utility:resolvePath value='javascript/textsizer.js'/>'></script>
+<script type="text/javascript" src='<utility:resolvePath value='javascript/collapse.js'/>'></script>

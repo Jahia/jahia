@@ -1,4 +1,7 @@
 <%@ include file="../../common/declarations.jspf" %>
+<!--
+Styles for jQuery
+-->
 
 <template:container id="peopleContainer" displayActionMenu="false"  emptyContainerDivCssClassName="mockup-people">
     <ui:actionMenu contentObjectName="peopleContainer" namePostFix="people" labelKey="people.update">
@@ -16,7 +19,7 @@
 				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail"/></a></p>
 
 				<div class="peopleAction">
-<a class="peopleDownload" href="${peoplePicture.downloadUrl}" target="_blank">View full size</a>
+<a class="peopleDownload" href="${peoplePicture.downloadUrl}" rel="imagebox-lights">View full size</a>
 <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><utility:resourceBundle
                             resourceName='web_templates_peopleContainer.peopleBiography' defaultValue='web_templates_peopleContainer.peopleBiography'/></a>
 				</div>
@@ -31,5 +34,18 @@
 
 <!-- unused fields <template:field name="peopleTelephone"/> <template:field name="peopleCellular"/> <template:field name="peopleFax"/> -->
 
+<script type="text/javascript">
+jQuery(document).ready(
+	function()
+	{
+		jQuery.ImageBox.init(
+			{
+				loaderSRC: '<utility:resolvePath value="images/imagebox/loading.gif"/>',
+				closeHTML: '<img src=<utility:resolvePath value="images/imagebox/close.jpg"/> />'
+			}
+		);
+	}
+);
+</script>
 
 

@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ include file="declarations.jspf" %>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
 <template:themeDisplay defaultTheme="default"/>
-
 <%// JS Script for Flash Player %>
 <script type="text/javascript" src='<utility:resolvePath value='javascript/swfobject.js'/>'></script>
 <script type="text/javascript" src='<utility:resolvePath value='javascript/textsizer.js'/>'></script>
 <script type="text/javascript" src='<utility:resolvePath value='javascript/collapse.js'/>'></script>
+<script type="text/javascript" src='<utility:resolvePath value='javascript/jQuery.js'/>'></script>
+<!-- Set Jquery as a variable instead of document to avoid possible conflicts -->
+<script type="text/javascript">
+    jQuery.noConflict();
+</script>
+<script type="text/javascript" src='<utility:resolvePath value='javascript/interface.js'/>'></script>

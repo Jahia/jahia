@@ -314,7 +314,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     public int doStartTag() throws JspException {
-        if (getName() == null || getName().isEmpty()) {
+        if (getName() == null || getName().length() == 0) {
             logger.error("Container name must be set in containerList tag...");
             return SKIP_BODY;
         }
@@ -474,11 +474,11 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
     
     public String getWindowSizeKey () {
-        return (getId() != null && !getId().isEmpty() ? getId() + "_": "") + getName() + "_windowsize";
+        return (getId() != null && getId().length() > 0? getId() + "_": "") + getName() + "_windowsize";
     }
 
     public String getWindowOffsetKey () {
-        return (getId() != null && !getId().isEmpty() ? getId() + "_": "") + getName() + "_windowoffset";
+        return (getId() != null && getId().length() > 0 ? getId() + "_": "") + getName() + "_windowoffset";
     }
     
     private void saveSort (boolean ignoreOptimizedMode, String fieldName, int fieldType, String useOptimizedMode, boolean isMetaData) throws JahiaException {

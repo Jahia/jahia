@@ -332,14 +332,14 @@ public class JahiaContainerListPagination {
     }
     private String getWindowSizeKey(String containerListName,
             String listViewId) {
-        return (listViewId != null && !listViewId.isEmpty() ? listViewId
+        return (listViewId != null && listViewId.length() > 0 ? listViewId
                 + "_"
                 : "")
                 + containerListName + "_windowsize";
     }
     private String getWindowOffsetKey(String containerListName,
             String listViewId) {
-        return (listViewId != null && !listViewId.isEmpty() ? listViewId
+        return (listViewId != null && listViewId.length() > 0 ? listViewId
                 + "_"
                 : "")
                 + containerListName + "_windowoffset";

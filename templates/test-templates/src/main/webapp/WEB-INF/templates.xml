@@ -128,7 +128,8 @@
                   page-type="test_templates:opensearch" description="description.template.openSearch"/>
         <template name="ContentFormHandler" display-name="template.name.formhandler" filename="contentedit/formhandler.jsp" 
                   page-type="test_templates:ContentFormHandler" description="description.template.formhandler"/>                  
-        
+        <template name="SameListViews" display-name="template.name.sameListViews" filename="contentview/samelistviews.jsp" 
+                  page-type="test_templates:samelistviews" description="description.template.samelistviews"/>           
         <!-- remove inherited -->
         <template name="FAQ" display-name="template.name.faq" filename="faq.jsp" visible="false"
                   page-type="core_templates:faq"/>

@@ -1,5 +1,9 @@
 <test_templates = 'http://www.jahia.org/jahia/test_template/nt/1.0'>
 
+[test_templates:someFields] > jnt:container
+ smallText smallText
+ integer integer
+
 [test_templates:allFields] > jnt:container
  smallText smallText
  sharedSmallText sharedSmallText
@@ -279,3 +283,6 @@
 
 [test_templates:tagcache] > test_templates:generic
  containerList cachecontent (jnt:mainContentContainer)
+
+ [test_templates:samelistviews] > test_templates:generic
+ containerList someFields (test_templates:someFields)

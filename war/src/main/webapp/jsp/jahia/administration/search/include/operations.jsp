@@ -61,6 +61,6 @@ Boolean indexExists = (Boolean) request.getAttribute("indexExists"); // Does the
 </div>
 <ul style="list-style-type: none">
     <li>
-        <input type="radio" name="operation" value="doindex"<% if (operation.equals("doindex")) { %> checked<%} %>><internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label"/>.
+        <input type="radio" name="operation" value="doindex"<% if (operation.equals("doindex")) { %> checked<%} %>><internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label"/>
     </li>
 </ul>

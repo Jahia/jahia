@@ -1,7 +1,6 @@
 <%@ include file="../../common/declarations.jspf" %>
 
-<template:container id="eventContainer"  actionMenuNamePostFix="event">
-
+<template:container id="eventContainer"  actionMenuNamePostFix="event"  emptyContainerDivCssClassName="mockup-eventlist">
         <template:field name="startDate" display="false" beanID="startDate"/>
         <template:field name="endDate" display="false" beanID="endDate"/>
         <fmt:parseDate var="startDateP" value="${startDate.value}" pattern="dd.MM.yyyy HH:mm" type="both"/>

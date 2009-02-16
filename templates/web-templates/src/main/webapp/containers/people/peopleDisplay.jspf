@@ -1,6 +1,6 @@
 <%@ include file="../../common/declarations.jspf" %>
 
-<template:container id="peopleContainer" displayActionMenu="false">
+<template:container id="peopleContainer" displayActionMenu="false"  emptyContainerDivCssClassName="mockup-people">
     <ui:actionMenu contentObjectName="peopleContainer" namePostFix="people" labelKey="people.update">
 	<div class="peopleListItem"><!--start peopleListItem -->
         <template:field name="peoplePicture" valueBeanID="peoplePicture" display="false"/>

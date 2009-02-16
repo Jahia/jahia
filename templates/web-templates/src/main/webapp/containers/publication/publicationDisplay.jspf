@@ -3,7 +3,7 @@
 
 <c:set var="loop" value="0"/>
 <div class="box4-text">
-	<template:container id="publicationContainer" displayActionMenu="false">
+	<template:container id="publicationContainer" displayActionMenu="false" emptyContainerDivCssClassName="mockup-publication">
 
 	<template:field name='file' valueBeanID="file" display="false"/>
 	<template:field name='preview' valueBeanID="preview" display="false"/>

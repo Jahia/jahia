@@ -37,7 +37,7 @@
 <%@ include file="../common/declarations.jspf" %>
 
 <template:containerList name="banner" id="banner" actionMenuNamePostFix="banner" actionMenuNameLabelKey="banner">
-    <template:container id="bannerContainer" >
+    <template:container id="bannerContainer"  emptyContainerDivCssClassName="mockup-banner">
     <template:field name='background' valueBeanID="background" display="false"/>
 
     <div id="illustration2" style="background:transparent url(${background.downloadUrl}) no-repeat top left;">

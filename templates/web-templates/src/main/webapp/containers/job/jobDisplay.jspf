@@ -16,7 +16,7 @@
 	</thead>
     <div class="box4-text">
         <tbody>
-<template:container id="jobContainer" displayActionMenu="false" cacheKey="jobContainer">
+<template:container id="jobContainer" displayActionMenu="false" cacheKey="jobContainer"   emptyContainerDivCssClassName="mockup-joblist">
 			<tr class="<c:choose><c:when test="${loop == '0'}">odd<c:set var="loop" value="1"/></c:when><c:otherwise>even<c:set var="loop" value="0"/></c:otherwise>
     </c:choose>">
 				<td headers="job"><a href="${currentPage.url}/template/jobDetail?queryPath=${jobContainer.JCRPath}"><template:field name="title" /></a>&nbsp;</td>

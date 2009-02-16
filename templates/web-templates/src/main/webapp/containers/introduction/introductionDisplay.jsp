@@ -37,7 +37,7 @@
 <div class="intro">
     <template:containerList name="introduction" id="introductionContainerList" actionMenuNamePostFix="introduction"
                            actionMenuNameLabelKey="introduction">
-        <template:container id="mainContent">
+        <template:container id="mainContent" emptyContainerDivCssClassName="mockup-introduction">
             <template:field name='introduction' />
         </template:container>
     </template:containerList>

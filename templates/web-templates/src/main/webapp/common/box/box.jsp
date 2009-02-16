@@ -41,7 +41,7 @@
 <c:set var="boxID" scope="request" value="${param.name}"/>
 <%-- Let us now display the main box list with all the different boxes it has --%>
 <template:boxList name="${param.name}" id="${param.name}" actionMenuNamePostFix="boxes" actionMenuNameLabelKey="boxes">
-    <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update" cache="false">
+    <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update" cache="false"   emptyContainerDivCssClassName="mockup-boxfiles">
         <template:field name="boxTitle" valueBeanID="boxTitle" display="false"/>
         <%-- Set boxTitle to be use in box skinner template_rep/skins/myskin/myskin.jsp --%>
         <c:set var="boxTitle" scope="request" value="${boxTitle}"/>

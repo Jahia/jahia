@@ -36,7 +36,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 <template:containerList name="article" id="article" actionMenuNamePostFix="article"
                         actionMenuNameLabelKey="article">
-    <template:container id="articleContent">
+    <template:container id="articleContent"  emptyContainerDivCssClassName="mockup-article">
     <h2><template:field name="title"/></h2>
     <div class="intro">
         <template:field name="intro"/>

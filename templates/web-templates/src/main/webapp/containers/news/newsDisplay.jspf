@@ -1,7 +1,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 <template:container id="newsContainer" cacheKey="resumeNewsList" encapsulatingDivCssClassName="news"
-                    actionMenuNamePostFix="news" actionMenuNameLabelKey="news.update" displayExtensions="false">
+                    actionMenuNamePostFix="news" actionMenuNameLabelKey="news.update" displayExtensions="false"   emptyContainerDivCssClassName="mockup-newslist">
 
     <div class="newsListItem"><!--start newsListItem -->
         <h4><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}"><template:field name='newsTitle'/></a></h4>

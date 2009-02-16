@@ -34,30 +34,24 @@
 .action-menu-icon {
     color: #4096EE !important;
 }
-
 #bodywrapper #header .actionMenuWrap {
     overflow: hidden;
     margin: 0;
     padding: 0;
 }
-
 #bodywrapper #header .actionMenuWrap div {
     float: left;
     overflow: hidden;
 }
-
 #bodywrapper #header .actionMenuWrap span {
     float: left;
 }
-
 #bodywrapper #headerPart2 .actionMenuWrap span {
     float: right;
 }
-
 #bodywrapper .markedForDelete {
     text-decoration: line-through !important;
 }
-
 #bodywrapper #navigationN2 .action-menu-icons {
     display: inline;
     vertical-align: middle;
@@ -69,7 +63,6 @@
 	height:1%;
 	overflow: hidden
 }
-
 #bodywrapper #bottomshortcuts div.action-menu-icons {
     display: inline;
 	float:left;
@@ -81,7 +74,6 @@ overflow:hidden
 #bodywrapper #bottomshortcuts span {
     display: inline;
 }
-
 #bodywrapper #bottomshortcuts div.actionMenuWrap {
     display: inline;
 }
@@ -105,7 +97,6 @@ overflow:hidden
 #bodywrapper .containerListWrap {
     border: 1px solid #b7cbd8 !important;
 }
-
 #bodywrapper .containerListWrap .action-menu-icons {
     background: url( ../img/actions/bg.gif) top left repeat-x !important;
     border-right: solid 1px #b7cbd8 !important;
@@ -121,63 +112,73 @@ overflow:hidden
 
 .mockup-teasers {
 display:block;
-width:641px;
+width:638px;
 height:214px;
 background: url( ../img/mockup/bk_teasers.gif) top left no-repeat;
 }
 .mockup-article {
 display:block;
-width:641px;
+width:638px;
 height:560px;
 background: url( ../img/mockup/bk_article.gif) top left no-repeat;
 }
-
-.mockup-boxfiles {
-display:block;
-width:285px;
-height:277px;
-background: url( ../img/mockup/bk_boxfiles.gif) top left no-repeat;
-}
 .mockup-enventlist {
 display:block;
-width:641px;
+width:638px;
 height:547px;
 background: url( ../img/mockup/bk_eventlist.gif) top left no-repeat;
 }
 .mockup-introduction {
 display:block;
-width:641px;
+width:638px;
 height:226px;
-background: url( ../img/mockup/bk_eventlist.gif) top left no-repeat;
-}
-
-.mockup-menu {
-display:block;
-width:641px;
-height:157px;
-background: url( ../img/mockup/bk_menu.gif) top left no-repeat;
+background: url( ../img/mockup/bk_introduction.gif) top left no-repeat;
 }
 .mockup-newslist {
 display:block;
-width:641px;
+width:638px;
 height:551px;
 background: url( ../img/mockup/bk_newslist.gif) top left no-repeat;
 }
 .mockup-people {
 display:block;
-width:641px;
+width:638px;
 height:220px;
 background: url( ../img/mockup/bk_people.gif) top left no-repeat;
 }
 .mockup-pressreleases {
 display:block;
-width:641px;
+width:638px;
 height:255px;
-background: url( ../img/mockup/bk_people.gif) top left no-repeat;
+background: url( ../img/mockup/bk_pressreleases.gif) top left no-repeat;
 }
 .mockup-publication {
 display:block;
-width:641px;
+width:638px;
 height:255px;
 background: url( ../img/mockup/bk_publication.gif) top left no-repeat;
+}
+.mockup-boxes {
+display:block;
+width:280px;
+height:412px;
+background: url( ../img/mockup/bk_boxfiles.gif) top left no-repeat;
+}
+.mockup-boxfiles {
+display:block;
+width:280px;
+height:222px;
+background: url( ../img/mockup/bk_boxfiles.gif) top left no-repeat;
+}
+.mockup-boxtext {
+display:block;
+width:280px;
+height:277px;
+background: url( ../img/mockup/bk_boxfiles.gif) top left no-repeat;
+}
+.mockup-menu {
+display:block;
+width:280px;
+height:157px;
+background: url( ../img/mockup/bk_menu.gif) top left no-repeat;
 }

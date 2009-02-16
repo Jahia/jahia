@@ -126,7 +126,7 @@
                                                 </td>
                                                 <td>
                                                     <input type="text" name="groupName" class="input" size="40"
-                                                           maxlength="255" value="<%= groupName%>">&nbsp;
+                                                           maxlength="185" value="<%= groupName%>">&nbsp;
                                                     <font class="text2">
                                                         (<internal:adminResourceBundle
                                                             resourceName="org.jahia.admin.required.label"/>)

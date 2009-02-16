@@ -811,14 +811,18 @@ editModeSessionTimeout                                  = 1800
 # Pattern for the user name validation. The new user name will be
 # tested against this regular expression (see java.util.regex.Pattern)
 # pattern.
+# Please update the resource bundle message:
+# org.jahia.admin.users.ManageUsers.onlyCharacters.label
+# (JahiaAdministrationResources.properties),
+# to reflect the pattern changes
 userManagementUserNamePattern                           = [0-9a-z_A-Z\\-\\{\\}\\.@]+
-# Pattern for the user password validation. The new user password will be
-# tested against this regular expression (see java.util.regex.Pattern)
-# pattern.
-userManagementUserPasswordPattern                       = [0-9a-z_A-Z\\-\\{\\}\\.@]+
 # Pattern for the group name validation. The new group name will be
 # tested against this regular expression (see java.util.regex.Pattern)
 # pattern.
+# Please update the resource bundle message:
+# org.jahia.admin.users.ManageGroups.onlyCharacters.label
+# (JahiaAdministrationResources.properties),
+# to reflect the pattern changes
 userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
 
 ######################################################################

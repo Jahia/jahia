@@ -469,16 +469,6 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService {
         return results;
     }
 
-	public boolean isPasswordSyntaxCorrect(final String password) {
-		Boolean result = (Boolean) routeCallOne(new Command() {
-			public Object execute(JahiaUserManagerProvider p) {
-				return p.isPasswordSyntaxCorrect(password) ? Boolean.TRUE
-				        : Boolean.FALSE;
-			}
-		}, null, null);
-		return result.booleanValue();
-	}
-
 	public boolean isUsernameSyntaxCorrect(final String name) {
 		Boolean result = (Boolean) routeCallOne(new Command() {
 			public Object execute(JahiaUserManagerProvider p) {

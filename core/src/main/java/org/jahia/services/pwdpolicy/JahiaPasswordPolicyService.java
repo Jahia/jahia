@@ -103,8 +103,33 @@ public class JahiaPasswordPolicyService extends JahiaService {
             String password, int siteId, boolean isUserInitiated,
             boolean onlyPeriodicalRules) {
 
+        return enforcePolicy(user, password, siteId, isUserInitiated, onlyPeriodicalRules, true);
+    }
+
+    /**
+     * Enforce the password policy for the specified user if applicable during
+     * on user login.
+     * 
+     * @param user
+     *            the current user
+     * @param password
+     *            the new user password in clear text
+     * @param siteId the ID of the site, where the user is created or -1, if it is unknown
+     * @param isUserInitiated
+     *            set to <code>true</code> if the change in the password is
+     *            initiated by the user and not via administration interface.
+     * @param onlyPeriodicalRules
+     *            if only to evaluate periodical rules (on login)
+     * @param checkIfPolicyIsEnabled perform a check if policy is enabled for the specified user and site 
+     * @return the evaluation result
+     */
+    private PolicyEnforcementResult enforcePolicy(JahiaUser user,
+            String password, int siteId, boolean isUserInitiated,
+            boolean onlyPeriodicalRules, boolean checkIfPolicyIsEnabled) {
+
         PolicyEnforcementResult evaluationResult = PolicyEnforcementResult.SUCCESS;
-        if (siteId > 0 ? isPolicyEnabled(siteId) : isPolicyEnabled(user)) {
+        if (!checkIfPolicyIsEnabled
+                || (siteId > 0 && isPolicyEnabled(siteId) || isPolicyEnabled(user))) {
             JahiaPasswordPolicy policy = getDefaultPolicy();
             if (policy != null) {
                 evaluationResult = PolicyEvaluator.evaluate(policy,
@@ -170,6 +195,21 @@ public class JahiaPasswordPolicyService extends JahiaService {
             JahiaUser user, String password, int siteId) {
 
         return enforcePolicy(user, password, siteId, false, false);
+    }
+
+    /**
+     * Enforce the password policy for the newly created user.
+     * 
+     * @param user
+     *            the current user
+     * @param password
+     *            the new user password in clear text
+     * @return the evaluation result
+     */
+    public PolicyEnforcementResult enforcePolicyOnUserCreate(
+            JahiaUser user, String password) {
+
+        return enforcePolicy(user, password, -1, false, false, false);
     }
 
     public JahiaPasswordPolicy getDefaultPolicy() {
@@ -240,7 +280,10 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
         List<Integer> l = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getUserMembership(user);
         for (Integer siteId : l) {
-            enforcePolicy |= isPolicyEnabled(siteId);
+            if (isPolicyEnabled(siteId)) {
+                enforcePolicy = true;
+                break;
+            }
         }
 
         // check if the policy is enabled for at least one of the user

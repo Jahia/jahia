@@ -290,15 +290,4 @@ public abstract class JahiaUserManagerService extends JahiaService {
 	 *         validation pattern
 	 */
 	public abstract boolean isUsernameSyntaxCorrect(String name);
-
-    /**
-	 * Validates provided user password against a regular expression pattern,
-	 * specified in the Jahia configuration.
-	 * 
-	 * @param password
-	 *            the user password to be validated
-	 * @return <code>true</code> if the specified user password matches the
-	 *         validation pattern
-	 */
-	public abstract boolean isPasswordSyntaxCorrect(String password);
 }

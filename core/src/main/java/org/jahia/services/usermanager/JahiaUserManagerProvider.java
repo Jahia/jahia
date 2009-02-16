@@ -68,8 +68,6 @@ public abstract class JahiaUserManagerProvider extends JahiaService {
 
 	private static Pattern userNamePattern;
 
-	private static Pattern userPasswordPattern;
-
     private boolean defaultProvider = false;
     private boolean readOnly = false;
     private int priority = 99;
@@ -125,19 +123,6 @@ public abstract class JahiaUserManagerProvider extends JahiaService {
 			}
 		}
 		return userNamePattern;
-	}
-
-	private static Pattern getUserPasswordPattern() {
-		if (userPasswordPattern == null) {
-			synchronized (JahiaUserManagerProvider.class) {
-				if (userPasswordPattern == null) {
-					userPasswordPattern = Pattern
-					        .compile(org.jahia.settings.SettingsBean.getInstance().lookupString(
-					                "userManagementUserPasswordPattern"));
-				}
-			}
-		}
-		return userPasswordPattern;
 	}
 
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -237,32 +222,6 @@ public abstract class JahiaUserManagerProvider extends JahiaService {
      * @return boolean true if the login succeeded, false otherwise
      */
     public abstract boolean login (String userKey, String userPassword);
-
-    /**
-	 * Validates provided user password against a regular expression pattern,
-	 * specified in the Jahia configuration.
-	 * 
-	 * @param password
-	 *            the user password to be validated
-	 * @return <code>true</code> if the specified user password matches the
-	 *         validation pattern
-	 */
-	public boolean isPasswordSyntaxCorrect(String password) {
-		if (password == null || password.length() == 0) {
-			return false;
-		}
-
-		boolean pwdCorrect = getUserPasswordPattern().matcher(password)
-		        .matches();
-		if (!pwdCorrect && logger.isDebugEnabled()) {
-			logger
-			        .debug("Validation failed for the user password: "
-			                + password + " against pattern: "
-			                + getUserPasswordPattern().pattern());
-		}
-		return pwdCorrect;
-	}
-    
 
     /**
 	 * Validates provided user name against a regular expression pattern,

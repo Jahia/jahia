@@ -37,6 +37,7 @@
 package org.jahia.admin.users;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.compass.core.util.StringUtils;
 
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
@@ -434,8 +435,8 @@ public class ManageUsers extends AbstractAdministrationModule {
         // as well accentueted char and any internationalized char.
         else if (!ServicesRegistry.getInstance().getJahiaUserManagerService()
                 .isUsernameSyntaxCorrect(username)) {
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.onlyLettersDigitsUnderscores.label",
-                    jParams, jParams.getLocale());
+            userMessage = StringUtils.capitalize(JahiaResourceBundle.getAdminResource("org.jahia.admin.users.ManageUsers.onlyCharacters.label",
+                    jParams, jParams.getLocale()));
             return false;
         } else if (siteUser.getMember(jahiaSite.getID(), username) != null) {
             userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.user.label",
@@ -454,7 +455,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.alreadyExist.label",
                     jParams, jParams.getLocale()) + " ";
             userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.onAnotherSite.label", jParams, jParams.getLocale()) + ".";
-            userMessage += "<a href=\""+url+"\">" + JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.clickHereToRegister.label", jParams, jParams.getLocale()) + "</a>";
+            userMessage += "&nbsp;<a href=\""+url+"\">" + JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.clickHereToRegister.label", jParams, jParams.getLocale()) + "</a>";
             return false;
         }
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry
@@ -466,19 +467,10 @@ public class ManageUsers extends AbstractAdministrationModule {
             userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.specifyPassword.label",
                     jParams, jParams.getLocale());
             return false;
-        } else if(!pwdPolicyEnabled && !ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .isPasswordSyntaxCorrect(passwd)) {
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.onlyLettersDigitsUnderscoreWithPasswd.label",
-                    jParams, jParams.getLocale());
-            return false;
         } else {
             String passwdConfirm = request.getParameter("passwdconfirm").trim();
             if (!passwdConfirm.equals(passwd)) {
                 userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.passwdNotMatch.label",
-                        jParams, jParams.getLocale());
-                return false;
-            } else if (!pwdPolicyEnabled && passwd.length() < 6) {
-                userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.passwdLeast6Chars.label",
                         jParams, jParams.getLocale());
                 return false;
             }
@@ -700,10 +692,7 @@ public class ManageUsers extends AbstractAdministrationModule {
             passwd = passwd.trim();
             JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry
                     .getInstance().getJahiaPasswordPolicyService();
-            boolean pwdPolicyEnabled = false;
             if (!"".equals(passwd)) {
-                pwdPolicyEnabled = pwdPolicyService.isPolicyEnabled(jahiaSite
-                        .getID());
                 String passwdConfirm = request.getParameter("passwdconfirm").
                                        trim();
                 if (!passwdConfirm.equals(passwd)) {
@@ -711,16 +700,6 @@ public class ManageUsers extends AbstractAdministrationModule {
                         "org.jahia.admin.userMessage.passwdNotMatch.label",
                         jParams, jParams.getLocale());
                     return false;
-                } else if (!pwdPolicyEnabled && passwd.length() < 6) {
-                    userMessage = JahiaResourceBundle.getAdminResource(
-                        "org.jahia.admin.userMessage.passwdLeast6Chars.label",
-                        jParams, jParams.getLocale());
-                    return false;
-                } else if(!pwdPolicyEnabled && !ServicesRegistry.getInstance().getJahiaUserManagerService()
-                        .isPasswordSyntaxCorrect(passwd)) {
-                    userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.onlyLettersDigitsUnderscoreWithPasswd.label",
-                            jParams, jParams.getLocale());
-                          return false;
                 }
             }
             if (!"".equals(passwd) && !usr.setPassword(passwd)) {
@@ -730,10 +709,8 @@ public class ManageUsers extends AbstractAdministrationModule {
                 userMessage += " [" + username + "] ";
                 return false;
             }
-            if (pwdPolicyEnabled) {
-                PolicyEnforcementResult evalResult = ServicesRegistry
-                        .getInstance().getJahiaPasswordPolicyService()
-                        .enforcePolicyOnPasswordChange(usr, passwd, false);
+            if (pwdPolicyService.isPolicyEnabled(usr)) {
+                PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(usr, passwd, false);
                 if (!evalResult.isSuccess()) {
                     EngineMessages policyMsgs = evalResult.getEngineMessages();
                     policyMsgs.saveMessages(((ParamBean) jParams).getRequest());

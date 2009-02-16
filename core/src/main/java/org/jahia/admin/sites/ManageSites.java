@@ -67,6 +67,8 @@ import org.jahia.security.license.*;
 import org.jahia.services.files.JahiaTextFileService;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportAction;
+import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
+import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSiteTools;
 import org.jahia.services.sites.JahiaSitesService;
@@ -78,12 +80,12 @@ import org.jahia.tools.files.FileUpload;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.engines.EngineMessage;
+import org.jahia.engines.EngineMessages;
 import org.jahia.operations.valves.ThemeValve;
 import org.jahia.admin.AbstractAdministrationModule;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -374,7 +376,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY);
         request.setAttribute(JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY,
                 enforcePasswordPolicy != null ? enforcePasswordPolicy
-                        : "false");
+                        : "true");
 
         try {
             // logger.debug(" license check ");
@@ -496,7 +498,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 // set in session...
                 session.setAttribute(CLASS_NAME + "newJahiaSite", site);
 
-                // all is okay, go to add admin or use existant admin...
+                // all is okay, go to add admin or use existent admin...
                 if (siteAdmin.trim().equals("0")) {
                     displayCreateAdmin(request, response, session);
                 } else if (siteAdmin.trim().equals("1")) {
@@ -803,28 +805,38 @@ public class ManageSites extends AbstractAdministrationModule {
                     jParams, jParams.getLocale()) + " ";
             warningMsg += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.onAnotherSite.label", jParams, jParams.getLocale()) + ".";
         } else if (adminUsername.length() == 0) {
-            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.usernameMustLeast4Chars.label",
-                    jParams, jParams.getLocale());
-        } else if (adminUsername.length() < 4) {
-            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.usernameTooShort.label",
+            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.specifyUserName.label",
                     jParams, jParams.getLocale());
         } else if (!adminPassword.equals(adminConfirm)) {
             warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.confirmPasswdBeSame.label",
                     jParams, jParams.getLocale());
         } else if (adminPassword.length() == 0) {
-            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.passwdLeast4Chars.label",
-                    jParams, jParams.getLocale());
-        } else if (adminPassword.length() < 4) {
-            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.passwdTooShort.label",
+            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.specifyPassword.label",
                     jParams, jParams.getLocale());
         } else if (!userManager.isUsernameSyntaxCorrect(adminUsername)) {
-            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.onlyLettersDigitsUnderscoreWithUsername.label",
-                    jParams, jParams.getLocale());
-        } else if (!userManager.isPasswordSyntaxCorrect(adminPassword)) {
-            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.onlyLettersDigitsUnderscoreWithPasswd.label",
-                    jParams, jParams.getLocale());
+            warningMsg = StringUtils.capitalize(JahiaResourceBundle.getAdminResource("org.jahia.admin.users.ManageUsers.onlyCharacters.label",
+                    jParams, jParams.getLocale()));
         } else {
-            processError = false;
+            JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry
+                    .getInstance().getJahiaPasswordPolicyService();
+            JahiaSite newSite = (JahiaSite) session.getAttribute(CLASS_NAME
+                    + "newJahiaSite");
+            if (newSite != null
+                    && "true".equals(newSite.getSettings().get(
+                            JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY))) {
+                PolicyEnforcementResult evalResult = pwdPolicyService
+                        .enforcePolicyOnUserCreate(new JahiaDBUser(-1,
+                                adminUsername, adminPassword, null, null),
+                                adminPassword);
+                if (!evalResult.isSuccess()) {
+                    EngineMessages policyMsgs = evalResult.getEngineMessages();
+                    policyMsgs.saveMessages(((ParamBean) jParams).getRequest());
+                } else {
+                    processError = false;
+                }
+            } else {
+                processError = false;
+            }
         }
 
         if (!processError) {
@@ -998,7 +1010,6 @@ public class ManageSites extends AbstractAdministrationModule {
                     Properties adminProps = (Properties) session.getAttribute(CLASS_NAME + "adminProps");
                     if (adminUsername != null) {
                         // create user...
-                        String uniqueKey = adminUsername + ":" + site.getID();
                         adminSiteUser = jums.createUser(adminUsername, adminPassword, adminProps);
                     }
                 } else {

@@ -35,6 +35,7 @@
 
 <%@page import="org.jahia.bin.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@include file="/jsp/jahia/administration/include/header.inc"%>
 
 <%
@@ -104,6 +105,20 @@
     <%=warningMsg%>
   </p>
   </c:if>
+    <logic:present name="engineMessages">
+    <logic:equal name="engineMessages" property="size" value="1">
+            <logic:iterate name="engineMessages" property="messages" id="msg">
+                <span class="errorbold"><internal:message name="msg"/></span>
+            </logic:iterate>
+    </logic:equal>
+    <logic:notEqual name="engineMessages" property="size" value="1">
+            <ul>
+                <logic:iterate name="engineMessages" property="messages" id="msg">
+                    <li class="errorbold"><internal:message name="msg"/></li>
+                </logic:iterate>
+            </ul>
+    </logic:notEqual>
+    </logic:present>
   <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processcreateadmin")%>' method="post">
     <table  border="0" cellpadding="5" cellspacing="0" border="0">
     <tr>

@@ -279,7 +279,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     }
 
      /**
-      * Display a form destinated to create a group.
+      * Display a form for creating a group.
       *
       * @param request
       * @param response
@@ -348,13 +348,16 @@ public class ManageGroups extends AbstractAdministrationModule {
           groupMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.groupMessage.specifyGroupName.label",
                                              jParams, jParams.getLocale());
             return false;
-        }
-        // The following test is really disputable because we should can enter
-        // as well accentueted char and any internationalized char.
-        else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService()
+        } else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService()
 		        .isGroupNameSyntaxCorrect(groupName)) {
-          groupMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.groupMessage.onlyLettersDigitsUnderscores.label",
-                                             jParams, jParams.getLocale());
+          groupMessage = JahiaResourceBundle.getAdminResource(
+                    "org.jahia.admin.users.ManageGroups.groupName.label",
+                    jParams, jParams.getLocale())
+                    + ": "
+                    + JahiaResourceBundle
+                            .getAdminResource(
+                                    "org.jahia.admin.users.ManageGroups.onlyCharacters.label",
+                                    jParams, jParams.getLocale());
             return false;
         } else if (gMgr.groupExists (jahiaSite.getID(), groupName)) {
           groupMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.groupMessage.group.label",
@@ -691,13 +694,16 @@ public class ManageGroups extends AbstractAdministrationModule {
           groupMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.groupMessage.specifyGroupName.label",
               jParams, jParams.getLocale());
             return false;
-        }
-        // The following test is really disputable because we should can enter
-        // as well accentueted char and any internationalized char.
-        else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService()
+        } else if (!ServicesRegistry.getInstance().getJahiaGroupManagerService()
 		        .isGroupNameSyntaxCorrect(groupName)) {
-          groupMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.groupMessage.onlyLettersDigitsUnderscores.label",
-             jParams, jParams.getLocale());
+            groupMessage = JahiaResourceBundle.getAdminResource(
+                    "org.jahia.admin.users.ManageGroups.groupName.label",
+                    jParams, jParams.getLocale())
+                    + ": "
+                    + JahiaResourceBundle
+                            .getAdminResource(
+                                    "org.jahia.admin.users.ManageGroups.onlyCharacters.label",
+                                    jParams, jParams.getLocale());
             return false;
         }
         else if (gMgr.groupExists (jahiaSite.getID(), groupName)) {

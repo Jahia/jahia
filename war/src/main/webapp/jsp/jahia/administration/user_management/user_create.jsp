@@ -166,7 +166,7 @@
     </td>
     <td>
         <input class="input" type="text" name="username"
-               size="40" maxlength="255" value='<%=userProperties.get("username")%>'>
+               size="40" maxlength="40" value='<%=userProperties.get("username")%>'>
         &nbsp;<font class="text2">(<internal:adminResourceBundle resourceName="org.jahia.admin.required.label"/>)</font>
     </td>
 </tr>

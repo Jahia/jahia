@@ -727,8 +727,6 @@ public class SettingsBean {
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
-            settings.put("userManagementUserPasswordPattern", getString(
-                    "userManagementUserPasswordPattern", "[\\w\\{\\}\\-]+"));
             settings.put("userManagementGroupNamePattern", getString(
                     "userManagementGroupNamePattern", "[\\w\\{\\}\\-]+"));
 

@@ -227,7 +227,7 @@
     </td>
     <td>
         <%if (!isPopup) {%>
-        <input class="input" type="text" size="40" maxlength="255"
+        <input class="input" type="text" size="40" maxlength="40"
                <% if (isPropReadOnly(userProps, "firstname")) { %>disabled="true"<%}%>
                name='<%=ManageUsers.USER_PROPERTY_PREFIX+"firstname"%>'
                value='<%=getUserProp(userProps, "firstname")%>'/>

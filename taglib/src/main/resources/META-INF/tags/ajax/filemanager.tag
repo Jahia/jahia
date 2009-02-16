@@ -68,6 +68,7 @@
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.crop.label" aliasResourceName="fm_crop"/>
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.resize.label" aliasResourceName="fm_resize"/>
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.rotate.label" aliasResourceName="fm_rotate"/>
+    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.refresh.label" aliasResourceName="fm_refresh"/>
 
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.selection.label" aliasResourceName="fm_selection"/>
     <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.deselect.label" aliasResourceName="fm_deselect"/>

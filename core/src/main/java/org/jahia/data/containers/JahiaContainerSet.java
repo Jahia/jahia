@@ -204,7 +204,7 @@ public class JahiaContainerSet implements Map {
      */
     private void addContainerList(JahiaContainerList aContainerList, String listViewId) throws JahiaException {
         containerLists.put((listViewId != null
-                && !listViewId.isEmpty() ? listViewId + "_"
+                && listViewId.length() > 0 ? listViewId + "_"
                 : "")
                 + aContainerList.getDefinition().getName(), aContainerList);
     } // end addContainerList
@@ -1245,7 +1245,7 @@ public class JahiaContainerSet implements Map {
         if (checkDeclared(containerName)) {
             JahiaContainerList theContainerList = (JahiaContainerList)
                     containerLists.get((listViewId != null
-                            && !listViewId.isEmpty() ? listViewId + "_"
+                            && listViewId.length() > 0? listViewId + "_"
                                     : "")
                                     + containerName);
             boolean bypass = false;
@@ -1338,7 +1338,7 @@ public class JahiaContainerSet implements Map {
             JahiaContainerList aList = entry.getValue(); 
             if (aList.getID() == listID
                     && (listViewId == null
-                            || listViewId.isEmpty() || entry.getKey()
+                            || listViewId.length() == 0 || entry.getKey()
                             .startsWith(listViewId + "_"))) {
                 if (!aList.isContainersLoaded()) {
                     // When requesting an archived loadRequest

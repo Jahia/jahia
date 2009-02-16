@@ -20,33 +20,6 @@
                 </property>
             </activation>
             <dependencies>
-                <!--Cross project dependencies-->
-                <dependency>
-                    <groupId>org.jahia.server</groupId>
-                    <artifactId>jahia-api</artifactId>
-                    <version>${jahia.package.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>jsr170</groupId>
-                    <artifactId>jcr</artifactId>
-                    <version>1.0</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.jahia.server</groupId>
-                    <artifactId>jackrabbit-rar</artifactId>
-                    <version>${jahia.package.version}</version>
-                    <type>rar</type>
-                </dependency>
-                <dependency>
-                    <groupId>commons-id</groupId>
-                    <artifactId>commons-id</artifactId>
-                    <version>0.1-dev</version>
-                </dependency>
-                <dependency>
-                    <groupId>commons-discovery</groupId>
-                    <artifactId>commons-discovery</artifactId>
-                    <version>0.4</version>
-                </dependency>
                 <dependency>
                     <groupId>xerces</groupId>
                     <artifactId>xercesImpl</artifactId>

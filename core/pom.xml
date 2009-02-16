@@ -84,12 +84,6 @@
         <dependencyManagement>
           <dependencies>
             <dependency>
-              <groupId>org.jahia.server</groupId>
-              <artifactId>jahia-api</artifactId>
-              <version>${jahia.package.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
               <groupId>jboss</groupId>
               <artifactId>jboss-common</artifactId>
               <version>4.2.2.GA</version>
@@ -126,71 +120,17 @@
               <scope>provided</scope>
             </dependency>
             <dependency>
-              <groupId>jsr170</groupId>
-              <artifactId>jcr</artifactId>
-              <version>1.0</version>
+              <groupId>jsf</groupId>
+              <artifactId>jsf-api</artifactId>
+              <version>1.1</version>
               <scope>provided</scope>
             </dependency>
             <dependency>
-              <groupId>commons-id</groupId>
-              <artifactId>commons-id</artifactId>
-              <version>0.1-dev</version>
+              <groupId>jsf</groupId>
+              <artifactId>jsf-impl</artifactId>
+              <version>1.1</version>
               <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>commons-discovery</groupId>
-              <artifactId>commons-discovery</artifactId>
-              <version>0.4</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-api</artifactId>
-              <version>${jackrabbit.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-core</artifactId>
-              <version>${jackrabbit.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-jcr-commons</artifactId>
-              <version>${jackrabbit.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-text-extractors</artifactId>
-              <version>${jackrabbit.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-jcr-rmi</artifactId>
-              <version>${jackrabbit.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-spi</artifactId>
-              <version>${jackrabbit.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-spi-commons</artifactId>
-              <version>${jackrabbit.version}</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>org.apache.jackrabbit</groupId>
-              <artifactId>jackrabbit-core-ext</artifactId>
-              <version>${jahia.package.version}</version>
-              <scope>provided</scope>
-            </dependency>
+            </dependency>            
             <dependency>
               <groupId>javax.servlet</groupId>
               <artifactId>jstl</artifactId>

@@ -51,19 +51,31 @@ import java.util.Map;
  */
 public class JBossServerDeploymentImpl implements ServerDeploymentInterface {
 
-    public static final String defaultSharedLibraryDirectory = "server/default/lib";
+    public static final String jboss4SharedLibraryDirectory = "server/default/lib";
+    public static final String jboss5SharedLibraryDirectory = "common/lib";    
     public static final Map<String, String> sharedLibraryDirectory = new HashMap<String, String>();
+    
+    private String serverVersion;
+
+    public JBossServerDeploymentImpl(String serverVersion) {
+        super();
+        this.serverVersion = serverVersion;
+        sharedLibraryDirectory.put("4.0.x", jboss4SharedLibraryDirectory);
+        sharedLibraryDirectory.put("4.2.x", jboss4SharedLibraryDirectory);        
+        sharedLibraryDirectory.put("5.0.x", jboss5SharedLibraryDirectory);        
+    }
 
     private String getSharedLibraryDirectory(String serverVersion) {
         String result = sharedLibraryDirectory.get(serverVersion);
         if (result != null) return result;
-        return defaultSharedLibraryDirectory;
+        return jboss4SharedLibraryDirectory;
     }
 
     public boolean validateInstallationDirectory(String targetServerDirectory) {
+        File serverConfigJBoss50 = new File(targetServerDirectory, "server/default/deploy/jbossweb.sar/server.xml");
         File serverConfigJBoss42 = new File(targetServerDirectory, "server/default/deploy/jboss-web.deployer/server.xml");
         File serverConfigJBoss40 = new File(targetServerDirectory, "server/default/deploy/jbossweb-tomcat55.sar/server.xml");
-        return serverConfigJBoss42.exists() || serverConfigJBoss40.exists();
+        return serverConfigJBoss42.exists() || serverConfigJBoss40.exists() || serverConfigJBoss50.exists();
     }
 
     public boolean deploySharedLibraries(String targetServerDirectory,

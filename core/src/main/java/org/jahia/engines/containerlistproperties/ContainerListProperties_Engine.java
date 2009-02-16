@@ -128,7 +128,7 @@ public class ContainerListProperties_Engine implements JahiaEngine {
                 contentContainerList.getID (), jParams.getEntryLoadRequest ());
         String scrollStr = Integer.toString (ctnIDs.size ()) + "_0";
         if (scrollStr.length() > 0) {
-            extraParams.setProperty("ctnscroll_" + containerListName, scrollStr);
+            extraParams.setProperty(ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER + containerListName, scrollStr);
         }
         params += "?mode=display";
         params += "&clid=" + contentContainerList.getID ();
@@ -734,11 +734,11 @@ public class ContainerListProperties_Engine implements JahiaEngine {
 
         Properties extraParams = new Properties ();
         String containerListName = theContainerList.getDefinition ().getName ();
-        String scrollStr = jParams.getParameter ("ctnscroll_" +
+        String scrollStr = jParams.getParameter (ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER +
                 containerListName);
         if (scrollStr != null) {
             if (scrollStr.length () > 0) {
-                extraParams.setProperty ("ctnscroll_" + containerListName,
+                extraParams.setProperty (ProcessingContext.CONTAINER_SCROLL_PREFIX_PARAMETER + containerListName,
                         scrollStr);
             }
         }

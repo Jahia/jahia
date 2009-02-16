@@ -46,12 +46,13 @@ import java.util.Map;
 public class JahiaFieldsDef implements Serializable {
 // ------------------------------ FIELDS ------------------------------
 
+    private static final long serialVersionUID = 7447354819272528455L;
     /**
      * persistent field
      */
     private Integer id;
     private Integer isMetadata = new Integer(0);
-    private Map<String, String> properties;
+    private Map<Object, Object> properties;
     private String ctnName;
     /**
      * nullable persistent field
@@ -141,11 +142,11 @@ public class JahiaFieldsDef implements Serializable {
      * @hibernate.collection-cache usage="nonstrict-read-write"
      * @return
      */
-    public Map<String, String> getProperties() {
+    public Map<Object, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<Object, Object> properties) {
         this.properties = properties;
     }
 

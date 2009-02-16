@@ -100,7 +100,7 @@ public class JahiaFieldsDefinitionManager {
         try {
             if (defID > 0) {
                 JahiaFieldDefinition fieldDefinition = null;
-                Cache cache = getCache();
+                Cache<String, JahiaFieldDefinition> cache = getCache();
                 if(cache!=null) {
                     fieldDefinition = (JahiaFieldDefinition) cache.get(CACHE_ID_KEY_PREFIX+defID);
                 }
@@ -147,7 +147,7 @@ public class JahiaFieldsDefinitionManager {
     public JahiaFieldDefinition loadFieldDefinition(int siteID, String definitionName) {
         try {
             JahiaFieldDefinition fieldDefinition = null;
-            Cache cache = getCache();
+            Cache<String, JahiaFieldDefinition> cache = getCache();
             Object o = null;
             if (cache != null) {
                 o = cache.get(CACHE_SITE_NAME_KEY_PREFIX + siteID + definitionName);
@@ -174,7 +174,7 @@ public class JahiaFieldsDefinitionManager {
                     }
                 } else {
                     if (cache != null) {
-                        cache.put(CACHE_SITE_NAME_KEY_PREFIX + siteID + definitionName, "");
+                        cache.put(CACHE_SITE_NAME_KEY_PREFIX + siteID + definitionName, null);
                     }
                 }
 
@@ -224,7 +224,7 @@ public class JahiaFieldsDefinitionManager {
         if (theDef.getCtnType() != null) {
             jahiaFieldsDef.setCtnName(theDef.getCtnType());
         }
-        Map<String, String> props = new HashMap<String, String>();
+        Map<Object, Object> props = new HashMap<Object, Object>();
         props.putAll(theDef.getProperties());
         theDef.setProperties(props);
         if(jahiaFieldsDef.getProperties()!=null) {
@@ -330,15 +330,15 @@ public class JahiaFieldsDefinitionManager {
     }
 
     private void flushCache(int definitionID,int siteID, String definitionName) {
-        Cache cache =getCache();
+        Cache<String, JahiaFieldDefinition> cache =getCache();
         if(cache!=null) {
             cache.remove(CACHE_ID_KEY_PREFIX+definitionID);
             cache.remove(CACHE_SITE_NAME_KEY_PREFIX+siteID+definitionName);
         }
     }
 
-    private Cache getCache() {
-        Cache cache = cacheService.getCache(CACHE_NAME);
+    private Cache<String, JahiaFieldDefinition> getCache() {
+        Cache<String, JahiaFieldDefinition> cache = cacheService.getCache(CACHE_NAME);
         if(cache==null) {
             try {
                 cache = cacheService.createCacheInstance(CACHE_NAME);

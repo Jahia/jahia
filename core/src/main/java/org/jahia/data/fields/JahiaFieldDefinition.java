@@ -98,7 +98,7 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
     private Map<Integer, JahiaFieldSubDefinition> subDefs;
 
 
-    private Map<String, String> props = new ConcurrentHashMap<String, String>(11);
+    private Map<Object, Object> props = new ConcurrentHashMap<Object, Object>(11);
 
     /***
         * constructor
@@ -145,14 +145,14 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
     public  int     getID()                 {   return ID;              }
     public  int     getJahiaID()            {   return jahiaID;         }
     public  String  getName()               {   return name;            }
-    public Map<String, String> getProperties()       {   return this.props;      }
+    public Map<Object, Object> getProperties()       {   return this.props;      }
 
     public void setID( int value ) {
         this.ID = value;
         setObjectKey(new FieldDefinitionKey(ID));
     }
 
-    public void setProperties( Map<String, String> props ){
+    public void setProperties( Map<Object, Object> props ){
         if ( props != null ){
             this.props = props;
         }

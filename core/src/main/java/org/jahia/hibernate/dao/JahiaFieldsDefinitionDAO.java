@@ -43,7 +43,6 @@ import org.jahia.hibernate.model.JahiaFieldsDefExtpropPK;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -180,16 +179,16 @@ public class JahiaFieldsDefinitionDAO extends AbstractGeneratorDAO {
     }
 
     private void saveProperties(JahiaFieldsDef ctnDef, final HibernateTemplate template) {
-        Map<String, String> properties = ctnDef.getProperties();
+        Map<Object, Object> properties = ctnDef.getProperties();
         int size = properties.size();
         if (size > 0) {
             template.flush();
             template.clear();
             List<JahiaFieldsDefExtprop> list = template.find("from JahiaFieldsDefExtprop where comp_id.jahiaFieldsDef=?", ctnDef.getId());
-            for (Map.Entry<String, String> entry : properties.entrySet()) {
+            for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                 JahiaFieldsDefExtprop fieldsDefExtprop = new JahiaFieldsDefExtprop(new JahiaFieldsDefExtpropPK(ctnDef.getId(),
-                        entry.getKey()),
-                        entry.getValue());
+                        (String)entry.getKey()),
+                        (String)entry.getValue());
                 template.merge(fieldsDefExtprop);
                 list.remove(fieldsDefExtprop);
             }

@@ -236,15 +236,14 @@ public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             if (logger.isDebugEnabled()) {
                 logger.debug("Getting flattened children for parent " + parent.getObjectKey() + " with depth=" + String.valueOf(depth)) ;
             }
-            
+
             List<GWTJahiaWorkflowElement> result = new ArrayList<GWTJahiaWorkflowElement>() ;
             for (GWTJahiaWorkflowElement wfEl: WorkflowServiceHelper.getSubElementsRec(parent, object, depth, true, jParams)) {
-                if (wfEl.isAccessibleInTable()) {
+                if (wfEl.isAccessibleInTable()) { // filter hidden pages (no rights except read)
                     result.add(wfEl) ;
                 }
             }
 
-            // todo use filter to remove hidden pages
             if (sortParameter != null) {
                 Collections.sort(result, new GWTJahiaWorkflowElementComparator<GWTJahiaWorkflowElement>(sortParameter, isAscending));
             }

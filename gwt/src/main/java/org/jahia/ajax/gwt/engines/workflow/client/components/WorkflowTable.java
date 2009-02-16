@@ -43,12 +43,15 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.PagingToolBar;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.Validator;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.table.*;
 import com.google.gwt.user.client.Window;
@@ -166,6 +169,10 @@ public class WorkflowTable extends TopRightComponent {
         depthField.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 if (depthField.getValue() != null) {
+                    if (depthField.getValue().intValue() > 5) {
+                        Info.display("", "A maximum depth of 5 is allowed...");
+                        depthField.setValue(5);
+                    }
                     depth = depthField.getValue().intValue() ;
                     getLinker().refreshTable();
                 }
@@ -187,6 +194,14 @@ public class WorkflowTable extends TopRightComponent {
         pageField.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 if (pageField.getValue() != null) {
+                    if (pageField.getValue().intValue() == 0) {
+                        Info.display("", "At least 1 item/page...");
+                        pageField.setValue(1);
+                    }
+                    if (pageField.getValue().intValue() > 100) {
+                        Info.display("", "No more than 100 items/page...");
+                        pageField.setValue(100);
+                    }
                     pageSize = pageField.getValue().intValue() ;
                     getLinker().refreshTable();
                 }

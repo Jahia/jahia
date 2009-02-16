@@ -69,6 +69,7 @@ import java.util.*;
  * @author Khue Nguyen <a href="mailto:khue@jahia.org">khue@jahia.org</a>
  */
 
+@SuppressWarnings("serial")
 public class ContainerMetadataSorterBean extends ContainerSorterBean {
 
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
@@ -566,7 +567,7 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
         }
 
         buff
-                .append(" ( a.comp_id.id = b.metadataOwnerId AND b.type='ContentContainer' AND b.fieldDefinition.id = c.id and c.ctnName=(:fieldName) and (");
+                .append(" a.comp_id.id = b.metadataOwnerId AND b.type='ContentContainer' AND b.fieldDefinition.id = c.id and c.ctnName=(:fieldName) and (");
         parameters.put("fieldName", fieldName);
         buff.append(ContainerFilterBean.buildMultilangAndWorlflowQuery(
                 this.entryLoadRequest, true));

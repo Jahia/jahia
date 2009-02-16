@@ -106,6 +106,9 @@
 <div class="content-item">
 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processedit")%>'
       method="post">
+<c:if test="${not empty warningMsg}">
+    <p class="errorbold"><%=warningMsg%></p>
+</c:if>
 <input type="hidden" name="siteid" value="${siteID}">
 <table border="0" cellpadding="5" cellspacing="0" style="width:100%">
 <tr>

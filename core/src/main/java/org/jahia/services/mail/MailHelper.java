@@ -53,6 +53,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.bin.Jahia;
 
 /**
  * Helper class for retrieving user information.
@@ -282,6 +283,11 @@ public class MailHelper {
                                     + site, e);
                 }
             }
+
+            if (siteLocales == null || siteLocales.size() == 0) {
+                return Jahia.getThreadParamBean().getLocale();
+            }
+
             List<Locale> availableBundleLocales = getAvailableBundleLocales();
             for (Locale siteLocale : siteLocales) {
                 if (availableBundleLocales.contains(siteLocale)) {

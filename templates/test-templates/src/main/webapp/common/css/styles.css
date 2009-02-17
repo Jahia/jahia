@@ -490,7 +490,7 @@ div.sideMenu {
 }
 
 .sideMenu li a:hover {
-    background-color: #666666;
+    background-color: #666666 !important;
     color: #FFFFFF;
     line-height: 20px;
 }

@@ -167,6 +167,8 @@
                             <tasks>
                                 <copy file="./src/resources/catalina.bat" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat" overwrite="true"/>
                                 <copy file="./src/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
+                                <copy file="./src/resources/ehcache-hibernate.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/webapps/ROOT/WEB-INF/classes/" overwrite="true"/>
+                                <copy file="./src/resources/ehcache-jahia.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/webapps/ROOT/WEB-INF/classes/" overwrite="true"/>
                                 <copy file="./src/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
                                 <copy file="./src/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
                             </tasks>

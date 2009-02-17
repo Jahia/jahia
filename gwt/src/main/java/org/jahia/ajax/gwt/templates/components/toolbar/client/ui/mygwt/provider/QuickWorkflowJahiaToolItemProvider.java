@@ -61,8 +61,7 @@ public class QuickWorkflowJahiaToolItemProvider extends AbstractJahiaToolItemPro
         return new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 Map<String, GWTProperty> props = gwtToolbarItem.getProperties() ;
-                final String mode = props.get("mode").getValue() ;
-                if (mode.equals("quick")) {
+                if (!props.containsKey("mode") || props.get("mode").getValue().equals("quick")) {
                     new QuickWorkflowDialog(gwtToolbarItem).show();
                 } else {
                     final String action = props.get("action").getValue() ;

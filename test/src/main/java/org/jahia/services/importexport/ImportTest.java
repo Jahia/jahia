@@ -88,7 +88,7 @@ public class ImportTest extends XMLTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        TestHelper.deleteSite("testSite");
+        TestHelper.cleanDatabase();
     }
 }
 

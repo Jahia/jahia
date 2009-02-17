@@ -240,10 +240,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     public ContainerListBean getContainerListBean() {
-        if (this.containerList == null) {
+        if (getContainerList() == null) {
             return null;
         }
-        return new ContainerListBean(this.containerList, jData.getProcessingContext());
+        return new ContainerListBean(getContainerList(), jData.getProcessingContext());
     }
 
     public void setActionMenuCssClassName(String actionMenuCssClassName) {
@@ -358,25 +358,25 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                 pageContext.removeAttribute(getId(), PageContext.PAGE_SCOPE);
             }
         }
-        if (containerList != null) {
+        if (getContainerList() != null) {
             final ContainerCache ancestor = (ContainerCache) findAncestorWithClass(this, ContainerCache.class, request);
             if (ancestor != null) {
-                ancestor.addContainerListDependency(containerList.getID());
+                ancestor.addContainerListDependency(getContainerList().getID());
             }
         }
-        if (containerList == null) {
-            containerList = new JahiaContainerList(-1, -1, -1, -1, 0);
-            containerList.setFactoryProxy(new ContainerListFactoryProxy(LoadFlags.ALL,
+        if (getContainerList() == null) {
+            setContainerList(new JahiaContainerList(-1, -1, -1, -1, 0));
+            getContainerList().setFactoryProxy(new ContainerListFactoryProxy(LoadFlags.ALL,
                     jData.getProcessingContext(),
                     jData.getProcessingContext().getEntryLoadRequest(),
                     null,
                     null,
                     null));
         }
-        if(containerList != null && (containerList.getProperty("automatic_sort_handler")==null || enforceDefinedSort)) {
+        if(getContainerList() != null && (getContainerList().getProperty("automatic_sort_handler")==null || enforceDefinedSort)) {
             if (sortByField != null && !"".equals(sortByField.trim())) {
                 try {
-                    final JahiaContainerDefinition jahiaContainerDefinition = containerList.getDefinition();
+                    final JahiaContainerDefinition jahiaContainerDefinition = getContainerList().getDefinition();
                     final JahiaFieldDefinition definition = jahiaContainerDefinition.findFieldInStructure(jahiaContainerDefinition.getName()+"_"+sortByField);
                     boolean ignoreOptimizedMode = (definition.getType() == FieldTypes.PAGE ||
                                                    definition.getType() == FieldTypes.BIGTEXT ||
@@ -409,7 +409,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         try {
             final StringBuilder buff = new StringBuilder();
             if (shouldWeDisplayActionMenus
-                    && (this.containerList != null || (this.id != null && this.id
+                    && (getContainerList() != null || (this.id != null && this.id
                             .length() > 0))) {
                 final StringBuilder menu = new StringBuilder();
                 if (actionMenuCssClassName != null) {
@@ -423,14 +423,14 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                     }
                     final String actionMenu;
                     if (this.id != null && this.id.length() > 0) {
-                        if (containerList.getDefinition().getContainerListType() != JahiaContainerDefinition.SINGLE_TYPE || containerList.size() == 0) {
+                        if (getContainerList().getDefinition().getContainerListType() != JahiaContainerDefinition.SINGLE_TYPE || getContainerList().size() == 0) {
                             actionMenu = new ActionMenuOutputter(jData.getProcessingContext(), pageContext, null, this.id, null, ActionMenuIcon.CONTAINERLIST_UPDATE, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput();
                         }
                         else {
                                actionMenu = null;
                         }
                     } else {
-                        actionMenu = new ActionMenuOutputter(jData.getProcessingContext(), pageContext, null, null, "ContentContainerList_" + this.containerList.getID(), ActionMenuIcon.CONTAINERLIST_UPDATE, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput();
+                        actionMenu = new ActionMenuOutputter(jData.getProcessingContext(), pageContext, null, null, "ContentContainerList_" + getContainerList().getID(), ActionMenuIcon.CONTAINERLIST_UPDATE, getResourceBundle(), actionMenuNamePostFix, actionMenuNameLabelKey, actionMenuIconStyle).getOutput();
                     }
 
                     if (actionMenu != null && actionMenu.length() > 0) {
@@ -500,12 +500,12 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                 buff.append(";false");
         }
         buff.append(";").append(isMetaData);
-        containerList.setProperty("automatic_sort_ignoreOptimizedMode", String.valueOf(ignoreOptimizedMode));
-        containerList.setProperty("automatic_sort_handler", buff.toString());
-        containerList.setProperty("automatic_sort_useOptimizedMode", useOptimizedMode);
-        ContentContainerList contentContainerList = containerList.getContentContainerList();
+        getContainerList().setProperty("automatic_sort_ignoreOptimizedMode", String.valueOf(ignoreOptimizedMode));
+        getContainerList().setProperty("automatic_sort_handler", buff.toString());
+        getContainerList().setProperty("automatic_sort_useOptimizedMode", useOptimizedMode);
+        ContentContainerList contentContainerList = getContainerList().getContentContainerList();
         Set<ContentObject> pickers = contentContainerList.getPickerObjects();
-        final Properties p = containerList.getProperties();
+        final Properties p = getContainerList().getProperties();
         if (!contentContainerList.getProperties().equals(p)) {
             final Set<ContentObject> objects = new HashSet<ContentObject>(pickers);
             objects.add(contentContainerList);
@@ -518,7 +518,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                     }
                 }
                 if(!enforceDefinedSort) {
-                    JahiaEvent theEvent = new JahiaEvent(this, getProcessingContext(), containerList);
+                    JahiaEvent theEvent = new JahiaEvent(this, getProcessingContext(), getContainerList());
                     ServicesRegistry.getInstance().getJahiaEventService().fireSetContainerListProperties(theEvent);
                     l.setUnversionedChanged();
                 }
@@ -527,7 +527,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     private void checkSubdefinition(ProcessingContext processingContext) throws JahiaException {
-        boolean isSubdef = ServicesRegistry.getInstance().getJahiaContainersService().hasContainerDefinitionParents(containerList.getctndefid());
+        boolean isSubdef = ServicesRegistry.getInstance().getJahiaContainersService().hasContainerDefinitionParents(getContainerList().getctndefid());
         if (!isSubdef && ProcessingContext.EDIT.equals(processingContext.getOperationMode())) {
             try {
                 pageContext.getOut().append("<font color=\"red\">The container list ").append(listName).append(" is not a subdefiniton of ").append(parentListName).append(" but is use as is, this will lead to import/export/copy/paste issues, please correct your definitions in your template</font>");
@@ -557,7 +557,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
             }
         }
         if (list != null && list.getID() == 0) {
-            list = jData.containers().ensureContainerList(containerList.getDefinition(), parentContainer.getPageID(), parentContainer.getID(), getId());
+            list = jData.containers().ensureContainerList(list.getDefinition(), parentContainer.getPageID(), parentContainer.getID(), getId());
         }
         if (list != null) {
             list.getFactoryProxy().setlistViewId(getId());
@@ -618,19 +618,23 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
     // reads the container list from a container set
     protected boolean retrieveContainerList() throws JahiaException {
-        JahiaContainerList list = jData.containers().getContainerList(
-                getName(), getId());
+        JahiaContainerList list = getContainerList(jData, getName());
         if (list != null && list.getID() != 0) {
             list.getFactoryProxy().setlistViewId(getId());
             setContainerList(list);
             setSizeAndOffsetSettings();
         } else {
-                logger.debug("ContainerList is null: " + getName());
-                displayActionMenu = false;
-                return false;
+            logger.debug("ContainerList is null: " + getName());
+            displayActionMenu = false;
+            return false;
         }
         return true;
     }
+    
+    // reads the container list from a container set
+    protected JahiaContainerList getContainerList(JahiaData jData, String listName) throws JahiaException {
+        return jData.containers().getContainerList(listName, getId());
+    }    
 
     public int doEndTag() throws JspException {
         resetState();
@@ -685,7 +689,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
             final StringBuffer buf = new StringBuffer();
 
             final String url = jData.gui().drawContainerListNextWindowPageURL(
-                    containerList,
+                    getContainerList(),
                     (startPageIndex > 1 ? stopPageIndex : nbStepPerPage) + 1
                             - currentPageIndex, windowSize, false, getId());
 
@@ -708,7 +712,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                                              int windowSize) throws JahiaException {
         if (startPageIndex > 1) {
             final StringBuffer buf = new StringBuffer();
-            final String url = jData.gui().drawContainerListPreviousWindowPageURL(containerList,
+            final String url = jData.gui().drawContainerListPreviousWindowPageURL(getContainerList(),
                     currentPageIndex - startPageIndex + 1, windowSize, false, getId());
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"previousRangeOfPages\" href=\"");
@@ -724,10 +728,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     protected String getPreviousButtonLink(int windowSize) throws JahiaException {
-        if (containerList == null) return "";
-        final Iterator<JahiaContainer> containers = containerList.getContainers();
+        if (getContainerList() == null) return "";
+        final Iterator<JahiaContainer> containers = getContainerList().getContainers();
         if (containers.hasNext()) {
-            final String url = jData.gui().drawContainerListPreviousWindowPageURL(containerList, 1, windowSize, false, getId());
+            final String url = jData.gui().drawContainerListPreviousWindowPageURL(getContainerList(), 1, windowSize, false, getId());
             final StringBuffer buf = new StringBuffer();
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"previousLink\" href=\"");
@@ -745,10 +749,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     protected String getNextButtonLink(int windowSize) throws JahiaException {
-        if (containerList == null) return "";
-        final Iterator<JahiaContainer> containers = containerList.getContainers();
+        if (getContainerList() == null) return "";
+        final Iterator<JahiaContainer> containers = getContainerList().getContainers();
         if (containers.hasNext()) {
-            final String url = jData.gui().drawContainerListNextWindowPageURL(containerList, 1, windowSize, false, getId());
+            final String url = jData.gui().drawContainerListNextWindowPageURL(getContainerList(), 1, windowSize, false, getId());
             final StringBuffer buf = new StringBuffer();
             if (url != null && url.length() > 0) {
                 buf.append("<a class=\"nextLink\" href=\"");
@@ -769,7 +773,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (pageNumber == currentPageIndex) {
             return String.valueOf(pageNumber);
         }
-        final String url = jData.gui().drawContainerListWindowPageURL(containerList, pageNumber, false, getId());
+        final String url = jData.gui().drawContainerListWindowPageURL(getContainerList(), pageNumber, false, getId());
         final StringBuffer buff = new StringBuffer();
         if (url != null && url.length() > 0) {
             buff.append("<a class=\"paginationPageUrl\" href=\"");
@@ -783,8 +787,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
     protected String displayPagination() {
         // Pagination support
-        if (containerList == null) return "";
-        final JahiaContainerListPagination pagination = containerList.getCtnListPagination();
+        if (getContainerList() == null) return "";
+        final JahiaContainerListPagination pagination = getContainerList().getCtnListPagination();
         int pageNumber = 0;
         if (pagination != null && pagination.isValid() && pagination.getNbPages() > 1) {
             try {
@@ -913,7 +917,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         TemplatePathResolverBean templatePath = getJahiaBean().getIncludes()
                 .getTemplatePath();
         try {
-            String containerListType = containerList.getDefinition()
+            String containerListType = getContainerList().getDefinition()
                     .getContainerListNodeType();
             if (containerListType == null) {
                 return body;
@@ -923,7 +927,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
             List<ExtendedNodeType> superTypes = new ArrayList<ExtendedNodeType>(
                     Arrays.asList(nt.getSupertypes()));
             superTypes
-                    .addAll(containerList.getDefinition().getContainerListMixinNodeTypes());
+                    .addAll(getContainerList().getDefinition().getContainerListMixinNodeTypes());
             for (ExtendedNodeType superType : superTypes) {
                 if (displayExtensions
                         && superType.isNodeType("jmix:containerExtension")
@@ -951,10 +955,10 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
         request.setAttribute("includedBody", body.toString());
         request.setAttribute("extensionsPages", extensions);
-        request.setAttribute("containerListID", containerList.getID());
-        request.setAttribute("contentObjectKey", new ContentContainerListKey(containerList.getID()).toString());
+        request.setAttribute("containerListID", getContainerList().getID());
+        request.setAttribute("contentObjectKey", new ContentContainerListKey(getContainerList().getID()).toString());
         try {
-            request.setAttribute("definitionName", containerList.getDefinition().getName());
+            request.setAttribute("definitionName", getContainerList().getDefinition().getName());
         } catch (JahiaException e) {
             logger.error("Unable to retrieve container list definition: "
                     + e.getMessage(), e);

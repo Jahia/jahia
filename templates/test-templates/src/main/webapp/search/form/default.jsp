@@ -32,10 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
-%><%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
-%><%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" 
-%><%@taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%@taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <div class="searchform">
 <s:form>
     <fieldset>

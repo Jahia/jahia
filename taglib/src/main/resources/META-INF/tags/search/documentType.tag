@@ -32,13 +32,18 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ tag body-content="empty" description="Renders document type selection control with all node types available." %>
-<%@include file="declaration.tagf" %>
-<utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
 <%@ attribute name="value" required="false" type="java.lang.String" %>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
+<utility:useConstants var="jcr" className="org.jahia.api.Constants" scope="application"/>
 <c:set var="value" value="${h:default(param.src_documentType, value)}"/>
+<c:set var="display" value="${h:default(display, true)}"/>
 <c:if test="${display}">
     <select name="src_documentType">
         <option value=""><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.any"

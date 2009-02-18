@@ -35,14 +35,12 @@
 
 <%@ tag import="org.jahia.params.ProcessingContext" %>
 <%@ tag import="org.jahia.bin.JahiaAdministration" %>
-<%@ tag import="org.jahia.resourcebundle.JahiaResourceBundle" %>
 <%@ tag import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ tag import="org.jahia.services.categories.Category" %>
 <%@ attribute name="startPath" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
-<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
     final String importActionUrl = JahiaAdministration.composeActionURL(request, response, "categories", "&sub=import");

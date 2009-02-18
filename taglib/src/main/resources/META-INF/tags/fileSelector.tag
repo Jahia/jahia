@@ -48,12 +48,9 @@
               description="Comma-separated list of MIME types for files to be displayed. If both filters and mimeTypes are specified they are applied one after another." %>
 <%@ attribute name="onSelect" required="false" type="java.lang.String"
               description="The JavaScript function to be called after a location is selected. The selected path will be passed as an argument to this function. If the function returns true, the value will be also set into the field value. Otherwise nothing will be done by this tag." %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<c:set var="displayIncludeChildren" value="${not empty displayIncludeChildren ? displayIncludeChildren : 'true'}"/>
-<c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren"
-                                                    value="${fieldId}_includeChildren"/></c:if>
 <c:set var="fieldIdHash"><%= Math.abs(jspContext.getAttribute("fieldId").hashCode()) %>
 </c:set>
 <c:set var="useUrl" value="${not empty useUrl ? useUrl : 'false'}"/>
@@ -66,15 +63,11 @@ title='<utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceNa
     function setSelectedFile${fieldIdHash}(path, url) {
     <c:if test="${not empty onSelect}">
         if ((${onSelect})(path, url)) {
-            document.getElementById('${fieldId}').value =
-        ${useUrl} ?
-            url : path;
+            document.getElementById('${fieldId}').value = ${useUrl} ? url : path;
         }
     </c:if>
     <c:if test="${empty onSelect}">
-        document.getElementById('${fieldId}').value =
-    ${useUrl} ?
-        url : path;
+        document.getElementById('${fieldId}').value = ${useUrl} ? url : path;
     </c:if>
     }
 </script>

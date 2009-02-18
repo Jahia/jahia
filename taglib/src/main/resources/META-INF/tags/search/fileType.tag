@@ -33,11 +33,16 @@
 
 --%>
 
-<%@ tag body-content="empty"
+<%@ tag body-content="empty" dynamic-attributes="attributes"
         description="Renders file type selection control with all file type groups configured in the applicationcontext-basejahiaconfig.xml file." %>
 <%@ tag import="org.jahia.services.content.JCRContentUtils" %>
-<%@include file="declaration.tagf" %>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ attribute name="value" required="false" type="java.lang.String" %>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
 <c:set var="fileTypes" value="<%= JCRContentUtils.getInstance().getMimeTypes() %>"/>
 <c:if test="${not empty value}">
     <% if (!JCRContentUtils.getInstance().getMimeTypes().containsKey(jspContext.getAttribute("value"))) {

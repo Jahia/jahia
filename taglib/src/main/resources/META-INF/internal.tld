@@ -6,7 +6,7 @@
         version="2.0">
     <description>Provides a tag library which should only be used by Jahia JSP files, but not templates</description>
     <display-name>Internal Jahia Tag Library</display-name>
-    <tlib-version>2.0</tlib-version>
+    <tlib-version>6.0</tlib-version>
     <short-name>internal</short-name>
     <uri>http://www.jahia.org/tags/internalLib</uri>
     <tag>
@@ -269,12 +269,12 @@
     <tag-file>
         <description>Displays a catagories manager</description>
         <name>categoryManager</name>
-        <path>/META-INF/tags/ajax/categories-manager.tag</path>
+        <path>/META-INF/tags/ajax/categoriesmanager.tag</path>
     </tag-file>
     <tag-file>
         <description>Displays a catagories selector</description>
         <name>categorySelector</name>
-        <path>/META-INF/tags/ajax/categories-picker.tag</path>
+        <path>/META-INF/tags/ajax/categoriespicker.tag</path>
     </tag-file>
     <tag-file>
         <description>Displays the file manager engine</description>

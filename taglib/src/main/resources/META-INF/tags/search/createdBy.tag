@@ -34,7 +34,14 @@
 --%>
 
 <%@ tag body-content="empty" description="Renders the entry field for quering content object creator." %>
-<%@include file="declaration.tagf" %>
+<%@ tag dynamic-attributes="attributes"%>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="display" value="${h:default(display, true)}"/>
 <%@ attribute name="value" required="false" type="java.lang.String" description="Initial value for this field." %>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_createdBy"/>

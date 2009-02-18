@@ -31,8 +31,9 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%><%@ tag body-content="empty"
+--%>
+<%@ tag body-content="empty"
         description="Resolves the Web path to the specified resource considering template set inheritance (the same way, the ${jahia.includes.webPath[]} work)."
-        %><%@
-        attribute name="value" required="true" type="java.lang.String" description="The resource path to be resolved."
-        %>${jahia.includes.webPath[value]}
+        %>
+<%@ attribute name="value" required="true" type="java.lang.String" description="The resource path to be resolved."%>
+${jahia.includes.webPath[value]}

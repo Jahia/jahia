@@ -6,7 +6,7 @@
         version="2.0">
     <description>Provides a tag library with template specific tags</description>
     <display-name>Template Jahia Tag Library</display-name>
-    <tlib-version>2.0</tlib-version>
+    <tlib-version>6.0</tlib-version>
     <short-name>template</short-name>
     <uri>http://www.jahia.org/tags/templateLib</uri>
     <tag>

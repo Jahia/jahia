@@ -36,11 +36,19 @@
 <%@ tag body-content="empty"
         description="Renders language selection control. By default all active languages of the site are used. This can be overridden by providing a list of languages to be disaplyed." %>
 <%@ tag import="java.util.Locale, org.jahia.services.sites.JahiaSite, org.jahia.utils.LanguageCodeConverters" %>
-<%@include file="declaration.tagf" %>
+<%@ tag dynamic-attributes="attributes"%>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
 <%@ attribute name="value" required="false"
               description="Represents a single language code to be used for search or a comma separated string of codes." %>
 <%@ attribute name="valueOptions" required="false"
               description="Represents a comma separated string of language codes to be displayed in the selection list." %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<c:set var="display" value="${h:default(display, true)}"/>
 <c:if test="${display}">
     <c:set var="value" value="${not empty value ? value : ''}"/>
     <c:set var="value" value="${h:default(paramValues['src_languages.values'], fn:split(value, ','))}"/>

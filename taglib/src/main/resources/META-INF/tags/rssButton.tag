@@ -34,11 +34,11 @@
 --%>
 
 <%@ tag body-content="empty" description="Displays a button to subscribe to a RSS feed" %>
-<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ attribute name="targetURL" required="true" rtexprvalue="true" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
-<a title="<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>"
+<a title='<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>'
    href="${targetURL}">
-    <img title="<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>"
+    <img title='<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>'
          src="${pageContext.request.contextPath}/jsp/jahia/css/images/icones/rss_small.gif" alt="RSS"/>
 </a>

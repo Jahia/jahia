@@ -6,7 +6,7 @@
         version="2.0">
     <description>Provides tags for manipulating JCR content</description>
     <display-name>Jahia JCR Tag Library</display-name>
-    <tlib-version>1.0</tlib-version>
+    <tlib-version>6.0</tlib-version>
     <short-name>jcr</short-name>
     <uri>http://www.jahia.org/tags/jcr</uri>
     <tag>

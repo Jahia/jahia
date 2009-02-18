@@ -48,12 +48,9 @@
 <%@ attribute name="confirmationRequired" required="false" type="java.lang.Boolean"
               description="Does the subscription require confirmation (an e-mail with the confirmation link will be sent first)?"
         %>
-<%@ tag dynamic-attributes="attributes"
-        %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"
-        %>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"
-        %>
+<%@ tag dynamic-attributes="attributes"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <c:set target="${attributes}" property="jahiatype" value="subscription"/>
 <c:set var="elementId" value="subscription_${source}"/>
 <c:set target="${attributes}" property="id" value="${h:default(id, elementId)}"/>

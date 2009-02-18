@@ -6,7 +6,7 @@
         version="2.0">
     <description>Provides a tag library with UI components tags to use within jahia templates</description>
     <display-name>UI components Jahia Tag Library</display-name>
-    <tlib-version>2.0</tlib-version>
+    <tlib-version>6.0</tlib-version>
     <short-name>uiComponents</short-name>
     <uri>http://www.jahia.org/tags/uiComponentsLib</uri>
     <tag>
@@ -1046,24 +1046,27 @@
     </tag>
 
     <tag-file>
+        <description>Renders the link to the folder path selection engine (as a popup window)</description>
+        <name>folderSelector</name>
+        <path>/META-INF/tags/folderSelector.tag</path>
+    </tag-file>
+    
+    <tag-file>
         <description>Renders a media gallery displaying image thumbnails</description>
         <name>mediaGallery</name>
         <path>/META-INF/tags/mediaGallery.tag</path>
     </tag-file>
+
     <tag-file>
         <description>Renders the link to the category selection engine (as a popup window)</description>
         <name>categorySelector</name>
         <path>/META-INF/tags/categorySelector.tag</path>
     </tag-file>
+
     <tag-file>
         <description>Renders the link to the file selection engine (as a popup window)</description>
         <name>fileSelector</name>
         <path>/META-INF/tags/fileSelector.tag</path>
-    </tag-file>
-    <tag-file>
-        <description>Renders the link to the folder path selection engine (as a popup window)</description>
-        <name>folderSelector</name>
-        <path>/META-INF/tags/folderSelector.tag</path>
     </tag-file>
 
     <tag-file>

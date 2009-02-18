@@ -32,7 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
+<%@tag body-content="empty" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ attribute name="sitekey" required="true" rtexprvalue="true" type="java.lang.String" description="text" %>

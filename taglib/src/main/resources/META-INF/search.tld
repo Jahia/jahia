@@ -7,7 +7,7 @@
 
     <description>Provides tags for performing search over WCM and DMS content and displaying results</description>
     <display-name>Jahia Search</display-name>
-    <tlib-version>1.0</tlib-version>
+    <tlib-version>6.0</tlib-version>
     <short-name>search</short-name>
     <uri>http://www.jahia.org/tags/search</uri>
 

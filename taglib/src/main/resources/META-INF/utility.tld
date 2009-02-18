@@ -6,7 +6,7 @@
         version="2.0">
     <description>Provides a tag library with utility tags to use within jahia templates</description>
     <display-name>Utility Jahia Tag Library</display-name>
-    <tlib-version>2.0</tlib-version>
+    <tlib-version>6.0</tlib-version>
     <short-name>utility</short-name>
     <uri>http://www.jahia.org/tags/utilityLib</uri>
     <tag>
@@ -319,18 +319,6 @@
         </description>
         <name>resolvePath</name>
         <path>/META-INF/tags/resolvePath.tag</path>
-    </tag-file>
-
-    <tag-file>
-        <description>Tag to retrieve the picto image of a file</description>
-        <name>getPicto</name>
-        <path>/META-INF/tags/getPicto/getPicto.tag</path>
-    </tag-file>
-
-    <tag-file>
-        <description>Retrieves the value of a given request parameter</description>
-        <name>getRequestParameter</name>
-        <path>/META-INF/tags/request/getParameter.tag</path>
     </tag-file>
 
 </taglib>

@@ -67,13 +67,21 @@
 <c:set var="includeChildren"
        value="${functions:default(param[fieldIdIncludeChildren], empty paramValues[fieldId] ? includeChildren : 'false')}"/>
 <c:set var="useUrl" value="${not empty useUrl ? useUrl : 'false'}"/>
+<script type="text/javascript">
+    function openFolderSelector(){
+        return window.open('${pageContext.request.contextPath}/jsp/jahia/engines/webdav/filePicker.jsp?foldersOnly=true&amp;callback=setSelectedFilePath${fieldIdHash}&amp;rootPath=${rootPath}&amp;startPath=${startPath}&amp;filters=${filters}', '<%="pathSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=510,width=700');
+    }
+</script>
 &nbsp;<a href="#select"
-onclick="{var pathSelector = window.open('${pageContext.request.contextPath}/jsp/jahia/engines/webdav/filePicker.jsp?foldersOnly=true&amp;callback=setSelectedFilePath${fieldIdHash}&amp;rootPath=${rootPath}&amp;startPath=${startPath}&amp;filters=${filters}', '<%="pathSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=510,width=700'); pathSelector.focus(); return false;}"
-title='<utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.selectFolder"
-                                      defaultValue="Select folder"/>'><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+onclick="{var pathSelector = openFolderSelector(); pathSelector.focus(); return false;}"
+title='<utility:resourceBundle resourceBundle="JahiaEnginesResources"
+                               resourceName="org.jahia.engines.search.selectFolder"
+                               defaultValue="Select folder"/>'><utility:resourceBundle
+        resourceBundle="JahiaEnginesResources"
         resourceName="org.jahia.engines.search.select" defaultValue="select"/></a>
 <c:if test="${displayIncludeChildren}">
-    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle
+        resourceBundle="JahiaEnginesResources"
         resourceName="org.jahia.engines.search.selectFolder.includeChildren" defaultValue="include subfolders"/></label>
 </c:if>
 <script type="text/javascript">

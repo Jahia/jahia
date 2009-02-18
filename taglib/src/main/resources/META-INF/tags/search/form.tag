@@ -34,7 +34,13 @@
 --%>
 
 <%@ tag body-content="scriptless" description="Renders the HTML form element to wrap up the search controls." %>
-<%@include file="declaration.tagf" %>
+<%@ tag dynamic-attributes="attributes"%>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="display" value="${h:default(display, true)}"/>
 <%@ attribute name="searchFor" required="false" type="java.lang.String"
               description="Specifies the search mode: pages or files [pages]." %>
 <%@ attribute name="resultsPage" required="false" type="java.lang.String"

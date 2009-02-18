@@ -34,7 +34,14 @@
 --%>
 
 <%@ tag body-content="empty" description="Renders search term input control." %>
-<%@include file="declaration.tagf" %>
+<%@ tag dynamic-attributes="attributes"%>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="display" value="${h:default(display, true)}"/>
 <%@ attribute name="value" required="false" type="java.lang.String" description="The initial value." %>
 <%@ attribute name="match" required="false" type="java.lang.String" description="The match type for search terms. [as_is]" %>
 <%@ attribute name="searchIn" required="false" type="java.lang.String"

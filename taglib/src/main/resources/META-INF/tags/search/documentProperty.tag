@@ -33,9 +33,11 @@
 
 --%>
 
-<%@ tag body-content="empty"
+<%@ tag body-content="empty" dynamic-attributes="attributes"
         description="Renders input control for the document property depending on its type (boolean, text, date, category)." %>
-<%@include file="declaration.tagf" %>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
 <%@ attribute name="documentType" required="true" type="java.lang.String"
               description="The node type of this property." %>
 <%@ attribute name="name" required="true" type="java.lang.String" description="The name of the property." %>
@@ -48,6 +50,13 @@
               description="For text properties. The match type for search term." %>
 <%@ attribute name="includeChildren" required="false" type="java.lang.Boolean"
               description="For category properties. The include children initial value." %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
+<c:set var="display" value="${h:default(display, true)}"/>
 <c:set var="propName" value="src_properties(${documentType}).${name}.value"/>
 <c:set var="value" value="${h:default(param[propName], value)}"/>
 <s:documentPropertyDescriptor documentType="${documentType}" name="${name}">

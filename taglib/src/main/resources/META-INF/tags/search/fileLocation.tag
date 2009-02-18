@@ -34,10 +34,20 @@
 --%>
 
 <%@ tag body-content="empty" description="Renders file path selection control." %>
-<%@include file="declaration.tagf" %>
+<%@ tag dynamic-attributes="attributes"%>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
 <%@ attribute name="value" required="false" type="java.lang.String" description="The initial value of the file path." %>
 <%@ attribute name="includeChildren" required="false" type="java.lang.Boolean"
               description="The initial value of the include children field." %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+
+<c:set var="display" value="${h:default(display, true)}"/>
+<c:set var="display" value="${h:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_fileLocation.value"/>
 <c:set target="${attributes}" property="id" value="src_fileLocation.value"/>

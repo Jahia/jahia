@@ -34,10 +34,18 @@
 --%>
 
 <%@ tag body-content="empty" description="Renders items per page drop down box." %>
-<%@include file="declaration.tagf" %>
+<%@ tag dynamic-attributes="attributes"%>
+<%@ attribute name="display" required="false" type="java.lang.Boolean"
+              description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
+        %>
 <%@ attribute name="value" required="false" type="java.lang.Integer" description="The initial value." %>
 <%@ attribute name="options" required="false" type="java.lang.String"
               description="Allowed options as a comma separated list of value." %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<c:set var="display" value="${h:default(display, true)}"/>
 <c:set var="value" value="${h:default(param['src_itemsPerPage'], h:default(value, '10'))}"/>
 <c:set var="options" value="${h:default(options, '5,10,20,30,50,100')}"/>
 <c:set target="${attributes}" property="name" value="src_itemsPerPage"/>

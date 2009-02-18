@@ -159,31 +159,32 @@
                                 <jarFileName>jahia-gwt-${jahia.package.version}.jar</jarFileName>
                             </allowedJars>
                             <compileTargets>
-                                <value>org.jahia.ajax.gwt.javascriptapi.JavaScriptApi</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.guest.live.Live</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.general.edit.Edit</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.general.live.Live</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.mediagallery.live.Live</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.mediagallery.edit.Edit</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.layoutmanager.live.Live</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.layoutmanager.edit.Edit</value>
-                                <!--value>org.jahia.ajax.gwt.templates.entrypoint.sitemap.live.Live</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.sitemap.edit.Edit</value-->
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.opensearch.live.Live</value>
-                                <value>org.jahia.ajax.gwt.templates.entrypoint.opensearch.edit.Edit</value>
-                                <value>org.jahia.ajax.gwt.engines.commons.Engines</value>
-                                <value>org.jahia.ajax.gwt.engines.pdisplay.ProcessDisplay</value>
-                                <value>org.jahia.ajax.gwt.engines.jobreport.JobReport</value>
-                                <value>org.jahia.ajax.gwt.engines.filemanager.FileManager</value>
-                                <value>org.jahia.ajax.gwt.engines.workflow.WorkflowManager</value>
-                                <value>org.jahia.ajax.gwt.engines.categories.CategoriesManager</value>
-                                <value>org.jahia.ajax.gwt.engines.versioning.comparison.VersionComparison</value>
-                                <value>org.jahia.ajax.gwt.subengines.acleditor.ACLEditor</value>
-                                <value>org.jahia.ajax.gwt.subengines.filepicker.FilePicker</value>
-                                <value>org.jahia.ajax.gwt.subengines.pagepicker.PagePicker</value>
-                                <value>org.jahia.ajax.gwt.subengines.categoriespicker.CategoriesPicker</value>
-                                <value>org.jahia.ajax.gwt.subengines.usergroupselect.UserGroupSelect</value>
-                                <value>org.jahia.ajax.gwt.admin.Administration</value>
+                                <value>org.jahia.ajax.gwt.template.general.edit.Edit</value>
+                                <value>org.jahia.ajax.gwt.template.general.live.Live</value>
+                                <value>org.jahia.ajax.gwt.template.guest.live.Live</value>
+                                <value>org.jahia.ajax.gwt.template.layoutmanager.edit.Edit</value>
+                                <value>org.jahia.ajax.gwt.template.layoutmanager.live.Live</value>
+                                <value>org.jahia.ajax.gwt.template.mediagallery.edit.Edit</value>
+                                <value>org.jahia.ajax.gwt.template.mediagallery.live.Live</value>
+                                <value>org.jahia.ajax.gwt.template.opensearch.edit.Edit</value>
+                                <value>org.jahia.ajax.gwt.template.opensearch.live.Live</value>
+                                <!--value>org.jahia.ajax.gwt.template.sitemap.edit.Edit</value>
+                                <value>org.jahia.ajax.gwt.template.sitemap.live.Live</value-->
+                                <value>org.jahia.ajax.gwt.module.acleditor.ACLEditor</value>
+                                <value>org.jahia.ajax.gwt.module.admin.Admin</value>
+                                <value>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</value>
+                                <value>org.jahia.ajax.gwt.module.categorypicker.CategoryPicker</value>
+                                <value>org.jahia.ajax.gwt.module.definition.ContentDefinition</value>
+                                <value>org.jahia.ajax.gwt.module.engines.Engines</value>
+                                <value>org.jahia.ajax.gwt.module.filemanager.FileManager</value>
+                                <value>org.jahia.ajax.gwt.module.filepicker.FilePicker</value>
+                                <value>org.jahia.ajax.gwt.module.jobreport.JobReport</value>
+                                <value>org.jahia.ajax.gwt.module.pagepicker.PagePicker</value>
+                                <value>org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay</value>
+                                <value>org.jahia.ajax.gwt.module.resources.Resources</value>
+                                <value>org.jahia.ajax.gwt.module.usergroup.UserGroupSelect</value>
+                                <value>org.jahia.ajax.gwt.module.versioning.VersionComparison</value>
+                                <value>org.jahia.ajax.gwt.module.workflow.WorkflowManager</value>
                             </compileTargets>
                             <gwtVersion>1.5.3</gwtVersion>
                        </configuration>

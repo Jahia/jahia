@@ -35,9 +35,9 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaGroup;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaUser;
-import org.jahia.ajax.gwt.commons.client.rpc.UserManagerService;
+import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.sites.JahiaSite;

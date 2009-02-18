@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.timebasedpublishing.GWTJahiaTimebasedPublishingState;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.timebasedpublishing.GWTJahiaTimebasedPublishingDetails;
+import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingState;
+import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingDetails;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.ajax.usersession.userSettings;
 import org.jahia.params.ProcessingContext;

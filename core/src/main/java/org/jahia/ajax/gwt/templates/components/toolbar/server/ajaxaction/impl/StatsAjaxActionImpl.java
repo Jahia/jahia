@@ -34,8 +34,8 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.data.JahiaData;
 
 import java.util.Map;
@@ -49,8 +49,8 @@ public class StatsAjaxActionImpl extends AjaxAction {
     public static String PAGE = "page";
     public static String SITE = "site";
 
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map<String, GWTProperty> gwtPropertiesMap) {
-        GWTAjaxActionResult gwtAjaxActionResult = new GWTAjaxActionResult();
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map<String, GWTJahiaProperty> gwtPropertiesMap) {
+        GWTJahiaAjaxActionResult gwtAjaxActionResult = new GWTJahiaAjaxActionResult();
         String value = "";
         if (action.equalsIgnoreCase(PAGE)) {
             value = getPageStatistics();

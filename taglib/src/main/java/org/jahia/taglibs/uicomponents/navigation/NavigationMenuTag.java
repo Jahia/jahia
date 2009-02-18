@@ -35,7 +35,7 @@ package org.jahia.taglibs.uicomponents.navigation;
 
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.ui.actions.ActionMenuIcon;
+import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;

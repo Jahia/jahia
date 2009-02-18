@@ -33,7 +33,7 @@
 
 --%>
 
-<%@ page import="org.jahia.ajax.gwt.config.client.util.Constants" %>
+<%@ page import="org.jahia.ajax.gwt.client.util.Constants" %>
 <%@ include file="../../declarations.jspf" %>
 <template:containerList name="rssContainer" id="rss">
         <template:container id="rssContainer">

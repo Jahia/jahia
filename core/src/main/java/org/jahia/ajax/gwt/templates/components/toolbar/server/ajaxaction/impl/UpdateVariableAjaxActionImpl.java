@@ -38,9 +38,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.mygwt.provider.AjaxActionJahiaToolItemProvider;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.widget.toolbar.provider.AjaxActionJahiaToolItemProvider;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.content.ObjectKey;
 import org.jahia.data.JahiaData;
@@ -66,11 +66,11 @@ public class UpdateVariableAjaxActionImpl extends AjaxAction {
      * @param gwtPropertiesMap
      * @return
      */
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map<String, GWTProperty> gwtPropertiesMap) {
-        GWTAjaxActionResult result = new GWTAjaxActionResult();
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map<String, GWTJahiaProperty> gwtPropertiesMap) {
+        GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         if (gwtPropertiesMap != null && jahiaData != null) {
             // get name
-            GWTProperty storageProp = gwtPropertiesMap.get("storage");
+            GWTJahiaProperty storageProp = gwtPropertiesMap.get("storage");
             boolean isSession = false;
             if (storageProp != null) {
                 String storageValue = storageProp.getValue();
@@ -78,7 +78,7 @@ public class UpdateVariableAjaxActionImpl extends AjaxAction {
             }
 
             // get name
-            GWTProperty prefNameProp = gwtPropertiesMap.get("prefName");
+            GWTJahiaProperty prefNameProp = gwtPropertiesMap.get("prefName");
             if(prefNameProp == null){
                 logger.error("Property 'prefName' not found. --> cancel action");
                 return result;
@@ -86,7 +86,7 @@ public class UpdateVariableAjaxActionImpl extends AjaxAction {
             String preferenceName = prefNameProp.getValue();
 
             // get value
-            GWTProperty prefValueProp = gwtPropertiesMap.get(AjaxActionJahiaToolItemProvider.SELECTED);
+            GWTJahiaProperty prefValueProp = gwtPropertiesMap.get(AjaxActionJahiaToolItemProvider.SELECTED);
             if(prefValueProp == null){
                 logger.error("Property '"+AjaxActionJahiaToolItemProvider.SELECTED+"' not found. --> cancel action");
                 return result;
@@ -101,7 +101,7 @@ public class UpdateVariableAjaxActionImpl extends AjaxAction {
             }
 
             // get page cache flush property value
-            GWTProperty flushPageCacheProp = gwtPropertiesMap.get("flushPageCache");
+            GWTJahiaProperty flushPageCacheProp = gwtPropertiesMap.get("flushPageCache");
             boolean flushPageCacheActivated = false;
             if (flushPageCacheProp != null) {
                 String flushPageCachePropStringValue = flushPageCacheProp.getValue();

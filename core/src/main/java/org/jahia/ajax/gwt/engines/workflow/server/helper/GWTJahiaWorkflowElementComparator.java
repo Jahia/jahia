@@ -33,7 +33,8 @@
 
 package org.jahia.ajax.gwt.engines.workflow.server.helper;
 
-import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowElement;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
+
 import java.util.Comparator;
 
 /**

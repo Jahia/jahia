@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.engines.versioning.server;
 
-import org.jahia.ajax.gwt.engines.versioning.client.model.VersionComparisonData;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionComparisonData;
 import org.jahia.exceptions.JahiaException;
 
 /**
@@ -51,7 +51,7 @@ public interface VersionComparisonDelegate {
      * @return
      * @throws JahiaException
      */
-    public VersionComparisonData getVersionComparisonData(VersionComparisonContext context)
+    public GWTJahiaVersionComparisonData getVersionComparisonData(VersionComparisonContext context)
     throws JahiaException;
 
 }

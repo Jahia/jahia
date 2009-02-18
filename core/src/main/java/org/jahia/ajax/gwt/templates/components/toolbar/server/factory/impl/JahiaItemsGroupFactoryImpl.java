@@ -33,15 +33,15 @@
 
 package org.jahia.ajax.gwt.templates.components.toolbar.server.factory.impl;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaLabel;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaNodeOperationResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaNodeOperationResultItem;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
-import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowElement;
+import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
+import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.widget.toolbar.provider.JahiaProviderFactory;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.bean.GWTToolbarItem;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.Constants;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.mygwt.provider.JahiaProviderFactory;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.factory.ItemsGroupFactory;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.JahiaData;
@@ -76,7 +76,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaItemsGroupFactoryImpl.class);
     private static JahiaPreferencesProvider bookmarksPreferencesProvider;
 
-    public final static String LANG_WORFLOW = "lang.worflow";
+    public final static String LANG_WORFLOW = "lang.workflow";
     public final static String HISTORY = "history";
     public final static String SITES = "sites";
     public final static String BOOKMARKS = "bookmarks";
@@ -90,7 +90,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @param input
      * @return
      */
-    public List<GWTToolbarItem> populateItemsList(List<GWTToolbarItem> gwtToolbarItemsList, JahiaData jahiaData, String input, Map<String, String> properties) {
+    public List<GWTJahiaToolbarItem> populateItemsList(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData, String input, Map<String, String> properties) {
         if (input != null) {
             // case of history
             if (input.equalsIgnoreCase(HISTORY)) {
@@ -118,7 +118,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @param historyPathLength
      * @return
      */
-    public List<GWTToolbarItem> populateWithHistoryItems(List<GWTToolbarItem> gwtToolbarItemsList, JahiaData jahiaData, int historyPathLength) {
+    public List<GWTJahiaToolbarItem> populateWithHistoryItems(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData, int historyPathLength) {
         // create the list item
         List<HistoryBean> historyBeanList = (List<HistoryBean>) jahiaData.getProcessingContext().getSessionState().getAttribute(HistoryValve.ORG_JAHIA_TOOLBAR_HISTORY);
         if (historyBeanList != null) {
@@ -130,7 +130,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 HistoryBean cHistoryBean = historyBeanList.get(i);
                 int pid = cHistoryBean.getPid();
                 try {
-                    GWTToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, null, pid);
+                    GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, null, pid);
                     if (gwtToolbarItem != null) {
                         String minIconStyle = "gwt-toolbar-ItemsGroup-icons-page-min";
                         String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-page-normal";
@@ -150,7 +150,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
     /**
      * populate with bookmark items
      */
-    public List<GWTToolbarItem> populateWithBookmarksItems(List<GWTToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
+    public List<GWTJahiaToolbarItem> populateWithBookmarksItems(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
         // get bookmarks provider
         JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
         Map<JahiaPreferenceKey, JahiaPreference> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaPreferences(jahiaData.getProcessingContext());
@@ -160,7 +160,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 BookmarksJahiaPreferenceKey bKey = (BookmarksJahiaPreferenceKey) key;
                 int pid = bKey.getPid();
                 try {
-                    GWTToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, null, pid);
+                    GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, null, pid);
                     if (gwtToolbarItem != null) {
                         String minIconStyle = "gwt-toolbar-ItemsGroup-icons-bookmark-min";
                         String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-bookmark-min";
@@ -201,13 +201,13 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @param jahiaData
      * @return
      */
-    public List<GWTToolbarItem> populateWithChangeSiteItems(List<GWTToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
+    public List<GWTJahiaToolbarItem> populateWithChangeSiteItems(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
         try {
             JahiaGroupManagerService jahiaGroupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
             List<JahiaSite> sitesList = jahiaGroupManagerService.getAdminGrantedSites(jahiaData.getProcessingContext().getUser());
             if (sitesList != null && sitesList.size() > 1) {
                 for (JahiaSite site : sitesList) {
-                    GWTToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
+                    GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
                     // add to itemsgroup
                     if (gwtToolbarItem != null) {
                         String minIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
@@ -237,7 +237,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @param jahiaData
      * @return
      */
-    public List<GWTToolbarItem> populateWithQuickWorkflowItems(List<GWTToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
+    public List<GWTJahiaToolbarItem> populateWithQuickWorkflowItems(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
         try {
             ProcessingContext processingContext = jahiaData.getProcessingContext();
             ContentObjectKey currentObjectKey = (ContentObjectKey) processingContext.getContentPage().getObjectKey();
@@ -262,28 +262,28 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     }
                 }
                 if (warns>0) {
-                    GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
+                    GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
                     gwtToolbarItem.setTitle(vals.size()+" warnings");
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
                     
                     gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
-                    gwtToolbarItem.addProperty(new GWTProperty(Constants.WIDTH, "1020"));
-                    gwtToolbarItem.addProperty(new GWTProperty(Constants.HEIGHT, "730"));
-                    gwtToolbarItem.addProperty(new GWTProperty(Constants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
                     
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
                 if (errors>0) {
-                    GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
+                    GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
                     gwtToolbarItem.setTitle(vals.size()+" errors");
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
 
                     gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
-                    gwtToolbarItem.addProperty(new GWTProperty(Constants.WIDTH, "1020"));
-                    gwtToolbarItem.addProperty(new GWTProperty(Constants.HEIGHT, "730"));
-                    gwtToolbarItem.addProperty(new GWTProperty(Constants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
                     
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
@@ -297,7 +297,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     if (actionsMap.get(lang).contains(actionLabel.getKey())) {
                         String key = actionLabel.getKey();
                         String label = actionLabel.getLabel();
-                        GWTToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, label, "quick");
+                        GWTJahiaToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, label, "quick");
                         // add to itemsgroup
                         if (gwtToolbarItem != null) {
                             String minIconStyle = "gwt-toolbar-ItemsGroup-icons-action-" + key + "-min";
@@ -326,7 +326,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
 //                    if (actionsMap.get(lang).contains(actionLabel.getKey())) {
 //                        String key = actionLabel.getKey();
 //                        String label = actionLabel.getLabel();
-//                        GWTToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, "Batch " + label, "batch");
+//                        GWTJahiaToolbarItem gwtToolbarItem = createQuickWorkflowItem(currentObjectKey.getKey(), lang, key, "Batch " + label, "batch");
 //                        // add to itemsgroup
 //                        if (gwtToolbarItem != null) {
 //                            String minIconStyle = "gwt-toolbar-ItemsGroup-icons-action-" + key + "-min";
@@ -347,7 +347,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     String publishAllLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.workflow.publishAll",
                             processingContext,
                             processingContext.getLocale() );
-                    GWTToolbarItem gwtToolbarItem = createPublishAllItem(publishAllLabel);
+                    GWTJahiaToolbarItem gwtToolbarItem = createPublishAllItem(publishAllLabel);
                     // add to itemsgroup
                 
                     if (gwtToolbarItem != null) {
@@ -376,7 +376,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @return
      * @throws JahiaException
      */
-    private GWTToolbarItem createRedirectItem(JahiaData jahiaData, String itemTitle, Integer pid) {
+    private GWTJahiaToolbarItem createRedirectItem(JahiaData jahiaData, String itemTitle, Integer pid) {
         try {
             JahiaPage jahiaPage = ServicesRegistry.getInstance().getJahiaPageService().lookupPage(pid, jahiaData.getProcessingContext());
 
@@ -394,7 +394,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @return
      * @throws JahiaException
      */
-    private GWTToolbarItem createRedirectItem(JahiaData jahiaData, String itemTitle, JahiaPage jahiaPage) throws JahiaException {
+    private GWTJahiaToolbarItem createRedirectItem(JahiaData jahiaData, String itemTitle, JahiaPage jahiaPage) throws JahiaException {
         if (jahiaPage != null) {
             String url = jahiaData.getProcessingContext().composePageUrl(jahiaPage);
             if (url == null) {
@@ -409,13 +409,13 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             }
 
             // create the toolitem
-            GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
+            GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
             gwtToolbarItem.setTitle(title);
             gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_REDIRECT_WINDOW);
             gwtToolbarItem.setDisplayTitle(true);
 
             // add url property
-            GWTProperty gwtProperty = new GWTProperty();
+            GWTJahiaProperty gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName("url");
             gwtProperty.setValue(url);
             gwtToolbarItem.addProperty(gwtProperty);
@@ -436,33 +436,33 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @return
      * @throws JahiaException
      */
-    private GWTToolbarItem createQuickWorkflowItem(String objectKey, String language, String action, String label, String mode) throws JahiaException {
+    private GWTJahiaToolbarItem createQuickWorkflowItem(String objectKey, String language, String action, String label, String mode) throws JahiaException {
         if (objectKey != null && objectKey.length() > 0 && action != null && action.length() > 0) {
 
             // create the toolitem
-            GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
+            GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
             gwtToolbarItem.setTitle(label);
             gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
             gwtToolbarItem.setDisplayTitle(true);
 
             // add url property
-            GWTProperty gwtProperty = new GWTProperty();
+            GWTJahiaProperty gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName("action");
             gwtProperty.setValue(action);
             gwtToolbarItem.addProperty(gwtProperty);
-            gwtProperty = new GWTProperty();
+            gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName("language");
             gwtProperty.setValue(language);
             gwtToolbarItem.addProperty(gwtProperty);
-            gwtProperty = new GWTProperty();
+            gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName("objectKey");
             gwtProperty.setValue(objectKey);
             gwtToolbarItem.addProperty(gwtProperty);
-            gwtProperty = new GWTProperty();
+            gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName("label");
             gwtProperty.setValue(label);
             gwtToolbarItem.addProperty(gwtProperty);
-            gwtProperty = new GWTProperty();
+            gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName("mode");
             gwtProperty.setValue(mode);
             gwtToolbarItem.addProperty(gwtProperty);
@@ -479,27 +479,27 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
      * @return
      * @throws JahiaException
      */
-    private GWTToolbarItem createPublishAllItem(String label) throws JahiaException {
+    private GWTJahiaToolbarItem createPublishAllItem(String label) throws JahiaException {
         // create the toolitem
-        GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
+        GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
         gwtToolbarItem.setTitle(label);
         gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_QUICK_WORKFLOW);
         gwtToolbarItem.setDisplayTitle(true);
 
         // add label property
-        GWTProperty gwtProperty = new GWTProperty();
+        GWTJahiaProperty gwtProperty = new GWTJahiaProperty();
         gwtProperty.setName("action");
         gwtProperty.setValue("publishAll");
         gwtToolbarItem.addProperty(gwtProperty);
-        gwtProperty = new GWTProperty();
+        gwtProperty = new GWTJahiaProperty();
         gwtProperty.setName("label");
         gwtProperty.setValue(label);
         gwtToolbarItem.addProperty(gwtProperty);
-        gwtProperty = new GWTProperty();
+        gwtProperty = new GWTJahiaProperty();
         gwtProperty.setName("language");
         gwtProperty.setValue("all");
         gwtToolbarItem.addProperty(gwtProperty);
-        gwtProperty = new GWTProperty();
+        gwtProperty = new GWTJahiaProperty();
         gwtProperty.setName("objectKey");
         gwtProperty.setValue("all");
         gwtToolbarItem.addProperty(gwtProperty);

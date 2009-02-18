@@ -39,7 +39,7 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.pagesusers.PageUserProperty;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.ajax.gwt.commons.client.beans.GWTPageUserProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaPageUserProperty;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
 
@@ -131,7 +131,7 @@ public class JahiaPagesUsersPropManager {
         return updatePageUserProp(properties, objects);
     }
 
-    public Map<String, GWTPageUserProperty> getPageUsersProperties(int pageId, String principalKey, String principalType, String propType) {
+    public Map<String, GWTJahiaPageUserProperty> getPageUsersProperties(int pageId, String principalKey, String principalType, String propType) {
         Map properties = null;
         Cache cache = getCache();
         if (cache != null) {

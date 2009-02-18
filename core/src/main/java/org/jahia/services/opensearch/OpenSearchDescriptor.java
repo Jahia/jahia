@@ -41,11 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.Image;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.Namespace;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.OpenSearchDescriptorConstants;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.URL;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.URLTemplate;
+import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaImage;
+import org.jahia.ajax.gwt.client.data.opensearch.*;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -57,10 +54,10 @@ import org.jdom.input.SAXBuilder;
  * Time: 09:35:53
  * To change this template use File | Settings | File Templates.
  */
-public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
+public class OpenSearchDescriptor implements GWTJahiaOpenSearchDescriptorConstants {
 
     private static final org.jdom.Namespace OPEN_SEARCH_NS =
-            org.jdom.Namespace.getNamespace(Namespace.OPEN_SEARCH_NS.getPrefix(),Namespace.OPEN_SEARCH_NS.getURI());
+            org.jdom.Namespace.getNamespace(GWTJahiaNamespace.OPEN_SEARCH_NS.getPrefix(), GWTJahiaNamespace.OPEN_SEARCH_NS.getURI());
 
     private Map namespaces = new HashMap();
     private String docPath;
@@ -73,12 +70,12 @@ public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
 
     public OpenSearchDescriptor(String docPath) throws Exception {
         this.docPath = docPath;
-        namespaces.put(Namespace.OPEN_SEARCH_NS.getPrefix(),Namespace.OPEN_SEARCH_NS);
+        namespaces.put(GWTJahiaNamespace.OPEN_SEARCH_NS.getPrefix(), GWTJahiaNamespace.OPEN_SEARCH_NS);
         loadDescriptor(null);
     }
 
     public OpenSearchDescriptor(InputStream inputStream) throws Exception {
-        namespaces.put(Namespace.OPEN_SEARCH_NS.getPrefix(),Namespace.OPEN_SEARCH_NS);
+        namespaces.put(GWTJahiaNamespace.OPEN_SEARCH_NS.getPrefix(), GWTJahiaNamespace.OPEN_SEARCH_NS);
         loadDescriptor(inputStream);
     }
 
@@ -119,15 +116,15 @@ public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
         return this.description;
     }
 
-    public List<Image> getImages(){
+    public List<GWTJahiaImage> getImages(){
         return this.images;
     }
 
-    public List<URL> getUrls() {
+    public List<GWTJahiaURL> getUrls() {
         return urls;
     }
 
-    public Map<String,Namespace> getNamespaces() {
+    public Map<String, GWTJahiaNamespace> getNamespaces() {
         return namespaces;
     }
 
@@ -140,7 +137,7 @@ public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
         List imagesEl = this.descriptor.getChildren(IMAGE,defaultNamespace);
         Iterator it = imagesEl.iterator();
         Element el = null;
-        Image image = null;
+        GWTJahiaImage image = null;
         String uri = null;
         String height = null;
         String width = null;
@@ -148,10 +145,10 @@ public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
         while (it.hasNext()){
             el = (Element)it.next();
             uri = getTextValue(el.getTextTrim(),"");
-            type = getTextValue(el.getAttributeValue(Image.TYPE_ATTRIBUTE),"");
-            height = getTextValue(el.getAttributeValue(Image.HEIGHT_ATTRIBUTE),"");
-            width = getTextValue(el.getAttributeValue(Image.WIDTH_ATTRIBUTE),"");
-            image = new Image(uri, type, width, height);
+            type = getTextValue(el.getAttributeValue(GWTJahiaImage.TYPE_ATTRIBUTE),"");
+            height = getTextValue(el.getAttributeValue(GWTJahiaImage.HEIGHT_ATTRIBUTE),"");
+            width = getTextValue(el.getAttributeValue(GWTJahiaImage.WIDTH_ATTRIBUTE),"");
+            image = new GWTJahiaImage(uri, type, width, height);
             this.images.add(image);
         }
     }
@@ -167,8 +164,8 @@ public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
         String pageOffset = null;
         int indexOffsetInt = 0;
         int pageOffsetInt = 0;
-        URLTemplate URLTmpl = null;
-        URL url = null;
+        GWTJahiaURLTemplate URLTmpl = null;
+        GWTJahiaURL url = null;
         List parameters = null;
         while (it.hasNext()){
             el = (Element)it.next();
@@ -182,22 +179,22 @@ public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
             if (templateEl != null){
                 template = templateEl.getText();
             }
-            type = getTextValue(el.getAttributeValue(org.jahia.ajax.gwt.templates.components.opensearch.client.model.URL.TYPE_ATTRIBUE,defaultNamespace),"");
-            indexOffset = getTextValue(el.getAttributeValue(org.jahia.ajax.gwt.templates.components.opensearch.client.model.URL.INDEX_OFFSET_ATTRIBUTE,defaultNamespace),"");
+            type = getTextValue(el.getAttributeValue(GWTJahiaURL.TYPE_ATTRIBUE,defaultNamespace),"");
+            indexOffset = getTextValue(el.getAttributeValue(GWTJahiaURL.INDEX_OFFSET_ATTRIBUTE,defaultNamespace),"");
             try {
                 indexOffsetInt = Integer.parseInt(indexOffset);
             } catch ( Throwable t ){
             }
-            pageOffset = getTextValue(el.getAttributeValue(org.jahia.ajax.gwt.templates.components.opensearch.client.model.URL.PAGE_OFFSET_ATTRIBUTE,defaultNamespace),"");
+            pageOffset = getTextValue(el.getAttributeValue(GWTJahiaURL.PAGE_OFFSET_ATTRIBUTE,defaultNamespace),"");
             try {
                 pageOffsetInt = Integer.parseInt(pageOffset);
             } catch ( Throwable t ){
             }
-            type = getTextValue(el.getAttributeValue(org.jahia.ajax.gwt.templates.components.opensearch.client.model.URL.TYPE_ATTRIBUE),"");
-            URLTmpl = new URLTemplate(template,namespaces);
+            type = getTextValue(el.getAttributeValue(GWTJahiaURL.TYPE_ATTRIBUE),"");
+            URLTmpl = new GWTJahiaURLTemplate(template,namespaces);
             // @todo parse additional parameters
             parameters = new ArrayList();
-            url = new URL(URLTmpl,type,indexOffsetInt,pageOffsetInt,parameters);
+            url = new GWTJahiaURL(URLTmpl,type,indexOffsetInt,pageOffsetInt,parameters);
             this.urls.add(url);
         }
     }
@@ -209,10 +206,10 @@ public class OpenSearchDescriptor implements OpenSearchDescriptorConstants {
     private void addAdditionalNamespaces(List additionalNamespaces){
         Iterator it = additionalNamespaces.iterator();
         org.jdom.Namespace jdNS = null;
-        Namespace namespace = null;
+        GWTJahiaNamespace namespace = null;
         while (it.hasNext()){
             jdNS = (org.jdom.Namespace)it.next();
-            namespace = new Namespace(jdNS.getPrefix(),jdNS.getURI());
+            namespace = new GWTJahiaNamespace(jdNS.getPrefix(),jdNS.getURI());
             namespaces.put(namespace.getPrefix(),namespace);
         }
     }

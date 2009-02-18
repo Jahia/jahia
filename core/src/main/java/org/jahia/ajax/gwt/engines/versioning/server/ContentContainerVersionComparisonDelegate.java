@@ -33,11 +33,11 @@
 
 package org.jahia.ajax.gwt.engines.versioning.server;
 
-import org.jahia.ajax.gwt.engines.versioning.client.model.FieldGroup;
-import org.jahia.ajax.gwt.engines.versioning.client.model.JahiaField;
-import org.jahia.ajax.gwt.engines.versioning.client.model.VersionComparisonData;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionComparisonData;
 import org.jahia.ajax.gwt.engines.versioning.server.VersionComparisonUtils;
-import org.jahia.ajax.gwt.commons.client.beans.GWTVersion;
+import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaField;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaFieldGroup;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.data.fields.FieldTypes;
@@ -76,11 +76,11 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(ContentContainerVersionComparisonDelegate.class);
 
-    public VersionComparisonData getVersionComparisonData(VersionComparisonContext context)
+    public GWTJahiaVersionComparisonData getVersionComparisonData(VersionComparisonContext context)
     throws JahiaException {
 
         final HttpServletRequest request = context.getJParams().getRequest();
-        VersionComparisonData data = null;
+        GWTJahiaVersionComparisonData data = null;
         try {
 
             // engine view Helper
@@ -258,7 +258,7 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
                         true,languageCode,revisionsList);
     }
 
-    protected VersionComparisonData getVersionComparisonDataFrom(ContainerCompareBean containerCompareBean,
+    protected GWTJahiaVersionComparisonData getVersionComparisonDataFrom(ContainerCompareBean containerCompareBean,
                                                                  VersionComparisonContext context, String languageCode){
 
         Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
@@ -266,9 +266,9 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
         if (containerCompareBean == null){
             return null;
         } else {
-            GWTVersion version1 = getVersionFromRevisionEntrySet(containerCompareBean.getOldRevision(),context
+            GWTJahiaVersion version1 = getVersionFromRevisionEntrySet(containerCompareBean.getOldRevision(),context
                     ,languageCode);
-            GWTVersion version2 = getVersionFromRevisionEntrySet(containerCompareBean.getNewRevision(),context
+            GWTJahiaVersion version2 = getVersionFromRevisionEntrySet(containerCompareBean.getNewRevision(),context
                     ,languageCode);
             List fieldGroups = new ArrayList();
             addFieldGroups(fieldGroups,containerCompareBean.getFields(),"Fields",context,languageCode);
@@ -283,7 +283,7 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
 
             String changedDiffLegend = VersionComparisonUtils.getChangedDiffLegendAssert(context.getJParams(),locale);
 
-            VersionComparisonData data = new VersionComparisonData(titleAssert,version1,version2,fieldGroups);
+            GWTJahiaVersionComparisonData data = new GWTJahiaVersionComparisonData(titleAssert,version1,version2,fieldGroups);
             data.setAddedDiffLegend(addedDiffLegend);
             data.setRemovedDiffLegend(removedDiffLegend);
             data.setChangedDiffLegend(changedDiffLegend);
@@ -308,7 +308,7 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
                                   String languageCode){
         if (fields !=null){
             JahiaFieldVersionCompare fieldForComparison = null;
-            FieldGroup fieldGroup = new FieldGroup();
+            GWTJahiaFieldGroup fieldGroup = new GWTJahiaFieldGroup();
             fieldGroup.setGroupName(groupName);
             List compareFields = new ArrayList();
             ContentField contentField = null;
@@ -344,7 +344,7 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
                     fieldTitle = fieldDef.getTitle(
                             LanguageCodeConverters.languageCodeToLocale(languageCode));
                 }
-                JahiaField f = new JahiaField(fieldType,String.valueOf(fieldForComparison.getFieldId()),fieldTitle,
+                GWTJahiaField f = new GWTJahiaField(fieldType,String.valueOf(fieldForComparison.getFieldId()),fieldTitle,
                         icon,fieldType==FieldTypes.BIGTEXT,originalValue,newValue,mergedDiffValue);
                 compareFields.add(f);
             }
@@ -353,10 +353,10 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
         }
     }
 
-    protected GWTVersion getVersionFromRevisionEntrySet(RevisionEntrySet rev, VersionComparisonContext context,
+    protected GWTJahiaVersion getVersionFromRevisionEntrySet(RevisionEntrySet rev, VersionComparisonContext context,
                                                      String languageCode){
         Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-        GWTVersion version = new GWTVersion();
+        GWTJahiaVersion version = new GWTJahiaVersion();
         version.setVersionableUUID(context.getVersionableUUID());
         version.setDate(rev.getVersionID()*1000L);
         version.setLang(languageCode);
@@ -367,15 +367,15 @@ public class ContentContainerVersionComparisonDelegate implements VersionCompari
         }
         version.setReadableName(readableName);
         List<String> versionRowData = new ArrayList<String>();
-        version.set(GWTVersion.VERSION_LABEL,version.getReadableName());
-        versionRowData.add((String)version.get(GWTVersion.VERSION_LABEL));
-        version.set(GWTVersion.WORKFLOW_STATE,RevisionEntrySet.getWorkflowState(rev, context.getJParams(), locale));
-        versionRowData.add((String)version.get(GWTVersion.WORKFLOW_STATE));
-        version.set(GWTVersion.AUTHOR,rev.getLastContributor());
-        versionRowData.add((String)version.get(GWTVersion.AUTHOR));
-        version.set(GWTVersion.DATE,RevisionEntrySet.getVersionDate(rev,locale));
-        versionRowData.add((String)version.get(GWTVersion.DATE));
-        version.set(GWTVersion.LANG,languageCode);
+        version.set(GWTJahiaVersion.VERSION_LABEL,version.getReadableName());
+        versionRowData.add((String)version.get(GWTJahiaVersion.VERSION_LABEL));
+        version.set(GWTJahiaVersion.WORKFLOW_STATE,RevisionEntrySet.getWorkflowState(rev, context.getJParams(), locale));
+        versionRowData.add((String)version.get(GWTJahiaVersion.WORKFLOW_STATE));
+        version.set(GWTJahiaVersion.AUTHOR,rev.getLastContributor());
+        versionRowData.add((String)version.get(GWTJahiaVersion.AUTHOR));
+        version.set(GWTJahiaVersion.DATE,RevisionEntrySet.getVersionDate(rev,locale));
+        versionRowData.add((String)version.get(GWTJahiaVersion.DATE));
+        version.set(GWTJahiaVersion.LANG,languageCode);
         versionRowData.add(languageCode);
         version.setVersionRowData(versionRowData.toArray(new String[]{}));
         return version;

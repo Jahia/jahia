@@ -33,17 +33,16 @@
 
 package org.jahia.ajax.gwt.filemanagement.server.helper;
 
-import org.jahia.ajax.gwt.filemanagement.client.model.*;
-import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.filemanagement.client.model.GWTJahiaNode;
-import org.jahia.ajax.gwt.filemanagement.client.util.JCRClientUtils;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet;
-import org.jahia.ajax.gwt.filemanagement.client.model.GWTPortletInstanceWizard;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.*;
 
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -903,7 +902,7 @@ public class FileManagerWorker {
      * @param nodes    the nodes to save the properties of
      * @param newProps the new properties
      * @param user     the current user
-     * @throws org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException
+     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
     public static void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, JahiaUser user) throws GWTJahiaServiceException {
@@ -1334,7 +1333,7 @@ public class FileManagerWorker {
         return results;
     }
 
-    public static GWTJahiaNode createPortletInstance(String parentPath, GWTPortletInstanceWizard wiz, ProcessingContext context) throws GWTJahiaServiceException {
+    public static GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance wiz, ProcessingContext context) throws GWTJahiaServiceException {
         try {
             String name = wiz.getInstanceName();
 

@@ -36,7 +36,7 @@ package org.jahia.taglibs.template.container;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.struts.taglib.TagUtils;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.ui.actions.ActionMenuIcon;
+import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;

@@ -39,8 +39,8 @@ import com.sun.syndication.io.XmlReader;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.feed.synd.SyndFeed;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.commons.client.beans.rss.GWTRSSFeed;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.utils.RSSHelper;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.I18nBean;
@@ -581,7 +581,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
      * @param feedUrl
      * @return
      */
-    protected GWTRSSFeed loadRssFeed(URL feedUrl) {
+    protected GWTJahiaRSSFeed loadRssFeed(URL feedUrl) {
         try {
             SyndFeedInput input = new SyndFeedInput();
             URLConnection urlConnection = feedUrl.openConnection();

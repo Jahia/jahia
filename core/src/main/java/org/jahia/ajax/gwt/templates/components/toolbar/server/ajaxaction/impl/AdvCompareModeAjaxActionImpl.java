@@ -33,8 +33,11 @@
 
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
-import org.jahia.ajax.gwt.commons.client.beans.*;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRevision;
+import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
 import org.jahia.data.JahiaData;
 import org.jahia.params.AdvCompareModeSettings;
 import org.jahia.params.ProcessingContext;
@@ -54,10 +57,10 @@ public class AdvCompareModeAjaxActionImpl extends AjaxAction {
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(AdvCompareModeAjaxActionImpl.class);
 
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
         logger.debug("***************  AdvCompareModeAjaxActionImpl");
 
-        GWTProperty enabledProperty = (GWTProperty) gwtPropertiesMap.get("enabled");
+        GWTJahiaProperty enabledProperty = (GWTJahiaProperty) gwtPropertiesMap.get("enabled");
 
         AdvCompareModeSettings advCompareModeSettings = (AdvCompareModeSettings)jahiaData.getProcessingContext().getSessionState()
                 .getAttribute(ProcessingContext.SESSION_ADV_COMPARE_MODE_SETTINGS);
@@ -69,10 +72,10 @@ public class AdvCompareModeAjaxActionImpl extends AjaxAction {
         AdvCompareModeSettings.setThreadLocalAdvCompareModeSettings(advCompareModeSettings);
         advCompareModeSettings.setEnabled(enabledProperty != null && "true".equals(enabledProperty.getValue()));
 
-        GWTAjaxActionResult actionResult = new GWTAjaxActionResult();
+        GWTJahiaAjaxActionResult actionResult = new GWTJahiaAjaxActionResult();
 
         ContentObjectEntryState version1EntryState = updateVersionSetting(advCompareModeSettings.getVersion1(),
-                (GWTRevision) gwtPropertiesMap.get("version1"),jahiaData);
+                (GWTJahiaRevision) gwtPropertiesMap.get("version1"),jahiaData);
         if (((advCompareModeSettings.getVersion1().getDate()>0 && !advCompareModeSettings.getVersion1().isUseVersion())
                 || (advCompareModeSettings.getVersion1().getVersion() != null &&
                 advCompareModeSettings.getVersion1().isUseVersion()))
@@ -80,7 +83,7 @@ public class AdvCompareModeAjaxActionImpl extends AjaxAction {
             actionResult.addError("Wrong version 1: " + " the page does not exist or is deleted at that date");
         }
         ContentObjectEntryState version2EntryState = updateVersionSetting(advCompareModeSettings.getVersion2(),
-                (GWTRevision) gwtPropertiesMap.get("version2"),jahiaData);
+                (GWTJahiaRevision) gwtPropertiesMap.get("version2"),jahiaData);
         if (((advCompareModeSettings.getVersion2().getDate()>0 && !advCompareModeSettings.getVersion2().isUseVersion())
                 || (advCompareModeSettings.getVersion2().getVersion() != null &&
                 advCompareModeSettings.getVersion2().isUseVersion()))
@@ -168,13 +171,13 @@ public class AdvCompareModeAjaxActionImpl extends AjaxAction {
     }
 
     public static ContentObjectEntryState updateVersionSetting(AdvCompareModeSettings.VersionSetting setting,
-                                     GWTRevision versionProp, JahiaData jahiaData){
+                                     GWTJahiaRevision versionProp, JahiaData jahiaData){
         if (versionProp != null){
             setting.setDate(versionProp.getDate());
             setting.setUseVersion(versionProp.isUseVersion());
             setting.setVersion(versionProp.getVersion());
         }
-        GWTVersion version = setting.getVersion();
+        GWTJahiaVersion version = setting.getVersion();
 
         ContentObjectEntryState entryState = null;
         if (setting.isUseVersion() && version != null){

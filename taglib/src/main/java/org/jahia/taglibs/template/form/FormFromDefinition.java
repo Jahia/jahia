@@ -34,7 +34,7 @@
 package org.jahia.taglibs.template.form;
 
 import org.jahia.taglibs.template.gwt.GWTJahiaModuleTag;
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 
 import javax.servlet.jsp.JspException;
 

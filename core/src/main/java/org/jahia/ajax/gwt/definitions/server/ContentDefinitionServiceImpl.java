@@ -35,8 +35,8 @@ package org.jahia.ajax.gwt.definitions.server;
 
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
-import org.jahia.ajax.gwt.definitions.client.ContentDefinitionService;
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 
 import java.util.*;
 

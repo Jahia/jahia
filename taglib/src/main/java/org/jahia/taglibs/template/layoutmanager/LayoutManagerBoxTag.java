@@ -33,7 +33,7 @@
 
 package org.jahia.taglibs.template.layoutmanager;
 
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.apache.log4j.Logger;
 

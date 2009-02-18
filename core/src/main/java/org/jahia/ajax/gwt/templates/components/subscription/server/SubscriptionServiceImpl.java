@@ -36,9 +36,9 @@ package org.jahia.ajax.gwt.templates.components.subscription.server;
 import java.util.List;
 
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.templates.components.subscription.client.SubscriptionInfo;
-import org.jahia.ajax.gwt.templates.components.subscription.client.SubscriptionService;
-import org.jahia.ajax.gwt.templates.components.subscription.client.SubscriptionStatus;
+import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionInfo;
+import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
+import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.mail.MailHelper;

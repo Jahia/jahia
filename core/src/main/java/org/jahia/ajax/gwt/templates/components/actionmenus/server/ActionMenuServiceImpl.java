@@ -33,19 +33,18 @@
 
 package org.jahia.ajax.gwt.templates.components.actionmenus.server;
 
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.ActionMenuService;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.timebasedpublishing.GWTJahiaTimebasedPublishingDetails;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.timebasedpublishing.GWTJahiaTimebasedPublishingState;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.actions.*;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.workflow.GWTJahiaWorkflowState;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.GWTJahiaGlobalState;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.GWTJahiaIntegrityState;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.acldiff.GWTJahiaAclDiffState;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.acldiff.GWTJahiaAclDiffDetails;
+import org.jahia.ajax.gwt.client.service.actionmenu.ActionMenuService;
+import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingDetails;
+import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingState;
+import org.jahia.ajax.gwt.client.data.actionmenu.actions.*;
+import org.jahia.ajax.gwt.client.data.actionmenu.workflow.GWTJahiaWorkflowState;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaGlobalState;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaIntegrityState;
+import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
+import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.*;
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.registries.ServicesRegistry;

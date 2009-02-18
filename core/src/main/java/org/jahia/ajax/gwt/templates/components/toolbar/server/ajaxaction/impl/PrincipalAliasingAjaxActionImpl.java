@@ -35,8 +35,8 @@ package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
 import java.util.Map;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -54,14 +54,14 @@ import org.jahia.services.usermanager.JahiaUser;
 public class PrincipalAliasingAjaxActionImpl extends AjaxAction {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(PrincipalAliasingAjaxActionImpl.class);
 
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
         logger.debug("***************  PrincipalAliasingAjaxActionImpl");
 
-        GWTAjaxActionResult result = new GWTAjaxActionResult();
+        GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
 
-        GWTProperty enabledProperty = (GWTProperty) gwtPropertiesMap.get("enabled");
-        GWTProperty dateProperty = (GWTProperty) gwtPropertiesMap.get("date");
-        GWTProperty principalProperty = (GWTProperty) gwtPropertiesMap.get("principalKey");
+        GWTJahiaProperty enabledProperty = (GWTJahiaProperty) gwtPropertiesMap.get("enabled");
+        GWTJahiaProperty dateProperty = (GWTJahiaProperty) gwtPropertiesMap.get("date");
+        GWTJahiaProperty principalProperty = (GWTJahiaProperty) gwtPropertiesMap.get("principalKey");
 
         boolean previousEnabledState = false;
         JahiaUser previousAliasedUser = null;

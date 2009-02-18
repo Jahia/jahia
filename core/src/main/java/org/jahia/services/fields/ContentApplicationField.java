@@ -47,7 +47,7 @@ import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.xml.XMLSerializationOptions;
 import org.jahia.utils.xml.XmlWriter;
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 
 import java.io.IOException;
 import java.util.*;

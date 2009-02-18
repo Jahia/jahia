@@ -37,7 +37,7 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.TextExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.ui.EngineOpener;
+import org.jahia.ajax.gwt.client.util.EngineOpener;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
 import org.jahia.data.JahiaData;

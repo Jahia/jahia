@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.actions.*;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.actionmenu.actions.*;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.params.ProcessingContext;
 import org.jahia.content.ObjectKey;

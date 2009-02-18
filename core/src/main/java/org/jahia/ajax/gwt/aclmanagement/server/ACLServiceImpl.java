@@ -35,9 +35,9 @@ package org.jahia.ajax.gwt.aclmanagement.server;
 
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.commons.server.rpc.JahiaContentServiceImpl;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.aclmanagement.client.ACLService;
-import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.acl.ACLService;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.exceptions.JahiaException;
@@ -72,7 +72,7 @@ public class ACLServiceImpl extends AbstractJahiaGWTServiceImpl implements ACLSe
             return ACLHelper.getGWTJahiaNodeACL(new JahiaBaseACL(aclid), newAcl, retrieveParamBean());
         } catch (JahiaException e) {
             logger.error("unable to get acl",e);
-            throw new  GWTJahiaServiceException(e.getMessage());
+            throw new GWTJahiaServiceException(e.getMessage());
         }
     }
 

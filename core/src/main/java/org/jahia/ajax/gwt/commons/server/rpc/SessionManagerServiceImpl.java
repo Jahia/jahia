@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.commons.server.rpc;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaContext;
-import org.jahia.ajax.gwt.commons.client.rpc.SessionManagerService;
+import org.jahia.ajax.gwt.client.data.GWTJahiaContext;
+import org.jahia.ajax.gwt.client.service.SessionManagerService;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 

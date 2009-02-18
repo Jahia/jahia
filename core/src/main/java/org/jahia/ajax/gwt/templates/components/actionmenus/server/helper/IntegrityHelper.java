@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.GWTJahiaIntegrityState;
+import org.jahia.ajax.gwt.client.data.actionmenu.GWTJahiaIntegrityState;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.containers.JahiaContainer;

@@ -41,17 +41,15 @@ import java.io.*;
 import java.util.List;
 import java.util.Map;
 
-import org.jahia.ajax.gwt.filemanagement.client.model.GWTPortletInstanceWizard;
-
-import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.filemanagement.client.JahiaNodeService;
-import org.jahia.ajax.gwt.filemanagement.client.exception.ExistingFileException;
-import org.jahia.ajax.gwt.filemanagement.client.model.*;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -329,7 +327,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         }
     }
 
-    public GWTJahiaNode createPortletInstance(String path, GWTPortletInstanceWizard wiz) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException {
         return FileManagerWorker.createPortletInstance(path, wiz, retrieveParamBean());
     }
 

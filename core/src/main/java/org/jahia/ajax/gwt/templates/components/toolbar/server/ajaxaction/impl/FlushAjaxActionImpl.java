@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.content.ObjectKey;
 import org.jahia.data.JahiaData;
@@ -65,8 +65,8 @@ public class FlushAjaxActionImpl extends AjaxAction {
      * @param gwtPropertiesMap
      * @return
      */
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
-        GWTAjaxActionResult result = new GWTAjaxActionResult();
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+        GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         if (action != null) {
 
             if (action.equalsIgnoreCase("flushLocks")) {

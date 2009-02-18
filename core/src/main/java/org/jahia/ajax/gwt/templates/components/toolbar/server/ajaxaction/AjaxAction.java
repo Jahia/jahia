@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.data.JahiaData;
 
 import java.util.Map;
@@ -52,5 +52,5 @@ public abstract class AjaxAction {
      * @param gwtPropertiesMap
      * @return
      */
-    public abstract GWTAjaxActionResult execute(JahiaData jahiaData,String action, Map<String, GWTProperty> gwtPropertiesMap);
+    public abstract GWTJahiaAjaxActionResult execute(JahiaData jahiaData,String action, Map<String, GWTJahiaProperty> gwtPropertiesMap);
 }

@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.filemanagement.server.helper;
 
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.definitions.client.model.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.apache.jackrabbit.value.*;
 
 import javax.jcr.Value;

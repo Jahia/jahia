@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.utils;
 
-import org.jahia.ajax.gwt.config.client.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.params.AdvPreviewSettings;
@@ -171,7 +171,7 @@ public class GWTInitializer {
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
         String context = request.getContextPath();
-        buf.append(" <link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/css/jahia-ext-all.css\" rel=\"stylesheet\"/>");
+        buf.append(" <link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/org.jahia.ajax.gwt.template.general.live.Live/css/jahia-ext-all.css\" rel=\"stylesheet\"/>");
         buf.append(" <link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/css/gwt/theme/xtheme-jahia.css\" rel=\"stylesheet\"/>");
 
         /*toolbar set optim.*/

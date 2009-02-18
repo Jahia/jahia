@@ -34,8 +34,8 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -58,18 +58,18 @@ public class QuickValidationActionImpl extends AjaxAction {
     private static final transient Logger logger = Logger.getLogger(QuickValidationActionImpl.class);
 
 
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
 
         final ProcessingContext processingContext = jahiaData.getProcessingContext();
         long startTime = System.currentTimeMillis();
-        GWTAjaxActionResult result = new GWTAjaxActionResult();
+        GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         try {
             // create a job key
             String key = "ContentPage_" + processingContext.getPageID();
 
             //String comment
             String comment = null;
-            GWTProperty gwtProperty = (GWTProperty) gwtPropertiesMap.get("comment");
+            GWTJahiaProperty gwtProperty = (GWTJahiaProperty) gwtPropertiesMap.get("comment");
             if (gwtProperty != null) {
                 comment = gwtProperty.getValue();
             }

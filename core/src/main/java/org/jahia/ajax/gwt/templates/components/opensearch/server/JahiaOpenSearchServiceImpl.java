@@ -40,10 +40,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.GWTOpenSearchService;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.GWTOpenSearchDescriptor;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.GWTOpenSearchEngine;
-import org.jahia.ajax.gwt.templates.components.opensearch.client.model.GWTOpenSearchEngineGroup;
+import org.jahia.ajax.gwt.client.service.opensearch.GWTOpenSearchService;
+import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngineGroup;
+import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchDescriptor;
+import org.jahia.ajax.gwt.client.data.opensearch.GWTJahiaOpenSearchEngine;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.opensearch.JahiaOpenSearchService;
 import org.jahia.services.opensearch.OpenSearchDescriptor;
@@ -62,13 +62,13 @@ public class JahiaOpenSearchServiceImpl extends AbstractJahiaGWTServiceImpl impl
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JahiaOpenSearchServiceImpl.class);
 
-    private List<GWTOpenSearchEngine> searchEngines;
+    private List<GWTJahiaOpenSearchEngine> searchEngines;
 
-    private Map<String, GWTOpenSearchEngine> searchEnginesMap;
+    private Map<String, GWTJahiaOpenSearchEngine> searchEnginesMap;
 
-    private List<GWTOpenSearchEngineGroup> searchEngineGroups;
+    private List<GWTJahiaOpenSearchEngineGroup> searchEngineGroups;
     
-    public List<GWTOpenSearchEngine> getSearchEngines() {
+    public List<GWTJahiaOpenSearchEngine> getSearchEngines() {
         if (searchEngines==null){
             try {
                 loadSearchEngines();
@@ -79,7 +79,7 @@ public class JahiaOpenSearchServiceImpl extends AbstractJahiaGWTServiceImpl impl
         return searchEngines;
     }
 
-    public List<GWTOpenSearchEngineGroup> getSearchEngineGroups() {
+    public List<GWTJahiaOpenSearchEngineGroup> getSearchEngineGroups() {
         if (searchEngineGroups == null) {
             try {
                 loadSearchEngines();
@@ -92,14 +92,14 @@ public class JahiaOpenSearchServiceImpl extends AbstractJahiaGWTServiceImpl impl
 
     private void loadSearchEngines() throws Exception {
 
-        searchEngines = new ArrayList<GWTOpenSearchEngine>();
-        searchEnginesMap = new HashMap<String,GWTOpenSearchEngine>();
+        searchEngines = new ArrayList<GWTJahiaOpenSearchEngine>();
+        searchEnginesMap = new HashMap<String, GWTJahiaOpenSearchEngine>();
 
         JahiaOpenSearchService openSearchSrv = ServicesRegistry.getInstance().getOpenSearchService();
         List<SearchEngineBean> searchEngineBeans = openSearchSrv.getSearchEngines();
         Iterator<SearchEngineBean> it = searchEngineBeans.iterator();
         SearchEngineBean searchEngineBean;
-        GWTOpenSearchEngine gwtOpenSearchEngine;
+        GWTJahiaOpenSearchEngine gwtOpenSearchEngine;
         while (it.hasNext()){
             searchEngineBean = it.next();
             gwtOpenSearchEngine = getGWTOpenSearchEngine(searchEngineBean);
@@ -109,11 +109,11 @@ public class JahiaOpenSearchServiceImpl extends AbstractJahiaGWTServiceImpl impl
             }
         }
 
-        searchEngineGroups = new ArrayList<GWTOpenSearchEngineGroup>();
+        searchEngineGroups = new ArrayList<GWTJahiaOpenSearchEngineGroup>();
         List<SearchEngineGroupBean> searchEngineGroupBeans = openSearchSrv.getSearchEngineGroups();
         Iterator<SearchEngineGroupBean> searchEngineGroupIt = searchEngineGroupBeans.iterator();
         SearchEngineGroupBean searchEngineGroupBean;
-        GWTOpenSearchEngineGroup gwtOpenSearchEngineGroup;
+        GWTJahiaOpenSearchEngineGroup gwtOpenSearchEngineGroup;
         while (searchEngineGroupIt.hasNext()){
             searchEngineGroupBean = searchEngineGroupIt.next();
             gwtOpenSearchEngineGroup = getGWTOpenSearchEngineGroup(searchEngineGroupBean);
@@ -130,15 +130,15 @@ public class JahiaOpenSearchServiceImpl extends AbstractJahiaGWTServiceImpl impl
         }
     }
 
-    private GWTOpenSearchEngine getGWTOpenSearchEngine(SearchEngineBean searchEngineBean){
+    private GWTJahiaOpenSearchEngine getGWTOpenSearchEngine(SearchEngineBean searchEngineBean){
         if (searchEngineBean == null){
             return null;
         }
-        GWTOpenSearchEngine gwtOSE = new GWTOpenSearchEngine();
+        GWTJahiaOpenSearchEngine gwtOSE = new GWTJahiaOpenSearchEngine();
         gwtOSE.setName(searchEngineBean.getName());
         gwtOSE.setUrlType(searchEngineBean.getUrlType());
         gwtOSE.setDescriptorType(searchEngineBean.getDescriptorType());
-        GWTOpenSearchDescriptor gwtOSD = new GWTOpenSearchDescriptor();
+        GWTJahiaOpenSearchDescriptor gwtOSD = new GWTJahiaOpenSearchDescriptor();
         OpenSearchDescriptor descriptor = searchEngineBean.getDescriptor();
         if (descriptor != null){
             gwtOSD.setDescription(descriptor.getDescription());
@@ -151,11 +151,11 @@ public class JahiaOpenSearchServiceImpl extends AbstractJahiaGWTServiceImpl impl
         return gwtOSE;
     }
 
-    private GWTOpenSearchEngineGroup getGWTOpenSearchEngineGroup(SearchEngineGroupBean searchEngineGroup){
+    private GWTJahiaOpenSearchEngineGroup getGWTOpenSearchEngineGroup(SearchEngineGroupBean searchEngineGroup){
         if (searchEngineGroup == null){
             return null;
         }
-        GWTOpenSearchEngineGroup gwtOSEG = new GWTOpenSearchEngineGroup();
+        GWTJahiaOpenSearchEngineGroup gwtOSEG = new GWTJahiaOpenSearchEngineGroup();
         gwtOSEG.setName(searchEngineGroup.getName());
         gwtOSEG.setEngineNames(searchEngineGroup.getEngineNames());
         return gwtOSEG;

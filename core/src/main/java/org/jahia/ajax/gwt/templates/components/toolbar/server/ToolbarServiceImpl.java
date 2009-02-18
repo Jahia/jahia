@@ -36,18 +36,18 @@ package org.jahia.ajax.gwt.templates.components.toolbar.server;
 
 import org.jahia.ajax.gwt.engines.pdisplay.server.ProcessDisplayServiceImpl;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.toolbar.*;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.bean.*;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.bean.analytics.GWTAnalyticsParameter;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.bean.monitor.GWTJahiaStateInfo;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.bean.monitor.GWTProcessJobInfo;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.service.ToolbarService;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.Constants;
-import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.ToolbarManager;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
+import org.jahia.ajax.gwt.client.data.toolbar.analytics.GWTJahiaAnalyticsParameter;
+import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaStateInfo;
+import org.jahia.ajax.gwt.client.data.toolbar.monitor.GWTJahiaProcessJobInfo;
+import org.jahia.ajax.gwt.client.util.ToolbarConstants;
+import org.jahia.ajax.gwt.client.widget.toolbar.ToolbarManager;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.factory.ItemsGroupFactory;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
@@ -72,7 +72,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.content.ContentPageKey;
-import org.jahia.content.ContentObjectKey;
 import org.jahia.analytics.data.GAdataCollector;
 import org.jahia.exceptions.JahiaException;
 import org.quartz.JobDataMap;
@@ -100,7 +99,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @param pageContext
      * @return
      */
-    public GWTToolbars getGWTToolbars(GWTJahiaPageContext pageContext, boolean reset) throws GWTJahiaServiceException {
+    public GWTJahiaToolbarSet getGWTToolbars(GWTJahiaPageContext pageContext, boolean reset) throws GWTJahiaServiceException {
         try {
             if (reset) {
                 getToolbarJahiaPreferencesProvider().deleteAllPreferencesByPrincipal(getRemoteJahiaUser());
@@ -113,8 +112,8 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                 ToolbarSet toolbarSet = getToolbarService().getToolbarSet(retrieveParamBean(pageContext));
                 Visibility visibility = toolbarSet.getVisibility();
                 if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
-                    GWTToolbars gwtToolbars = createGWTToolbarSet(pageContext, toolbarSet);
-                    return gwtToolbars;
+                    GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(pageContext, toolbarSet);
+                    return gwtJahiaToolbarSet;
                 } else {
                     logger.info("Toolbars are not visible.");
                     return null;
@@ -129,29 +128,29 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         }
     }
 
-    public GWTToolbars createGWTToolbarSet(GWTJahiaPageContext pageContext, ToolbarSet toolbarSet) {
+    public GWTJahiaToolbarSet createGWTToolbarSet(GWTJahiaPageContext pageContext, ToolbarSet toolbarSet) {
         if (toolbarSet.getToolbarList() == null || toolbarSet.getToolbarList().isEmpty()) {
             logger.debug("toolbar set list is empty");
             return null;
         }
         JahiaData jData = retrieveJahiaData(pageContext);
 
-        // create  a gwtToolbars
-        GWTToolbars gwtToolbars = new GWTToolbars();
+        // create  a gwtJahiaToolbarSet
+        GWTJahiaToolbarSet gwtJahiaToolbarSet = new GWTJahiaToolbarSet();
         for (Toolbar toolbar : toolbarSet.getToolbarList()) {
             // add only tool bar that the user can view
             Visibility visibility = toolbar.getVisibility();
             if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
-                GWTToolbar gwtToolbar = createGWTToolbar(pageContext, toolbar);
+                GWTJahiaToolbar gwtToolbar = createGWTToolbar(pageContext, toolbar);
                 // add toolbar only if not empty
                 if (gwtToolbar != null && gwtToolbar.getGwtToolbarItemsGroups() != null && !gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) {
-                    gwtToolbars.addGWTToolbar(gwtToolbar);
+                    gwtJahiaToolbarSet.addGWTToolbar(gwtToolbar);
                 }
             } else {
                 logger.debug("toolbar: " + toolbar.getType() + ":  not visible");
             }
         }
-        return gwtToolbars;
+        return gwtJahiaToolbarSet;
 
     }
 
@@ -161,8 +160,8 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @param pageContext
      * @param toolbarList
      */
-    public void updateToolbars(GWTJahiaPageContext pageContext, List<GWTToolbar> toolbarList) throws GWTJahiaServiceException {
-        for (GWTToolbar o : toolbarList) {
+    public void updateToolbars(GWTJahiaPageContext pageContext, List<GWTJahiaToolbar> toolbarList) throws GWTJahiaServiceException {
+        for (GWTJahiaToolbar o : toolbarList) {
             updateToolbar(pageContext, o);
         }
     }
@@ -174,7 +173,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @param gwtToolbar
      * @throws GWTJahiaServiceException
      */
-    public void updateToolbar(GWTJahiaPageContext pageContext, GWTToolbar gwtToolbar) throws GWTJahiaServiceException {
+    public void updateToolbar(GWTJahiaPageContext pageContext, GWTJahiaToolbar gwtToolbar) throws GWTJahiaServiceException {
         ToolbarJahiaPreferenceKey key = createToolbarPreferenceKey(gwtToolbar);
         ToolbarJahiaPreferenceValue value = createToolbarJahiaPreferenceValue(gwtToolbar);
         getToolbarJahiaPreferencesProvider().setJahiaPreference(key, value);
@@ -187,7 +186,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @param pageContext
      * @return
      */
-    public GWTToolbar loadGWTToolbar(GWTJahiaPageContext pageContext, GWTToolbar gwtToolbar) {
+    public GWTJahiaToolbar loadGWTToolbar(GWTJahiaPageContext pageContext, GWTJahiaToolbar gwtToolbar) {
         ToolbarJahiaPreferenceKey key = createToolbarPreferenceKey(gwtToolbar);
         ToolbarJahiaPreferenceValue value = createToolbarJahiaPreferenceValue(gwtToolbar);
         getToolbarJahiaPreferencesProvider().setJahiaPreference(key, value);
@@ -202,11 +201,11 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @param gwtPropertiesMap
      * @return
      */
-    public GWTAjaxActionResult execute(GWTJahiaPageContext pageContext, Map<String, GWTProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
-        final GWTProperty classActionProperty = gwtPropertiesMap.get(Constants.CLASS_ACTION);
-        final GWTProperty actionProperty = gwtPropertiesMap.get(Constants.ACTION);
+    public GWTJahiaAjaxActionResult execute(GWTJahiaPageContext pageContext, Map<String, GWTJahiaProperty> gwtPropertiesMap) throws GWTJahiaServiceException {
+        final GWTJahiaProperty classActionProperty = gwtPropertiesMap.get(ToolbarConstants.CLASS_ACTION);
+        final GWTJahiaProperty actionProperty = gwtPropertiesMap.get(ToolbarConstants.ACTION);
 
-        GWTAjaxActionResult actionResult = new GWTAjaxActionResult("");
+        GWTJahiaAjaxActionResult actionResult = new GWTJahiaAjaxActionResult("");
 
         // execute actionProperty depending on classActin and the actionProperty
         if (classActionProperty != null) {
@@ -220,8 +219,8 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                 // execute action
                 try {
                     // remove useless propertiey
-                    gwtPropertiesMap.remove(Constants.CLASS_ACTION);
-                    gwtPropertiesMap.remove(Constants.ACTION);
+                    gwtPropertiesMap.remove(ToolbarConstants.CLASS_ACTION);
+                    gwtPropertiesMap.remove(ToolbarConstants.ACTION);
                     JahiaData jData = retrieveJahiaData(pageContext);
 
                     // execute actionProperty
@@ -259,7 +258,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
     }
 
 
-    private GWTToolbar createGWTToolbar(GWTJahiaPageContext pageContext, Toolbar toolbar) {
+    private GWTJahiaToolbar createGWTToolbar(GWTJahiaPageContext pageContext, Toolbar toolbar) {
         // don't add the tool bar if  has no items group
         if (toolbar.getItemsGroupList() == null || toolbar.getItemsGroupList().isEmpty()) {
             logger.debug("toolbar itemsgroup list is empty");
@@ -270,7 +269,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         ParamBean paramBean = retrieveParamBean(pageContext);
 
         // create gwtTollbar
-        GWTToolbar gwtToolbar = new GWTToolbar();
+        GWTJahiaToolbar gwtToolbar = new GWTJahiaToolbar();
         gwtToolbar.setIndex(toolbar.getIndex());
         gwtToolbar.setName(toolbar.getName());
         gwtToolbar.setTitle(getResources(paramBean, toolbar.getTitleKey()));
@@ -279,17 +278,17 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         gwtToolbar.setMandatory(toolbar.isMandatory());
         gwtToolbar.setDisplayTitle(toolbar.isDisplayTitle());
         //create and set state
-        GWTState defaultGWTState = new GWTState();
+        GWTJahiaState defaultGWTState = new GWTJahiaState();
         String state = toolbar.getState();
         if (state != null) {
             if (state.equalsIgnoreCase("top")) {
-                defaultGWTState.setValue(Constants.TOOLBAR_TOP);
+                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_TOP);
             } else if (state.equalsIgnoreCase("box")) {
-                defaultGWTState.setValue(Constants.TOOLBAR_HORIZONTAL_BOX);
+                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_HORIZONTAL_BOX);
             } else if (state.equalsIgnoreCase("right")) {
-                defaultGWTState.setValue(Constants.TOOLBAR_RIGHT);
+                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_RIGHT);
             } else {
-                defaultGWTState.setValue(Constants.TOOLBAR_TOP);
+                defaultGWTState.setValue(ToolbarConstants.TOOLBAR_TOP);
             }
 
             // by defautl load toolbar if mandatory value is 'true' or displayed value
@@ -299,13 +298,13 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         gwtToolbar.setState(createJahiaToolbarState(gwtToolbar, defaultGWTState));
 
         // load items-group
-        List<GWTToolbarItemsGroup> gwtToolbarItemsGroupList = new ArrayList<GWTToolbarItemsGroup>();
+        List<GWTJahiaToolbarItemsGroup> gwtToolbarItemsGroupList = new ArrayList<GWTJahiaToolbarItemsGroup>();
         int index = 0;
         for (ItemsGroup itemsGroup : toolbar.getItemsGroupList()) {
             // add only itemsgroup that the user can view
             Visibility visibility = itemsGroup.getVisibility();
             if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
-                GWTToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(pageContext, gwtToolbar.getName(), index, itemsGroup);
+                GWTJahiaToolbarItemsGroup gwtItemsGroup = createGWTItemsGroup(pageContext, gwtToolbar.getName(), index, itemsGroup);
 
                 // add itemsGroup only if not empty
                 if (gwtItemsGroup != null && gwtItemsGroup.getGwtToolbarItems() != null && !gwtItemsGroup.getGwtToolbarItems().isEmpty()) {
@@ -325,7 +324,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         return gwtToolbar;
     }
 
-    private GWTState createJahiaToolbarState(GWTToolbar gwtToolbar, GWTState defaultState) {
+    private GWTJahiaState createJahiaToolbarState(GWTJahiaToolbar gwtToolbar, GWTJahiaState defaultState) {
         JahiaPreferencesProvider provider = getToolbarJahiaPreferencesProvider();
         ToolbarJahiaPreferenceKey key = createToolbarPreferenceKey(gwtToolbar);
         if (key != null) {
@@ -333,7 +332,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
             if (preference != null && preference.getValue() != null) {
                 logger.debug("Preference found for toolbar: " + gwtToolbar.getName());
                 ToolbarJahiaPreferenceValue value = (ToolbarJahiaPreferenceValue) preference.getValue();
-                GWTState state = new GWTState();
+                GWTJahiaState state = new GWTJahiaState();
                 state.setValue(value.getState());
                 state.setIndex(value.getIndex());
                 state.setPagePositionX(value.getPositionX());
@@ -346,7 +345,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         return defaultState;
     }
 
-    private ToolbarJahiaPreferenceKey createToolbarPreferenceKey(GWTToolbar toolbar) {
+    private ToolbarJahiaPreferenceKey createToolbarPreferenceKey(GWTJahiaToolbar toolbar) {
         JahiaUser remoteJahiaUser = getRemoteJahiaUser();
         ToolbarJahiaPreferenceKey key = new ToolbarJahiaPreferenceKey();
         key.setPrincipal(remoteJahiaUser);
@@ -356,7 +355,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         return key;
     }
 
-    private ToolbarJahiaPreferenceValue createToolbarJahiaPreferenceValue(GWTToolbar gwtToolbar) {
+    private ToolbarJahiaPreferenceValue createToolbarJahiaPreferenceValue(GWTJahiaToolbar gwtToolbar) {
         ToolbarJahiaPreferenceValue value = new ToolbarJahiaPreferenceValue();
         value.setState(gwtToolbar.getState().getValue());
         value.setIndex(gwtToolbar.getState().getIndex());
@@ -366,7 +365,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         return value;
     }
 
-    private GWTToolbarItemsGroup createGWTItemsGroup(GWTJahiaPageContext page, String toolbarName, int index, ItemsGroup itemsGroup) {
+    private GWTJahiaToolbarItemsGroup createGWTItemsGroup(GWTJahiaPageContext page, String toolbarName, int index, ItemsGroup itemsGroup) {
         // don't add the items group if  has no items group
         if (itemsGroup.getItemList() == null || itemsGroup.getItemList().isEmpty()) {
             logger.debug("itemlist is empty");
@@ -376,7 +375,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         JahiaData jData = retrieveJahiaData(page);
         ParamBean paramBean = retrieveParamBean(page);
 
-        List<GWTToolbarItem> gwtToolbarItemsList = new ArrayList<GWTToolbarItem>();
+        List<GWTJahiaToolbarItem> gwtToolbarItemsList = new ArrayList<GWTJahiaToolbarItem>();
         // create items from definition
         for (int i = 0; i < itemsGroup.getItemList().size(); i++) {
             // case of item
@@ -389,7 +388,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
 
                 // add only visible items
                 if ((visibility != null && visibility.getRealValue(jData)) || visibility == null) {
-                    GWTToolbarItem gwtToolbarItem = createGWTItem(page, item);
+                    GWTJahiaToolbarItem gwtToolbarItem = createGWTItem(page, item);
                     if (gwtToolbarItem != null) {
                         gwtToolbarItemsList.add(gwtToolbarItem);
                     }
@@ -423,7 +422,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         }
 
         // creat items-group
-        GWTToolbarItemsGroup gwtToolbarItemsGroup = new GWTToolbarItemsGroup();
+        GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup = new GWTJahiaToolbarItemsGroup();
         gwtToolbarItemsGroup.setId(toolbarName + "_" + index);
         gwtToolbarItemsGroup.setType(itemsGroup.getType());
         gwtToolbarItemsGroup.setLayout(itemsGroup.getLayout());
@@ -437,12 +436,12 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         return gwtToolbarItemsGroup;
     }
 
-    private GWTToolbarItem createGWTItem(GWTJahiaPageContext page, Item item) {
+    private GWTJahiaToolbarItem createGWTItem(GWTJahiaPageContext page, Item item) {
         JahiaData jData = retrieveJahiaData(page);
         ParamBean paramBean = retrieveParamBean(page);
 
-        // GWTToolbarItem
-        GWTToolbarItem gwtToolbarItem = new GWTToolbarItem();
+        // GWTJahiaToolbarItem
+        GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
         gwtToolbarItem.setTitle(getResources(paramBean, item.getTitleResourceBundleKey()));
         gwtToolbarItem.setType(item.getType());
         gwtToolbarItem.setDisplayTitle(item.isDisplayTitle());
@@ -454,9 +453,9 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         } else {
             gwtToolbarItem.setSelected(false);
         }
-        Map<String, GWTProperty> pMap = new HashMap<String, GWTProperty>();
+        Map<String, GWTJahiaProperty> pMap = new HashMap<String, GWTJahiaProperty>();
         for (Property currentProperty : item.getPropertyList()) {
-            GWTProperty gwtProperty = new GWTProperty();
+            GWTJahiaProperty gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName(currentProperty.getName());
             gwtProperty.setValue(currentProperty.getRealValue(jData));
             pMap.put(gwtProperty.getName(), gwtProperty);
@@ -491,7 +490,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
 
             // check pdisplay
             if (gwtJahiaStateInfo.isCheckProcessInfo()) {
-                GWTProcessJobInfo gwtProcessJobInfo = updateGWTProcessJobInfo(gwtJahiaStateInfo.getGwtProcessJobInfo(), pageContext.getPid());
+                GWTJahiaProcessJobInfo gwtProcessJobInfo = updateGWTProcessJobInfo(gwtJahiaStateInfo.getGwtProcessJobInfo(), pageContext.getPid());
                 gwtJahiaStateInfo.setGwtProcessJobInfo(gwtProcessJobInfo);
                 if (gwtProcessJobInfo.isJobExecuting()) {
                     gwtJahiaStateInfo.setIconStyle("gwt-toolbar-ItemsGroup-icons-wait-min");
@@ -540,10 +539,10 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      *
      * @return
      */
-    private GWTProcessJobInfo updateGWTProcessJobInfo(GWTProcessJobInfo gwtProcessJobInfo, int currentPageId) throws GWTJahiaServiceException {
+    private GWTJahiaProcessJobInfo updateGWTProcessJobInfo(GWTJahiaProcessJobInfo gwtProcessJobInfo, int currentPageId) throws GWTJahiaServiceException {
         long lastExecutedJob = getSchedulerService().getLastJobCompletedTime();
         if (gwtProcessJobInfo == null) {
-            gwtProcessJobInfo = new GWTProcessJobInfo();
+            gwtProcessJobInfo = new GWTJahiaProcessJobInfo();
             gwtProcessJobInfo.setLastViewTime(lastExecutedJob);
         }
         boolean isCurrentUser = false;
@@ -745,7 +744,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
     /*
    * Google analytics   todo should be adapted to the new version
    * */
-    public Map<String, String> getGAdata(GWTAnalyticsParameter p) throws GWTJahiaServiceException {
+    public Map<String, String> getGAdata(GWTJahiaAnalyticsParameter p) throws GWTJahiaServiceException {
         ParamBean paramBean = retrieveParamBean();
         JahiaSite currentSite = paramBean.getSite();
         String gaLogin = currentSite.getSettings().getProperty(p.getJahiaGAprofile()+"_"+currentSite.getSiteKey()+"_gaLogin");

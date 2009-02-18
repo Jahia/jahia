@@ -49,7 +49,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.resourcebundle.JahiaResourceBundle;
 import org.jahia.bin.Jahia;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

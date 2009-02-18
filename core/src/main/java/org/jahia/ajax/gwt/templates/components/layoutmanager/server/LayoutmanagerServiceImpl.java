@@ -35,15 +35,15 @@ package org.jahia.ajax.gwt.templates.components.layoutmanager.server;
 
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.commons.client.beans.rss.GWTRSSFeed;
-import org.jahia.ajax.gwt.templates.components.layoutmanager.client.bean.GWTLayoutItem;
-import org.jahia.ajax.gwt.templates.components.layoutmanager.client.bean.GWTLayoutManagerConfig;
-import org.jahia.ajax.gwt.templates.components.layoutmanager.client.service.LayoutmanagerService;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
+import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
+import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
+import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
-import org.jahia.ajax.gwt.filemanagement.client.model.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
@@ -53,9 +53,6 @@ import org.jahia.services.preferences.layoutmanager.LayoutmanagerJahiaPreference
 import org.jahia.services.preferences.layoutmanager.LayoutmanagerJahiaPreference;
 import org.jahia.services.preferences.widget.WidgetJahiaPreferenceKey;
 import org.jahia.services.preferences.widget.WidgetJahiaPreferenceValue;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.pages.ContentPage;
-import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -94,7 +91,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param page                       jahia parameter as pid, current mode,...
      * @param layoutItem draggableWidgetPreferences of the corresponding wiget
      */
-    public String saveLayoutItem(GWTJahiaPageContext page, GWTLayoutItem layoutItem) throws GWTJahiaServiceException {
+    public String saveLayoutItem(GWTJahiaPageContext page, GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException {
         // key
         LayoutmanagerJahiaPreferenceKey key = createLayoutmanagerPreferenceKey(page, layoutItem);
 
@@ -126,8 +123,8 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
             layoutNode.setProperty(PAGE_NODE_PROPERTY, jahiaPageContext.getPid());
 
             // for each portlet, create a layoutItem node
-            List<GWTLayoutItem> draggableWidgets = getLayoutItems(jahiaPageContext);
-            for (GWTLayoutItem draggableWidgetPreferences : draggableWidgets) {
+            List<GWTJahiaLayoutItem> draggableWidgets = getLayoutItems(jahiaPageContext);
+            for (GWTJahiaLayoutItem draggableWidgetPreferences : draggableWidgets) {
                 JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(draggableWidgetPreferences.getWindowId(), getRemoteJahiaUser());
                 if (portletNode != null) {
                     JCRNodeWrapper layoutItemNode = layoutNode.addNode(LAYOUT_ITEM_NODE_NAME, Constants.JAHIANT_LAYOUTITEM);
@@ -163,7 +160,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param gwtJahiaPageContext
      * @param layoutItem
      */
-    public void removeLayoutItem(GWTJahiaPageContext gwtJahiaPageContext, GWTLayoutItem layoutItem) throws GWTJahiaServiceException {
+    public void removeLayoutItem(GWTJahiaPageContext gwtJahiaPageContext, GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException {
         // key
         LayoutmanagerJahiaPreferenceKey key = createLayoutmanagerPreferenceKey(gwtJahiaPageContext, layoutItem);
 
@@ -178,8 +175,8 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param pageContext
      * @param layoutItems
      */
-    public void saveLayoutItems(GWTJahiaPageContext pageContext, List<GWTLayoutItem> layoutItems) throws GWTJahiaServiceException {
-        for (GWTLayoutItem draggableWidgetPreferences : layoutItems) {
+    public void saveLayoutItems(GWTJahiaPageContext pageContext, List<GWTJahiaLayoutItem> layoutItems) throws GWTJahiaServiceException {
+        for (GWTJahiaLayoutItem draggableWidgetPreferences : layoutItems) {
             saveLayoutItem(pageContext, draggableWidgetPreferences);
         }
 
@@ -191,7 +188,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param pageContext
      * @param gwtLayoutManagerConfig
      */
-    public void saveLayoutmanagerConfig(GWTJahiaPageContext pageContext, GWTLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException {
+    public void saveLayoutmanagerConfig(GWTJahiaPageContext pageContext, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException {
         try {
             setPagePreferenceValue("lm_" + gwtLayoutManagerConfig.getId() + "_" + "nbColumns", String.valueOf(gwtLayoutManagerConfig.getNbColumns()));
             setPagePreferenceValue("lm_" + gwtLayoutManagerConfig.getId() + "_" + "liveDraggable", String.valueOf(gwtLayoutManagerConfig.isLiveDraggable()));
@@ -206,8 +203,8 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      *
      * @return
      */
-    public GWTLayoutManagerConfig getLayoutmanagerConfig() {
-        GWTLayoutManagerConfig gwtLayoutManagerConfig = new GWTLayoutManagerConfig();
+    public GWTJahiaLayoutManagerConfig getLayoutmanagerConfig() {
+        GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig = new GWTJahiaLayoutManagerConfig();
         String nbColumns = "3";
         String liveDraggable = "true";
         String liveQuickbarVisible = "true";
@@ -239,7 +236,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param draggableWidgetPreferences
      * @return
      */
-    private LayoutmanagerJahiaPreferenceKey createLayoutmanagerPreferenceKey(GWTJahiaPageContext pageContext, GWTLayoutItem draggableWidgetPreferences) throws GWTJahiaServiceException {
+    private LayoutmanagerJahiaPreferenceKey createLayoutmanagerPreferenceKey(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem draggableWidgetPreferences) throws GWTJahiaServiceException {
         LayoutmanagerJahiaPreferenceKey key = createLayoutmanagerPreferenceKey(pageContext);
         key.setPid(String.valueOf(pageContext.getPid()));
         key.setWindowId(draggableWidgetPreferences.getWindowId());
@@ -265,7 +262,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param gwtLayoutItem
      * @return
      */
-    private LayoutmanagerJahiaPreferenceValue createLayoutmanagerPreferenceValue(GWTLayoutItem gwtLayoutItem) {
+    private LayoutmanagerJahiaPreferenceValue createLayoutmanagerPreferenceValue(GWTJahiaLayoutItem gwtLayoutItem) {
         LayoutmanagerJahiaPreferenceValue value = new LayoutmanagerJahiaPreferenceValue(gwtLayoutItem.getColumn(), gwtLayoutItem.getRow(), gwtLayoutItem.getStatus());
         return value;
     }
@@ -275,8 +272,8 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @return Map <widget Id, widget preferences>
      */
 
-    public List<GWTLayoutItem> getLayoutItems(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException {
-        List<GWTLayoutItem> layoutItems = new ArrayList<GWTLayoutItem>();
+    public List<GWTJahiaLayoutItem> getLayoutItems(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException {
+        List<GWTJahiaLayoutItem> layoutItems = new ArrayList<GWTJahiaLayoutItem>();
         try {
             // create layout manager key
             LayoutmanagerJahiaPreferenceKey preferenceKey = createLayoutmanagerPreferenceKey(jahiaPageContext);
@@ -308,8 +305,8 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param jahiaPageContext
      * @throws RepositoryException
      */
-    private List<GWTLayoutItem> getDefaultLayoutItems(GWTJahiaPageContext jahiaPageContext) throws RepositoryException {
-        List<GWTLayoutItem> layoutItems = new ArrayList<GWTLayoutItem>();
+    private List<GWTJahiaLayoutItem> getDefaultLayoutItems(GWTJahiaPageContext jahiaPageContext) throws RepositoryException {
+        List<GWTJahiaLayoutItem> layoutItems = new ArrayList<GWTJahiaLayoutItem>();
         JCRStoreProvider storeProvider = jcrStoreService.getMainStoreProvider();
         String layoutNodeName = getLayoutNodeName(jahiaPageContext);
         JCRNodeWrapper layoutManagerNode = storeProvider.getNodeWrapper(LAYOUTMANAGER_NODE_PATH, getRemoteJahiaUser());
@@ -320,7 +317,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
             NodeIterator nodeIterator = layoutNode.getNodes();
             while (nodeIterator != null && nodeIterator.hasNext()) {
                 // create preferences values
-                GWTLayoutItem gwtLayoutItem = createGWTLayoutItem(nodeIterator.nextNode());
+                GWTJahiaLayoutItem gwtLayoutItem = createGWTLayoutItem(nodeIterator.nextNode());
 
                 // widget are ordered by rows
                 int row = gwtLayoutItem.getRow();
@@ -345,7 +342,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @return
      * @throws RepositoryException
      */
-    private GWTLayoutItem createGWTLayoutItem(Node layoutItem) throws RepositoryException {
+    private GWTJahiaLayoutItem createGWTLayoutItem(Node layoutItem) throws RepositoryException {
         // get column
         int column = (int) layoutItem.getProperty(COLUMN_INDEX_NODE_PROPERTY).getLong();
 
@@ -359,7 +356,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
 
         // create preferences values
         GWTJahiaNode gwtJahiaPortletNode = FileManagerWorker.getGWTJahiaNode(portletNode);
-        GWTLayoutItem gwtLayoutItem = new GWTLayoutItem(gwtJahiaPortletNode, column, row, status);
+        GWTJahiaLayoutItem gwtLayoutItem = new GWTJahiaLayoutItem(gwtJahiaPortletNode, column, row, status);
         return gwtLayoutItem;
     }
 
@@ -369,14 +366,14 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param preference
      * @return
      */
-    private GWTLayoutItem createGWTLayoutItem(JahiaPreference preference) {
+    private GWTJahiaLayoutItem createGWTLayoutItem(JahiaPreference preference) {
         LayoutmanagerJahiaPreferenceKey key = (LayoutmanagerJahiaPreferenceKey) preference.getKey();
         LayoutmanagerJahiaPreferenceValue value = (LayoutmanagerJahiaPreferenceValue) preference.getValue();
 
         try {
             // retrieve instance id from path
             GWTJahiaNode gwtJahiaNode = FileManagerWorker.getNodeByUUID(key.getWindowId(), retrieveParamBean().getUser());
-            return new GWTLayoutItem(gwtJahiaNode, value.getColumnIndex(), value.getRowIndex(), value.getStatus());
+            return new GWTJahiaLayoutItem(gwtJahiaNode, value.getColumnIndex(), value.getRowIndex(), value.getStatus());
         } catch (RepositoryException e) {
             logger.error("Unable to get JCR Node with uuid " + key.getWindowId());
             return null;
@@ -447,8 +444,8 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param widgetId
      * @return
      */
-    public GWTRSSFeed loalRssFeed(GWTJahiaPageContext pageContext, String widgetId) throws GWTJahiaServiceException {
-        GWTRSSFeed gwtrssFeed = null;
+    public GWTJahiaRSSFeed loalRssFeed(GWTJahiaPageContext pageContext, String widgetId) throws GWTJahiaServiceException {
+        GWTJahiaRSSFeed gwtrssFeed = null;
         try {
             // get widget preference
             JahiaPreferencesProvider jahiaPreferencesProvider = getWidgetJahiaPreferencesProvider();

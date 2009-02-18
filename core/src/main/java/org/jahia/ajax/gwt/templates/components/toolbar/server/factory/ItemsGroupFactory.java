@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.templates.components.toolbar.server.factory;
 
-import org.jahia.ajax.gwt.templates.components.toolbar.client.bean.GWTToolbarItem;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.data.JahiaData;
 
 import java.util.List;
@@ -53,5 +53,5 @@ public interface ItemsGroupFactory {
      * @param properties
      * @return
      */
-    public List<GWTToolbarItem> populateItemsList(List<GWTToolbarItem> gwtToolbarItemsList,JahiaData jahiaData, String input, Map<String, String> properties);
+    public List<GWTJahiaToolbarItem> populateItemsList(List<GWTJahiaToolbarItem> gwtToolbarItemsList,JahiaData jahiaData, String input, Map<String, String> properties);
 }

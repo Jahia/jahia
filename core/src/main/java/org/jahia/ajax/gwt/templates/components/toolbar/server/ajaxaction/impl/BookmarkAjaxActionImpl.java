@@ -34,8 +34,8 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
@@ -60,8 +60,8 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
     public final static String BOOKMARK_CURRENT_PAGE = "bookmark.current.page";
     public final static String BOOKMARK_DELETE_CURRENT_PAGE = "bookmark.delete.current.page";
 
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map<String, GWTProperty> gwtPropertiesMap) {
-        GWTAjaxActionResult result = new GWTAjaxActionResult();
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map<String, GWTJahiaProperty> gwtPropertiesMap) {
+        GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         if (action != null) {
             if (action.equalsIgnoreCase(BOOKMARK_CURRENT_PAGE)) {
                 result.setValue(bookmarkCurrentPage(jahiaData, gwtPropertiesMap));
@@ -78,7 +78,7 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
      * @param jahiaData
      * @return
      */
-    public String deleteBookmarkCurrentPage(JahiaData jahiaData, Map<String, GWTProperty> gwtPropertiesMap) {
+    public String deleteBookmarkCurrentPage(JahiaData jahiaData, Map<String, GWTJahiaProperty> gwtPropertiesMap) {
         // get processing context
         ProcessingContext processingContext = jahiaData.getProcessingContext();
 
@@ -101,7 +101,7 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
      * @param gwtPropertiesMap
      * @return
      */
-    public String bookmarkCurrentPage(JahiaData jahiaData, Map<String, GWTProperty> gwtPropertiesMap) {
+    public String bookmarkCurrentPage(JahiaData jahiaData, Map<String, GWTJahiaProperty> gwtPropertiesMap) {
         // get processing context
         ProcessingContext processingContext = jahiaData.getProcessingContext();
 

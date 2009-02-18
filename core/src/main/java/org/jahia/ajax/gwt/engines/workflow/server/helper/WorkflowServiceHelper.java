@@ -34,11 +34,10 @@
 package org.jahia.ajax.gwt.engines.workflow.server.helper;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowElement;
-import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowHistoryEntry;
-import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowBatch;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowHistoryEntry;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLabel;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaLabel;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;

@@ -34,7 +34,7 @@
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.templates.components.actionmenus.client.beans.actions.GWTJahiaAction;
+import org.jahia.ajax.gwt.client.data.actionmenu.actions.GWTJahiaAction;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.beans.ContainerListBean;

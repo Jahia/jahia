@@ -39,8 +39,8 @@ import org.jahia.content.ObjectKey;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
-import org.jahia.ajax.gwt.config.client.util.Constants;
+import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.ajax.gwt.client.util.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;

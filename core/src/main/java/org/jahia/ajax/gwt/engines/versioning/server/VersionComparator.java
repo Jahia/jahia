@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.engines.versioning.server;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTVersion;
+import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
 
 import java.util.Comparator;
 import java.util.Locale;
@@ -60,11 +60,11 @@ public class VersionComparator implements Comparator {
 
     public int compare(Object o1, Object o2) {
 
-        GWTVersion version1 = (GWTVersion) o1;
-        GWTVersion version2 = (GWTVersion) o2;
+        GWTJahiaVersion version1 = (GWTJahiaVersion) o1;
+        GWTJahiaVersion version2 = (GWTJahiaVersion) o2;
         if (!asc){
-            version1 = (GWTVersion) o2;
-            version2 = (GWTVersion) o1;
+            version1 = (GWTJahiaVersion) o2;
+            version2 = (GWTJahiaVersion) o1;
         }
         Object value1 = null;
         Object value2 = null;

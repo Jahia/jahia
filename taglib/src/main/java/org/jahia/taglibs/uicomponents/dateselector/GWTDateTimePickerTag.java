@@ -35,7 +35,7 @@ package org.jahia.taglibs.uicomponents.dateselector;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.internal.date.AbstractDateTag;
 
 import javax.servlet.http.HttpServletRequest;

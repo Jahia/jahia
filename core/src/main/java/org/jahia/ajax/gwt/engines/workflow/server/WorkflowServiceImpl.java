@@ -33,14 +33,17 @@
 
 package org.jahia.ajax.gwt.engines.workflow.server;
 
-import org.jahia.ajax.gwt.engines.workflow.client.WorkflowService;
-import org.jahia.ajax.gwt.engines.workflow.client.model.*;
+import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.GWTJahiaWorkflowElementComparator;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaLabel;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLabel;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowBatch;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowHistoryEntry;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowManagerState;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.workflow.ActivationJob;
 import org.jahia.services.workflow.WorkflowAction;

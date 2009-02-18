@@ -38,8 +38,8 @@ import java.util.Locale;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.GWTRevision;
-import org.jahia.ajax.gwt.commons.client.beans.GWTVersion;
+import org.jahia.ajax.gwt.client.data.GWTJahiaRevision;
+import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.AdvCompareModeAjaxActionImpl;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -198,11 +198,11 @@ public class AdvCompareModeSettings implements Cloneable {
         return (settings != null && settings.isEnabled());
     }
 
-    public GWTRevision getGWTRevision1(){
+    public GWTJahiaRevision getGWTRevision1(){
         return getGWTRevision(this.getVersion1());
     }
 
-    public GWTRevision getGWTRevision2(){
+    public GWTJahiaRevision getGWTRevision2(){
         return getGWTRevision(this.getVersion2());
     }
 
@@ -242,11 +242,11 @@ public class AdvCompareModeSettings implements Cloneable {
         return entryState;
     }
 
-    private GWTRevision getGWTRevision(VersionSetting setting){
+    private GWTJahiaRevision getGWTRevision(VersionSetting setting){
         if (setting==null){
             return null;
         }
-        return new GWTRevision(setting.getDate(),setting.getVersion(),setting.isUseVersion());
+        return new GWTJahiaRevision(setting.getDate(),setting.getVersion(),setting.isUseVersion());
     }
 
     public Object clone(){
@@ -271,10 +271,10 @@ public class AdvCompareModeSettings implements Cloneable {
 
     public class VersionSetting implements Cloneable {
         private long date;
-        private GWTVersion version;
+        private GWTJahiaVersion version;
         private boolean useVersion;
 
-        public VersionSetting(long date, GWTVersion version, boolean useVersion) {
+        public VersionSetting(long date, GWTJahiaVersion version, boolean useVersion) {
             this.date = date;
             this.version = version;
             this.useVersion = useVersion;
@@ -288,11 +288,11 @@ public class AdvCompareModeSettings implements Cloneable {
             this.date = date;
         }
 
-        public GWTVersion getVersion() {
+        public GWTJahiaVersion getVersion() {
             return version;
         }
 
-        public void setVersion(GWTVersion version) {
+        public void setVersion(GWTJahiaVersion version) {
             this.version = version;
         }
 

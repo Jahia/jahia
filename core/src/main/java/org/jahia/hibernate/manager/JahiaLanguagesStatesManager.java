@@ -158,6 +158,7 @@ public class JahiaLanguagesStatesManager {
         return m;
     }
 
+    // TODO use this to provide a new view
     public Map<String,List<String>> getAllStagingAndWaitingObject(final int siteID) {
         final Map<String,List<String>> m = new HashMap<String,List<String>>();
         final List l = dao.findAllStagingAndWaitingObjects(siteID);

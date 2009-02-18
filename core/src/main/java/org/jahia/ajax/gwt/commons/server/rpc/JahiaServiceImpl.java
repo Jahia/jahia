@@ -39,13 +39,13 @@ import au.id.jericho.lib.html.StartTag;
 import au.id.jericho.lib.html.SourceFormatter;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.engines.LockHelper;
-import org.jahia.ajax.gwt.commons.client.beans.*;
-import org.jahia.ajax.gwt.commons.client.beans.rss.GWTRSSFeed;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.commons.client.rpc.JahiaService;
+import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.commons.server.BufferedHttpResponseWrapper;
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaData;
@@ -233,13 +233,13 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     }
 
 
-    public void saveUserProperties(GWTJahiaPageContext page, List<GWTPageUserProperty> properties) {
+    public void saveUserProperties(GWTJahiaPageContext page, List<GWTJahiaPageUserProperty> properties) {
         logger.debug("begin save user properties");
         if (properties != null) {
             JahiaPageUserPropService pageUserProperties = getJahiaPageUserPropService();
             int pageId = page.getPid();
             String principalKey = getRemoteJahiaUser().getUserKey();
-            for (GWTPageUserProperty prop : properties) {
+            for (GWTJahiaPageUserProperty prop : properties) {
                 // by default: pageId = currentPageId
                 if (prop.getPageId() == -1) {
                     prop.setPageId(pageId);
@@ -289,8 +289,8 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         return output;
     }
 
-    public GWTPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString) {
-        GWTPortletOutputBean result = new GWTPortletOutputBean();
+    public GWTJahiaPortletOutputBean drawPortletInstanceOutput(GWTJahiaPageContext page, String windowID, String entryPointIDStr, String pathInfo, String queryString) {
+        GWTJahiaPortletOutputBean result = new GWTJahiaPortletOutputBean();
         try {
             int fieldId = Integer.parseInt(windowID);
             ParamBean jParams = retrieveParamBean(page);
@@ -459,12 +459,12 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         }
     }
 
-    public GWTRSSFeed loadRssFeed(GWTJahiaPageContext pageContext, String url, Integer maxEntries) throws GWTJahiaServiceException {
+    public GWTJahiaRSSFeed loadRssFeed(GWTJahiaPageContext pageContext, String url, Integer maxEntries) throws GWTJahiaServiceException {
 
         try {
             //load corresponding url
             URL urlObj = new URL(url);
-            GWTRSSFeed gwtrssFeed = loadRssFeed(urlObj);
+            GWTJahiaRSSFeed gwtrssFeed = loadRssFeed(urlObj);
             if (gwtrssFeed != null) {
                 gwtrssFeed.setUrl(url);
                 gwtrssFeed.setNbDisplayedEntries(maxEntries);
@@ -482,7 +482,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
      *
      * @return a list of ordered language codes
      */
-    public GWTLanguageSwitcherBean getAvailableLanguagesAndWorkflowStates(boolean displayIsoCode,boolean displayLanguage, boolean inEngine) {
+    public GWTJahiaLanguageSwitcherBean getAvailableLanguagesAndWorkflowStates(boolean displayIsoCode,boolean displayLanguage, boolean inEngine) {
         ProcessingContext jParams = retrieveParamBean();
         Locale locale = jParams.getLocale();
         if(inEngine) {
@@ -490,7 +490,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         }
         Map<String,String> availableLanguages = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite(),displayIsoCode,displayLanguage, locale);
         Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
-        return new GWTLanguageSwitcherBean(availableLanguages, workflowStates);
+        return new GWTJahiaLanguageSwitcherBean(availableLanguages, workflowStates);
     }
 
     private String getCleanHTMLText(String text, String notTrunkedText, int maxChar) {
@@ -506,8 +506,8 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         return text;
     }
 
-    public GWTInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent) {
-        GWTInlineEditingResultBean resultBean = new GWTInlineEditingResultBean();
+    public GWTJahiaInlineEditingResultBean inlineUpdateField(Integer containerID, Integer fieldID, String updatedContent) {
+        GWTJahiaInlineEditingResultBean resultBean = new GWTJahiaInlineEditingResultBean();
         logger.debug("inlineUpdateField called for containerID=" + containerID + " fieldID=" + fieldID + " updatedContent=" + updatedContent);
         ProcessingContext jParams = retrieveParamBean();
         try {

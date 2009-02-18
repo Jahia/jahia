@@ -33,12 +33,12 @@
 
 package org.jahia.ajax.gwt.engines.versioning.server;
 
-import org.jahia.ajax.gwt.engines.versioning.client.RPCVersioningService;
-import org.jahia.ajax.gwt.engines.versioning.client.model.VersionsData;
-import org.jahia.ajax.gwt.commons.client.beans.GWTVersion;
-import org.jahia.ajax.gwt.engines.versioning.client.model.VersionComparisonData;
+import org.jahia.ajax.gwt.client.service.versioning.RPCVersioningService;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionsData;
+import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionComparisonData;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 
@@ -55,13 +55,13 @@ public class RPCVersioningServiceImpl extends AbstractJahiaGWTServiceImpl implem
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(RPCVersioningServiceImpl.class);
 
-    public VersionComparisonData getData(GWTJahiaPageContext page,String versionableUUID, String version1, String version2,
+    public GWTJahiaVersionComparisonData getData(GWTJahiaPageContext page,String versionableUUID, String version1, String version2,
                                          String lang) {
         ContentContainerVersionComparisonDelegate delegate = new ContentContainerVersionComparisonDelegate();
         VersionComparisonContext context = new VersionComparisonContext(versionableUUID,version1,version2,lang,
                 this.retrieveParamBean(page.getPid(),page.getMode()),this.getRemoteJahiaUser());
 
-        VersionComparisonData data = null;
+        GWTJahiaVersionComparisonData data = null;
         try {
            data = delegate.getVersionComparisonData(context);
         } catch ( Exception t ){
@@ -86,14 +86,14 @@ public class RPCVersioningServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @param versionPerPage
      * @return
      */
-    public PagingLoadResult<GWTVersion> getRevisions(GWTJahiaPageContext page,String versionableUUID,
+    public PagingLoadResult<GWTJahiaVersion> getRevisions(GWTJahiaPageContext page,String versionableUUID,
                                         String lang, boolean withStagingRevision, boolean withDeletedRevision,
                                         boolean applyLanguageFiltering,
                                         boolean skipNotAvailablePageRevisions,
                                         int offset, String sortParameter,
                                         boolean isAscending, int versionPerPage) {
         ContentPageRevisionsDelegate delegate = new ContentPageRevisionsDelegate();
-        VersionsData data = null;
+        GWTJahiaVersionsData data = null;
         try {
             data = delegate.getRevisions(versionableUUID,lang, withStagingRevision, withDeletedRevision,
                     applyLanguageFiltering, skipNotAvailablePageRevisions, this.retrieveParamBean(page.getPid(),
@@ -102,9 +102,9 @@ public class RPCVersioningServiceImpl extends AbstractJahiaGWTServiceImpl implem
             logger.debug("t");
         }
         if (data != null){
-            List<GWTVersion> subList = new ArrayList<GWTVersion>();
+            List<GWTJahiaVersion> subList = new ArrayList<GWTJahiaVersion>();
             try {
-                List<GWTVersion> versions = data.getVersions();
+                List<GWTJahiaVersion> versions = data.getVersions();
                 // sort job list depending on the sortParameter value
                 logger.debug("Parameter: " + sortParameter);
                 Locale locale = Locale.getDefault();

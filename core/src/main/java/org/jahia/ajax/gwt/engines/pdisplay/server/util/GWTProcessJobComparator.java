@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.engines.pdisplay.server.util;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaProcessJob;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
 
 import java.util.Comparator;
 

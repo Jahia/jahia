@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.jahia.ajax.gwt.commons.client.beans.rss.*;
+import org.jahia.ajax.gwt.client.data.rss.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -50,7 +50,7 @@ import org.apache.log4j.Logger;
 public class RSSHelper {
     private static final transient Logger logger = Logger.getLogger(RSSHelper.class);
 
-    public static GWTRSSFeed createGWTRSSFeed(SyndFeed feed) {
+    public static GWTJahiaRSSFeed createGWTRSSFeed(SyndFeed feed) {
         if (feed == null) {
             return null;
         }
@@ -63,57 +63,57 @@ public class RSSHelper {
         String copyright = feed.getCopyright();
         String description = feed.getDescription();
         String encoding = feed.getEncoding();
-        List<GWTRSSEntry> entries = createGWTRSSEntries(feed.getEntries());
+        List<GWTJahiaRSSEntry> entries = createGWTRSSEntries(feed.getEntries());
         String feedType = feed.getFeedType();
-        GWTRSSImage gwtrssImage = createGWTRSSImage(feed.getImage());
+        GWTJahiaRSSImage gwtrssImage = createGWTRSSImage(feed.getImage());
         String language = feed.getLanguage();
-        return new GWTRSSFeed(url, title, author, authors, categories, contributors, copyright, description, encoding, entries, feedType, gwtrssImage, language);
+        return new GWTJahiaRSSFeed(url, title, author, authors, categories, contributors, copyright, description, encoding, entries, feedType, gwtrssImage, language);
 
     }
 
-    private static List<GWTRSSEntry> createGWTRSSEntries(List<SyndEntry> syndEntryList) {
+    private static List<GWTJahiaRSSEntry> createGWTRSSEntries(List<SyndEntry> syndEntryList) {
         if (syndEntryList == null) {
             return null;
         }
-        List<GWTRSSEntry> gwtrssEntries = new ArrayList<GWTRSSEntry>();
+        List<GWTJahiaRSSEntry> gwtrssEntries = new ArrayList<GWTJahiaRSSEntry>();
 
         for (SyndEntry syndEntry : syndEntryList) {
             String author = syndEntry.getAuthor();
 
             // authors
-            List<GWTRSSPerson> authors = new ArrayList<GWTRSSPerson>();
+            List<GWTJahiaRSSPerson> authors = new ArrayList<GWTJahiaRSSPerson>();
             if (syndEntry.getAuthors() != null) {
                 for (Object syndPersonObj : syndEntry.getAuthors()) {
-                    GWTRSSPerson gwtrssPerson = createGWTRSSPerson((SyndPerson) syndPersonObj);
+                    GWTJahiaRSSPerson gwtrssPerson = createGWTRSSPerson((SyndPerson) syndPersonObj);
                     authors.add(gwtrssPerson);
                 }
             }
 
             // categories
-            List<GWTRSSCategory> categories = new ArrayList<GWTRSSCategory>();
+            List<GWTJahiaRSSCategory> categories = new ArrayList<GWTJahiaRSSCategory>();
             /*
             Not handled due to a bug with gwt ---> to be fixed
             if (syndEntry.getCategories() != null) {
                 for (Object syndCategoryObj : syndEntry.getCategories()) {
-                    GWTRSSCategory gwtrssCategory = createGWTRSSCategory((SyndCategory) syndCategoryObj);
+                    GWTJahiaRSSCategory gwtrssCategory = createGWTRSSCategory((SyndCategory) syndCategoryObj);
                     categories.add(gwtrssCategory);
                 }
             } */
 
             // SynContent list
-            List<GWTRSSContent> contents = new ArrayList<GWTRSSContent>();
+            List<GWTJahiaRSSContent> contents = new ArrayList<GWTJahiaRSSContent>();
             if (syndEntry.getContents() != null) {
                 for (Object syndContentObj : syndEntry.getContents()) {
-                    GWTRSSContent gwtrssContent = createGWTRSSContent((SyndContent) syndContentObj);
+                    GWTJahiaRSSContent gwtrssContent = createGWTRSSContent((SyndContent) syndContentObj);
                     contents.add(gwtrssContent);
                 }
             }
 
             // contibutors
-            List<GWTRSSPerson> contributors = new ArrayList<GWTRSSPerson>();
+            List<GWTJahiaRSSPerson> contributors = new ArrayList<GWTJahiaRSSPerson>();
             if (syndEntry.getContributors() != null) {
                 for (Object syndPersonObj : syndEntry.getContributors()) {
-                    GWTRSSPerson gwtrssPerson = createGWTRSSPerson((SyndPerson) syndPersonObj);
+                    GWTJahiaRSSPerson gwtrssPerson = createGWTRSSPerson((SyndPerson) syndPersonObj);
                     contributors.add(gwtrssPerson);
                 }
             }
@@ -128,12 +128,12 @@ public class RSSHelper {
             }
 
             // enclosure
-            List<GWTRSSEnclosure> enclosures = null;//new ArrayList<GWTRSSEnclosure>();
+            List<GWTJahiaRSSEnclosure> enclosures = null;//new ArrayList<GWTJahiaRSSEnclosure>();
             /*
             Not handled due to a bug with gwt ---> to be fixed
             if (syndEntry.getEnclosures() != null) {
                 for (Object syndEnclosureObj : syndEntry.getEnclosures()) {
-                    GWTRSSEnclosure gwtrssEnclosure = createGWTRSSEnclosure((SyndEnclosure) syndEnclosureObj);
+                    GWTJahiaRSSEnclosure gwtrssEnclosure = createGWTRSSEnclosure((SyndEnclosure) syndEnclosureObj);
                     enclosures.add(gwtrssEnclosure);
                 }
             } */
@@ -142,7 +142,7 @@ public class RSSHelper {
             Date publishedDate = null;//syndEntry.getPublishedDate();
             String title = syndEntry.getTitle();
             Date updatedDate = null;//syndEntry.getUpdatedDate();
-            gwtrssEntries.add(new GWTRSSEntry(author, authors, categories, contents, contributors, description, enclosures, link, links, publishedDate, title, updatedDate));
+            gwtrssEntries.add(new GWTJahiaRSSEntry(author, authors, categories, contents, contributors, description, enclosures, link, links, publishedDate, title, updatedDate));
         }
         return gwtrssEntries;
     }
@@ -151,8 +151,8 @@ public class RSSHelper {
      * @param syndPerson
      * @return
      */
-    private static GWTRSSPerson createGWTRSSPerson(SyndPerson syndPerson) {
-        GWTRSSPerson gwtrssPerson = new GWTRSSPerson();
+    private static GWTJahiaRSSPerson createGWTRSSPerson(SyndPerson syndPerson) {
+        GWTJahiaRSSPerson gwtrssPerson = new GWTJahiaRSSPerson();
         gwtrssPerson.setEmail(syndPerson.getEmail());
         gwtrssPerson.setName(syndPerson.getName());
         gwtrssPerson.setUri(syndPerson.getUri());
@@ -163,8 +163,8 @@ public class RSSHelper {
      * @param syndContent
      * @return
      */
-    private static GWTRSSContent createGWTRSSContent(SyndContent syndContent) {
-        GWTRSSContent gwtrssContent = new GWTRSSContent();
+    private static GWTJahiaRSSContent createGWTRSSContent(SyndContent syndContent) {
+        GWTJahiaRSSContent gwtrssContent = new GWTJahiaRSSContent();
         gwtrssContent.setMode(syndContent.getMode());
         gwtrssContent.setValue(syndContent.getValue());
         gwtrssContent.setType(syndContent.getType());
@@ -175,8 +175,8 @@ public class RSSHelper {
      * @param syndEnclosure
      * @return
      */
-    private static GWTRSSEnclosure createGWTRSSEnclosure(SyndEnclosure syndEnclosure) {
-        GWTRSSEnclosure gwtrssEnclosure = new GWTRSSEnclosure();
+    private static GWTJahiaRSSEnclosure createGWTRSSEnclosure(SyndEnclosure syndEnclosure) {
+        GWTJahiaRSSEnclosure gwtrssEnclosure = new GWTJahiaRSSEnclosure();
         gwtrssEnclosure.setUrl(syndEnclosure.getUrl());
         gwtrssEnclosure.setType(syndEnclosure.getType());
         //  gwtrssEnclosure.setLength(syndEnclosure.getLength());
@@ -189,7 +189,7 @@ public class RSSHelper {
      * @param syndImage
      * @return
      */
-    public static GWTRSSImage createGWTRSSImage(SyndImage syndImage) {
+    public static GWTJahiaRSSImage createGWTRSSImage(SyndImage syndImage) {
         if (syndImage == null) {
             return null;
         }
@@ -198,6 +198,6 @@ public class RSSHelper {
         String title = syndImage.getTitle();
         String url = syndImage.getUrl();
 
-        return new GWTRSSImage(description, link, title, url);
+        return new GWTJahiaRSSImage(description, link, title, url);
     }
 }

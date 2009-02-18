@@ -33,10 +33,10 @@
 
 package org.jahia.ajax.gwt.engines.workflow.server.helper;
 
-import org.jahia.ajax.gwt.engines.workflow.client.model.GWTJahiaWorkflowElement;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaNodeOperationResult;
+import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
+import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaNodeOperationResultItem;
 import org.jahia.content.ContentObject;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.ObjectKey;

@@ -35,7 +35,7 @@ package org.jahia.taglibs.uicomponents.calendar;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;

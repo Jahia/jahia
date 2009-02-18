@@ -34,7 +34,7 @@
 package org.jahia.services.toolbar.resolver.impl;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl.AdvCompareModeAjaxActionImpl;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaData;
@@ -100,7 +100,7 @@ public class URLPropertyResolver implements PropertyResolver {
                                     .getAttribute(ProcessingContext.SESSION_ADV_COMPARE_MODE_SETTINGS);
                     if (settings != null && settings.isEnabled()) {
 
-                        GWTAjaxActionResult actionResult = new GWTAjaxActionResult();
+                        GWTJahiaAjaxActionResult actionResult = new GWTJahiaAjaxActionResult();
 
                         ContentObjectEntryState version1EntryState = settings.getContentObjectEntryState(settings.getVersion1(),
                                 jData.getProcessingContext().getContentPage(), jData.getProcessingContext().getLocale());

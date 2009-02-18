@@ -34,7 +34,7 @@
 package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.params.AdvPreviewSettings;
@@ -183,7 +183,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     gwtScript = "general";
                 }
                 if (isLiveMode()) {
-                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.templates.entrypoint.").append(gwtScript).append(".live.Live").toString())).append("\n");
+                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".live.Live").toString())).append("\n");
                 } else {
 
                     if (checkGAprofilePresent(jData)) {
@@ -195,7 +195,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                         buf.append(gviz);
                     }
 
-                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.templates.entrypoint.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
+                    buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
                 }
 
                 // resource bunlde var fo toolbar

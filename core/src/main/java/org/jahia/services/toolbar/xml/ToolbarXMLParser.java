@@ -33,7 +33,7 @@
 
 package org.jahia.services.toolbar.xml;
 
-import org.jahia.ajax.gwt.templates.components.toolbar.client.ui.Constants;
+import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.services.toolbar.bean.*;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -328,28 +328,28 @@ public class ToolbarXMLParser {
             int layoutInt = 0;
             if (layout != null) {
                 if (layout.equalsIgnoreCase("button")) {
-                    layoutInt = Constants.ITEMSGROUP_BUTTON;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON;
                 } else if (layout.equalsIgnoreCase("label")) {
-                    layoutInt = Constants.ITEMSGROUP_LABEL;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_LABEL;
                 } else if (layout.equalsIgnoreCase("button-label")) {
-                    layoutInt = Constants.ITEMSGROUP_BUTTON_LABEL;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON_LABEL;
                 } else if (layout.equalsIgnoreCase("menu")) {
-                    layoutInt = Constants.ITEMSGROUP_MENU;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_MENU;
                 } else if (layout.equalsIgnoreCase("menu-radio")) {
-                    layoutInt = Constants.ITEMSGROUP_MENU_RADIO;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_MENU_RADIO;
                 } else if (layout.equalsIgnoreCase("menu-checkbox")) {
-                    layoutInt = Constants.ITEMSGROUP_MENU_CHECKBOX;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX;
                 } else if (layout.equalsIgnoreCase("select")) {
-                    layoutInt = Constants.ITEMSGROUP_SELECT;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_SELECT;
                 } else if (layout.equalsIgnoreCase("box")) {
-                    layoutInt = Constants.ITEMSGROUP_BOX;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_BOX;
                 } else if (layout.equalsIgnoreCase("tab")) {
-                    layoutInt = Constants.ITEMSGROUP_TABS;
+                    layoutInt = ToolbarConstants.ITEMSGROUP_TABS;
                 } else {
                     logger.debug("Warning: layout " + itemsGroup.getLayout() + " unknown.");
                 }
             } else {
-                layoutInt = Constants.ITEMSGROUP_BUTTON;
+                layoutInt = ToolbarConstants.ITEMSGROUP_BUTTON;
             }
             itemsGroup.setLayout(layoutInt);
 

@@ -33,7 +33,10 @@
 
 package org.jahia.ajax.gwt.utils;
 
-import org.jahia.ajax.gwt.commons.client.beans.*;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAdvCompareModeSettings;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAdvPreviewSettings;
+import org.jahia.ajax.gwt.client.data.GWTJahiaContext;
+import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.params.AdvCompareModeSettings;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
@@ -72,11 +75,11 @@ public class JahiaGWTUtils {
         return new GWTJahiaUser(user.getUsername(),user.getUserKey());
     }
 
-    public static GWTAdvPreviewSettings jahiaAdvPreviewSettingsToGWTBean(AdvPreviewSettings settings){
+    public static GWTJahiaAdvPreviewSettings jahiaAdvPreviewSettingsToGWTBean(AdvPreviewSettings settings){
         if (settings==null){
             return null;
         }
-        GWTAdvPreviewSettings gwtAdvPreviewSettings = new GWTAdvPreviewSettings();
+        GWTJahiaAdvPreviewSettings gwtAdvPreviewSettings = new GWTJahiaAdvPreviewSettings();
         gwtAdvPreviewSettings.setMainUser(jahiaUserToGWTBean(settings.getMainUser()));
         gwtAdvPreviewSettings.setAliasedUser(jahiaUserToGWTBean(settings.getAliasedUser()));
         gwtAdvPreviewSettings.setEnabled(settings.isEnabled());
@@ -84,11 +87,11 @@ public class JahiaGWTUtils {
         return gwtAdvPreviewSettings;
     }
 
-    public static GWTAdvCompareModeSettings jahiaAdvCompareModeSettingsToGWTBean(AdvCompareModeSettings settings){
+    public static GWTJahiaAdvCompareModeSettings jahiaAdvCompareModeSettingsToGWTBean(AdvCompareModeSettings settings){
         if (settings==null){
             return null;
         }
-        GWTAdvCompareModeSettings gwtAdvCompareModeSettings = new GWTAdvCompareModeSettings();
+        GWTJahiaAdvCompareModeSettings gwtAdvCompareModeSettings = new GWTJahiaAdvCompareModeSettings();
         gwtAdvCompareModeSettings.setEnabled(settings.isEnabled());
         gwtAdvCompareModeSettings.setRevision1(settings.getGWTRevision1());
         gwtAdvCompareModeSettings.setRevision2(settings.getGWTRevision2());

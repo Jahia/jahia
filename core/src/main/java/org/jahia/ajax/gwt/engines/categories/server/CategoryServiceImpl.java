@@ -33,12 +33,14 @@
 
 package org.jahia.ajax.gwt.engines.categories.server;
 
-import org.jahia.ajax.gwt.engines.categories.client.service.CategoryService;
-import org.jahia.ajax.gwt.engines.categories.client.model.*;
-import org.jahia.ajax.gwt.commons.client.rpc.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.service.category.CategoryService;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
-import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
+import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryTitle;
+import org.jahia.ajax.gwt.client.data.category.GWTJahiaNodeProperty;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.categories.Category;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -301,7 +303,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
      *
      * @param path
      * @return
-     * @throws GWTJahiaServiceException
+     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
     public String getDownloadPath(String path) throws GWTJahiaServiceException {
         // No implemented
@@ -451,9 +453,9 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
      * @param category
      */
     private void updateInfo(GWTJahiaCategoryNode gwtJahiaCategoryNode, Category category) {
-        List<GWTCategoryTitle> gwtCategoryTitles = gwtJahiaCategoryNode.getCategoryTitles();
+        List<GWTJahiaCategoryTitle> gwtCategoryTitles = gwtJahiaCategoryNode.getCategoryTitles();
         logger.debug("Try to update " + gwtCategoryTitles.size() + "categories");
-        for (GWTCategoryTitle categoryTitle : gwtCategoryTitles) {
+        for (GWTJahiaCategoryTitle categoryTitle : gwtCategoryTitles) {
             if (categoryTitle.getTitleValue() != null && !categoryTitle.getTitleValue().equalsIgnoreCase("")) {
                 category.setTitle(LanguageCodeConverters.languageCodeToLocale(categoryTitle.getLocale()), categoryTitle.getTitleValue());
             }
@@ -516,11 +518,11 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
 
 
         // load titles
-        List<GWTCategoryTitle> gwtCategoryTitles = new ArrayList<GWTCategoryTitle>();
+        List<GWTJahiaCategoryTitle> gwtCategoryTitles = new ArrayList<GWTJahiaCategoryTitle>();
         JahiaSiteLanguageListManager listManager = (JahiaSiteLanguageListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageListManager.class.getName());
         List<String> allLanguageCodes = listManager.getAllSitesLanguages();
         for (String curLanguageCode : allLanguageCodes) {
-            GWTCategoryTitle gwtCategoryTitle = new GWTCategoryTitle();
+            GWTJahiaCategoryTitle gwtCategoryTitle = new GWTJahiaCategoryTitle();
             gwtCategoryTitle.setLocale(curLanguageCode);
             String titleValue = category.getTitle(LanguageCodeConverters.languageCodeToLocale(curLanguageCode));
             if (titleValue == null) {

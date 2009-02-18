@@ -35,10 +35,10 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.*;
-import org.jahia.ajax.gwt.commons.client.rpc.JahiaContentService;
+import org.jahia.ajax.gwt.client.service.JahiaContentService;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
-import org.jahia.ajax.gwt.config.client.beans.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.ContainerBean;
@@ -287,7 +287,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
 
                 // Todo serialize the display attribute in UserProperty to remove this code
                 if ("emailNotificationsDisabled".equals(property.getName())) {
-                    final BasicDataBean data = new BasicDataBean();
+                    final GWTJahiaBasicDataBean data = new GWTJahiaBasicDataBean();
                     data.setValue(property.getValue());
                     data.setDisplayName(data.getValue());
                     gwtJahiaUserProperty.setDisplay(UserProperty.CHECKBOX);
@@ -297,10 +297,10 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
                     gwtJahiaUserProperty.setDisplay(UserProperty.SELECT_BOX);
                     gwtJahiaUserProperty.setValues(getAvailableBundleLanguageBeans());
                     final Locale loc = LanguageCodeConverters.languageCodeToLocale(property.getValue());
-                    gwtJahiaUserProperty.setValue(new BasicDataBean(loc.toString(), loc.getDisplayName(loc)));
+                    gwtJahiaUserProperty.setValue(new GWTJahiaBasicDataBean(loc.toString(), loc.getDisplayName(loc)));
 
                 } else {
-                    final BasicDataBean data = new BasicDataBean();
+                    final GWTJahiaBasicDataBean data = new GWTJahiaBasicDataBean();
                     data.setValue(property.getValue());
                     data.setDisplayName(data.getValue());
                     gwtJahiaUserProperty.setValue(data);
@@ -350,8 +350,8 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
     }
 
 
-    public GWTAjaxActionResult updateJahiaUserProperties(List<GWTJahiaUserProperty> newJahiaUserProperties, List<GWTJahiaUserProperty> removeJahiaUserProperties) {
-        GWTAjaxActionResult gwtAjaxActionResult = new GWTAjaxActionResult();
+    public GWTJahiaAjaxActionResult updateJahiaUserProperties(List<GWTJahiaUserProperty> newJahiaUserProperties, List<GWTJahiaUserProperty> removeJahiaUserProperties) {
+        GWTJahiaAjaxActionResult gwtAjaxActionResult = new GWTJahiaAjaxActionResult();
         JahiaUser user = getRemoteJahiaUser();
 
         // update user properties
@@ -722,11 +722,11 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
                 JahiaResourceBundle.MESSAGE_DEFAULT_RESOURCE_BUNDLE, null);
     }
 
-    public static List<BasicDataBean> getAvailableBundleLanguageBeans() {
+    public static List<GWTJahiaBasicDataBean> getAvailableBundleLanguageBeans() {
         final List<Locale> tmp = getAvailableBundleLocales();
-        final List<BasicDataBean> result = new ArrayList<BasicDataBean>();
+        final List<GWTJahiaBasicDataBean> result = new ArrayList<GWTJahiaBasicDataBean>();
         for (Locale locale : tmp) {
-            result.add(new BasicDataBean(locale.toString(), locale.getDisplayName(locale)));
+            result.add(new GWTJahiaBasicDataBean(locale.toString(), locale.getDisplayName(locale)));
         }
         return result;
     }

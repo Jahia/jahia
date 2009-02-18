@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.data.JahiaData;
 import org.jahia.engines.EngineMessage;
@@ -70,8 +70,8 @@ public class SimpleAjaxActionImpl extends AjaxAction {
      * @param gwtPropertiesMap
      * @return
      */
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
-        GWTAjaxActionResult result = new GWTAjaxActionResult();
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+        GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         if (action != null) {
             if (action.equalsIgnoreCase(USER_INFO)) {
                 result.setValue(userInfo(jahiaData, gwtPropertiesMap));
@@ -141,7 +141,7 @@ public class SimpleAjaxActionImpl extends AjaxAction {
      * @return
      */
     public String flushAllCaches(JahiaData jahiaData, Map gwtPropertiesMap) {
-        GWTProperty fluschTypeProp = (GWTProperty) gwtPropertiesMap.get("flush");
+        GWTJahiaProperty fluschTypeProp = (GWTJahiaProperty) gwtPropertiesMap.get("flush");
         if (fluschTypeProp != null) {
             String cacheType = fluschTypeProp.getValue();
             if (cacheType != null) {

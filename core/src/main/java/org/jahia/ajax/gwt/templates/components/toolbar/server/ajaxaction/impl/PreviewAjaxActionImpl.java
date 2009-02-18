@@ -34,8 +34,8 @@
 package org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.impl;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.GWTAjaxActionResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTProperty;
+import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.templates.components.toolbar.server.ajaxaction.AjaxAction;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
@@ -51,10 +51,10 @@ import java.util.Map;
 public class PreviewAjaxActionImpl extends AjaxAction {
     private static final transient Logger logger = Logger.getLogger(PreviewAjaxActionImpl.class);
 
-    public GWTAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
-        GWTAjaxActionResult result = new GWTAjaxActionResult();
+    public GWTJahiaAjaxActionResult execute(JahiaData jahiaData, String action, Map gwtPropertiesMap) {
+        GWTJahiaAjaxActionResult result = new GWTJahiaAjaxActionResult();
         // To Do: generate preview link depending on a date value
-        GWTProperty dateProperty = (GWTProperty) gwtPropertiesMap.get("date");
+        GWTJahiaProperty dateProperty = (GWTJahiaProperty) gwtPropertiesMap.get("date");
         if (dateProperty != null) {
             String dateLongValue = dateProperty.getValue();
             if (dateLongValue != null) {

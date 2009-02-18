@@ -38,10 +38,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaNodeOperationResult;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaNodeOperationResultItem;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaProcessJob;
-import org.jahia.ajax.gwt.commons.client.beans.GWTJahiaProcessJobAction;
+import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJobAction;
+import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
+import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
+import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.content.ContentObject;
 import org.jahia.content.NodeOperationResult;
 import org.jahia.content.ObjectKey;

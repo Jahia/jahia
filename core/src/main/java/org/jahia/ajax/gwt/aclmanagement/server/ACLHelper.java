@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.aclmanagement.server;
 
-import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.aclmanagement.client.model.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.acl.JahiaACLEntry;
 import org.jahia.services.usermanager.JahiaUser;

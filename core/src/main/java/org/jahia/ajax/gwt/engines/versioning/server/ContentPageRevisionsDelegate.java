@@ -33,8 +33,8 @@
 
 package org.jahia.ajax.gwt.engines.versioning.server;
 
-import org.jahia.ajax.gwt.commons.client.beans.GWTVersion;
-import org.jahia.ajax.gwt.engines.versioning.client.model.VersionsData;
+import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
+import org.jahia.ajax.gwt.client.data.versioning.GWTJahiaVersionsData;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.engines.calendar.CalendarHandler;
@@ -80,13 +80,13 @@ public class ContentPageRevisionsDelegate {
      * @return
      * @throws JahiaException
      */
-    public VersionsData getRevisions(String versionableUUID, String langCode, boolean withStagingRevision,
+    public GWTJahiaVersionsData getRevisions(String versionableUUID, String langCode, boolean withStagingRevision,
                                      boolean withDeletedRevision, boolean applyLanguageFiltering,
                                      boolean skipNotAvailablePageRevisions, ParamBean jParams)
     throws JahiaException {
 
         final HttpServletRequest request = jParams.getRequest();
-        VersionsData data;
+        GWTJahiaVersionsData data;
 
         try {
 
@@ -218,9 +218,9 @@ public class ContentPageRevisionsDelegate {
         return calHandler;
     }
 
-    protected VersionsData getRevisionsData(List<RevisionEntrySet> revisions, ParamBean jParams, String languageCode){
+    protected GWTJahiaVersionsData getRevisionsData(List<RevisionEntrySet> revisions, ParamBean jParams, String languageCode){
 
-        VersionsData data = new VersionsData();
+        GWTJahiaVersionsData data = new GWTJahiaVersionsData();
         List versionRowDataHeadLabels = new ArrayList();
         versionRowDataHeadLabels.add(JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.version",
                 jParams,jParams.getLocale(),"Version"));
@@ -237,7 +237,7 @@ public class ContentPageRevisionsDelegate {
         if (revisions == null){
             return data;
         }
-        List<GWTVersion> gwtRevisionEntrySets = new ArrayList<GWTVersion>();
+        List<GWTJahiaVersion> gwtRevisionEntrySets = new ArrayList<GWTJahiaVersion>();
         try {
             Iterator<RevisionEntrySet> iterator = revisions.iterator();
             RevisionEntrySet entrySet;
@@ -253,10 +253,10 @@ public class ContentPageRevisionsDelegate {
         return data;
     }
 
-    protected GWTVersion getGWTRevisionEntryFromRevisionEntrySet(RevisionEntrySet rev, ParamBean jParams,
+    protected GWTJahiaVersion getGWTRevisionEntryFromRevisionEntrySet(RevisionEntrySet rev, ParamBean jParams,
                                                      String languageCode){
         Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-        GWTVersion version = new GWTVersion();
+        GWTJahiaVersion version = new GWTJahiaVersion();
         version.setVersionableUUID(rev.getObjectKey().getKey());
         version.setDate(rev.getVersionID()*1000L);
         version.setLang(languageCode);
@@ -265,15 +265,15 @@ public class ContentPageRevisionsDelegate {
         String readableName = RevisionEntrySet.getVersionNumber(rev, jParams, locale);
         version.setReadableName(readableName);
         List<String> versionRowData = new ArrayList<String>();
-        version.set(GWTVersion.VERSION_LABEL,version.getReadableName());
-        versionRowData.add((String)version.get(GWTVersion.VERSION_LABEL));
-        version.set(GWTVersion.WORKFLOW_STATE,RevisionEntrySet.getWorkflowState(rev, jParams, locale));
-        versionRowData.add((String)version.get(GWTVersion.WORKFLOW_STATE));
-        version.set(GWTVersion.AUTHOR,rev.getLastContributor());
-        versionRowData.add((String)version.get(GWTVersion.AUTHOR));
-        version.set(GWTVersion.DATE,RevisionEntrySet.getVersionDate(rev,locale));
-        versionRowData.add((String)version.get(GWTVersion.DATE));
-        version.set(GWTVersion.LANG,languageCode);
+        version.set(GWTJahiaVersion.VERSION_LABEL,version.getReadableName());
+        versionRowData.add((String)version.get(GWTJahiaVersion.VERSION_LABEL));
+        version.set(GWTJahiaVersion.WORKFLOW_STATE,RevisionEntrySet.getWorkflowState(rev, jParams, locale));
+        versionRowData.add((String)version.get(GWTJahiaVersion.WORKFLOW_STATE));
+        version.set(GWTJahiaVersion.AUTHOR,rev.getLastContributor());
+        versionRowData.add((String)version.get(GWTJahiaVersion.AUTHOR));
+        version.set(GWTJahiaVersion.DATE,RevisionEntrySet.getVersionDate(rev,locale));
+        versionRowData.add((String)version.get(GWTJahiaVersion.DATE));
+        version.set(GWTJahiaVersion.LANG,languageCode);
         versionRowData.add(languageCode);
         version.setVersionRowData(versionRowData.toArray(new String[]{}));
         return version;

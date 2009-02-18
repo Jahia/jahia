@@ -35,7 +35,7 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.templatestructure.TemplateTag;
-import org.jahia.ajax.gwt.commons.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.util.ResourceBundle;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspWriter;

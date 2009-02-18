@@ -38,9 +38,9 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.ajax.gwt.commons.client.beans.rss.GWTRSSFeed;
+import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
+import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.utils.RSSHelper;
-import org.jahia.ajax.gwt.templates.commons.client.module.JahiaType;
 import org.apache.log4j.Logger;
 
 import javax.portlet.*;
@@ -127,7 +127,7 @@ public class JahiaRSSPortlet extends GenericPortlet {
         //load corresponding url
         try {
             URL urlObj = new URL(url);
-            GWTRSSFeed gwtrssFeed = loadRssFeed(urlObj);
+            GWTJahiaRSSFeed gwtrssFeed = loadRssFeed(urlObj);
             if (gwtrssFeed != null) {
                 gwtrssFeed.setUrl(url);
                 gwtrssFeed.setNbDisplayedEntries(maxEntryDisplay);
@@ -137,7 +137,7 @@ public class JahiaRSSPortlet extends GenericPortlet {
         }
     }
 
-    protected GWTRSSFeed loadRssFeed(URL feedUrl) {
+    protected GWTJahiaRSSFeed loadRssFeed(URL feedUrl) {
         try {
             SyndFeedInput input = new SyndFeedInput();
             URLConnection urlConnection = feedUrl.openConnection();

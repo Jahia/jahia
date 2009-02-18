@@ -62,16 +62,6 @@ html, body,
     margin-bottom: 0.2em;
 }
 
-#bodywrapper body {
-    font-size: 80%;
-    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-}
-
-#bodywrapper table {
-    font-size: 100%;
-}
-
-/*IE 5.5 text too big bugfix*/
 #bodywrapper h1 {
     font-size: 2em;
     margin: 0 0 0.5em 0;
@@ -130,6 +120,11 @@ html, body,
     text-align: left;
 }
 
+/*IE 5.5 text too big bugfix*/
+#bodywrapper table {
+    font-size: 100%;
+}
+
 /* Restore correct styles displaying for tags rewrited by GxT */
 #bodywrapper strong, #bodywrapper th {
     font-weight: bold;
@@ -156,47 +151,6 @@ html, body,
     #bodywrapper select {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 1em;
-}
-
-/*SPECIAL ELEMENTS*/
-#bodywrapper img {
-    border: 0;
-}
-
-/******************************************************************************
-* Utils
-******************************************************************************/
-.collapsible {
-    display: none;
-}
-
-#bodywrapper .clear {
-    clear: both;
-}
-
-#bodywrapper br.clear {
-    clear: both;
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 0; /* no height ! */
-    font-size: 0;
-}
-
-#bodywrapper .hide, #bodywrapper .hidden {
-    display: none;
-}
-
-#bodywrapper .floatright {
-    float: right;
-    margin: 5px;
-}
-
-#bodywrapper .floatleft {
-    float: left;
-    margin: 5px;
-}
-
-#bodywrapper .layouted {
-    zoom: 1;
 }
 
 /******************************************************************************
@@ -227,6 +181,12 @@ body {
     #bodywrapper a:active {
     color: #900;
     text-decoration: none;
+    background: none;
+}
+
+#bodywrapper a:visited {
+    color: #900;
+    text-decoration: underline;
     background: none;
 }
 
@@ -331,7 +291,7 @@ body {
     background-color: #eaeaea;
 }
 
-#bodywrapper div.intro {
+#bodywrapper .intro {
     color: #333;
     line-height: 1.6em;
     font-size: 1.4em;
@@ -342,16 +302,50 @@ body {
     margin: 1em 0;
 }
 
-#bodywrapper div.intro p {
-    padding: 0;
-    margin: 0;
+#bodywrapper img {
+    border: 0;
+}
+
+/******************************************************************************
+* Utils
+******************************************************************************/
+.collapsible {
+    display: none;
+}
+
+#bodywrapper .clear {
+    clear: both;
+}
+
+#bodywrapper br.clear {
+    clear: both;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 0; /* no height ! */
+    font-size: 0;
+}
+
+#bodywrapper .hide, #bodywrapper .hidden {
+    display: none;
+}
+
+#bodywrapper .floatright {
+    float: right;
+    margin: 5px;
+}
+
+#bodywrapper .floatleft {
+    float: left;
+    margin: 5px;
+}
+
+#bodywrapper .layouted {
+    zoom: 1;
 }
 
 /******************************************************************************
 * Generic
 ******************************************************************************/
-#bodywrapper #columnA,
-    #bodywrapper #columnB {
+#bodywrapper #columnA, #bodywrapper #columnB {
     font-size: 0.9em;
     line-height: 140%
 }
@@ -619,7 +613,6 @@ body {
     top: -1px;
     right: -1px;
     background: url( ../img/box4-topright.png ) no-repeat top right;
-
 }
 
 /*languages*/
@@ -735,7 +728,7 @@ body {
 }
 
 #bodywrapper .illustration2-text {
-    padding-right:20px;
+    padding-right: 20px;
     line-height: normal
 }
 
@@ -791,18 +784,16 @@ body {
 #bodywrapper #content {
     margin: 0 280px;
     overflow: hidden;
-
-}
-
-/*2 colums columnB/mainColumn  */
-#bodywrapper #content3 {
-    margin: 0 280px 0 0;
-    overflow: hidden;
 }
 
 /*2 colums mainColumn/columnA */
 #bodywrapper #content2 {
     margin: 0 0 0 280px;
+    overflow: hidden;
+}
+/*2 colums columnB/mainColumn  */
+#bodywrapper #content3 {
+    margin: 0 280px 0 0;
     overflow: hidden;
 }
 
@@ -824,7 +815,6 @@ body {
     margin-left: -940px;
     overflow: hidden;
     display: block;
-
 }
 
 #bodywrapper #columnA {
@@ -1043,7 +1033,7 @@ body {
     float: left;
     overflow: hidden;
     display: block;
-    margin-right:15px
+    margin-right: 15px
 }
 
 #bodywrapper #footerPart3 .columns2 .column-item2 {
@@ -1066,7 +1056,7 @@ body {
     padding: 0;
     display: inline;
     padding-left: 16px;
-    float:right;
+    float: right;
 }
 
 /*bottomshortcuts*/
@@ -1136,54 +1126,57 @@ body {
 * navigationN2
 ******************************************************************************/
 #bodywrapper .box2-containerN2 .box2-text {
-	padding:15px 0 !important;
+    padding: 15px 0 !important;
 }
+
 #bodywrapper #navigationN2 ul {
-	margin:0;
-	padding:0;
-	list-style-type:none;
-	position:relative ;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    position: relative;
 }
+
 #bodywrapper #navigationN2 li ul {
-	padding:0 0 0 10px;
+    padding: 0 0 0 10px;
 }
-#bodywrapper #navigationN2 li{
-	margin:0;
-	padding:0;
-	position:relative ;
+
+#bodywrapper #navigationN2 li {
+    margin: 0;
+    padding: 0;
+    position: relative;
 }
 
 #bodywrapper #navigationN2 a {
-    display: inline ;
-    font-weight:bold;
+    display: inline;
+    font-weight: bold;
     text-decoration: none;
-    color:#000;
-    padding-left:12px ;
-    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50% ;
+    color: #000;
+    padding-left: 12px;
+    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50%;
 }
 
 #bodywrapper #navigationN2 a.inpath {
-    color:#600;
-    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+    color: #600;
+    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
 }
 
 #bodywrapper #navigationN2 a.selected {
-    color:#c03;
-    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60% ;
+    color: #c03;
+    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
 }
 
-#bodywrapper #navigationN2 a:hover{
-	color:#555 ;
+#bodywrapper #navigationN2 a:hover {
+    color: #555;
 }
 
 #bodywrapper #navigationN2 li .action-menu-icons {
-    position:absolute ;
-    top: 0 ;
-    right : 0 ;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 #bodywrapper #navigationN2 li .ContentContainerList {
-    position:relative ;
+    position: relative;
 }
 
 /******************************************************************************
@@ -1406,7 +1399,7 @@ body {
 ******************************************************************************/
 #bodywrapper .box3-style1 .box3-container {
     border: 1px solid #ccc;
-    background-color:#ebedf4;
+    background-color: #ebedf4;
 }
 
 #bodywrapper .box3-style1 {
@@ -1479,8 +1472,6 @@ body {
     background: url( ../img/box4-topright.png ) no-repeat top right;
 
 }
-
-
 
 /******************************************************************************
 * Box 4 style1
@@ -1851,9 +1842,13 @@ body {
     margin-left: 0.5em;
     padding: 0;
 }
- #bodywrapper .eventsSort {
-    float:right; margin-top:5px; margin-right:10px;
+
+#bodywrapper .eventsSort {
+    float: right;
+    margin-top: 5px;
+    margin-right: 10px;
 }
+
 /******************************************************************************
 *  Portraits generic
 ******************************************************************************/
@@ -2392,6 +2387,7 @@ body {
     font-weight: bold
 
 }
+
 #bodywrapper ul.links {
     margin: 0;
     padding: 0;
@@ -2832,7 +2828,6 @@ body {
 ******************************************************************************/
 #bodywrapper .jobLabel {
     font-weight: bold;
-
 }
 
 #bodywrapper .jobtxt {
@@ -2986,17 +2981,6 @@ body {
     background-color: #fff
 }
 
-#bodywrapper .col1 {
-
-}
-
-#bodywrapper .col2 {
-
-}
-
-#bodywrapper .col3 {
-}
-
 #bodywrapper .tab tfoot td {
     font-size: 0.8em;
     color: #666;
@@ -3026,7 +3010,6 @@ body {
     margin: 0;
     padding: 0;
     list-style: none;
-
 }
 
 #bodywrapper #sitemap li {
@@ -3151,7 +3134,6 @@ body {
     background-color: #ebedf4;
     padding: 0 0.5em;
 }
-
 
 /******************************************************************************
 *  loginForm
@@ -3280,33 +3262,38 @@ body {
 #bodywrapper .maincontent {
     margin-top: 20px;
 }
+
 /******************************************************************************
 *  Preferences
 ******************************************************************************/
-#bodywrapper div.preferences{
-border: 1px solid #ccc;
-background-color:#ebedf4;
-padding:5px;
-font-size:90%;
-line-height:100%;
-margin:1em 0;
+#bodywrapper div.preferences {
+    border: 1px solid #ccc;
+    background-color: #ebedf4;
+    padding: 5px;
+    font-size: 90%;
+    line-height: 100%;
+    margin: 1em 0;
 }
-#bodywrapper .preferences p{
-margin:0;
-padding:0
+
+#bodywrapper .preferences p {
+    margin: 0;
+    padding: 0
 }
-#bodywrapper .preferences h2{
-margin:0;
-padding:0;
-font-size:1.2em;
-font-weight:bold;
+
+#bodywrapper .preferences h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+    font-weight: bold;
 }
-#bodywrapper .preferences .preference-item .preference-label{
-font-weight:bold;
+
+#bodywrapper .preferences .preference-item .preference-label {
+    font-weight: bold;
 }
+
 /******************************************************************************
 *  Calendar in template Events
 ******************************************************************************/
-#bodywrapper .box2 .x-date-picker    {
-   margin-left:40px;
-
+#bodywrapper .box2 .x-date-picker {
+    margin-left: 40px;
+}

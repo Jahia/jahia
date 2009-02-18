@@ -91,14 +91,19 @@ public class TestMojo extends AbstractMojo {
                 conn = new URL(url1).openConnection();
             }
 
-            InputStream is = conn.getInputStream();
+            InputStream is = null;
+            if (conn != null) {
+                is = conn.getInputStream();
+            }
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
-            String line = null;
+            String line;
             while ( (line = r.readLine())!= null) {
                 getLog().info("Adding test "+line);
                 targets.add(line);
             }
-            is.close();
+            if (is != null) {
+                is.close();
+            }
 
             for (String s : targets) {
                 executeTest(s);
@@ -106,7 +111,7 @@ public class TestMojo extends AbstractMojo {
             getLog().info("Done.");
 
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            getLog().error(e);
         }
     }
 
@@ -121,14 +126,16 @@ public class TestMojo extends AbstractMojo {
             File out = project.getBasedir();
             out = new File(out,"target/surefire-reports");
             if (!out.exists()) {
-                out.mkdirs();
+                final boolean b = out.mkdirs();
+                if(!b)
+                    getLog().error("could not create directory "+out.getAbsolutePath());
             }
             FileOutputStream os = new FileOutputStream(new File(out, "TEST-"+ test + ".xml"));
             IOUtils.copy(is, os);
             is.close();
             os.close();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            getLog().error(e);
         }
     }
 

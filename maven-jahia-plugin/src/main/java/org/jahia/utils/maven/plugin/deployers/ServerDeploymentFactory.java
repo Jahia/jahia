@@ -60,6 +60,7 @@ public class ServerDeploymentFactory {
         instance.addImplementation("jboss5.0.x", jbossImplementation);
         ServerDeploymentInterface websphereImplementation = new WebsphereServerDeploymentImpl();
         instance.addImplementation("websphere6.1.x", websphereImplementation);
+        instance.addImplementation("weblogic10", new WeblogicServerDeploymentImpl());
     }
 
     public static ServerDeploymentFactory getInstance() {

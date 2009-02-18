@@ -11,4 +11,4 @@
 <script type="text/javascript">
     jQuery.noConflict();
 </script>
-<script type="text/javascript" src='<utility:resolvePath value='javascript/interface.js'/>'></script>
+<script type="text/javascript" src='<utility:resolvePath value='javascript/facebox.js'/>'></script>

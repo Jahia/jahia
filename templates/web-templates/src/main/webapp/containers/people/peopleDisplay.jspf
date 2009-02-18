@@ -19,7 +19,7 @@ Styles for jQuery
 				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail"/></a></p>
 
 				<div class="peopleAction">
-<a class="peopleDownload" href="${peoplePicture.downloadUrl}" rel="imagebox-lights">View full size</a>
+<a class="peopleDownload" href="${peoplePicture.downloadUrl}" rel="facebox">View full size</a>
 <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><utility:resourceBundle
                             resourceName='web_templates_peopleContainer.peopleBiography' defaultValue='web_templates_peopleContainer.peopleBiography'/></a>
 				</div>
@@ -33,19 +33,9 @@ Styles for jQuery
 
 
 <!-- unused fields <template:field name="peopleTelephone"/> <template:field name="peopleCellular"/> <template:field name="peopleFax"/> -->
-
-<script type="text/javascript">
-jQuery(document).ready(
-	function()
-	{
-		jQuery.ImageBox.init(
-			{
-				loaderSRC: '<utility:resolvePath value="images/imagebox/loading.gif"/>',
-				closeHTML: '<img src=<utility:resolvePath value="images/imagebox/close.jpg"/> />'
-			}
-		);
-	}
-);
+<script type='text/javascript'>
+jQuery(document).ready(function($) {
+  $('a[rel*=facebox]').facebox()
+})
 </script>
-
 

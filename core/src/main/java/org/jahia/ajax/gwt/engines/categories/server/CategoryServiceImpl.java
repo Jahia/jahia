@@ -113,11 +113,13 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         List<GWTJahiaCategoryNode> res = new ArrayList<GWTJahiaCategoryNode>();
         for (String key : keys) {
             try {
+                key = key.trim();
                 Category cat = Category.getCategory(key);
                 GWTJahiaCategoryNode gwtJahiaNode = createGWTJahiaCategoryNode("", cat, false, null);
                 res.add(gwtJahiaNode);
             } catch (JahiaException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error("Error retrieveing categories: " + keys
+                        + ". Cause: " + e.getMessage(), e);
             }
 
 
@@ -436,7 +438,8 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             GWTJahiaNodeACL gwtacl = ACLHelper.getGWTJahiaNodeACL(baseACL, false, retrieveParamBean());
             return gwtacl;
         } catch (JahiaException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error("Error retrieveing ACL for " + gwtJahiaCategoryNode
+                    + ". Cause: " + e.getMessage(), e);
         }
         return null;
     }

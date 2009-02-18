@@ -39,9 +39,9 @@ import java.util.Map;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ItemDefinition;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -52,7 +52,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.resourcebundle.JahiaResourceBundle;
-import org.jahia.services.categories.Category;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -66,8 +65,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  */
 public final class JCRContentUtils {
     
-    public static final String CATEGORY_DELIMITER = "/";
-
     private static JCRContentUtils instance;
 
     private static final Logger logger = Logger.getLogger(JCRContentUtils.class);
@@ -81,69 +78,6 @@ public final class JCRContentUtils {
     public static String cleanUpNodeName(String nodeTypeName) {
         return nodeTypeName != null ? StringUtils.replaceChars(nodeTypeName,
                 ':', '_') : nodeTypeName;
-    }
-
-    /**
-     * Returns the category key from the full category path.
-     * 
-     * @param categoryPath
-     *            the full category path
-     * @return the category key from the full category path
-     */
-    public static String getCategoryKey(String categoryPath) {
-        return categoryPath != null
-                && categoryPath.contains(CATEGORY_DELIMITER) ? categoryPath
-                .substring(categoryPath.lastIndexOf(CATEGORY_DELIMITER)
-                        + CATEGORY_DELIMITER.length()) : categoryPath;
-    }
-
-    /**
-     * Returns the category path for the specified category.
-     * 
-     * @param category
-     *            current category
-     * @return the category path for the specified category
-     * @throws JahiaException
-     *             in case of an error
-     */
-    private static String getCategoryPath(Category category)
-            throws JahiaException {
-        StringBuilder catPath = new StringBuilder(32);
-        while (true) {
-            catPath.insert(0, category.getKey()).insert(0, CATEGORY_DELIMITER);
-            List l = category.getParentCategories();
-            if (l.isEmpty())
-                break;
-            category = (Category) l.iterator().next();
-        }
-        return catPath.toString();
-    }
-
-    /**
-     * Returns the category path for the specified category.
-     * 
-     * @param categoryId
-     *            current category ID
-     * @return the category path for the specified category
-     * @throws JahiaException
-     *             in case of an error
-     */
-    public static String getCategoryPath(int categoryId) throws JahiaException {
-        return getCategoryPath(Category.getCategory(categoryId));
-    }
-
-    /**
-     * Returns the category path for the specified category.
-     * 
-     * @param categoryKey
-     *            current category key
-     * @return the category path for the specified category
-     * @throws JahiaException
-     *             in case of an error
-     */
-    public static String getCategoryPath(String categoryKey)
-            throws JahiaException {
-        return getCategoryPath(Category.getCategory(categoryKey));
     }
 
     public static String getDisplayLabel(String nodeName, ProcessingContext ctx) {

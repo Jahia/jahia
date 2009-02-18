@@ -60,6 +60,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.categories.Category;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.JCRStoreService;
@@ -234,12 +235,12 @@ public class FileSearchViewHandler extends AbstractSearchViewHandler {
     private void addPropertyConstraintCategory(
             StringBuilder categoryConstraints, String name, String value,
             boolean includeChildren) throws JahiaException {
-        String categoryPath = JCRContentUtils.getCategoryPath(value);
+        String categoryPath = Category.getCategoryPath(value);
         addConstraint(categoryConstraints, "or", "@" + name + "="
                 + stringToJCRSearchExp(categoryPath));
         if (includeChildren) {
             addConstraint(categoryConstraints, "or", "jcr:like(@" + name + ","
-                    + stringToJCRSearchExp(categoryPath + JCRContentUtils.CATEGORY_DELIMITER + "%") + ")");
+                    + stringToJCRSearchExp(categoryPath + Category.PATH_DELIMITER + "%") + ")");
         }
     }
 

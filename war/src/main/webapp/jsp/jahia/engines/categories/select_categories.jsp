@@ -58,7 +58,7 @@
         </p>
         <% } else { %>
         <internal:gwtImport module="org.jahia.ajax.gwt.subengines.categoriespicker.CategoriesPicker"/>
-        <internal:categorySelector selectedCategories="<%=selectedCategories%>" startCategoryKey="<%= categoryPropertyName %>"/>
+        <internal:categorySelector selectedCategories="<%=selectedCategories%>" startCategoryKey="<%= categoryPropertyName %>" autoSelectParent="${param.autoSelectParent}"/>
         <% } %>
 
 <div id="actionBar">

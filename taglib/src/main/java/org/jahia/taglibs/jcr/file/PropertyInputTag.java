@@ -36,7 +36,6 @@ package org.jahia.taglibs.jcr.file;
 import org.apache.struts.taglib.TagUtils;
 import org.jahia.engines.categories.CategoriesSelect_Engine;
 import org.jahia.services.categories.Category;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.*;
 
@@ -174,12 +173,12 @@ public class PropertyInputTag extends PropertyValueTag {
                 Value[] values = objectNode.getProperty(name).getValues();
                 for (int i = 0; i < values.length; i++) {
                     String value = values[i].getString();
-                    value = JCRContentUtils.getCategoryKey(value);
+                    value = Category.getCategoryKey(value);
                     selected.add(value);
                 }
             } else {
                 String value = objectNode.getProperty(name).getString();
-                value = JCRContentUtils.getCategoryKey(value);
+                value = Category.getCategoryKey(value);
                 selected.add(value);
             }
         }

@@ -55,6 +55,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.captcha.CaptchaService;
+import org.jahia.services.categories.Category;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
@@ -877,7 +878,7 @@ public class FileManagerWorker {
                                 && jahiaNodePropertyValue.getString().length() > 0) {
                             adjustedGwtValues
                                     .add(new GWTJahiaNodePropertyValue(
-                                            JCRContentUtils
+                                            Category
                                                     .getCategoryKey(jahiaNodePropertyValue
                                                             .getString()),
                                             jahiaNodePropertyValue.getType()));
@@ -994,8 +995,7 @@ public class FileManagerWorker {
         String[] categories = StringUtils.split(value, ",");
         for (String categoryKey : categories) {
             try {
-                values.add(new StringValue(JCRContentUtils
-                        .getCategoryPath(categoryKey.trim())));
+                values.add(new StringValue(Category.getCategoryPath(categoryKey.trim())));
             } catch (JahiaException e) {
                 logger.warn(
                         "Unable to retrieve category path for category key '"

@@ -43,6 +43,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.collections.FastArrayList;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jahia.bin.Jahia;
 import org.jahia.content.CategoryKey;
@@ -77,6 +78,8 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         ParentACLFinder, PropertiesInterface {
 
     private static final long serialVersionUID = 3389053914999712807L;
+
+    public static final String PATH_DELIMITER = "/";
 
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (Category.class);
@@ -866,7 +869,7 @@ public class Category extends JahiaObject implements ACLResourceInterface,
     }
 
     /**
-     * Returns the path representation of the form /root/catKey1/catKeyB
+     * Returns the path representation of the form <code>/root/catKey1/catKeyB/thisCategoryKey</code>
      *
      * @param p
      * @return
@@ -874,22 +877,12 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      */
     public String getCategoryPath(Principal p) throws JahiaException {
         List<Category> parentCategories = this.getParentCategories(p);
-        if (parentCategories.isEmpty()){
-            return "/" + this.getKey();
+        StringBuilder path = new StringBuilder(32);
+        for (Category category : parentCategories) {
+            path.append(PATH_DELIMITER).append(category.getKey());
         }
-        StringBuffer path = new StringBuffer();
-        Iterator<Category> it = parentCategories.iterator();
-        Category cat = null;
-        while (it.hasNext()){
-            cat = it.next();
-            if (path.length()==0){
-                path.append("/");
-            }
-            path.append(cat.getKey());
-            if (it.hasNext()){
-                path.append("/");
-            }
-        }
+        path.append(PATH_DELIMITER).append(this.getKey());
+
         return path.toString();
     }
 
@@ -900,15 +893,15 @@ public class Category extends JahiaObject implements ACLResourceInterface,
      * @return
      */
     public static Category getLastCategoryNode(String path) throws JahiaException {
-        if (path == null || "".equals(path.trim()) || !path.startsWith("/")){
+        if (path == null || "".equals(path.trim()) || !path.startsWith(PATH_DELIMITER)){
             return null;
         }
-        if (path.endsWith("/*")){
+        if (path.endsWith(PATH_DELIMITER + "*")){
             path = path.substring(0,path.length()-2);
-        } else if (path.endsWith("/")){
+        } else if (path.endsWith(PATH_DELIMITER)){
             path = path.substring(0,path.length()-1);
         }
-        int pos = path.lastIndexOf("/");
+        int pos = path.lastIndexOf(PATH_DELIMITER);
         if (pos == -1){
             return null;
         }
@@ -916,8 +909,29 @@ public class Category extends JahiaObject implements ACLResourceInterface,
         return Category.getCategory(catKey);
     }
 
+    /**
+     * Returns the category key from the full category path.
+     * 
+     * @param categoryPath
+     *            the full category path
+     * @return the category key from the full category path
+     */
+    public static String getCategoryKey(String categoryPath) {
+        return StringUtils.substringAfterLast(categoryPath, PATH_DELIMITER);
+    }
+    
+    /**
+     * Returns the path representation of the form <code>/root/catKey1/catKeyB/thisCategoryKey</code>
+     *
+     * @param p
+     * @return
+     * @throws JahiaException
+     */
+    public static String getCategoryPath(String categoryKey) throws JahiaException {
+        return getCategory(categoryKey).getCategoryPath((Principal) null);
+    }
 
-    @Override
+   @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }

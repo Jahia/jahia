@@ -43,11 +43,14 @@
 <%@ attribute name="includeChildren" type="java.lang.Boolean"
               description="The initial value for the include children input field." %>
 <%@ attribute name="root" type="java.lang.String" description="The root category to start with." %>
+<%@ attribute name="autoSelectParent" required="false" rtexprvalue="true" type="java.lang.Boolean"
+              description="Allows to control if we have to auto check the parent of a category when selected or not. [false]" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<c:set var="displayIncludeChildren" value="${not empty displayIncludeChildren ? displayIncludeChildren : 'true'}"/>
+<c:set var="displayIncludeChildren" value="${functions:default(displayIncludeChildren, true)}"/>
+<c:set var="autoSelectParent" value="${functions:default(autoSelectParent, false)}"/>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren"
                                                     value="${fieldId}_includeChildren"/></c:if>
 <%-- by default set includeChildren to 'true' to search in subfolders --%>
@@ -57,7 +60,7 @@
        value="${functions:default(param[fieldIdIncludeChildren], empty paramValues[fieldId] ? includeChildren : 'false')}"/>
 <c:set var="root" value="${not empty root ? root : 'root'}"/>
 &nbsp;<a href="#select"
-onclick="javascript:{var categoriesSelector = window.open('${pageContext.request.contextPath}/jsp/jahia/engines/categories/launcher.jsp?pid=${jahia.page.ID}&contextId=${fieldId}@${root}&selectedCategories=' + document.getElementById('${fieldId}').value, '<%="categoriesSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable=yes,scrollbars=yes,height=800,width=600'); categoriesSelector.focus(); return false;}"
+onclick="javascript:{var categoriesSelector = window.open('${pageContext.request.contextPath}/jsp/jahia/engines/categories/launcher.jsp?autoSelectParent=${autoSelectParent}&pid=${jahia.page.ID}&contextId=${fieldId}@${root}&selectedCategories=' + document.getElementById('${fieldId}').value, '<%="categoriesSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable=yes,scrollbars=yes,height=800,width=600'); categoriesSelector.focus(); return false;}"
 title='<utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.selectCategories"
                                       defaultValue="Select categories"/>'><utility:resourceBundle resourceBundle="JahiaEnginesResources"
         resourceName="org.jahia.engines.search.select" defaultValue="select"/></a>

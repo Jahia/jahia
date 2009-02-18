@@ -34,6 +34,7 @@
 package org.jahia.services.content.automation;
 
 import org.drools.spi.KnowledgeHelper;
+import org.jahia.services.categories.Category;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -133,7 +134,7 @@ public class PropertyWrapper implements Updateable  {
             if (objectValue instanceof String) {
                 if (propDef.getSelector() == SelectorType.CATEGORY) {
                     try {
-                        value = factory.createValue(JCRContentUtils.getCategoryPath((String) objectValue));
+                        value = factory.createValue(Category.getCategoryPath((String) objectValue));
                     } catch (Exception e) {
                         logger.warn("Can't get category "+objectValue + ", cause " + e.getMessage());
                     }

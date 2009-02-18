@@ -135,7 +135,7 @@ public class FeedWriter {
         osm.setItemsPerPage(50);
 
         Link link = new Link();
-        link.setHref("http//www.jahia.org/opensearch-description.xml");
+        link.setHref("http://www.jahia.org/opensearch-description.xml");
         link.setType("application/opensearchdescription+xml");
         link.setTitle("Jahia Open Search");
         osm.setLink(link);

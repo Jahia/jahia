@@ -45,6 +45,7 @@ import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.data.beans.TemplatePathResolverFactory;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 
 /**
@@ -108,7 +109,7 @@ public class IncludeTag extends ImportSupport {
         try {
             super.addParameter(name, URLEncoder.encode(value, pageContext
                     .getResponse().getCharacterEncoding() != null ? pageContext
-                    .getResponse().getCharacterEncoding() : org.jahia.settings.SettingsBean.getInstance()
+                    .getResponse().getCharacterEncoding() : SettingsBean.getInstance()
                     .getDefaultResponseBodyEncoding()));
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e);

@@ -36,5 +36,7 @@
 <jsp:include page="../generic_full.jsp" flush="true">
     <jsp:param name="gwtScript" value='opensearch'/>
     <jsp:param name="workAreaJSP" value='search/opensearch/workarea.jsp'/>
+    <jsp:param name="opensearch" value="true"/>
+    <jsp:param name="useGWT" value="true"/>
 </jsp:include>
 

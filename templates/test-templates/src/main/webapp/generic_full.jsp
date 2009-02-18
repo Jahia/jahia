@@ -35,10 +35,16 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ include file="common/declarations.jspf"%>
-<template:template>
+<template:template gwtForGuest="${not empty param.useGWT}">
     <template:templateHead>
         <%@ include file="common/template-head.jspf" %>
         <link rel="stylesheet" type="text/css" href="${jahia.includes.webPath['common/css/web.css']}" media="screen"/>
+        <c:if test="${!empty param.opensearch}">
+            <s:openSearchLink searchFor="pages"/>
+            <s:openSearchLink searchFor="pages" format="rss"/>
+            <s:openSearchLink searchFor="files"/>
+            <s:openSearchLink searchFor="files" format="rss"/>
+        </c:if>
         <utility:applicationResources/>
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">

@@ -35,4 +35,5 @@
 
 <jsp:include page="../generic.jsp" flush="true">
   <jsp:param name="workAreaJSP" value='search/form/default.jsp'/>
+  <jsp:param name="useGWT" value="true"/>
 </jsp:include>

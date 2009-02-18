@@ -204,7 +204,7 @@ This is the centralized place where all tiles definitions should be defined.
    </definition>
 
   <!-- metadata engine : for page -->
-  <definition name="engines.metadata.page" extends="engines.metadata.page">
+  <definition name="engines.metadata.page" extends="engines.metadata">
     <!--
       <put name="top-information" value="/views/engines/pageproperties/common/top-information.jsp" />
       -->
@@ -212,7 +212,7 @@ This is the centralized place where all tiles definitions should be defined.
    </definition>
 
   <!-- versioning engine : for container -->
-  <definition name="engines.metadata.container" extends="engines.metadata.container">
+  <definition name="engines.metadata.container" extends="engines.metadata">
       <put name="body-content" value="/views/engines/metadata/metadata.jsp" />
    </definition>
 

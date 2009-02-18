@@ -8,16 +8,8 @@
         <jndi-name>jdbc/jahia</jndi-name>
     </resource-description>
     <resource-description>
-        <res-ref-name>jcr/repository</res-ref-name>
-        <jndi-name>jcr/repository</jndi-name>
-    </resource-description>
-    <resource-description>
         <res-ref-name>jdbc/jahiaNonTx</res-ref-name>
         <jndi-name>jdbc/jahiaNonTx</jndi-name>
-    </resource-description>
-    <resource-description>
-        <res-ref-name>jahia/users</res-ref-name>
-        <jndi-name>jahia/users</jndi-name>
     </resource-description>
     <jsp-descriptor>
         <keepgenerated>true</keepgenerated>
@@ -25,6 +17,7 @@
         <verbose>true</verbose>
     </jsp-descriptor>
     <container-descriptor>
-        <prefer-web-inf-classes>true</prefer-web-inf-classes>
-    </container-descriptor>
+        <
+        <prefer-web-inf-classes>false</prefer-web-inf-classes>
+    </container-descriptor>    
 </weblogic-web-app>

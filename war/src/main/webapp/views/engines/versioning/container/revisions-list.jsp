@@ -159,7 +159,6 @@ function handleRevisionDetails(version1){
             %>
             <jsp:include page="<%=calURL%>" flush="true"/>
             <script type="text/javascript">
-            <!--
             // override calendar default
             function onCalCloseHandler<%=fromCalHandler.getIdentifier()%>(calendar) {
                 sendForm('showRevisionsList','');
@@ -168,7 +167,6 @@ function handleRevisionDetails(version1){
             function onCalResetHandler<%=fromCalHandler.getIdentifier()%>() {
                 sendForm('showRevisionsList');
             }
-            -->
             </script>
           </td>
         </tr>
@@ -182,7 +180,6 @@ function handleRevisionDetails(version1){
             %>
             <jsp:include page="<%=calURL%>" flush="true"/>
             <script type="text/javascript">
-            <!--
             // override calendar default
             function onCalCloseHandler<%=toCalHandler.getIdentifier()%>(calendar) {
                 sendForm('showRevisionsList','');
@@ -191,7 +188,6 @@ function handleRevisionDetails(version1){
             function onCalResetHandler<%=toCalHandler.getIdentifier()%>() {
                 sendForm('showRevisionsList');
             }
-            -->
             </script>
           </td>
         </tr>

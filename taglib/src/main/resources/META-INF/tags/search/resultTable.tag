@@ -33,7 +33,12 @@
 
 --%>
 
-<%@ tag body-content="empty" %>
+<%@ tag body-content="empty" description="Displays the search hits as a table view with sorting and paging support.
+            Must be nested into the 'results' tag.
+            Displayed columns can be customized using the 'columns' attribute (the order of column names is also
+            respected).
+            Another way to customize the view is to nest this tag into a 'resultTableSettings' tag or to provide the
+            settings object as an 'viewSettings' attribute." %>
 <%@ tag import="org.jahia.taglibs.search.ResultsTag" %>
 <%@ tag import="org.jahia.taglibs.search.ResultTableSettingsTag" %>
 <%@ attribute name="contextId" description="Unique ID to distinguish this result table." %>

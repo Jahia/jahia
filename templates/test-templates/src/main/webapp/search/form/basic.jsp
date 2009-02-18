@@ -33,14 +33,14 @@
 
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
+%><%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" 
 %><%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" 
-%><%@taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" 
 %><%@taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <div class="searchform">
 <s:form resultsPage="this">
     <fieldset>
         <legend>Text search</legend>
-        Search term:&nbsp;<s:term /><br/>
+        Search term:&nbsp;<s:term searchIn="content,metadata" searchInAllowSelection="true" searchInSelectionOptions="content,metadata"/><br/>
     </fieldset>
     <fieldset>
         <legend>Author and date</legend>

@@ -37,7 +37,7 @@
 <s:form>
     <fieldset>
         <legend>Text search</legend>
-        Search term:&nbsp;<s:term /><br/>
+        Search term:&nbsp;<s:term  searchIn="content,metadata" searchInAllowSelection="true" searchInSelectionOptions="content,metadata"/><br/>
     </fieldset>
     <fieldset>
         <legend>Author and date</legend>

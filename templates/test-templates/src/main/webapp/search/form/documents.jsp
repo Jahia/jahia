@@ -41,7 +41,7 @@
 <s:form searchFor="files" resultsPage="this">
     <fieldset>
         <legend>Text search</legend>
-        Search term:&nbsp;<s:term/><br/>
+        Search term:&nbsp;<s:term searchIn="content,filename,description,documentTitle,keywords" searchInAllowSelection="true" searchInSelectionOptions="content,filename,description,documentTitle,keywords"/><br/>
     </fieldset>
     <fieldset>
         <legend>Author and date</legend>

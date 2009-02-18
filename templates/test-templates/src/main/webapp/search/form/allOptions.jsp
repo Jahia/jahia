@@ -41,7 +41,7 @@
 <s:form resultsPage="this">
     <fieldset>
         <legend>Text search</legend>
-        Search term:&nbsp;<s:term/><br/>
+        Search term:&nbsp;<s:term searchIn="content,filename,description,documentTitle,keywords" searchInAllowSelection="true" searchInSelectionOptions="content,filename,description,documentTitle,keywords"/><br/>
         Raw query:&nbsp;<s:rawQuery/><br/>
     </fieldset>
     <fieldset>

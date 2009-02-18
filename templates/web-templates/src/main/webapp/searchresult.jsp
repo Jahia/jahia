@@ -43,4 +43,5 @@
     <jsp:param name="useGWT" value="true"/>
     <jsp:param name="columnB" value="structures/searchresult/columnB.jsp"/>
     <jsp:param name="footerNav" value="true"/>
+    <jsp:param name="opensearch" value="true"/>
 </jsp:include>

@@ -36,10 +36,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../common/declarations.jspf" %>
-<c:set var="useGWT" value="false"/>
-<c:if test="${ !empty param.useGWT }">
-    <c:set var="useGWT" value="true"/>
-</c:if>
+<c:set var="useGWT" value="${!empty param.useGWT}"/>
 <template:template gwtForGuest="${useGWT}">
     <template:templateHead>
         <template:meta name="keywords" metadata="keywords"/>
@@ -50,6 +47,10 @@
         <c:if test="${ !empty param.rssFeed }">
             <link rel="alternate" type="application/rss+xml" title="web templates : news"
                   href="${currentPage.url}/${param.rssFeed}"/>
+        </c:if>
+        <c:if test="${!empty param.opensearch}">
+            <s:openSearchLink searchFor="pages"/>
+            <s:openSearchLink searchFor="files"/>
         </c:if>
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">

@@ -85,16 +85,18 @@ public class ResultIteratorTag extends LoopTagSupport {
         ResultsTag parent = (ResultsTag) findAncestorWithClass(this,
                 ResultsTag.class);
         if (null == parent) {
-            throw new JspTagException(
-                    "Parent tag not found. This tag (ResultIteratorTag) must be nested inside the ResultsTag");
+            throw new JspTagException("Parent tag not found. This tag ("
+                    + this.getClass().getName()
+                    + ") must be nested inside the "
+                    + ResultsTag.class.getName());
         }
 
         List<Hit> results = parent.getHits();
         if (results == null || results.size() <= begin) {
             results = Collections.emptyList();
-        } else  if (end != -1 && begin > 0) {
+        } else if (end != -1 && begin > 0) {
             results = results.subList(begin, Math.min(results.size(), end));
-            
+
         }
 
         resultIterator = results.iterator();

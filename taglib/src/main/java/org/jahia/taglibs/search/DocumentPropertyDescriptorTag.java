@@ -37,21 +37,21 @@ import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
 
 import org.jahia.engines.search.SearchCriteriaFactory;
 import org.jahia.engines.search.SearchCriteria.DocumentPropertyDescriptor;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 
 /**
  * Exposes a descriptor for the specified document property into the page scope.
- * The descriptor comtains information about property type (boolean, text, date,
+ * The descriptor contains information about property type (boolean, text, date,
  * category), if it is constrained with a list of allowed values etc.
  * 
  * @author Sergiy Shyrkov
  */
 @SuppressWarnings("serial")
-public class DocumentPropertyDescriptorTag extends TagSupport {
+public class DocumentPropertyDescriptorTag extends AbstractJahiaTag {
 
     private static final String DEF_VAR = "descriptor";
 
@@ -86,15 +86,11 @@ public class DocumentPropertyDescriptorTag extends TagSupport {
     }
 
     @Override
-    public void release() {
-        resetState();
-        super.release();
-    }
-
-    private void resetState() {
+    protected void resetState() {
         var = DEF_VAR;
         documentType = null;
         name = null;
+        super.resetState();
     }
 
     public void setDocumentType(String documentType) {

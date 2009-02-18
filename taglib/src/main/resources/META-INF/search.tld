@@ -12,30 +12,32 @@
     <uri>http://www.jahia.org/tags/search</uri>
 
     <tag>
-        <description>Performs the search and exposes search results to be displayed</description>
-        <name>results</name>
-        <tag-class>org.jahia.taglibs.search.ResultsTag</tag-class>
+        <description>Exposes a descriptor for the specified document property into the page scope.
+            The descriptor contains information about property type (boolean, text, date, category), if it is
+            constrained with a list of allowed values etc.
+        </description>
+        <name>documentPropertyDescriptor</name>
+        <tag-class>org.jahia.taglibs.search.DocumentPropertyDescriptorTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <name>countVar</name>
-            <required>false</required>
+            <description>The node type name.</description>
+            <name>documentType</name>
+            <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>
-                If specified, the results will represent the result of the specified stored query execution,
-                rather than the results of the submitted search parameters
-            </description>
-            <name>storedQuery</name>
-            <required>false</required>
+            <description>The document property name.</description>
+            <name>name</name>
+            <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <description>The name of the page scope variable the descriptor will be exposed under.</description>
             <name>var</name>
             <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
+            <rtexprvalue>false</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
     </tag>
@@ -102,6 +104,35 @@
     </tag>
 
     <tag>
+        <description>Performs the search and exposes search results to be displayed</description>
+        <name>results</name>
+        <tag-class>org.jahia.taglibs.search.ResultsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>countVar</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                If specified, the results will represent the result of the specified stored query execution,
+                rather than the results of the submitted search parameters
+            </description>
+            <name>storedQuery</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
         <description>
             Uses view settings for the saved search results display, i.e. displayed table columns, default sorting.
             View settings are based on the current saved search container ID, saved search query ID and the user key.
@@ -153,14 +184,14 @@
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>The name of the page scope variable o exposet he view settings object.</description>
+            <description>The name of the page scope variable to expose the view settings object.</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>The name of the page scope variable o exposet he view settings object.</description>
+            <description>The name of the page scope variable to expose the view settings object.</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
@@ -169,56 +200,44 @@
     </tag>
 
     <tag>
-        <description>Exposes a descriptor for the specified document property into the page scope.
-            The descriptor comtains information about property type (boolean, text, date, category), if it is
-            constrained with a list of allowed values etc.
-        </description>
-        <name>documentPropertyDescriptor</name>
-        <tag-class>org.jahia.taglibs.search.DocumentPropertyDescriptorTag</tag-class>
+        <description>Generates the RSS feed view of the search results. Must be nested into the 'results' tag.</description>
+        <name>rssFeedView</name>
+        <tag-class>org.jahia.taglibs.search.RssFeedViewTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>The node type name.</description>
-            <name>documentType</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The document property name.</description>
-            <name>name</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-        <attribute>
-            <description>The name of the page scope variable the descriptor will be exposed under.</description>
-            <name>var</name>
-            <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
-            <type>java.lang.String</type>
-        </attribute>
-    </tag>
-
-    <!-- open search -->
-    <tag>
-        <description>create html struture for an open search.</description>
-        <name>opensearch-box</name>
-        <tag-class>org.jahia.taglibs.search.OpenSearchBoxTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>id</name>
+            <description>The feed description.</description>
+            <name>description</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
         </attribute>
         <attribute>
+            <description>If set to 'false' the tag only exposes the RSS feed into its scope without generating the output.</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The feed title.</description>
             <name>title</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <name>cssClassName</name>
+            <description>The type of the RSS feed to generate: rss_0.90, rss_0.91, rss_0.92, rss_0.93, rss_0.94, rss_1.0 rss_2.0 or atom_0.3. Default is rss_2.0.</description>
+            <name>type</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>If specified, the results (as an instance of com.sun.syndication.feed.synd.SyndFeed) are exposed into the tag's scope.</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
         </attribute>
     </tag>
 
@@ -271,6 +290,10 @@
         <path>/META-INF/tags/search/lastModifiedBy.tag</path>
     </tag-file>
     <tag-file>
+        <name>openSearchLink</name>
+        <path>/META-INF/tags/search/openSearchLink.tag</path>
+    </tag-file>
+    <tag-file>
         <name>pagePath</name>
         <path>/META-INF/tags/search/pagePath.tag</path>
     </tag-file>
@@ -283,14 +306,6 @@
         <path>/META-INF/tags/search/resultsPageUrl.tag</path>
     </tag-file>
     <tag-file>
-        <description>
-            Displays the search hits as a table view with sorting and paging support.
-            Must be nested into the 'results' tag.
-            Displayed columns can be customized using the 'columns' attribute (the order of column names is also
-            respected).
-            Another way to customize the view is to nest this tag into a 'resultTableSettings' tag or to provide the
-            settings object as an 'viewSettings' attribute.
-        </description>
         <name>resultTable</name>
         <path>/META-INF/tags/search/resultTable.tag</path>
     </tag-file>

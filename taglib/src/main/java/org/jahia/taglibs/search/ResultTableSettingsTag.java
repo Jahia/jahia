@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentContainerKey;
@@ -54,8 +53,9 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.search.savedsearch.JahiaSavedSearch;
 import org.jahia.services.search.savedsearch.JahiaSavedSearchView;
 import org.jahia.services.search.savedsearch.JahiaSavedSearchViewSettings;
-import org.jahia.taglibs.utility.Utils;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.container.ContainerTag;
+import org.jahia.taglibs.utility.Utils;
 
 /**
  * Uses view settings for the saved search results display, i.e. displayed table
@@ -77,7 +77,7 @@ import org.jahia.taglibs.template.container.ContainerTag;
  * @author Sergiy Shyrkov
  */
 @SuppressWarnings("serial")
-public class ResultTableSettingsTag extends TagSupport {
+public class ResultTableSettingsTag extends AbstractJahiaTag {
 
     private static final String DEF_ICON = "images/columns.gif";
 
@@ -184,12 +184,6 @@ public class ResultTableSettingsTag extends TagSupport {
         return view.getSettings();
     }
 
-    @Override
-    public void release() {
-        resetState();
-        super.release();
-    }
-
     private void renderCustomizeViewButton() throws JspTagException {
         Map<String, Object> params = new HashMap<String, Object>(4);
         params.put("searchMode", view.getSearchMode());
@@ -223,13 +217,15 @@ public class ResultTableSettingsTag extends TagSupport {
         }
     }
 
-    private void resetState() {
+    @Override
+    protected void resetState() {
         var = DEF_VAR;
         icon = DEF_ICON;
         title = DEF_TITLE;
         contextId = null;
         allowChanges = true;
         view = null;
+        super.resetState();
     }
 
     public void setAllowChanges(boolean allowChanges) {

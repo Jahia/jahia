@@ -38,7 +38,6 @@ import java.util.List;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.log4j.Logger;
 import org.jahia.engines.search.FileSearchViewHandler;
@@ -50,6 +49,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.search.savedsearch.JahiaSavedSearch;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 
 /**
@@ -58,7 +58,7 @@ import org.jahia.taglibs.utility.Utils;
  * @author Sergiy Shyrkov
  */
 @SuppressWarnings("serial")
-public class ResultsTag extends TagSupport {
+public class ResultsTag extends AbstractJahiaTag {
 
     private static final String DEF_COUNT_VAR = "count";
 
@@ -168,18 +168,14 @@ public class ResultsTag extends TagSupport {
     }
 
     @Override
-    public void release() {
-        resetState();
-        super.release();
-    }
-
-    private void resetState() {
+    protected void resetState() {
         var = DEF_VAR;
         countVar = DEF_COUNT_VAR;
         count = 0;
         hits = null;
         storedQuery = null;
         savedSearch = null;
+        super.resetState();
     }
 
     public void setCountVar(String countVar) {

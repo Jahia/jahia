@@ -32,7 +32,7 @@
  */
 package org.jahia.configwizard.gwt.commons.client;
 
-import org.jahia.ajax.gwt.commons.client.ui.WorkInProgress;
+import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 
 import com.google.gwt.core.client.EntryPoint;
 

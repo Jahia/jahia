@@ -82,7 +82,8 @@ file            pdfVersion
 [web_templates:eventContainer] > jnt:container, web_templates:title
 date            startDate
 date            endDate
-smallText      location
+smallText       location
+smallText       eventsType (choicelist) < resourceBundle(events_type)
 bigText         body
 
 [web_templates:answerJobContainer] > jnt:container
@@ -102,7 +103,7 @@ sharedSmallText contract (choicelist) <
     resourceKey(contract3),
     resourceKey(contract4)
 smallText       town
-smallText       country
+smallText       country (choicelist) < country()
 smallText       educationLevel
 bigText         description
 bigText         skills

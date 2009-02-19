@@ -389,7 +389,7 @@
 
     function saveContent() {
         check();
-        if (workInProgressOverlay) workInProgressOverlay.launch();
+        if (typeof workInProgressOverlay != 'undefined') workInProgressOverlay.launch();
     }
     // -->
 </script>

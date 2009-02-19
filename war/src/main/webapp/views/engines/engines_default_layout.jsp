@@ -137,7 +137,7 @@ function check() {
 function saveContent() {
     // used by Html editors
     // override this for preprocessing before for submission
-    if (workInProgressOverlay) workInProgressOverlay.launch();
+    if (typeof workInProgressOverlay != 'undefined') workInProgressOverlay.launch();
 }
 //-->
 </script>

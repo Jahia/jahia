@@ -174,7 +174,7 @@ for (int i = 0; i < strToRemove.length; i++) {
   function saveContent() {
     // alert("saveContent Started");
     getHtmlEditorText(document.mainForm.elements["_<%=theField.getID()%>"]);
-    if (workInProgressOverlay) workInProgressOverlay.launch();
+    if (typeof workInProgressOverlay != 'undefined') workInProgressOverlay.launch();
   }
 
   function changeHtmlEditor(what) {

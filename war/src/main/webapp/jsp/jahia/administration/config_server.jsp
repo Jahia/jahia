@@ -48,7 +48,7 @@ function testSettings() {
     } else if (document.jahiaAdmin.from.value.length == 0) {
         alert("<internal:adminResourceBundle resourceName='org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label'/>");
     } else {
-        if (workInProgressOverlay) {
+        if (typeof workInProgressOverlay != 'undefined') {
         	workInProgressOverlay.start();
         }
         jahia.request('${pageContext.request.contextPath}/ajaxaction/subscription', {onSuccess: testSettingsSuccess, onFailure: testSettingsFailure,
@@ -61,7 +61,7 @@ function testSettings() {
     }
 }
 function testSettingsSuccess(text, code, statusText) {
-    if (workInProgressOverlay) {
+    if (typeof workInProgressOverlay != 'undefined') {
         workInProgressOverlay.stop();
     }
 	if (code == 200) {
@@ -71,7 +71,7 @@ function testSettingsSuccess(text, code, statusText) {
     }
 }
 function testSettingsFailure(text, code, statusText) {
-    if (workInProgressOverlay) {
+    if (typeof workInProgressOverlay != 'undefined') {
         workInProgressOverlay.stop();
     }
     alert("<internal:adminResourceBundle resourceName='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n'" + code + " " + statusText + "\n" + text);

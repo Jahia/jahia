@@ -40,6 +40,7 @@
         %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
 <c:set var="display" value="${h:default(display, true)}"/>
 <%@ attribute name="searchFor" required="false" type="java.lang.String"
               description="Specifies the search mode: pages or files [pages]." %>

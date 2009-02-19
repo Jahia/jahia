@@ -144,7 +144,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
     // we have two versions of these properties because we have to respect the
     // JavaBeans design pattern.
-    private int windowSize = -1; // -1 means functionality is deactivated by default
+    private int windowSize = Jahia.getSettings().getPaginationWindowSize();
     private int windowOffset = -1;
     private int nbStepPerPage = -1;
     private int maxSize = Integer.MAX_VALUE;
@@ -887,7 +887,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         listName = "";
         containerList = null;
 
-        windowSize = -1; // -1 means functionality is deactivated by default
+        windowSize = Jahia.getSettings().getPaginationWindowSize();
         windowOffset = -1;
         displayPagination = PaginationBean.PAGINATION_AT_BOTTOM;
 

@@ -297,6 +297,7 @@ public class SettingsBean {
 
     // pagination settings
     private int preloadedItemsForPagination = 100;
+    private int paginationWindowSize;
 
     // Core engine page generation queue configuration parameters
     private int maxParallelProcessings = 40;
@@ -670,6 +671,7 @@ public class SettingsBean {
             batchLoadingSize = getInt("batchLoadingSize",20);
 
             preloadedItemsForPagination = getInt("preloadedItemsForPagination",preloadedItemsForPagination);
+            paginationWindowSize = getInt("paginationWindowSize", 20);
 
             // Maximum parallel heavy processing threads
             maxParallelProcessings = getInt("maxParallelProcessings", maxParallelProcessings);
@@ -1903,5 +1905,9 @@ public class SettingsBean {
 
     public void setGmailPasswordExported(boolean gmailPasswordExported) {
         this.gmailPasswordExported = gmailPasswordExported;
+    }
+
+    public int getPaginationWindowSize() {
+        return paginationWindowSize;
     }
 }

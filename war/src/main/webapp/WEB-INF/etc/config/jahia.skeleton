@@ -263,6 +263,13 @@ default_templates_set		                        =   Web templates
 templates.boxes.onError                             	= full
 
 ######################################################################
+### Pagination #######################################################
+######################################################################
+# Below you can change the default window size for the automatic pagination
+# of lists displayed in templates using the *containerList tags
+paginationWindowSize                                    = 20 
+
+######################################################################
 ### Filemanager  #####################################################
 ######################################################################
 # Configuration of the file manager that uses Slide as a back-end.

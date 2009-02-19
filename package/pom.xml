@@ -12,7 +12,7 @@
 
   <modules>
     <module>jahia-tgz-package</module>
-    
+    <module>jahia-qa-package</module>
   </modules>
 
 </project>

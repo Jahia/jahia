@@ -296,7 +296,7 @@
         <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.SkeletonCacheEventListenerFactory"
                                    properties=""/>
 	<cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" 
-properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+properties="replicateAsynchronously=true, replicatePuts=false, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
     </cache>
     <cache
             name="SkeletonCache-groups"
@@ -305,7 +305,7 @@ properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=t
             diskPersistent="true"
             eternal="false">
 	<cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" 
-properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+properties="replicateAsynchronously=true, replicatePuts=false, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
     </cache>
     <!-- This cache parameters define how many fragments of pages do we want to store in cache (based on an average of 5 fragments per page)-->
     <cache
@@ -318,7 +318,7 @@ properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=t
             maxElementsOnDisk="50000"
             eternal="false">
 	<cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" 
-properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+properties="replicateAsynchronously=true, replicatePuts=false, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
     </cache>
     <cache
             name="ContainerHTMLCache-groups"
@@ -327,7 +327,7 @@ properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=t
             diskPersistent="true"
             eternal="false">
 	<cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory" 
-properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
+properties="replicateAsynchronously=true, replicatePuts=false, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true" />
     </cache>
     <cache
             name="LockAlreadyAcquiredMap"

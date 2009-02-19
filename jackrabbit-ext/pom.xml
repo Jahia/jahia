@@ -12,7 +12,6 @@
 
   <modules>
     <module>core</module>
-    <module>rar</module>
     <module>server</module>
   </modules>
 

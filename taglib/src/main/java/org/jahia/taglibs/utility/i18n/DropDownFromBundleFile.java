@@ -37,6 +37,8 @@ import org.jahia.utils.JahiaTemplatesRBLoader;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+
+import java.util.Enumeration;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.io.IOException;
@@ -63,7 +65,9 @@ public class DropDownFromBundleFile extends AbstractJahiaTag {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(bundleName, getProcessingContext().getCurrentLocale(), new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), getProcessingContext().getSiteID()));
         if (bundle != null) {
             SortedSet<String> values = new TreeSet<String>();
-            for (String key : bundle.keySet()) {
+            Enumeration<String> keys = bundle.getKeys();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement();
                 values.add(bundle.getString(key));
             }
             final JspWriter writer = pageContext.getOut();

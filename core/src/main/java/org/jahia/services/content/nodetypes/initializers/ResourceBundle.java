@@ -41,6 +41,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.PropertyType;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -67,7 +68,9 @@ public class ResourceBundle implements ValueInitializer {
                     }
                 }
             });
-            for (String key : bundle.keySet()) {
+            Enumeration<String> keys = bundle.getKeys();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement();
                 values.add(new ValueImpl(bundle.getString(key), PropertyType.STRING,false));
             }
             return values.toArray(new Value[values.size()]);

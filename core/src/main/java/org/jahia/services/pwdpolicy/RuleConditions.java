@@ -41,6 +41,11 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.UserProperty;
 
+/**
+ * Includes a set of conditions for the Password Policy Service.
+ *
+ * @author Sergiy Shyrkov
+ */
 public final class RuleConditions {
 
     /**

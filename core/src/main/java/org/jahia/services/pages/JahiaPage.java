@@ -60,13 +60,9 @@ import org.jahia.utils.textdiff.HunkTextDiffVisitor;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import name.fraser.neil.plaintext.DiffMatchPatch;
 
 
 /**
@@ -518,42 +514,34 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
             newValueWorkflowState = pageInfo.getWorkflowState();
         }
 
-        /*
-        // check for moved page
-        boolean movedPage = false;
-        if ( currentPageInfo != null && pageInfo != null ){
-            movedPage = currentPageInfo.getParentID() != pageInfo.getParentID();
-        }
-        if ( movedPage ){
-            return "<span style='color:brown;text-decoration:line-through;'>"+oldValue+"</span>";
-        }*/ 
         // Highlight text diff
-        HunkTextDiffVisitor hunkTextDiffV = null;
+        DiffMatchPatch hunkTextDiffV = new DiffMatchPatch();
+            LinkedList<DiffMatchPatch.Diff> diffs;
         if ( currentPageInfo == null ||
                 (currentPageInfo.getWorkflowState() == EntryLoadRequest.DELETED_WORKFLOW_STATE) ){
             // does not exists
-            if ( oldValue == null || "".equals(oldValue) ){
+            if ("".equals(oldValue)){
                 oldValue = newValue; // we should display something
             }
             return HunkTextDiffVisitor.getDeletedText(oldValue);
         } else if ( currentPageInfo.getVersionID() == -1 && newValueWorkflowState==1){
             // currently marked for delete compared with active
             // does not exists
-            if ( oldValue == null || "".equals(oldValue) ){
+            if ("".equals(oldValue)){
                 oldValue = newValue; // we should display something
             }
             return HunkTextDiffVisitor.getDeletedText(oldValue);
         } else if ( currentPageInfo.getWorkflowState() < newValueWorkflowState ){
-            hunkTextDiffV = new HunkTextDiffVisitor(oldValue,newValue);
+            diffs = hunkTextDiffV.diff_main(oldValue,newValue);
         } else {
             if ( newValueWorkflowState == EntryLoadRequest.DELETED_WORKFLOW_STATE ){
                 // was deleted
                 newValue = "";
             }
-            hunkTextDiffV = new HunkTextDiffVisitor(newValue,oldValue);
+            diffs = hunkTextDiffV.diff_main(newValue,oldValue);
         }
-        hunkTextDiffV.highLightDiff();
-        mergedValue = hunkTextDiffV.getMergedDiffText();
+        hunkTextDiffV.diff_cleanupSemantic(diffs);
+        mergedValue = hunkTextDiffV.diff_prettyHtml(diffs);
 
         return mergedValue;
     }

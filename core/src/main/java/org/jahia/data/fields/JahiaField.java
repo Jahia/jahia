@@ -54,6 +54,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.LinkedList;
+
+import name.fraser.neil.plaintext.DiffMatchPatch;
 
 public abstract class JahiaField implements Cloneable, Serializable,
         ACLResourceInterface, PropertiesInterface, Comparable<JahiaField> {
@@ -636,20 +639,9 @@ public abstract class JahiaField implements Cloneable, Serializable,
                 newValueWorkflowState = jahiaField.getWorkflowState();
             }
 
-            /*
-            if ( jahiaField != null ){
-                newValue = jahiaField.getValue();
-
-                if ( jahiaField.getWorkflowState() == ContentObjectEntryState.WORKFLOW_STATE_VERSIONING_DELETED
-                     || jahiaField.getWorkflowState() == ContentObjectEntryState.WORKFLOW_STATE_START_STAGING
-                     && jahiaField.getVersionID() == -1 ){
-
-                    return HunkTextDiffVisitor.getDeletedText(oldValue);
-                }
-            }*/
-
             // Highlight text diff
-            HunkTextDiffVisitor hunkTextDiffV = null;
+            DiffMatchPatch hunkTextDiffV = new DiffMatchPatch();
+            LinkedList<DiffMatchPatch.Diff> diffs;
             if ( this.isForComparisonOnly() ){
                 // does not exists
                 return HunkTextDiffVisitor.getDeletedText(oldValue);
@@ -657,20 +649,12 @@ public abstract class JahiaField implements Cloneable, Serializable,
                 // currently marked for delete compared with active
                 return HunkTextDiffVisitor.getDeletedText(oldValue);
             } else if (this.getWorkflowState() < newValueWorkflowState) {
-                hunkTextDiffV = new HunkTextDiffVisitor(oldValue, newValue);
+                diffs = hunkTextDiffV.diff_main(oldValue, newValue);
             } else {
-                hunkTextDiffV = new HunkTextDiffVisitor(newValue, oldValue);
+                diffs = hunkTextDiffV.diff_main(newValue, oldValue);
             }
-            hunkTextDiffV.highLightDiff();
-            mergedValue = hunkTextDiffV.getMergedDiffText();
-
-            /*
-            // Highlight text diff
-            HunkTextDiffVisitor hunkTextDiffV =
-                    new HunkTextDiffVisitor(oldValue,newValue);
-            hunkTextDiffV.highLightDiff();
-            mergedValue = hunkTextDiffV.getMergedDiffText();
-            */
+            hunkTextDiffV.diff_cleanupSemantic(diffs);
+            mergedValue = hunkTextDiffV.diff_prettyHtml(diffs);
         } catch (Exception t) {
             logger.warn("Error getting highlight diff value", t);
         }

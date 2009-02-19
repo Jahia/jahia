@@ -74,15 +74,12 @@
 </script>
 &nbsp;<a href="#select"
 onclick="{var pathSelector = openFolderSelector(); pathSelector.focus(); return false;}"
-title='<utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                               resourceName="org.jahia.engines.search.selectFolder"
+title='<utility:resourceBundle resourceName="selectors.folderSelector.selectFolder"
                                defaultValue="Select folder"/>'><utility:resourceBundle
-        resourceBundle="JahiaEnginesResources"
-        resourceName="org.jahia.engines.search.select" defaultValue="select"/></a>
+        resourceName="selectors.select" defaultValue="select"/></a>
 <c:if test="${displayIncludeChildren}">
     &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle
-        resourceBundle="JahiaEnginesResources"
-        resourceName="org.jahia.engines.search.selectFolder.includeChildren" defaultValue="include subfolders"/></label>
+        resourceName="selectors.folderSelector.selectFolder.includeChildren" defaultValue="include subfolders"/></label>
 </c:if>
 <script type="text/javascript">
     function setSelectedFilePath${fieldIdHash}(path, url) {

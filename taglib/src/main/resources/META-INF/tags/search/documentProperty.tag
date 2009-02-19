@@ -74,8 +74,7 @@
             <c:when test="${descriptor.type == 'TEXT'}">
                 <c:if test="${descriptor.constrained}">
                     <select ${h:attributes(attributes)}>
-                        <option value=""><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.any"
-                                                                        defaultValue="any"/></option>
+                        <option value=""><utility:resourceBundle resourceName="searchForm.any.any" defaultValue="any"/></option>
                         <c:forEach items="${descriptor.allowedValues}" var="allowedValue">
                             <option value="${fn:escapeXml(allowedValue)}" ${value == allowedValue ? 'selected="selected"' : ''}>${fn:escapeXml(allowedValue)}</option>
                         </c:forEach>

@@ -69,7 +69,7 @@
            if (pageTitle != null && pageTitle.length() > 0) {
                jspContext.setAttribute("pageTitle", pageTitle);
            } else { 
-           %><c:set var="pageTitle"><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.workflow.display.notitle" defaultValue="n.a."/></c:set><%
+           %><c:set var="pageTitle"><utility:resourceBundle resourceName="searchForm.pagePicker.noTitle" defaultValue="n.a."/></c:set><%
            }
         %>
     </c:if>

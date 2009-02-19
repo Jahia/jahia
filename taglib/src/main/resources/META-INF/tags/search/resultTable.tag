@@ -49,6 +49,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
     ResultsTag resultTag = (ResultsTag) findAncestorWithClass(this, ResultsTag.class);
     if (resultTag == null) {
@@ -132,10 +133,10 @@
                        folder="${webdavPath}${row.folderPath}"
                        target="_blank"
                        style="behavior:url(#default#AnchorClick)"
-                       title="<utility:resourceBundle resourceBundle='JahiaEnginesResources' resourceName='org.jahia.engines.filemanager.Filemanager_Engine.openIEfolder.label'/>"><img
-                            src="${pageContext.request.contextPath}/jsp/jahia/javascript/zimbra/complexTree/IEFolder.gif"
+                       title="<utility:resourceBundle resourceName='searchResults.openIEfolder' defaultValue='Open as a Web folder'/>"><img
+                            src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/IEFolder.gif"
                             alt="IE folder" border="0"
-                            title="<utility:resourceBundle resourceBundle='JahiaEnginesResources' resourceName='org.jahia.engines.filemanager.Filemanager_Engine.openIEfolder.label'/>"/></a>
+                            title="<utility:resourceBundle resourceName='searchResults.openIEfolder' defaultValue='Open as a Web folder'/>"/></a>
                 </display:column>
             </c:if>
         </c:forEach>

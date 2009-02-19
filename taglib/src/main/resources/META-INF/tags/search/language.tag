@@ -58,8 +58,7 @@
     </c:if>
     <c:set target="${attributes}" property="name" value="src_languages.values"/>
     <select ${h:attributes(attributes)}>
-        <option value="" ${selectedValues == ',,' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                resourceName="org.jahia.engines.search.currentLanguage" defaultValue="---"/></option>
+        <option value="" ${selectedValues == ',,' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.currentLanguage" defaultValue="---"/></option>
         <c:set var="currentLocale" value="${jahia.processingContext.locale}"/>
         <c:forTokens items="${valueOptions}" delims="," var="lang">
             <c:set var="langCode" value="${fn:trim(lang)}"/>

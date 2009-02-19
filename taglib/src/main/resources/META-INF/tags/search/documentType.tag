@@ -46,8 +46,7 @@
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:if test="${display}">
     <select name="src_documentType">
-        <option value=""><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.any"
-                                                        defaultValue="any"/></option>
+        <option value=""><utility:resourceBundle resourceName="searchForm.any" defaultValue="any"/></option>
         <jcr:nodeType ntname="${jcr.nt_file}">
             <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>
                 <jcr:nodeTypeLabel/></option>

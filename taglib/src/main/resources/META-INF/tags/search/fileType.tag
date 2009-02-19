@@ -53,11 +53,9 @@
 <c:if test="${display}">
     <c:set target="${attributes}" property="name" value="src_fileType"/>
     <select ${h:attributes(attributes)}>
-        <option value=""><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.any"
-                                                        defaultValue="any"/></option>
+        <option value=""><utility:resourceBundle resourceName="searchForm.any" defaultValue="any"/></option>
         <c:forEach items="${fileTypes}" var="type">
-            <option value="${type.key}" ${value == type.key ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                    resourceName="org.jahia.engines.search.fileType.${type.key}" defaultValue="${type.key}"/></option>
+            <option value="${type.key}" ${value == type.key ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.fileType.${type.key}" defaultValue="${type.key}"/></option>
         </c:forEach>
     </select>
 </c:if>

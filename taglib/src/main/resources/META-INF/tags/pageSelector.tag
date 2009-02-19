@@ -79,12 +79,11 @@
 <c:set var="link"><%= ((SelectPage_Engine) EnginesRegistry.getInstance().getEngineByBeanName("selectPageEngine")).renderLink((ProcessingContext) jspContext.getAttribute("ctx"), (Map) jspContext.getAttribute("engineParams")) %></c:set>
 <c:set target="${attributes}" property="href" value="#select"/>
 <c:set target="${attributes}" property="onclick" value="<%= null %>"/>
-<c:if test="${empty attributes.title}"><c:set target="${attributes}" property="title"><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.selectPage" defaultValue="Select page"/></c:set></c:if>
-<c:if test="${empty label}"><c:set var="label"><utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.select" defaultValue="select"/></c:set></c:if>
+<c:if test="${empty attributes.title}"><c:set target="${attributes}" property="title"><utility:resourceBundle resourceName="selectors.pageSelector.selectPage" defaultValue="Select page"/></c:set></c:if>
+<c:if test="${empty label}"><c:set var="label"><utility:resourceBundle resourceName="selectors.select" defaultValue="select"/></c:set></c:if>
 <a ${h:attributes(attributes)} onclick="javascript:{var pageSelector = window.open('${link}', '<%="pageSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=600'); pageSelector.focus(); return false;}">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
-    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-        resourceName="org.jahia.engines.search.selectPage.includeChildren" defaultValue="include subpages"/></label>
+    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle resourceName="selectors.pageSelector.selectPage.includeChildren" defaultValue="include subpages"/></label>
 </c:if>
 <script type="text/javascript">
     function setSelectedPage${fieldIdHash}(pid, url, title) {

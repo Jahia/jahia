@@ -46,6 +46,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <c:set var="searchFor" value="${h:default(fn:toLowerCase(searchFor), 'pages')}"/>
 <c:set var="format" value="${h:default(fn:toLowerCase(format), 'html')}"/>
 <%
@@ -58,7 +59,9 @@ if (!"html".equals(jspContext.getAttribute("format")) && !"rss".equals(jspContex
 %>
 <c:set var="descriptor" value="/opensearch/descriptor-${searchFor}-${format}.jsp"/>
 <c:if test="${empty title}">
-    <c:set var="title" value="${jahia.site.title} - ${searchFor == 'pages' ? 'content' : 'document repository'}${format == 'rss' ? ' (RSS)' : ''}"/>
+    <c:set var="labelContent"><utility:resourceBundle resourceName="opensearch.linkTitle.content" defaultValue="content"/></c:set>
+    <c:set var="labelDocuments"><utility:resourceBundle resourceName="opensearch.linkTitle.documentRepository" defaultValue="document repository"/></c:set>
+    <c:set var="title" value="${jahia.site.title} - ${searchFor == 'pages' ? labelContent : labelDocuments}${format == 'rss' ? ' (RSS)' : ''}"/>
 </c:if>
 <c:url var="url" value="${currentPage.url}" context="/">
     <c:param name="template" value="${jahia.includes.templatePath[descriptor]}"/>

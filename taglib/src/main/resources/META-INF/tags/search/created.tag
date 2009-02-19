@@ -74,31 +74,22 @@
 </c:if>
 <c:if test="${display}">
     <select name="${valueParamName}" onchange="searchDateTypeToggle(this);">
-        <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                resourceName="org.jahia.engines.search.date.anytime" defaultValue="anytime"/></option>
-        <option value="today" ${value == 'today' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                resourceName="org.jahia.engines.search.date.today" defaultValue="today"/></option>
-        <option value="last_week" ${value == 'last_week' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                resourceName="org.jahia.engines.search.date.lastWeek" defaultValue="last week"/></option>
-        <option value="last_month" ${value == 'last_month' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                resourceName="org.jahia.engines.search.date.lastMonth" defaultValue="last month"/></option>
+        <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.anytime" defaultValue="anytime"/></option>
+        <option value="today" ${value == 'today' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.today" defaultValue="today"/></option>
+        <option value="last_week" ${value == 'last_week' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.lastWeek" defaultValue="last week"/></option>
+        <option value="last_month" ${value == 'last_month' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.lastMonth" defaultValue="last month"/></option>
         <option value="last_three_months" ${value == 'last_three_months' ? 'selected="selected"' : ''}>
-            <utility:resourceBundle resourceBundle="JahiaEnginesResources"  resourceName="org.jahia.engines.search.date.lastThreeMonths"
-                                           defaultValue="last three months"/></option>
+            <utility:resourceBundle resourceName="searchForm.date.lastThreeMonths" defaultValue="last three months"/></option>
         <option value="last_six_months" ${value == 'last_six_months' ? 'selected="selected"' : ''}>
-            <utility:resourceBundle resourceBundle="JahiaEnginesResources"  resourceName="org.jahia.engines.search.date.lastSixMonths"
-                                           defaultValue="last six months"/></option>
-        <option value="range" ${value == 'range' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-                resourceName="org.jahia.engines.search.date.range" defaultValue="date range..."/></option>
+            <utility:resourceBundle resourceName="searchForm.date.lastSixMonths" defaultValue="last six months"/></option>
+        <option value="range" ${value == 'range' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.range" defaultValue="date range..."/></option>
     </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange">
             <c:set var="valueParamName" value="${attributes.name}.from"/>
-            <utility:resourceBundle resourceBundle="JahiaEnginesResources"  resourceName="org.jahia.engines.search.date.from" defaultValue="from"/>:&nbsp;
-            <ui:dateSelector fieldName="${valueParamName}"
-                                 value="${h:default(param[valueParamName], from)}"/>
+            <utility:resourceBundle resourceName="searchForm.date.from" defaultValue="from"/>:&nbsp;
+            <ui:dateSelector fieldName="${valueParamName}" value="${h:default(param[valueParamName], from)}"/>
             <c:set var="valueParamName" value="${attributes.name}.to"/>
-            <utility:resourceBundle resourceBundle="JahiaEnginesResources"  resourceName="org.jahia.engines.search.date.to" defaultValue="to"/>:&nbsp;
-            <ui:dateSelector fieldName="${valueParamName}"
-                                 value="${h:default(param[valueParamName], to)}"/>
+            <utility:resourceBundle resourceName="searchForm.date.to" defaultValue="to"/>:&nbsp;
+            <ui:dateSelector fieldName="${valueParamName}" value="${h:default(param[valueParamName], to)}"/>
     </div>
 </c:if>
 <c:if test="${!display}"><input type="hidden" name="${valueParamName}" value="${value}"/></c:if>

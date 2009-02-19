@@ -41,6 +41,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <c:set var="display" value="${h:default(display, true)}"/>
 <%@ attribute name="value" required="false" type="java.lang.String" description="The initial value." %>
 <%@ attribute name="match" required="false" type="java.lang.String" description="The match type for search terms. [as_is]" %>
@@ -67,12 +68,12 @@
     <input type="hidden" name="${key}" value="${h:default(param[key], match)}"/>
 </c:if>
 <c:if test="${searchInAllowSelection}">
-    <div class="searchFields">search in:
+    <div class="searchFields"><utility:resourceBundle resourceName="searchForm.term.searchIn" defaultValue="search in:"/>
 <c:forTokens items="${searchInSelectionOptions}" delims="," var="field">
     <c:set var="key" value="src_terms[${termIndex}].fields.${field}"/>
     <c:set var="fieldSelected" value="${h:default(param[key], fn:contains(searchIn, field))}"/>
     <input type="hidden" id="src_terms[${termIndex}].fields.${field}" name="src_terms[${termIndex}].fields.${field}" value="${fieldSelected}"/>
-    <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view">${field}</label></span>
+    <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view"><utility:resourceBundle resourceName="searchForm.term.searchIn.${field}" defaultValue="${field}"/></label></span>
 </c:forTokens>
     </div>
 </c:if>

@@ -53,7 +53,7 @@
 <c:set var="autoSelectParent" value="${functions:default(autoSelectParent, false)}"/>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren"
                                                     value="${fieldId}_includeChildren"/></c:if>
-<%-- by default set includeChildren to 'true' to search in subfolders --%>
+<%-- by default set includeChildren to 'true' to search in sub-categories --%>
 <c:set var="includeChildren" value="${not empty includeChildren ? includeChildren : 'true'}"/>
 <%-- resolve includeChildren either from request parameter or from the default value (note that the 'false' value is not submitted for checkbox) --%>
 <c:set var="includeChildren"
@@ -61,10 +61,8 @@
 <c:set var="root" value="${not empty root ? root : 'root'}"/>
 &nbsp;<a href="#select"
 onclick="javascript:{var categoriesSelector = window.open('${pageContext.request.contextPath}/jsp/jahia/engines/categories/launcher.jsp?autoSelectParent=${autoSelectParent}&pid=${jahia.page.ID}&contextId=${fieldId}@${root}&selectedCategories=' + document.getElementById('${fieldId}').value, '<%="categoriesSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable=yes,scrollbars=yes,height=800,width=600'); categoriesSelector.focus(); return false;}"
-title='<utility:resourceBundle resourceBundle="JahiaEnginesResources" resourceName="org.jahia.engines.search.selectCategories"
-                                      defaultValue="Select categories"/>'><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-        resourceName="org.jahia.engines.search.select" defaultValue="select"/></a>
+title='<utility:resourceBundle resourceName="selectors.categorySelector.selectCategories"
+                                      defaultValue="Select categories"/>'><utility:resourceBundle  resourceName="selectors.select" defaultValue="select"/></a>
 <c:if test="${displayIncludeChildren}">
-    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle resourceBundle="JahiaEnginesResources"
-        resourceName="org.jahia.engines.search.selectCategories.includeChildren" defaultValue="include subcategories"/></label>
+    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle resourceName="selectors.categorySelector.selectCategories.includeChildren" defaultValue="include subcategories"/></label>
 </c:if>

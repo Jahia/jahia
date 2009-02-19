@@ -136,7 +136,7 @@
                     <databaseUrl>jdbc:mysql://10.8.37.246/jahia_qa243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>
-                    <overwritedb>true</overwritedb>
+                    <overwritedb>false</overwritedb>
                     <storeFilesInDB>true</storeFilesInDB>
                     <cluster_node_serverId>qa-j3</cluster_node_serverId>
                     <localIp>10.8.37.243</localIp>

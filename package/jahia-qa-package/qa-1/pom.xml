@@ -158,7 +158,7 @@
                     <databaseUrl>jdbc:mysql://10.8.37.246/jahia_bidonStandalone?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>
-                    <overwritedb>true</overwritedb>
+                    <overwritedb>false</overwritedb>
                     <storeFilesInDB>true</storeFilesInDB>
                     <localIp>10.8.37.245</localIp>
                 </configuration>

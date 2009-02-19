@@ -44,8 +44,7 @@
                 <tr>
                     <td>
                         <c:if test="${myFileField.downloadable}">
-                            <a class="<utility:getPicto fileName="${myFileField.fileFieldTitle}"/>"
-                               href="${myFileField.downloadUrl}"
+                            <a href="${myFileField.downloadUrl}"
                                title="${myFileField.fileFieldTitle}">
                                 <c:out value="${myFileField.fileFieldTitle}"/>
                             </a>

@@ -56,20 +56,20 @@ public class DefaultIncludeProvider {
     public static String getDocType(final String doctype) {
         final String lowerCaseDocType = doctype.toLowerCase();
         if (XHTML.equals(lowerCaseDocType) || XHTML_STRICT.equals(lowerCaseDocType)) {
-            return new StringBuffer("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n")
-                    .append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n").toString();
+            return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n"
+                 + " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n";
 
         } else if (XHTML_TRANSITIONAL.equals(lowerCaseDocType)) {
-            return new StringBuffer("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n")
-                    .append(" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n").toString();
+            return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n"
+                 + " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
 
         } else if (HTML.equals(lowerCaseDocType) || HTML_STRICT.equals(lowerCaseDocType)) {
-            return new StringBuffer("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n")
-                    .append(" \"http://www.w3.org/TR/html4/strict.dtd\">\n").toString();
+            return "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"\n"
+                 + " \"http://www.w3.org/TR/html4/strict.dtd\">\n";
 
         } else if (HTML_TRANSITIONAL.equals(lowerCaseDocType)) {
-            return new StringBuffer("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n")
-                    .append(" \"http://www.w3.org/TR/html4/loose.dtd\">\n").toString();
+            return "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n"
+                 + " \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 
         } else {
             throw new IllegalArgumentException("Unknown DOCTYPE '" + doctype + "'");
@@ -98,7 +98,7 @@ public class DefaultIncludeProvider {
      * @return the script include
      */
     public static String getJSToolsImport(final HttpServletRequest request, final JahiaData jData) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         if (jData.gui().isLogged()) {
             buf.append("<script type=\"text/javascript\" src=\"");
             buf.append(jData.getProcessingContext().settings().getJsHttpPath());
@@ -125,7 +125,7 @@ public class DefaultIncludeProvider {
     public static String getServerConfigImport(final HttpServletRequest request) {
         final String jahiaContextPath = request.getContextPath();
         final String jahiaMainServletPath = jahiaContextPath + org.jahia.bin.Jahia.getServletPath();
-        final StringBuffer buf = new StringBuffer("<script type=\"text/javascript\" language=\"JavaScript\">\n");
+        final StringBuilder buf = new StringBuilder("<script type=\"text/javascript\" language=\"JavaScript\">\n");
         buf.append("var jahiaMainServletPath=\"").append(jahiaMainServletPath).append("\";\n");
         buf.append("var jahiaContextPath =\"").append(jahiaContextPath).append("\";\n");
         buf.append("var jahiaCoreWebdavPath =\"").append(jahiaContextPath).append("/webdav\";\n");

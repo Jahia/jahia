@@ -33,6 +33,8 @@
 
 package org.jahia.ajax.gwt.client.util;
 
+import java.util.MissingResourceException;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 
@@ -98,14 +100,39 @@ public class ResourceBundle {
      * @return
      */
     public static String getNotEmptyResource(String key, String defaultValue) {
+        return getNotEmptyResource(RESOURCE_BUNDLE_MODULE_TYPE,
+                APPLICATION_RESOURCE_ELEMENT_ID, key, defaultValue);
+    }
+
+    /**
+     * Retrieves the resource bundle message for the specified module, element
+     * and key and fallback to the specified default value if the resource
+     * cannot be found.
+     * 
+     * @param jahiaModuleType
+     * @param elementId
+     * @param key
+     * @param defaultValue
+     * @return the resource bundle message for the specified module, element and
+     *         key and fallback to the specified default value if the resource
+     *         cannot be found
+     */
+    public static String getNotEmptyResource(String jahiaModuleType,
+            String elementId, String key, String defaultValue) {
         String value = defaultValue;
         try {
-            Dictionary jahiaParamDictionary = Dictionary.getDictionary(RESOURCE_BUNDLE_MODULE_TYPE
-                    + "_rb_" + APPLICATION_RESOURCE_ELEMENT_ID);
+            Dictionary jahiaParamDictionary = Dictionary
+                    .getDictionary((jahiaModuleType != null ? jahiaModuleType
+                            : RESOURCE_BUNDLE_MODULE_TYPE)
+                            + "_rb_"
+                            + (elementId != null ? elementId
+                                    : APPLICATION_RESOURCE_ELEMENT_ID));
             value = jahiaParamDictionary.get(key);
-            if (value == null || "".equals(value.trim())){
+            if (value == null || "".equals(value.trim())) {
                 value = defaultValue;
             }
+        } catch (MissingResourceException e) {
+            Log.debug("Resource is missing for key [" + key + "]");
         } catch (Exception e) {
             Log.error("Can't retrieve [" + key + "]", e);
         }

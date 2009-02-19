@@ -36,10 +36,10 @@
     height: 16px;
     width: 16px;
 }
-.subscribe {
+.not-subscribed {
     background: url(../images/subscribe.png) center left no-repeat;
 }
-.unsubscribe {
+.subscribed {
     background: url(../images/unsubscribe.png) center left no-repeat;
 }
 .subscription-unavailable {

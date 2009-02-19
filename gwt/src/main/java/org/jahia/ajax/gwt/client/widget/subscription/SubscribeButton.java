@@ -36,14 +36,16 @@ package org.jahia.ajax.gwt.client.widget.subscription;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
+import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
+import org.jahia.ajax.gwt.client.util.ResourceBundle;
+
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
-import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
 
 /**
  * SRenders subscribe/unsubscribe button, depending on the user subscription
@@ -53,34 +55,29 @@ import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
  */
 public class SubscribeButton extends HTML {
 
-    private static final Map<SubscriptionStatus, String> STATUS_STYLE_MAPPING = new HashMap<SubscriptionStatus, String>(
-            4);
+    private static String getAttribute(Element elem, String attributeName,
+            String defaultValue) {
+        return elem.getAttribute(attributeName).length() > 0 ? elem
+                .getAttribute(attributeName) : defaultValue;
+    }
 
-    private static final String STYLE_SUBSCRIBE = "subscribe-button subscribe";
-
-    private static final String STYLE_UNAVAILABLE = "subscribe-button subscription-unavailable";
-
-    private static final String STYLE_UNKNOWN = "subscribe-button subscription-unknown";
-
-    private static final String STYLE_UNSUBSCRIBE = "subscribe-button unsubscribe";
-    //    
-    static {
-        STATUS_STYLE_MAPPING.put(SubscriptionStatus.UNAUTHORIZED, STYLE_UNAVAILABLE);
-        STATUS_STYLE_MAPPING.put(SubscriptionStatus.NO_EMAIL_ADDRESS, STYLE_UNAVAILABLE);
-        STATUS_STYLE_MAPPING.put(SubscriptionStatus.NOT_SUBSCRIBED,
-                STYLE_SUBSCRIBE);
-        STATUS_STYLE_MAPPING.put(SubscriptionStatus.SUBSCRIBED,
-                STYLE_UNSUBSCRIBE);
-        STATUS_STYLE_MAPPING.put(SubscriptionStatus.UNKNOWN, STYLE_UNKNOWN);
+    private static String getMessage(String key) {
+        return ResourceBundle.getNotEmptyResource("subscribebutton", null, key,
+                key);
     }
 
     private boolean confirmationRequired;
 
     private String event;
-    
+
+    private Map<String, String> i18n = new HashMap<String, String>();
+
     private String source;
 
     private SubscriptionStatus status = SubscriptionStatus.UNKNOWN;
+
+    private Map<SubscriptionStatus, String> statusStyleMapping = new HashMap<SubscriptionStatus, String>(
+            4);
 
     /**
      * Initializes an instance of this class.
@@ -90,7 +87,10 @@ public class SubscribeButton extends HTML {
         source = wrapper.getAttribute("source");
         event = wrapper.getAttribute("event");
         event = event.length() > 0 ? event : "contentPublished";
-        confirmationRequired = "true".equals(wrapper.getAttribute("confirmationRequired"));
+        confirmationRequired = "true".equals(wrapper
+                .getAttribute("confirmationRequired"));
+        initStyles(wrapper);
+        initMessages(wrapper);
         init();
     }
 
@@ -106,7 +106,8 @@ public class SubscribeButton extends HTML {
                         for (StackTraceElement element : caught.getStackTrace()) {
                             ex.append("\n").append(element);
                         }
-                        Window.alert(caught.getLocalizedMessage() + "\n" + ex.toString());
+                        Window.alert(caught.getLocalizedMessage() + "\n"
+                                + ex.toString());
                         updateState(SubscriptionStatus.UNKNOWN);
                     }
 
@@ -123,22 +124,19 @@ public class SubscribeButton extends HTML {
             public void onClick(Widget sender) {
                 switch (status) {
                 case NOT_SUBSCRIBED:
-                    if (Window
-                            .confirm("Would you like to be noified of changes in this content?")) {
+                    if (Window.confirm(i18n.get("subscribe.confirm"))) {
                         subscribe();
                     }
                     break;
 
                 case SUBSCRIBED:
-                    if (Window
-                            .confirm("Would you like to stop notifications about changes in this content?")) {
+                    if (Window.confirm(i18n.get("unsubscribe.confirm"))) {
                         unsubscribe();
                     }
                     break;
 
                 case NO_EMAIL_ADDRESS:
-                    Window
-                            .alert("You have not provided an e-mail address. Please update your profile settings first.");
+                    Window.alert(i18n.get("provideEmailAddress"));
                     break;
 
                 default:
@@ -149,25 +147,70 @@ public class SubscribeButton extends HTML {
         getStatus();
     }
 
+    private void initMessages(Element elem) {
+        i18n.put("operation.failure", getAttribute(elem,
+                "messageOperationFailure", getMessage("operation.failure")));
+        i18n.put("provideEmailAddress",
+                getAttribute(elem, "messageProvideEmailAddress",
+                        getMessage("provideEmailAddress")));
+        i18n.put("subscribe.confirm",
+                getAttribute(elem, "messageSubscribeConfirmation",
+                        getMessage("subscribe.confirm")));
+        i18n.put("subscribe.success", getAttribute(elem,
+                "messageSubscribeSuccess", getMessage("subscribe.success")));
+        i18n.put("subscribe.success.confirmationEmail", getAttribute(elem,
+                "messageSubscribeSuccessConfirmationEmail",
+                getMessage("subscribe.success.confirmationEmail")));
+        i18n.put("subscribe.title", getAttribute(elem, "messageSubscribeTitle",
+                getMessage("subscribe.title")));
+
+        i18n.put("unsubscribe.confirm", getAttribute(elem,
+                "messageUnsubscribeConfirmation",
+                getMessage("unsubscribe.confirm")));
+
+        i18n
+                .put("unsubscribe.success", getAttribute(elem,
+                        "messageUnsubscribeSuccess",
+                        getMessage("unsubscribe.success")));
+
+        i18n.put("unsubscribe.title", getAttribute(elem,
+                "messageUnsubscribeTitle", getMessage("unsubscribe.title")));
+    }
+
+    private void initStyles(Element elem) {
+        statusStyleMapping.put(SubscriptionStatus.UNAUTHORIZED, getAttribute(
+                elem, "styleUnavailable",
+                "subscribe-button subscription-unavailable"));
+        statusStyleMapping.put(SubscriptionStatus.NO_EMAIL_ADDRESS,
+                getAttribute(elem, "styleNoEmailAddress",
+                        "subscribe-button subscription-unavailable"));
+        statusStyleMapping.put(SubscriptionStatus.NOT_SUBSCRIBED, getAttribute(
+                elem, "styleNotSubscribed", "subscribe-button not-subscribed"));
+        statusStyleMapping.put(SubscriptionStatus.SUBSCRIBED, getAttribute(
+                elem, "styleSubscribed", "subscribe-button subscribed"));
+        statusStyleMapping.put(SubscriptionStatus.UNKNOWN, getAttribute(elem,
+                "styleUnknown", "subscribe-button subscription-unknown"));
+    }
+
     private void subscribe() {
         getService().subscribe(source, event, confirmationRequired,
                 new AsyncCallback<SubscriptionStatus>() {
                     public void onFailure(Throwable caught) {
                         caught.printStackTrace();
-                        Window
-                                .alert("Unable to subscribe to the content change event. Cause:\n"
-                                        + caught);
+                        Window.alert(i18n.get("operation.failure") + "\n"
+                                + caught);
                     }
 
                     public void onSuccess(SubscriptionStatus result) {
                         if (SubscriptionStatus.SUBSCRIBED == result) {
                             Window
-                                    .alert("Thank you for subscribing to our Notification Service!"
-                                            + (confirmationRequired ? " An e-mail will be sent to your address for confirmation."
+                                    .alert(i18n.get("subscribe.success")
+                                            + (confirmationRequired ? " "
+                                                    + i18n
+                                                            .get("subscribe.success.confirmationEmail")
                                                     : ""));
                         } else {
-                            Window
-                                    .alert("Unable to subscribe to the content change event.");
+                            Window.alert(i18n.get("operation.failure"));
                         }
                         updateState(result);
                     }
@@ -179,17 +222,15 @@ public class SubscribeButton extends HTML {
                 new AsyncCallback<SubscriptionStatus>() {
                     public void onFailure(Throwable caught) {
                         caught.printStackTrace();
-                        Window
-                                .alert("Unable to complete unsubscribe request to the content change event. Cause:\n"
-                                        + caught);
+                        Window.alert(i18n.get("operation.failure") + "\n"
+                                + caught);
                     }
 
                     public void onSuccess(SubscriptionStatus result) {
                         if (SubscriptionStatus.NOT_SUBSCRIBED == result) {
-                            Window.alert("Your unsubscription request was successful.");
+                            Window.alert(i18n.get("unsubscribe.success"));
                         } else {
-                            Window
-                                    .alert("Unable to complete unsubscribe request to the content change event.");
+                            Window.alert(i18n.get("operation.failure"));
                         }
                         updateState(result);
                     }
@@ -199,21 +240,21 @@ public class SubscribeButton extends HTML {
 
     private void updateState(SubscriptionStatus status) {
         this.status = status;
-        setStyleName(STATUS_STYLE_MAPPING.get(status));
+        setStyleName(statusStyleMapping.get(status));
         String title = null;
         switch (status) {
         case SUBSCRIBED:
-            title = "Unsubscribe from being notified of changes for this content";
+            title = i18n.get("unsubscribe.title");
             break;
         case NOT_SUBSCRIBED:
         case NO_EMAIL_ADDRESS:
-            title = "Subscribe to be notified of changes for this content";
+            title = i18n.get("subscribe.title");
             break;
 
         default:
             break;
         }
-        
+
         setTitle(title);
     }
 }

@@ -85,10 +85,7 @@ stretcherToOpen   = 0; %>
       function setWaitingCursor() {
           if (typeof workInProgressOverlay != 'undefined') {
              workInProgressOverlay.launch();
-          } else {
-  	       document.body.style.cursor = "wait";
-  	       openWorkInProgressWindow('<%=request.getContextPath()%>');
-  	    }
+          }
       }
   
       -->

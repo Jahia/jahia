@@ -147,11 +147,6 @@ function changeField(fieldID) {
 function setWaitingCursor(showWaitingImage) {
     if (typeof workInProgressOverlay != 'undefined') {
         workInProgressOverlay.launch();
-    } else {
-        if (document.body.style.cursor == "wait") return;
-        document.body.style.cursor = "wait";
-        if (showWaitingImage == 1)
-            openWorkInProgressWindow(jahia.config.contextPath);
     }
 }
 

@@ -772,18 +772,18 @@ connectionTimeoutForProductionJob                           = 60000
 # These parameters are used to enable or disable batch loading with hibernate.
 #
 batchLoadingEnabled	                                      = true
-batchLoadingSize		                              = 20
+batchLoadingSize		                                  = 20
 
 ######################################################################
 ### container list pagination settings    ############################
 ######################################################################
 #
 #
-preloadedItemsForPagination = 100
+preloadedItemsForPagination                               = 100
 
 # Below you can change the default window size for the automatic pagination
 # of lists displayed in templates using the *containerList tags
-paginationWindowSize                                    = 20
+paginationWindowSize                                      = 100
 
 ######################################################################
 ### select page engine view    #######################################

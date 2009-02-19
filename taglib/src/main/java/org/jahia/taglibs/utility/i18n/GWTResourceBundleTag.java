@@ -82,7 +82,12 @@ public class GWTResourceBundleTag extends AbstractJahiaTag {
                 outBuf.append("\"").append(resourceName).append("\"");
             }
             outBuf.append(":\"");
-            outBuf.append(getResourceValue(resourceName, getProcessingContext()));
+            GWTResourceBundleDictionaryTag parent = (GWTResourceBundleDictionaryTag) findAncestorWithClass(
+                    this, GWTResourceBundleDictionaryTag.class);
+            outBuf.append(getResourceValue(parent != null
+                    && parent.getResourceNamePrefix() != null ? parent
+                    .getResourceNamePrefix()
+                    + resourceName : resourceName, getProcessingContext()));
             outBuf.append("\"");
             out.print(outBuf.toString());
             pageContext.getRequest().setAttribute("org.jahia.ajax.gwt.rb", Boolean.TRUE);

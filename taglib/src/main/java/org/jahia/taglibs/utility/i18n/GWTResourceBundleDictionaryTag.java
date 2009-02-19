@@ -51,6 +51,7 @@ public class GWTResourceBundleDictionaryTag extends AbstractJahiaTag {
     private String moduleType = ResourceBundle.RESOURCE_BUNDLE_MODULE_TYPE;
     private String elementId = ResourceBundle.APPLICATION_RESOURCE_ELEMENT_ID;
     private boolean enableGwt = true ;
+    private String resourceNamePrefix;
 
     /**
      * Return the resource bundle module type.
@@ -90,7 +91,7 @@ public class GWTResourceBundleDictionaryTag extends AbstractJahiaTag {
             }
         }
         try {
-            // add jahia parameter dictonary
+            // add jahia parameter dictionary
             StringBuffer buf = new StringBuffer();
             if (getModuleType() != null && getElementId() != null) {
                 buf.append("<script type='text/javascript'>\n");
@@ -133,7 +134,16 @@ public class GWTResourceBundleDictionaryTag extends AbstractJahiaTag {
         moduleType = null;
         elementId = null;
         enableGwt = true ;
+        resourceNamePrefix = null;
         return EVAL_PAGE;
+    }
+
+    public String getResourceNamePrefix() {
+        return resourceNamePrefix;
+    }
+
+    public void setResourceNamePrefix(String resourceNamePrefix) {
+        this.resourceNamePrefix = resourceNamePrefix;
     }
 
 }

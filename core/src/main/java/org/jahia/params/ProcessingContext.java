@@ -1597,7 +1597,7 @@ public class ProcessingContext {
     protected JahiaSite getSiteByHostName() throws JahiaException {
         JahiaSite resolvedSite = null;
 
-        if (isValidServerName(getServerName().toLowerCase())) {
+        if (getServerName() != null && isValidServerName(getServerName().toLowerCase())) {
             resolvedSite = REGISTRY.getJahiaSitesService().getSite(
                     getServerName());
         }

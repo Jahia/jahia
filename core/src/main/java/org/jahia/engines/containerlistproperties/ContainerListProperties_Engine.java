@@ -614,7 +614,7 @@ public class ContainerListProperties_Engine implements JahiaEngine {
     //                        }
     //                    }
     //                });
-                } catch (Exception e) {
+                } catch (JahiaException e) {
                     logger.error("Error during update operation of an element we must flush all caches to ensure integrity between database and viewing");
                     ServicesRegistry.getInstance().getCacheService().flushAllCaches();
                     throw new JahiaException(e.getMessage(), e.getMessage(),
@@ -1133,8 +1133,6 @@ public class ContainerListProperties_Engine implements JahiaEngine {
             buff.append(";").append((containerSort.indexOf("Desc") > 0) ? "desc" : "asc");
             switch (fieldType) {
                 case ContentFieldTypes.DATE :
-                    buff.append(";false");
-                    break;
                 case ContentFieldTypes.INTEGER :
                 case ContentFieldTypes.FLOAT :
                     buff.append(";true");
@@ -1296,14 +1294,14 @@ public class ContainerListProperties_Engine implements JahiaEngine {
         int j;
         boolean flag = false;
         boolean isDate = sortInfo4Date != null && !sortInfo4Date.isEmpty();
-        final Comparator<String> comparator = new NumericStringComparator();
+        final Comparator<String> comparator = new NumericStringComparator<String>();
         for (incr = n / 2; incr > 0; incr = incr / 2) {
             for (int i = incr; i < n; i++) {
                 final JahiaContainer c = containers.get(i);
                 final String str = fieldInfoToDisplay.get(i);
                 String str2 = EMPTY_STRING;
                 String str4Test = str;
-                String str4Test2 = EMPTY_STRING;
+                String str4Test2;
                 if (isDate) {
                     str2 = sortInfo4Date.get(i);
                     str4Test = str2;
@@ -1394,7 +1392,7 @@ public class ContainerListProperties_Engine implements JahiaEngine {
 
         final Iterator<JahiaContainerStructure> fList = cList.getDefinition().getStructure(JahiaContainerStructure.JAHIA_FIELD);
         while (fList.hasNext ()) {
-            final JahiaContainerStructure aStructure = (JahiaContainerStructure) fList.next ();
+            final JahiaContainerStructure aStructure = fList.next ();
             final JahiaFieldDefinition theDef = (JahiaFieldDefinition)aStructure.getObjectDef();
             if (theDef != null) {
                 final String prop = cList.getContentContainerList().getProperty ("view_field_acl_" + theDef.getName ());

@@ -56,7 +56,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.JahiaTools;
-import org.jboss.util.collection.ListSet;
 import org.springframework.context.ApplicationContext;
 
 import java.util.*;
@@ -80,7 +79,6 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
     protected JahiaUser user = null;
     protected JahiaSite site = null;
     protected boolean siteLevel = false;
-    protected String contextID = "";
 
     // --------------------------------------------------------------------------
     /**
@@ -321,7 +319,7 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
             this.numberFormat = numberFormat;
         }
         if (siteId > 0) {
-            this.siteIds = new Integer[] { new Integer(siteId) };
+            this.siteIds = new Integer[] {siteId};
         }
         if (containerDefinitionName != null
                 && !"".equals(containerDefinitionName.trim())) {
@@ -364,10 +362,10 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
         this.siteIds = new Integer[siteIds.length];
         int i = 0;
         for (int siteId : siteIds) {
-            this.siteIds[i] = new Integer(siteId);
+            this.siteIds[i] = siteId;
             i++;
         }
-        this.containerDefinitionNames = containerDefinitionNames;
+        this.containerDefinitionNames = containerDefinitionNames.clone();
         this.siteLevel = true;
         this.user = jParams.getUser();
         this.site = jParams.getSite();
@@ -435,7 +433,7 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
             if (bits.length() == 0) {
                 return result;
             } else if (bits.cardinality() == 1) {
-                result.add(new Integer(bits.nextSetBit(0)));
+                result.add(bits.nextSetBit(0));
                 return result;
             }
         }
@@ -444,12 +442,11 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
         String[] fieldNames = new String[] { fieldName };
         JahiaContainerManager containerMgr = (JahiaContainerManager) context
                 .getBean(JahiaContainerManager.class.getName());
-        List<Object[]> ctnIds = containerMgr.getSortedContainerIds(new Integer(
-                this.ctnListID), siteIds, Boolean.valueOf(siteLevel),
+        List<Object[]> ctnIds = containerMgr.getSortedContainerIds(this.ctnListID, siteIds, siteLevel,
                 containerDefinitionNames, fieldNames, true,
                 this.entryLoadRequest, false, false, this.ASC_Ordering, bits,
                 this.getDBMaxResult());
-        Set<Integer> v = new ListSet();
+        Set<Integer> v = new LinkedHashSet<Integer>();
         if (ctnIds != null && !ctnIds.isEmpty()) {
             List<TmpData> orderedIds = new ArrayList<TmpData>();
             Set<Integer> stagedEntries = new HashSet<Integer>();
@@ -458,26 +455,25 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
                 Integer versionId = (Integer) row[2];
                 Integer ctnId = (Integer) row[3];
                 
-                if (workflowState.intValue() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                    workflowState = new Integer(
-                            EntryLoadRequest.STAGING_WORKFLOW_STATE);
+                if (workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
+                    workflowState = EntryLoadRequest.STAGING_WORKFLOW_STATE;
                 }
-                if (bits != null && !bits.get(ctnId.intValue())) {
+                if (bits != null && !bits.get(ctnId)) {
                     continue;
                 }
-                if (workflowState.intValue() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
+                if (workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                     stagedEntries.add(ctnId);
                 }
                 orderedIds.add(new TmpData(ctnId, workflowState, versionId));
             }
-            int wfs = 0;
+            int wfs;
             for (TmpData data : orderedIds) {
-                wfs = data.getWorkflowState().intValue();
+                wfs = data.getWorkflowState();
                 if (wfs == EntryLoadRequest.ACTIVE_WORKFLOW_STATE
                         && stagedEntries.contains(data.getCtnId())) {
                     continue;
                 } else if (wfs > EntryLoadRequest.ACTIVE_WORKFLOW_STATE
-                        && data.getVersionId().intValue() == -1) {
+                        && data.getVersionId() == -1) {
                     continue;
                 }
                 v.add(data.getCtnId());
@@ -485,42 +481,6 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
         }
         result.addAll(v);
         return result;
-    }
-
-    private class TmpData {
-        private Integer ctnId;
-        private Integer workflowState;
-        private Integer versionId;
-
-        public TmpData(Integer ctnId, Integer workflowState, Integer versionId) {
-            this.ctnId = ctnId;
-            this.workflowState = workflowState;
-            this.versionId = versionId;
-        }
-
-        public Integer getCtnId() {
-            return ctnId;
-        }
-
-        public void setCtnId(Integer ctnId) {
-            this.ctnId = ctnId;
-        }
-
-        public Integer getWorkflowState() {
-            return workflowState;
-        }
-
-        public void setWorkflowState(Integer workflowState) {
-            this.workflowState = workflowState;
-        }
-
-        public Integer getVersionId() {
-            return versionId;
-        }
-
-        public void setVersionId(Integer versionId) {
-            this.versionId = versionId;
-        }
     }
 
     // --------------------------------------------------------------------------
@@ -534,7 +494,7 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
      *            , the fieldName
      * @return List.
      */
-    protected List<Object> getFieldValues(int ctnListID, String fieldName,
+    protected List<DataBean> getFieldValues(int ctnListID, String fieldName,
             boolean convertValueAsLong, BitSet bits) throws JahiaException {
 
         Set<Integer> deletedCtns = ContainerFilterBean
@@ -581,7 +541,7 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
             locale = Locale.ENGLISH;
         }
 
-        List<Object> datas = new ArrayList<Object>();
+        List<DataBean> datas = new ArrayList<DataBean>();
 
         boolean mixLanguageEnabled = JahiaSite
                 .isMixLanguagesActiveForSite(Jahia.getThreadParamBean());
@@ -592,21 +552,18 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
         }
         Map<String, TempField> maps = new HashMap<String, TempField>();
         Map<String, Map<String, TempField>> dataByLanguageCodeMaps = new HashMap<String, Map<String, TempField>>();
-        Map<String, TempField> dataByLanguageCodeMap = null;
-        ApplicationContext context = SpringContextSingleton.getInstance()
-                .getContext();
-        JahiaFieldsDataManager fieldMgr = (JahiaFieldsDataManager) context
-                .getBean(JahiaFieldsDataManager.class.getName());
-        List<Object[]> queryResult = fieldMgr.executeQuery(buff.toString(),
-                parameters);
+        Map<String, TempField> dataByLanguageCodeMap;
+        ApplicationContext context = SpringContextSingleton.getInstance().getContext();
+        JahiaFieldsDataManager fieldMgr = (JahiaFieldsDataManager) context.getBean(JahiaFieldsDataManager.class.getName());
+        List<Object[]> queryResult = fieldMgr.executeQuery(buff.toString(),parameters);
 
         for (Object[] row : queryResult) {
-            int ctnID = ((Integer) row[0]).intValue();
-            int fieldID = ((Integer) row[1]).intValue();
+            int ctnID = (Integer) row[0];
+            int fieldID = (Integer) row[1];
             String fieldValue = (String) row[2];
-            int workflowState = ((Integer) row[3]).intValue();
+            int workflowState = (Integer) row[3];
             String languageCode = (String) row[4];
-            int type = ((Integer) row[5]).intValue();
+            int type = (Integer) row[5];
             if (type == ContentFieldTypes.PAGE) {
                 try {
                     fieldValue = ContentPage.getPage(
@@ -635,7 +592,7 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
 
             if (fieldValue != null && (bits == null || bits.get(ctnID))) {
                 if (this.entryLoadRequest.isCurrent()
-                        || !deletedCtns.contains(new Integer(ctnID))) {
+                        || !deletedCtns.contains(ctnID)) {
                     if (workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                         workflowState = EntryLoadRequest.STAGING_WORKFLOW_STATE;
                     }
@@ -699,7 +656,7 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
         Set<Integer> addedIds = new HashSet<Integer>();
         boolean hasDifferentTranslation = !dataByLanguageCodeMaps.isEmpty();
         for (TempField aField : maps.values()) {
-            if (!addedIds.contains(new Integer(aField.id))) {
+            if (!addedIds.contains(aField.id)) {
                 String key = aField.id + "_" + aField.workflowState + "_"
                         + locale.toString();
                 if (!aField.languageCode.equals(ContentField.SHARED_LANGUAGE)
@@ -757,20 +714,18 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
                         valueToSort = "";
                     }
                 }
-                Object obj = convertValueAsLong ? new DataBean(aField.ctnID,
-                        valueToSort) : new StrDataBean(aField.ctnID,
-                        valueToSort);
+                DataBean obj = new DataBean(aField.ctnID,valueToSort);
                 if (this.entryLoadRequest.isCurrent()) {
                     datas.add(obj);
-                    addedIds.add(new Integer(aField.id));
+                    addedIds.add(aField.id);
                 } else if (this.entryLoadRequest.isStaging()
                         && aField.workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                     datas.add(obj);
-                    addedIds.add(new Integer(aField.id));
+                    addedIds.add(aField.id);
                 } else if (aField.workflowState == EntryLoadRequest.ACTIVE_WORKFLOW_STATE
-                        && !stagingFields.contains(new Integer(aField.id))) {
+                        && !stagingFields.contains(aField.id)) {
                     datas.add(obj);
-                    addedIds.add(new Integer(aField.id));
+                    addedIds.add(aField.id);
                 }
             }
         }
@@ -830,9 +785,8 @@ public class ContainerMetadataSorterBean extends ContainerSorterBean {
 
         List<Integer> queryResults = fieldMgr.executeQuery(buff.toString(),
                 parameters);
-        Set<Integer> datas = new HashSet<Integer>(queryResults);
 
-        return datas;
+        return new HashSet<Integer>(queryResults);
     }
 
 }

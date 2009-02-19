@@ -40,18 +40,7 @@
 package org.jahia.data.containers;
 
 import java.io.Serializable;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
@@ -75,7 +64,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.comparator.NumericStringComparator;
-import org.jboss.util.collection.ListSet;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -132,8 +120,7 @@ public class ContainerSorterBean implements Serializable,
      * 
      * @param ctnListID
      *            , the container list id.
-     * @param the
-     *            field name, the field on which to sort.
+     * @param fieldName, the field on which to sort.
      * @deprecated
      */
     public ContainerSorterBean(int ctnListID, String fieldName)
@@ -145,9 +132,8 @@ public class ContainerSorterBean implements Serializable,
     /**
      * Constructor
      * 
-     * @param int ctnListID, the container list id.
-     * @param String
-     *            the field name, the field on which to sort.
+     * @param ctnListID, the container list id.
+     * @param fieldName name, the field on which to sort.
      * @param entryLoadRequest
      * @throws JahiaException
      */
@@ -160,12 +146,9 @@ public class ContainerSorterBean implements Serializable,
     /**
      * Constructor
      * 
-     * @param ctnListID
-     *            , the container list id.
-     * @param the
-     *            field name, the field on which to sort.
-     * @param force
-     *            field values to be converted to long representation before sorting ( if true ).
+     * @param ctnListID, the container list id.
+     * @param fieldName, the field on which to sort.
+     * @param numberSort, force field values to be converted to long representation before sorting ( if true ).
      * @param entryLoadRequest
      * @throws JahiaException
      */
@@ -179,12 +162,10 @@ public class ContainerSorterBean implements Serializable,
     /**
      * Constructor
      * 
-     * @param int ctnListID, the container list id.
-     * @param String
-     *            the field name, the field on which to sort.
-     * @param boolean , force field values to be converted to number representation before sorting ( if true ).
-     * @param numberFormat
-     *            , only used if numberSort is true. If null, the format used is NumberFormat.LONG_FORMAT
+     * @param ctnListID, the container list id.
+     * @param fieldName, the field on which to sort.
+     * @param numberSort, force field values to be converted to number representation before sorting ( if true ).
+     * @param numberFormat, only used if numberSort is true. If null, the format used is NumberFormat.LONG_FORMAT
      * @param entryLoadRequest
      * @throws JahiaException
      */
@@ -541,7 +522,7 @@ public class ContainerSorterBean implements Serializable,
      * 
      * If support for one of these features is required, this mode must ne set to false.
      * 
-     * @param optimizedMode
+     * @param optimizedMode use the optimized mode
      */
     public void setOptimizedMode(boolean optimizedMode) {
         this.optimizedMode = optimizedMode;
@@ -550,7 +531,7 @@ public class ContainerSorterBean implements Serializable,
     /**
      * A dbMax Result may be defined and be used by the sorter if applicable.
      * 
-     * @param dbMaxResult
+     * @param dbMaxResult maximum number of results returned by the DB
      */
     public void setDBMaxResult(int dbMaxResult) {
         this.dbMaxResult = dbMaxResult;
@@ -565,12 +546,13 @@ public class ContainerSorterBean implements Serializable,
      * Load an Map of pair/value (ctnID,fieldValue) for a given ctnlist and a given fieldName.
      * 
      * 
-     * @param int ctnListID, the container list id
-     * @param String
-     *            fieldName, the fieldName
+     * @param ctnListID, the container list id
+     * @param fieldName, the fieldName
+     * @param convertValueAsLong number sort
+     * @param bits, BitSet of results
      * @return List.
      */
-    protected List<Object> getFieldValues(int ctnListID, String fieldName,
+    protected List<DataBean> getFieldValues(int ctnListID, String fieldName,
             boolean convertValueAsLong, BitSet bits) throws JahiaException {
         List<Integer> deletedCtns = ContainerFilterBean
                 .getDeletedContainers(ctnListID);
@@ -593,7 +575,7 @@ public class ContainerSorterBean implements Serializable,
         if (locale == null) {
             locale = Locale.ENGLISH;
         }
-        List<Object> datas = new ArrayList<Object>();
+        List<DataBean> datas = new ArrayList<DataBean>();
 
         boolean mixLanguageEnabled = JahiaSite
                 .isMixLanguagesActiveForSite(Jahia.getThreadParamBean());
@@ -604,21 +586,18 @@ public class ContainerSorterBean implements Serializable,
         }
         Map<String, TempField> maps = new HashMap<String, TempField>();
         Map<String, Map<String, TempField>> dataByLanguageCodeMaps = new HashMap<String, Map<String, TempField>>();
-        Map<String, TempField> dataByLanguageCodeMap = null;
-        ApplicationContext context = SpringContextSingleton.getInstance()
-                .getContext();
-        JahiaFieldsDataManager fieldMgr = (JahiaFieldsDataManager) context
-                .getBean(JahiaFieldsDataManager.class.getName());
-        List<Object[]> queryResult = fieldMgr.executeQuery(buff.toString(),
-                parameters);
+        Map<String, TempField> dataByLanguageCodeMap;
+        ApplicationContext context = SpringContextSingleton.getInstance().getContext();
+        JahiaFieldsDataManager fieldMgr = (JahiaFieldsDataManager) context.getBean(JahiaFieldsDataManager.class.getName());
+        List<Object[]> queryResult = fieldMgr.executeQuery(buff.toString(),parameters);
 
         for (Object[] row : queryResult) {
-            int ctnID = ((Integer) row[0]).intValue();
-            int fieldID = ((Integer) row[1]).intValue();
+            int ctnID = (Integer) row[0];
+            int fieldID = (Integer) row[1];
             String fieldValue = (String) row[2];
-            int workflowState = ((Integer) row[3]).intValue();
+            int workflowState = (Integer) row[3];
             String languageCode = (String) row[4];
-            int type = ((Integer) row[5]).intValue();
+            int type = (Integer) row[5];
 
             if (type == ContentFieldTypes.PAGE) {
                 try {
@@ -652,7 +631,7 @@ public class ContainerSorterBean implements Serializable,
 
             if (fieldValue != null && (bits == null || bits.get(ctnID))) {
                 if (this.entryLoadRequest.isCurrent()
-                        || !deletedCtns.contains(new Integer(ctnID))) {
+                        || !deletedCtns.contains(ctnID)) {
                     if (workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                         workflowState = EntryLoadRequest.STAGING_WORKFLOW_STATE;
                     }
@@ -716,7 +695,7 @@ public class ContainerSorterBean implements Serializable,
         Set<Integer> addedIds = new HashSet<Integer>();
         boolean hasDifferentTranslation = !dataByLanguageCodeMaps.isEmpty();
         for (TempField aField : maps.values()) {
-            if (!addedIds.contains(new Integer(aField.id))) {
+            if (!addedIds.contains(aField.id)) {
                 String key = aField.id + "_" + aField.workflowState + "_"
                         + locale.toString();
                 if (!aField.languageCode.equals(ContentField.SHARED_LANGUAGE)
@@ -751,8 +730,7 @@ public class ContainerSorterBean implements Serializable,
                                     break;
                                 } else if (otherLanguageField == null
                                         && aField.workflowState == EntryLoadRequest.STAGING_WORKFLOW_STATE) {
-                                    otherLanguageField = (TempField) dataByLanguageCodeMap
-                                            .get(aField.id
+                                    otherLanguageField = dataByLanguageCodeMap.get(aField.id
                                                     + "_"
                                                     + EntryLoadRequest.ACTIVE_WORKFLOW_STATE
                                                     + "_" + languageCode);
@@ -774,21 +752,19 @@ public class ContainerSorterBean implements Serializable,
                         valueToSort = "";
                     }
                 }
-                Object obj = convertValueAsLong ? new DataBean(aField.ctnID,
-                        valueToSort) : new StrDataBean(aField.ctnID,
-                        valueToSort);
+                DataBean obj = new DataBean(aField.ctnID,valueToSort);
 
                 if (this.entryLoadRequest.isCurrent()) {
                     datas.add(obj);
-                    addedIds.add(new Integer(aField.id));
+                    addedIds.add(aField.id);
                 } else if (this.entryLoadRequest.isStaging()
                         && aField.workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                     datas.add(obj);
-                    addedIds.add(new Integer(aField.id));
+                    addedIds.add(aField.id);
                 } else if (aField.workflowState == EntryLoadRequest.ACTIVE_WORKFLOW_STATE
-                        && !stagingFields.contains(new Integer(aField.id))) {
+                        && !stagingFields.contains(aField.id)) {
                     datas.add(obj);
-                    addedIds.add(new Integer(aField.id));
+                    addedIds.add(aField.id);
                 }
             }
         }
@@ -800,10 +776,10 @@ public class ContainerSorterBean implements Serializable,
     /**
      * Containers are sorted after sorting field's data are loaded and converted to a long representation.
      * 
-     * @param BitSet
-     *            bits, any bit position sset to true must correspond to a ctn id to include in the result. if you want all ctn ids in the
+     * @param bits, any bit position sset to true must correspond to a ctn id to include in the result. if you want all ctn ids in the
      *            result, gieve a null BitSet.
      * @return List, List of sorted ctn ids.
+     * @throws org.jahia.exceptions.JahiaException in case of error
      */
     protected List<Integer> doStringSort(BitSet bits) throws JahiaException {
         List<Integer> result = new ArrayList<Integer>();
@@ -811,23 +787,23 @@ public class ContainerSorterBean implements Serializable,
             if (bits.length() == 0) {
                 return result;
             } else if (bits.cardinality() == 1) {
-                result.add(new Integer(bits.nextSetBit(0)));
+                result.add(bits.nextSetBit(0));
                 return result;
             }
         }
 
-        List<StrDataBean> datas = new ArrayList(this.getFieldValues(this.ctnListID, this.fieldName, this
+        List<DataBean> datas = new ArrayList<DataBean>(this.getFieldValues(this.ctnListID, this.fieldName, this
                 .isNumberOrdering(), bits));
 
         // sort the datas
         if (datas.size() > 1) {
             // a dummy dataBean
-            Collections.sort(datas, new StrDataBean(ASC_Ordering));
+            Collections.sort(datas, new StringComparator(ASC_Ordering));
         }
         // retrieve sorted ids
         BitSet sortedBitSet = new BitSet();
-        for (StrDataBean dataBean : datas) {
-            result.add(new Integer(dataBean.ctnID));
+        for (DataBean dataBean : datas) {
+            result.add(dataBean.ctnID);
             sortedBitSet.set(dataBean.ctnID);
         }
         // if bits is null, return all containers
@@ -837,19 +813,17 @@ public class ContainerSorterBean implements Serializable,
                     .getJahiaContainersService().getctnidsInList(
                             this.getCtnListID(), this.entryLoadRequest);
             for (Integer id : ctnIds) {
-                bits.set(id.intValue());
+                bits.set(id);
             }
         }
         // missing container should be returned as well
-        if (bits != null) {
-            BitSet diffBitSet = new BitSet();
-            diffBitSet.or(bits);
-            diffBitSet.andNot(sortedBitSet);
-            int l = diffBitSet.size();
-            for (int i = 0; i < l; i++) {
-                if (diffBitSet.get(i)) {
-                    result.add(new Integer(i));
-                }
+        BitSet diffBitSet = new BitSet();
+        diffBitSet.or(bits);
+        diffBitSet.andNot(sortedBitSet);
+        int l = diffBitSet.size();
+        for (int i = 0; i < l; i++) {
+            if (diffBitSet.get(i)) {
+                result.add(i);
             }
         }
         return result;
@@ -859,10 +833,10 @@ public class ContainerSorterBean implements Serializable,
     /**
      * Containers are sorted after sorting field's data are loaded and converted to a long representation.
      * 
-     * @param BitSet
-     *            bits, any bit position sset to true must correspond to a ctn id to include in the result. if you want all ctn ids in the
+     * @param bits, any bit position sset to true must correspond to a ctn id to include in the result. if you want all ctn ids in the
      *            result, gieve a null BitSet.
      * @return List, List of sorted ctn ids.
+     * @throws org.jahia.exceptions.JahiaException in case of error
      */
     protected List<Integer> doNumberSort(BitSet bits) throws JahiaException {
         List<Integer> result = new ArrayList<Integer>();
@@ -870,23 +844,23 @@ public class ContainerSorterBean implements Serializable,
             if (bits.length() == 0) {
                 return result;
             } else if (bits.cardinality() == 1) {
-                result.add(new Integer(bits.nextSetBit(0)));
+                result.add(bits.nextSetBit(0));
                 return result;
             }
         }
 
-        List<DataBean> datas = new ArrayList(this.getFieldValues(this.ctnListID, this.fieldName, this
+        List<DataBean> datas = new ArrayList<DataBean>(this.getFieldValues(this.ctnListID, this.fieldName, this
                 .isNumberOrdering(), bits));
 
         // sort the datas
         if (datas.size() > 1) {
             // a dummy dataBean
-            Collections.sort(datas, new DataBean(ASC_Ordering));
+            Collections.sort(datas, new NumberComparator(ASC_Ordering,numberFormat));
         }
         // retrieve sorted ids
         BitSet sortedBitSet = new BitSet();
         for (DataBean dataBean : datas) {
-            result.add(new Integer(dataBean.ctnID));
+            result.add(dataBean.ctnID);
             sortedBitSet.set(dataBean.ctnID);
         }
         // if bits is null, return all containers
@@ -896,21 +870,20 @@ public class ContainerSorterBean implements Serializable,
                     .getJahiaContainersService().getctnidsInList(
                             this.getCtnListID(), this.entryLoadRequest);
             for (Integer id : ctnIds) {
-                bits.set(id.intValue());
+                bits.set(id);
             }
         }
         // missing container should be returned as well
-        if (bits != null) {
-            BitSet diffBitSet = new BitSet();
-            diffBitSet.or(bits);
-            diffBitSet.andNot(sortedBitSet);
-            int l = diffBitSet.size();
-            for (int i = 0; i < l; i++) {
-                if (diffBitSet.get(i)) {
-                    result.add(new Integer(i));
-                }
+        BitSet diffBitSet = new BitSet();
+        diffBitSet.or(bits);
+        diffBitSet.andNot(sortedBitSet);
+        int l = diffBitSet.size();
+        for (int i = 0; i < l; i++) {
+            if (diffBitSet.get(i)) {
+                result.add(i);
             }
         }
+
 
         return result;
     }
@@ -918,19 +891,18 @@ public class ContainerSorterBean implements Serializable,
     // --------------------------------------------------------------------------
     /**
      * 
-     * @param BitSet
-     *            bits, any bit position sset to true must correspond to a ctn id to include in the result. if you want all ctn ids in the
+     * @param bits, any bit position sset to true must correspond to a ctn id to include in the result. if you want all ctn ids in the
      *            result, gieve a null BitSet.
      * @return List, List of sorted ctn ids.
+     * @throws JahiaException in case of error
      */
-    protected List<Integer> doOptimizedSort(BitSet bits)
-            throws JahiaException {
+    protected List<Integer> doOptimizedSort(BitSet bits) throws JahiaException {
         List<Integer> result = new ArrayList<Integer>();
         if (bits != null) {
             if (bits.length() == 0) {
                 return result;
             } else if (bits.cardinality() == 1) {
-                result.add(new Integer(bits.nextSetBit(0)));
+                result.add(bits.nextSetBit(0));
                 return result;
             }
         }
@@ -939,11 +911,10 @@ public class ContainerSorterBean implements Serializable,
         JahiaContainerManager containerMgr = (JahiaContainerManager) context
                 .getBean(JahiaContainerManager.class.getName());
         String[] fieldNames = new String[] { fieldName };
-        List<Object[]> ctnIds = containerMgr.getSortedContainerIds(new Integer(
-                this.ctnListID), null, Boolean.FALSE, null, fieldNames, false,
+        List<Object[]> ctnIds = containerMgr.getSortedContainerIds(this.ctnListID, null, Boolean.FALSE, null, fieldNames, false,
                 this.entryLoadRequest, false, false, this.ASC_Ordering, bits,
                 this.dbMaxResult);
-        Set<Integer> v = new ListSet();
+        Set<Integer> v = new LinkedHashSet<Integer>();
         BitSet sortedBitSet = new BitSet();
         if (ctnIds != null && !ctnIds.isEmpty()) {
             List<TmpData> orderedIds = new ArrayList<TmpData>();
@@ -953,29 +924,28 @@ public class ContainerSorterBean implements Serializable,
                 Integer versionId = (Integer) row[2];
                 Integer ctnId = (Integer) row[4];
 
-                if (workflowState.intValue() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                    workflowState = new Integer(
-                            EntryLoadRequest.STAGING_WORKFLOW_STATE);
+                if (workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
+                    workflowState = EntryLoadRequest.STAGING_WORKFLOW_STATE;
                 }
-                if (bits != null && !bits.get(ctnId.intValue())) {
+                if (bits != null && !bits.get(ctnId)) {
                     continue;
                 }
-                if (workflowState.intValue() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
+                if (workflowState > EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                     stagedEntries.add(ctnId);
                 }
                 orderedIds.add(new TmpData(ctnId, workflowState, versionId));
             }
-            int wfs = 0;
+            int wfs;
             for (TmpData data : orderedIds) {
-                wfs = data.getWorkflowState().intValue();
+                wfs = data.getWorkflowState();
                 if (wfs == EntryLoadRequest.ACTIVE_WORKFLOW_STATE
                         && stagedEntries.contains(data.getCtnId())) {
                     continue;
                 } else if (wfs > EntryLoadRequest.ACTIVE_WORKFLOW_STATE
-                        && data.getVersionId().intValue() == -1) {
+                        && data.getVersionId() == -1) {
                     continue;
                 }
-                sortedBitSet.set(data.getCtnId().intValue());
+                sortedBitSet.set(data.getCtnId());
                 v.add(data.getCtnId());
             }
         }
@@ -987,20 +957,18 @@ public class ContainerSorterBean implements Serializable,
                     .getJahiaContainersService().getctnidsInList(
                             this.getCtnListID(), this.entryLoadRequest);
             for (Integer id : allCtnIds) {
-                bits.set(id.intValue());
+                bits.set(id);
             }
         }
 
         // missing container should be returned as well
-        if (bits != null) {
-            BitSet diffBitSet = new BitSet();
-            diffBitSet.or(bits);
-            diffBitSet.andNot(sortedBitSet);
-            int l = diffBitSet.size();
-            for (int i = 0; i < l; i++) {
-                if (diffBitSet.get(i)) {
-                    v.add(new Integer(i));
-                }
+        BitSet diffBitSet = new BitSet();
+        diffBitSet.or(bits);
+        diffBitSet.andNot(sortedBitSet);
+        int l = diffBitSet.size();
+        for (int i = 0; i < l; i++) {
+            if (diffBitSet.get(i)) {
+                v.add(i);
             }
         }
         result.addAll(v);
@@ -1008,53 +976,33 @@ public class ContainerSorterBean implements Serializable,
     }
 
     // --------------------------------------------------------------------------
-    protected class DataBean implements Comparator {
+    protected static class DataBean {
         int ctnID = 0;
         String value = null;
-        boolean ASC_Ordering = true;
 
         public DataBean(int ctnID, String value) {
             this.ctnID = ctnID;
             this.value = value;
         }
 
-        public DataBean(boolean ASC_Ordering) {
-            this.ASC_Ordering = ASC_Ordering;
-        }
-
-        public int compare(Object obj1, Object obj2) throws ClassCastException {
-
-            DataBean dataBean1 = (DataBean) obj1;
-            DataBean dataBean2 = (DataBean) obj2;
-            if (ASC_Ordering) {
-                return NumberFormats.compareNumber(dataBean1.value,
-                        dataBean2.value, numberFormat);
-            } else {
-                return NumberFormats.compareNumber(dataBean2.value,
-                        dataBean1.value, numberFormat);
-            }
+        @Override
+        public String toString() {
+            return value;
         }
     }
 
     // --------------------------------------------------------------------------
-    protected class StrDataBean extends NumericStringComparator {
-        int ctnID = 0;
-        String value = "";
+    protected static class StringComparator extends NumericStringComparator {
         boolean ASC_Ordering = true;
 
-        public StrDataBean(int ctnID, String value) {
-            this.ctnID = ctnID;
-            this.value = value;
-        }
-
-        public StrDataBean(boolean ASC_Ordering) {
+        public StringComparator(boolean ASC_Ordering) {
             this.ASC_Ordering = ASC_Ordering;
         }
 
         public int compare(Object obj1, Object obj2) throws ClassCastException {
-            if (obj1 instanceof StrDataBean) {
-                StrDataBean dataBean1 = (StrDataBean) obj1;
-                StrDataBean dataBean2 = (StrDataBean) obj2;
+            if (obj1 instanceof DataBean) {
+                DataBean dataBean1 = (DataBean) obj1;
+                DataBean dataBean2 = (DataBean) obj2;
                 if (this.ASC_Ordering) {
                     return super.compare(dataBean1.value, dataBean2.value);
                 } else {
@@ -1066,7 +1014,26 @@ public class ContainerSorterBean implements Serializable,
         }
     }
 
-    protected class TempField {
+    protected static class NumberComparator implements Comparator<DataBean>,Serializable {
+        boolean ASC_Ordering = true;
+        String numberFormat = "";
+        public NumberComparator(boolean ASC_Ordering,String numberFormat) {
+            this.ASC_Ordering = ASC_Ordering;
+            this.numberFormat = numberFormat;
+        }
+
+        public int compare(DataBean dataBean1, DataBean dataBean2) {
+            if (ASC_Ordering) {
+                return NumberFormats.compareNumber(dataBean1.value,
+                        dataBean2.value, numberFormat);
+            } else {
+                return NumberFormats.compareNumber(dataBean2.value,
+                        dataBean1.value, numberFormat);
+            }
+        }
+    }
+
+    protected static class TempField {
         public int id;
         public int ctnID;
         public int versionID;
@@ -1085,7 +1052,7 @@ public class ContainerSorterBean implements Serializable,
         }
     }
 
-    protected class TmpData {
+    protected static class TmpData {
         private Integer ctnId;
         private Integer workflowState;
         private Integer versionId;
@@ -1125,9 +1092,9 @@ public class ContainerSorterBean implements Serializable,
     /**
      * Returns an array of fields that are in staging.
      * 
-     * @param ctnListID
-     * @return
-     * @throws JahiaException
+     * @param ctnListID containerlist to get fields ids from
+     * @return List of staging fields ids
+     * @throws JahiaException in case of error
      */
     protected List<Integer> getStagingFields(int ctnListID)
             throws JahiaException {
@@ -1145,10 +1112,7 @@ public class ContainerSorterBean implements Serializable,
         JahiaFieldsDataManager fieldMgr = (JahiaFieldsDataManager) context
                 .getBean(JahiaFieldsDataManager.class.getName());
 
-        List<Integer> queryResults = fieldMgr.executeQuery(buff.toString(),
-                parameters);
-
-        return queryResults;
+        return fieldMgr.executeQuery(buff.toString(), parameters);
     }
 
     public String toString() {
@@ -1159,23 +1123,4 @@ public class ContainerSorterBean implements Serializable,
         }
         return buf.toString();
     }
-
-    /**
-     * Return the collator instantiated with the first locale from the internal EntryLoadRequest. If the entryLoadRequest is null, the
-     * localtor is instantiated with the default locale of the system
-     * 
-     * @return Collator
-     */
-    protected Collator getCollator() {
-        Collator collator = Collator.getInstance();
-        if (this.getEntryLoadRequest() != null) {
-            Locale locale;
-            locale = this.getEntryLoadRequest().getFirstLocale(true);
-            if (locale != null) {
-                collator = Collator.getInstance(locale);
-            }
-        }
-        return collator;
-    }
-
 }

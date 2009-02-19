@@ -41,15 +41,16 @@ import org.jahia.hibernate.model.JahiaResource;
 
 import java.util.Comparator;
 import java.text.Collator;
+import java.io.Serializable;
 
 /**
- * Created by IntelliJ IDEA.
- * User: rincevent
+ * This class allows sorting of string by their Numeric values also so A1,A10,A2 are sorted like A1,A2,A10
+ * or 1B,10B,2B are sorted like 1B,2B,10B. 
+ * @author cedric.mailleux@jahia.com
  * Date: 7 déc. 2006
  * Time: 17:48:00
- * To change this template use File | Settings | File Templates.
  */
-public class NumericStringComparator implements Comparator {
+public class NumericStringComparator<T> implements Comparator<T>, Serializable {
 
     /**
      * Compare between two objects, sort by their value
@@ -57,7 +58,7 @@ public class NumericStringComparator implements Comparator {
      * @param c1
      * @param c2
      */
-    public int compare(Object c1, Object c2) throws ClassCastException {
+    public int compare(T c1, T c2) throws ClassCastException {
 
         // System.out.println("Comparing: "+o1+" and "+o2);
         if (c1 == null) {
@@ -66,50 +67,10 @@ public class NumericStringComparator implements Comparator {
             return -1;
         }
 
-        String s1;
-        if (c1 instanceof ResourceBundleMarker) {
-            s1 = ((ResourceBundleMarker) c1).getValue();
-
-        } else if (c1.getClass() == Category.class) {
-            final Category cat = (Category) c1;
-            s1 = cat.getTitle(Jahia.getThreadParamBean().getLocale());
-            if (s1 == null || s1.length() == 0) {
-                s1 = cat.getKey();
-            }
-
-        } else if (c1.getClass() == JahiaCategory.class) {
-            final JahiaCategory cat = (JahiaCategory) c1;
-            s1 = cat.getKey();
-
-        } else if (c1.getClass() == JahiaResource.class) {
-            final JahiaResource res = (JahiaResource) c1;
-            s1 = res.getValue();
-
-        } else
-            s1 = c1.toString();
+        String s1 = getStringValueForObjectComparison(c1);
 
         // Second object c2 processing
-        String s2;
-        if (c2 instanceof ResourceBundleMarker) {
-            s2 = ((ResourceBundleMarker) c2).getValue();
-
-        } else if (c2.getClass() == Category.class) {
-            final Category cat = (Category) c2;
-            s2 = cat.getTitle(Jahia.getThreadParamBean().getLocale());
-            if (s2 == null || s2.length() == 0) {
-                s2 = cat.getKey();
-            }
-
-        } else if (c2.getClass() == JahiaCategory.class) {
-            final JahiaCategory cat = (JahiaCategory) c2;
-            s2 = cat.getKey();
-
-        } else if (c2.getClass() == JahiaResource.class) {
-            final JahiaResource res = (JahiaResource) c2;
-            s2 = res.getValue();
-
-        } else
-            s2 = c2.toString();
+        String s2 = getStringValueForObjectComparison(c2);
 
         // find the first digit.
         int idx1 = getFirstDigitIndex(s1);
@@ -126,20 +87,12 @@ public class NumericStringComparator implements Comparator {
         int edx1 = getLastDigitIndex(s1, idx1);
         int edx2 = getLastDigitIndex(s2, idx2);
 
-        String sub1 = null;
-        String sub2 = null;
+        String sub1;
+        String sub2;
 
-        if (edx1 == -1) {
-            sub1 = s1.substring(idx1);
-        } else {
-            sub1 = s1.substring(idx1, edx1);
-        }
+        sub1 = removeLastDigits(s1, idx1, edx1);
 
-        if (edx2 == -1) {
-            sub2 = s2.substring(idx2);
-        } else {
-            sub2 = s2.substring(idx2, edx2);
-        }
+        sub2 = removeLastDigits(s2, idx2, edx2);
 
         // deal with zeros at start of each number
         int zero1 = countZeroes(sub1);
@@ -240,7 +193,7 @@ public class NumericStringComparator implements Comparator {
         return -1;
     }
 
-    public int countZeroes(String str) {
+    protected int countZeroes(String str) {
         int count = 0;
 
         // assuming str is small...
@@ -270,5 +223,36 @@ public class NumericStringComparator implements Comparator {
         }
 
         return true;
+    }
+
+    private String getStringValueForObjectComparison(T c1) {
+        String s1;
+        if (c1 instanceof ResourceBundleMarker) {
+            s1 = ((ResourceBundleMarker) c1).getValue();
+        } else if (c1.getClass() == Category.class) {
+            final Category cat = (Category) c1;
+            s1 = cat.getTitle(Jahia.getThreadParamBean().getLocale());
+            if (s1 == null || s1.length() == 0) {
+                s1 = cat.getKey();
+            }
+        } else if (c1.getClass() == JahiaCategory.class) {
+            final JahiaCategory cat = (JahiaCategory) c1;
+            s1 = cat.getKey();
+        } else if (c1.getClass() == JahiaResource.class) {
+            final JahiaResource res = (JahiaResource) c1;
+            s1 = res.getValue();
+        } else
+            s1 = c1.toString();
+        return s1;
+    }
+
+    private String removeLastDigits(String s1, int idx1, int edx1) {
+        String sub1;
+        if (edx1 == -1) {
+            sub1 = s1.substring(idx1);
+        } else {
+            sub1 = s1.substring(idx1, edx1);
+        }
+        return sub1;
     }
 }

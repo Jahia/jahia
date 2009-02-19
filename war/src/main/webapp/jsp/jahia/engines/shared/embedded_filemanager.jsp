@@ -45,7 +45,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 
-<internal:gwtImport module="org.jahia.ajax.gwt.subengines.filepicker.FilePicker" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.filepicker.FilePicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
 
 <%

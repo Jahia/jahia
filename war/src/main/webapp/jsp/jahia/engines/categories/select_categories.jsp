@@ -57,7 +57,7 @@
                     resourceName="org.jahia.engines.categories.noCategoriesAvailable.label"/></b>
         </p>
         <% } else { %>
-        <internal:gwtImport module="org.jahia.ajax.gwt.subengines.categoriespicker.CategoriesPicker"/>
+        <internal:gwtImport module="org.jahia.ajax.gwt.module.categorypicker.CategoryPicker"/>
         <internal:categorySelector selectedCategories="<%=selectedCategories%>" startCategoryKey="<%= categoryPropertyName %>" autoSelectParent="${param.autoSelectParent}"/>
         <% } %>
 

@@ -103,7 +103,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <title>Jahia Engine - <%=engineTitle%></title>
-<internal:gwtInit modules="org.jahia.ajax.gwt.engines.commons.Engines"/>
+<internal:gwtInit modules="org.jahia.ajax.gwt.module.engines.Engines"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/css/andromeda.css" type="text/css" />
 <%--
 <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/engines/css/menu.css" type="text/css"/>

@@ -52,7 +52,7 @@ final String selectUsrGrp = (String) request.getAttribute("selectUsrGrp"); %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%
 stretcherToOpen   = 0; %>
-<internal:gwtImport module="org.jahia.ajax.gwt.admin.Administration" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 <div id="topTitle">
   <h1>Jahia</h1>
   <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.serverpermissions.title.label"/></h2>

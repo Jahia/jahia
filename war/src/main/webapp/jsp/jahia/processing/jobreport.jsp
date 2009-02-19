@@ -42,7 +42,7 @@
     <title><internal:engineResourceBundle resourceName="org.jahia.engines.processDisplay.jobresult.label" defaultValue="Job Report"/></title>
 </head>
 <body>
-<internal:gwtImport module="org.jahia.ajax.gwt.engines.jobreport.JobReport"/>
+<internal:gwtImport module="org.jahia.ajax.gwt.module.jobreport.JobReport"/>
 <internal:jobReport name="<%= request.getParameter(\"name\")%>" groupName="<%= request.getParameter(\"groupName\")%>"/>
 </body>
 </html>

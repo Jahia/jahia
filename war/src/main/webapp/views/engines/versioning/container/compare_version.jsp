@@ -60,7 +60,7 @@
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 
 <%@include file="/views/engines/common/taglibs.jsp" %>
-<internal:gwtImport module="org.jahia.ajax.gwt.engines.versioning.comparison.VersionComparison"/>
+<internal:gwtImport module="org.jahia.ajax.gwt.module.versioning.VersionComparison"/>
 <%
   JahiaEngineCommonData engineCommonData =
     (JahiaEngineCommonData)request.getAttribute(JahiaEngineCommonData.JAHIA_ENGINE_COMMON_DATA);

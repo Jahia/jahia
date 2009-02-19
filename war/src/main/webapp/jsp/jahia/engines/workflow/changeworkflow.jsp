@@ -43,7 +43,7 @@
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<internal:gwtImport module="org.jahia.ajax.gwt.subengines.usergroupselect.UserGroupSelect" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.usergroup.UserGroupSelect" />
 
 
 <%

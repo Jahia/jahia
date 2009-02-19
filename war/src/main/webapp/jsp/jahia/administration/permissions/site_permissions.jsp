@@ -58,7 +58,7 @@
 
     <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.title.label"/></h2>
 </div>
-<internal:gwtImport module="org.jahia.ajax.gwt.admin.Administration" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">

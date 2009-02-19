@@ -57,7 +57,7 @@ cursor:pointer;
 <script type="text/javascript" > var crop=0; 	</script>
 
 		<internal:gwtInit standalone="true"/>
-		<internal:gwtImport module="org.jahia.ajax.gwt.engines.filemanager.FileManager" />
+		<internal:gwtImport module="org.jahia.ajax.gwt.module.filemanager.FileManager" />
 	</head>
 	<body>
 		<internal:fileManager startPath="" enginemode="true" conf="filemanager"/>

@@ -262,7 +262,7 @@ jahia.config = {
 </div>
 </center>
 <c:if test="${empty requestScope['jahia.engines.gwtModuleIncluded']}">
-<internal:gwtImport module="org.jahia.ajax.gwt.engines.commons.Engines"/>
+<internal:gwtImport module="org.jahia.ajax.gwt.module.engines.Engines"/>
 </c:if>
 </body>
 </html>

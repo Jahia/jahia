@@ -41,7 +41,7 @@
 	<head>
 		<title>Jahia Workflow Manager</title>
 		<internal:gwtInit standalone="true"/>
-		<internal:gwtImport module="org.jahia.ajax.gwt.engines.workflow.WorkflowManager" />
+		<internal:gwtImport module="org.jahia.ajax.gwt.module.workflow.WorkflowManager" />
 	</head>
 	<body>
     <%

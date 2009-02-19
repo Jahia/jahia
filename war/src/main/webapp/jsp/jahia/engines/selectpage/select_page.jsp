@@ -44,7 +44,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 
 <internal:gwtInit />
-<internal:gwtImport module="org.jahia.ajax.gwt.subengines.pagepicker.PagePicker" />
+<internal:gwtImport module="org.jahia.ajax.gwt.module.pagepicker.PagePicker" />
 <%
 
   final String selectedPageOperation = request.getParameter(SelectPage_Engine.OPERATION);

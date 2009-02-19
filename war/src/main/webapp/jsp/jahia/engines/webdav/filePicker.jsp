@@ -42,7 +42,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title><internal:engineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.fileLocation.label"/></title>
-<internal:gwtInit modules="org.jahia.ajax.gwt.subengines.filepicker.FilePicker"/>
+<internal:gwtInit modules="org.jahia.ajax.gwt.module.filepicker.FilePicker"/>
 <script type="text/javascript">
 function handleSelection(path) {
     <c:if test="${not empty param.callback}">

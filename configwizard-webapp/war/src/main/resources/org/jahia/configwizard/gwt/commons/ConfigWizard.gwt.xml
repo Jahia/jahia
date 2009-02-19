@@ -1,9 +1,0 @@
-<module>
-    <inherits name="org.jahia.ajax.gwt.commons.Commons"/>
-
-    <stylesheet src="../../../gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/css/jahia-ext-embedded.css"/>
-    <stylesheet src="../../../gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/css/jahia-ext-all.css"/>
-    <stylesheet src="../../../css/gwt/theme/xtheme-jahia.css"/>
-    
-    <entry-point class='org.jahia.configwizard.gwt.commons.client.ConfigWizardEntryPoint'/>
-</module>

@@ -30,7 +30,7 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.configwizard.gwt.commons.client;
+package org.jahia.ajax.gwt.configwizard.client;
 
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 

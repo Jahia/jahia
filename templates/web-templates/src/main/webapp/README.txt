@@ -34,12 +34,13 @@
 folder description :
 
 first level : jsp files are TEMPLATES files + definitions (.cnd) and ordering instructions for fields in engines (.grp)
+    main file is positioning.jsp
 
 common/ :
     all common files called in most templates (declarations, headers, footers, navbars, etc.) or specific features pre-packaged that aree not templates (login form, serach form...)
 
-structures/ :
-    main file is structures.jsp
+areas/ :
+
     one folder for each template, within one file for each area
 
 skins/ :
@@ -48,8 +49,8 @@ skins/ :
 theme/ :
     one folder for each graphic theme, contains css folder where all css files are loaded + js scripts specific to the theme and images.
 
-containers/ :
-    contains all display files for each container.
+modules/ :
+    contains all display files for each container or content module.
 
 images :
     preview.gif (710x141) preview in template choose from site wizzard

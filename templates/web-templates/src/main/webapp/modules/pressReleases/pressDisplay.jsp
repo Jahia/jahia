@@ -36,7 +36,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 <div class="pressRealese"><!--start pressRealese -->
-    <template:include page="modules/pressReleases/pressTopDisplay.jsp"/>
+    <template:include page="modules/introduction/introductionDisplay.jsp"/>
     <div class="pressRealeseForm"><!--start pressRealeseForm -->
         <template:jahiaPageForm name="pressPageForm" method="get">
             <fieldset>

@@ -40,5 +40,5 @@
 <%-- Define layout file --%>
 <jsp:include page="positioning.jsp">
     <jsp:param name="mainArea" value="areas/introduction_portraits.jsp"/>
-    <jsp:param name="areaB" value="structures/search_nav_boxes.jsp"/>
+    <jsp:param name="areaB" value="areas/search_nav_boxes.jsp"/>
 </jsp:include>

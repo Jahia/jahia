@@ -327,6 +327,10 @@
                                 <value>org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages</value>
                                 <value>org.jahia.actions.sites.*.admin.production.ManageSiteProduction</value>
                                 <value>org.jahia.actions.sites.*.admin.permissions.ManageSitePermissions</value>
+                                <value>org.jahia.actions.sites.*.admin.htmleditors.HtmlEditorsAdmin</value>
+                                <value>org.jahia.actions.sites.*.admin.integrity.IntegrityChecks</value>
+                                <value>org.jahia.actions.sites.*.admin.analytics.ManageAnalytics</value>
+                                <value>org.jahia.actions.sites.*.admin.themes.ManageThemes</value>
                             </list>
                         </entry>
                         <entry key="data">

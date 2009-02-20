@@ -274,7 +274,7 @@
 
     <bean id="themesAdministrationModule" class="org.jahia.admin.themes.ManageThemes">
         <property name="urlKey" value="themes" />
-        <property name="permissionName" value="admin.permissions.ManageThemes" />
+        <property name="permissionName" value="admin.themes.ManageThemes" />
         <property name="name" value="themes" />
         <property name="icon" value="window_earth" />
         <property name="label" value="org.jahia.admin.themes.ManageThemes.label" />

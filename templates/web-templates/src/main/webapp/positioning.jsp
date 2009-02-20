@@ -84,21 +84,21 @@
                         <c:if test="${ !empty param.areaA }">
                             <!--start areaA--><div id="areaA">
                                 <div class="spacer">
-                                    <template:include page="${param.columnA}"/>
+                                    <template:include page="${param.areaA}"/>
                                 </div>
                             </div><!-- stop AreaA -->
                         </c:if>
                         <c:if test="${ !empty param.areaB }">
                             <!--start areaB--><div id="areaB">
                                 <div class="spacer">
-                                    <template:include page="${param.columnB}"/>
+                                    <template:include page="${param.areaB}"/>
                                 </div>
                             </div><!-- stop areaB-->
                         </c:if>
                         <c:if test="${ !empty param.areaC }">
                             <!--start areaC--><div id="areaC">
                                 <div class="spacer">
-                                    <template:include page="${param.columnC}"/>
+                                    <template:include page="${param.areaC}"/>
                                 </div>
                                 <!--stop areaC-->
                             </div>

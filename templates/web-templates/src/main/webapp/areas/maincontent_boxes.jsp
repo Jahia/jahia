@@ -44,9 +44,9 @@
         <template:include page="common/breadcrumb.jsp"/>
         <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></h2>
         <template:include page="modules/maincontent/maincontentDisplay.jsp"/>
-
+        <div class="clear"></div>
         <template:include page="common/box/box.jsp">
-            <template:param name="name" value="mainAreaBoxes"/>
+            <template:param name="name" value="mainColumn_Box"/>
         </template:include>
     </div>
 </div>

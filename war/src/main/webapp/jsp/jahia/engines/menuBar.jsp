@@ -43,6 +43,7 @@
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult"%>
 <%@ page import="org.jahia.services.lock.LockKey"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
 <%
@@ -64,7 +65,7 @@
       <li class="dex-TabBarItem">
         <div class="display">
           <div>
-            <span class="tab-icon ico-data"><internal:engineResourceBundle resourceName="org.jahia.engines.lock.container.label"/></span>
+            <span class="tab-icon ico-data"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.container.label"/></span>
           </div>
         </div>
       </li>
@@ -78,10 +79,10 @@
           <div>
             <span class="tab-icon ico-data">
               <% if (showEditMenu) { %>
-              <internal:engineResourceBundle resourceName="org.jahia.engines.lock.container.label"/>
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.container.label"/>
               <% } else { %>
               <a href="javascript:handleActionChange('edit')">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.lock.container.label"/>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.container.label"/>
               </a>
               <% } %>
             </span>
@@ -143,7 +144,7 @@
         <li class="dex-TabBarItem" onclick="handleActionChange('<%=screenName%>');">
           <div class="display">
             <div>
-              <span class="tab-icon ico-tool"><internal:engineResourceBundle resourceName="org.jahia.engines.tools.label"/></span>
+              <span class="tab-icon ico-tool"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.tools.label"/></span>
             </div>
           </div>
         </li>
@@ -153,7 +154,7 @@
               <li class="dex-TabBarItem-selected">
                 <div class="display">
                   <div>
-                    <span class="tab-icon ico-tool"><internal:engineResourceBundle resourceName="org.jahia.engines.tools.label"/></span>
+                    <span class="tab-icon ico-tool"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.tools.label"/></span>
                   </div>
                 </div>
               </li>

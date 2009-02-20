@@ -39,6 +39,7 @@
 <%@page import = "org.jahia.services.pages.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="groupMessage" class="java.lang.String" scope="session"/>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <%
@@ -94,7 +95,7 @@ function pasteSelectionClose()
 
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.users.GroupMembersTool.groupMembersAddition.label"/></h2>
+<h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.GroupMembersTool.groupMembersAddition.label"/></h2>
 </div>
 <div id="main">
 <!-- -->
@@ -121,13 +122,13 @@ function pasteSelectionClose()
     <tr>
         <td align="center" >
         <div class="buttonList" style="padding-top: 8px; padding-bottom: 8px">
-        <div class="button" title="<internal:adminResourceBundle resourceName='org.jahia.admin.users.ManageGroups.altApplyAndReturn.label'/>">
-<a href="javascript:pasteSelectionClose()" ><internal:adminResourceBundle resourceName="org.jahia.admin.ok.label"/></a></div>
-         <div class="button" title="<internal:adminResourceBundle resourceName='org.jahia.admin.users.GroupMembersTool.altCloseWithoutPaste.label'/>">
-		<a href="javascript:window.close();" ><internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/></a>
+        <div class="button" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageGroups.altApplyAndReturn.label'/>">
+<a href="javascript:pasteSelectionClose()" ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a></div>
+         <div class="button" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.GroupMembersTool.altCloseWithoutPaste.label'/>">
+		<a href="javascript:window.close();" ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
 </div>
-<div class="button" title="<internal:adminResourceBundle resourceName='org.jahia.admin.users.GroupMembersTool.altPasteWithoutClose.label'/>">
-		<a href="javascript:pasteSelection();" ><internal:adminResourceBundle resourceName="org.jahia.admin.select.label"/></a>
+<div class="button" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.GroupMembersTool.altPasteWithoutClose.label'/>">
+		<a href="javascript:pasteSelection();" ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.select.label"/></a>
 </div>
 
 

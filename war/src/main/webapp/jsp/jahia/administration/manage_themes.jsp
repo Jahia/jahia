@@ -51,8 +51,8 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.themes.ManageThemes.label"/>
-        : <% if (currentSite != null) { %><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.themes.ManageThemes.label"/>
+        : <% if (currentSite != null) { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>
         &nbsp;&nbsp;<%} %></h2>
 </div>
 <div id="main">
@@ -73,7 +73,7 @@
                         <div id="content" class="fit">
                             <div class="head">
                                 <div class="object-title">
-                                    <internal:adminResourceBundle
+                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                             resourceName="org.jahia.admin.themes.ManageThemes.label"/>&nbsp;
                                 </div>
                             </div>
@@ -87,7 +87,7 @@
                 if (request.getParameter("jahiaThemeSelector") != null ) {
             %>
                               <span style="padding: 5px;display:block;border-bottom: 1px solid #B7CBD8;">
-            <internal:adminResourceBundle resourceName='org.jahia.admin.changeTheme'
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.changeTheme'
                                           defaultValue="New theme selected "/> :
                     </span>
 
@@ -106,14 +106,14 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-ok" href="#"
-                 onclick="document.jahiathemeSelectorFormsite.submit()"><internal:adminResourceBundle
+                 onclick="document.jahiathemeSelectorFormsite.submit()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.saveChanges.label"/></a>
             </span>
           </span>

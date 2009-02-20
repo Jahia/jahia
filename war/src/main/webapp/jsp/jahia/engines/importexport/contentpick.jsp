@@ -149,14 +149,14 @@
                     long diftime = System.currentTimeMillis() - d;
                     long difmin = diftime / 60000;
                     if (difmin < 60) {
-                        String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".today.rangeprefix");
+                        String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.rangeprefix");
                         return pref + " " + difmin + " minutes";
                     } else {
-                        String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".today.prefix");
+                        String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.prefix");
                         return pref + " " + sd.format(new Date(d));
                     }
                 } else if (c.after(hier) && c.before(now)) {
-                    String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".yesterday.prefix");
+                    String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".yesterday.prefix");
                     return pref + " " + sd.format(new Date(d));
                 }
 
@@ -252,7 +252,7 @@ if (elh != null) {
 }
 
 // to bundle html labels
-ResourceBundle bundle = ResourceBundle.getBundle("JahiaEnginesResources", jParams.getLocale());
+ResourceBundle bundle = ResourceBundle.getBundle("JahiaInternalResources", jParams.getLocale());
 String bundle_prefix = "org.jahia.engines.importexport.contentpick";
 
 // type of object
@@ -1033,7 +1033,7 @@ for (int z = 2; z < 5; z++) {
         <table cellpadding="0" cellspacing="0" border="0" width="100%" class="object-title">
           <tr>
             <th width="100%">    
-             <internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.welcome.label1"/>&nbsp;<%=objectType%>&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.welcome.label2"/>
+             <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.welcome.label1"/>&nbsp;<%=objectType%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.welcome.label2"/>
             </th>
 
             <td>
@@ -1108,16 +1108,16 @@ for (int z = 2; z < 5; z++) {
               <!-- concat box -->
               <div id="sc0" class="switchcontent" style="background-color: #ffffff;<% if(displayConcat){%> display: none;<%}%>">
                 <select name="concat" id="cond0" ><!--onchange="goSearch(this.name)"-->
-                  <option value="or" <% if (concatmode.equalsIgnoreCase("or")) {%> selected="selected"<%}%>><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.condition0.or.label"/></option>
-                  <option value="and" <% if (concatmode.equalsIgnoreCase("and")) {%>selected="selected"<%}%>><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.condition0.and.label"/></option>
+                  <option value="or" <% if (concatmode.equalsIgnoreCase("or")) {%> selected="selected"<%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.condition0.or.label"/></option>
+                  <option value="and" <% if (concatmode.equalsIgnoreCase("and")) {%>selected="selected"<%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.condition0.and.label"/></option>
                 </select>&nbsp;&nbsp;
-                <internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.prefix.and.label"/>&nbsp;&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.prefix.and.label"/>&nbsp;&nbsp;
               </div>
               <!-- end concat box -->
               <select name="condition1" id="cond1" onchange="goSearch(this.name)">
-                <option value="or" <% if (cond1.equalsIgnoreCase("or")) {%>selected="selected"<%}%>><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.condition1.or.label"/></option>
-                <option value="and" <% if (cond1.equalsIgnoreCase("and")) {%>selected="selected"<%}%>><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.condition1.and.label"/></option>
-                <option value="exact" <% if (cond1.equalsIgnoreCase("exact")) {%>selected="selected"<%}%>><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.condition1.exact.label"/></option>
+                <option value="or" <% if (cond1.equalsIgnoreCase("or")) {%>selected="selected"<%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.condition1.or.label"/></option>
+                <option value="and" <% if (cond1.equalsIgnoreCase("and")) {%>selected="selected"<%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.condition1.and.label"/></option>
+                <option value="exact" <% if (cond1.equalsIgnoreCase("exact")) {%>selected="selected"<%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.condition1.exact.label"/></option>
               </select>
               <!-- main query -->
               <input id="query" name="query" size=30 value="<%=engineMap.get("query1")%>" onkeypress="submitenter(this,event)"/>

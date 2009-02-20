@@ -58,38 +58,38 @@
     <div class="content">
         <div id="editor" class="mainPanel">
             <h4 class="versioningIcon">
-                <internal:engineResourceBundle
+                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
             </h4>
 
-            <h5><internal:engineResourceBundle resourceName="org.jahia.engines.version.stepOneOfThree"/></h5>
+            <h5><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepOneOfThree"/></h5>
 
             <p>
-                <strong><internal:engineResourceBundle
+                <strong><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.selectTheTaskToPerform"/></strong>. </p>
             <p>
-                <internal:engineResourceBundle
+                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.availableTasks"/>:</p>
             <ul class="noStyle">
                 <li>
                     <input type="radio" name="operationType"
                            value="1" <%if(versViewHelper.getOperationType()==1){%>
                            checked="checked"<%}%>> A) &nbsp;
-                    <internal:engineResourceBundle
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.undoStagingModification"/>
                 </li>
                 <li>
                     <input type="radio" name="operationType"
                            value="2" <%if(versViewHelper.getOperationType()==2){%>
                            checked=checked<%}%>> B) &nbsp;
-                    <internal:engineResourceBundle
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.restoreArchivedContent"/>
                 </li>
             </ul>
             <div class="navBox">
                 <div class="nextStep">
                     <div class="button">
-                        <a href="javascript:sendForm('<c:out value="${step2}"/>');"><internal:engineResourceBundle
+                        <a href="javascript:sendForm('<c:out value="${step2}"/>');"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="org.jahia.engines.version.proceedToStep"/> 2 >></a>
                     </div>
                 </div>

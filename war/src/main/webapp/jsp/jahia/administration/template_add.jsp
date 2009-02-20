@@ -68,7 +68,7 @@
 	<div id="topTitleLogo">
 		<img src="<%=URL%>images/icons/admin/briefcase_document.gif" width="48" height="48" />
   </div>
-  <h1 id="topTitleLabel"><internal:adminResourceBundle resourceName="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
+  <h1 id="topTitleLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
 </div>
 
 <div id="adminMainContent">
@@ -76,18 +76,18 @@
 <% if ( canAddNew.booleanValue() ) { %>
 
   <h2>
-    <internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.manuallyRegister.label"/>&nbsp;:
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.manuallyRegister.label"/>&nbsp;:
   </h2>
   
   <p>
-    <internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.manuallyRegisterNewTemplate.label"/>&nbsp;:
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.manuallyRegisterNewTemplate.label"/>&nbsp;:
   </p>
   <p>
     <b>Jahia&nbsp;home/jsp/jahia/templates/<%=currentSite.getSiteKey()%></b>
   </p>
   
   <h3>
-    <internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.newTemplateInfo.label"/>&nbsp;:
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.newTemplateInfo.label"/>&nbsp;:
   </h3>
   
   <form name="mainForm" action="<%=requestURI%>?do=addtemplate" method="post">
@@ -105,7 +105,7 @@
     <% } %>
     <tr>
         <td align="right" style="width:50%" >
-            *<internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.templateName.label"/>&nbsp;:
+            *<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.templateName.label"/>&nbsp;:
         </td>
         <td>
           <input class="input" type="text" name="templName" value="<%=templName%>" size="<%=inputSize%>">
@@ -113,7 +113,7 @@
     </tr>
     <tr>
         <td align="right">
-            *<internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.templateFolder.label"/>&nbsp;:
+            *<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.templateFolder.label"/>&nbsp;:
         </td>
         <td width="90%">
           <input class="input" type="text" name="rootFolder" value="<%=rootFolder%>" size="<%=inputSize%>">
@@ -121,7 +121,7 @@
     </tr>
     <tr>
         <td align="right">
-            *<internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.fileName.label"/>&nbsp;:
+            *<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.fileName.label"/>&nbsp;:
         </td>
         <td>
           <input class="input" type="text" name="fileName" value="<%=fileName%>" size="<%=inputSize%>">
@@ -129,11 +129,11 @@
     </tr>
     <tr>
         <td align="right">
-            *<internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.fileName.label"/>&nbsp;:
+            *<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.fileName.label"/>&nbsp;:
         </td>
         <td>
             <select name="pageType">
-                <option value=""> ---------&nbsp;&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
+                <option value=""> ---------&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                 <c:forEach items="${type}" var="types">
                     <option value="<c:out value='${type.key}'/>" <c:if test="${type.key == pageType}">selected="selected"</c:if>><c:out value="${type.value}"/>
                 </c:forEach>
@@ -142,7 +142,7 @@
     </tr>
     <tr>
         <td align="right">
-            <internal:adminResourceBundle resourceName="org.jahia.admin.availableToUsers.label"/>&nbsp;:
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.availableToUsers.label"/>&nbsp;:
         </td>
         <td>
           <input type="checkbox" name="isAvailable" value="1" <% if (isAvailable.intValue()==1){%>checked<% } %>>
@@ -158,7 +158,7 @@
     
     <div class="buttonList" style="text-align: right; padding-top: 30px; padding-bottom: 20px">
       <div class="button">
-        <a href="javascript:sendForm('save');"><internal:adminResourceBundle resourceName="org.jahia.admin.save.label"/></a>
+        <a href="javascript:sendForm('save');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/></a>
       </div>
     </div>
   
@@ -168,11 +168,11 @@
 <% } else { %>
   <table border="0" cellpadding="0" width="90%">
   <tr>
-      <td colspan="2" class="text" align="left"><b><internal:adminResourceBundle resourceName="org.jahia.admin.licenseLimitation.label"/>&nbsp;:</b><br><br>&nbsp;</td>
+      <td colspan="2" class="text" align="left"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.licenseLimitation.label"/>&nbsp;:</b><br><br>&nbsp;</td>
   </tr>
   <tr>
       <td valign="top" align="left" colspan="2" class="text">
-          <b><internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.numberTemplatePerSite.label"/> <%=templateLimit.intValue()%>&nbsp;.</b>
+          <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.numberTemplatePerSite.label"/> <%=templateLimit.intValue()%>&nbsp;.</b>
       </td>
   </tr>
 
@@ -183,14 +183,14 @@
 
   <div id="operationMenu">
   	<div id="operationMenuLabel">
-			<internal:adminResourceBundle resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
+			<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
 		</div>
 		<ul id="operationList">
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
       </li>     		
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
       </li>     		
     </ul>
   </div>

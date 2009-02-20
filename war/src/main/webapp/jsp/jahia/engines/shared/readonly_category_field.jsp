@@ -40,6 +40,7 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper"%>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%!
     private static String printArray(final String[] values) {
         if (values == null || values.length == 0) return "";
@@ -63,6 +64,6 @@
     }
 %>
 
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/>&nbsp;:&nbsp;<%=printArray(theField.getValues())%>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/>&nbsp;:&nbsp;<%=printArray(theField.getValues())%>
 
 

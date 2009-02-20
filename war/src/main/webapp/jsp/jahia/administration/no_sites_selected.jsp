@@ -42,7 +42,7 @@
 stretcherToOpen   = 0; %>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -61,7 +61,7 @@ stretcherToOpen   = 0; %>
             </jsp:include>
           <div id="content" class="fit">
             <div class="error">
-              <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.noSiteSpecified.label"/>
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.noSiteSpecified.label"/>
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@ stretcherToOpen   = 0; %>
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
+      <a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
     </span>
   </span>
 </div>

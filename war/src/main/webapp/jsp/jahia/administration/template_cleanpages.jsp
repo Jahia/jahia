@@ -93,7 +93,7 @@ function sendForm(subAction)
 	<div id="topTitleLogo">
 		<img src="<%=URL%>images/icons/admin/briefcase_document.gif" width="48" height="48" />
   </div>
-  <h1 id="topTitleLabel"><internal:adminResourceBundle resourceName="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
+  <h1 id="topTitleLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
 </div>
 
 <div id="adminMainContent">
@@ -103,12 +103,12 @@ function sendForm(subAction)
               <tr>
                   <td valign="top">
                       <b><%=templ.getName()%>
-                         <internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.stillUsed.label"/></b>
+                         <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.stillUsed.label"/></b>
                       <br><br>
                       	<% if ( canDeleteTemplate.booleanValue() ){ %>
-                          	<internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.beforeDeleting.label"/><br>
+                          	<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.beforeDeleting.label"/><br>
                           <% } else { %>
-                          	<internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.cannotDelete.label"/><br>
+                          	<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.cannotDelete.label"/><br>
                           <% } %>
                       <br>
                       <select class="input" name="pageids" size="10" multiple >
@@ -127,9 +127,9 @@ function sendForm(subAction)
                       </select>
                       <br>&nbsp;<br>
 	            	<% if ( canDeleteTemplate.booleanValue() ){ %>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.selectTemplate.label"/><br><br>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.selectTemplate.label"/><br><br>
                         <select class="input" name="templateid">
-                            <option value="0">--&nbsp;&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.chooseATemplate.label"/>&nbsp;&nbsp;--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                            <option value="0">--&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.chooseATemplate.label"/>&nbsp;&nbsp;--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                         <%
                             while(allTemplatesIterator.hasNext()) {
                                 JahiaPageDefinition pageDefinition = (JahiaPageDefinition) allTemplatesIterator.next();
@@ -144,7 +144,7 @@ function sendForm(subAction)
           	<% if ( canDeleteTemplate.booleanValue() ){ %>
                <div class="buttonList" style="text-align: right; padding : 10px">
                  <div class="button">
-                     <a href="javascript:sendForm('swap');"><internal:adminResourceBundle resourceName="org.jahia.admin.save.label"/></a>
+                     <a href="javascript:sendForm('swap');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/></a>
                  </div>
                </div>
       			<% } %>
@@ -155,14 +155,14 @@ function sendForm(subAction)
 
   <div id="operationMenu">
   	<div id="operationMenuLabel">
-			<internal:adminResourceBundle resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
+			<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
 		</div>
 		<ul id="operationList">
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
       </li>     		
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
       </li>     		
     </ul>
   </div>

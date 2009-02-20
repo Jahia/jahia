@@ -76,7 +76,7 @@ import java.util.Locale;
  * Usage example: In "./jahia/build/classes" directory type :
  * # java org.jahia.tools.resourcemaker.KeyToLangFlgImgAssociation
  * The output "lang_flg_resource_bundle.properties" file is generated and can be
- * merged to "JahiaEnginesResources.properties" file.
+ * merged to "JahiaInternalResources.properties" file.
  *
  * WARNING ! The image resource flag should exist in path
  * "/jsp/jahia/engines/images/flags/".

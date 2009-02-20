@@ -37,8 +37,8 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.resourcebundle.JahiaResourceBundle;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.internal.i18n.EngineResourceBundleTag;
 import org.jahia.utils.JahiaConsole;
+import org.jahia.utils.JahiaTools;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -176,12 +176,12 @@ public class JahiaButton extends AbstractJahiaTag {
         String bImageOff = "";
         String bImageOn = "";
         try {
-            bImageOff = EngineResourceBundleTag.parseResourceValue(
+            bImageOff = parseResourceValue(
                 JahiaResourceBundle.getEngineResource("org.jahia." + img +
                 "Off.button",
                 jData.getProcessingContext(),
                 jData.getProcessingContext().getLocale()), jData.getProcessingContext());
-            bImageOn = EngineResourceBundleTag.parseResourceValue(
+            bImageOn = parseResourceValue(
                 JahiaResourceBundle.getEngineResource("org.jahia." + img +
                 "On.button",
                 jData.getProcessingContext(),
@@ -277,7 +277,7 @@ public class JahiaButton extends AbstractJahiaTag {
      *
      * FIXME : This method duplicate the method already defined in ServerHttpPathTag
      */
-    private final String getServerHttpPath (ProcessingContext jParams) {
+    private String getServerHttpPath (ProcessingContext jParams) {
         return jParams.getContextPath();
     }
 
@@ -293,6 +293,34 @@ public class JahiaButton extends AbstractJahiaTag {
         altBundle = null;
         return EVAL_PAGE;
     }
+
+
+    /**
+     * parse the resource value and replace :
+     * <jahiaEngine> 	: by /jsp/jahia/engines/
+     * <siteTemplate>	: by /jsp/jahia/templates/<mysite>/
+	 *                                       	  where <mysite> is the sitekey of the current site
+     *
+     * @param val, the String to parse
+     * @param jParams, the paramBean
+     * @return String , the parsed value
+     */
+    protected String parseResourceValue(String val,ProcessingContext jParams){
+
+        if ( (val == null) || (jParams == null) || (jParams.getSite()== null) )
+            return val;
+        val = JahiaTools.replacePattern(val,JAHIA_ENGINE_TAG,
+                                                         "/jsp/jahia/engines/");
+
+        val = JahiaTools.replacePattern(val,SITE_TEMPLATE_TAG,
+                "/jsp/jahia/templates/" + jParams.getSite().getSiteKey() + "/");
+
+        return val;
+
+    }
+
+    public static final String JAHIA_ENGINE_TAG 				= "<jahiaEngine>";
+    public static final String SITE_TEMPLATE_TAG 				= "<siteTemplate>";
 
     // Taglib parameters
     private String img = "";

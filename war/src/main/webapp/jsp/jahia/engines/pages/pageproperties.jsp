@@ -45,7 +45,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
-
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
 <%
@@ -78,7 +78,7 @@
 %>
 <div id="header">
   <h1>Jahia</h1>
-  <h2 class="page"><internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageSettings.label"/></h2>
+  <h2 class="page"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageSettings.label"/></h2>
   <jsp:include page="../navigation.jsp" flush="true" />
 </div>
 <div id="mainContent">
@@ -106,10 +106,10 @@
               <%@ include file="../menu.inc" %>
               <div id="content" class="fit w2">
                 <div class="head">
-                   <div class="object-title"> <internal:engineResourceBundle resourceName="org.jahia.page.options.label"/></div>
+                   <div class="object-title"> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.page.options.label"/></div>
                 </div>
                 <logic:present name="engineMessages">
-                  <p class="errorbold"><internal:engineResourceBundle resourceName="org.jahia.engines.shared.BigText_Field.error.label"/>: </p>
+                  <p class="errorbold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.BigText_Field.error.label"/>: </p>
                   <ul>
                     <logic:iterate name="engineMessages" property="messages" id="curMessage">
                       <li class="error"><internal:message name="curMessage"/></li>
@@ -120,7 +120,7 @@
                 <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
                   <tr>
                     <th width="120">
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageTitle.label"/>:
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageTitle.label"/>:
                     </th>
                     <td class="t4">
                       <%=pageTitle%>
@@ -130,7 +130,7 @@
                   <% if (templateListEnum.hasNext()) { %>
                   <tr>
                     <th width="120">
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.template.label"/>:
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.template.label"/>:
                     </th>
                     <td>
                       <%
@@ -168,10 +168,10 @@
                       }
                       if (localeList.size() > 1) {
                       %>
-                      <internal:engineResourceBundle
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources"
                               resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared2lignes.label"/>
                       <% } else { %>
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/>
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/>
                       <% } %>
                     </th>
                     <td>
@@ -184,7 +184,7 @@
                 <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
                   <tr>
                     <th width="150">
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageTitle.label"/>
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageTitle.label"/>
                     </th>
                     <td >
                       <input type="text" name="pageTitle" value="<%=pageTitle%>"/>
@@ -193,7 +193,7 @@
                   <% if (templateListEnum.hasNext()) { %>
                     <tr>
                       <th>
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.template.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.template.label"/>
                       </th>
                       <td>
                         <select name="pageTemplate">
@@ -230,9 +230,9 @@
                           }
                           if (localeList.size() > 1) {
                         %>
-                          <internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared2lignes.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared2lignes.label"/>
                         <% } else { %>
-                          <internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/>
                         <% } %>
                       </th>
                       <td>
@@ -255,7 +255,7 @@
                 <%@ include file="../tools.inc" %>
                 <div class="content">
                   <div id="editor">
-                      <p class="error"><internal:engineResourceBundle resourceName="org.jahia.engines.noLogs.label"/></p>
+                      <p class="error"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.noLogs.label"/></p>
                   </div>
                 </div>
                 <div class="clearing">&nbsp;</div>

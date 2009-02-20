@@ -110,7 +110,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <!-- Defaults to JahiaEnginesResources -->
+            <!-- Defaults to JahiaInternalResources -->
             <name>resourceBundle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -146,7 +146,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <!-- Defaults to JahiaEnginesResources -->
+            <!-- Defaults to JahiaInternalResources -->
             <name>resourceBundle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

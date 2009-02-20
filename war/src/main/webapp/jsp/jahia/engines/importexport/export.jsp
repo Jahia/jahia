@@ -65,43 +65,43 @@ if (elh != null) {
     <%@ include file="../tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-         <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.Export.label"/></div>
+         <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Export.label"/></div>
       </div>
 
       <% if ((readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EXPORT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) && ! ((Boolean) engineMap.get("hasActiveEntries")).booleanValue()) { %>
-        <internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.unavailable.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.unavailable.label"/>
       <% } else { %>
         <div class="content-body padded">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-export" href="#" onclick="doExport(); return false;" title="<internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.Export.label"/>"><internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.Export.label"/></a>
+              <a class="ico-export" href="#" onclick="doExport(); return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Export.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Export.label"/></a>
             </span>
           </span>
         </div>
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr>
-            <th><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.type.label"/></th>
+            <th><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.type.label"/></th>
             <td>
               <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EXPORT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %>
-                 <internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.completeLiveContent.label"/>
+                 <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.completeLiveContent.label"/>
               <% } else { %>
                 <select name="exporttype" class="input">
                   <% if (((Boolean) engineMap.get("hasActiveEntries")).booleanValue()) { %>
-                    <option value="complete"><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.completeLiveContent.label"/></option>
+                    <option value="complete"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.completeLiveContent.label"/></option>
                   <% } %>
-                  <option value="staging"><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.completeStagingContent.label"/></option>
-                  <option value="diff"><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.Differential.label"/></option>
+                  <option value="staging"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.completeStagingContent.label"/></option>
+                  <option value="diff"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.Differential.label"/></option>
                 </select>
               <% } %>
             </td>
           </tr>
           <tr>
-            <th><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.format.label"/></th>
+            <th><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.format.label"/></th>
             <td class="t22">
               <select name="exportformat" class="input">
-                <option value="xml"><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.xml.label"/></option>
-                <option value="zipnofiles"><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.zipnofiles.label"/></option>
-                <option value="zipfiles"><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.export.zipfiles.label"/></option>
+                <option value="xml"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.xml.label"/></option>
+                <option value="zipnofiles"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.zipnofiles.label"/></option>
+                <option value="zipfiles"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.export.zipfiles.label"/></option>
               </select>
             </td>
           </tr>

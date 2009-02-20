@@ -65,8 +65,8 @@ function checkAllBoxes(state, language) {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
         <td><br><br>
-            <b><internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.theUser.label"/>
-&nbsp;<i>'<%=user.getUsername()%>'</i>&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.noSuffisantRights.label"/></b>
+            <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.theUser.label"/>
+&nbsp;<i>'<%=user.getUsername()%>'</i>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.noSuffisantRights.label"/></b>
         </td>
     </tr>
 </table>
@@ -77,26 +77,13 @@ function checkAllBoxes(state, language) {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
         <td>
-            <internal:displayIcon src="workflowEditState" />&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.stateEditing.label"/>&nbsp;&nbsp;&nbsp;
+            <internal:displayIcon src="workflowEditState" />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.stateEditing.label"/>&nbsp;&nbsp;&nbsp;
         </td>
         <td>
-            <internal:displayIcon src="workflowWaitingAnimState" />&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.stateApproval.label"/>&nbsp;&nbsp;&nbsp;
+            <internal:displayIcon src="workflowWaitingAnimState" />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.stateApproval.label"/>&nbsp;&nbsp;&nbsp;
         </td>
         <td>
-            <internal:displayIcon src="workflowActiveState" />&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.statePublished.label"/>&nbsp;&nbsp;&nbsp;
-        </td>
-    </tr>
-</table>
-<table class="text" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </td>
-        <td>
-            <internal:displayIcon src="workflowAccept" />&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.acceptAndPublishPages.label"/>&nbsp;&nbsp;&nbsp;
-        </td>
-        <td>
-            <internal:displayIcon src="workflowRefuse" />&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.refusePages.label"/>
+            <internal:displayIcon src="workflowActiveState" />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.statePublished.label"/>&nbsp;&nbsp;&nbsp;
         </td>
     </tr>
 </table>
@@ -106,7 +93,20 @@ function checkAllBoxes(state, language) {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
         <td>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.mandatoryLanguage.label"/>
+            <internal:displayIcon src="workflowAccept" />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.acceptAndPublishPages.label"/>&nbsp;&nbsp;&nbsp;
+        </td>
+        <td>
+            <internal:displayIcon src="workflowRefuse" />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.refusePages.label"/>
+        </td>
+    </tr>
+</table>
+<table class="text" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+        <td>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.mandatoryLanguage.label"/>
         </td>
     </tr>
 </table>
@@ -138,7 +138,7 @@ function checkAllBoxes(state, language) {
     </tr>
     <tr>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-        <td><b><internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.publishPages.label"/></b></td>
+        <td><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.publishPages.label"/></b></td>
         <td>&nbsp;</td>
         <%
         languageEnum = languageSettings.iterator();
@@ -157,7 +157,7 @@ function checkAllBoxes(state, language) {
         <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <% } %>
         <td width="40%" valign="bottom">
-            <b><internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.comments.label"/></b>&nbsp;:
+            <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.comments.label"/></b>&nbsp;:
         </td>
     </tr>
     <% String[] resourceBundleState =
@@ -284,7 +284,7 @@ function checkAllBoxes(state, language) {
                     boolean isWaitingState = languageState.intValue() == EntryLoadRequest.WAITING_WORKFLOW_STATE;
                     boolean isActiveState = languageState.intValue() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE;
                     if (contentPage.hasSameParentID() == treeJahiaSiteMap.getParentPageID(i)) { %>
-                        <td colspan="<%=languageSettings.size() * 4 %>"><i><internal:engineResourceBundle
+                        <td colspan="<%=languageSettings.size() * 4 %>"><i><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.workflow.SelectPage_Engine.pageMoved.label"/></i></td>
                         <% break;
                     } else if ( contentPage.getTitles(true).containsKey(languageCode) ){

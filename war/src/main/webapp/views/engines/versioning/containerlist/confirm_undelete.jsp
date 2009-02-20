@@ -70,11 +70,11 @@ function sendFormSave() {
     <div id="content" class="fit w2">
       <div class="head">
         <div class="object-title">
-          <internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.Versioning.label"/>&nbsp;-&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.stepTwoOfTwo" defaultValue="Step 2 of 2 " /> : <internal:engineResourceBundle resourceName="org.jahia.engines.version.confirmation" />
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Versioning.label"/>&nbsp;-&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepTwoOfTwo" defaultValue="Step 2 of 2 " /> : <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.confirmation" />
         </div>
       </div>
       <div class="content-body padded">
-        <internal:engineResourceBundle resourceName="org.jahia.engines.version.clickOnOkOrApplyToUndelete" />.
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.clickOnOkOrApplyToUndelete" />.
       </div>
     </div>
   </div>

@@ -107,19 +107,19 @@
     <div id="content" class="fit w2">
       <div class="head">
         <div class="object-title">
-          <internal:engineResourceBundle resourceName="org.jahia.engines.version.selectAPreciseDateFromRevisions"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.selectAPreciseDateFromRevisions"/>
         </div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
           <th valign="top" width="120">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.version.dateRange"/>&nbsp;:
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.dateRange"/>&nbsp;:
           </th>
           <td>
             <table cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td align="left">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.version.from"/>&nbsp;:&nbsp;
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.from"/>&nbsp;:&nbsp;
                 </td>
                 <td nowrap="nowrap">
                   <%
@@ -144,7 +144,7 @@
               </tr>
               <tr>
                 <td align="left">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.version.to"/>&nbsp;:&nbsp;
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.to"/>&nbsp;:&nbsp;
                 </td>
                 <td nowrap="nowrap">
                   <%
@@ -172,7 +172,7 @@
                 <td>
                   <select class="input" name="nbmax_rev" onChange="sendForm('showRevisionsList','');">
                     <option value="-1"<logic:equal name="jahiaEngineViewHelper" property="nbMaxOfRevisionsAsStr" value="-1"> selected</logic:equal>>
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.version.allRevisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.allRevisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </option>
                     <option value="10"<logic:equal name="jahiaEngineViewHelper" property="nbMaxOfRevisionsAsStr" value="10"> selected</logic:equal>>10</option>
                     <option value="20"<logic:equal name="jahiaEngineViewHelper" property="nbMaxOfRevisionsAsStr" value="20"> selected</logic:equal> >20</option>
@@ -183,15 +183,15 @@
               </tr>
               <tr>
                 <td nowrap align="left">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.version.typeOfRevisions" defaultValue="Type of revisions"/>&nbsp;:&nbsp;
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.typeOfRevisions" defaultValue="Type of revisions"/>&nbsp;:&nbsp;
                 </td>
                 <td>
                   <select class="input" name="typeOfRevisions" onChange="sendForm('showRevisionsList','');">
                     <option value="1"<logic:equal name="jahiaEngineViewHelper" property="contentOrMetadataRevisionsAsString" value="1"> selected</logic:equal>>
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.version.contentRevisions" defaultValue="Content revisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.contentRevisions" defaultValue="Content revisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </option>
                     <option value="2"<logic:equal name="jahiaEngineViewHelper" property="contentOrMetadataRevisionsAsString" value="2"> selected</logic:equal>>
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.version.metadataRevisions" defaultValue="Metadata revisions"/>
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.metadataRevisions" defaultValue="Metadata revisions"/>
                     </option>
                   </select>
                 </td>
@@ -201,7 +201,7 @@
         </tr>
         <tr>
           <th valign="top">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.version.showRevisionsFor"/>&nbsp;:&nbsp;
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.showRevisionsFor"/>&nbsp;:&nbsp;
           </th>
           <td valign="top" nowrap="nowrap" align="left">
             <select class="input" name="level" onChange="sendForm('showRevisionsList','');">
@@ -210,10 +210,10 @@
                   ${level}&nbsp;&nbsp;
                   <c:choose>
                     <c:when test="${level == 1}">
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.version.level"/> (<internal:engineResourceBundle resourceName="org.jahia.engines.version.currentPageOnly"/>)
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.level"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.currentPageOnly"/>)
                     </c:when>
                     <c:otherwise>
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.version.levels"/>
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.levels"/>
                     </c:otherwise>
                   </c:choose>
                 </option>
@@ -232,14 +232,14 @@
         }%>
         <div class="head">
           <div class="object-title">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.version.nbOfRevisions"/>&nbsp;&nbsp;(&nbsp;<%=nbRevisions%>&nbsp;/&nbsp;<%=revisions.size()%>&nbsp;)
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.nbOfRevisions"/>&nbsp;&nbsp;(&nbsp;<%=nbRevisions%>&nbsp;/&nbsp;<%=revisions.size()%>&nbsp;)
           </div>
         </div>
         <% if (nbRevisions > 0) { %>
           <%int revisionEntryIndex = 0;%>
           <%@ include file="/views/engines/versioning/pages/revisions-list-displaytag.inc" %>
         <% } else { %>
-          <div class="content-body padded"><center><strong><internal:engineResourceBundle resourceName="org.jahia.engines.importexport.contentpick.noresults.label"/></strong></center></div>
+          <div class="content-body padded"><center><strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.noresults.label"/></strong></center></div>
         <% } %>
       <% } %>
     </div>

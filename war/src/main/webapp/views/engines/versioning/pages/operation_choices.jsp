@@ -59,38 +59,38 @@
     <div class="content">
         <div id="editor" class="mainPanel">
             <h4 class="versioningIcon">
-                <internal:engineResourceBundle
+                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
             </h4>
 
-            <h5><internal:engineResourceBundle resourceName="org.jahia.engines.version.stepOneOfThree"/></h5>
+            <h5><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepOneOfThree"/></h5>
 
             <p>
-                <strong><internal:engineResourceBundle
+                <strong><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.selectTheTaskToPerform"/></strong>. </p>
             <p>
-                <internal:engineResourceBundle
+                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.availableTasks"/>:</p>
             <ul class="noStyle">
                 <li>
                     <input type="radio" name="operationType"
                            value="1" <%if(pagesVersViewHelper.getOperationType()==1){%>
                            checked="checked"<%}%>/> A) &nbsp;
-                    <internal:engineResourceBundle
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.undoStagingModification"/>
                 </li>
                 <li>
                     <input type="radio" name="operationType"
                            value="2" <%if(pagesVersViewHelper.getOperationType()==2){%>
                            checked=checked<%}%>/> B) &nbsp;
-                    <internal:engineResourceBundle
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.restoreArchivedContent"/>
                 </li>
                 <li>
                     <input type="radio" name="operationType"
                            value="3" <%if(pagesVersViewHelper.getOperationType()==3){%>
                            checked=checked<%}%>/> C) &nbsp;
-                    <internal:engineResourceBundle
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.version.restoreDeletedPages"/>
                 </li>
             </ul>
@@ -98,7 +98,7 @@
             <div class="navBox">
                 <div class="nextStep">
                     <div class="button">
-                        <a href="javascript:sendForm('showSiteMap');"><internal:engineResourceBundle
+                        <a href="javascript:sendForm('showSiteMap');"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="org.jahia.engines.version.proceedToStep"/> 2 >></a>
                     </div>
                 </div>

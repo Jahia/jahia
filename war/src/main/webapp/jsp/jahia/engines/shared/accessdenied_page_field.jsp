@@ -34,8 +34,8 @@
 --%>
 
 <%@ page language="java" %>
-<%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <h4 class="page_type_big">
-    <internal:engineResourceBundle
+    <utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.shared.Page_Field.accessDenied.label"/>
 </h4>

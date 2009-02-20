@@ -37,8 +37,9 @@
 <%@ page import="org.jahia.data.fields.JahiaField" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <p class="error">
-    <internal:engineResourceBundle resourceName="org.jahia.engines.shared.fileNotModified.label"/>
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.fileNotModified.label"/>
 </p>
 
 <%
@@ -49,7 +50,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="90%">
 <tr>
 	<td class="text" align="left" nowrap>
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/> :
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> :
 </td>
 </tr>
 <tr>

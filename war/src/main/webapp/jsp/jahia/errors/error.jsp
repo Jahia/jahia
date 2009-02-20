@@ -36,7 +36,9 @@
 <%@ page language = "java" 
 %><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
 %><%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" 
-%><%@ page import="org.jahia.settings.SettingsBean" 
+%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ page import="org.jahia.settings.SettingsBean"
 %><?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -51,7 +53,7 @@ Error:
 Exception StackTrace: <c:out value="${not empty requestScope['org.jahia.exception.trace'] ? requestScope['org.jahia.exception.trace'] : requestScope['javax.servlet.error.exception']}"/>
 -->
 </c:if>
-    <title><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.jahiaError.label"/></title>
+    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.jahiaError.label"/></title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/css/error.css" type="text/css"/>
 </head>
 
@@ -61,18 +63,18 @@ Exception StackTrace: <c:out value="${not empty requestScope['org.jahia.exceptio
 
 <table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
 <tr>
-    <td class="boxtitle"><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
+    <td class="boxtitle"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
 </tr>
 <tr>
     <td class="boxcontent">
-        <p class="bold"><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.internalError.label"/></p>
+        <p class="bold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.internalError.label"/></p>
         <%
         if (SettingsBean.getInstance().isDevelopmentMode()) {
         %>
-        <p><a href="#viewSource" onclick="document.location='view-source:' + document.location.href; return false;"><internal:engineResourceBundle
+        <p><a href="#viewSource" onclick="document.location='view-source:' + document.location.href; return false;"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.bin.JahiaErrorDisplay.viewSource2part.label"/></a></p>
         <% } %>
-        <p><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a href="javascript:history.back()"><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;<internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
+        <p><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a href="javascript:history.back()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
     </td>
 </tr>
 </table>

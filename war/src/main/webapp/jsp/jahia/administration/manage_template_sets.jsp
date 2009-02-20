@@ -36,52 +36,52 @@
 <%@include file="/jsp/jahia/administration/include/header.inc"%>
 <div id="topTitle">
     <div id="topTitleLogo"><img src="<%=URL%>images/icons/admin/briefcase_document.gif" width="48" height="48" /></div>
-    <h1 id="topTitleLabel"><internal:adminResourceBundle resourceName="org.jahia.admin.manageTemplateSets.label" /></h1>
+    <h1 id="topTitleLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplateSets.label" /></h1>
 </div>
 
 <div id="adminMainContent">
 
-<h2><internal:adminResourceBundle resourceName="org.jahia.admin.manageTemplates.label" />:</h2>
+<h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label" />:</h2>
 
 <form name="mainForm" action="?do=templates" method="post">
 <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0"
     width="100%">
     <thead>
         <tr>
-            <th width="50%"><internal:adminResourceBundle
+            <th width="50%"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.admin.name.label" /></th>
-            <th width="25%"><internal:adminResourceBundle
+            <th width="25%"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.admin.components.ManageComponents.context.label" /></th>
-            <th width="25%"><internal:adminResourceBundle
+            <th width="25%"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.admin.components.ManageComponents.deleteComponents.label" /></th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td colspan="3" class="text"><internal:adminResourceBundle
+            <td colspan="3" class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.admin.components.ManageComponents.noApplicationFound.label" /></td>
         </tr>
     </tbody>
 </table>
 </form>
 <div id="operationMenu">
-<div id="operationMenuLabel"><internal:adminResourceBundle
+<div id="operationMenuLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources"
     resourceName="org.jahia.admin.otherOperations.label" />&nbsp;:</div>
 <ul id="operationList">
     <li class="operationEntry"><a class="operationLink"
-        href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><internal:adminResourceBundle
+        href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
         resourceName="org.jahia.admin.templates.ManageTemplates.deployNewTemplates.label" /></a>
     </li>
     <li class="operationEntry"><a class="operationLink"
-        href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><internal:adminResourceBundle
+        href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
         resourceName="org.jahia.admin.templates.ManageTemplates.manuallyAddNewTemplate.label" /></a>
     </li>
     <li class="operationEntry"><a class="operationLink"
-        href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=options")%>'><internal:adminResourceBundle
+        href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=options")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
         resourceName="org.jahia.admin.templates.ManageTemplates.templatesManagementOptions.label" /></a>
     </li>
     <li class="operationEntry"><a class="operationLink"
-        href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle
+        href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
         resourceName="org.jahia.admin.backToMenu.label" /></a></li>
 </ul>
 </div>

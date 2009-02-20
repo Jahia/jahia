@@ -42,25 +42,25 @@
   <span class="dex-PushButton">
     <span class="first-child">
       <a class="ico-back" href="javascript:sendForm('showContainersList','')">
-        <internal:engineResourceBundle resourceName="org.jahia.engines.version.backToStep"/>&nbsp;1&nbsp;:&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.showContainersList" defaultValue="Show containers list" /></a>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/>&nbsp;1&nbsp;:&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.showContainersList" defaultValue="Show containers list" /></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:sendForm('restoreSave','');" class="ico-ok" title="<internal:engineResourceBundle resourceName="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">
-              <internal:engineResourceBundle resourceName="org.jahia.button.ok"/></a>
+      <a href="javascript:sendForm('restoreSave','');" class="ico-ok" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:sendForm('restoreApply','');" class="ico-apply" title="<internal:engineResourceBundle resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
-        <internal:engineResourceBundle resourceName="org.jahia.button.apply"/></a>
+      <a href="javascript:sendForm('restoreApply','');" class="ico-apply" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.apply"/></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:window.close();" class="ico-cancel" title="<internal:engineResourceBundle resourceName="org.jahia.altCloseWithoutSave.label"/>">
-        <internal:engineResourceBundle resourceName="org.jahia.button.cancel"/></a>
+      <a href="javascript:window.close();" class="ico-cancel" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altCloseWithoutSave.label"/>">
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.cancel"/></a>
     </span>
   </span>
 </div>

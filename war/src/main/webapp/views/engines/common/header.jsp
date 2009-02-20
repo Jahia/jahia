@@ -37,8 +37,8 @@
 
 <table width="100%" height="63" border="0" cellspacing="0" cellpadding="0">
     <tr>
-        <td width="126" height="63"><img src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.header.image"/>" width="126" height="63"></td>
-        <td height="63" width="100%" background="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.headerBg.image"/>" align="right" valign="middle">&nbsp;</td>
+        <td width="126" height="63"><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.header.image"/>" width="126" height="63"></td>
+        <td height="63" width="100%" background="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.headerBg.image"/>" align="right" valign="middle">&nbsp;</td>
     </tr>
 </table>
 <br>

@@ -95,7 +95,7 @@ stretcherToOpen   = 0; %>
 <h1>Jahia</h1>
 <h2 class="edit">
 <%if(!isConfigWizard){%>
-      <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
+      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
       <%}else{%>
       <internal:message key="org.jahia.createSite.siteFactory"/>
       <%}%>
@@ -129,7 +129,7 @@ stretcherToOpen   = 0; %>
             <% } %>
                 <div class="head">
                   <div class="object-title">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.multipleimport.list"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.multipleimport.list"/>
                   </div>
                 </div>
                 <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
@@ -137,7 +137,7 @@ stretcherToOpen   = 0; %>
                     <tr>
                       <th<%if(importsInfos.size()==1){ %> style="display:none;"<%} %> width="5%">&nbsp;</th>
                       <th width="95%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.name.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.name.label"/>
                       </th>
                     </tr>
                   </thead>
@@ -165,7 +165,7 @@ stretcherToOpen   = 0; %>
                           <table border="0" cellpadding="0" width="100%">
                             <tr>
                               <td>
-                                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;
+                                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;
                               </td>
                               <td>
                                 <input class="input" type="text" name="<%=siteKey+"siteTitle"%>" value="<%=infos.get("sitetitle")%>" size="<%=inputSize%>" maxlength="100">
@@ -173,9 +173,9 @@ stretcherToOpen   = 0; %>
                             </tr>
                             <tr>
                               <td>
-                                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteServerNameExists")))  { %>
+                                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteServerNameExists")))  { %>
                                 <div class="error">
-                                  <internal:adminResourceBundle resourceName="org.jahia.admin.warningMsg.chooseAnotherServerName.label"/>
+                                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.warningMsg.chooseAnotherServerName.label"/>
                                 </div><% } %>
                               </td>
                               <td>
@@ -184,9 +184,9 @@ stretcherToOpen   = 0; %>
                             </tr>
                             <tr>
                               <td>
-                                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteKeyExists")))  { %>
+                                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;<% if (Boolean.TRUE.equals(infos.get("siteKeyExists")))  { %>
                                 <div class="error">
-                                  <internal:adminResourceBundle resourceName="org.jahia.admin.warningMsg.chooseAnotherSiteKey.label"/>
+                                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.warningMsg.chooseAnotherSiteKey.label"/>
                                 </div><% } %>
                               </td>
                               <td>
@@ -196,7 +196,7 @@ stretcherToOpen   = 0; %>
                             <tr>
 
                               <td>
-                                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;
+                                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;
                               </td>
                               <td>
                                 <select name="<%=siteKey + "templates"%>">
@@ -211,9 +211,9 @@ stretcherToOpen   = 0; %>
 
                           </table>
                           <% } else if ("files".equals(fileType))  { %>
-                          <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.multipleimport.shared"/>: <%=filename %>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.multipleimport.shared"/>: <%=filename %>
                           <% } else { %>
-                          <internal:adminResourceBundle resourceName='<%="org.jahia.admin.site.ManageSites.fileImport."+filename %>' defaultValue="<%= filename %>"/><% } %>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='<%="org.jahia.admin.site.ManageSites.fileImport."+filename %>' defaultValue="<%= filename %>"/><% } %>
                         </td>
                       </tr><%
                       } %>
@@ -232,7 +232,7 @@ stretcherToOpen   = 0; %>
           if (session.getAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia") == null) { %>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span><%} %>
           <%if(isConfigWizard){ %>
@@ -243,7 +243,7 @@ stretcherToOpen   = 0; %>
           </span><%} %>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-import" href='javascript:sendForm();'><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
+              <a class="ico-import" href='javascript:sendForm();'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
             </span>
           </span>
         </div>

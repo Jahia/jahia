@@ -38,6 +38,7 @@
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
@@ -53,7 +54,7 @@
 
         <% if (engineMap.containsKey("NoCategories")) { %>
         <p>
-            <b><internal:engineResourceBundle
+            <b><utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.engines.categories.noCategoriesAvailable.label"/></b>
         </p>
         <% } else { %>
@@ -64,15 +65,15 @@
 <div id="actionBar">
   <span class="dex-PushButton">
        <span class="first-child">
-           <a href="javascript:sendFormSave();" class="ico-ok" title='<internal:engineResourceBundle resourceName="org.jahia.ok.button"/>'>
-                 <internal:engineResourceBundle resourceName="org.jahia.ok.button"/>
+           <a href="javascript:sendFormSave();" class="ico-ok" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.ok.button"/>'>
+                 <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.ok.button"/>
             </a>
         </span>
   </span>
   <span class="dex-PushButton">
         <span class="first-child">
-             <a href="javascript:window.close();" class="ico-cancel" title='<internal:engineResourceBundle resourceName="org.jahia.close.button"/>'>
-                   <internal:engineResourceBundle resourceName="org.jahia.close.button"/>
+             <a href="javascript:window.close();" class="ico-cancel" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.close.button"/>'>
+                   <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.close.button"/>
               </a>
         </span>
   </span>

@@ -48,8 +48,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="groupMessage" class="java.lang.String" scope="session"/>
-<c:set var="noneLabel"><internal:adminResourceBundle resourceName="org.jahia.userMessage.none" defaultValue="none"/></c:set>
+<c:set var="noneLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.userMessage.none" defaultValue="none"/></c:set>
 <%
     JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
@@ -127,7 +128,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.users.ManageGroups.editGroup.label"/></h2>
 </div>
 <div id="main">
@@ -148,7 +149,7 @@
                         <div id="content" class="fit">
                             <div class="head">
                                 <div class="object-title">
-                                    <internal:adminResourceBundle
+                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                             resourceName="org.jahia.admin.users.ManageGroups.editSelectedGroup.label"/>
                                 </div>
                             </div>
@@ -166,14 +167,14 @@
                                     <div id="operationMenu">
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-user-add" href="<%=openWindowURL%>"><internal:adminResourceBundle
+                        <a class="ico-user-add" href="<%=openWindowURL%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="org.jahia.admin.users.ManageGroups.addMembers.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-user-delete"
-                           href="javascript:removeSelectBox(document.mainForm.selectMember, '- - - - - - - - - - <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageGroups.noMoreMembers.label"/> - - - - - - - - - -');"><internal:adminResourceBundle
+                           href="javascript:removeSelectBox(document.mainForm.selectMember, '- - - - - - - - - - <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.noMoreMembers.label"/> - - - - - - - - - -');"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="org.jahia.admin.users.ManageGroups.removeMembers.label"/></a>
                       </span>
                     </span>
@@ -188,7 +189,7 @@
                                     <table border="0" cellpadding="3">
                                         <tr>
                                             <td>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;
                                             </td>
                                             <td>
@@ -199,7 +200,7 @@
                                         </tr>
                                         <tr style="vertical-align: top">
                                             <td>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.homePage.label"/>&nbsp;
                                             </td>
                                             <td>
@@ -208,13 +209,13 @@
                                                 <br/>
                                                 <span class="dex-PushButton">
                                                     <span class="first-child">
-                                                        <c:set var="label"><internal:adminResourceBundle resourceName='org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroup.label' defaultValue='select'/></c:set>
+                                                        <c:set var="label"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroup.label' defaultValue='select'/></c:set>
                                                         <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" class="ico-home-add" label="${label}"/>
                                                     </span>
                                                 </span>
                                                 <span class="dex-PushButton">
                                                     <span class="first-child">
-                                                        <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label" defaultValue="remove"/></a>
+                                                        <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label" defaultValue="remove"/></a>
                                                     </span>
                                                 </span>
                                             </td>
@@ -224,7 +225,7 @@
                                             <tr>
                                                 <td>
                                                     <label for="enforcePasswordPolicy">
-                                                        <internal:adminResourceBundle
+                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
                                                     </label>
                                                 </td>
@@ -247,7 +248,7 @@
                                         <tr>
                                             <td align="center">
                                                 <div align="left">
-                                                    <i><internal:adminResourceBundle
+                                                    <i><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.users.ManageGroups.groupMembers.label"/>:</i>
                                                 </div>
                                                 <table class="text" width="100%" border="0" cellspacing="0"
@@ -258,7 +259,7 @@
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{2}/);"
-                                           title="<internal:adminResourceBundle resourceName='org.jahia.admin.users.ManageGroups.altSortByProvider.label'/>"><internal:adminResourceBundle
+                                           title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageGroups.altSortByProvider.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                 resourceName="org.jahia.admin.users.ManageGroups.altSortByProvider.label"/></a>
                                     </span>
                                 </span>
@@ -266,7 +267,7 @@
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{8}/);"
-                                           title="<internal:adminResourceBundle resourceName='org.jahia.admin.users.ManageGroups.altSortByIdentifier.label'/>"><internal:adminResourceBundle
+                                           title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageGroups.altSortByIdentifier.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                 resourceName="org.jahia.admin.users.ManageGroups.altSortByIdentifier.label"/></a>
                                     </span>
                                 </span>
@@ -274,7 +275,7 @@
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectMember, false, /.{24}/);"
-                                           title="<internal:adminResourceBundle resourceName='org.jahia.admin.users.ManageGroups.altSortByProperty.label'/>"><internal:adminResourceBundle
+                                           title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageGroups.altSortByProperty.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                 resourceName="org.jahia.admin.users.ManageGroups.altSortByProperty.label"/></a>
                                     </span>
                                 </span>
@@ -293,7 +294,7 @@
                                                         ondblclick="javascript:{ if (<%= jParams.getUser().isRoot() %> || this.value != 'uroot:0') { openUserDetail(); } }"<%} %>
                                                         ><%
                                                     if (groupMembersSet.size() == 0) { %>
-                                                    <option value="null">- - - - - - - - - - <internal:adminResourceBundle
+                                                    <option value="null">- - - - - - - - - - <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.users.ManageGroups.noMoreMembers.label"/> - - - - - - - - - -</option>
                                                     <%
                                                     } else {
@@ -340,14 +341,14 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-cancel" href="<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>
-"><internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/></a>
+"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
 
               <a class="ico-ok"
-                 href="javascript:selectAllOptionsSelectBox(document.mainForm.selectMember);javascript:document.mainForm.submit();"><internal:adminResourceBundle
+                 href="javascript:selectAllOptionsSelectBox(document.mainForm.selectMember);javascript:document.mainForm.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.ok.label"/></a>
             </span>
           </span>

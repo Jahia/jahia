@@ -37,7 +37,7 @@
 <%@ page import="org.jahia.data.fields.JahiaField" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.util.*" %>
-<%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final JahiaField theField = (JahiaField) engineMap.get("theField");
@@ -67,8 +67,8 @@
 %>
 <p>
     <div>
-    <input class="simpleTextEditorButton" type="button" value='<internal:engineResourceBundle resourceName="org.jahia.engines.simpleText.replaceCRWithBR.label" defaultValue="Replace Carriage Returns with &lt;br&gt; tag"/>' onmousedown="replaceLineBreakByBr(document.getElementById('jahiaEditor'))">
-    <input class="simpleTextEditorButton" type="button" value='<internal:engineResourceBundle resourceName="org.jahia.engines.simpleText.selectAll.label" defaultValue="Select all"/>' onClick="selectAll(document.getElementById('jahiaEditor'))">
+    <input class="simpleTextEditorButton" type="button" value='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.simpleText.replaceCRWithBR.label" defaultValue="Replace Carriage Returns with &lt;br&gt; tag"/>' onmousedown="replaceLineBreakByBr(document.getElementById('jahiaEditor'))">
+    <input class="simpleTextEditorButton" type="button" value='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.simpleText.selectAll.label" defaultValue="Select all"/>' onClick="selectAll(document.getElementById('jahiaEditor'))">
     <textarea id="jahiaEditor" name="_<%=theField.getID()%>" cols="75" rows="20"><%=JahiaTools.replacePattern(FormDataManager.formEncode(theOldField),"<","&lt;")%></textarea>
     </div>
 </p>

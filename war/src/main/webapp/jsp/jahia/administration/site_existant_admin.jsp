@@ -63,7 +63,7 @@ if(siteJS.getID() != 0) { %>
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
 </div>
 <div id="main">
@@ -84,11 +84,11 @@ if(siteJS.getID() != 0) { %>
                             <div id="content" class="fit">
                                 <div class="head">
                                     <div class="object-title">
-                                        <internal:adminResourceBundle
+                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.site.ManageSites.selectTheAdministrator.label"/>
                                     </div>
                                     <div class="object-shared">
-                                        <internal:adminResourceBundle resourceName="org.jahia.step.label"/> 1a / 3
+                                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.step.label"/> 1a / 3
                                     </div>
                                 </div>
                                 <form name="jahiaAdmin"
@@ -98,14 +98,14 @@ if(siteJS.getID() != 0) { %>
                                         <tr>
                                             <% if (allSites != null) { %>
                                             <td>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.site.ManageSites.virtualSiteWhereAdministrator.label"/>&nbsp;:
                                             </td>
                                             <td>
                                                 <select name="selectSite" onChange="changeSite();">
                                                     <option value="0"<% if (selectedSite.intValue() == 0) { %>
                                                             selected<%} %>>
-                                                        ---------&nbsp;&nbsp;<internal:adminResourceBundle
+                                                        ---------&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.site.ManageSites.pleaseChooseASite.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                                                     <% while (allSites.hasNext()) {
                                                         JahiaSite site = (JahiaSite) allSites.next(); %>
@@ -117,7 +117,7 @@ if(siteJS.getID() != 0) { %>
                                             </td>
                                             <% } else { %>
                                             <td>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.site.ManageSites.anyVirtualSite.label"/>
                                             </td>
                                             <% } %>
@@ -125,7 +125,7 @@ if(siteJS.getID() != 0) { %>
                                         <tr>
                                             <% if (selectedSite.intValue() > 0) { %>
                                             <td>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.site.ManageSites.selectTheAdministrator.label"/>&nbsp;:
                                             </td>
                                             <td>
@@ -153,14 +153,14 @@ if(siteJS.getID() != 0) { %>
   <span class="dex-PushButton">
     <span class="first-child">
       <a class="ico-back"
-         href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><internal:adminResourceBundle
+         href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
               resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
     </span>
   </span><% if (selectedSite.intValue() > 0) { %>
   <span class="dex-PushButton">
     <span class="first-child">
     <a class="ico-ok"
-       href="javascript:{showWorkInProgress(); document.jahiaAdmin.submit();}"><internal:adminResourceBundle
+       href="javascript:{showWorkInProgress(); document.jahiaAdmin.submit();}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.save.label"/></a>
   </span>
   </span><% } %>

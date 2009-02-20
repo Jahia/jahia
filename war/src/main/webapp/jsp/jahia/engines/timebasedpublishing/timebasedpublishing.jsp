@@ -75,20 +75,20 @@ final String labelResourceName = "org.jahia.engines.timebasedpublishing.timebpst
     <%@ include file="../menu.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-         <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.timebasedpublishing.status.label"/></div>
+         <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.status.label"/></div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
           <th width="120">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.timebasedpublishing.currentstatus.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.currentstatus.label"/>
           </th>
           <td>
-            <internal:engineResourceBundle resourceName="<%=labelResourceName%>"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=labelResourceName%>"/>
           </td>
         </tr>
         <tr>
           <th>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.servertime.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.servertime.label"/>
           </th>
           <td>
             <span id="serverTime"/>
@@ -102,14 +102,14 @@ final String labelResourceName = "org.jahia.engines.timebasedpublishing.timebpst
       <%
       EngineValidationHelper evh = (EngineValidationHelper)engineMap.get(TimeBasedPublishingEngine.ENGINE_NAME + ".EngineValidationError");
       if (evh != null && evh.hasErrors()) { %>
-      <p class="errorbold"><internal:engineResourceBundle resourceName="org.jahia.engines.validation.errors.label"/></p>
+      <p class="errorbold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.validation.errors.label"/></p>
       <%
         for (ValidationError ve : evh.getErrors()) {
           final String msg = ve.getMsgError();
           if (msg != null && msg.length() > 0)
           {%>
           <span class="error">
-          <internal:engineResourceBundle resourceName='<%="org.jahia.engines.timebasedpublishing.error." + msg%>' defaultValue='Expiration date must be bigger than Publication date'/></span><br/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='<%="org.jahia.engines.timebasedpublishing.error." + msg%>' defaultValue='Expiration date must be bigger than Publication date'/></span><br/>
           <%}
         }
       } %>

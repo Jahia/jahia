@@ -56,7 +56,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.title.label"/></h2>
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.title.label"/></h2>
 </div>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 
@@ -78,7 +78,7 @@
 <div id="content" class="fit">
 <div class="head headtop">
     <div class="object-title">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.mainMenu.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.mainMenu.label"/>
     </div>
 </div>
 <div class="content-item">
@@ -97,7 +97,7 @@
 <input type="hidden" name="currentGroup" value="<%=curPermissionGroup%>"/>
 
 <p>
-    <internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.introduction.label"/>
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.introduction.label"/>
 </p>
 
 <div class="dex-subTabBar">
@@ -107,7 +107,7 @@
                 <div>
                               <span>
                                 <a href="#"
-                                   onclick="changePermissionGroup('administration')"><internal:adminResourceBundle
+                                   onclick="changePermissionGroup('administration')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                         resourceName="org.jahia.admin.sitepermissions.permissionGroup.administration.label"/></a>
                               </span>
                 </div>
@@ -117,7 +117,7 @@
             <div>
                 <div>
                               <span>
-                                <a href="#" onclick="changePermissionGroup('data')"><internal:adminResourceBundle
+                                <a href="#" onclick="changePermissionGroup('data')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                         resourceName="org.jahia.admin.sitepermissions.permissionGroup.data.label"/></a>
                               </span>
                 </div>
@@ -127,7 +127,7 @@
             <div>
                 <div>
                               <span>
-                                <a href="#" onclick="changePermissionGroup('tools')"><internal:adminResourceBundle
+                                <a href="#" onclick="changePermissionGroup('tools')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                         resourceName="org.jahia.admin.sitepermissions.permissionGroup.tools.label"/></a>
                               </span>
                 </div>
@@ -137,7 +137,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('actions')"><internal:adminResourceBundle
+                               <a href="#" onclick="changePermissionGroup('actions')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                        resourceName="org.jahia.admin.sitepermissions.permissionGroup.actions.label"/></a>
                               </span>
                 </div>
@@ -147,7 +147,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('languages')"><internal:adminResourceBundle
+                               <a href="#" onclick="changePermissionGroup('languages')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                        resourceName="org.jahia.admin.sitepermissions.permissionGroup.languages.label"/></a>
                               </span>
                 </div>
@@ -157,7 +157,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('toolbars')"><internal:adminResourceBundle
+                               <a href="#" onclick="changePermissionGroup('toolbars')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                        resourceName="org.jahia.admin.sitepermissions.permissionGroup.toolbars.label"/></a>
                               </span>
                 </div>
@@ -167,7 +167,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('integrity')"><internal:adminResourceBundle
+                               <a href="#" onclick="changePermissionGroup('integrity')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                        resourceName="org.jahia.admin.sitepermissions.permissionGroup.integrity.label" defaultValue="Integrity checks"/></a>
                               </span>
                 </div>
@@ -178,7 +178,7 @@
 <div class="buttonList" style="text-align:right; padding:10px">
                     <span class="dex-PushButton">
                         <span class="first-child">
-                          <a class="ico-ok" href="javascript:saveContent();"><internal:adminResourceBundle
+                          <a class="ico-ok" href="javascript:saveContent();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                   resourceName="org.jahia.admin.saveChanges.label"/></a>
                         </span>
                     </span>
@@ -192,7 +192,7 @@
                     <div class="object-title">
                         <c:set var="aclShortName" value="${fn:substringAfter(fn:substringAfter(curAclName.aclName, 'org.jahia.actions.sites.'), '.')}"/>
                         <c:if test="${fn:contains(aclShortName, 'engines.languages.')}" var="languagePermissions">
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.permission.engines.languages.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.permission.engines.languages.label"/>
                             <%
                             String aclShortName = (String)pageContext.getAttribute("aclShortName");
                             String flagCode = aclShortName.substring(aclShortName.lastIndexOf('.') + 1); 
@@ -201,7 +201,7 @@
                             &nbsp;<internal:displayLanguageFlag code="<%=flagCode%>"/>
                         </c:if>
                         <c:if test="${!languagePermissions}">
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.permission.${aclShortName}.label" defaultValue="org.jahia.admin.sitepermissions.permission.${aclShortName}.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.permission.${aclShortName}.label" defaultValue="org.jahia.admin.sitepermissions.permission.${aclShortName}.label"/>
                         </c:if>
                     </div>
                 </div>
@@ -229,7 +229,7 @@
 <div id="actionBar">
             <span class="dex-PushButton">
                 <span class="first-child">
-                  <a class="ico-ok" href="javascript:saveContent();"><internal:adminResourceBundle
+                  <a class="ico-ok" href="javascript:saveContent();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                           resourceName="org.jahia.admin.saveChanges.label"/></a>
                 </span>
             </span>

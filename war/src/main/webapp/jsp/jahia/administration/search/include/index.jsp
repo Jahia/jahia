@@ -36,42 +36,43 @@
 <%@page import   = "java.util.*" %>
 <%@page import="org.jahia.bin.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="url"     		class="java.lang.String"        scope="request"/>     <% // http files path. %>
 <jsp:useBean id="input"   		class="java.lang.String"        scope="request"/>     <% // inputs size. %>
 <jsp:useBean id="values" 		class="java.util.HashMap" 	scope="request"/>     <% // Map containing values. %>
 <jsp:useBean id="subAction"		class="java.lang.String"    scope="request"/>     <% // the default screen %>
 
 <p class="error">
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.theIndexCanTake.label"/>&nbsp;!
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.theIndexCanTake.label"/>&nbsp;!
 </p>
 
 <h3>
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.whatIsIndexing.label"/>
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.whatIsIndexing.label"/>
 </h3>
 
 <p>
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.indexingIsProcess.label"/>.
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.indexingIsProcess.label"/>.
 </p>
 <p>
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.indexingSite.label"/>.
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.indexingSite.label"/>.
 </p>
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.noteWhenReIndex.label"/>.
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.noteWhenReIndex.label"/>.
 <p>
   
 <h3>
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.whenToIndex.label"/>
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.whenToIndex.label"/>
 </h3>
 
 <p>
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.becauseProcess.label"/>&nbsp;:
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.becauseProcess.label"/>&nbsp;:
 </p>    
 <ul>
-  <li><internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.afterFirst.label"/>.</li>
-  <li><internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.afterRestoring.label"/>.</li>
-  <li><internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.anyTime.label"/>.</li>
+  <li><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.afterFirst.label"/>.</li>
+  <li><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.afterRestoring.label"/>.</li>
+  <li><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.anyTime.label"/>.</li>
 </ul>
 <p>
-  <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.noteWhenContent.label"/>.
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.noteWhenContent.label"/>.
 </p>
 
 

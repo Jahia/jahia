@@ -39,6 +39,7 @@
 <%@page import="org.jahia.params.ProcessingContext"%>
 <%@page import = "org.jahia.data.JahiaData"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>   <% // http files path. %>
 <jsp:useBean id="userMessage" class="java.lang.String" scope="session"/>
@@ -94,7 +95,7 @@ function setFocus()
 
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.manageUsers.label"/> : <%= currentSite%></h2>
+<h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageUsers.label"/> : <%= currentSite%></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
@@ -116,7 +117,7 @@ function setFocus()
             <div id="content" class="fit">
             <div class="head">
                 <div class="object-title">
-                <internal:adminResourceBundle resourceName="org.jahia.admin.manageUsers.label"/>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageUsers.label"/>
                 </div>
             </div>
             <div class="content-body">
@@ -124,29 +125,29 @@ function setFocus()
             <div id="operationMenu">
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-user-add" href="javascript:submitForm('create');"><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.createNewUser.label"/></a>
+                    <a class="ico-user-add" href="javascript:submitForm('create');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.createNewUser.label"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-user-reg" href="javascript:submitForm('register');"><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.registerExistingUser.label"/></a>
+                    <a class="ico-user-reg" href="javascript:submitForm('register');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.registerExistingUser.label"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-user-view" href="javascript:submitForm('edit');"><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.editViewProp.label"/></a>
+                    <a class="ico-user-view" href="javascript:submitForm('edit');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.editViewProp.label"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-user-delete" href="javascript:submitForm('remove');"><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/></a>
+                    <a class="ico-user-delete" href="javascript:submitForm('remove');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/></a>
                     </span> 
                 </span>                           
             </div>
             </div>
                 <div class="head">
                     <div class="object-title">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.userList.label"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.userList.label"/>
                     </div>
                 </div>
              <%
@@ -185,7 +186,7 @@ function setFocus()
   <div id="actionBar">
     <span class="dex-PushButton"> 
 	  <span class="first-child">
-      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
       </span>
      </span> 	      
   </div>

@@ -39,6 +39,7 @@
 <%@taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@page language="java" import="org.jahia.clipbuilder.html.bean.ClippersManagerBean"%>
 <%@ page import="org.jahia.data.JahiaData" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
@@ -144,7 +145,7 @@
                                             <bean:message key="clipbuilder.deployement.permissions"/>
                                             <% if(aclService.getServerActionPermission("admin.components.ManageShareComponents",user,JahiaBaseACL.READ_RIGHTS,currentSiteID)>0){ %>
                                             <a style="font-weight:normal;" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'>
-                                                (<internal:adminResourceBundle
+                                                (<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                     resourceName="org.jahia.admin.manageComponents.label"/>)
                                             </a>
                                             <% } %>

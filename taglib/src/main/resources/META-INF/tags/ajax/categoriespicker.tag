@@ -67,7 +67,7 @@
     final JahiaUser currentUser = jParams.getUser();
     final boolean hasRootCategoryAccess = Category.getRootCategory(currentUser) != null;
     if (!hasRootCategoryAccess) { %>
-<utility:resourceBundle resourceBundle="JahiaAdministrationResources"
+<utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
 <%} else {%>
 <logic:present name="org.jahia.engines.EngineHashMap" scope="request">

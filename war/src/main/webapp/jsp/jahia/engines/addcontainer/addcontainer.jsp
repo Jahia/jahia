@@ -40,6 +40,7 @@
 <%@ page import="java.util.Map" %>
 <%@ page import="org.jahia.params.ParamBean"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%
 final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
@@ -57,7 +58,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
 %>
 <div id="header">
   <h1>Jahia</h1>
-  <h2<% if ("update_container".equals(jspSource)) { %> class="edit"><internal:engineResourceBundle resourceName="org.jahia.engines.updatecontainer.UpdateContainer_Engine.updateContainer.label"/><% } else { %> class="add"><internal:engineResourceBundle resourceName="org.jahia.engines.addcontainer.AddContainer.label"/><% } %></h2>
+  <h2<% if ("update_container".equals(jspSource)) { %> class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.updatecontainer.UpdateContainer_Engine.updateContainer.label"/><% } else { %> class="add"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.addcontainer.AddContainer.label"/><% } %></h2>
   <jsp:include page="../navigation.jsp" flush="true" />
 </div>
 <div id="mainContent">
@@ -87,7 +88,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                 <%@ include file="../tools.inc" %>
                 <div class="content">
                   <div id="editor">
-                    <p class="error"><internal:engineResourceBundle resourceName="org.jahia.engines.noLogs.label"/></p>
+                    <p class="error"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.noLogs.label"/></p>
                   </div>
                 </div>
                 <div class="clearing">&nbsp;</div>

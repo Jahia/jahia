@@ -39,5 +39,5 @@
 
 <%@include file="/views/engines/common/taglibs.jsp" %>
 <h2 class="version">
-  <internal:engineResourceBundle resourceName="org.jahia.engines.versioning.CompareVersion.label" defaultValue="Compare Version"/>
+  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.versioning.CompareVersion.label" defaultValue="Compare Version"/>
 </h2>

@@ -40,6 +40,7 @@
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult" %>
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%
 final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -70,22 +71,22 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
     <% if ("locks".equals(engineName)) { %>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a href="javascript:sendFormApply();" class="ico-ok" title="<internal:engineResourceBundle resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
-            <internal:engineResourceBundle resourceName="org.jahia.button.ok"/></a>
+          <a href="javascript:sendFormApply();" class="ico-ok" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
         </span>
       </span>
     <% } else if (!engineMap.containsKey("errorMessage") || (engineMap.get("errorMessage") == Boolean.FALSE)) { %>
       <% if (results != null) { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="#" onclick="return false;" class="ico-ok"><internal:engineResourceBundle resourceName="org.jahia.button.ok"/></a>
+            <a href="#" onclick="return false;" class="ico-ok"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
           </span>
         </span>
       <% } else { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="javascript:sendFormSave();" class="ico-ok" title="<internal:engineResourceBundle resourceName="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">
-              <internal:engineResourceBundle resourceName="org.jahia.button.ok"/></a>
+            <a href="javascript:sendFormSave();" class="ico-ok" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
           </span>
         </span>
       <% } %>
@@ -95,15 +96,15 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
     <!--
     <span class="dex-PushButton">
           <span class="first-child">
-            <internal:engineResourceBundle resourceName="org.jahia.button.apply"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.apply"/>
           </span>
         </span>
      -->
       <% } else { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="javascript:sendFormApply();" class="ico-apply" title="<internal:engineResourceBundle resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
-              <internal:engineResourceBundle resourceName="org.jahia.button.apply"/></a>
+            <a href="javascript:sendFormApply();" class="ico-apply" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.apply"/></a>
           </span>
         </span>
       <% } %>
@@ -111,8 +112,8 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
   <% } %>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:window.close();" class="ico-cancel" title="<internal:engineResourceBundle resourceName="org.jahia.altCloseWithoutSave.label"/>">
-        <internal:engineResourceBundle resourceName="org.jahia.button.cancel"/></a>
+      <a href="javascript:window.close();" class="ico-cancel" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altCloseWithoutSave.label"/>">
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.cancel"/></a>
     </span>
   </span>
 </div>

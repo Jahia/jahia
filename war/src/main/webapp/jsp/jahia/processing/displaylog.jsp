@@ -53,6 +53,7 @@
                  java.text.MessageFormat,
                  java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%!
     /**
      * jsp pages to display logs
@@ -72,7 +73,7 @@
      */
     private String getRessource(String label, Locale l) {
         try {
-            return ResourceBundle.getBundle("JahiaEnginesResources", l).getString(label);
+            return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
             try {
                 return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);
@@ -225,7 +226,7 @@
                             height="10">
 
                         <div id="copyright"><%=Jahia.COPYRIGHT%>&nbsp;
-                            <internal:engineResourceBundle
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                     resourceName="org.jahia.Jahia.copyright.label"/>
                         </div><span
                             class="version">Jahia <%=Jahia.VERSION%>.<%=Jahia.getPatchNumber()%> r<%=

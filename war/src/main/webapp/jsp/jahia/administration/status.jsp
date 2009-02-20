@@ -142,7 +142,7 @@
 
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.serverStatus.label"/></h2>
+<h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.serverStatus.label"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
@@ -163,7 +163,7 @@
 			<div id="content" class="fit">
             <div class="head">
                 <div class="object-title">
-                     <internal:adminResourceBundle
+                     <utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.admin.serverStatus.label"/>
                 </div>
             </div>
@@ -171,18 +171,18 @@
 
 <div class="stretcher-head head">
     <div class="object-title">
-    <a href="#locks" class="sectionLink"><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.title.lockSection.label"/></a>
+    <a href="#locks" class="sectionLink"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.title.lockSection.label"/></a>
     </div>                
 </div>
 <div class="stretcher">
     <table border="0" cellspacing="0" cellpadding="5">
         <tr class="evenLine">
             <td width="100%">
-                <strong><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.flushLocks.label"/>&nbsp;:</strong><br>
+                <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.flushLocks.label"/>&nbsp;:</strong><br>
             </td>
             <td>
                 
-                <input type="submit" name="flushLocks" value="<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.flush.label"/>">
+                <input type="submit" name="flushLocks" value="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.flush.label"/>">
             </td>
         </tr>
     </table>
@@ -190,20 +190,20 @@
 
 <div class="stretcher-head head">
     <div class="object-title">
-     <a href="#caches" class="sectionLink"><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.title.cacheSection.label"/></a>
+     <a href="#caches" class="sectionLink"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.title.cacheSection.label"/></a>
     </div>                
 </div>
 <div class="stretcher">
     <p>
-        <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.cacheFlushingIntroduction.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.cacheFlushingIntroduction.label"/>
     </p>
     <table border="0" cellspacing="0" cellpadding="5">
         <tr class="evenLine">
             <td width="100%">
-                <strong><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.flushAllCaches.label"/>&nbsp;:</strong><br>
+                <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.flushAllCaches.label"/>&nbsp;:</strong><br>
             </td>
             <td>
-                <input type="submit" name="flushAllCaches" value="<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.flush.label"/>">
+                <input type="submit" name="flushAllCaches" value="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.flush.label"/>">
             </td>
         </tr>
     </table>
@@ -235,29 +235,29 @@
         %>
         <tr class="<%=cacheLineClass%>">
             <td width="100%">
-                <%=curCache.getName()%> : <strong><internal:adminResourceBundle resourceName="<%=resourceKey%>"/></strong>
+                <%=curCache.getName()%> : <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=resourceKey%>"/></strong>
                 <br>
                 <%=curCache.size()%>&nbsp;
                 <% if(curCache.size() > 1){
-                %><internal:adminResourceBundle resourceName="org.jahia.admin.entries.label"/><%
+                %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.entries.label"/><%
             } else {
-            %><internal:adminResourceBundle resourceName="org.jahia.admin.entrie.label"/><%
+            %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.entrie.label"/><%
                 } %>
                 &nbsp;
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.groupSize.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.groupSize.label"/> :
                 <%=curCache.getGroupsSize()%>
                 &nbsp;
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.groupsKeysTotal.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.groupsKeysTotal.label"/> :
                 <%=curCache.getGroupsKeysTotal()%>
                 <br>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.successfulHits.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.successfulHits.label"/> :
                 <%=curCache.getSuccessHits()%> / <%=curCache.getTotalHits()%>&nbsp;
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.efficiency.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.efficiency.label"/> :
                 <%=efficiencyStr%> %
             </td>
             <td>
-                <input type="submit" name="flush_<%=curCache.getName()%>" value="<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.flush.label"/>">
+                <input type="submit" name="flush_<%=curCache.getName()%>" value="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.flush.label"/>">
             </td>
         </tr>
         <%
@@ -391,33 +391,33 @@
 
 <div class="stretcher-head head">
     <div class="object-title">
-      <a href="#memory" class="sectionLink"><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.title.memorySection.label"/></a>
+      <a href="#memory" class="sectionLink"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.title.memorySection.label"/></a>
     </div>                
 </div>
 <div class="stretcher">
     <table class="evenOddTable full" width="100%" border="0" cellspacing="0" cellpadding="5">
         <tr class="evenLine">
             <td width="100%">
-                <strong><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.maxJvmMemory.label"/>&nbsp;:</strong><br>
+                <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.maxJvmMemory.label"/>&nbsp;:</strong><br>
             </td>
             <td>
-                <%=maxMemoryInMBytes%>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=maxMemoryInKBytes%>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.kB.label"/>)
+                <%=maxMemoryInMBytes%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=maxMemoryInKBytes%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.kB.label"/>)
             </td>
         </tr>
         <tr class="oddLine">
             <td width="100%">
-                <strong><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.totalJvmMemory.label"/>&nbsp;:</strong><br>
+                <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.totalJvmMemory.label"/>&nbsp;:</strong><br>
             </td>
             <td>
-                <%=totalMemoryInMBytes%>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=totalMemoryInKBytes%>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.kB.label"/>)
+                <%=totalMemoryInMBytes%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=totalMemoryInKBytes%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.kB.label"/>)
             </td>
         </tr>
         <tr class="evenLine">
             <td width="100%">
-                <strong><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.freeMemory.label"/>&nbsp;:</strong><br>
+                <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.freeMemory.label"/>&nbsp;:</strong><br>
             </td>
             <td>
-                <%=freeMemoryInMBytes%>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=freeMemoryInKBytes%>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.kB.label"/>)
+                <%=freeMemoryInMBytes%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.mB.label"/>&nbsp;(<%=freeMemoryInKBytes%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.kB.label"/>)
             </td>
         </tr>
     </table>
@@ -425,7 +425,7 @@
 
 <div class="stretcher-head head">
     <div class="object-title">
-      <a href="#systemInfo" class="sectionLink"><internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.title.systemInfoSection.label"/></a>
+      <a href="#systemInfo" class="sectionLink"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.title.systemInfoSection.label"/></a>
     </div>                
 </div>
 <div class="stretcher">
@@ -476,7 +476,7 @@
   <div id="actionBar">
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
-      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
       </span>
      </span> 	      
   </div>

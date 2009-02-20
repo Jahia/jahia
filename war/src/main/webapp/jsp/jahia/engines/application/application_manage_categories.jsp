@@ -41,6 +41,7 @@
 <%@ page import="org.jahia.resourcebundle.*" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%
     // common declaration
@@ -69,7 +70,7 @@
 
 %>
 <h3 class="template">
-    <internal:engineResourceBundle resourceName="org.jahia.engines.portletCategories.label"/>
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.portletCategories.label"/>
 </h3>
 <!-- End Langs -->
 <!-- Buttons -->

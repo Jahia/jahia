@@ -42,6 +42,7 @@
 <%@ page import="org.jahia.services.sites.*" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
 
     Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -61,10 +62,10 @@
 
 <html>
 <head>
-    <title><internal:engineResourceBundle
+    <title><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.sites.Sites_Engine.virtualSitesTitle.label"/></title>
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.stylesheet.css"/>"
+          href="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.stylesheet.css"/>"
           type="text/css">
     <script type="text/javascript" src="<%=theURL%>../javascript/jahia.js"></script>
     <script type="text/javascript">
@@ -109,14 +110,14 @@
     <table width="530" height="63" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td width="126" height="63"><img
-                    src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.header.image"/>"
+                    src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.header.image"/>"
                     width="126" height="63" alt=""></td>
             <td width="404" height="63"
-                background="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.headerBg.image"/>">
+                background="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.headerBg.image"/>">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td align="right" class="text" colspan="2"><b>::&nbsp;&nbsp;<internal:engineResourceBundle
+            <td align="right" class="text" colspan="2"><b>::&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.engines.sites.Sites_Engine.virtualSites.label"/>&nbsp;&nbsp;::</b>&nbsp;&nbsp;&nbsp;&nbsp;
             </td>
         </tr>
@@ -131,7 +132,7 @@
         <td width="100%">
             <table border="0" cellpadding="0" width="90%">
                 <tr>
-                    <td nowrap><font class="text"><b><internal:engineResourceBundle
+                    <td nowrap><font class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.engines.sites.Sites_Engine.virtualSitesUrl.label"/></b>
                         <br>
                         <br>
@@ -144,10 +145,10 @@
                         <table border="0" cellpadding="0" cellspacing="5" width="100%">
                             <tr>
                                 <td valign="top" align="left" class="text" width="50%"><b>
-                                    <internal:engineResourceBundle
+                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                             resourceName="org.jahia.engines.name.label"/></b></td>
                                 <td valign="top" align="right" class="text" width="25%"><b>
-                                    <internal:engineResourceBundle
+                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                             resourceName="org.jahia.engines.sites.Sites_Engine.url.label"/></b>
                                 </td>
                             </tr>
@@ -156,8 +157,8 @@
                             </tr>
                             <tr>
                                 <td colspan="2" width="100%" height="2"
-                                    background="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.hr.image"/>">
-                                    <img src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.pix.image"/>"
+                                    background="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.hr.image"/>">
+                                    <img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image"/>"
                                          width="1" height="1"></td>
                             </tr>
                             <tr>
@@ -183,7 +184,7 @@
                                 }
                             } else { %>
                             <tr>
-                                <td colspan="2" class="text"><internal:engineResourceBundle
+                                <td colspan="2" class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                         resourceName="org.jahia.engines.sites.Sites_Engine.noSitesFound.label"/></td>
                             </tr>
                             <% } %>
@@ -199,9 +200,9 @@
                                     <br>
                                     <a href="<%=jParams.composeSiteUrl()%>"
                                        onMouseOut="MM_swapImgRestore()"
-                                       onMouseOver="MM_swapImage('logout','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.exitAdministrationOn.button"/>',1)"><img
+                                       onMouseOver="MM_swapImage('logout','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.exitAdministrationOn.button"/>',1)"><img
                                             name="logout"
-                                            src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.exitAdministrationOff.button"/>"
+                                            src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.exitAdministrationOff.button"/>"
                                             width="150" height="17" border="0"></a>
                                 </td>
                             </tr>

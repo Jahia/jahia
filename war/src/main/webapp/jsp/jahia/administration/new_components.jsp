@@ -51,7 +51,7 @@ stretcherToOpen   = 0; %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.manageComponents.label"/></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -71,14 +71,14 @@ stretcherToOpen   = 0; %>
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.newApplicationsList.label"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.newApplicationsList.label"/>
                   </div>
                 </div>
                 <div class="content-body">
                   <div id="operationMenu">
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-refresh" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=displaynewlist")%>' onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('refreshdir','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.refreshOn.button"/>',1)" title='<internal:adminResourceBundle resourceName="org.jahia.admin.refresh.label"/>'><internal:adminResourceBundle resourceName="org.jahia.admin.refresh.label"/></a>
+                        <a class="ico-refresh" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=displaynewlist")%>' onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('refreshdir','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.refreshOn.button"/>',1)" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.refresh.label"/>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.refresh.label"/></a>
                       </span>
                     </span>
                   </div>
@@ -87,13 +87,13 @@ stretcherToOpen   = 0; %>
                       <thead>
                         <tr>
                           <th width="50%">
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.fileOrDirectoryName.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.fileOrDirectoryName.label"/>
                           </th>
                           <th width="25%">
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.context.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.context.label"/>
                           </th>
                           <th class="lastCol" style="text-align:right" width="25%">
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.moreDetails.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.moreDetails.label"/>
                           </th>
                         </tr>
                       </thead>
@@ -118,7 +118,7 @@ stretcherToOpen   = 0; %>
                             /<%=aPackage.getContextRoot() %>
                           </td>
                           <td class="lastCol" style="text-align:right">
-                            <a href="<%=requestURI%>?do=sharecomponents&sub=details&package_name=<%=aPackage.getFileName()%>" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.showDetails.label"/>"><internal:adminResourceBundle resourceName="org.jahia.admin.details.label"/></a>
+                            <a href="<%=requestURI%>?do=sharecomponents&sub=details&package_name=<%=aPackage.getFileName()%>" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.showDetails.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.details.label"/></a>
                             <br>
                             <br>
                           </td>
@@ -128,7 +128,7 @@ stretcherToOpen   = 0; %>
                         } else { %>
                         <tr>
                           <td colspan="3" align="center" class="lastCol">
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.noApplicationsFound.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.noApplicationsFound.label"/>
                           </td>
                         </tr><%
                         } %>
@@ -144,7 +144,7 @@ stretcherToOpen   = 0; %>
           <div id="actionBar">
             <span class="dex-PushButton">
               <span class="first-child">
-                <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
+                <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
               </span>
             </span>
           </div>

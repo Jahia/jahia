@@ -80,28 +80,28 @@
     <div class="content">
         <div id="editor">
             <h4 class="clock">
-                <internal:engineResourceBundle
+                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
             </h4>
 
             <table>
                 <caption>
-                    <internal:engineResourceBundle resourceName="org.jahia.engines.timebasedpublishing.status.label"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.status.label"/>
                 </caption>
                 <tr>
                     <td class="t1">
-                        <internal:engineResourceBundle
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="org.jahia.engines.timebasedpublishing.currentstatus.label"/>
 
                     </td>
                     <td class="t22">
-                        <internal:engineResourceBundle
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="<%=labelResourceName%>"/>
                     </td>
                 </tr>
                 <tr>
                     <td class="t1">
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.servertime.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.servertime.label"/>
                     </td>
                     <td class="t22">
                         <span id="serverTime"/>
@@ -111,18 +111,18 @@
 
             <table>
                 <caption>
-                    <internal:engineResourceBundle
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.engines.timebasedpublishing.retentionrule.label"/>
                 </caption>
                 <tr>
-                    <td class="t1"><internal:engineResourceBundle
+                    <td class="t1"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.engines.timebasedpublishing.currentrule.label"/></td>
                     <td class="t22">
                         <% final Iterator iterator = ruleDefs.iterator();
                             while (iterator.hasNext()) {
                                 final RetentionRuleDef ruleDef = (RetentionRuleDef) iterator.next();
                                 if (String.valueOf(ruleDef.getId().intValue()).equals(selectedRuleDef)) { %>
-                        <internal:engineResourceBundle resourceName="<%=ruleDef.getBundleKey() %>"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=ruleDef.getBundleKey() %>"/>
                         <% } %>
                         <% } %>
                     </td>
@@ -134,25 +134,25 @@
 
             %>
             <table>
-                <caption><internal:engineResourceBundle
+                <caption><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.timebasedpublishing.rule.settings.label"/></caption>
                 <tr>
-                    <td class="t1"><internal:engineResourceBundle
+                    <td class="t1"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.engines.timebasedpublishing.inheritfromparent.label"/>
                     </td>
                     <td class="t22">
                         <input class="input" type="radio" disabled="disabled" name="inherited" value="1" <% if ( inherited ){ %>
                                checked="checked"<% } %>>
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.yes.label"/>&nbsp;
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.yes.label"/>&nbsp;
                         <input class="input" type="radio" disabled="disabled" name="inherited" value="0" <% if ( !inherited ){ %>
                                checked="checked"<% } %>>
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.no.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.no.label"/>
                     </td>
                 </tr>
                 <% if (!inherited) { %>
                 <tr id="rangerule.settings1">
                     <td class="t1">
-                        <internal:engineResourceBundle
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="org.jahia.engines.timebasedpublishing.rangerule.validFrom.label"/>
                     </td>
                     <td class="t22">
@@ -161,7 +161,7 @@
                 </tr>
                 <tr id="rangerule.settings2">
                     <td class="t1">
-                        <internal:engineResourceBundle
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                 resourceName="org.jahia.engines.timebasedpublishing.rangerule.validTo.label"/>
                     </td>
                     <td class="t22">
@@ -171,7 +171,7 @@
                 <% } %>
             </table>
             <% } else { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.timebasedpublishing.rule.none.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.rule.none.label"/>
             <% } %>
 
         </div>

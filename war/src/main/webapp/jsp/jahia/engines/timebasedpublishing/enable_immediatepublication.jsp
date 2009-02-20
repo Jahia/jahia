@@ -36,6 +36,7 @@
 <%@ page language="java"%>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
   Boolean enableImmediatePublication = (Boolean)request.getAttribute("enableImmediatePublication");
   if ( enableImmediatePublication == null ){
@@ -43,7 +44,7 @@
   }
 %>
 <input class="input immediatePublication" type="radio" name="enableImmediatePublication" value="true" <%if(enableImmediatePublication.booleanValue()){%>checked<%}%> ${inherited ? ' disabled="disabled"' : ''}>
-<internal:engineResourceBundle resourceName="org.jahia.engines.timebasedpublishing.allowedToStartImmediately" defaultValue="allowed to start immediately"/><br/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.allowedToStartImmediately" defaultValue="allowed to start immediately"/><br/>
 <input class="input immediatePublication" type="radio" name="enableImmediatePublication" value="false" <%if(!enableImmediatePublication.booleanValue()){%>checked<%}%> ${inherited ? ' disabled="disabled"' : ''}>
-<internal:engineResourceBundle resourceName="org.jahia.engines.timebasedpublishing.onlyAtNextFullPeriod" defaultValue="only at next full publish period"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.onlyAtNextFullPeriod" defaultValue="only at next full publish period"/>
 

@@ -60,7 +60,7 @@
     <h1>Jahia</h1>
     <h2 class="edit">
     	
-    	<internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
+    	<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
 </div>
 <% } %>
 <div id="main">
@@ -91,7 +91,7 @@
             <% } %>
 <div class="head">
     <div class="object-title">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteProperties.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteProperties.label"/>
     </div>
     <%if(!isConfigWizard){%>
     <div  class="object-shared">
@@ -111,8 +111,8 @@
     <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;
-                <br><em><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.egSiteTitle.label"/></em>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteTitle.label"/>*&nbsp;
+                <br><em><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.egSiteTitle.label"/></em>
             </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="siteTitle" value="<%=newJahiaSite.getTitle()%>" size="<%=inputSize%>" maxlength="100">
@@ -120,8 +120,8 @@
         </tr>
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;
-                <br><em><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.egSiteServerName.label"/></em>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteServerName.label"/>*&nbsp;
+                <br><em><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.egSiteServerName.label"/></em>
             </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="siteServerName" value="<%=newJahiaSite.getServerName()%>" size="<%=inputSize%>" maxlength="200">
@@ -129,12 +129,12 @@
         </tr>
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;
-                <br><em><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.egSiteKey.label"/></em>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>*&nbsp;
+                <br><em><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.egSiteKey.label"/></em>
             </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="siteKey" value="<%=newJahiaSite.getSiteKey()%>" size="<%=inputSize%>" maxlength="50">
-                <br><em>&nbsp;&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteKeyAppears.label"/></em>
+                <br><em>&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteKeyAppears.label"/></em>
 
             </td>
         </tr>
@@ -142,7 +142,7 @@
         <tr>
             <td>
                 <label for="enforcePasswordPolicy">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
                 </label>
             </td>
             <td>
@@ -152,7 +152,7 @@
         <% } %>
         <tr >
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
             </td>
             <td>
                 &nbsp;<textarea class="input" name="siteDescr" rows="6" cols='45'><%=newJahiaSite.getDescr()%></textarea>
@@ -160,7 +160,7 @@
         </tr>
         <tr>
             <td valign="top">
-                <label for="setAsDefaultVirtualSite"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.setAsDefaultVirtualSite.label"/></label>&nbsp;
+                <label for="setAsDefaultVirtualSite"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.setAsDefaultVirtualSite.label"/></label>&nbsp;
             </td>
             <td valign="top">
                 <input type="checkbox" name="defaultSite" <% if (defaultSite.booleanValue()) { %>checked<% } %> id="setAsDefaultVirtualSite" />
@@ -169,33 +169,33 @@
     </table>
     <div class="head headtop">
         <div class="object-title">
-            <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.administratorAccount.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.administratorAccount.label"/>
         </div>
     </div>
     <table border="0">
         <tr>
             <td><input type="radio" name="siteAdmin" value="2" checked="checked" id="noSiteAdmin"/></td>
-            <td><label for="noSiteAdmin"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.noSiteAdmin.label"/></label></td>
+            <td><label for="noSiteAdmin"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.noSiteAdmin.label"/></label></td>
         </tr>
         <tr>
             <td><input type="radio" name="siteAdmin" value="0" id="createNewSiteAdmin"/></td>
-            <td><label for="createNewSiteAdmin"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.createNewUser.label"/></label></td>
+            <td><label for="createNewSiteAdmin"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.createNewUser.label"/></label></td>
         </tr>
         <% if ( !newAdminOnly.booleanValue() ){
         %>
         <tr>
             <td><input type="radio" name="siteAdmin" value="1" id="useExistingSiteAdmin"/></td>
-            <td><label for="useExistingSiteAdmin"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.selectAdministrator.label"/></label></td>
+            <td><label for="useExistingSiteAdmin"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.selectAdministrator.label"/></label></td>
         </tr>
         <% } %>
     </table>
 </form>
 <% } else { %>
 <p class="errorbold">
-    <internal:adminResourceBundle resourceName="org.jahia.admin.licenseLimitation.label"/>
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.licenseLimitation.label"/>
 </p>
 <p class="error">
-    <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.numberSiteForLicense.label"/>
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.numberSiteForLicense.label"/>
     <%=siteLimit.intValue()%>
 </p>
 <% } %>
@@ -212,13 +212,13 @@
 <div id="actionBar">
   	<span class="dex-PushButton">
 	  <span class="first-child">
-      	 <a class="ico-back" class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
+      	 <a class="ico-back" class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
       </span>
      </span>
   	 <span class="dex-PushButton">
       <span class="first-child">
          <a class="ico-next" href="javascript:document.jahiaAdmin.submit();">
-             <internal:adminResourceBundle resourceName="org.jahia.admin.nextStep.button.label"/>
+             <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.nextStep.button.label"/>
          </a>
       </span>
      </span>

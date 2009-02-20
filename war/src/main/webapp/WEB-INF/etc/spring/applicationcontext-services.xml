@@ -327,10 +327,6 @@
                                 <value>org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages</value>
                                 <value>org.jahia.actions.sites.*.admin.production.ManageSiteProduction</value>
                                 <value>org.jahia.actions.sites.*.admin.permissions.ManageSitePermissions</value>
-                                <value>org.jahia.actions.sites.*.admin.htmleditors.HtmlEditorsAdmin</value>
-                                <value>org.jahia.actions.sites.*.admin.integrity.IntegrityChecks</value>
-                                <value>org.jahia.actions.sites.*.admin.analytics.ManageAnalytics</value>
-                                <value>org.jahia.actions.sites.*.admin.themes.ManageThemes</value>
                             </list>
                         </entry>
                         <entry key="data">
@@ -809,9 +805,8 @@
                         <value>ehcache-jahia.xml</value>
                         <value>esi-cluster-cache.xml</value>
                         <value>esi-local-cache.xml</value>
-                        <value>JahiaAdministrationResources*</value>
                         <value>jahia-cache-service.xml</value>
-                        <value>JahiaEnginesResources*</value>
+                        <value>JahiaInternalResources*</value>
                         <value>JahiaMessageResources*</value>
                         <value>jahiapublickeystore</value>
                         <value>jahia-tx-cache-service.xml</value>

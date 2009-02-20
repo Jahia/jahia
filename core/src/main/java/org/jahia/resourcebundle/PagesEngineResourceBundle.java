@@ -85,7 +85,7 @@ public class PagesEngineResourceBundle
 
         if ( contentPage == null || res == null || jParams == null )
             return;
-        resources.put( JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE + "_" + contentPage.getID(), res );
+        resources.put( JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE + "_" + contentPage.getID(), res );
     }
 
     /**
@@ -100,7 +100,7 @@ public class PagesEngineResourceBundle
         if ( contentPage == null || jParams == null )
             return null;
 
-        ResourceBundle res = (ResourceBundle)resources.get( JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE
+        ResourceBundle res = (ResourceBundle)resources.get( JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE
                               + "_" + contentPage.getID() );
         return res;
     }

@@ -40,6 +40,7 @@
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
@@ -51,12 +52,12 @@
     }
 %>
 
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/>&nbsp;:&nbsp;
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/>&nbsp;:&nbsp;
 <% if (theField.getValue().equals("true")) { %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Boolean_Field.true.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Boolean_Field.true.label"/>
 <%} else { %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Boolean_Field.false.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Boolean_Field.false.label"/>
 <% } %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Boolean_Field.booleanField.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Boolean_Field.booleanField.label"/>
 
 

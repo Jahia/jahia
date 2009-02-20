@@ -67,8 +67,8 @@ function sendForm() {
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.analytics.ManageAnalytics.label"/>
-        : <% if (currentSite != null) { %><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.analytics.ManageAnalytics.label"/>
+        : <% if (currentSite != null) { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -89,7 +89,7 @@ function sendForm() {
 <div id="content" class="fit">
 <div class="head headtop">
     <div class="object-title">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.analytics.ManageAnalytics.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.analytics.ManageAnalytics.label"/>
     </div>
 </div>
 
@@ -113,7 +113,7 @@ function sendForm() {
 
             <tr>
             <td valign="top">
-                <label for="trackingEnabled"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.enableTracking.label"/></label>&nbsp;
+                <label for="trackingEnabled"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.enableTracking.label"/></label>&nbsp;
             </td>
             <td valign="top">
                 :&nbsp;<input type="checkbox" name="trackingEnabled" <% if (Boolean.valueOf(settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackingEnabled"))) { %>checked<% } %> id="trackingEnabled" />
@@ -121,18 +121,18 @@ function sendForm() {
         </tr>
             <tr>
             <td valign="top">
-                <label><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.trackedUrls.label"/></label>&nbsp;
+                <label><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.trackedUrls.label"/></label>&nbsp;
             </td>
             <td valign="top">
-                 <label><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.realUrls.label"/></label><input type="radio" name="trackedUrls" value = "real" <%if(settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls")!=null){if ((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls").equals("real"))) { %>checked<% }}else{ %>checked<% }%> id="trackedUrls" />
-                 <label><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.virtualUrls.label"/></label><input type="radio" name="trackedUrls" value = "virtual"<% if(settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls")!=null){ if ((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls").equals("virtual"))) { %>checked<% }} %> id="trackedUrls" />
+                 <label><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.realUrls.label"/></label><input type="radio" name="trackedUrls" value = "real" <%if(settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls")!=null){if ((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls").equals("real"))) { %>checked<% }}else{ %>checked<% }%> id="trackedUrls" />
+                 <label><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.virtualUrls.label"/></label><input type="radio" name="trackedUrls" value = "virtual"<% if(settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls")!=null){ if ((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_trackedUrls").equals("virtual"))) { %>checked<% }} %> id="trackedUrls" />
             </td>
         </tr>
 
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.jahiaGAprofileName.label"/>&nbsp;
-                <br><em><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.egJahiaGAprofileName.label"/></em>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.jahiaGAprofileName.label"/>&nbsp;
+                <br><em><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.egJahiaGAprofileName.label"/></em>
             </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="jahiaGAprofile" value="<%=jahiaGAprofile%>" <%if(!operation.equals("add")){%> readonly="readonly" <%}%> size="<%=inputSize%>" maxlength="50">
@@ -141,8 +141,8 @@ function sendForm() {
 
            <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.gaUserAccount.label"/>&nbsp;
-                <br><em><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.egGAuserAccount.label"/></em>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.gaUserAccount.label"/>&nbsp;
+                <br><em><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.egGAuserAccount.label"/></em>
             </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="gaUserAccount" value="<%if((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaUserAccount") !=null )){%><%=settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaUserAccount")%><%}%>" size="<%=inputSize%>" maxlength="50">
@@ -150,8 +150,8 @@ function sendForm() {
         </tr>
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.gaProfile.label"/>&nbsp;
-                <br><em><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.egGAprofile.label"/></em>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.gaProfile.label"/>&nbsp;
+                <br><em><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.egGAprofile.label"/></em>
             </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="gaProfile" value="<%if((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaProfile") !=null )){%><%=settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaProfile")%><%}%>" size="<%=inputSize%>" maxlength="50">
@@ -160,8 +160,8 @@ function sendForm() {
 
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.gaLogin.label"/>&nbsp;
-                <br><em><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.egGaLogin.label"/></em>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.gaLogin.label"/>&nbsp;
+                <br><em><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.egGaLogin.label"/></em>
             </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="gaLogin" value="<%if((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaLogin") !=null )){%><%=settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaLogin")%><%}%>" size="<%=inputSize%>" maxlength="50">
@@ -169,7 +169,7 @@ function sendForm() {
         </tr>
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageAnalytics.gaPassword.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.gaPassword.label"/>&nbsp;
             </td>
             <td>
                 :&nbsp;<input class="input" type="password" name="gaPassword" value="<%if((settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaPassword") !=null )){%><%=settings.getProperty(jahiaGAprofile+"_"+currentSite.getSiteKey()+"_gaPassword")%><%}%>" size="<%=inputSize%>" maxlength="50">
@@ -212,17 +212,17 @@ function sendForm() {
  <div id="actionBar">
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+                    <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile="+jahiaGAprofile)%>'><internal:adminResourceBundle resourceName="org.jahia.admin.delete.label"/></a>
+                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile="+jahiaGAprofile)%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-ok" href="javascript:sendForm();"><internal:adminResourceBundle resourceName='org.jahia.admin.save.label'/></a>
+                    <a class="ico-ok" href="javascript:sendForm();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.save.label'/></a>
                   </span>
                 </span>
               </div>

@@ -78,9 +78,9 @@ stretcherToOpen   = 0; %>
                   if (result==-1) {
                       divElementStatus.innerHTML = getElementValueFromXmlDoc(elements[i],"substatus","") + " - " + getElementValueFromXmlDoc(elements[i],"completed",'0') + "% ( "+ getElementValueFromXmlDoc(elements[i],"remaining",'0') + " )";
                   } else if (result==0) {
-                      divElementStatus.innerHTML = '<internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.success.label"/>';
+                      divElementStatus.innerHTML = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.success.label"/>';
                   } else {
-                      divElementStatus.innerHTML = '<internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.failed.label"/>';
+                      divElementStatus.innerHTML = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.failed.label"/>';
                   }
               }
           }
@@ -96,7 +96,7 @@ stretcherToOpen   = 0; %>
               action = 'reset';
           }
           var divElement = document.getElementById('installLink');
-          divElement.innerHTML = "<internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.ongoingInstall.label"/>";
+          divElement.innerHTML = "<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.ongoingInstall.label"/>";
           monitor();
           watch();
           document.jahiaAdmin.sub.value = action;
@@ -107,7 +107,7 @@ stretcherToOpen   = 0; %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.label"/></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -131,7 +131,7 @@ stretcherToOpen   = 0; %>
                     <c:if test="${versionStatus.index == 0}">
                       <div class="head">
                         <div class="object-title">
-                          <c:out value="${version.key.buildNumber}"/>- <c:out value="${version.key.releaseNumber}"/>( <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.initialInstall.label"/>)
+                          <c:out value="${version.key.buildNumber}"/>- <c:out value="${version.key.releaseNumber}"/>( <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.initialInstall.label"/>)
                         </div>
                       </div>
                     </c:if>
@@ -145,13 +145,13 @@ stretcherToOpen   = 0; %>
                         <thead>
                           <tr>
                             <th>
-                              <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.patchName.label"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.patchName.label"/>
                             </th>
                             <th>
-                              <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.installationDate.label"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.installationDate.label"/>
                             </th>
                             <th class="lastCol">
-                              <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.status.label"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.status.label"/>
                             </th>
                           </tr>
                         </thead>
@@ -164,10 +164,10 @@ stretcherToOpen   = 0; %>
                           <fmt:formatDate value="${patch.installationDate}" type="both" timeStyle="long" dateStyle="long" />
                           <td class="lastCol">
                             <c:if test="${patch.resultCode == 0}">
-                              <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.success.label"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.success.label"/>
                             </c:if>
                             <c:if test="${patch.resultCode != 0}">
-                              <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.failed.label"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.failed.label"/>
                             </c:if>
                           </td>
                         </tr>
@@ -178,21 +178,21 @@ stretcherToOpen   = 0; %>
                   <c:if test="${isPatchesAvailable}">
                     <div class="head">
                       <div class="object-title">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.available.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.available.label"/>
                       </div>
                     </div>
                     <div id="installLink">
-                      <a href="javascript:doAction('install');"><internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.install.label"/></a>
+                      <a href="javascript:doAction('install');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.install.label"/></a>
                     </div>
                     <br/>
                     <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
                       <thead>
                         <tr>
                           <th>
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.patchName.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.patchName.label"/>
                           </th>
                           <th colspan="2" class="lastCol">
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.status.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.status.label"/>
                           </th>
                         </tr>
                       </thead>
@@ -217,7 +217,7 @@ stretcherToOpen   = 0; %>
                   </c:if>
                   <c:if test="${!isPatchesAvailable}">
                     <p>
-                      &nbsp;&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.nopatch.label"/>
+                      &nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.nopatch.label"/>
                     </p>
                   </c:if>
                 </form>
@@ -231,7 +231,7 @@ stretcherToOpen   = 0; %>
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
         </div>

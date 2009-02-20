@@ -105,7 +105,7 @@ SESSION_LOCALE);
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.manageLanguages.label"/>: <% if ( currentSite!= null ){ %><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>&nbsp;&nbsp;<%} %></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageLanguages.label"/>: <% if ( currentSite!= null ){ %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>&nbsp;&nbsp;<%} %></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -125,12 +125,12 @@ SESSION_LOCALE);
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.configuredLanguages.label"/>&nbsp;
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.configuredLanguages.label"/>&nbsp;
                   </div>
                 </div>
                 <div class="content-body">
                   <div id="operationMenu">
-                    * = <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.languagesUsedByHomePage.label"/>&nbsp;
+                    * = <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.languagesUsedByHomePage.label"/>&nbsp;
                   </div>
                 </div>
                 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=commit")%>' method="post">
@@ -138,18 +138,18 @@ SESSION_LOCALE);
                     <thead>
                       <tr>
                         <th>
-                          <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.rank.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.rank.label"/>
                         </th>
                         <th>
-                          <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.language.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.language.label"/>
                         </th>
                         <th style="text-align:center">
-                          <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.active.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.active.label"/>
                         </th>
                         <th style="text-align:center">
-                          <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.mandatory.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.mandatory.label"/>
                         </th><!--
-                        <th style="text-align:center"  ><internal:adminResourceBundle resourceName="org.jahia.admin.delete.label"/></th>
+                        <th style="text-align:center"  ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></th>
                         -->
                       </tr>
                     </thead>
@@ -159,7 +159,7 @@ SESSION_LOCALE);
                       if (!languageList.hasNext()) { %>
                       <tr>
                         <td colspan="5">
-                          <b><internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.noLanguageDefined.label"/></b>
+                          <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.noLanguageDefined.label"/></b>
                         </td>
                       </tr><%
                       } else {
@@ -201,7 +201,7 @@ SESSION_LOCALE);
                       </table>
                       <div class="head headtop">
                         <div class="object-title">
-                          <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.options.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.options.label"/>
                         </div>
                       </div><%
                       if (mixLanguages.booleanValue()) { %>
@@ -209,7 +209,7 @@ SESSION_LOCALE);
                       } else { %>
                       <input type="checkbox" name="mixLanguages" id="mixLanguages"/><%
                       } %>
-                      <label for="mixLanguages"><internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.mixLanguages.label"/></label>
+                      <label for="mixLanguages"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.mixLanguages.label"/></label>
                       <br>
                       <% if (request.getAttribute("jahiaErrorMessage")!=null) { %>
                       <br>
@@ -224,7 +224,7 @@ SESSION_LOCALE);
                         <table border="0" cellpadding="5" cellspacing="0">
                           <tr>
                             <td>
-                            	<b><internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.availableLanguages.label"/></b><br/>
+                            	<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.availableLanguages.label"/></b><br/>
                               <select name="language_list" multiple="" size="10">
                                 <%
                                 Iterator localeIter = LanguageCodeConverters.getSortedLocaleList(currentLocale).iterator();
@@ -244,7 +244,7 @@ SESSION_LOCALE);
                             <td>
                                 <span class="dex-PushButton">
                                     <span class="first-child">
-                                        <a class="add-lang" href="javascript:sendForm();" title="<internal:adminResourceBundle resourceName='org.jahia.admin.languages.ManageSiteLanguages.addLanguages.label'/>"><internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.addLanguages.label"/></a>
+                                        <a class="add-lang" href="javascript:sendForm();" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.languages.ManageSiteLanguages.addLanguages.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.addLanguages.label"/></a>
                                     </span>
                                 </span>
                             </td>
@@ -255,7 +255,7 @@ SESSION_LOCALE);
                       <br/>
                       <div class="head headtop">
                         <div class="object-title">
-                          <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.languageMappings.label"/>
+                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.languageMappings.label"/>
                         </div>
                       </div>
                       <table style="clear:both" class="text">
@@ -267,7 +267,7 @@ SESSION_LOCALE);
                         <% if (!mappingList.hasNext()) { %>
                         <tr>
                           <td>
-                            <internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.noMappings.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.noMappings.label"/>
                           </td>
                         </tr><%
                         }
@@ -292,17 +292,17 @@ SESSION_LOCALE);
               <div id="actionBar">
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+                    <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-edit" href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=displayMappings")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.languages.ManageSiteLanguages.editLanguageMappings.label"/></a>
+                    <a class="ico-edit" href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=displayMappings")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.editLanguageMappings.label"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-ok" href="javascript:sendForm();"><internal:adminResourceBundle resourceName='org.jahia.admin.save.label'/></a>
+                    <a class="ico-ok" href="javascript:sendForm();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.save.label'/></a>
                   </span>
                 </span>
               </div>

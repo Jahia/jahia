@@ -39,11 +39,12 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ page import="org.jahia.data.JahiaData" %>
 <%@ page import="org.jahia.services.mail.MailHelper" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.bin.*,org.jahia.admin.users.*" %>
-<c:set var="noneLabel"><internal:adminResourceBundle resourceName="org.jahia.userMessage.none" defaultValue="none"/></c:set>
+<c:set var="noneLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.userMessage.none" defaultValue="none"/></c:set>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <% // http files path. %>
 <jsp:useBean id="userMessage" class="java.lang.String" scope="session"/>
@@ -93,7 +94,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.users.ManageUsers.createNewUser.label"/></h2>
 </div>
 <div id="main">
@@ -116,7 +117,7 @@
 <div id="content" class="fit">
 <div class="head">
     <div class="object-title">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.createNewUser.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.createNewUser.label"/>
     </div>
 </div>
 <div class="content-item">
@@ -147,32 +148,32 @@
 <!-- Create new user -->
 <input type="hidden" name="actionType" value="save"/>
 
-<p>&nbsp;&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.pleaseOk.label"/></p>
+<p>&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.pleaseOk.label"/></p>
 
-<p>&nbsp;&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.noteThat.label"/>&nbsp;:</p>
+<p>&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.noteThat.label"/>&nbsp;:</p>
 <ul>
-    <li><internal:adminResourceBundle
+    <li><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.users.ManageUsers.userNameUniq.label"/></li>
-    <li><internal:adminResourceBundle
+    <li><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.users.ManageUsers.onlyCharacters.label"/></li>
-    <li><internal:adminResourceBundle
+    <li><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.users.ManageUsers.inputMaxCharacter.label"/></li>
 </ul>
 
 <table border="0" style="width:100%">
 <tr>
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.username.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name="username"
                size="40" maxlength="40" value='<%=userProperties.get("username")%>'>
-        &nbsp;<font class="text2">(<internal:adminResourceBundle resourceName="org.jahia.admin.required.label"/>)</font>
+        &nbsp;<font class="text2">(<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.required.label"/>)</font>
     </td>
 </tr>
 <tr>
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.firstName.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.firstName.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"firstname"%>'
@@ -181,7 +182,7 @@
 </tr>
 <tr>
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.lastName.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.lastName.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"lastname"%>'
@@ -190,7 +191,7 @@
 </tr>
 <tr>
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.eMail.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.eMail.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"email"%>'
@@ -199,7 +200,7 @@
 </tr>
 <tr>
     <td align="right" nowrap>
-        <internal:adminResourceBundle resourceName="org.jahia.admin.organization.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.organization.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" name='<%=ManageUsers.USER_PROPERTY_PREFIX+"organization"%>'
@@ -208,7 +209,7 @@
 </tr>
 <tr>
     <td align="right">
-        <label for="emailNotificationsDisabled"><internal:adminResourceBundle
+        <label for="emailNotificationsDisabled"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.admin.emailNotifications.label"
                 defaultValue="emailNotifications"/>&nbsp;</label>
     </td>
@@ -223,7 +224,7 @@
 </tr>
 <tr>
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.preferredLanguage.label"
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.preferredLanguage.label"
                                      defaultValue="preferredLanguage"/>&nbsp;
     </td>
     <td>
@@ -246,27 +247,27 @@
 <%-- You can add your custom user properties here --%>
 <tr>
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.password.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.password.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="password" name="passwd"
                size="40" maxlength="255" value='<%=userProperties.get("passwd")%>'>
-        &nbsp;<font class="text2">(<internal:adminResourceBundle resourceName="org.jahia.admin.required.label"/>)</font>
+        &nbsp;<font class="text2">(<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.required.label"/>)</font>
     </td>
 </tr>
 <tr>
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.confirmPassword.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.confirmPassword.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="password" name="passwdconfirm"
                size="40" maxlength="255" value='<%=userProperties.get("passwdconfirm")%>'>
-        &nbsp;<font class="text2">(<internal:adminResourceBundle resourceName="org.jahia.admin.required.label"/>)</font>
+        &nbsp;<font class="text2">(<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.required.label"/>)</font>
     </td>
 </tr>
 <tr style="height:35px; vertical-align: top;">
     <td align="right">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.homePage.label"/>&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.homePage.label"/>&nbsp;
     </td>
     <td>
         <b id="homePageLabel">${not empty homePageLabel ? homePageLabel : noneLabel}</b>
@@ -274,14 +275,14 @@
         <br/>
         <span class="dex-PushButton">
             <span class="first-child">
-                <c:set var="label"><internal:adminResourceBundle resourceName='org.jahia.admin.select.label' defaultValue='select'/></c:set>
-                <c:set var="title"><internal:adminResourceBundle resourceName='org.jahia.admin.users.ManageUsers.setHomePage.label' defaultValue='select'/></c:set>
+                <c:set var="label"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.select.label' defaultValue='select'/></c:set>
+                <c:set var="title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageUsers.setHomePage.label' defaultValue='select'/></c:set>
                 <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" class="ico-home-add" label="${label}" title="${title}"/>
             </span>
         </span>
         <span class="dex-PushButton">
             <span class="first-child">
-                <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label" defaultValue="remove"/></a>
+                <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label" defaultValue="remove"/></a>
             </span>
         </span>
     </td>
@@ -301,19 +302,19 @@
   	<span class="dex-PushButton">
 	  <span class="first-child">
       	 <a class="ico-cancel"
-              href='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=display")%>'><internal:adminResourceBundle
+              href='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                    resourceName="org.jahia.admin.cancel.label"/></a>
       </span>
      </span>
      <span class="dex-PushButton">
       <span class="first-child">
-         <a class="ico-restore" href="javascript:document.mainForm.reset();"><internal:adminResourceBundle
+         <a class="ico-restore" href="javascript:document.mainForm.reset();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                  resourceName="org.jahia.admin.resetChanges.label"/></a>
       </span>
      </span>
      <span class="dex-PushButton">
         <span class="first-child">
-        <a class="ico-ok" href="javascript:document.mainForm.submit();"><internal:adminResourceBundle
+        <a class="ico-ok" href="javascript:document.mainForm.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.admin.ok.label"/></a>
         </span>
       </span>

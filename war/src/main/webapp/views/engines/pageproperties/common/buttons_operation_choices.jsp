@@ -38,13 +38,13 @@
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:window.close();" class="ico-cancel" title="<internal:engineResourceBundle resourceName="org.jahia.altCloseWithoutSave.label"/>">
-        <internal:engineResourceBundle resourceName="org.jahia.button.cancel"/></a>
+      <a href="javascript:window.close();" class="ico-cancel" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altCloseWithoutSave.label"/>">
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.cancel"/></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-next" href="javascript:sendForm('<c:out value="${step2}"/>');"><internal:engineResourceBundle resourceName="org.jahia.engines.version.proceedToStep"/> 2</a>
+      <a class="ico-next" href="javascript:sendForm('<c:out value="${step2}"/>');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.proceedToStep"/> 2</a>
     </span>
   </span>
 </div>

@@ -164,36 +164,36 @@
 <%@ include file="../tools.inc" %>
 <div id="content" class="fit w2">
 <div class="head">
-    <div class="object-title"><internal:engineResourceBundle
+    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.include.actionSelector.Workflow.label"/></div>
 </div>
 
 <% if (hasLocksActivated) {%>
 <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
     <tr>
-        <td><internal:engineResourceBundle
+        <td><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.engines.workflow.WorkflowEngine.error.locks.activated.label"/></td>
     </tr>
 </table>
 <% } else { %>
 <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
     <tr>
-        <th><internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.wfmode.label"/></th>
+        <th><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.wfmode.label"/></th>
         <td>
             <input type="hidden" name="workflowName" id="workflowName" value="${workflowName}"/>
             <input type="hidden" name="process" id="process" value="${process}"/>
             <input type="hidden" name="workflowMode" id="workflowMode" value="${workflowMode}"/>
             <select name="workflowModeCombo" onchange="javascript:{populateWorkflowOptions(this); sendFormUpdate();}">
                 <% if (hasParent.booleanValue()) { %>
-                <option value="3" ${workflowMode == 3 ? 'selected="selected"' : ''}><internal:engineResourceBundle
+                <option value="3" ${workflowMode == 3 ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.workflow.WorkflowEngine.inherited.label"/></option>
-                <option value="4" ${workflowMode == 4 ? 'selected="selected"' : ''}><internal:engineResourceBundle
+                <option value="4" ${workflowMode == 4 ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.workflow.WorkflowEngine.linked.label"/></option>
                 <% } %>
-                <option value="0" ${workflowMode == 0 ? 'selected="selected"' : ''}><internal:engineResourceBundle
+                <option value="0" ${workflowMode == 0 ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.workflow.WorkflowEngine.noworkflow.label"/></option>
                 <c:if test="${empty processes}">
-                    <option value="1" ${workflowMode == 1 ? 'selected="selected"' : ''}><internal:engineResourceBundle
+                    <option value="1" ${workflowMode == 1 ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.engines.workflow.WorkflowEngine.standard.label"/></option>
                 </c:if>
                 <c:if test="${not empty processes}">
@@ -210,13 +210,13 @@
     <tr>
         <% if (workflowMode.intValue() == WorkflowService.LINKED) { %>
         <th>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.linkedto.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.linkedto.label"/>
         </th>
         <td>
             <%= engineMap.get("linked") %>
             <% } else { %>
             <th>
-                <internal:engineResourceBundle
+                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.engines.workflow.WorkflowEngine.inheritfrom.label"/>:
             </th>
         <td>
@@ -226,17 +226,17 @@
                 switch (inheritedMode.intValue()) {
                     case WorkflowService.INACTIVE:
             %>
-            (<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.noworkflow.label"/>)
+            (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.noworkflow.label"/>)
             <%
                     break;
                 case WorkflowService.JAHIA_INTERNAL:
             %>
-            (<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.standard.label"/>)
+            (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.standard.label"/>)
             <%
                     break;
                 case WorkflowService.EXTERNAL:
             %>
-        (<internal:engineResourceBundle resourceName="org.jahia.engines.workflow.WorkflowEngine.external.label"/>
+        (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.external.label"/>
          - <%= engineMap.get("inheritedProcess") %>)
             <%
                         break;
@@ -253,7 +253,7 @@
     roleNb = roles.size();
     if (roleNb > 0) { %>
 <div class="head">
-    <div class="object-title"><internal:engineResourceBundle
+    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.workflow.definesRoles.label"/></div>
 </div>
 
@@ -295,7 +295,7 @@
                         }
                         if (inheritedMemberSet.size() + membersSet.size() == 0) {
                     %>
-                    <option value="null">-----&nbsp;<internal:engineResourceBundle
+                    <option value="null">-----&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----
                     </option>
                     <%}%>
@@ -303,17 +303,17 @@
             </td>
             <td width="5%">
                 <a href="javascript:puselectUsrGrp('<%=selectUsrGrp%>', 'authMembers<%=i%>');"
-                   title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'>
+                   title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'>
                     <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/user1_add.gif"
-                         alt='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
-                         title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
+                         alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
+                         title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
                          border="0"/></a>
                 <br/>
-                <a href="javascript:removeSelectBox(document.mainForm.authMembers<%=i%>, '-----&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----');"
-                   title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'>
+                <a href="javascript:removeSelectBox(document.mainForm.authMembers<%=i%>, '-----&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----');"
+                   title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'>
                     <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/user1_delete.gif"
-                         alt='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
-                         title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
+                         alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
+                         title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
                          border="0"/></a>
             </td>
             <% if (i > 0 && i < roles.size() - 1 && ((String) roles.get(i + 1)).endsWith("_unlock")) {
@@ -344,7 +344,7 @@
                         }
                         if (inheritedMemberSet.size() + membersSet.size() == 0) {
                     %>
-                    <option value="null">-----&nbsp;<internal:engineResourceBundle
+                    <option value="null">-----&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----
                     </option>
                     <%}%>
@@ -352,17 +352,17 @@
             </td>
             <td width="5%">
                 <a href="javascript:puselectUsrGrp('<%=selectUsrGrp%>', 'authMembers<%=i%>');"
-                   title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'>
+                   title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'>
                     <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/user1_add.gif"
-                         alt='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
-                         title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
+                         alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
+                         title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.setUsersAndGroups.label"/>'
                          border="0"/></a>
                 <br/>
-                <a href="javascript:removeSelectBox(document.mainForm.authMembers<%=i%>, '-----&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----');"
-                   title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'>
+                <a href="javascript:removeSelectBox(document.mainForm.authMembers<%=i%>, '-----&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----');"
+                   title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'>
                     <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/user1_delete.gif"
-                         alt='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
-                         title='<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
+                         alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
+                         title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.removeUsersOrGroups.label"/>'
                          border="0"/></a>
             </td>
             <% } else { %>
@@ -373,7 +373,7 @@
 </div>
 <%}%>
 <%} else { %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.notDefineRoles.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.notDefineRoles.label"/>
 <% } %>
 <script type="text/javascript">
     <!--

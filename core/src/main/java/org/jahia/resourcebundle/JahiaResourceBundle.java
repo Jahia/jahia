@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -55,223 +55,204 @@ import org.jahia.services.usermanager.JahiaUser;
  * @author Khue Nguyen
  * @version 1.0
  */
-public class JahiaResourceBundle
-{
+public class JahiaResourceBundle {
 
-    public static final String ENGINE_DEFAULT_RESOURCE_BUNDLE = "JahiaEnginesResources";
-    public static final String ADMIN_DEFAULT_RESOURCE_BUNDLE = "JahiaAdministrationResources";
+    public static final String DEFAULT_INTERNAL_RESOURCE_BUNDLE = "JahiaInternalResources";
     public static final String MESSAGE_DEFAULT_RESOURCE_BUNDLE = "JahiaMessageResources";
 
 
     //--------------------------------------------------------------------------
     /**
      * Returns the requested resource.
-     *
+     * <p/>
      * If the requested resource bundle is missing and useDefault is true,
      * Jahia will look for another engine resource bundle in that order :
-     *
-     *     *		1. 	Look for the engine resource bundle of the current user.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
-     *
-     *     *		2. 	Look for the engine resource bundle of the page.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetEngineResourceBundleTag.
-     *
-     *     *		3.      Look for the site's default engine resource bundle.
-     *                          Each site can have a default engine resource bundle. It's name
-     *         			must be of this form : "JahiaEnginesResourcesMYJAHIASITE"
-     *         			where MYJAHIASITE is the virtual site's sitekey in uppercase.
-     *
-     *     *		4.      Finally if none of the previous resource bundle are available,
-     *         			Jahia will return the internal engine's default resource bundle
-     *         			named "JahiaEnginesResources".
-     *
+     * <p/>
+     * *		1. 	Look for the engine resource bundle of the current user.
+     * This resource bundle can be set in the template used by the page
+     * with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
+     * <p/>
+     * *		2. 	Look for the engine resource bundle of the page.
+     * This resource bundle can be set in the template used by the page
+     * with the SetEngineResourceBundleTag.
+     * <p/>
+     * *		3.      Look for the site's default engine resource bundle.
+     * Each site can have a default engine resource bundle. It's name
+     * must be of this form : "JahiaInternalResourcesMYJAHIASITE"
+     * where MYJAHIASITE is the virtual site's sitekey in uppercase.
+     * <p/>
+     * *		4.      Finally if none of the previous resource bundle are available,
+     * Jahia will return the internal engine's default resource bundle
+     * named "JahiaInternalResources".
      *
      * @param resourceName the resource name
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale       if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the requested resource bundle
-     *
-     * @see org.jahia.taglibs.resourcebundle.EngineResourceBundleTag
-     * @see org.jahia.taglibs.resourcebundle.SetEngineResourceBundleTag
-     *
      */
-    public static String getEngineResource( final String resourceName,
-                                            final ProcessingContext jParams,
-                                            final Locale locale ){
+    public static String getEngineResource(final String resourceName,
+                                           final ProcessingContext jParams,
+                                           final Locale locale) {
         return getEngineResource(resourceName,
-                                 jParams,
-                                 locale,
-                                 null);
+                jParams,
+                locale,
+                null);
     }
 
     //--------------------------------------------------------------------------
     /**
      * Returns the requested resource.
-     *
+     * <p/>
      * If the requested resource bundle is missing and useDefault is true,
      * Jahia will look for another engine resource bundle in that order :
-     *
-     *     *		1. 	Look for the engine resource bundle of the current user.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
-     *
-     *     *		2. 	Look for the engine resource bundle of the page.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetEngineResourceBundleTag.
-     *
-     *     *		3.      Look for the site's default engine resource bundle.
-     *                          Each site can have a default engine resource bundle. It's name
-     *         			must be of this form : "JahiaEnginesResourcesMYJAHIASITE"
-     *         			where MYJAHIASITE is the virtual site's sitekey in uppercase.
-     *
-     *     *		4.      Finally if none of the previous resource bundle are available,
-     *         			Jahia will return the internal engine's default resource bundle
-     *         			named "JahiaEnginesResources".
-     *
+     * <p/>
+     * *		1. 	Look for the engine resource bundle of the current user.
+     * This resource bundle can be set in the template used by the page
+     * with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
+     * <p/>
+     * *		2. 	Look for the engine resource bundle of the page.
+     * This resource bundle can be set in the template used by the page
+     * with the SetEngineResourceBundleTag.
+     * <p/>
+     * *		3.      Look for the site's default engine resource bundle.
+     * Each site can have a default engine resource bundle. It's name
+     * must be of this form : "JahiaInternalResourcesMYJAHIASITE"
+     * where MYJAHIASITE is the virtual site's sitekey in uppercase.
+     * <p/>
+     * *		4.      Finally if none of the previous resource bundle are available,
+     * Jahia will return the internal engine's default resource bundle
+     * named "JahiaInternalResources".
      *
      * @param resourceName the resource name
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
+     * @param locale       if null, uses the locale returned by ProcessingContext.getLocale()
      * @param defaultValue
-     *
      * @return ResourceBundle, the requested resource bundle
-     *
-     * @see org.jahia.taglibs.resourcebundle.EngineResourceBundleTag
-     * @see org.jahia.taglibs.resourcebundle.SetEngineResourceBundleTag
-     *
      */
-    public static String getEngineResource( final String resourceName,
-                                            final ProcessingContext jParams,
-                                            final Locale locale,
-                                            final String defaultValue ){
+    public static String getEngineResource(final String resourceName,
+                                           final ProcessingContext jParams,
+                                           final Locale locale,
+                                           final String defaultValue) {
 
         ResourceBundle res = null;
         String resValue = null;
 
-        if ( resourceName == null || resourceName.trim().equals("") )
+        if (resourceName == null || resourceName.trim().equals(""))
             return defaultValue;
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         boolean adminMode = false;
         try {
             adminMode = jParams.isInAdminMode();
-        } catch ( Exception e ){
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
 
-        if ( !adminMode ) {
+        if (!adminMode) {
             // first look for user's engine resource bundle
-            res = getGrpUsrEngineResourceBundle(jParams.getPageID(),jParams.getUser());
-            if ( res != null ){
+            res = getGrpUsrEngineResourceBundle(jParams.getPageID(), jParams.getUser());
+            if (res != null) {
                 try {
                     resValue = res.getString(resourceName);
                     return resValue;
-                } catch ( Exception t ){
+                } catch (Exception t) {
                 }
             }
 
             // second look for page's engine resource bundle
-            res = getPageEngineResourceBundle(jParams.getPageID(),jParams);
-            if ( res != null ){
+            res = getPageEngineResourceBundle(jParams.getPageID(), jParams);
+            if (res != null) {
                 try {
                     resValue = res.getString(resourceName);
                     return resValue;
-                } catch ( Exception t ){
+                } catch (Exception t) {
                 }
             }
 
             // third look for site's engine resource bundle
-            res = getSiteEngineResourceBundle(jParams.getSite(),jParams,loc);
-            if ( res != null ){
+            res = getSiteEngineResourceBundle(jParams.getSite(), jParams, loc);
+            if (res != null) {
                 try {
                     resValue = getString(res, resourceName, loc);
                     return resValue;
-                } catch ( Exception t ){
+                } catch (Exception t) {
                 }
             }
         }
 
         // fourth look for jahia's engine default resource bundle
-        res = getEngineDefaultResourceBundle(jParams,loc);
-        if ( res != null ){
+        res = getEngineDefaultResourceBundle(jParams, loc);
+        if (res != null) {
             try {
                 resValue = getString(res, resourceName, loc);
                 if (resValue != null) {
                     return resValue;
                 }
-            } catch ( Exception t ){
+            } catch (Exception t) {
             }
         }
         logger.warn("Resource [" + resourceName +
-                    "] not found in engine resource bundles using locale [" +
-                    locale + "]");
+                "] not found in engine resource bundles using locale [" +
+                locale + "]");
         return defaultValue;
     }
 
     //--------------------------------------------------------------------------
     /**
      * Returns the requested resource for Administration Templates.
-     *
+     * <p/>
      * If the requested resource bundle is missing and useDefault is true,
      * Jahia will look for another resource bundle in that order :
-     *
-     *     *		1.      Look for the site's default engine resource bundle.
-     *                          Each site can have a default engine resource bundle. It's name
-     *         			must be of this form : "JahiaEnginesResourcesMYJAHIASITE"
-     *         			where MYJAHIASITE is the virtual site's sitekey in uppercase.
-     *
-     *     *		2.      Finally if none of the previous resource bundle are available,
-     *         			Jahia will return the internal engine's default resource bundle
-     *         			named "JahiaAdministrationResources".
-     *
+     * <p/>
+     * *		1.      Look for the site's default engine resource bundle.
+     * Each site can have a default engine resource bundle. It's name
+     * must be of this form : "JahiaInternalResourcesMYJAHIASITE"
+     * where MYJAHIASITE is the virtual site's sitekey in uppercase.
+     * <p/>
+     * *		2.      Finally if none of the previous resource bundle are available,
+     * Jahia will return the internal engine's default resource bundle
+     * named "JahiaInternalResources".
      *
      * @param resourceName the resource name
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale       if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the requested resource bundle
-     *
-     * @see org.jahia.taglibs.resourcebundle.AdminResourceBundleTag
-     *
      */
-    public static String getAdminResource( final String resourceName,
-                                           final ProcessingContext jParams,
-                                           final Locale locale ){
+    public static String getAdminResource(final String resourceName,
+                                          final ProcessingContext jParams,
+                                          final Locale locale) {
 
         ResourceBundle res = null;
         String resValue = null;
 
-        if ( resourceName == null || resourceName.trim().equals("") )
+        if (resourceName == null || resourceName.trim().equals(""))
             return null;
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         // first look for site's engine resource bundle
-        res = getSiteAdminResourceBundle(jParams.getSite(),jParams,loc);
-        if ( res != null ){
+        res = getSiteAdminResourceBundle(jParams.getSite(), jParams, loc);
+        if (res != null) {
             try {
                 resValue = getString(res, resourceName, loc);
                 return resValue;
-            } catch ( Exception t ){
+            } catch (Exception t) {
             }
         }
 
         // second look for jahia's engine default resource bundle
-        res = getAdminDefaultResourceBundle(jParams,loc);
-        if ( res != null ){
+        res = getAdminDefaultResourceBundle(jParams, loc);
+        if (res != null) {
             try {
                 resValue = getString(res, resourceName, loc);
                 return resValue;
-            } catch ( Exception t ){
+            } catch (Exception t) {
             }
         }
         logger.warn("Resource [" + resourceName +
-                    "] not found in administration resource bundles using locale [" +
-                    loc + "]");
+                "] not found in administration resource bundles using locale [" +
+                loc + "]");
         return null;
     }
 
@@ -280,34 +261,30 @@ public class JahiaResourceBundle
      * Returns the requested resource for Message Templates.
      *
      * @param resourceName the resource name
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale       if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the requested resource bundle
-     *
-     * @see org.jahia.taglibs.resourcebundle.MessageTag
-     *
      */
-    public static String getMessageResource( final String resourceName,
-                                             final Locale locale ){
-        
-        final String resValue;
-        
-        if ( resourceName == null || resourceName.trim().equals("") )
-            return null;
-        
-        final ResourceBundle res = ResourceBundle.getBundle(
-                MESSAGE_DEFAULT_RESOURCE_BUNDLE,locale);
+    public static String getMessageResource(final String resourceName,
+                                            final Locale locale) {
 
-        if ( res != null ){
+        final String resValue;
+
+        if (resourceName == null || resourceName.trim().equals(""))
+            return null;
+
+        final ResourceBundle res = ResourceBundle.getBundle(
+                MESSAGE_DEFAULT_RESOURCE_BUNDLE, locale);
+
+        if (res != null) {
             resValue = getString(res, resourceName, locale);
             return resValue;
         } else {
             resValue = null;
         }
-        
+
         logger.warn("Resource [" + resourceName +
-                    "] not found in message resource bundles using locale [" +
-                    locale + "]");
+                "] not found in message resource bundles using locale [" +
+                locale + "]");
         return resValue;
     }
 
@@ -316,51 +293,43 @@ public class JahiaResourceBundle
      * Returns the requested resource for Message Templates.
      *
      * @param resourceName the resource name
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     * @param args arguments to use in the value instead of place-holders
-     *
+     * @param locale       if null, uses the locale returned by ProcessingContext.getLocale()
+     * @param args         arguments to use in the value instead of place-holders
      * @return ResourceBundle, the requested resource bundle
-     *
-     * @see org.jahia.taglibs.resourcebundle.MessageTag
-     *
      */
-    public static String getMessageResource( final String resourceName,
-                                             final Locale locale, Object[] args ){
-        
+    public static String getMessageResource(final String resourceName,
+                                            final Locale locale, Object[] args) {
+
         String resValue = getMessageResource(resourceName, locale);
-        
-        if ( null != resValue && args != null && args.length > 0) {
+
+        if (null != resValue && args != null && args.length > 0) {
             resValue = new MessageFormat(resValue, locale).format(args);
         }
-        
+
         return resValue;
     }
 
-        /**
+    /**
      * Returns the requested resource for Message Templates.
      *
      * @param resourceName the resource name
-     * @param locale if null, uses the default locale
-     * @param fileName The file were to look for resources
-     *
+     * @param locale       if null, uses the default locale
+     * @param fileName     The file were to look for resources
      * @return ResourceBundle, the requested resource bundle
-     *
-     * @see org.jahia.taglibs.resourcebundle.MessageTag
-     *
      */
-    public static String getMessageResource( final String resourceName,
-                                             final Locale locale,
-                                             final String fileName){
+    public static String getMessageResource(final String resourceName,
+                                            final Locale locale,
+                                            final String fileName) {
 
         final String resValue;
 
-        if ( resourceName == null || resourceName.trim().equals("") )
+        if (resourceName == null || resourceName.trim().equals(""))
             return null;
 
         final ResourceBundle res = ResourceBundle.getBundle(
                 fileName, locale);
 
-        if ( res != null ){
+        if (res != null) {
             resValue = getString(res, resourceName, locale);
             return resValue;
         } else {
@@ -368,52 +337,45 @@ public class JahiaResourceBundle
         }
 
         logger.warn("Resource [" + resourceName +
-                    "] not found in message resource bundles using locale [" +
-                    locale + "]");
+                "] not found in message resource bundles using locale [" +
+                locale + "]");
         return resValue;
     }
 
     //--------------------------------------------------------------------------
     /**
      * Returns the requested resource. The resource is prefixed with the Application Context
-     *
+     * <p/>
      * If the requested resource bundle is missing and useDefault is true,
      * Jahia will look for another engine resource bundle in that order :
-     *
-     *     *		1. 	Look for the engine resource bundle of the current user.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
-     *
-     *     *		2. 	Look for the engine resource bundle of the page.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetEngineResourceBundleTag.
-     *
-     *     *		3.      Look for the site's default engine resource bundle.
-     *                          Each site can have a default engine resource bundle. It's name
-     *         			must be of this form : "JahiaEnginesResourcesMYJAHIASITE"
-     *         			where MYJAHIASITE is the virtual site's sitekey in uppercase.
-     *
-     *     *		4.      Finally if none of the previous resource bundle are available,
-     *         			Jahia will return the internal engine's default resource bundle
-     *         			named "JahiaEnginesResources".
-     *
+     * <p/>
+     * *		1. 	Look for the engine resource bundle of the current user.
+     * This resource bundle can be set in the template used by the page
+     * with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
+     * <p/>
+     * *		2. 	Look for the engine resource bundle of the page.
+     * This resource bundle can be set in the template used by the page
+     * with the SetEngineResourceBundleTag.
+     * <p/>
+     * *		3.      Look for the site's default engine resource bundle.
+     * Each site can have a default engine resource bundle. It's name
+     * must be of this form : "JahiaInternalResourcesMYJAHIASITE"
+     * where MYJAHIASITE is the virtual site's sitekey in uppercase.
+     * <p/>
+     * *		4.      Finally if none of the previous resource bundle are available,
+     * Jahia will return the internal engine's default resource bundle
+     * named "JahiaInternalResources".
      *
      * @param resourceName the resource name
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale       if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the requested resource bundle
-     *
-     * @see org.jahia.taglibs.resourcebundle.EngineResourceBundleTag
-     * @see org.jahia.taglibs.resourcebundle.SetEngineResourceBundleTag
-     *
      */
-    public static String getUrlPathResourceEngineResource( final String resourceName,
-                                                           final ProcessingContext jParams,
-                                                           final Locale locale )
-    {
+    public static String getUrlPathResourceEngineResource(final String resourceName,
+                                                          final ProcessingContext jParams,
+                                                          final Locale locale) {
         final String res = getEngineResource(resourceName, jParams, locale);
-        if ( res != null ){
+        if (res != null) {
             final StringBuffer buff = new StringBuffer();
             buff.append(jParams.getContextPath()).append(res);
             return buff.toString();
@@ -429,24 +391,23 @@ public class JahiaResourceBundle
      * to allow the resolver to be more dynamic, notably making by specifying
      * resolver classes or something fancy like that :)
      *
-     * @param bundleCode a String containing a bundle code such as "administration",
-     * "engine", "configuration" that will indicate which resolver to use for
-     * finding the resource. If the bundleCode is null, the default resolver
-     * (engine) will be used.
+     * @param bundleCode  a String containing a bundle code such as "administration",
+     *                    "engine", "configuration" that will indicate which resolver to use for
+     *                    finding the resource. If the bundleCode is null, the default resolver
+     *                    (engine) will be used.
      * @param resourceKey the key for the resource within the bundle to be found.
-     * @param locale the locale to use for resolving the bundle file, or if it
-     * is null, the jParams parameter is used accessing it's jParams.getLocale()
-     * method
-     * @param jParams used in case the locale parameter is null. the
-     * jParams.getLocale method is then called.
-     *
+     * @param locale      the locale to use for resolving the bundle file, or if it
+     *                    is null, the jParams parameter is used accessing it's jParams.getLocale()
+     *                    method
+     * @param jParams     used in case the locale parameter is null. the
+     *                    jParams.getLocale method is then called.
      * @return a String containing the value associated with the key in the
-     * bundle specified by the bundle code, or null if the key couldn't be
-     * found.
+     *         bundle specified by the bundle code, or null if the key couldn't be
+     *         found.
      */
-    public static String getResource(final String bundleCode, 
-                                     final String resourceKey, 
-                                     final Locale locale, 
+    public static String getResource(final String bundleCode,
+                                     final String resourceKey,
+                                     final Locale locale,
                                      final ProcessingContext jParams) {
         final String result;
 
@@ -464,43 +425,41 @@ public class JahiaResourceBundle
 
     //--------------------------------------------------------------------------
     /**
-     * Get a Jahia common resource defined in ENGINE_DEFAULT_RESOURCE_BUNDLE.
+     * Get a Jahia common resource defined in DEFAULT_INTERNAL_RESOURCE_BUNDLE.
      *
      * @param resourceName The name(key) of resource bundle.
-     * @param jParams ;)
-     * @return
-     *    Null if no resource found.
+     * @param jParams      ;)
+     * @return Null if no resource found.
      */
-    public static String getCommonResource(final String resourceName, 
-            final ProcessingContext jParams) {
+    public static String getCommonResource(final String resourceName,
+                                           final ProcessingContext jParams) {
 
-        final ResourceBundle res = ResourceBundle.getBundle(ENGINE_DEFAULT_RESOURCE_BUNDLE);
+        final ResourceBundle res = ResourceBundle.getBundle(DEFAULT_INTERNAL_RESOURCE_BUNDLE);
         try {
             if (res != null) {
                 return res.getString(resourceName);
             }
         } catch (java.util.MissingResourceException mre) {
             logger.warn("Resource [" + resourceName + "] not found in [" +
-                        ENGINE_DEFAULT_RESOURCE_BUNDLE + "] !");
+                    DEFAULT_INTERNAL_RESOURCE_BUNDLE + "] !");
         }
         return null;
     }
 
     //--------------------------------------------------------------------------
     /**
-     * Get a Jahia common resource defined in ENGINE_DEFAULT_RESOURCE_BUNDLE.
+     * Get a Jahia common resource defined in DEFAULT_INTERNAL_RESOURCE_BUNDLE.
      * The returned value is prefixed with the Application Context Path.
      *
      * @param resourceName The name(key) of resource bundle.
      * @param jParams
-     * @return
-     *    Null if no resource found.
+     * @return Null if no resource found.
      */
-    public static String getUrlPathCommonResource(final String resourceName, 
-            final ProcessingContext jParams) {
+    public static String getUrlPathCommonResource(final String resourceName,
+                                                  final ProcessingContext jParams) {
 
-        final String res = getCommonResource(resourceName,jParams);
-        if ( res != null ){
+        final String res = getCommonResource(resourceName, jParams);
+        if (res != null) {
             final StringBuffer buff = new StringBuffer();
             buff.append(jParams.getContextPath()).append(res);
             return buff.toString();
@@ -511,68 +470,66 @@ public class JahiaResourceBundle
     //--------------------------------------------------------------------------
     /**
      * Returns the requested resource bundle.
-     *
+     * <p/>
      * If the requested resource bundle is missing and useDefault is true,
      * Jahia will look for another engine resource bundle in that order :
-     *
-     *     *		1. 	Look for the engine resource bundle of the current user.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
-     *
-     *     *		2. 	Look for the engine resource bundle of the page.
-     *         			This resource bundle can be set in the template used by the page
-     *         			with the SetEngineResourceBundleTag.
-     *
-     *     *		3.  Look for the site's default engine resource bundle.
-     *            Each site can have a default engine resource bundle. It's name
-     *         			must be of this form : "JahiaEnginesResourcesMYJAHIASITE"
-     *         			where MYJAHIASITE is the virtual site's sitekey in uppercase.
-     *
-     *     *		4.  Finally if none of the previous resource bundle are available,
-     *         			Jahia will return the internal engine's default resource bundle
-     *         			named "JahiaEnginesResources".
-     *
+     * <p/>
+     * *		1. 	Look for the engine resource bundle of the current user.
+     * This resource bundle can be set in the template used by the page
+     * with the SetUsrEngineResourceBundleTag,SetGrpEngineResourceBundleTag.
+     * <p/>
+     * *		2. 	Look for the engine resource bundle of the page.
+     * This resource bundle can be set in the template used by the page
+     * with the SetEngineResourceBundleTag.
+     * <p/>
+     * *		3.  Look for the site's default engine resource bundle.
+     * Each site can have a default engine resource bundle. It's name
+     * must be of this form : "JahiaInternalResourcesMYJAHIASITE"
+     * where MYJAHIASITE is the virtual site's sitekey in uppercase.
+     * <p/>
+     * *		4.  Finally if none of the previous resource bundle are available,
+     * Jahia will return the internal engine's default resource bundle
+     * named "JahiaInternalResources".
      *
      * @param resourceBundle the resource bundle name
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     * @param useDefault when true , return Jahia engines' default resource bundle
-     *                           	  if the requested resource bundle is missing.
-     *
+     * @param locale         if null, uses the locale returned by ProcessingContext.getLocale()
+     * @param useDefault     when true , return Jahia engines' default resource bundle
+     *                       if the requested resource bundle is missing.
      * @return ResourceBundle, the requested resource bundle
      */
     public static ResourceBundle getEngineResourceBundle(
-                                                    final String resourceBundle,
-                                                    final ProcessingContext jParams,
-                                                    final Locale locale,
-                                                    final boolean useDefault ){
+            final String resourceBundle,
+            final ProcessingContext jParams,
+            final Locale locale,
+            final boolean useDefault) {
 
         ResourceBundle res = null;
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         try {
-            res = ResourceBundle.getBundle(resourceBundle,loc);
-        } catch ( Exception t ){
+            res = ResourceBundle.getBundle(resourceBundle, loc);
+        } catch (Exception t) {
             // logger.debug("Error while retrieving engine resource bundle :" + resourceBundle + " for locale " + loc, t);
         }
-        if ( ((res == null) && useDefault) && (jParams != null) ){
+        if (((res == null) && useDefault) && (jParams != null)) {
 
             // first look for usr, grp's engine resource bundle
-            res = getGrpUsrEngineResourceBundle(jParams.getPageID(),jParams.getUser());
+            res = getGrpUsrEngineResourceBundle(jParams.getPageID(), jParams.getUser());
 
-            if ( res == null ){
+            if (res == null) {
                 // second look for page's engine resource bundle
-                res = getPageEngineResourceBundle(jParams.getPageID(),jParams);
+                res = getPageEngineResourceBundle(jParams.getPageID(), jParams);
             }
 
-            if ( res == null ){
+            if (res == null) {
                 // third look for site's engine resource bundle
-                res = getSiteEngineResourceBundle(jParams.getSite(),jParams,loc);
+                res = getSiteEngineResourceBundle(jParams.getSite(), jParams, loc);
             }
-            if ( res == null ){
+            if (res == null) {
                 // fourth look for jahia default engine resource bundle
-                res = getEngineDefaultResourceBundle(jParams,loc);
+                res = getEngineDefaultResourceBundle(jParams, loc);
             }
         }
         return res;
@@ -581,26 +538,25 @@ public class JahiaResourceBundle
     //--------------------------------------------------------------------------
     /**
      * Returns Jahia engines' default resource bundle
-     * This resource bundle's name is "JahiaEnginesResources"
+     * This resource bundle's name is "JahiaInternalResources"
      *
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale  if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the Jahia engines' default resource bundle or null if not found
      */
     public static ResourceBundle getEngineDefaultResourceBundle(
-                                                    final ProcessingContext jParams,
-                                                    final Locale locale ){
+            final ProcessingContext jParams,
+            final Locale locale) {
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         ResourceBundle res = null;
 
         try {
-            res = ResourceBundle.getBundle(ENGINE_DEFAULT_RESOURCE_BUNDLE,loc);
-        } catch ( Exception t ){
+            res = ResourceBundle.getBundle(DEFAULT_INTERNAL_RESOURCE_BUNDLE, loc);
+        } catch (Exception t) {
             logger.debug("Error while using default engine resource bundle (" +
-                         ENGINE_DEFAULT_RESOURCE_BUNDLE + ") with locale " + loc, t);
+                    DEFAULT_INTERNAL_RESOURCE_BUNDLE + ") with locale " + loc, t);
         }
 
         return res;
@@ -609,26 +565,25 @@ public class JahiaResourceBundle
     //--------------------------------------------------------------------------
     /**
      * Returns Jahia admin' default resource bundle
-     * This resource bundle's name is "JahiaAdministrationResources"
+     * This resource bundle's name is "JahiaInternalResources"
      *
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale  if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the Jahia engines' default resource bundle or null if not found
      */
     public static ResourceBundle getAdminDefaultResourceBundle(
-                                                    final ProcessingContext jParams,
-                                                    final Locale locale ){
+            final ProcessingContext jParams,
+            final Locale locale) {
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         ResourceBundle res = null;
 
         try {
-            res = ResourceBundle.getBundle(ADMIN_DEFAULT_RESOURCE_BUNDLE,loc);
-        } catch ( Exception t ){
+            res = ResourceBundle.getBundle(DEFAULT_INTERNAL_RESOURCE_BUNDLE, loc);
+        } catch (Exception t) {
             logger.debug("Error while retrieving administration default resource bundle " +
-                         ADMIN_DEFAULT_RESOURCE_BUNDLE + " with locale " + loc, t);
+                    DEFAULT_INTERNAL_RESOURCE_BUNDLE + " with locale " + loc, t);
         }
 
         return res;
@@ -640,21 +595,20 @@ public class JahiaResourceBundle
      * This resource bundle's name is "JahiaMessageResources"
      *
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale  if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the Jahia engines' default resource bundle or null if not found
      */
     public static ResourceBundle getMessageDefaultResourceBundle(
-                                                    final ProcessingContext jParams,
-                                                    final Locale locale ){
+            final ProcessingContext jParams,
+            final Locale locale) {
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         ResourceBundle res = null;
 
         try {
-            res = ResourceBundle.getBundle(MESSAGE_DEFAULT_RESOURCE_BUNDLE,loc);
-        } catch ( Exception t ){
+            res = ResourceBundle.getBundle(MESSAGE_DEFAULT_RESOURCE_BUNDLE, loc);
+        } catch (Exception t) {
             logger.debug("Error while retrieving message default resource bundle " +
                     MESSAGE_DEFAULT_RESOURCE_BUNDLE + " with locale " + loc, t);
         }
@@ -666,32 +620,31 @@ public class JahiaResourceBundle
     /**
      * Returns the current site engines' resource bundle
      * Internally, Jahia look for a resource bundle whose name is :
-     *
-     * "JahiaEnginesResources" + jParams.getSite().getSiteKey().toUpperCase()
-     *
-     * like :	JahiaEnginesResourcesMYJAHIASITE
+     * <p/>
+     * "JahiaInternalResources" + jParams.getSite().getSiteKey().toUpperCase()
+     * <p/>
+     * like :	JahiaInternalResourcesMYJAHIASITE
      *
      * @param site
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale  if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the site engines' default resource bundle or null if not found
      */
-    public static ResourceBundle getSiteEngineResourceBundle( final JahiaSite site,
-                                                              final ProcessingContext jParams,
-                                                              final Locale locale ){
+    public static ResourceBundle getSiteEngineResourceBundle(final JahiaSite site,
+                                                             final ProcessingContext jParams,
+                                                             final Locale locale) {
 
-        if ( site == null )
+        if (site == null)
             return null;
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         ResourceBundle res = null;
 
         try {
-            res = ResourceBundle.getBundle( ENGINE_DEFAULT_RESOURCE_BUNDLE
-                                            +site.getSiteKey().toUpperCase(),loc);
-        } catch ( Exception t ){
+            res = ResourceBundle.getBundle(DEFAULT_INTERNAL_RESOURCE_BUNDLE
+                    + site.getSiteKey().toUpperCase(), loc);
+        } catch (Exception t) {
             //JahiaConsole.println(	CLASS_NAME+".getSiteEngineResourceBundle",
             //						t.getMessage());
         }
@@ -703,32 +656,31 @@ public class JahiaResourceBundle
     /**
      * Returns the current site admin' resource bundle
      * Internally, Jahia look for a resource bundle whose name is :
-     *
-     * "JahiaAdministrationResources" + jParams.getSite().getSiteKey().toUpperCase()
-     *
-     * like :	JahiaAdministrationResourcesMYJAHIASITE
+     * <p/>
+     * "JahiaInternalResources" + jParams.getSite().getSiteKey().toUpperCase()
+     * <p/>
+     * like :	JahiaInternalResourcesMYJAHIASITE
      *
      * @param site
      * @param jParams
-     * @param locale if null, uses the locale returned by ProcessingContext.getLocale()
-     *
+     * @param locale  if null, uses the locale returned by ProcessingContext.getLocale()
      * @return ResourceBundle, the site engines' default resource bundle or null if not found
      */
-    public static ResourceBundle getSiteAdminResourceBundle( final JahiaSite site,
-                                                             final ProcessingContext jParams,
-                                                             final Locale locale ){
+    public static ResourceBundle getSiteAdminResourceBundle(final JahiaSite site,
+                                                            final ProcessingContext jParams,
+                                                            final Locale locale) {
 
-        if ( site == null )
+        if (site == null)
             return null;
 
-        final Locale loc = checkLocale(locale,jParams);
+        final Locale loc = checkLocale(locale, jParams);
 
         ResourceBundle res = null;
 
         try {
-            res = ResourceBundle.getBundle( ADMIN_DEFAULT_RESOURCE_BUNDLE
-                                            +site.getSiteKey().toUpperCase(),loc);
-        } catch ( Exception t ){
+            res = ResourceBundle.getBundle(DEFAULT_INTERNAL_RESOURCE_BUNDLE
+                    + site.getSiteKey().toUpperCase(), loc);
+        } catch (Exception t) {
             //JahiaConsole.println(	CLASS_NAME+".getSiteEngineResourceBundle",
             //						t.getMessage());
         }
@@ -741,40 +693,39 @@ public class JahiaResourceBundle
      * Returns the engine resource bundle associated with the page.
      * With the SetEngineResourceBundleTag, you can associate an engine resource bundle
      * with a template JSP.
-     *
+     * <p/>
      * Jahia will use this resource bundle to give different look to the engines
      * popup that are opened from pages using this template.
      *
      * @param pageID the page id
-     *
      * @return ResourceBundle, the site engines' default resource bundle or null if not found
      */
-    public static ResourceBundle getPageEngineResourceBundle( final int pageID , 
-                                                              final ProcessingContext jParams){
+    public static ResourceBundle getPageEngineResourceBundle(final int pageID,
+                                                             final ProcessingContext jParams) {
 
 
-        if ( jParams == null )
+        if (jParams == null)
             return null;
 
-        if ( pageID == -1 )
+        if (pageID == -1)
             return null;
 
         ContentPage contentPage = null;
         try {
-            contentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pageID,true);
-        } catch ( Exception t) {
+            contentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pageID, true);
+        } catch (Exception t) {
             //JahiaConsole.println(	CLASS_NAME+".getPageEngineResourceBundle",
             //						t.getMessage());
         }
 
-        if ( (contentPage == null) )
+        if ((contentPage == null))
             return null;
 
         ResourceBundle res = null;
 
         try {
-            res = PagesEngineResourceBundle.getInstance().getResourceBundle( contentPage , jParams );
-        } catch ( Exception t ){
+            res = PagesEngineResourceBundle.getInstance().getResourceBundle(contentPage, jParams);
+        } catch (Exception t) {
             //JahiaConsole.println(	CLASS_NAME+".getPageEngineResourceBundle",
             //						t.getMessage());
         }
@@ -787,36 +738,35 @@ public class JahiaResourceBundle
      * Returns the engine resource bundle associated with a page and a given Principal.
      * With the SetUsrEngineResourceBundleTag and SetGrpEngineResourceBundleTag,
      * you can associate an engine resource bundle with a template JSP for a given user or group.
-     *
+     * <p/>
      * Jahia will use this resource bundle to give different look to the engines
      * popup that are opened from pages using this template and for the current user.
      *
      * @param pageID the page id
-     *
      * @return ResourceBundle, the grp or usr engines' default resource bundle or null if not found
      */
-    public static ResourceBundle getGrpUsrEngineResourceBundle( final int pageID , final JahiaUser user){
+    public static ResourceBundle getGrpUsrEngineResourceBundle(final int pageID, final JahiaUser user) {
 
 
-        if ( pageID == -1 || user==null )
+        if (pageID == -1 || user == null)
             return null;
 
         ContentPage contentPage = null;
         try {
-            contentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pageID,true);
-        } catch ( Exception t) {
+            contentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pageID, true);
+        } catch (Exception t) {
             //JahiaConsole.println(	CLASS_NAME+".getPageEngineResourceBundle",
             //						t.getMessage());
         }
 
-        if ( (contentPage == null) )
+        if ((contentPage == null))
             return null;
 
         ResourceBundle res = null;
 
         try {
-            res = GrpUsrEngineResourceBundle.getInstance().getResourceBundle( contentPage , user );
-        } catch ( Exception t ){
+            res = GrpUsrEngineResourceBundle.getInstance().getResourceBundle(contentPage, user);
+        } catch (Exception t) {
             //JahiaConsole.println(	CLASS_NAME+".getPageEngineResourceBundle",
             //						t.getMessage());
         }
@@ -825,15 +775,15 @@ public class JahiaResourceBundle
     }
 
 
-    private static Locale checkLocale(final Locale locale, final ProcessingContext jParams){
+    private static Locale checkLocale(final Locale locale, final ProcessingContext jParams) {
         final Locale resLocale;
-        if ( locale == null ){
-            if ( jParams != null ){
+        if (locale == null) {
+            if (jParams != null) {
                 resLocale = jParams.getLocale();
             } else {
                 resLocale = Locale.getDefault();
             }
-            
+
         } else {
             resLocale = locale;
         }
@@ -853,8 +803,8 @@ public class JahiaResourceBundle
      * @param locale
      * @return String
      */
-    public static String getString( final ResourceBundle res,
-            final String resName, final Locale locale) {
+    public static String getString(final ResourceBundle res,
+                                   final String resName, final Locale locale) {
         String resource = null;
         try {
             resource = res.getString(resName);
@@ -905,7 +855,7 @@ public class JahiaResourceBundle
      * @return String
      */
     public static String getString(final ResourceBundle res,
-            final String resName, final String defaultValue) {
+                                   final String resName, final String defaultValue) {
         String resource = null;
         try {
             resource = res.getString(resName);

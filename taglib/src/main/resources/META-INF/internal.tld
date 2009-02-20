@@ -16,22 +16,6 @@
         <body-content>JSP</body-content>
     </tag>
     <tag>
-        <description>Support for jahia engine resource bundle</description>
-        <name>engineResourceBundle</name>
-        <tag-class>org.jahia.taglibs.internal.i18n.EngineResourceBundleTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>resourceName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>defaultValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <description>Lowest level support for resource bundle messages. This is inspired
             by the Struts been message tag except that it checks a session
             variable (org.jahia.services.multilang.currentlocale) to determine
@@ -51,23 +35,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <description>Support for jahia Administration Wizard resource bundle</description>
-        <name>adminResourceBundle</name>
-        <tag-class>org.jahia.taglibs.internal.i18n.AdminResourceBundleTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>resourceName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>defaultValue</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
     <tag>
         <description>Generate resource bundle to be used by JahiaModule.</description>
         <name>gwtAdminResourceBundle</name>

@@ -41,7 +41,7 @@
 <%@include file="/jsp/jahia/administration/include/header.inc"%>
 
 <tr>
-    <td align="left" class="text" colspan="2"><h3><internal:adminResourceBundle resourceName="org.jahia.bin.JahiaAdministration.confirmation.label"/></h3></td>
+    <td align="left" class="text" colspan="2"><h3><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaAdministration.confirmation.label"/></h3></td>
 </tr>
 </table>
 &nbsp;<br>&nbsp;<br>
@@ -57,13 +57,13 @@
         &nbsp;<br>&nbsp;<br>
         <%if(!isLynx){%>
          <div class="buttonList" style="padding-top: 8px; padding-bottom: 8px">
-          <div class="button" title="<internal:adminResourceBundle resourceName='org.jahia.admin.users.ManageUsers.applyModif.label'/>">
-            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>" ><internal:adminResourceBundle resourceName="org.jahia.admin.ok.label"/></a>
+          <div class="button" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageUsers.applyModif.label'/>">
+            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>" ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
           </div>
 
         </div>
         <%}else{%>
-            &nbsp;&nbsp;<a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.bin.JahiaAdministration.ok.label"/> >></a>
+            &nbsp;&nbsp;<a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaAdministration.ok.label"/> >></a>
         <%}%>
 
     </td>

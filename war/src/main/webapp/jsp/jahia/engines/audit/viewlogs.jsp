@@ -65,7 +65,7 @@ if (userAgent != null) {
     <%@ include file="../tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-        <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.EngineToolBox.administrativeAuditLog.label"/></div>
+        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.administrativeAuditLog.label"/></div>
       </div>
       <% if (!(deletedRows.intValue() > 0)) { %>
         <% if (! (readOnlyMode && (results.getReadOnlyTabs().contains(LockPrerequisites.LOGS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)))) { %>
@@ -73,7 +73,7 @@ if (userAgent != null) {
             <div id="operationMenu">
               <span class="dex-PushButton">
                 <span class="first-child">
-                  <a class="ico-flush" href="javascript:submittedCount++;window.location.href='<%=engineURL%><%=URLSep%>screen=logs&flush=1'" title="<internal:engineResourceBundle resourceName="org.jahia.engines.EngineToolBox.flush.label"/>"><internal:engineResourceBundle resourceName="org.jahia.engines.EngineToolBox.flush.label"/></a>
+                  <a class="ico-flush" href="javascript:submittedCount++;window.location.href='<%=engineURL%><%=URLSep%>screen=logs&flush=1'" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.flush.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.flush.label"/></a>
                 </span>
               </span>
             </div>
@@ -102,9 +102,9 @@ if (userAgent != null) {
           <p class="error">
             <%=deletedRows%>
             <% if (deletedRows.intValue() > 1) {%>
-              <internal:engineResourceBundle resourceName="org.jahia.engines.EngineToolBox.logDeletedPlural.label"/>
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.logDeletedPlural.label"/>
             <%} else {%>
-              <internal:engineResourceBundle resourceName="org.jahia.engines.EngineToolBox.logDeletedSingular.label"/>
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.logDeletedSingular.label"/>
             <% } %>
           </p>
         <% } %>

@@ -93,7 +93,7 @@ import org.jahia.resourcebundle.JahiaResourceBundle;
  * </attriInfo>"
  * @see JahiaResourceBundle
  *      see SetAdminResourceBundleTag
- *      see JahiaEnginesResources.properties
+ *      see JahiaInternalResources.properties
  */
 public class MessageTag extends TagSupport {
 

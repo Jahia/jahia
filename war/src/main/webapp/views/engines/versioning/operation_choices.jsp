@@ -58,47 +58,47 @@
       <div class="head">
         <div class="object-title">
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringPage}">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
           </c:if>
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringContainer}">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
           </c:if>
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringContainerList}">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
           </c:if>
-          &nbsp;-&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.stepOneOfThree"/>
+          &nbsp;-&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepOneOfThree"/>
         </div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
           <td colspan="2">
-            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.version.selectTheTaskToPerform"/></strong>.
+            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.selectTheTaskToPerform"/></strong>.
           </td>
         </tr>
         <tr>
           <th valign="top" width="100">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.version.availableTasks"/>:
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.availableTasks"/>:
           </th>
           <td>
             <ul class="noStyle">
               <li>
                 <input type="radio" name="operationType" value="1" <%if(versViewHelper.getOperationType()==1){%> checked="checked"<%}%>>
-                A)&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.undoStagingModification"/>
+                A)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.undoStagingModification"/>
               </li>
               <li>
                 <input type="radio" name="operationType" value="2" <%if(versViewHelper.getOperationType()==2){%> checked=checked<%}%>>
-                B)&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreArchivedContent"/>
+                B)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreArchivedContent"/>
               </li>
               <c:if test="${!empty versioningUndeletePage }">
                 <li>
                   <input type="radio" name="operationType" value="3" <%if(versViewHelper.getOperationType()==3){%> checked=checked<%}%>>
-                  C)&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreDeletedPages" defaultValue="Restore deleted pages" />
+                  C)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreDeletedPages" defaultValue="Restore deleted pages" />
                 </li>
               </c:if>
               <c:if test="${!empty versioningUndeleteContainer }">
                 <li>
                   <input type="radio" name="operationType" value="3" <%if(versViewHelper.getOperationType()==3){%> checked=checked<%}%>>
-                  C)&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreDeletedContainer" defaultValue="Restore deleted containers" />
+                  C)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreDeletedContainer" defaultValue="Restore deleted containers" />
                 </li>
               </c:if>
             </ul>

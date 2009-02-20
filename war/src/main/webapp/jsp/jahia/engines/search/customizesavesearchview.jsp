@@ -36,9 +36,10 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <c:set var="settings" value="${requestScope['org.jahia.engines.EngineHashMap'].savedSearchView.settings}"/>
 <h3 class="updateelement">
-    <internal:engineResourceBundle
+    <utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.search.customizeSaveSearchView.label" defaultValue="Customize view"/>
 </h3>
 
@@ -84,32 +85,32 @@
             <c:if test="${jahia.requestInfo.admin}">
 	            <tr>
 	                <td align="left" valign="top" class="warning">
-	                    <internal:engineResourceBundle resourceName="org.jahia.engines.search.customizeSaveSearchView.sharedSettings.label" defaultValue="This profile is shared."/>
+	                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.customizeSaveSearchView.sharedSettings.label" defaultValue="This profile is shared."/>
 	                </td>
 	            </tr>
             </c:if>
             <tr>
                 <td align="left" valign="top">
-                <h2><internal:engineResourceBundle resourceName="org.jahia.engines.search.customizeSaveSearchView.fieldsToDisplay.label" defaultValue="Field to display"/>:</h2>
+                <h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.customizeSaveSearchView.fieldsToDisplay.label" defaultValue="Field to display"/>:</h2>
                 <span style="clear: both">&nbsp;</span>
                 <ul id="columns">
                 <c:forEach items="${settings.fields}" var="field">
-                    <li id="column_${field.name}"><input type="checkbox" name="view_fieldMap.${field.name}.selected" id="${field.name}" value="true" ${field.selected ? 'checked="checked"' : ''}/>&nbsp;<label for="${field.name}"><internal:engineResourceBundle resourceName="${field.resourceKey}" defaultValue="${field.label}"/></label></li>
+                    <li id="column_${field.name}"><input type="checkbox" name="view_fieldMap.${field.name}.selected" id="${field.name}" value="true" ${field.selected ? 'checked="checked"' : ''}/>&nbsp;<label for="${field.name}"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="${field.resourceKey}" defaultValue="${field.label}"/></label></li>
                 </c:forEach>
                 </ul>
                 </td>
             <tr>
             <tr>
                 <td align="left" valign="top">
-                <h2><internal:engineResourceBundle resourceName="org.jahia.engines.search.customizeSaveSearchView.fieldsForSort.label" defaultValue="Sort on field"/>:</h2>
+                <h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.customizeSaveSearchView.fieldsForSort.label" defaultValue="Sort on field"/>:</h2>
                 <select name="view_sortBy">
                     <option value=""></option>
                     <c:forEach items="${settings.fields}" var="field">
-                        <option value="${field.name}"${settings.sortBy == field.name ? 'selected="selected"' : ''}><internal:engineResourceBundle resourceName="${field.resourceKey}" defaultValue="${field.label}"/></option>
+                        <option value="${field.name}"${settings.sortBy == field.name ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="${field.resourceKey}" defaultValue="${field.label}"/></option>
                     </c:forEach>
                 </select>
-                <input type="radio" id="view_ascending_asc" name="view_ascending" value="true" ${settings.ascending ? 'checked="checked"' : ''}/>&nbsp;<label for="view_ascending_asc"><internal:engineResourceBundle resourceName="org.jahia.engines.search.customizeSaveSearchView.ascending.label" defaultValue="Ascending"/></label>
-                <input type="radio" id="view_ascending_desc" name="view_ascending" value="false" ${not settings.ascending ? 'checked="checked"' : ''}/>&nbsp;<label for="view_ascending_desc"><internal:engineResourceBundle resourceName="org.jahia.engines.search.customizeSaveSearchView.descending.label" defaultValue="Descending"/></label>
+                <input type="radio" id="view_ascending_asc" name="view_ascending" value="true" ${settings.ascending ? 'checked="checked"' : ''}/>&nbsp;<label for="view_ascending_asc"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.customizeSaveSearchView.ascending.label" defaultValue="Ascending"/></label>
+                <input type="radio" id="view_ascending_desc" name="view_ascending" value="false" ${not settings.ascending ? 'checked="checked"' : ''}/>&nbsp;<label for="view_ascending_desc"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.customizeSaveSearchView.descending.label" defaultValue="Descending"/></label>
                 </td>
             </tr>
         </table>														          	

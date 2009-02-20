@@ -55,7 +55,7 @@
 <div class="content">
 <div id="editor" class="mainPanel">
 <h4 class="versioningIcon">
-    <internal:engineResourceBundle
+    <utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
 </h4>
 <div class="clearing">&nbsp;</div>

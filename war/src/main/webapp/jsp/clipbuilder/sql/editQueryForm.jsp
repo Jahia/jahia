@@ -36,7 +36,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
-<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ page language="java" import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.data.JahiaData" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
@@ -68,7 +68,7 @@
         {
             newwindow = window.open(url, 'name', 'toolbar=0,resizable=yes,scrollable=yes');
             if (window.focus) {
-                newwindow.focus()
+                newwindow.focus();
             }
         }
 
@@ -123,11 +123,11 @@
 <table class="text" height="63" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td width="126" height="63">
-            <img src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.header.image"/>"
+            <img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.header.image"/>"
                  width="126" height="63" alt="">
         </td>
         <td width="100%" height="63">
-            <img src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.headerBg.image"/>"
+            <img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.headerBg.image"/>"
                  width="100%" height="63" alt="">
         </td>
     </tr>
@@ -137,7 +137,7 @@
     <tr>
         <td align="right" class="text">
             <a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/>
             </a>
         </td>
     </tr>
@@ -158,7 +158,7 @@
             <b>
                 <bean:message key="sql.title"/>
             </b>
-            <img src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.hr.image"/>"
+            <img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.hr.image"/>"
                  width="100%" height="2">
         </td>
     </tr>
@@ -229,7 +229,7 @@
                                                     <bean:message key="clipbuilder.deployement.permissions"/>
                                                     <% if (aclService.getServerActionPermission("admin.components.ManageShareComponents", user, JahiaBaseACL.READ_RIGHTS, currentSiteID) > 0) { %>
                                                     <a href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'>
-                                                        (<internal:adminResourceBundle
+                                                        (<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.manageComponents.label"/>)
                                                     </a>
                                                     <% } %>
@@ -435,7 +435,7 @@
     <tr>
         <td align="right" class="text">
             <a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/>
             </a>
         </td>
     </tr>

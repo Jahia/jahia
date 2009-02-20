@@ -87,7 +87,7 @@ public class PortletModesTag extends TagSupport {
     private ProcessingContext processingContext = null;
     private GuiBean guiBean = null;
     private HTMLToolBox htmlToolBox = null;
-    private String resourceBundle = "JahiaEnginesResources";
+    private String resourceBundle = "JahiaInternalResources";
     private String listCSSClass = "portletModes";
     private String currentCSSClass = "current";
 
@@ -131,7 +131,7 @@ public class PortletModesTag extends TagSupport {
      * @jsp:attribute name="resourceBundle" required="false" rtexprvalue="true"
      * description="resource bundle to use to find portlet mode labels.
      *
-     * <p><attriInfo>Default is 'JahiaEnginesResources'.
+     * <p><attriInfo>Default is 'JahiaInternalResources'.
      * </attriInfo>"
      */
     public String getResourceBundle () {
@@ -212,7 +212,7 @@ public class PortletModesTag extends TagSupport {
         requestBean = null;
         guiBean = null;
         htmlToolBox = null;
-        resourceBundle = "JahiaEnginesResources";
+        resourceBundle = "JahiaInternalResources";
         listCSSClass = "portletModes";
         currentCSSClass = "current";
         return EVAL_PAGE;

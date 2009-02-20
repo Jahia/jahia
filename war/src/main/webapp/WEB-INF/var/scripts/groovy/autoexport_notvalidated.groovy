@@ -54,7 +54,7 @@ for (NodeOperationResult thenode : (List<NodeOperationResult>)results.getErrors(
 
 private String getRessource(String label, Locale l) {
     try {
-        return ResourceBundle.getBundle("JahiaEnginesResources", l).getString(label);
+        return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
     } catch (Exception e) {
         try {
             return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);

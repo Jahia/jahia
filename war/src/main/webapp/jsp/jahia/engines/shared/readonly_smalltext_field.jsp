@@ -42,6 +42,7 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper"%>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%!
     final static private org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger("jsp.jahia.engines.shared.readonly_smalltext_field");  %>
@@ -72,7 +73,7 @@
 %>
 
 <% if (theField.getValue().indexOf("#") != -1 && theField.getValue().length() > 6 && theField.getValue().length() < 10) { %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.shared.SmallText_Field.colorValue.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.SmallText_Field.colorValue.label"/>
 : <%=theField.getValue()%>
 <% } else if (defValue != null && !defValue.equals("") && defValue.toUpperCase().indexOf("JAHIA_MULTIVALUE") != -1) { %>
 <%
@@ -107,12 +108,12 @@
                 theSelection = theList.substring(0, endStr);
                 theList = theList.substring(endStr + 1, theList.length());
                 if (theSelection.equals(theSelectedField)) { %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/> : <%=theSelection%>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> : <%=theSelection%>
 <% }
 } else {
     theSelection = theList.substring(0, theList.length());
     if (theSelection.equals(theSelectedField)) { %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/> : <%=theSelection%>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> : <%=theSelection%>
 <% }
     break;
 }
@@ -126,11 +127,11 @@
 
     if (value.length() > 100) {
 %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/>
 : <%=value.substring(0, 100) + "..."%>
 <% } else {
 %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/> : <%=value%>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> : <%=value%>
 <% }
 }
 %>

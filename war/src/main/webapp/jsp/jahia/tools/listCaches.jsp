@@ -87,31 +87,31 @@
         %>
         <tr class="<%=cacheLineClass%>">
             <td width="100%">
-                <%=curCache.getName()%> : <strong><internal:adminResourceBundle resourceName="<%=resourceKey%>"/></strong>
+                <%=curCache.getName()%> : <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=resourceKey%>"/></strong>
                 <br>
                 <%=curCache.size()%>&nbsp;
                 <% if(curCache.size() > 1){
-                %><internal:adminResourceBundle resourceName="org.jahia.admin.entries.label"/><%
+                %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.entries.label"/><%
             } else {
-            %><internal:adminResourceBundle resourceName="org.jahia.admin.entrie.label"/><%
+            %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.entrie.label"/><%
                 } %>
                 &nbsp;
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.groupSize.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.groupSize.label"/> :
                 <%=curCache.getGroupsSize()%>
                 &nbsp;
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.groupsKeysTotal.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.groupsKeysTotal.label"/> :
                 <%=curCache.getGroupsKeysTotal()%>
                 <br/>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.successfulHits.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.successfulHits.label"/> :
                 <%=curCache.getSuccessHits()%> / <%=curCache.getTotalHits()%>&nbsp;
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
-                <internal:adminResourceBundle resourceName="org.jahia.admin.status.ManageStatus.efficiency.label"/> :
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.totalHits.label"/>,
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.status.ManageStatus.efficiency.label"/> :
                 <%=efficiencyStr%> %
             </td>
             <td>
                 Key (optional): <input type="text" name="key_<%=curCache.getName()%>" size="20" title="Key"/> 
-                <input type="submit" name="view_<%=curCache.getName()%>" value="<utility:resourceBundle resourceBundle="JahiaAdministrationResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.view.label" defaultValue="View"/>"/>
-                <input type="submit" name="flush_<%=curCache.getName()%>" value="<utility:resourceBundle resourceBundle="JahiaAdministrationResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.flush.label" defaultValue="Flush"/>"/>
+                <input type="submit" name="view_<%=curCache.getName()%>" value="<utility:resourceBundle resourceBundle="JahiaInternalResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.view.label" defaultValue="View"/>"/>
+                <input type="submit" name="flush_<%=curCache.getName()%>" value="<utility:resourceBundle resourceBundle="JahiaInternalResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.flush.label" defaultValue="Flush"/>"/>
                 <nobr><a href="?view_<%=curCache.getName()%>=1">View all</a></nobr>
             </td>
         </tr>

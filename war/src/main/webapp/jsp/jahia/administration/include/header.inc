@@ -44,6 +44,7 @@
 <%@page import = "org.jahia.services.sites.JahiaSite"%>
 <%@page import = "org.jahia.data.JahiaData"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%!
 public String getAdminResource(String messageKey, HttpServletRequest request) {
@@ -95,7 +96,7 @@ public String getAdminResource(String messageKey, HttpServletRequest request) {
     int stretcherToOpen = 1;
 %>
 <head>
-    <title><internal:adminResourceBundle resourceName="org.jahia.admin.jahiaAdministration.label"/></title>
+    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.jahiaAdministration.label"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <internal:gwtInit/>
     <link rel="stylesheet" href="<%=contextPath%>/jsp/jahia/css/andromeda.css" type="text/css" />

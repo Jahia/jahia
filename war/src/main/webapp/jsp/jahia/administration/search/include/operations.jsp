@@ -36,6 +36,7 @@
 <%@page import="java.util.*"%>
 <%@page import="org.jahia.bin.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="url" class="java.lang.String" scope="request" />
 <% // http files path. %>
 <jsp:useBean id="input" class="java.lang.String" scope="request" />
@@ -49,18 +50,18 @@ Boolean isLynx = (Boolean) request.getAttribute("isLynx"); // Linx.
 Boolean indexExists = (Boolean) request.getAttribute("indexExists"); // Does the index exist or not. %>
 <% if ( !indexExists.booleanValue() ) { %>
 <p class="errorBold">
-    <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.indexNotExist.label" />
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.indexNotExist.label" />
 </p>
 <% } else { %>
 <jsp:include page="processing.jsp" flush="true" />
 <% } %>
 <div class="head headtop">
     <div class="object-title">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.availableOperation.label" />
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.availableOperation.label" />
     </div>
 </div>
 <ul style="list-style-type: none">
     <li>
-        <input type="radio" name="operation" value="doindex"<% if (operation.equals("doindex")) { %> checked<%} %>><internal:adminResourceBundle resourceName="org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label"/>
+        <input type="radio" name="operation" value="doindex"<% if (operation.equals("doindex")) { %> checked<%} %>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label"/>
     </li>
 </ul>

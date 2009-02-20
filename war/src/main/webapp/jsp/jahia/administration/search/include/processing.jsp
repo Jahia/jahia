@@ -252,15 +252,15 @@
             long difmin = diftime / 60000;
             if (difmin < 60) {
 
-                String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".processDisplay.launchedsince.label");
+                String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".processDisplay.launchedsince.label");
                 return pref + difmin + " minutes " + difsec1 + " sec";
             } else {
-                String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".today.prefix");
+                String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.prefix");
                 return pref + "&nbsp;" + sd.format(date);
             }
         } else if (c.after(hier) && c.before(now)) {
             //yesterday
-            String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".yesterday.prefix");
+            String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".yesterday.prefix");
             return pref + "&nbsp;" + sd.format(date);
         }
         // all other dates in the past
@@ -301,10 +301,10 @@
                 long difsec1 = difsec % 60;
                 long difmin = dif / 60000;
                 if (difmin < 60) {
-                    String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".today.futurerangeprefix");
+                    String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.futurerangeprefix");
                     return pref + "&nbsp;" + difmin + " minutes " + difsec1 + " sec";
                 } else {
-                    String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".today.prefix");
+                    String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.prefix");
                     return pref + "&nbsp;" + sd.format(new Date(time));
                 }
             } else {
@@ -315,7 +315,7 @@
                 tom.set(Calendar.MINUTE, now.getActualMaximum(Calendar.MINUTE));
                 tom.set(Calendar.SECOND, now.getActualMaximum(Calendar.SECOND));
                 if(c.before(tom)){
-                String pref = getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".tomorrow.prefix");
+                String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".tomorrow.prefix");
                 s = pref+"&nbsp;"+sd.format(new Date(time));
                 } else {
                 s = df.format(new Date(time));
@@ -337,7 +337,7 @@
 
 
         if(duration<=0){
-                timeduration=getRessource("org.jahia.engines.processDisplay.executed.label", l)+"&nbsp;"+getRessource(ResourceBundle.getBundle("JahiaEnginesResources", l), ".duration.shortime");
+                timeduration=getRessource("org.jahia.engines.processDisplay.executed.label", l)+"&nbsp;"+getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".duration.shortime");
                 return timeduration;
                 } else if(duration<60){
                 sec=duration;
@@ -393,7 +393,7 @@
      */
     private String getRessource(String label, Locale l, String defaultValue) {
         try {
-          return ResourceBundle.getBundle("JahiaEnginesResources", l).getString(label);
+          return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
             return defaultValue;
         }

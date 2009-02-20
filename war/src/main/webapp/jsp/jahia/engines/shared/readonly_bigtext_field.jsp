@@ -40,6 +40,7 @@
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -54,7 +55,7 @@
 
 <fieldset>
     <legend>
-        &nbsp;<b><internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/></b>&nbsp;
+        &nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/></b>&nbsp;
     </legend>
     <%= (value == null || value.length() == 0) ? "&nbsp;" : value %>
 </fieldset>

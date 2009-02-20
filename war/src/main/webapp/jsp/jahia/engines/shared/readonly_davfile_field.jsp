@@ -42,6 +42,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.utils.FileUtils" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -65,15 +66,15 @@
     }
 %>
 
-<internal:engineResourceBundle resourceName="org.jahia.engines.shared.File_Field.file.label"/>&nbsp;:&nbsp;
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.File_Field.file.label"/>&nbsp;:&nbsp;
 <% if (fField == null || url == null) { %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.shared.File_Field.none.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.File_Field.none.label"/>
 <% } else {
 
     if (fField.isImage()) { %>
 <%=fField.getTitle()%>
 <br/>
-<internal:engineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.path.label"/>:
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.filemanager.Filemanager_Engine.path.label"/>:
 <%=fField.getRealName()%>
 <br/>&nbsp;<br/>
 <img src="<%=url%>" alt="<%=fField.getTitle()%>" border="0"/>
@@ -83,7 +84,7 @@
 %>
 <img alt="<%=ext%>" src="${pageContext.request.contextPath}/jsp/jahia/engines/images/types/<%=ext%>.gif"/>
 <a href="<%=url%>" target="_blank"><%=fField.getTitle()%></a><br/>
-<internal:engineResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.path.label"/>:
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.filemanager.Filemanager_Engine.path.label"/>:
 <%=fField.getRealName()%>
 <% } %>
 <% } %>

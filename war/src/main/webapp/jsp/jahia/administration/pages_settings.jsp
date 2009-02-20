@@ -80,7 +80,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.pageSettings.label"/></h2>
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.pageSettings.label"/></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -101,7 +101,7 @@
                             <div id="content" class="fit">
                                 <div class="head headtop">
                                     <div class="object-title">
-                                        <internal:adminResourceBundle resourceName="org.jahia.admin.pageSettings.label"/>
+                                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.pageSettings.label"/>
                                     </div>
                                 </div>
                                 <div class="content-item">
@@ -111,11 +111,11 @@
                                         <table cellpadding="5" cellspacing="0" border="0" class="topAlignedTable">
                                             <tr>
                                                 <td style="width:25%">
-                                                    <internal:adminResourceBundle
+                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.pages.ManagePages.forThisPage.label"/>
                                                 </td>
                                                 <td>
-                                                    <internal:adminResourceBundle
+                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.homepages.ManageHomepages.selectedpage.label"/>: <%=title %>
                                                     [<%=basePageID > 0 ? String.valueOf(basePageID) : "" %>]&nbsp;&nbsp;
                                                 </td>
@@ -123,7 +123,7 @@
                       <span class="dex-PushButton">
                         <span class="first-child">
                           <a class="ico-page-select"
-                             href="javascript:<%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.SELECT_ANY_PAGE_OPERATION, -1, -1, "setPid", jParams.getSiteID(), -1)%>"><internal:adminResourceBundle
+                             href="javascript:<%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.SELECT_ANY_PAGE_OPERATION, -1, -1, "setPid", jParams.getSiteID(), -1)%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                   resourceName="org.jahia.admin.selectAPage.label"/></a>
                         </span>
                       </span>
@@ -131,12 +131,12 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <internal:adminResourceBundle
+                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.pages.ManagePages.useThisTemplate.label"/>
                                                 </td>
                                                 <td colspan="2">
                                                     <select class="input" name="templateid">
-                                                        <option value="0">--&nbsp;&nbsp;<internal:adminResourceBundle
+                                                        <option value="0">--&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.chooseATemplate.label"/>&nbsp;&nbsp;--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                                                         <%
                                                             while (allTemplatesIterator.hasNext()) {
@@ -167,13 +167,13 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:sendForm('save');"><internal:adminResourceBundle
+              <a class="ico-ok" href="javascript:sendForm('save');"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.saveChanges.label"/></a>
             </span>
           </span>

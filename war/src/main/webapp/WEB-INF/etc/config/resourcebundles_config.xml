@@ -1,13 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <registry>
     <!-- core resources -->
     <resource-bundle>
-        <key>JahiaEnginesResources</key>
-        <file>JahiaEnginesResources</file>
-    </resource-bundle>
-    <resource-bundle>
-        <key>JahiaAdministrationResources</key>
-        <file>JahiaAdministrationResources</file>
+        <key>JahiaInternalResources</key>
+        <file>JahiaInternalResources</file>
     </resource-bundle>
     <resource-bundle>
         <key>JahiaMessageResources</key>

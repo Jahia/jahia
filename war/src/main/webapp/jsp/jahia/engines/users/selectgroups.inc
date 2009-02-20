@@ -127,8 +127,8 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
             <span class="first-child">
 
 
-              <a class="ico-search" href="javascript:sendForm('searchGroups');" title="<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.searchItems.label"/>">
-                <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.search.label"/></a>
+              <a class="ico-search" href="javascript:sendForm('searchGroups');" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.searchItems.label"/>">
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.search.label"/></a>
             </span>
           </span>
         </div>
@@ -137,36 +137,36 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr class="evenLine">
             <th valign="top">
-              <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.search.label"/> :
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.search.label"/> :
             </th>
             <td>
               <input type="text" name="searchString" size="20" onkeypress="return getkey2(event);"<% final String searchString = (String) request.getAttribute("searchString"); if (searchString != null) { %> value="<%=(String) request.getAttribute("searchString")%>"<% } %>>
-              <br/><internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.useTest.label"/>
+              <br/><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.useTest.label"/>
             </td>
           </tr>
           <tr class="oddLine">
             <th valign="top">
-              <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.in.label"/> :
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.in.label"/> :
             </th>
             <td>
               <ul class="noStyle">
                 <li>
-                  <input type="radio" name="searchIn" value="allProps" checked="checked" onclick="disableCheckBox(properties);" <%if(isInParam(request,"searchIn","allProps")){%> checked<%}%>>&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.allProperties.label" />
+                  <input type="radio" name="searchIn" value="allProps" checked="checked" onclick="disableCheckBox(properties);" <%if(isInParam(request,"searchIn","allProps")){%> checked<%}%>>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.allProperties.label" />
                 </li>
                 <li>
-                  <input type="radio" name="searchIn" value="properties" onclick="enableCheckbox(properties);" <%if(isInParam(request,"searchIn","properties")){%> checked<%}%>>&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.properties.label"/>:
+                  <input type="radio" name="searchIn" value="properties" onclick="enableCheckbox(properties);" <%if(isInParam(request,"searchIn","properties")){%> checked<%}%>>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.properties.label"/>:
                   <ul>
                     <li>
                       <input type="checkbox" name="properties" value="groupname"  <%if(propertiesParameters == null || propertiesParameters.length == 0){%> disabled="disabled" <%}%><%if(isInParam(request,"properties","groupname")){%> checked<%}else{%><%}%>>&nbsp;
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.groupname.label"/>
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.groupname.label"/>
                     </li>
                     <li>
                       <input type="checkbox" name="properties" value="description" <%if(propertiesParameters == null ||propertiesParameters.length == 0){%> disabled="disabled" <%}%> <%if(isInParam(request,"properties","description")){%> checked<%}%>>&nbsp;
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.description.label"/> (LDAP)
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.description.label"/> (LDAP)
                     </li>
                     <li>
                       <input type="checkbox" name="properties" value="members" <%if(propertiesParameters == null ||propertiesParameters.length == 0){%> disabled="disabled" <%}%> <%if(isInParam(request,"properties","members")){%> checked<%}%>>&nbsp;
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.members.label"/> (LDAP)
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.members.label"/> (LDAP)
                     </li>
                   </ul>
                 </li>
@@ -175,13 +175,13 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
           </tr>
           <tr class="evenLine">
             <th valign="top">
-              <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.on.label"/> :
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.on.label"/> :
             </th>
             <td>
               <ul class="noStyle">
                 <%  if (selectSite.booleanValue()) { %>
                 <li>
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.selectSite.label"/>:
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.selectSite.label"/>:
                   <select name="selectedSite">
                     <% while(siteEnum.hasNext()) { JahiaSite site = (JahiaSite) siteEnum.next(); %>
                       <option value="<%=site.getID()%>"<%if(jahiaSite.getID()==site.getID()){%> selected<%}%>>&nbsp;<%=site.getTitle()%>&nbsp;</option>
@@ -191,11 +191,11 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
                 <%  } %>
                 <li>
                   <input type="radio" name="storedOn" value="everywhere"<% if (providersParameters == null || providersParameters.length == 0) { %> checked="checked" <% } %> onclick="disableCheckBox(providers);">&nbsp;
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.everywhere.label"/>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.everywhere.label"/>
                 </li>
                 <li>
                   <input type="radio" name="storedOn" value="providers"<% if (providersParameters != null && providersParameters.length > 0) { %> checked="checked" <% } %> onclick="enableCheckbox(providers);">&nbsp;
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.providers.label"/> :
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.providers.label"/> :
                   <ul>
                     <%
                     final Iterator providerEnum = providerList.iterator();
@@ -204,7 +204,7 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
                     %>
                       <li>
                         <input type="checkbox" name="providers" value="<%=curProvider.getKey()%>" <%if(providersParameters == null || providersParameters.length == 0){%>disabled="disabled"<%}%><% if (isInParam(request,"providers",curProvider.getKey())) { %> checked="checked" <% } %>>
-                        <internal:engineResourceBundle resourceName='<%="org.jahia.engines.users.SelectUG_Engine.providers." + curProvider.getKey() + ".label"%>'/>&nbsp;(<%=curProvider.getKey()%>)
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='<%="org.jahia.engines.users.SelectUG_Engine.providers." + curProvider.getKey() + ".label"%>'/>&nbsp;(<%=curProvider.getKey()%>)
                       </li>
                     <% } %>
                   </ul>
@@ -223,7 +223,7 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
     </td>
     <td class="split nopadding">
       <div class="head">
-        <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.searchResults.label"/></div>
+        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.searchResults.label"/></div>
       </div>
       <div class="content-body padded">
 
@@ -234,18 +234,18 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
         <table border="0" width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td valign="top" width="40" align="center">
-              <a style="margin-left: 20px;" href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{2}/);" title="<internal:engineResourceBundle resourceName="org.jahia.engines.sortBySource.label"/>">
+              <a style="margin-left: 20px;" href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{2}/);" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortBySource.label"/>">
                 <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/sort_descending.gif" border="0" alt="sortBySource"/></a>
             </td>
             <td width="40" align="center">
-              <a style="margin-left: 25px;" href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{8}/);" title="<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
+              <a style="margin-left: 25px;" href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{8}/);" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
                 <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/sort_descending.gif" border="0" alt="sortByUserId"/></a>
             </td>
             <td valign="top" width="50">
               &nbsp;
             </td>
             <td>
-              <a style="margin-left: 135px;" href='<%="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<internal:engineResourceBundle resourceName="org.jahia.engines.sortByProperty.label"/>">
+              <a style="margin-left: 135px;" href='<%="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortByProperty.label"/>">
                 <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/sort_descending.gif" border="0" alt="sortByProperty"/> </a>
             </td>
           </tr>
@@ -274,34 +274,34 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
             <td colspan="3">
               <div>
                 <a href="javascript:selectAllOptionsSelectBox(document.mainForm.selectedUG);">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.selectAll.label"/></a>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.selectAll.label"/></a>
                 &nbsp;|&nbsp;
                 <a href="javascript:invertSelectionSelectBox(document.mainForm.selectedUG);">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.invertSelection.label"/></a>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.invertSelection.label"/></a>
               </div>
             </td>
           </tr>
         </table>
       </div>
       <div class="headtop">
-        <div class="object-title"><a href="javascript:viewMembers()"><internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.viewGroupMembersButton.label"/></a></div>
+        <div class="object-title"><a href="javascript:viewMembers()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.viewGroupMembersButton.label"/></a></div>
       </div>
       <div class="content-body padded">
         <table border="0" width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td valign="top" width="40" align="center">
-              <a style="margin-left: 20px;" href="javascript:sortSelectBox(document.mainForm.memberList, false, /.{2}/);"title="<internal:engineResourceBundle resourceName="org.jahia.engines.sortBySource.label"/>">
+              <a style="margin-left: 20px;" href="javascript:sortSelectBox(document.mainForm.memberList, false, /.{2}/);"title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortBySource.label"/>">
                 <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/sort_descending.gif" border="0" alt="sortBySource"/></a>
             </td>
             <td width="70" align="center">
-              <a style="margin-left: 25px;" href="javascript:sortSelectBox(document.mainForm.memberList, false, /.{8}/);" title="<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
+              <a style="margin-left: 25px;" href="javascript:sortSelectBox(document.mainForm.memberList, false, /.{8}/);" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
                 <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/sort_descending.gif" border="0" alt="sortByUserId"/></a>
             </td>
             <td valign="top" width="30">
               &nbsp;
             </td>
             <td>
-              <a style="margin-left: 135px;" href='<%="javascript:sortSelectBox(document.mainForm.memberList, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<internal:engineResourceBundle resourceName="org.jahia.engines.sortByProperty.label"/>">
+              <a style="margin-left: 135px;" href='<%="javascript:sortSelectBox(document.mainForm.memberList, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortByProperty.label"/>">
                 <img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/sort_descending.gif" border="0" alt="sortByProperty"/> </a>
             </td>
           </tr>

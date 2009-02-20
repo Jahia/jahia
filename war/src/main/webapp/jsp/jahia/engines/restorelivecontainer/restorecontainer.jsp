@@ -38,6 +38,7 @@
 <%@ page import="org.jahia.params.ParamBean" %>
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
 <%
@@ -56,7 +57,7 @@
 </script>
 
 <h3 class="restore">
-    <internal:engineResourceBundle
+    <utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restore.label"/>
     <span>
         [ID = <%=theContainer.getID()%>]
@@ -70,7 +71,7 @@
 <div class="clearing">&nbsp;</div>
 
 <h5>
-    <internal:engineResourceBundle resourceName="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restoretext.label"/>
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restoretext.label"/>
 </h5>
 
 <div class="clearing">&nbsp;</div>

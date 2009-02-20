@@ -38,6 +38,7 @@
 <%@page import="org.jahia.bin.*" %>
 <%@page import="org.jahia.data.JahiaData" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <jsp:useBean id="groupMessage" class="java.lang.String" scope="session"/>
 <%
@@ -60,7 +61,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
             resourceName="org.jahia.admin.users.ManageGroups.createNewGroup.label"/></h2>
 </div>
 <div id="main">
@@ -81,7 +82,7 @@
                             <div id="content" class="fit">
                                 <div class="head">
                                     <div class="object-title">
-                                        <internal:adminResourceBundle
+                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                 resourceName="org.jahia.admin.users.ManageGroups.createNewGroup.label"/>
                                     </div>
                                 </div>
@@ -96,39 +97,39 @@
                                           method="post">
                                         <!-- Create new group -->
                                         <p>
-                                            <internal:adminResourceBundle
+                                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                     resourceName="org.jahia.admin.users.ManageGroups.pleaseTypeGroupName.label"/>
                                         </p>
 
                                         <p>
-                                            <internal:adminResourceBundle
+                                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                     resourceName="org.jahia.admin.users.ManageGroups.noteThat.label"/>&nbsp;
                                         </p>
                                         <ul>
                                             <li>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.users.ManageGroups.groupNameUniq.label"/>
                                             </li>
                                             <li>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.users.ManageGroups.onlyCharacters.label"/>
                                             </li>
                                             <li>
-                                                <internal:adminResourceBundle
+                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.users.ManageGroups.inputMaxCharacter.label"/>
                                             </li>
                                         </ul>
                                         <table border="0" style="width:100%">
                                             <tr>
                                                 <td align="right">
-                                                    <internal:adminResourceBundle
+                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;
                                                 </td>
                                                 <td>
                                                     <input type="text" name="groupName" class="input" size="40"
                                                            maxlength="185" value="<%= groupName%>">&nbsp;
                                                     <font class="text2">
-                                                        (<internal:adminResourceBundle
+                                                        (<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.required.label"/>)
                                                     </font>
                                                 </td>
@@ -137,7 +138,7 @@
                                             <tr>
                                                 <td align="right">
                                                     <input type="checkbox" name="setHomePage"
-                                                           checked>&nbsp;<internal:adminResourceBundle
+                                                           checked>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                         resourceName="org.jahia.admin.defaultHomePage.label"/>&nbsp;
                                                 </td>
                                                 <td>
@@ -161,13 +162,13 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-cancel"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><internal:adminResourceBundle
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.cancel.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:document.mainForm.submit();"><internal:adminResourceBundle
+              <a class="ico-ok" href="javascript:document.mainForm.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.ok.label"/></a>
             </span>
           </span>

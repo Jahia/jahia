@@ -36,7 +36,9 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" 
 %><%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
 %><%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" 
-%><%@page import="java.text.MessageFormat"
+%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@page import="java.text.MessageFormat"
 %><%@page import="org.jahia.bin.Jahia" 
 %><%@page import="org.jahia.params.ParamBean" 
 %><%@page import="org.jahia.resourcebundle.JahiaResourceBundle" 
@@ -56,7 +58,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/jsp/jahia/javascript/jahia.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/jsp/jahia/errors/error_include.js"></script>
 <c:if test="${isInvalidModeError}">
-    <title><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.invalidMode.label"/></title>
+    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.invalidMode.label"/></title>
     <script type="text/javascript">
         <!--
         function redirectToPage()  {
@@ -70,7 +72,7 @@
     </script>
 </c:if>
 <c:if test="${not isInvalidModeError}">
-    <title><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.httpForbidden.label"/></title>
+    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.httpForbidden.label"/></title>
 </c:if>    
 </head>
 <body>
@@ -78,12 +80,12 @@
 <c:if test="${isInvalidModeError}">
 <table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
     <tr>
-        <td class="boxtitle"><internal:engineResourceBundle
+        <td class="boxtitle"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
     </tr>
     <tr>
         <td class="boxcontent">
-            <p class="bold"><internal:engineResourceBundle
+            <p class="bold"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.bin.JahiaErrorDisplay.invalidModeRequested.label"/></p>
 
             <p><a href="#redirect" onclick="redirectToPage(); return false;">
@@ -99,29 +101,29 @@
 <c:if test="${not isInvalidModeError}">
 <table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
     <tr>
-        <td colspan="2" class="boxtitle"><internal:engineResourceBundle
+        <td colspan="2" class="boxtitle"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
     </tr>
     <tr>
         <td colspan="2" class="boxcontent">
-            <p class="bold"><internal:engineResourceBundle
+            <p class="bold"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.bin.JahiaErrorDisplay.error403.label"/></p>
 
-            <p><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.accessForbidden.label"/></p>
+            <p><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.accessForbidden.label"/></p>
 
             <c:if test="${isGuest}">
-                <p><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.loginAgain.label"/></p>
+                <p><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.loginAgain.label"/></p>
             </c:if>
         </td>
     </tr>
     <tr>
         <td align="left" class="boxcontent">
             <c:if test="${isGuest}">
-            <a href="javascript:EnginePopup('<%=Jahia.getServletPath()%>','login')" class="bold"><internal:engineResourceBundle
+            <a href="javascript:EnginePopup('<%=Jahia.getServletPath()%>','login')" class="bold"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
             </c:if>
             <c:if test="${not isGuest}">
-            <a href="${pageContext.request.contextPath}/jsp/logout.jsp" class="bold"><internal:engineResourceBundle
+            <a href="${pageContext.request.contextPath}/jsp/logout.jsp" class="bold"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.bin.JahiaErrorDisplay.logout.label"/></a>
             </c:if>
         </td>
@@ -129,7 +131,7 @@
           <script type="text/javascript">
             <!--
             if (window.opener != null) {
-                document.writeln( "<a href=\"javascript:window.close()\" class=\"bold\"><internal:engineResourceBundle resourceName="org.jahia.bin.JahiaErrorDisplay.close.label"/></a>" );
+                document.writeln( "<a href=\"javascript:window.close()\" class=\"bold\"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.close.label"/></a>" );
             }
             // -->
           </script>                    

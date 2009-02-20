@@ -38,6 +38,7 @@
 <%@page import = "java.util.*" %>
 <%@page import = "org.jahia.data.JahiaData" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/><% // http files path. %>
 <%
 String groupName = (String)request.getAttribute("groupName");
@@ -47,7 +48,7 @@ int stretcherToOpen   = 1; %>
 <!-- Adiministration page position -->
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.viewGroupMemberships.label"/></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.viewGroupMemberships.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -67,17 +68,17 @@ int stretcherToOpen   = 1; %>
           <div id="content" class="fit">
             <div class="head">
               <div class="object-title">
-                <internal:adminResourceBundle resourceName="org.jahia.admin.membershipsForGroup.label"/>&nbsp;: <%= groupName %>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.membershipsForGroup.label"/>&nbsp;: <%= groupName %>
               </div>
             </div><!-- View group membership on other sites --><!-- For future version : <script language="javascript" src="../search_options.js"></script> -->
             <table border="0" cellspacing="0" class="evenOddTable" style="width:100%">
               <thead>
                 <tr>
                   <th>
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.username.label"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/>
                   </th>
                   <th style="text-align:right">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.homeSite.label"/>&nbsp;&nbsp;
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.homeSite.label"/>&nbsp;&nbsp;
                   </th>
                 </tr>
               </thead>
@@ -87,7 +88,7 @@ int stretcherToOpen   = 1; %>
                 if (!it.hasNext()) { %>
                 <tr>
                   <td colspan="2">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.noMembershipFromOtherSites.label"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.noMembershipFromOtherSites.label"/>
                   </td>
                 </tr><%
                 } else {
@@ -123,7 +124,7 @@ int stretcherToOpen   = 1; %>
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToGroupList.label"/></a>
+      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToGroupList.label"/></a>
     </span>
   </span>
 </div>

@@ -48,14 +48,14 @@
     <div id="columnB" style="text-align: left; padding-top: 50px">
         <h3>Custom 404 error page</h3>
 
-        <p><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+        <p><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                    resourceName="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
 
-        <p><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+        <p><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                    resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a
-                href="javascript:history.back()"><utility:resourceBundle resourceBundle="JahiaEnginesResources"
+                href="javascript:history.back()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                          resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;<utility:resourceBundle
-                resourceBundle="JahiaEnginesResources"
+                resourceBundle="JahiaInternalResources"
                 resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
     </div>
 </center>

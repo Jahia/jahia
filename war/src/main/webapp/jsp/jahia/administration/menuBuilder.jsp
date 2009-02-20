@@ -40,7 +40,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.clipbuilder.title"/></h2>
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.clipbuilder.title"/></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -60,17 +60,17 @@
                             <div id="content" class="fit">
                                 <div class="head">
                                     <div class="object-title">
-                                        <internal:adminResourceBundle resourceName="org.jahia.admin.clipbuilder.label"/>
+                                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.clipbuilder.label"/>
                                     </div>
                                 </div>
                                 <div class="content-item">
                                     <ul class="linkList">
                                         <li>
-                                            <a href='<%=JahiaAdministration.composeActionURL(request,response,null,"/manageAction?do=clipbuilder&webClippingAction=init")%>'><internal:adminResourceBundle
+                                            <a href='<%=JahiaAdministration.composeActionURL(request,response,null,"/manageAction?do=clipbuilder&webClippingAction=init")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                     resourceName="org.jahia.admin.clipbuilder.htmllabel"/></a>
                                         </li>
                                         <li>
-                                            <a href='<%=JahiaAdministration.composeActionURL(request,response,null,"/buildSqlPortlet?do=clipbuilder&webClippingAction=init")%>'><internal:adminResourceBundle
+                                            <a href='<%=JahiaAdministration.composeActionURL(request,response,null,"/buildSqlPortlet?do=clipbuilder&webClippingAction=init")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                     resourceName="org.jahia.admin.clipbuilder.sqllabel"/></a>
                                         </li>
                                     </ul>
@@ -84,7 +84,7 @@
   <span class="dex-PushButton">
     <span class="first-child">
       <a class="ico-back"
-         href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu#server","")%>'><internal:adminResourceBundle
+         href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu#server","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
               resourceName="org.jahia.admin.backToMenu.label"/></a>
     </span>
   </span>

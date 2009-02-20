@@ -37,6 +37,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.params.ParamBean" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
 final String engineUrl = (String) engineMap.get("engineUrl");
@@ -85,9 +86,9 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
   <h1>Jahia</h1>
   <h2>
     <% if (selectUGEngine.equals("selectUsers")) { %>
-      <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"/>
+      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"/>
     <% } else { %>
-      <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"/>
+      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"/>
     <% } %>
   </h2>
 </div>
@@ -105,7 +106,7 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
                   <div>
                     <span class="tab-icon ico-data">
                       <a href="javascript:handleActionChange('searchGroups')">
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.groupList.label"/></a>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.groupList.label"/></a>
                     </span>
                   </div>
                 </div>
@@ -115,7 +116,7 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
                   <div>
                     <span class="tab-icon ico-data">
                       <a href="javascript:handleActionChange('searchUsers')">
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.userList.label"/></a>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.userList.label"/></a>
                     </span>
                   </div>
                 </div>
@@ -153,20 +154,20 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
   <div id="actionBar">
     <span class="dex-PushButton">
       <span class="first-child">
-        <a class="ico-ok" href="javascript:pasteSelectionClose();" title="<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.pasteAndClose.label"/>">
-          <internal:engineResourceBundle resourceName="org.jahia.button.ok"/></a>
+        <a class="ico-ok" href="javascript:pasteSelectionClose();" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.pasteAndClose.label"/>">
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
       </span>
     </span>
     <span class="dex-PushButton">
       <span class="first-child">
-        <a class="ico-add" href="javascript:pasteSelection();" title="<internal:engineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.pasteWithoutClose.label"/>">
-          <internal:engineResourceBundle resourceName="org.jahia.button.add"/></a>
+        <a class="ico-add" href="javascript:pasteSelection();" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.pasteWithoutClose.label"/>">
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.add"/></a>
       </span>
     </span>
     <span class="dex-PushButton">
       <span class="first-child">
-        <a class="ico-cancel" href="javascript:window.close();" title="<internal:engineResourceBundle resourceName="org.jahia.altCloseWithoutSave.label"/>">
-          <internal:engineResourceBundle resourceName="org.jahia.button.cancel"/></a>
+        <a class="ico-cancel" href="javascript:window.close();" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altCloseWithoutSave.label"/>">
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.cancel"/></a>
       </span>
     </span>
   </div>

@@ -44,9 +44,10 @@
 <%@ page import="org.jahia.data.fields.JahiaField" %>
 <%@ page import="java.util.Iterator" %>
 <%@ page import="org.jahia.params.ParamBean" %>
-<%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.filepicker.FilePicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
 <%!
@@ -138,9 +139,9 @@
             for (i = 0; i < index; i++) {
                 badName += "- ";
                 if (usrgrpname[i].substr(0, 1) == "u") {
-                    badName += "<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.userName.label"/>";
+                    badName += "<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.userName.label"/>";
                 } else {
-                    badName += "<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Application_Field.groupName.label"/>";
+                    badName += "<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.groupName.label"/>";
                 }
                 badName += usrgrpname[i].substr(1, usrgrpname[i].lastIndexOf(':') - 1) + "\n";
             }

@@ -53,7 +53,7 @@
 
     <h2 class="edit">
         <%if (!isConfigWizard) {%>
-        <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
         <%} else {%>
         <internal:message key="org.jahia.createSite.siteFactory"/>
         <%}%>
@@ -111,12 +111,12 @@
                                 <div class="full">
                                     <% } %>
                                     <div class="head">
-                                        <div class="object-title"><internal:adminResourceBundle
+                                        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                 resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>
                                         </div>
                                         <%if (!isConfigWizard) {%>
                                         <div class="object-shared">
-                                            <internal:adminResourceBundle resourceName="org.jahia.step.label"/> 2 / 3
+                                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.step.label"/> 2 / 3
                                         </div>
                                         <% } %>
                                     </div>
@@ -129,13 +129,13 @@
                                             <tr>
                                                 <c:if test="${not empty tmplSets}">
                                                     <td>
-                                                        <internal:adminResourceBundle
+                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;:
                                                     </td>
                                                     <td>
                                                         <select name="selectTmplSet" onChange="submitForm('change');">
                                                             <option value="">
-                                                                ---------&nbsp;&nbsp;<internal:adminResourceBundle
+                                                                ---------&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                     resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                                                             <c:forEach items="${tmplSets}" var="tmplPack">
                                                                 <c:set var="displayName" value="" scope="request"/>
@@ -154,7 +154,7 @@
                                                 </c:if>
                                                 <c:if test="${empty tmplSets}">
                                                     <td colspan="2">
-                                                        <internal:adminResourceBundle
+                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.site.ManageSites.noTemplatesHasbeenFound.label"/>
                                                     </td>
                                                 </c:if>
@@ -162,7 +162,7 @@
                                             <tr>
                                                 <c:if test="${not empty availableThemes}">
                                                     <td>
-                                                        <internal:adminResourceBundle
+                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>&nbsp;:
                                                     </td>
                                                     <td>
@@ -187,14 +187,14 @@
                                                 <c:if test="${empty selectedPackage || empty selectedPackage.thumbnail}">
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <internal:adminResourceBundle
+                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.site.ManageSites.NoTemplatePreview.label"/>
                                                     </td>
                                                 </c:if>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <internal:adminResourceBundle
+                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                             resourceName="org.jahia.admin.site.ManageSites.pleaseChooseLanguage.label"/>&nbsp;:
                                                 </td>
                                                 <td>
@@ -242,7 +242,7 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displaycreateadmin")%>'><internal:adminResourceBundle
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displaycreateadmin")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
             </span>
           </span>
@@ -250,7 +250,7 @@
           <span class="dex-PushButton">
             <span class="first-child">
                 <a class="ico-back"
-                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displayselectexistantadmin")%>'><internal:adminResourceBundle
+                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displayselectexistantadmin")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
            </span>
           </span>
@@ -258,7 +258,7 @@
           <span class="dex-PushButton">
             <span class="first-child">
                 <a class="ico-back"
-                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><internal:adminResourceBundle
+                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
            </span>
           </span>
@@ -268,7 +268,7 @@
                   <span class="dex-PushButton">
                     <span class="first-child">
                     <a class="ico-ok" href="javascript:submitForm('save');">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.save.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/>
                     </a>
                   </span>
                 </span>

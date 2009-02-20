@@ -59,7 +59,7 @@
 </script>
 
 <tr>
-    <td align="center" class="text"><img name="component" src="<%=URL%>images/icons/admin/application.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><internal:adminResourceBundle resourceName="org.jahia.admin.manageComponents.label"/></h3></td>
+    <td align="center" class="text"><img name="component" src="<%=URL%>images/icons/admin/application.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/></h3></td>
 </tr>
 </table>
 <br>
@@ -75,7 +75,7 @@
         <tr>
             <td>
                 <font class="text"><br><br>
-                <b><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.confirmChangeStatus.label"/>&nbsp;:</b><br><br><br><br>
+                <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.confirmChangeStatus.label"/>&nbsp;:</b><br><br><br><br>
                 </font>
             </td>
         </tr>
@@ -84,14 +84,14 @@
                 <form name="mainForm" action="<%=requestURI%>?do=components&sub=savevisibility" method="post">
                 <table border="0" cellpadding="0" cellspacing="0" width="85%">
                 <tr>
-                    <td valign="top" align="left" class="text"><b><internal:adminResourceBundle resourceName="org.jahia.admin.name.label"/></b></td>
-                    <td	valign="top" align="right" class="text"><b><internal:adminResourceBundle resourceName="org.jahia.admin.availableToUsers.label"/></b></td>
+                    <td valign="top" align="left" class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.name.label"/></b></td>
+                    <td	valign="top" align="right" class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.availableToUsers.label"/></b></td>
                 </tr>
                 <tr>
                     <td colspan="2"></td>
                 </tr>
                 <tr>
-                    <td colspan="2" width="100%" height="2" background="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.header.image"/>"><img src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.pix.image"/>" width="1" height="1"></td>
+                    <td colspan="2" width="100%" height="2" background="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.header.image"/>"><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image"/>" width="1" height="1"></td>
                 </tr>
                 <tr>
                     <td colspan="2"><br></td>
@@ -110,16 +110,16 @@
                                     <input type="hidden" name ="visible_status" value="<%=app.getID()%>">
                                     <%
                                     if (app.getVisibleStatus() == 1 ){
-                                    %><b><internal:adminResourceBundle resourceName="org.jahia.admin.no.label"/></b><%
+                                    %><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.no.label"/></b><%
                                     } else {
-                                    %><b><internal:adminResourceBundle resourceName="org.jahia.admin.yes.label"/></b><%
+                                    %><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.yes.label"/></b><%
                                     } %>
                                 </td>
                             </tr>
                             <%
                         }
                     } else {
-                    %><tr><td colspan="2" class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.noApplicationsFound.label"/></td></tr><%
+                    %><tr><td colspan="2" class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.noApplicationsFound.label"/></td></tr><%
                     }
                 %>
                 <tr>
@@ -128,8 +128,8 @@
                 <tr>
                     <td align="right" colspan="2">
                     &nbsp;<br>
-                        <a href="<%=requestURI%>?do=components&sub=display" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Cancel','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.cancelOn.button"/>',1)"><img name="Cancel" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.cancelOff.button"/>" width="69" height="17" border="0" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/>"></a>
-                        <a href="javascript:document.mainForm.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('save','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.saveOn.button"/>',1)"><img name="save" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.saveOff.button"/>" border="0" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.save.label"/>"></a>
+                        <a href="<%=requestURI%>?do=components&sub=display" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Cancel','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancelOn.button"/>',1)"><img name="Cancel" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancelOff.button"/>" width="69" height="17" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/>"></a>
+                        <a href="javascript:document.mainForm.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('save','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.saveOn.button"/>',1)"><img name="save" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.saveOff.button"/>" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/>"></a>
                     </td>
                 </tr>
                 <tr>

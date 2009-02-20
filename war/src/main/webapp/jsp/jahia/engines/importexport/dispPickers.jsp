@@ -55,6 +55,7 @@
 <%@ page import="org.jahia.engines.calendar.CalendarHandler" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%!
 
     /**
@@ -184,7 +185,7 @@
                 //logger.debug("URL---->"+url);
                 //if (!isPage) {
                 if(isActive && isReadable) {
-                    ResourceBundle bundle = ResourceBundle.getBundle("JahiaEnginesResources", loc);
+                    ResourceBundle bundle = ResourceBundle.getBundle("JahiaInternalResources", loc);
                     r = new StringBuffer("<a href=\"").append(url).append("\" target=\"_new\">").append(t).append("</a><br>(pid: ").append(pageID).append(" ").append(getRessource(bundle, "org.jahia.engines.importexport.contentpick.searchsite.onesite.label","")).append(" ").append(sitekey).append(")").toString();
                 } else  {
                     r = new StringBuffer("<span class=\"picklink\">").append(t).append("</span><br>(pid: ").append(pageID).append(" - site: ").append(sitekey).append(")").toString() ;
@@ -336,7 +337,7 @@
     //current locale
     final Locale locale=(Locale)request.getSession().getAttribute(ParamBean.SESSION_LOCALE);
     // to bundle html labels
-    ResourceBundle enginebundle = ResourceBundle.getBundle("JahiaEnginesResources", locale);
+    ResourceBundle enginebundle = ResourceBundle.getBundle("JahiaInternalResources", locale);
     ResourceBundle pickersbundle =  ResourceBundle.getBundle("jahiatemplates.common", locale);
 
     // jparams
@@ -531,7 +532,7 @@
 <tr><td colspan="2">
 
 <table border="0" width="100%"><tr><td width="48"><img name="logo" src="../../css/images/logo/logo-jahia.gif" border="0" width="45" height="34"></td><td><img src="../images/pix.gif" border="0" width="1" height="10">
-<div id="copyright"><%=Jahia.COPYRIGHT%>&nbsp;<internal:engineResourceBundle
+<div id="copyright"><%=Jahia.COPYRIGHT%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
  resourceName="org.jahia.Jahia.copyright.label"/></div><span class="version">Jahia <%=Jahia.VERSION%>.<%=Jahia.getPatchNumber()%> r<%=Jahia.getBuildNumber()%></span>
 </td></tr></table>
 </td></tr>

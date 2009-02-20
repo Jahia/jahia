@@ -92,13 +92,13 @@
       <div class="head">
         <div class="object-title">
           <% if (pagesVersViewHelper.getOperationType() == 1) { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.version.UndoStagingWizard" defaultValue="Undo Staging Wizard"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.UndoStagingWizard" defaultValue="Undo Staging Wizard"/>
           <% } else if (pagesVersViewHelper.getOperationType() == 2) { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreArchivedContent" defaultValue="Restore old version Wizard"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreArchivedContent" defaultValue="Restore old version Wizard"/>
           <% } else { %>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.version.ContentUndeleteWizard" defaultValue="Content Undelete Wizard"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.ContentUndeleteWizard" defaultValue="Content Undelete Wizard"/>
           <% } %>
-          &nbsp;-&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.stepTwoOfThree"/>
+          &nbsp;-&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepTwoOfThree"/>
         </div>
       </div>
       <% if (pagesVersViewHelper.getOperationType() == 1) { %>
@@ -106,22 +106,22 @@
           <tr>
             <th align="left" valign="top" rowspan="3" width="70">
               <span class="errorbold">
-                <internal:engineResourceBundle resourceName="org.jahia.engines.version.warning"/>:&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.warning"/>:&nbsp;
               </span>
             </th>
             <td align="left" valign="top">
-              a)&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.undoStagingApplyToAllLanguages"/>!
+              a)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.undoStagingApplyToAllLanguages"/>!
             </td>
           </tr>
           <tr>
 
             <td align="left" valign="top">
-              b)&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.pagesThatExistOnlyInStaging"/>.
+              b)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.pagesThatExistOnlyInStaging"/>.
             </td>
           </tr>
           <tr>
             <td align="left" valign="top">
-              c)&nbsp;<internal:engineResourceBundle  resourceName="org.jahia.engines.version.previouslyDeletedPages"/>.
+              c)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"  resourceName="org.jahia.engines.version.previouslyDeletedPages"/>.
             </td>
           </tr>
         </table>
@@ -131,7 +131,7 @@
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr>
             <th align="left" valign="top" width="100">
-              <internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreDate"/> :
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreDate"/> :
             </th>
             <td>
               <%
@@ -153,12 +153,12 @@
               -->
               </script>
               <br/>
-              <a href="javascript:sendForm('showRevisionsList')"><internal:engineResourceBundle resourceName="org.jahia.engines.version.chooseTheDateFromRevisionsList"/>.</a><br>
+              <a href="javascript:sendForm('showRevisionsList')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.chooseTheDateFromRevisionsList"/>.</a><br>
             </td>
           </tr>
           <tr>
             <th align="left" valign="top">
-              <internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreOptions"/> :
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreOptions"/> :
             </th>
             <td>
               <table cellpadding="0" cellspacing="0" border="0">
@@ -167,9 +167,9 @@
                     <input type="radio" name="exact_restore" value="yes" <% if ( pagesVersViewHelper.exactRestore() ){%> checked<%}%> >
                   </td>
                   <td style="padding-top: 5px;">
-                    <internal:engineResourceBundle resourceName="org.jahia.engines.version.exactRestore"/> :<br />
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.exactRestore"/> :<br />
                     <div style="padding:10px 0 0 25px;">
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.version.exactRestoreDescription"/>.
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.exactRestoreDescription"/>.
                     </div>
                   </td>
                 </tr>
@@ -178,9 +178,9 @@
                     <input type="radio" name="exact_restore" value="no"<% if ( !pagesVersViewHelper.exactRestore() ){%> checked<%}%>>
                   </td>
                   <td style="padding-top: 5px;">
-                    <internal:engineResourceBundle resourceName="org.jahia.engines.version.partialRestore"/> :<br />
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.partialRestore"/> :<br />
                     <div style="padding:10px 0 0 25px;">
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.version.partialRestoreDescription"/>.
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.partialRestoreDescription"/>.
                     </div>
                   </td>
                 </tr>
@@ -191,16 +191,16 @@
       <% } %>
       <div class="head">
         <div class="object-title">
-          <internal:engineResourceBundle resourceName="org.jahia.engines.version.pagesSelection"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.pagesSelection"/>
         </div>
       </div>
       <% if (pagesVersViewHelper.getOperationType() == 2) { %>
         <p>
-          <internal:engineResourceBundle resourceName="org.jahia.engines.version.restorePageSelectionWarning" defaultValue="Pages that exist only in Staging or that do not exist at the selected date (<span style='color:Blue'>blue pages</span>) are not selectable. You could try to choose a precise revision from the revision list: "/>
-          <a href="javascript:sendForm('showRevisionsList')"><internal:engineResourceBundle resourceName="org.jahia.engines.version.chooseTheDateFromRevisionsList"/>.</a>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restorePageSelectionWarning" defaultValue="Pages that exist only in Staging or that do not exist at the selected date (<span style='color:Blue'>blue pages</span>) are not selectable. You could try to choose a precise revision from the revision list: "/>
+          <a href="javascript:sendForm('showRevisionsList')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.chooseTheDateFromRevisionsList"/>.</a>
         </p>
       <% } %>
-      <!--<p><span class="error">N.B:&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.lockedPages"/></span></p>-->
+      <!--<p><span class="error">N.B:&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.lockedPages"/></span></p>-->
       <%
       // Restore specific
       final int restoreVersionID = (int) (pagesVersViewHelper.getRestoreDateCalendar().getDateLong().longValue() / 1000);

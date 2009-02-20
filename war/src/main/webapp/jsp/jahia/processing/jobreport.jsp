@@ -35,11 +35,11 @@
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <html>
 <head>
     <internal:gwtInit standalone="true"/>
-    <title><internal:engineResourceBundle resourceName="org.jahia.engines.processDisplay.jobresult.label" defaultValue="Job Report"/></title>
+    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.processDisplay.jobresult.label" defaultValue="Job Report"/></title>
 </head>
 <body>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.jobreport.JobReport"/>

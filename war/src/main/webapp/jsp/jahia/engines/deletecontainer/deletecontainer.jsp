@@ -58,6 +58,7 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper" %>
 <%@ page import="org.jahia.engines.JahiaEngine" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <%
 final Logger logger = Logger.getLogger("deletecontainer.jsp") ;
@@ -88,7 +89,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
 
 <div id="header">
   <h1>Jahia</h1>
-  <h2 class="delete"><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.deleteContainer.label"/></h2>
+  <h2 class="delete"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.deleteContainer.label"/></h2>
 </div>
 <div id="mainContent">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -100,13 +101,13 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
               <div id="content" class="full">
                 <% if (!error) {%>
                 <div class="head">
-                  <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.confirm.label"/></div>
+                  <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.confirm.label"/></div>
                 </div>
                 <%}%>
                 <div>
                   <% if (error) { %>
                     <p class="errorbold">
-                       <internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.errorMessage"/>
+                       <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.errorMessage"/>
                     </p>
                   <%} else {%>
                     <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
@@ -173,8 +174,8 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
     						if(!deletedFiles.isEmpty())
     						{ %>
     									<input type="checkbox" name="deleteFile" /> 
-    									<internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.deleteFiles"/>
-    									<span  style="color: red;">(<internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.deleteFiles.warning"/>)</span>
+    									<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.deleteFiles"/>
+    									<span  style="color: red;">(<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.deleteFiles.warning"/>)</span>
     
     						<%
       
@@ -187,16 +188,16 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                       currentLocale = elh.getCurrentLanguageCode() ;
                   }%>
                   <p class="errorbold">
-                    <internal:engineResourceBundle resourceName="org.jahia.warning.label"/>:
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.warning.label"/>:
                   </p>
                   <% if (stagingWarning) { %>
-                         <p><internal:engineResourceBundle resourceName="org.jahia.stagingWarning.label"/></p>
+                         <p><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.stagingWarning.label"/></p>
                   <% } %>
                   <% if (!deletedPages.isEmpty()) {
                     if (deletedPages.size() > DeleteContainer_Engine.PAGE_LIST_SIZE_LIMIT) {%>
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.delPagesPartialList.label"/>:
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.delPagesPartialList.label"/>:
                     <%} else {%>
-                      <internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.delPages.label"/>:
+                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.delPages.label"/>:
                     <%}%>
                     <ul>
                       <%
@@ -212,7 +213,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                     </ul>
                   <%}
                   if (ctnPickers != null && ctnPickers.size() > 0) { %>
-                    <internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.brokenPickers.label"/>:
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.brokenPickers.label"/>:
                     <ul>
                       <%
                       for (ContentObject contentObject : ctnPickers) {
@@ -231,7 +232,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                     </ul>
                   <%}
                   if (!deletedLinks.isEmpty()) {%>
-                    <internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.delLinks.label"/>:
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.delLinks.label"/>:
                     <ul>
                       <%
                       for (Iterator it = deletedLinks.iterator(); it.hasNext(); ) {
@@ -239,7 +240,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                         if (aPage != null && aPage.getACL().getPermission(jParams.getUser(), JahiaBaseACL.READ_RIGHTS, true)) { %>
                           <li>
                             <a target="_blank" href="<%=aPage.getURL(jParams)%>"><%=aPage.getTitle()%></a>&nbsp;
-                            (<internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.onPageId.label"/>:
+                            (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.onPageId.label"/>:
                             <a target="_blank" href="<%=ContentPage.getPage(aPage.getParentID()).getURL(jParams)%>"><%=aPage.getParentID()%></a>)
                           </li>
                         <%}
@@ -247,29 +248,29 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                     </ul>
                   <%}
                   if (futureBrokenLinkObjects.size() > 0) { %>
-                    <p><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.futureBrokenLinks.label"/>:<p>
+                    <p><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.futureBrokenLinks.label"/>:<p>
                     <div class="inMiddle">
                       <table id="hardLinks">
                         <tr class="header">
                           <td>
-                            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.type.label"/></strong>
+                            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.type.label"/></strong>
                           </td>
                           <td>
-                            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.subType.label"/></strong>
+                            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.subType.label"/></strong>
                           </td>
                           <td>
-                            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.id.label"/></strong>
+                            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.id.label"/></strong>
                           </td>
                           <td>
-                            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.name.label"/></strong></td>
+                            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.name.label"/></strong></td>
                           <td>
-                            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.title.label"/></strong>
+                            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.title.label"/></strong>
                           </td>
                           <td>
-                            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.pageId.label"/></strong>
+                            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.pageId.label"/></strong>
                           </td>
                           <td>
-                            <strong><internal:engineResourceBundle resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.pageTitle.label"/></strong>
+                            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.deletecontainer.DeleteContainer_Engine.pageTitle.label"/></strong>
                           </td>
                         </tr>
                         <%

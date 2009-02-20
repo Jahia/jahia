@@ -60,18 +60,18 @@
 	<div id="topTitleLogo">
 		<img src="<%=URL%>images/icons/admin/application.gif" width="48" height="48" alt="Applications" />
   </div>
-  <h1 id="topTitleLabel"><internal:adminResourceBundle resourceName="org.jahia.admin.manageComponents.label"/></h1>
+  <h1 id="topTitleLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/></h1>
 </div>
 
 <div id="adminMainContent">
 	
-	<h2><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.componentDetails.label"/>&nbsp;:</h2>
+	<h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.componentDetails.label"/>&nbsp;:</h2>
 
         <form name="mainForm" action="<%=requestURI%>?do=sharecomponents&sub=details&package_name=<%=aPackage.getFileName()%>" method="post">
         <table border="0"  cellpadding="0">
         <% if ( !canDeploy.booleanValue() ) { %>
           <div class="text">
-                 <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationCannotBeDeployed.label"/>
+                 <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.applicationCannotBeDeployed.label"/>
           </div>
         <% } %>
         <tr>
@@ -79,7 +79,7 @@
                 <table border="0" cellpadding="0" cellspacing="0" >
                 <tr>
                     <td valign="top" align="left" nowrap>
-                        <font class="text"><b><% if (!aPackage.isDirectory()) { %><internal:adminResourceBundle resourceName="org.jahia.admin.file.label"/><% } else { %><internal:adminResourceBundle resourceName="org.jahia.admin.directoryName.label"/><% } %>&nbsp;:</b></font>
+                        <font class="text"><b><% if (!aPackage.isDirectory()) { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.file.label"/><% } else { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.directoryName.label"/><% } %>&nbsp;:</b></font>
                     </td>
                     <td valign="top" align="left">
                         <font class="text"><b>&nbsp;&nbsp;&nbsp;<% if ( aPackage.isDirectory() ) {%>/<%} %><%=aPackage.getFileName()%></b></font>
@@ -92,7 +92,7 @@
             <td colspan="2"><br></td>
         </tr>
         <tr>
-            <td colspan="2" class="text"align="left"><b><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.listWebApplications.label"/>&nbsp;:</b></td>
+            <td colspan="2" class="text"align="left"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.listWebApplications.label"/>&nbsp;:</b></td>
         </tr>
         <tr>
             <td colspan="2"><br></td>
@@ -118,7 +118,7 @@
                     %>
                     <tr>
                         <td valign="top" align="right" nowrap>
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.webAppName.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.webAppName.label"/>&nbsp;:</font>
                         </td>
                         <td width="90%">
                             <font class="text">&nbsp;<b><%=webApp.getName()%></b></font>
@@ -127,7 +127,7 @@
                     </tr>
                     <tr>
                         <td valign="top" align="right" nowrap>
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.webAppContext.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.webAppContext.label"/>&nbsp;:</font>
                             <br>
                         </td>
                         <td width="90%">
@@ -138,7 +138,7 @@
                     </tr>
                     <tr>
                         <td valign="top" align="right" nowrap>
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.description.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.description.label"/>&nbsp;:</font>
                         </td>
                         <td >
                             <font class="text">&nbsp;<%=webApp.getdesc()%></font>
@@ -150,7 +150,7 @@
                     </tr>
                     <tr>
                         <td valign="top" align="right" nowrap >
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.listOfServlets.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.listOfServlets.label"/>&nbsp;:</font>
                         </td>
                         <td><br></td>
                     </tr>
@@ -178,7 +178,7 @@
                         %>
                     <tr>
                         <td valign="top" align="right" nowrap>
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.name.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.name.label"/>&nbsp;:</font>
                         </td>
                         <td >
                             <font class="text">&nbsp;<%=servlet.getName()%></font>
@@ -187,7 +187,7 @@
                     </tr>
                     <tr>
                         <td valign="top" align="right" nowrap>
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.source.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.source.label"/>&nbsp;:</font>
                         </td>
                         <td >
                             <font class="text">&nbsp;<%=servlet.getSource()%></font>
@@ -196,7 +196,7 @@
                     </tr>
                     <tr>
                         <td valign="top" align="right" nowrap>
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.type.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.type.label"/>&nbsp;:</font>
                         </td>
                         <td >
                             <font class="text">&nbsp;<%=servlet.getTypeLabel()%></font>
@@ -205,7 +205,7 @@
                     </tr>
                     <tr>
                         <td valign="top" align="right" nowrap>
-                            <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.description.label"/>&nbsp;:</font>
+                            <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.description.label"/>&nbsp;:</font>
                         </td>
                         <td>
                             <font class="text">&nbsp;<%=servlet.getdesc()%></font>
@@ -233,7 +233,7 @@
                     %>
                     <tr>
                         <td valign="top" align="right" nowrap colspan="2">
-                            <font class="text"><b><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.noWebComponents.label"/></b></font>
+                            <font class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.noWebComponents.label"/></b></font>
                         </td>
                     </tr>
                     <tr>
@@ -252,27 +252,27 @@
   <div style="text-align:center">
                 &nbsp;<br>
                 <input type="hidden" name="subaction" value="">
-                <a href="javascript:sendForm('delete');" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('delete','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.deleteOn.button"/>',1)"><img name="delete" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.deployOff.button"/>" width="69" height="17" border="0" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.delete.label"/>"></a>
+                <a href="javascript:sendForm('delete');" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('delete','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.deleteOn.button"/>',1)"><img name="delete" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.deployOff.button"/>" width="69" height="17" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/>"></a>
                 <% if ( canDeploy.booleanValue() ){%>
-                    <a href="javascript:sendForm('deploy');" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('deploy','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.deployOn.button"/>',1)"><img name="deploy" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.deployOff.button"/>" width="69" height="17" border="0" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.deploy.label"/>"></a>
+                    <a href="javascript:sendForm('deploy');" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('deploy','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.deployOn.button"/>',1)"><img name="deploy" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.deployOff.button"/>" width="69" height="17" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.deploy.label"/>"></a>
                 <% } else { %>
-                    <a href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=displaynewlist")%>' onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('cancel','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.cancelOn.button"/>',1)"><img name="cancel" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.cancelOff.button"/>" width="69" height="17" border="0" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/>"></a>
+                    <a href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=displaynewlist")%>' onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('cancel','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancelOn.button"/>',1)"><img name="cancel" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancelOff.button"/>" width="69" height="17" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/>"></a>
                 <% } %>
   </div>
 
   <div id="operationMenu">
   	<div id="operationMenuLabel">
-			<internal:adminResourceBundle resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
+			<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
 		</div>
 		<ul id="operationList">
       <li class="operationEntry">
-        <a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=displaynewlist")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.backToNewComponentsList.label"/></a>
+        <a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=displaynewlist")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.backToNewComponentsList.label"/></a>
       </li>
       <li class="operationEntry">
-        <a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
+        <a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
       </li>
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
       </li>     		
     </ul>
   </div>

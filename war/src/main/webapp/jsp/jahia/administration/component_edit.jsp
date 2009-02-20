@@ -79,7 +79,7 @@
 
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.manageComponents.label"/></h2>
+<h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/></h2>
 </div>
 
 <div id="main">
@@ -102,7 +102,7 @@
             <div id="content" class="fit">
             <div class="head headtop">
                 <div class="object-title">
-                    <internal:adminResourceBundle
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
                             resourceName="org.jahia.admin.users.ManageUsers.editUser.label"/>
                 </div>
             </div>
@@ -114,16 +114,16 @@
 
         %>
         <div class="head">
-            <div class="object-title"><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.deleteComponents.label"/>
+            <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.deleteComponents.label"/>
             </div>
         </div>
         <p>
-        &nbsp;&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.confirmDeleteComponents.label"/>
+        &nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.confirmDeleteComponents.label"/>
         </p>
         <table border="0" cellpadding="5" cellspacing="0" width="100%">
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationName.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.applicationName.label"/>&nbsp;
                     </td>
             <td>
                 :&nbsp;<b><%=appItem.getName()%></b>
@@ -131,7 +131,7 @@
                 </tr>
                 <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationContext.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.applicationContext.label"/>&nbsp;
                     </td>
             <td>
                 :&nbsp;<%=appItem.getContext()%>
@@ -139,18 +139,18 @@
                 </tr>
                 <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.availableToUsers.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.availableToUsers.label"/>&nbsp;
                     </td>
                     <td >
                 :&nbsp;
                         <%
                             if (appItem.getVisibleStatus() == 1 ){
-                        %><internal:adminResourceBundle resourceName="org.jahia.admin.yes.label"/><% } else { %><internal:adminResourceBundle resourceName="org.jahia.admin.no.label"/><% } %>
+                        %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.yes.label"/><% } else { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.no.label"/><% } %>
                     </td>
                 </tr>
                 <tr>
             <td style="vertical-align: top">
-                <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationDesc.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.applicationDesc.label"/>&nbsp;
                     </td>
             <td>
                 &nbsp;<textarea name="appDescr" rows="6" cols="45"><%=appItem.getdesc()%></textarea>
@@ -158,20 +158,20 @@
                 </tr>
                 <tr>
             <td></td>
-            <td><b><internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.deleteAndUndeploy.label"/>&nbsp;</b>&nbsp;<input type="checkbox" name="undeploy"></td>
+            <td><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.deleteAndUndeploy.label"/>&nbsp;</b>&nbsp;<input type="checkbox" name="undeploy"></td>
                 </tr>
                 </table>
         
         <% } else { %>
         <div class="head">
             <div class="object-title">
-                <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.componentDetails.label"/>
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.componentDetails.label"/>
             </div>
         </div>
   <table border="0" cellpadding="5" cellspacing="0" width="100%">
         <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationName.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.applicationName.label"/>&nbsp;
                     </td>
             <td>
                 :&nbsp;<input class="input" type="text" name="appName" value="<%=appItem.getName()%>" size="<%=inputSize%>">
@@ -179,7 +179,7 @@
                 </tr>
                 <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationContext.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.applicationContext.label"/>&nbsp;
                     </td>
             <td>
                 :&nbsp;<%=appItem.getContext()%>
@@ -187,7 +187,7 @@
                 </tr>
                 <tr>
             <td>
-                <internal:adminResourceBundle resourceName="org.jahia.admin.availableToUsers.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.availableToUsers.label"/>&nbsp;
                     </td>
                     <td >
                 :&nbsp;
@@ -199,7 +199,7 @@
                 </tr>
                 <tr>
             <td style="vertical-align:top">
-                <internal:adminResourceBundle resourceName="org.jahia.admin.description.label"/>&nbsp;
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.description.label"/>&nbsp;
                     </td>
             <td>
                 &nbsp;<textarea class="input" name="appDescr" rows="6" cols='45'><%=appItem.getdesc()%></textarea>
@@ -208,7 +208,7 @@
                 <% if ( nbShare.intValue()>0 ){ %>
                 <tr>
             <td style="vertical-align:top">
-                <internal:adminResourceBundle resourceName="org.jahia.admin.components.ManageComponents.sharedWith.label"/>&nbsp;:
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.sharedWith.label"/>&nbsp;:
                     </td>
             <td style="vertical-align:top">
                         <% while ( authSites.hasNext() ){
@@ -248,14 +248,14 @@
       <span class="dex-PushButton"> 
           <span class="first-child">
           <a class="ico-cancel" href="<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>">
-          <internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/>
         </a>
        </span>
       </span>
       <span class="dex-PushButton"> 
           <span class="first-child">
           <a class="ico-delete" href="javascript:sendForm('delete');">
-          <internal:adminResourceBundle resourceName="org.jahia.admin.delete.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/>
         </a>
        </span>
       </span>
@@ -265,21 +265,21 @@
       <span class="dex-PushButton">
         <span class="first-child"> 
           <a class="ico-restore" href="javascript:document.mainForm.reset();">
-          <internal:adminResourceBundle resourceName="org.jahia.admin.resetChanges.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.resetChanges.label"/>
           </a>
          </span> 
       </span>  
       <span class="dex-PushButton">
       <span class="first-child"> 
           <a class="ico-save" href="javascript:sendForm('save');">
-          <internal:adminResourceBundle resourceName="org.jahia.admin.save.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/>
           </a>
           </span>
       </span>
       <span class="dex-PushButton">
       <span class="first-child"> 
           <a class="ico-delete" href="javascript:sendForm('confirmdelete');">
-          <internal:adminResourceBundle resourceName="org.jahia.admin.delete.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/>
         </a>
         </span>
       </span> 

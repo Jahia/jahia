@@ -11,7 +11,7 @@ function previewToolbar(toolbar) {
       <tr>
           <td colspan="2">
             <div class="head headtop">
-                <div class="object-title"><internal:adminResourceBundle resourceName="org.jahia.admin.htmlsettings.editor.settings.label" defaultValue="!!!HTML Editor Toolbar"/></div>
+                <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.htmlsettings.editor.settings.label" defaultValue="!!!HTML Editor Toolbar"/></div>
             </div>
           </td>
       </tr>

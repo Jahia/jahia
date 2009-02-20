@@ -44,6 +44,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <internal:gwtImport module="org.jahia.ajax.gwt.module.filepicker.FilePicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
@@ -90,13 +91,13 @@
       </th>
       <% if (jParams.getSite().getLanguageSettings(true).size() > 1 &&  ServicesRegistry.getInstance().getJahiaACLManagerService().hasWriteAccesOnAllLangs(jParams)) { %>
       <td nowrap="nowrap">
-        <internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
       </td>
       <td>
         <% if (allSameTitles) { %>
-        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
+        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
         <% } else { %>
-        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<internal:engineResourceBundle resourceName="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
+        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
         <% } %>
         <input id="apply_change_to_all_lang_<%=theField.getID()%>" type="hidden" name="apply_change_to_all_lang_<%=theField.getID()%>" value="<%=applyChangeToAllLang || allSameTitles %>"/>
       </td>

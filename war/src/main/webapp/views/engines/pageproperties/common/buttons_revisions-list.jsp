@@ -44,27 +44,27 @@
     if (nbRevisions>0){ %>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a class="ico-back" href="javascript:setUseRevisionEntry();"><internal:engineResourceBundle resourceName="org.jahia.engines.version.backToStep"/> 2, <internal:engineResourceBundle resourceName="org.jahia.engines.version.useTheSelectedRevision"/></a>
+          <a class="ico-back" href="javascript:setUseRevisionEntry();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/> 2, <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.useTheSelectedRevision"/></a>
         </span>
       </span>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a class="ico-back" href="javascript:sendForm('showSiteMap','')"><internal:engineResourceBundle resourceName="org.jahia.engines.version.backToStep"/> 2, <internal:engineResourceBundle resourceName="org.jahia.engines.version.ignoreRevisionDateSelection"/></a>
+          <a class="ico-back" href="javascript:sendForm('showSiteMap','')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/> 2, <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.ignoreRevisionDateSelection"/></a>
         </span>
       </span>
 
     <% } else { %>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a class="ico-back" href="javascript:sendForm('showSiteMap','')"><internal:engineResourceBundle resourceName="org.jahia.engines.version.backToStep"/> 2</a>
+          <a class="ico-back" href="javascript:sendForm('showSiteMap','')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/> 2</a>
         </span>
       </span>
     <% } %>
   <% } %>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:window.close();" class="ico-cancel" title="<internal:engineResourceBundle resourceName="org.jahia.altCloseWithoutSave.label"/>">
-        <internal:engineResourceBundle resourceName="org.jahia.button.cancel"/></a>
+      <a href="javascript:window.close();" class="ico-cancel" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altCloseWithoutSave.label"/>">
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.cancel"/></a>
     </span>
   </span>
 </div>

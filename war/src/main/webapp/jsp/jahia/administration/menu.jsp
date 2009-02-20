@@ -98,7 +98,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.jahiaAdministration.label"/></h2>
+    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.jahiaAdministration.label"/></h2>
 
 </div>
 
@@ -135,7 +135,7 @@
         }
     </script>
     <form name="jahiaAdmin">
-        <nobr><b><internal:adminResourceBundle resourceName="org.jahia.admin.selectWebsite.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b>
+        <nobr><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.selectWebsite.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b>
             <select name="changesite" onChange="changeSiteNow();">
                 <% while (sitesEnum.hasNext()) {
                     JahiaSite site = (JahiaSite) sitesEnum.next(); %>
@@ -168,7 +168,7 @@
                         <span class="first-child">
                             <a href="${item.link}"><img
                                     name="${item.name}" src="${iconUrl}" width="32"
-                                    height="32" border="0"><span><internal:adminResourceBundle
+                                    height="32" border="0"><span><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                     resourceName="${item.label}" defaultValue="${item.label}"/></span></a>
                         </span>
                     </span>
@@ -177,7 +177,7 @@
                     <span class="dex-PushButton-big disabled">
                         <span class="first-child" style="cursor: default">
                             <a href="#${item.name}" onclick="return false;" style="cursor: default;"><img name="${item.name}" src="${iconUrlDisabled}" width="32"
-                                             height="32" border="0"><span><internal:adminResourceBundle
+                                             height="32" border="0"><span><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                     resourceName="${item.label}" defaultValue="${item.label}"/></a></span>
                         </span>
                     </span>

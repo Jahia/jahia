@@ -40,6 +40,7 @@
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%
     final Map engineMap = (Map) request.getAttribute( "org.jahia.engines.EngineHashMap" );
     final String fieldsEditCallingEngineName = (String) engineMap.get( "fieldsEditCallingEngineName" );
@@ -50,7 +51,7 @@
         jParams.setCurrentLocale(elh.getCurrentLocale());
     }
 %>
-<internal:engineResourceBundle resourceName="org.jahia.engines.value.label"/>&nbsp;:&nbsp;<%=theField.getValue()%>&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.shared.Date_Field.dateField.label"/>
+<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/>&nbsp;:&nbsp;<%=theField.getValue()%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Date_Field.dateField.label"/>
 
 
 

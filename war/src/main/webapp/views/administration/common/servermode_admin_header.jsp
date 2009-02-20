@@ -34,6 +34,7 @@
 --%>
 
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@page language = "java" %>
 <%@page import = "java.util.*"%>
 
@@ -44,5 +45,5 @@
 <div id="topTitle">
 <h1>Jahia</h1>
 <% String titleKey = request.getAttribute("dialogTitle") != null ? request.getAttribute("dialogTitle").toString() : "org.jahia.admin.serverSettings.label"; %>
-<h2 class="edit"><internal:adminResourceBundle resourceName="<%=titleKey %>"/></h2>
+<h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=titleKey %>"/></h2>
 </div>

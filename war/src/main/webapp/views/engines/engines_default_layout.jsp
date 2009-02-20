@@ -109,7 +109,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/engines/css/menu.css" type="text/css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/css/colorsAndStyles.css" type="text/css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/css/actions.css" type="text/css"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.stylesheet.css"/>" type="text/css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.stylesheet.css"/>" type="text/css"/>
 --%>
 
 
@@ -343,7 +343,7 @@ window.onload = windowOnload;
       </script>
       <% if (results != null) { %>
         <div id="readOnly">
-          <internal:engineResourceBundle resourceName="org.jahia.engines.readOnlyMode.label"/>: <%=LockKey.getFriendlyMessage(lockKey, jParams)%>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.readOnlyMode.label"/>: <%=LockKey.getFriendlyMessage(lockKey, jParams)%>
           <%
           final List locksInfo = LockRegistry.getInstance().getInfo(lockKey);
           for (java.util.Iterator iterator = locksInfo.iterator(); iterator.hasNext();) {
@@ -353,8 +353,8 @@ window.onload = windowOnload;
             boolean isSameContext = jahiaUser != null && jParams.getUser().getUserKey().equals(jahiaUser.getUserKey()) && jParams.getSessionID().equals(lockID); %>
             <% if ((! LockKey.WAITING_FOR_APPROVAL_TYPE.equals(lockKey.getType())) && LockRegistry.getInstance().hasAdminRights(lockKey, jParams.getUser()) || isSameContext) { %>
             <div class="button">
-              <a href="javascript:sendFormSteal();" title="<internal:engineResourceBundle resourceName="org.jahia.engines.lock.stealLock.label"/>">
-                <internal:engineResourceBundle resourceName="org.jahia.engines.lock.stealLock.label"/></a>
+              <a href="javascript:sendFormSteal();" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.stealLock.label"/>">
+                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.stealLock.label"/></a>
             </div>
             <input type="hidden" name="whichKeyToSteal" value=""/>
             <% } %>

@@ -100,11 +100,11 @@ public class GrpUsrEngineResourceBundle
         if ( isGroup ){
             key = ((JahiaGroup)p).getGroupKey();
             JahiaConsole.println(CLASS_NAME+".addResourceBundle","Added grp res. bun. : " + key ) ;
-            grpResources.put( JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE + "_" + contentPage.getID() + "_" + key , res );
+            grpResources.put( JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE + "_" + contentPage.getID() + "_" + key , res );
         } else {
             key = ((JahiaUser)p).getUserKey();
             JahiaConsole.println(CLASS_NAME+".addResourceBundle","Added user res. bun. : " + key ) ;
-            usrResources.put( JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE + "_" + contentPage.getID() + "_" + key , res );
+            usrResources.put( JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE + "_" + contentPage.getID() + "_" + key , res );
         }
     }
 
@@ -132,7 +132,7 @@ public class GrpUsrEngineResourceBundle
 
         ResourceBundle res;
         if ( !isGroup ){
-            res = (ResourceBundle)usrResources.get( JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE
+            res = (ResourceBundle)usrResources.get( JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE
                               + "_" + contentPage.getID() + "_" + key );
             if ( res == null )
                 res = getGrpResourceBundle(contentPage,p);
@@ -159,7 +159,7 @@ public class GrpUsrEngineResourceBundle
         JahiaGroup grp;
         String grpKey;
         String key ;
-        String resName = JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE + "_" + contentPage.getID() + "_";
+        String resName = JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE + "_" + contentPage.getID() + "_";
         ResourceBundle res = null;
         Iterator keys = grpResources.keySet().iterator();
         while (keys.hasNext()){

@@ -57,20 +57,20 @@
 	<div id="topTitleLogo">
 		<img src="<%=URL%>images/icons/admin/briefcase_document.gif" width="48" height="48" />
   </div>
-  <h1 id="topTitleLabel"><internal:adminResourceBundle resourceName="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><internal:adminResourceBundle resourceName="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
+  <h1 id="topTitleLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
 </div>
 
 <div id="adminMainContent">
 
   <h2>
-    <internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.newTemplatesList.label"/>&nbsp;:
+    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.newTemplatesList.label"/>&nbsp;:
   </h2>
   <table border="0" cellpadding="5" cellspacing="0" width="100%" class="evenOddTable">
     <thead>      
       <tr>
-          <th width="50%"><internal:adminResourceBundle resourceName="org.jahia.admin.fileOrDirectoryName.label"/></th>
-          <th width="25%"><internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.rootFolder.label"/></th>
-          <th	style="text-align:right" width="25%"><internal:adminResourceBundle resourceName="org.jahia.admin.moreDetails.label"/></th>
+          <th width="50%"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.fileOrDirectoryName.label"/></th>
+          <th width="25%"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.rootFolder.label"/></th>
+          <th	style="text-align:right" width="25%"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.moreDetails.label"/></th>
       </tr>
     </thead>
     <tbody>
@@ -89,7 +89,7 @@
                   <tr class="<%=lineClass%>">
                       <td><b><a href="<%=requestURI%>?do=templates&sub=details&package_name=<%=aPackage.getFileName()%>"><% if (aPackage.isDirectory()){ %>/<%}%><%=aPackage.getFileName()%></a></b><br><br></td>
                       <td>/<%=aPackage.getRootFolder()%></td>
-                      <td style="text-align:right"><a href="<%=requestURI%>?do=templates&sub=details&package_name=<%=aPackage.getFileName()%>" alt="<internal:adminResourceBundle resourceName="org.jahia.admin.showDetails.label"/>"><internal:adminResourceBundle resourceName="org.jahia.admin.details.label"/></a><br><br></td>
+                      <td style="text-align:right"><a href="<%=requestURI%>?do=templates&sub=details&package_name=<%=aPackage.getFileName()%>" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.showDetails.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.details.label"/></a><br><br></td>
                   </tr>
                   <%
               }
@@ -97,7 +97,7 @@
       %>
       <tr>
           <td colspan="3" style="text-align: center">
-            <internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.noTemplateFound.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.noTemplateFound.label"/>
           </td>
       </tr>
       <%
@@ -107,26 +107,26 @@
   </table>
   <div class="buttonList" style="text-align: right; padding-top: 30px; padding-bottom : 20px">
     <div class="button">
-      <a class="ico-refresh" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.refresh.label"/></a>
+      <a class="ico-refresh" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.refresh.label"/></a>
     </div>
   </div>
 
   <div id="operationMenu">
   	<div id="operationMenuLabel">
-			<internal:adminResourceBundle resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
+			<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
 		</div>
 		<ul id="operationList">
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
       </li>     		
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.manuallyAddNewTemplate.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.manuallyAddNewTemplate.label"/></a>
       </li>     		
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=options")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.templates.ManageTemplates.templatesManagementOptions.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=options")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.templatesManagementOptions.label"/></a>
       </li>     		
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
       </li>     		
     </ul>
   </div>

@@ -34,17 +34,18 @@
 --%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <div class="leftMenu">
     <ul>
         <li class="section first"><span>Main Menu</span></li>
     <c:forEach items="${param.mode == 'server' ? administrationServerModules : administrationSiteModules}" var="item">
         <li class="item">
             <c:if test="${item.enabled}">
-                <a href="${item.link}" class="set-${param.mode} ico-${param.mode}-${item.name}${item.selected ? ' selected' : ''}"><internal:adminResourceBundle
+                <a href="${item.link}" class="set-${param.mode} ico-${param.mode}-${item.name}${item.selected ? ' selected' : ''}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="${item.label}" defaultValue="${item.label}"/></a>
             </c:if>
             <c:if test="${not item.enabled}">
-                <span class="set-${param.mode}-disabled ico-${param.mode}-${item.name}"><internal:adminResourceBundle
+                <span class="set-${param.mode}-disabled ico-${param.mode}-${item.name}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="${item.label}" defaultValue="${item.label}"/></span>
             </c:if>
         </li>

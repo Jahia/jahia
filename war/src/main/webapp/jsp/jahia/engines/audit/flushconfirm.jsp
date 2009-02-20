@@ -51,21 +51,21 @@ final String theScreen = (String) engineMap.get("screen");
     <%@ include file="../tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-        <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.EngineToolBox.flushLogEntries.label"/></div>
+        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.flushLogEntries.label"/></div>
       </div>
       <div class="content-body">
         <div id="operationMenu">
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-ok" href="javascript:submittedCount++;window.location.href='<%=engineURL%><%=URLSep%>screen=logs&flush=2'">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.yes.label"/>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.yes.label"/>
               </a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-cancel" href="javascript:submittedCount++;window.location.href='<%=engineURL%><%=URLSep%>screen=logs'">
-                  <internal:engineResourceBundle resourceName="org.jahia.engines.no.label"/>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.no.label"/>
               </a>
             </span>
           </span>
@@ -73,7 +73,7 @@ final String theScreen = (String) engineMap.get("screen");
       </div>
       <div class="content-body padded">
         <p align="left">
-          <internal:engineResourceBundle resourceName="org.jahia.engines.EngineToolBox.areYouSureDelete.label"/>&nbsp;<%=objectTypeName%>:
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.areYouSureDelete.label"/>&nbsp;<%=objectTypeName%>:
           <b><%=objectName%></b> ?
         </p>
         <input type="hidden" name="oid" value="<%=objectIDStr%>">

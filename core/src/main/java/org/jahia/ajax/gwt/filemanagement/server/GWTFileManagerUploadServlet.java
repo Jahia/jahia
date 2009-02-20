@@ -108,11 +108,11 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
             Locale locale = (Locale) request.getSession().getAttribute(ParamBean.SESSION_LOCALE);
             String locMsg = null ;
             try {
-                ResourceBundle res = ResourceBundle.getBundle(JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE, locale) ;
+                ResourceBundle res = ResourceBundle.getBundle(JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE, locale) ;
                 locMsg = MessageFormat.format(res.getString("org.jahia.engines.filemanager.Filemanager_Engine.fileSizeError.label"),
                                               Jahia.getSettings().getJahiaFileUploadMaxSize()) ;
             } catch (Exception ex) {
-                logger.debug("Error while using default engine resource bundle (" + JahiaResourceBundle.ENGINE_DEFAULT_RESOURCE_BUNDLE + ") with locale " + locale, ex);
+                logger.debug("Error while using default engine resource bundle (" + JahiaResourceBundle.DEFAULT_INTERNAL_RESOURCE_BUNDLE + ") with locale " + locale, ex);
             }
             if (locMsg == null) {
                 locMsg = "File upload exceeding limit of " + Jahia.getSettings().getJahiaFileUploadMaxSize() + " bytes" ;

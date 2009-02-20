@@ -50,7 +50,7 @@ usrProviders = new ArrayList();
 <internal:gwtInit modules="org.jahia.ajax.gwt.module.engines.Engines"/>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -70,17 +70,17 @@ usrProviders = new ArrayList();
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.doYouWantToContinue.label"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.doYouWantToContinue.label"/>
                   </div>
                 </div>
                 <form method="post" action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processdelete&siteid=" + request.getParameter("siteid"))%>' name="mainForm">
                   <p class="errorbold">
-                    <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.pleaseBeCareful.label"/>
+                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.pleaseBeCareful.label"/>
                   </p>
                   <table border="0" cellpadding="10" cellspacing="0" style="width:100%" class="topAlignedTable">
                     <tr>
                       <td>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteTitle.label"/>&nbsp;
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteTitle.label"/>&nbsp;
                       </td>
                       <td>
                         :&nbsp;<%=siteTitle %>
@@ -88,7 +88,7 @@ usrProviders = new ArrayList();
                     </tr>
                     <tr>
                       <td>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteServerName.label"/>&nbsp;
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteServerName.label"/>&nbsp;
                       </td>
                       <td>
                         :&nbsp;<%=siteServerName %>
@@ -96,7 +96,7 @@ usrProviders = new ArrayList();
                     </tr>
                     <tr>
                       <td>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>&nbsp;
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>&nbsp;
                       </td>
                       <td>
                         :&nbsp;<%=siteKey %>
@@ -104,7 +104,7 @@ usrProviders = new ArrayList();
                     </tr>
                     <tr>
                       <td>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
                       </td>
                       <td>
                         &nbsp;
@@ -113,20 +113,20 @@ usrProviders = new ArrayList();
                     </tr>
                     <tr>
                       <td>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.purgeOptions.label"/>&nbsp;:
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.purgeOptions.label"/>&nbsp;:
                       </td>
                       <td>
                         <table border="0" cellpadding="0" cellspacing="0">
                         <%-- 
                           <tr>
                             <td>
-                              <input name="deleteTemplates" type="checkbox" value="1" checked>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.deleteSiteTemplates.label"/>
+                              <input name="deleteTemplates" type="checkbox" value="1" checked>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.deleteSiteTemplates.label"/>
                             </td>
                           </tr>
                           --%>
                           <tr>
                             <td>
-                              <input name="deleteFileRepository" type="checkbox" value="1" checked>&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.deleteSiteFileRepository.label"/>
+                              <input name="deleteFileRepository" type="checkbox" value="1" checked>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.deleteSiteFileRepository.label"/>
                             </td>
                           </tr>
                         </table>
@@ -144,17 +144,17 @@ usrProviders = new ArrayList();
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
+              <a class="ico-back" class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + request.getParameter("siteid"))%>'><internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/></a>
+              <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + request.getParameter("siteid"))%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-delete" href="#" onclick="javascript:{ showWorkInProgress(); document.mainForm.submit(); return false; }"><internal:adminResourceBundle resourceName="org.jahia.admin.delete.label"/></a>
+              <a class="ico-delete" href="#" onclick="javascript:{ showWorkInProgress(); document.mainForm.submit(); return false; }"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></a>
             </span>
           </span>
         </div>

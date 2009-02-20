@@ -44,7 +44,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
 <%
@@ -234,7 +234,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
 </script>
 <div id="header">
   <h1>Jahia</h1>
-  <h2 class="list"><internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListSettings.label"/></h2>
+  <h2 class="list"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListSettings.label"/></h2>
 </div>
 <div id="mainContent">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -262,13 +262,13 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                   <%@ include file="../menu.inc" %>
                   <div id="content" class="fit w2">
                     <div class="head">
-                       <div class="object-title"><internal:engineResourceBundle  resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListTitle.label"/>: <%=theContainerList.getDefinition().getTitle(elh.getCurrentLocale())%></div>
+                       <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"  resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListTitle.label"/>: <%=theContainerList.getDefinition().getTitle(elh.getCurrentLocale())%></div>
                     </div>
                     <%if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EDIT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) {%>
                       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
                         <tr>
                           <th width="200">
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.cursorField.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.cursorField.label"/>
                           </th>
                           <td>
                             <select name="cursorField" onchange="changeCursorField()">
@@ -287,21 +287,21 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                         </tr>
                         <tr>
                           <th width="200">
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.automaticRanking.label"/>
-                            (<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.sortBy.label"/>)
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.automaticRanking.label"/>
+                            (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.sortBy.label"/>)
                           </th>
                           <td>
                             <% if (autSort.equals("alphAsc")) {%>
-                              <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalAscending.label"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalAscending.label"/>
                             <% } else if (autSort.equals("alphDesc")) { %>
-                              <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalDescending.label"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalDescending.label"/>
                             <% } %>
                           </td>
                         </tr>
                         <tr>
                           <th width="200">
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAContainerUpOrDown.label"/>
-                            (<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.manualRanking.label"/>)
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAContainerUpOrDown.label"/>
+                            (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.manualRanking.label"/>)
                           </th>
                           <td>
                             <div class="selectContainer">
@@ -345,7 +345,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                         <% if (nbTotalOfContainers.intValue()>maxContainersToDisplay.intValue()){%>
                           <tr>
                             <th width="200">
-                              <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.maxContainersToDisplay.label" defaultValue="Nb. of Containers to display"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.maxContainersToDisplay.label" defaultValue="Nb. of Containers to display"/>
                             </th>
                             <td>
                               <select name="maxContainersToDisplay" onchange="changeMaxContainersToDisplay()">
@@ -356,15 +356,15 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                                 <option value="1000" <% if(maxContainersToDisplay.intValue()==1000){%> selected="selected" <% } %>>1000
                               </select>
                               <br/>
-                              <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.only" defaultValue="only"/>&nbsp;<%=maxContainersToDisplay%>&nbsp;
-                              <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.outOf" defaultValue="out of"/>&nbsp;<%=nbTotalOfContainers%>&nbsp;
-                              <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.areDisplayed" defaultValue="are&nbsp; displayed"/>
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.only" defaultValue="only"/>&nbsp;<%=maxContainersToDisplay%>&nbsp;
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.outOf" defaultValue="out of"/>&nbsp;<%=nbTotalOfContainers%>&nbsp;
+                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.areDisplayed" defaultValue="are&nbsp; displayed"/>
                             </td>
                           </tr>
                         <% } %>
                         <tr>
                           <th width="200">
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.cursorField.label"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.cursorField.label"/>
                           </th>
                           <td>
                             <select name="cursorField" onchange="changeCursorField()">
@@ -383,27 +383,27 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                         </tr>
                         <tr>
                           <th>
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.automaticRanking.label"/>
-                            (<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.sortBy.label"/>)
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.automaticRanking.label"/>
+                            (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.sortBy.label"/>)
                           </th>
                           <td>
                             <select name="autRank" onchange="automaticRanking()">
                               <option value="none">
-                                <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.chooseAnAutomaticSort.label"/>
+                                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.chooseAnAutomaticSort.label"/>
                               </option>
                               <option value="alphAsc" <% if (autSort.equals("alphAsc")) {%> selected="selected"<%}%>>
-                                <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalAscending.label"/>
+                                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalAscending.label"/>
                               </option>
                               <option value="alphDesc" <% if (autSort.equals("alphDesc")) {%> selected="selected"<%}%>>
-                                <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalDescending.label"/>
+                                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alphabeticalDescending.label"/>
                               </option>
                             </select>
                           </td>
                         </tr>
                         <tr>
                           <th valign="top">
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAContainerUpOrDown.label"/>
-                            (<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.manualRanking.label"/>)
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAContainerUpOrDown.label"/>
+                            (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.manualRanking.label"/>)
                           </th>
                           <td>
                             <table cellpadding="0" cellspacing="5" border="0">
@@ -444,17 +444,17 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                                   </div>
                                 </td>
                                 <td width="100%" class="text" align="left" valign="top">
-                                  <a href="javascript:moveTop()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Top','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveTopOn.button"/>',1)">
-                                    <img name="Top" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveTopOff.button"/>"  width="16" height="16" border="0" alt="<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveOnTop.label"/>"></a>
+                                  <a href="javascript:moveTop()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Top','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveTopOn.button"/>',1)">
+                                    <img name="Top" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveTopOff.button"/>"  width="16" height="16" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveOnTop.label"/>"></a>
                                   <br>
-                                  <a href="javascript:moveUp()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Up','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveUpOn.button"/>',1)">
-                                    <img name="Up" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveUpOff.button"/>" width="16" height="16" border="0" alt="<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveUp.label"/>"></a>
+                                  <a href="javascript:moveUp()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Up','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveUpOn.button"/>',1)">
+                                    <img name="Up" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveUpOff.button"/>" width="16" height="16" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveUp.label"/>"></a>
                                   <br>
-                                  <a href="javascript:moveDown()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Down','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveDownOn.button"/>',1)">
-                                    <img name="Down" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveDownOff.button"/>" width="16" height="16" border="0" alt="<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveDown.label"/>"></a>
+                                  <a href="javascript:moveDown()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Down','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveDownOn.button"/>',1)">
+                                    <img name="Down" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveDownOff.button"/>" width="16" height="16" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveDown.label"/>"></a>
                                   <br>
-                                  <a href="javascript:moveBottom()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Bottom','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveBottomOn.button"/>',1)">
-                                    <img name="Bottom" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.moveBottomOff.button"/>" width="16" height="16" border="0" alt="<internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAtBottom.label"/>"></a>
+                                  <a href="javascript:moveBottom()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Bottom','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveBottomOn.button"/>',1)">
+                                    <img name="Bottom" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.moveBottomOff.button"/>" width="16" height="16" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAtBottom.label"/>"></a>
                                   <br>
                                 </td>
                               </tr>
@@ -463,11 +463,11 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                         <tr>
                         <tr>
                           <th valign="top">
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.useOptimizedSort.label" defaultValue="Use DB optimized sort"/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.useOptimizedSort.label" defaultValue="Use DB optimized sort"/>
                           </th>
                           <td>
                             <input type="checkbox" name="useOptimizedMode" onchange="changeUseOptimizedMode()" <%if(useOptimizedMode.booleanValue()){%>checked<%}%> value="true">
-                            <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.useOptimizedSortExplanation.label" defaultValue="Uncheck only if you need language \"natural\" sorting on that field, to work properly with special characters like '�','�', OR if the MIXIN LANGUAGES is enabled (in Administration's language setting section) and not all translations are present. But performance can be bad."/>
+                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.useOptimizedSortExplanation.label" defaultValue="Uncheck only if you need language \"natural\" sorting on that field, to work properly with special characters like '�','�', OR if the MIXIN LANGUAGES is enabled (in Administration's language setting section) and not all translations are present. But performance can be bad."/>
                           </td>
                         </tr>
                       </table>
@@ -482,10 +482,10 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                     <%@ include file="../menu.inc" %>
                     <div id="content" class="fit w2">
                       <div class="head">
-                         <div class="object-title"><internal:engineResourceBundle  resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListTitle.label"/>: <%=theContainerList.getDefinition().getTitle(elh.getCurrentLocale())%></div>
+                         <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"  resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListTitle.label"/>: <%=theContainerList.getDefinition().getTitle(elh.getCurrentLocale())%></div>
                       </div>
                       <p class="error">
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.emptyContainerListWarning.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.emptyContainerListWarning.label"/>
                       </p>
                     </div>
                   <div style="clear:both"></div></div>
@@ -503,7 +503,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                    <%@ include file="../tools.inc" %>
                   <div id="content" class="fit w2">
                     <div id="editor">
-                      <p class="error"><internal:engineResourceBundle resourceName="org.jahia.engines.noLogs.label"/></p>
+                      <p class="error"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.noLogs.label"/></p>
                     </div>
                   </div>
                 <div style="clear:both"></div></div>

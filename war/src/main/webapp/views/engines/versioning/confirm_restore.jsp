@@ -88,48 +88,48 @@ function sendFormSave()
       <div class="head">
         <div class="object-title">
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringPage}">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
           </c:if>
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringContainer}">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
           </c:if>
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringContainerList}">
-            <internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
           </c:if>
           <% if ( versViewHelper.isRestoringPage() ){ %>
-            &nbsp;-&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.stepThreeOfThree" defaultValue="Step 3 of 3" /> : <internal:engineResourceBundle resourceName="org.jahia.engines.version.confirmation" />
+            &nbsp;-&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepThreeOfThree" defaultValue="Step 3 of 3" /> : <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.confirmation" />
           <% } %>
           <% if ( versViewHelper.isRestoringContainer() ){ %>
-            &nbsp;-&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.stepTwoOfTwo" defaultValue="Step 2 of 2" /> : <internal:engineResourceBundle resourceName="org.jahia.engines.version.confirmation" />
+            &nbsp;-&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepTwoOfTwo" defaultValue="Step 2 of 2" /> : <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.confirmation" />
           <% } %>
         </div>
       </div>
       <div class="content-body padded">
         <br />
-        <b>&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.clickOnOkOrApplyToRestore" />.</b><br />
+        <b>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.clickOnOkOrApplyToRestore" />.</b><br />
         <br />
-        <span class="errorbold"><internal:engineResourceBundle resourceName="org.jahia.engines.version.warning" />&nbsp;:&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.version.stagingContentWillBeOverriden" /></span><br />
+        <span class="errorbold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.warning" />&nbsp;:&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stagingContentWillBeOverriden" /></span><br />
         <br />
       </div>
       <div class="head">
         <div class="object-title">
-          <internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreOptionsSummary" />
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreOptionsSummary" />
         </div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
-          <th class="text" align="left" valign="top"><internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreDate" defaultValue="Restore date" />&nbsp;:&nbsp;</th>
+          <th class="text" align="left" valign="top"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreDate" defaultValue="Restore date" />&nbsp;:&nbsp;</th>
           <td class="text" align="left" valign="top"><bean:write name="contentVersioning.full_restore_date" /><% if ( !"".equals(versionNumber) ){ %>&nbsp;[<%=versionNumber%>]&nbsp;<% } %></td>
         </tr>
         <% if ( versViewHelper.isRestoringPage() ){ %>
         <tr>
-          <th class="text" align="left" valign="top"><internal:engineResourceBundle resourceName="org.jahia.engines.version.exactRestore" defaultValue="Exact restore" />&nbsp;:&nbsp;</th>
-          <td class="text" align="left" valign="top"><% if ("yes".equals(restoreExactLabel)){%><internal:engineResourceBundle resourceName="org.jahia.engines.yes.label" /><%}else{%><internal:engineResourceBundle resourceName="org.jahia.engines.no.label" /><%}%></td>
+          <th class="text" align="left" valign="top"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.exactRestore" defaultValue="Exact restore" />&nbsp;:&nbsp;</th>
+          <td class="text" align="left" valign="top"><% if ("yes".equals(restoreExactLabel)){%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.yes.label" /><%}else{%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.no.label" /><%}%></td>
         </tr>
         <% } %>
         <% if ( versViewHelper.isRestoringContainer() ){ %>
         <tr>
-          <th class="text" align="left" valign="top"><internal:engineResourceBundle resourceName="org.jahia.engines.version.languageToRestore" defaultValue="Languages to restore" />&nbsp;:&nbsp;</th>
+          <th class="text" align="left" valign="top"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.languageToRestore" defaultValue="Languages to restore" />&nbsp;:&nbsp;</th>
           <td class="text" align="left" valign="top">
             <%
             Iterator languageIterator = versViewHelper.getLanguagesSettings().iterator();
@@ -145,13 +145,13 @@ function sendFormSave()
           </tr>
         <% } %>
         <tr>
-          <th class="text" align="left" valign="top"><internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreMode" defaultValue="Restore mode" />&nbsp;:&nbsp;</th>
+          <th class="text" align="left" valign="top"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreMode" defaultValue="Restore mode" />&nbsp;:&nbsp;</th>
           <td class="text" align="left" valign="top">
             <select name="restoreMode" class="input">
-               <option value="<%=String.valueOf(ContentVersioningViewHelper.RESTORE_CONTENT)%>" <% if (versViewHelper.getRestoreMode() == ContentVersioningViewHelper.RESTORE_CONTENT){%>checked<%}%>><internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreContentOnly" defaultValue="Restore Content only" /></option>
+               <option value="<%=String.valueOf(ContentVersioningViewHelper.RESTORE_CONTENT)%>" <% if (versViewHelper.getRestoreMode() == ContentVersioningViewHelper.RESTORE_CONTENT){%>checked<%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreContentOnly" defaultValue="Restore Content only" /></option>
                <%-- 
                // temporary disable all other options except 'content only'
-               <option value="<%=String.valueOf(ContentVersioningViewHelper.RESTORE_CONTENT_AND_METADATA)%>" <% if (versViewHelper.getRestoreMode() == ContentVersioningViewHelper.RESTORE_CONTENT_AND_METADATA){%>checked<%}%>><internal:engineResourceBundle resourceName="org.jahia.engines.version.restoreContentAndMetadata" defaultValue="Restore Content and metadata" /></option>
+               <option value="<%=String.valueOf(ContentVersioningViewHelper.RESTORE_CONTENT_AND_METADATA)%>" <% if (versViewHelper.getRestoreMode() == ContentVersioningViewHelper.RESTORE_CONTENT_AND_METADATA){%>checked<%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreContentAndMetadata" defaultValue="Restore Content and metadata" /></option>
                --%>
             </select>
           </td>

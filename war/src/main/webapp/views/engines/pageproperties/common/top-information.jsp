@@ -39,9 +39,9 @@
 
 <table class="text" width="95%" align="center" border="0" cellspacing="0" cellpadding="0">
 <tr>
-    <td><img src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.pix.image"/>" width="1" height="18"></td>
-    <td><b><internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageSettings.label"/></b></td>
-    <td><b><internal:engineResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageTitle.label"/></b>&nbsp;:&nbsp;<span class="text2"><bean:write name="pageproperties.pagetitle" scope="request" /></span></td>
-    <td><b><internal:engineResourceBundle resourceName="org.jahia.pageId.label"/></b>&nbsp;:&nbsp;[<bean:write name="pageproperties.pageid" scope="request" />]</td>
+    <td><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image"/>" width="1" height="18"></td>
+    <td><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageSettings.label"/></b></td>
+    <td><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageTitle.label"/></b>&nbsp;:&nbsp;<span class="text2"><bean:write name="pageproperties.pagetitle" scope="request" /></span></td>
+    <td><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pageId.label"/></b>&nbsp;:&nbsp;[<bean:write name="pageproperties.pageid" scope="request" />]</td>
 </tr>
 </table>

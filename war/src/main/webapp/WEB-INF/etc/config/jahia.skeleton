@@ -817,7 +817,7 @@ editModeSessionTimeout                                  = 1800
 # pattern.
 # Please update the resource bundle message:
 # org.jahia.admin.users.ManageUsers.onlyCharacters.label
-# (JahiaAdministrationResources.properties),
+# (JahiaInternalResources.properties),
 # to reflect the pattern changes
 userManagementUserNamePattern                           = [0-9a-z_A-Z\\-\\{\\}\\.@]+
 # Pattern for the group name validation. The new group name will be
@@ -825,7 +825,7 @@ userManagementUserNamePattern                           = [0-9a-z_A-Z\\-\\{\\}\\
 # pattern.
 # Please update the resource bundle message:
 # org.jahia.admin.users.ManageGroups.onlyCharacters.label
-# (JahiaAdministrationResources.properties),
+# (JahiaInternalResources.properties),
 # to reflect the pattern changes
 userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
 

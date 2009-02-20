@@ -41,6 +41,7 @@
 <%@page import = "java.util.*"%>
 <%@page import="org.jahia.bin.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="userErrorMessage" class="java.lang.String" scope="session"/>
 
 <%
@@ -55,7 +56,7 @@ String selectedUsers = (String)request.getAttribute("selectedUsers");
 <!-- Adiministration page position -->
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.removeUser.label"/></h2>
+<h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.removeUser.label"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
@@ -77,31 +78,31 @@ String selectedUsers = (String)request.getAttribute("selectedUsers");
             <div id="content" class="fit">
 <div class="head">
     <div class="object-title">
-        <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/>
+        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.removeSelectedUser.label"/>
     </div>
 </div>
 <div class="content-item"><!-- Remove user -->
 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=processRemove")%>' method="post">
     <% if (selUser.getProviderName().indexOf("LDAP") == -1) { %>
         <p>
-          <b><internal:adminResourceBundle resourceName="org.jahia.admin.username.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= selUser.getUsername()%>
+          <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= selUser.getUsername()%>
           <input type="hidden" name="username" value="<%= selUser.getUsername()%>">
         </p>
         <p>
-          <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.definitivelyRemove.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.definitivelyRemove.label"/>
         </p>
         <p>
-          <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.areYouSure.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.areYouSure.label"/>
         </p>
         
         
         
     <% } else { %>
         <p>
-          <b><internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.userName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= selUser.getUsername()%>
+          <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.userName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= selUser.getUsername()%>
         </p>
         <p>
-          <internal:adminResourceBundle resourceName="org.jahia.admin.users.ManageUsers.cannotRemove.label"/>
+          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.cannotRemove.label"/>
         </p>
     <% } %>
 </form>
@@ -116,18 +117,18 @@ String selectedUsers = (String)request.getAttribute("selectedUsers");
   	
     <span class="dex-PushButton"> 
       <span class="first-child">
-         <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+         <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
       </span>
      </span>
      <% if (selUser.getProviderName().indexOf("LDAP") == -1) { %>     
      <span class="dex-PushButton"> 
       <span class="first-child">
-         <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.cancel.label"/></a>
+         <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"users","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
       </span>
      </span>
      <span class="dex-PushButton"> 
       <span class="first-child">
-         <a class="ico-ok" href="javascript:document.mainForm.submit();" ><internal:adminResourceBundle resourceName="org.jahia.admin.ok.label"/></a>
+         <a class="ico-ok" href="javascript:document.mainForm.submit();" ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
       </span>
      </span>      
       <% } %> 	      

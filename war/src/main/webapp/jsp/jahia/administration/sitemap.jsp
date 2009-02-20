@@ -46,7 +46,7 @@
 <%@include file="/jsp/jahia/administration/include/header.inc"%>
 
 <tr>
-    <td align="right" class="text" colspan="2"><b>::&nbsp;&nbsp;<internal:engineResourceBundle resourceName="org.jahia.engines.sitemap.SiteMap_Engines.siteMap.label"/>&nbsp;&nbsp;--&nbsp;&nbsp;::</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="right" class="text" colspan="2"><b>::&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sitemap.SiteMap_Engines.siteMap.label"/>&nbsp;&nbsp;--&nbsp;&nbsp;::</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 </tr>
 </table>
 <br>&nbsp;<br>
@@ -79,10 +79,10 @@
                 &nbsp;<br>
                 <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td nowrap width="145" valign="top"><font class="text"><b><internal:adminResourceBundle resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
+                    <td nowrap width="145" valign="top"><font class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
                     <td valign="top">
                         <font class="text">
-                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a><br>
+                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a><br>
                         </font>
                     </td>
                 </tr>

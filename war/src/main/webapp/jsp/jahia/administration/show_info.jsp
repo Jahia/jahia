@@ -72,7 +72,7 @@ jData.getProcessingContext().getLocale());
 stretcherToOpen   = 0; %>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.aboutJahia.label"/></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.aboutJahia.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -92,31 +92,31 @@ stretcherToOpen   = 0; %>
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.jahiaRelease.label"/><%=release %>, <%= jahiaEditionTitle %>, <internal:adminResourceBundle resourceName="org.jahia.admin.build.label"/><%=build %>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.jahiaRelease.label"/><%=release %>, <%= jahiaEditionTitle %>, <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.build.label"/><%=build %>
                 </div>
               </div>
               <div class="content-body">
                 <span style="padding: 5px;display:block;border-bottom: 1px solid #B7CBD8;">
-                  <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.licenceIsValid.label"/>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.licenceIsValid.label"/>
                 </span>
                 <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" width="100%">
                   <thead>
                     <tr>
                       <th width="50%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.resourceType.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.resourceType.label"/>
                       </th>
                       <th width="25%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.current.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.current.label"/>
                       </th>
                       <th class="lastCol" width="25%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.maximun.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.maximun.label"/>
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="evenLine">
                       <td width="50%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.numberOfSites.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.numberOfSites.label"/>
                       </td>
                       <td width="25%">
                         <b><%=nbCurrentSites %></b>
@@ -127,7 +127,7 @@ stretcherToOpen   = 0; %>
                     </tr>
                     <tr class="oddLine">
                       <td width="50%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.numberOfUsers.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.numberOfUsers.label"/>
                       </td>
                       <td width="25%">
                         <b><%=nbCurrentUsers %></b>
@@ -138,7 +138,7 @@ stretcherToOpen   = 0; %>
                     </tr>
                     <tr class="evenLine">
                       <td width="50%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.numberOfTemplates.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.numberOfTemplates.label"/>
                       </td>
                       <td width="25%">
                         <b><%=nbCurrentTemplates %></b>
@@ -149,7 +149,7 @@ stretcherToOpen   = 0; %>
                     </tr>
                     <tr class="oddLine">
                       <td width="50%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.numberOfPages.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.numberOfPages.label"/>
                       </td>
                       <td width="25%">
                         <b><%=nbCurrentPages %></b>
@@ -161,7 +161,7 @@ stretcherToOpen   = 0; %>
                     <% if (expirationDate != null) { %>
                     <tr class="evenLine">
                       <td width="50%">
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.expirationDate.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.expirationDate.label"/>
                       </td>
                       <td width="25%">
                         <b><%=dateFormatter.format(new Date()) %></b>
@@ -189,8 +189,8 @@ stretcherToOpen   = 0; %>
                       </td>
                       <td width="25%">
                         <% if (activated) { %>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.licenseActivated.label"/><% } else { %>
-                        <internal:adminResourceBundle resourceName="org.jahia.admin.info.LicenceInfo.licenseDeactivated.label"/><% } %>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.licenseActivated.label"/><% } else { %>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.info.LicenceInfo.licenseDeactivated.label"/><% } %>
                       </td>
                       <td width="25%" class="lastCol">
                         &nbsp;
@@ -215,7 +215,7 @@ stretcherToOpen   = 0; %>
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
         </div>

@@ -128,7 +128,7 @@ if (port != 80) {
 <h1>Jahia</h1>
 <h2 class="edit">
 <%if(!isConfigWizard){%>
-      <internal:adminResourceBundle resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
+      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
       <%}else{%>
       <internal:message key="org.jahia.createSite.siteFactory"/>
       <%}%>

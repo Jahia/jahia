@@ -373,7 +373,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
      */
     protected String getJahiaEngineRessource(String label, Locale l) {
         try {
-            return ResourceBundle.getBundle("JahiaEnginesResources", l).getString(label);
+            return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
             try {
                 return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);
@@ -413,7 +413,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
     protected String getLocaleJahiaEnginesResource(String label) {
         Locale l = getLocale();
         try {
-            return ResourceBundle.getBundle("JahiaEnginesResources", l).getString(label);
+            return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
             try {
                 return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);
@@ -426,7 +426,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
     protected String getLocaleJahiaAdminResource(String label) {
         Locale l = getLocale();
         try {
-            return ResourceBundle.getBundle("JahiaAdministrationResources", l).getString(label);
+            return ResourceBundle.getBundle("JahiaInternalResources", l).getString(label);
         } catch (Exception e) {
             try {
                 return ResourceBundle.getBundle("JahiaMessageResources", l).getString(label);

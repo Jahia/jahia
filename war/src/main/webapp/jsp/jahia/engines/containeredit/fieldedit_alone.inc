@@ -87,11 +87,11 @@ if (errorMsg == null) {
       if (theValue == "true") {
         theValue = "false";
         callingElement.className = "sharedLanguageNo";
-        callingElement.title = '<internal:engineResourceBundle resourceName="org.jahia.applyToSingleLanguage.label"/>';
+        callingElement.title = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>';
       } else {
         theValue = "true";
         callingElement.className = "sharedLanguageYes";
-        callingElement.title = '<internal:engineResourceBundle resourceName="org.jahia.applyToAllLanguages.label"/>';
+        callingElement.title = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>';
       }
       element.value = theValue;
     }

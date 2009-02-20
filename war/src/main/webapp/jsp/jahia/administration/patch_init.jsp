@@ -51,7 +51,7 @@ stretcherToOpen   = 0;
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.label"/></h2>
+  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -72,13 +72,13 @@ stretcherToOpen   = 0;
         <div id="content" class="fit">
             <div class="head">
                 <div class="object-title">
-                     <internal:adminResourceBundle
+                     <utility:resourceBundle resourceBundle="JahiaInternalResources"
                     resourceName="org.jahia.admin.patchmanagement.mainMenu.label"/>
                 </div>
             </div>
             <div  class="content-item">
           <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"patches","")%>' method="post">
-            <input type="hidden" name="sub" value="saveinit" /><h2><internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.warning.label"/></h2><internal:adminResourceBundle resourceName="org.jahia.admin.patchmanagement.enterBuildNumber.label"/>: <input name="id" />
+            <input type="hidden" name="sub" value="saveinit" /><h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.warning.label"/></h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.patchmanagement.enterBuildNumber.label"/>: <input name="id" />
           </form>
           </div>
         </div>
@@ -92,12 +92,12 @@ stretcherToOpen   = 0;
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a>
+      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-ok" href="#save" onclick="return doAction('saveinit')"><internal:adminResourceBundle resourceName="org.jahia.admin.saveChanges.label"/></a>
+      <a class="ico-ok" href="#save" onclick="return doAction('saveinit')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.saveChanges.label"/></a>
     </span>
   </span>
 </div>

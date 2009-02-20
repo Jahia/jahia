@@ -77,7 +77,7 @@
 </head>
 <body class="jahiaTool">
   <div id="mainAdminLayout">
-    <%=cacheName%> : <strong><internal:adminResourceBundle resourceName="<%=resourceKey%>"/></strong>
+    <%=cacheName%> : <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=resourceKey%>"/></strong>
 <%
     if (cacheKey != null && cacheKey.trim().length() > 0) {
         XStream serializer = new XStream(new DomDriver());
@@ -174,8 +174,8 @@
             <td>
 <form name="jahiaTool" action='viewCache' method="post">
                 <input type="hidden" name="key" size="20" title="Key" value="<%=objectKey%>"/>
-                <nobr><a href="?itemview_<%=cacheName%>=1&key=<%=objectKey%>"><utility:resourceBundle resourceBundle="JahiaAdministrationResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.viewDetails.label" defaultValue="View details"/></a></nobr>
-                <nobr><a href="?remove_<%=cacheName%>=1&key=<%=objectKey%>"><utility:resourceBundle resourceBundle="JahiaAdministrationResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.remove.label" defaultValue="Remove"/></a></nobr>
+                <nobr><a href="?itemview_<%=cacheName%>=1&key=<%=objectKey%>"><utility:resourceBundle resourceBundle="JahiaInternalResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.viewDetails.label" defaultValue="View details"/></a></nobr>
+                <nobr><a href="?remove_<%=cacheName%>=1&key=<%=objectKey%>"><utility:resourceBundle resourceBundle="JahiaInternalResources" localeLanguage="en" resourceName="org.jahia.admin.status.ManageStatus.remove.label" defaultValue="Remove"/></a></nobr>
 </form>
             </td>
         </tr>            

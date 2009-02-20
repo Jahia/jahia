@@ -60,12 +60,12 @@
     <%@ include file="../tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-         <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.include.actionSelector.Import.label"/></div>
+         <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Import.label"/></div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
           <th>
-            <internal:engineResourceBundle resourceName="org.jahia.engines.importexport.import.importFile"/>
+            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.import.importFile"/>
           </th>
           <td>
             <input class="input" type="file" name="data"/>

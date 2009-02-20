@@ -40,7 +40,7 @@
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-
+<%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
 <%
@@ -76,7 +76,7 @@
 
 <div id="header">
   <h1>Jahia</h1>
-  <h2 class="template"><internal:engineResourceBundle resourceName="org.jahia.engines.template.Template_Engine.templateSettings.label"/></h2>
+  <h2 class="template"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.template.Template_Engine.templateSettings.label"/></h2>
   <jsp:include page="../navigation.jsp" flush="true" />
 </div>
 <div id="mainContent">
@@ -104,16 +104,16 @@
                 <% } %>
                 <div id="content" class="fit w2">
                   <div class="head">
-                    <div class="object-title"><internal:engineResourceBundle resourceName="org.jahia.engines.template.Template_Engine.templateSettings.label"/></div>
+                    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.template.Template_Engine.templateSettings.label"/></div>
                   </div>
                   <% if (! warningMsg.equals("")) { %>
-                    <p class="errorbold"><internal:engineResourceBundle resourceName="org.jahia.warning.label"/></p>
+                    <p class="errorbold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.warning.label"/></p>
                     <p class="error"><%=warningMsg%></p>
                   <% } %>
 
                   <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
                     <tr>
-                      <th><internal:engineResourceBundle resourceName="org.jahia.engines.name.label"/></th>
+                      <th><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.name.label"/></th>
                       <td>
                           <input type="text" name="templateName" value="${template.name}" size="<%=inputSize%>" readonly="readonly">
                       </td>
@@ -121,7 +121,7 @@
 
                     <tr>
                       <th>
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.template.Template_Engine.sourcePath.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.template.Template_Engine.sourcePath.label"/>
                       </th>
                       <td>
                         <input type="text" name="sourcePath" value="${template.sourcePath}" readonly="readonly" size="100">
@@ -130,7 +130,7 @@
 <%-- 
                     <tr>
                       <th>
-                        <internal:engineResourceBundle resourceName="org.jahia.engines.template.Template_Engine.relativeTo.label"/>
+                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.template.Template_Engine.relativeTo.label"/>
                       </th>
                       <td class="t22">
                         <%=jParams.settings().getTemplatesContext() + jParams.getSite().getSiteKey() + "/" %>
@@ -138,7 +138,7 @@
                     </tr>
 --%>                    
                     <tr>
-                      <th><label for="templateAvailable"><internal:engineResourceBundle resourceName="org.jahia.engines.available.label"/></label></th>
+                      <th><label for="templateAvailable"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.available.label"/></label></th>
                       <td>
                         <c:if test="${template.available}">
                             <input type="hidden" name="templateAvailable" value="yes"/>
@@ -148,7 +148,7 @@
                     </tr>
                     <tr>
                       <th>
-                        <label for="templateDefault"><internal:engineResourceBundle resourceName="org.jahia.engines.template.Template_Engine.isTheDefault.label"/></label>
+                        <label for="templateDefault"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.template.Template_Engine.isTheDefault.label"/></label>
                       </th>
                       <td>
                         <c:if test="${template.default}">

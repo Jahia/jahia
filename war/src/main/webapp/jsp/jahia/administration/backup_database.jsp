@@ -45,7 +45,7 @@
 <%@include file="/jsp/jahia/administration/include/header.inc"%>
 
 <tr>
-    <td align="center" class="text"><br><br><img name="db" src="<%=URL%>images/icons/admin/data.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><internal:adminResourceBundle resourceName="org.jahia.admin.database.ManageDatabase.backupCurrentDatabase.label"/></h3></td>
+    <td align="center" class="text"><br><br><img name="db" src="<%=URL%>images/icons/admin/data.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.backupCurrentDatabase.label"/></h3></td>
 </tr>
 </table>
 <br><br>
@@ -63,10 +63,10 @@
         <tr>
             <td nowrap>
                 <br><br>
-                <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.database.ManageDatabase.backupName.label"/>&nbsp;:</font><br>
+                <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.backupName.label"/>&nbsp;:</font><br>
                 <input class="input" type="text" name="backupname" size="<%=inputSize%>" maxlength="250" value="<%=jahiaBackupName%>">
                 <br>&nbsp;<br>
-                <font class="text"><internal:adminResourceBundle resourceName="org.jahia.admin.database.ManageDatabase.backupDesc.label"/>&nbsp;:</font><br>
+                <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.backupDesc.label"/>&nbsp;:</font><br>
                 <input class="input" type="text" name="backupdesc" size="<%=inputSize%>" maxlength="250" value="<%=jahiaBackupDesc%>">
             </td>
         </tr>
@@ -74,10 +74,10 @@
             <td align="right">
                 &nbsp;<br>
                 <%if(!isLynx){%>
-                    <a href="javascript:document.jahiaAdmin.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('next','','${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.nextSteepOn.button"/>',1)"><img name="next" src="${pageContext.request.contextPath}<internal:engineResourceBundle resourceName="org.jahia.nextSteepOff.button"/>" width="114" height="17" border="0"></a>
+                    <a href="javascript:document.jahiaAdmin.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('next','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.nextSteepOn.button"/>',1)"><img name="next" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.nextSteepOff.button"/>" width="114" height="17" border="0"></a>
                 <%}else{%>
                     &nbsp;<br>
-                    <input type="submit" name="submit" value="<internal:adminResourceBundle resourceName="org.jahia.admin.database.ManageDatabase.saveChanges.label"/> >>">
+                    <input type="submit" name="submit" value="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.saveChanges.label"/> >>">
                 <%}%>
             </td>
         </tr>
@@ -86,11 +86,11 @@
                 &nbsp;<br><br>
                 <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td nowrap width="145" valign="top"><font class="text"><b><internal:adminResourceBundle resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
+                    <td nowrap width="145" valign="top"><font class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
                     <td valign="top">
                         <font class="text">
-                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=display")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.previousStep.label"/></a><br>
-                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><internal:adminResourceBundle resourceName="org.jahia.admin.backToMenu.label"/></a><br>
+                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.previousStep.label"/></a><br>
+                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a><br>
                         </font>
                     </td>
                 </tr>

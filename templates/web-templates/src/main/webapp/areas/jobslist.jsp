@@ -55,6 +55,6 @@
 		</template:jahiaPageForm>
 		</div>
 <!--stop jobsSearchForm -->
-        <template:include page="containers/job/jobDisplay.jsp"/>
+        <template:include page="modules/job/jobDisplay.jsp"/>
     </div>
 </div><!--stopContent-->

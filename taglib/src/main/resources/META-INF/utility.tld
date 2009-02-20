@@ -48,32 +48,6 @@
     </tag>
 
     <tag>
-        <description>Generate a GWT resource bundle Dictionary.</description>
-        <name>gwtResourceBundleDictionary</name>
-        <tag-class>org.jahia.taglibs.internal.i18n.GWTGenerateDictionaryTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>moduleType</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>elementId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>
-                This prefix will be automatically prepended to the resource name of any nested 
-                &lt;utility:gwtResourceBundle/&gt;, &lt;utility:gwtAdminResourceBundle/&gt; or 
-                &lt;utility:gwtEngineResourceBundle/&gt; tag.
-            </description>
-            <name>resourceNamePrefix</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <description>Generate resource bundle to be used by JahiaModule.</description>
         <name>gwtResourceBundle</name>
         <tag-class>org.jahia.taglibs.utility.i18n.GWTMessageTag</tag-class>

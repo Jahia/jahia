@@ -11,7 +11,7 @@
   <packaging>war</packaging>
 
   <properties>
-      <singleModuleName>org.jahia.ajax.gwt.templates.entrypoint.general.edit.Edit</singleModuleName>
+      <singleModuleName>org.jahia.ajax.gwt.template.general.edit.Edit</singleModuleName>
   </properties>
    <pluginRepositories>
       <pluginRepository>

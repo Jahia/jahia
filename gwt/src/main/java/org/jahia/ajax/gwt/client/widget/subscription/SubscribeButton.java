@@ -38,7 +38,7 @@ import java.util.Map;
 
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionServiceAsync;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -62,8 +62,7 @@ public class SubscribeButton extends HTML {
     }
 
     private static String getMessage(String key) {
-        return ResourceBundle.getNotEmptyResource("subscribebutton", null, key,
-                key);
+        return Messages.getNotEmptyResource("subscribebutton",key);
     }
 
     private boolean confirmationRequired;

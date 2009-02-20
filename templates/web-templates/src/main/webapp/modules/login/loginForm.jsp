@@ -33,28 +33,30 @@
 
 --%>
 
-<%@include file="../declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
+<c:if test="${!requestScope.currentRequest.logged}">
+<div class="loginForm"><!--start box -->
+    <h3><utility:resourceBundle resourceName='login' defaultValue="login"/></h3>
 
-<template:absoluteContainerList name="bottomLinks" id="bottomLinks" actionMenuNameLabelKey="bottomLinks.add" pageLevel="1">
-    <!--start  5 columns -->
-    <div class="columns5">
-        <template:container id="bottomLinkContainer" displayActionMenu="false">
-            <div class="column-item">
-                <div class="spacer"><!--start mapshortcuts-->
-                    <div class="mapshortcuts">
-                        <ui:actionMenu contentObjectName="bottomLinkContainer" namePostFix="bottomLink"
-                                                       labelKey="bottomLink.update">
-                        <template:field name="link" valueBeanID="links" display="false"/>
-                        <h4><template:field name="link"/></h4>
-                        <ui:sitemap enableDescription="true" startPid="${links.linkID}" maxDepth="1"/>
-                        </ui:actionMenu>
-                    </div>
-                </div>
-                <div class="clear"></div>
-            </div>
-        </template:container>
-        <div class="clear"></div>
+    <div class="loginForm"><!--start loginForm -->
+        <ui:loginArea>
+            <fieldset>
+                <legend><utility:resourceBundle resourceName='login' defaultValue="login"/></legend>
+                <p>
+                    <ui:loginUsername labelCssClassName="" cssClassName="username" labelKey="username" tabIndex="6"/>
+                </p>
+                <p>
+                    <ui:loginPassword labelCssClassName="" cssClassName="password" labelKey="password" tabIndex="7"/>
+                </p>
+                <p>
+                    <ui:loginRememberMe labelCssClassName="rememberLabel" cssClassName="rememberme" labelKey="rememberme" tabIndex="8"/>
+                </p>
+                <p><input type="submit" name="submit" id="submit" class="button" value="Login" tabindex="9"/></p>
+                <p><ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/></p>
+            </fieldset>
+        </ui:loginArea>
     </div>
-    </template:absoluteContainerList>
-<!--stop 5 columns -->
-<div class="clear"></div>
+    <!--stop loginForm -->
+</div>
+<!--stop box -->
+</c:if>

@@ -1,0 +1,23 @@
+<%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
+<template:container id="bannerContainer" emptyContainerDivCssClassName="mockup-teasers">
+    <!--start column-item -->
+    <div class="column-item">
+        <div class="spacer">
+            <!--start box -->
+            <div class="box box-fixed-height">
+                <template:image file="image" cssClassName="floatleft"/>
+                <div class="box-content">
+                    <h3><template:field name='title'/></h3>
+                    <p><template:field name='abstract'/></p>
+                </div>
+                <div class="more"><span> <template:link page="link" maxChar="20"/><a href="#">Read more </a></span>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <!--stop box -->
+        </div>
+
+        <div class="clear"></div>
+    </div>
+    <!--stop column-item -->
+</template:container>

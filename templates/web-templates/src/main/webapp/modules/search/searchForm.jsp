@@ -33,28 +33,26 @@
 
 --%>
 
-<%@include file="../declarations.jspf" %>
-
-<template:absoluteContainerList name="bottomLinks" id="bottomLinks" actionMenuNameLabelKey="bottomLinks.add" pageLevel="1">
-    <!--start  5 columns -->
-    <div class="columns5">
-        <template:container id="bottomLinkContainer" displayActionMenu="false">
-            <div class="column-item">
-                <div class="spacer"><!--start mapshortcuts-->
-                    <div class="mapshortcuts">
-                        <ui:actionMenu contentObjectName="bottomLinkContainer" namePostFix="bottomLink"
-                                                       labelKey="bottomLink.update">
-                        <template:field name="link" valueBeanID="links" display="false"/>
-                        <h4><template:field name="link"/></h4>
-                        <ui:sitemap enableDescription="true" startPid="${links.linkID}" maxDepth="1"/>
-                        </ui:actionMenu>
-                    </div>
-                </div>
-                <div class="clear"></div>
-            </div>
-        </template:container>
-        <div class="clear"></div>
-    </div>
-    </template:absoluteContainerList>
-<!--stop 5 columns -->
-<div class="clear"></div>
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ include file="../../common/declarations.jspf" %>
+<div id="formSearchTop"><!--start formSearchTop-->
+   <s:form name="simpleSearchForm">
+       <div id="formSearchTopA">
+        <p>
+            <label><utility:resourceBundle resourceName='search' defaultValue="Search" />: </label>
+            <s:term class="text" value="${searchLabel}"/>
+            <input class="png gobutton" type="image" src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/search-button.png'/>" tabindex="5"/>
+        </p>
+        </div>
+       <c:if test="${!currentPage.homePage}">
+        <div id="formSearchTopB">
+        <p class="loginFormTopSection">
+            <input type="checkbox" name="inTheCurrentSection" class="loginFormTopSection" id="inTheCurrentSection" ${not empty param.inTheCurrentSection ? 'checked="checked"' : ''} onchange="document.simpleSearchForm['src_pagePath.value'].value = this.checked ? '${jahia.page.ID}' : ''"/>
+            <s:pagePath value="" display="false"/>
+            <label class="loginFormTopSection" for="inTheCurrentSection"><utility:resourceBundle resourceName='lookcurrentsection' defaultValue="in current section only" /></label>
+        </p>
+        </div>
+       </c:if>
+    </s:form>
+</div>
+<!--stop formSearchTop-->

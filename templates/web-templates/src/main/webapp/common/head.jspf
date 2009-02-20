@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
-<%@ include file="declarations.jspf" %>
+<%@ include file="../common/declarations.jspf" %>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <template:themeDisplay defaultTheme="default"/>
 <%// JS Script for Flash Player %>

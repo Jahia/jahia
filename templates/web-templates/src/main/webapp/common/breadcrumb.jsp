@@ -33,7 +33,7 @@
 
 --%>
 
-<%@ include file="declarations.jspf" %>
+<%@ include file="../common/declarations.jspf" %>
 <div id="breadcrumb">
     <ui:currentPagePath cssClassName="breadcrumb"/>
 </div>

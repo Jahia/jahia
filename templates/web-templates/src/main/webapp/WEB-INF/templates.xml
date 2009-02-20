@@ -43,20 +43,20 @@
     <definitions-file>definitions.cnd</definitions-file>
     <definitions-file>definitions.grp</definitions-file>
     <common-pages>
-        <search-results>searchresult.jsp</search-results>
+        <search-results>tpl.searchresult.jsp</search-results>
     </common-pages>
     <templates default="simple" homepage="Home">
-        <template name="Home" display-name="template.name.home" filename="home.jsp" page-type="web_templates:home"/>
-        <template name="simple" display-name="template.name.simple" filename="simple.jsp" page-type="web_templates:simple"/>
-        <template name="article" display-name="template.name.article" filename="article.jsp" page-type="web_templates:article" description="description.template.article"/>
-        <template name="events" display-name="template.name.events" filename="events.jsp" page-type="web_templates:events" description="description.template.events"/>
-        <template name="people" display-name="template.name.portraits" filename="people.jsp" page-type="web_templates:people" description="description.template.portraits"/>
-        <template name="press" display-name="template.name.pressReleases" filename="pressRelease.jsp" page-type="web_templates:pressRelease" description="description.template.pressReleases"/>
-        <template name="news" display-name="template.name.news" filename="news.jsp" page-type="web_templates:news" description="description.template.news"/>
-        <template name="job" display-name="template.name.job" filename="job.jsp" page-type="web_templates:job" description="description.template.job"/>
-        <template name="full" display-name="template.name.full" filename="full.jsp" page-type="web_templates:full" description="description.template.full"/>
-        <template name="publication" display-name="template.name.publications" filename="publication.jsp" page-type="web_templates:publication" description="description.template.publications"/>
-        <template name="layout" display-name="template.name.myPortal" filename="layoutManager.jsp" page-type="web_templates:layoutManager" description="description.template.myPortal"/>
+        <template name="Home" display-name="template.name.home" filename="tpl.home.jsp" page-type="web_templates:home"/>
+        <template name="simple" display-name="template.name.simple" filename="tpl.simple.jsp" page-type="web_templates:simple"/>
+        <template name="article" display-name="template.name.article" filename="tpl.article.jsp" page-type="web_templates:article" description="description.template.article"/>
+        <template name="events" display-name="template.name.events" filename="tpl.events.jsp" page-type="web_templates:events" description="description.template.events"/>
+        <template name="people" display-name="template.name.portraits" filename="tpl.people.jsp" page-type="web_templates:people" description="description.template.portraits"/>
+        <template name="press" display-name="template.name.pressReleases" filename="tpl.pressReleases.jsp" page-type="web_templates:pressRelease" description="description.template.pressReleases"/>
+        <template name="news" display-name="template.name.news" filename="tpl.news.jsp" page-type="web_templates:news" description="description.template.news"/>
+        <template name="job" display-name="template.name.job" filename="tpl.jobs.jsp" page-type="web_templates:job" description="description.template.job"/>
+        <template name="full" display-name="template.name.full" filename="tpl.full.jsp" page-type="web_templates:full" description="description.template.full"/>
+        <template name="publication" display-name="template.name.publications" filename="tpl.publications.jsp" page-type="web_templates:publication" description="description.template.publications"/>
+        <template name="layout" display-name="template.name.myPortal" filename="tpl.layoutManager.jsp" page-type="web_templates:layoutManager" description="description.template.myPortal"/>
     </templates>
 </template-set>
 

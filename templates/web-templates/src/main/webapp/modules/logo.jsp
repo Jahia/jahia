@@ -33,28 +33,12 @@
 
 --%>
 
-<%@include file="../declarations.jspf" %>
-
-<template:absoluteContainerList name="bottomLinks" id="bottomLinks" actionMenuNameLabelKey="bottomLinks.add" pageLevel="1">
-    <!--start  5 columns -->
-    <div class="columns5">
-        <template:container id="bottomLinkContainer" displayActionMenu="false">
-            <div class="column-item">
-                <div class="spacer"><!--start mapshortcuts-->
-                    <div class="mapshortcuts">
-                        <ui:actionMenu contentObjectName="bottomLinkContainer" namePostFix="bottomLink"
-                                                       labelKey="bottomLink.update">
-                        <template:field name="link" valueBeanID="links" display="false"/>
-                        <h4><template:field name="link"/></h4>
-                        <ui:sitemap enableDescription="true" startPid="${links.linkID}" maxDepth="1"/>
-                        </ui:actionMenu>
-                    </div>
-                </div>
-                <div class="clear"></div>
-            </div>
-        </template:container>
-        <div class="clear"></div>
-    </div>
-    </template:absoluteContainerList>
-<!--stop 5 columns -->
-<div class="clear"></div>
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ include file="../common/declarations.jspf" %>
+<template:absoluteContainerList name="logo${param.id}" id="logoContainerList" pageLevel="1"
+                                actionMenuNameLabelKey="logo.update">
+    <template:container id="logoContainer">
+        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>'><template:image file="logo"
+                                                                                                             cssClassName="logotop png"/></a>
+    </template:container>
+</template:absoluteContainerList>

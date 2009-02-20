@@ -1,58 +1,56 @@
 <%@ include file="../common/declarations.jspf" %>
 <div id="footer"><!--start footer-->
     <c:if test="${ !empty param.footerNav}">
-    <div id="footerPart1"><!--start footerPart1-->
-        <template:include page="common/nav/footerNav.jsp"/>
-        <div class="clear"></div>
-    </div>
+        <div id="footerPart1"><!--start footerPart1-->
+            <template:include page="common/nav/footerNav.jsp"/>
+            <div class="clear"></div>
+        </div>
     </c:if>
     <!--stop footerPart1-->
-    <div id="footerPart2"><!--start footerPart2-->
-        <div id="footerPart2content"><!--start footerPart2content-->
-
-        </div>
+    <!--start footerPart2-->
+    <div id="footerPart2"><!--start footerPart2content-->
+        <div id="footerPart2content"></div>
         <div class="clear"></div>
     </div>
     <!--stop footerPart2-->
-    <div id="footerPart3"><!--start footerPart3-->
-        <div class="columns2"><!--start 2columns -->
-            <div class="column-item1"><!--start column-item -->
-                <div class="columnspace"><!--start columnspace -->
-                    <template:include page="common/logo.jsp">
+    <!--start footerPart3-->
+    <div id="footerPart3">
+        <!--start 2columns -->
+        <div class="columns2">
+            <!--start column-item -->
+            <div class="column-item1">
+                <div class="spacer">
+                    <template:include page="modules/logo.jsp">
                         <template:param name="id" value="Footer"/>
                     </template:include>
                 </div>
-                <!--stop columnspace -->
                 <div class="clear"></div>
             </div>
             <!--stop column-item -->
-            <div class="column-item2"><!--start column-item -->
-                <div class="columnspace"><!--start columnspace -->
-                    <div id="bottomshortcuts"><!--start bottomshortcuts-->
-                    <template:include page="common/links/basicLinksDisplay.jsp">
-                        <template:param name="cssClassName" value=""/>
-                        <template:param name="id" value="Footer"/>                                                             
-                    </template:include>
-                    </div>
-                    <!--stop bottomshortcuts-->
-                    <div id="copyright"><!--start copyright-->
-                        <p>
-                             <template:include page="containers/footer.jsp"/>
-                        </p>
-                    </div>
-                    <!--stop copyright-->
+            <!--start column-item -->
+            <div class="column-item2">
+                <div class="spacer"><!--start bottomshortcuts-->
+                    <div id="bottomshortcuts">
+                        <template:include page="common/links/basicLinksDisplay.jsp">
+                            <template:param name="cssClassName" value=""/>
+                            <template:param name="id" value="Footer"/>
+                        </template:include>
+                    </div><!--stop bottomshortcuts-->
+
+                    <!--start copyright-->
+                    <div id="copyright">
+                        <p><template:include page="modules/footer.jsp"/></p>
+                    </div><!--stop copyright-->
                 </div>
-                <!--stop columnspace -->
                 <div class="clear"></div>
-            </div>
-            <!--stop column-item -->
+            </div><!--stop column-item -->
+
             <div class="clear"></div>
-        </div>
-        <!--stop 2 columns -->
+        </div><!--stop 2 columns -->
+
         <div class="clear"></div>
-    </div>
-    <!--stop footerPart3-->
+    </div><!--stop footerPart3-->
+
     <div class="clear"></div>
     <div class="clear"></div>
-</div>
-<!--stop footer-->
+</div><!--stop footer-->

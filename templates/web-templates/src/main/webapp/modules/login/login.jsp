@@ -33,28 +33,35 @@
 
 --%>
 
-<%@include file="../declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
+<div id="peoplebox0" class="collapsible"><!--start collapsible loginFormTop-->
+    <div class="boxloginFormTop"><!--start box 4 default-->
+        <div class="boxloginFormTop-topright"></div>
+        <div class="boxloginFormTop-topleft"></div>
+        <div class="boxloginFormTop-header">
+            <div id="loginFormTop"><!--start loginFormTop-->
+                <ui:loginArea>
+                    <p><ui:loginUsername labelCssClassName="hide" cssClassName="text" labelKey="username" tabIndex="1"/>
+                        <ui:loginPassword labelCssClassName="hide" cssClassName="text" labelKey="password"
+                                          tabIndex="2"/>
+                        <input class="gobutton png" type="image"
+                               src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/loginformtop-button.png'/>"
+                               tabindex="3"/></p>
 
-<template:absoluteContainerList name="bottomLinks" id="bottomLinks" actionMenuNameLabelKey="bottomLinks.add" pageLevel="1">
-    <!--start  5 columns -->
-    <div class="columns5">
-        <template:container id="bottomLinkContainer" displayActionMenu="false">
-            <div class="column-item">
-                <div class="spacer"><!--start mapshortcuts-->
-                    <div class="mapshortcuts">
-                        <ui:actionMenu contentObjectName="bottomLinkContainer" namePostFix="bottomLink"
-                                                       labelKey="bottomLink.update">
-                        <template:field name="link" valueBeanID="links" display="false"/>
-                        <h4><template:field name="link"/></h4>
-                        <ui:sitemap enableDescription="true" startPid="${links.linkID}" maxDepth="1"/>
-                        </ui:actionMenu>
-                    </div>
-                </div>
-                <div class="clear"></div>
+                    <p class="loginFormTopCheckbox"><input type="checkbox" name="remember" id="remember"
+                                                           class="loginFormTopInputCheckbox" value="checked"
+                                                           tabindex="1"/>
+                        <label class="loginFormTopRememberLabel" for="remember"><utility:resourceBundle
+                                resourceName="rememberMe" defaultValue="Remember me"/></label></p>
+                </ui:loginArea>
             </div>
-        </template:container>
+            <!--stop loginFormTop-->
+        </div>
+        <div class="box4-bottomright"></div>
+        <div class="box4-bottomleft"></div>
         <div class="clear"></div>
     </div>
-    </template:absoluteContainerList>
-<!--stop 5 columns -->
-<div class="clear"></div>
+    <div class="clear"></div>
+    <!--stop box 4 default-->
+</div>
+<!--stop collapsible loginFormTop-->

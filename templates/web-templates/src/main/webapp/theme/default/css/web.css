@@ -13,6 +13,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
+ .
+ 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -353,8 +355,8 @@ body {
 /******************************************************************************
 * Generic
 ******************************************************************************/
-#bodywrapper #columnA,
-    #bodywrapper #columnB {
+#bodywrapper #areaA,
+    #bodywrapper #areaB {
     font-size: 0.9em;
     line-height: 140%
 }
@@ -789,47 +791,46 @@ body {
 /******************************************************************************
 * LAYOUT CONTENT & COLUMNS
 ******************************************************************************/
-/*3 colums columnB/mainColumn/columnA */
-#bodywrapper #content {
+
+/*3 colums areaB/mainArea/areaA */
+#bodywrapper #position1 {
     margin: 0 280px;
     overflow: hidden;
-
 }
 
-/*2 colums columnB / mainColumn  */
-#bodywrapper #content2 {
+/*2 colums areaB / mainArea  */
+#bodywrapper #position2 {
     margin: 0 280px 0 0;
     overflow: hidden;
 }
 
-/*2 colums mainColumn/ columnA */
-#bodywrapper #content3 {
+/*2 colums mainArea/ areaA */
+#bodywrapper #position3 {
     margin: 0 0 0 280px;
     overflow: hidden;
 }
 
-/* mainColumn alone*/
-#bodywrapper #content4 {
+/* mainArea alone*/
+#bodywrapper #position4 {
     margin: 0;
     overflow: hidden;
 }
 
-/*2 colums columnC 50%/ mainColumn 50%  */
-#bodywrapper #content5 {
+/*2 colums areaC 50%/ mainArea 50%  */
+#bodywrapper #position5 {
     margin: 0 460px 0 0;
     overflow: hidden;
 }
 
-#bodywrapper #columnA {
+#bodywrapper #areaA {
     float: left;
     width: 280px;
     margin-left: -940px;
     overflow: hidden;
     display: block;
-
 }
 
-#bodywrapper #columnB {
+#bodywrapper #areaB {
     float: left;
     width: 280px;
     margin-left: -280px;
@@ -837,7 +838,7 @@ body {
     display: block;
 }
 
-#bodywrapper #columnC {
+#bodywrapper #areaC {
     float: left;
     width: 460px;
     margin-left: -460px;
@@ -845,31 +846,32 @@ body {
     display: block;
 }
 
-#bodywrapper .space {
+
+#bodywrapper .spacer {
     padding: 10px 0;
 }
 
-#bodywrapper #content .mainColumn {
+#bodywrapper #position1 .spacer {
     padding: 10px 20px;
 }
 
-#bodywrapper #content2 .mainColumn {
+#bodywrapper #position2 .spacer {
     padding: 10px 20px 10px 0;
 }
 
-#bodywrapper #content3 .mainColumn {
+#bodywrapper #position3 .spacer {
     padding: 10px 0 10px 20px;
 }
 
-#bodywrapper #content4 .mainColumn {
+#bodywrapper #position4 .spacer {
     padding: 10px 0;
 }
 
-#bodywrapper #content5 .mainColumn {
+#bodywrapper #position5 .spacer {
     padding: 10px 10px 10px 0;
 }
 
-#bodywrapper #columnC .space {
+#bodywrapper #areaC .spacer {
     padding: 10px 0 10px 10px;
 }
 
@@ -891,7 +893,7 @@ body {
     display: block;
 }
 
-#bodywrapper .columns2 .column-item .columnspace {
+#bodywrapper .columns2 .column-item .spacer {
     padding: 10px;
 }
 
@@ -910,7 +912,7 @@ body {
     display: block;
 }
 
-#bodywrapper .columns3 .column-item .columnspace {
+#bodywrapper .columns3 .column-item .spacer {
     padding: 10px;
 }
 
@@ -929,7 +931,7 @@ body {
     display: block;
 }
 
-#bodywrapper .columns4 .column-item .columnspace {
+#bodywrapper .columns4 .column-item .spacer {
     padding: 10px;
 }
 
@@ -948,12 +950,12 @@ body {
     display: block;
 }
 
-#bodywrapper .columns5 .column-item .columnspace {
+#bodywrapper .columns5 .column-item .spacer {
     padding: 10px;
 }
 
 /*columns without bottom space*/
-#bodywrapper .nobottomspace .column-item .columnspace {
+#bodywrapper .nobottomspace .column-item .spacer {
     padding: 10px 10px 0 10px;
 }
 
@@ -1016,7 +1018,7 @@ body {
     text-align: center;
 }
 
-#bodywrapper #footerPart3 .columns2 .column-item .columnspace {
+#bodywrapper #footerPart3 .columns2 .column-item .spacer {
     padding: 0px;
 }
 
@@ -1052,7 +1054,7 @@ body {
     display: block;
 }
 
-#bodywrapper #footerPart3 .columns2 .column-item .columnspace {
+#bodywrapper #footerPart3 .columns2 .column-item .spacer {
     padding: 0px;
 }
 

@@ -38,6 +38,6 @@
 <%-- This file only describe the template --%>
 
 <%-- Define layout file --%>
-<jsp:include page="structures/structures.jsp">
-    <jsp:param name="mainColumn" value="structures/sitemap/mainColumn.jsp"/>
+<jsp:include page="positioning.jsp">
+    <jsp:param name="mainArea" value="areas/sitemap.jsp"/>
 </jsp:include>

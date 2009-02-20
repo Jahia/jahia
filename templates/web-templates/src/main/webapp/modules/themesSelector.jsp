@@ -33,10 +33,17 @@
 
 --%>
 
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
-
-<%@ include file="../../declarations.jspf" %>
-<template:containerList name="contentContainer" id="maincontentList"
-                       actionMenuNamePostFix="mainContents" actionMenuNameLabelKey="mainContents">
-    <%@ include file="../../../modules/maincontent/maincontentDisplay.jspf" %>
-</template:containerList>
+<%@ include file="../common/declarations.jspf" %>
+<%--
+Set theme for the actual site,
+values for scope are :
+- all : all users can change theme
+- user : only authentified users can change theme
+- site : only site admin can change theme.
+todo : change site to siteAdmin
+--%>
+<div class="themeSelector">
+    <c:if test="${requestScope.currentRequest.admin}">
+        <utility:resourceBundle resourceName='siteThemeSelector' defaultValue="Theme for site"/>: <ui:themeSelector scope="site"/>
+    </c:if>
+</div>

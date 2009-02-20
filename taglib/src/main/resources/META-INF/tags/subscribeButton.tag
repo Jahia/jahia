@@ -61,7 +61,7 @@
 <c:set target="${attributes}" property="confirmationRequired" value="${h:default(confirmationRequired, 'false')}"/>
 <c:if test="${empty requestScope['org.jahia.tags.subscribeButton.resourcesIncluded']}">
     <c:set var="org.jahia.tags.subscribeButton.resourcesIncluded" value="true" scope="request"/>
-    <utility:gwtResourceBundleDictionary moduleType="subscribeButton" resourceNamePrefix="subscription.button.">
+    <utility:gwtResourceBundleDictionary moduleType="subscribeButton" resourceNamePrefix="subscriptions.button.">
         <utility:gwtResourceBundle resourceName="operation.failure"/>
         <utility:gwtResourceBundle resourceName="provideEmailAddress"/>
         <utility:gwtResourceBundle resourceName="subscribe.title"/>

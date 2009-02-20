@@ -48,9 +48,9 @@
 <%@ attribute name="confirmationRequired" required="false" type="java.lang.Boolean"
               description="Does the subscription require confirmation (an e-mail with the confirmation link will be sent first)? [false]"
         %>
-<%@ tag dynamic-attributes="attributes"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ tag dynamic-attributes="attributes" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <c:set target="${attributes}" property="jahiatype" value="subscription"/>
 <c:set var="elementId" value="subscription_${source}"/>
@@ -61,16 +61,14 @@
 <c:set target="${attributes}" property="confirmationRequired" value="${h:default(confirmationRequired, 'false')}"/>
 <c:if test="${empty requestScope['org.jahia.tags.subscribeButton.resourcesIncluded']}">
     <c:set var="org.jahia.tags.subscribeButton.resourcesIncluded" value="true" scope="request"/>
-    <utility:gwtResourceBundleDictionary moduleType="subscribeButton" resourceNamePrefix="subscriptions.button.">
-        <utility:gwtResourceBundle resourceName="operation.failure"/>
-        <utility:gwtResourceBundle resourceName="provideEmailAddress"/>
-        <utility:gwtResourceBundle resourceName="subscribe.title"/>
-        <utility:gwtResourceBundle resourceName="subscribe.confirm"/>
-        <utility:gwtResourceBundle resourceName="subscribe.success"/>
-        <utility:gwtResourceBundle resourceName="subscribe.success.confirmationEmail"/>
-        <utility:gwtResourceBundle resourceName="unsubscribe.confirm"/>
-        <utility:gwtResourceBundle resourceName="unsubscribe.success"/>
-        <utility:gwtResourceBundle resourceName="unsubscribe.title"/>
-    </utility:gwtResourceBundleDictionary>
+    <utility:gwtResourceBundle resourceName="operation.failure"/>
+    <utility:gwtResourceBundle resourceName="provideEmailAddress"/>
+    <utility:gwtResourceBundle resourceName="subscribe.title"/>
+    <utility:gwtResourceBundle resourceName="subscribe.confirm"/>
+    <utility:gwtResourceBundle resourceName="subscribe.success"/>
+    <utility:gwtResourceBundle resourceName="subscribe.success.confirmationEmail"/>
+    <utility:gwtResourceBundle resourceName="unsubscribe.confirm"/>
+    <utility:gwtResourceBundle resourceName="unsubscribe.success"/>
+    <utility:gwtResourceBundle resourceName="unsubscribe.title"/>
 </c:if>
 <span ${h:attributes(attributes)}></span>

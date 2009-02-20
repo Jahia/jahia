@@ -162,6 +162,7 @@ singleContainer logoFooter (web_templates:logoContainer)
 containerList   bottomLinks (web_templates:bottomLinksContainer)
 
 [web_templates:simple] > jnt:page,web_templates:navigation
+containerList mainColumn_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
 containerList maincontent (jnt:mainContentContainer)
 

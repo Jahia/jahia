@@ -35,12 +35,9 @@ package org.jahia.services.content.impl.jahia;
 
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.BasicSessionState;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.nodetypes.ValueImpl;
@@ -64,11 +61,10 @@ import java.security.AccessControlException;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * Implementation of the JCR Session. 
  * User: Serge Huber
  * Date: 17 d�c. 2007
  * Time: 10:04:39
- * To change this template use File | Settings | File Templates.
  */
 public class SessionImpl implements Session {
 
@@ -78,21 +74,14 @@ public class SessionImpl implements Session {
     private String userId;
     private RepositoryImpl repository;
     private WorkspaceImpl workspace;
-    private SessionState sessionState;
     private Map<String, NodeImpl> nodesByPath = new HashMap();
     private Map<String, NodeImpl> nodesByUUID = new HashMap();
     private Set<ItemImpl> modifiedItems = new HashSet<ItemImpl>();
-
-    private static long sessionCounter = 0;
-
 
     public SessionImpl(RepositoryImpl repository, JahiaUser jahiaUser, String userId) throws RepositoryException {
         this.repository = repository;
         this.jahiaUser = jahiaUser;
         this.userId = userId;
-        sessionCounter++;
-        String sessionID = Long.toString(sessionCounter);
-        sessionState = new BasicSessionState(sessionID);
     }
 
     public ProcessingContext getProcessingContext(JahiaSite jahiaSite) throws RepositoryException {
@@ -134,34 +123,56 @@ public class SessionImpl implements Session {
         return nodesByPath.get("/");
     }
 
-    public Node getNodeByUUID(String uuid) throws ItemNotFoundException, RepositoryException {
-        try {
-            if (nodesByUUID.get(uuid) == null) {
-                List l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("uuid", uuid);
+    public Node getNodeByUUID(String uuid) throws ItemNotFoundException,
+            RepositoryException {
+        NodeImpl node = nodesByUUID.get(uuid);
+        if (node == null) {
+            try {
+                List l = ServicesRegistry.getInstance().getJahiaPageService()
+                        .findPagesByPropertyNameAndValue("uuid", uuid);
                 if (!l.isEmpty()) {
-                    nodesByUUID.put(uuid, getJahiaPageNode((ContentPage) l.iterator().next()));
+                    node = getJahiaPageNode((ContentPage) l.iterator().next());
                 }
-                l = ServicesRegistry.getInstance().getJahiaContainersService().findContainersByPropertyNameAndValue("uuid", uuid);
-                if (!l.isEmpty()) {
-                    nodesByUUID.put(uuid,getJahiaContainerNode((ContentContainer) l.iterator().next()));
+                if (node == null) {
+                    l = ServicesRegistry.getInstance()
+                            .getJahiaContainersService()
+                            .findContainersByPropertyNameAndValue("uuid", uuid);
+                    if (!l.isEmpty()) {
+                        node = getJahiaContainerNode((ContentContainer) l
+                                .iterator().next());
+                    }
                 }
-                l = ServicesRegistry.getInstance().getJahiaContainersService().findContainerListsByPropertyNameAndValue("uuid", uuid);
-                if (!l.isEmpty()) {
-                    nodesByUUID.put(uuid,getJahiaContainerListNode((ContentContainerList) l.iterator().next()));
+                if (node == null) {
+                    l = ServicesRegistry.getInstance()
+                            .getJahiaContainersService()
+                            .findContainerListsByPropertyNameAndValue("uuid",
+                                    uuid);
+                    if (!l.isEmpty()) {
+                        node = getJahiaContainerListNode((ContentContainerList) l
+                                .iterator().next());
+                    }
                 }
-                l = getRepository().getSitesService().findSiteByPropertyNameAndValue("uuid", uuid);
-                if (!l.isEmpty()) {
-                    nodesByUUID.put(uuid,getJahiaSiteNode((JahiaSite) l.iterator().next()));
+                if (node == null) {
+                    l = getRepository().getSitesService()
+                            .findSiteByPropertyNameAndValue("uuid", uuid);
+                    if (!l.isEmpty()) {
+                        node = getJahiaSiteNode((JahiaSite) l.iterator().next());
+                        nodesByUUID.put(uuid, node);
+                    }
                 }
+                if (node != null) {
+                    nodesByUUID.put(uuid, node);
+                }
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
             }
-            if (nodesByUUID.get(uuid) != null) {
-                return nodesByUUID.get(uuid);
-            }
-        } catch (JahiaException e) {
-            e.printStackTrace();
         }
 
-        throw new ItemNotFoundException(uuid);
+        if (node == null) {
+            throw new ItemNotFoundException(uuid);
+        }
+
+        return node;
     }
 
     public Item getItem(String s) throws PathNotFoundException, RepositoryException {
@@ -337,47 +348,48 @@ public class SessionImpl implements Session {
 
     NodeImpl getJahiaSiteNode(JahiaSite site)throws RepositoryException {
         String path = "/" + site.getSiteKey();
-        if (nodesByPath.get(path) == null) {
-            NodeImpl res = new JahiaSiteNodeImpl(this, site);
-            nodesByPath.put(path, res);
+        NodeImpl node = nodesByPath.get(path);
+        if (node == null || ((JahiaSiteNodeImpl)node).getSite() != site) {
+            node = new JahiaSiteNodeImpl(this, site);
+            nodesByPath.put(path, node);
         }
-        return nodesByPath.get(path);
+        return node;
     }
 
     NodeImpl getJahiaPageNode(ContentPage page)throws RepositoryException {
-        try {
-            String uuid = JahiaContentNodeImpl.getUUID(ContentPage.getPage(page.getID()));
-            if (nodesByUUID.get(uuid) == null) {
-                NodeImpl res = new JahiaPageNodeImpl(this, page);
-                nodesByPath.put(res.getPath(), res);
-                nodesByUUID.put(uuid, res);
-            }
-            return nodesByUUID.get(uuid);
-        } catch (JahiaException e) {
-            throw new RepositoryException(e);
-        }
+        return getContentNode(page);
     }
 
     NodeImpl getJahiaContainerListNode(ContentContainerList list) throws RepositoryException{
-        String uuid = JahiaContentNodeImpl.getUUID(list);
-        if (nodesByUUID.get(uuid) == null) {
-            NodeImpl res = new JahiaContainerListNodeImpl(this, list);
-            nodesByPath.put(res.getPath(), res);
-            nodesByUUID.put(uuid, res);
-        }
-        return nodesByUUID.get(uuid);
+        return getContentNode(list);
     }
 
     NodeImpl getJahiaContainerNode(ContentContainer cont)throws RepositoryException {
-        String uuid = JahiaContentNodeImpl.getUUID(cont);
-        if (nodesByUUID.get(uuid) == null) {
-            NodeImpl res = new JahiaContainerNodeImpl(this, cont);
-            nodesByPath.put(res.getPath(), res);
-            nodesByUUID.put(uuid, res);
-        }
-        return nodesByUUID.get(uuid);
+        return getContentNode(cont);
     }
 
+    private JahiaContentNodeImpl getContentNode(ContentObject obj)
+            throws RepositoryException {
+        String uuid = JahiaContentNodeImpl.getUUID(obj);
+        JahiaContentNodeImpl node = (JahiaContentNodeImpl) nodesByUUID
+                .get(uuid);
+        if (node == null || node.getContentObject() != obj) {
+            if (obj instanceof ContentPage) {
+                node = new JahiaPageNodeImpl(this, (ContentPage) obj);
+            } else if (obj instanceof ContentContainerList) {
+                node = new JahiaContainerListNodeImpl(this,
+                        (ContentContainerList) obj);
+            } else if (obj instanceof ContentContainer) {
+                node = new JahiaContainerNodeImpl(this, (ContentContainer) obj);
+            } else {
+                throw new IllegalArgumentException(
+                        "Unknown content object type for object: " + obj);
+            }
+            nodesByPath.put(node.getPath(), node);
+            nodesByUUID.put(uuid, node);
+        }
 
+        return node;
+    }
 
 }

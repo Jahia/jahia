@@ -1,7 +1,7 @@
 # Jahia Oracle Database configuration file
 
-jahia.database.name     =  Oracle 8.1.x / Oracle 9.x / Oracle 10.2.1.0
-jahia.database.driver   =  oracle.jdbc.driver.OracleDriver
+jahia.database.name     =  Oracle 8.1.x / Oracle 9.x / Oracle 10.2.1.0 / Oracle 11.x
+jahia.database.driver   =  oracle.jdbc.OracleDriver
 jahia.database.url      =  jdbc:oracle:thin:@localhost:1521:jahia
 jahia.database.user     =  jahia
 jahia.database.pass     =  jahia
@@ -9,14 +9,17 @@ jahia.database.transactions = false
 jahia.database.schemascriptdir = sql/schema/oracle
 jahia.database.popuplationscriptdir = sql/population
 jahia.database.starthsqlserver = false
-jahia.database.datasource = java:comp/env/jdbc/jetspeed
-#jahia.database.datasource = 
+#jahia.database.datasource = java:comp/env/jdbc/jahia
+jahia.database.datasource = jdbc/jahia
+#jahia.database.datasource =
 jahia.database.ojbplatform = Oracle
 jahia.database.hibernate.dialect = org.hibernate.dialect.Oracle9Dialect
 jahia.nested_transaction_allowed = false
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.oracle.OracleDelegate
 jahia.quartz.serializable = false
-jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.MyOraclePersistenceManager
-jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.MyOracleFileSystem
+#jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.MyOraclePersistenceManager
+#jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.MyOracleFileSystem
+jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.bundle.OraclePersistenceManager
+jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.MyOracle10R2FileSystem
 jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.OracleDatabaseJournal
 jahia.jackrabbit.schema = oracle

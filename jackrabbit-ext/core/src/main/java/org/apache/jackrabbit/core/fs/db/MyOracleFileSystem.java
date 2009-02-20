@@ -45,6 +45,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This code is part of the patch submitted in :
+ * https://issues.apache.org/jira/browse/JCR-1525
+ * but not yet applied to the Jackrabbit source code. Once it will have
+ * been included, we should remove the associated patches.
+ * 
  * <code>OracleFileSystem</code> is a JDBC-based <code>FileSystem</code>
  * implementation for Jackrabbit that persists file system entries in an
  * Oracle database.
@@ -151,6 +156,7 @@ public class MyOracleFileSystem extends DbFileSystem {
             // if we couldn't find the class there, we look locally. This fallback is necessary for this code to
             // work properly under Websphere and IBM JVM. It seems that under Websphere the above connection comes
             // from the System classloader.
+            /*
             log.warn("Class oracle.sql.BLOB not found in java.sql.Connection classloader, will search in local classloader");
             if (log.isDebugEnabled()) {
                 log.debug("Details of class not found", cnfe);
@@ -162,7 +168,7 @@ public class MyOracleFileSystem extends DbFileSystem {
                 log.error(msg, cnfe2);
                 throw new FileSystemException(msg, cnfe2);
             }
-
+            */
         }
         try {
             durationSessionConstant =

@@ -212,11 +212,15 @@ jahia.config = {
   <%= (String) request.getAttribute("org.jahia.engines.html.headers") %>
 <% } %>
 </head>
-<body ${jspSource == 'login' || jspSource == 'bad_login' ? "class='login' id='bodyLogin'" : ""}>
+<% if (jspSource == "login" || jspSource == "bad_login") { %>
+<body class="login" id="bodyLogin">
+<% } else { %>
+<body>
+<% } %>
 <center>
 <div id="userShell">
   <!-- wrapper (start) -->
-  <div id="main<%if(jspSource != null && ("login".equals(jspSource) || "bad_login".equals(jspSource))){%>Login<%}else{%>Client<%}%>Layout">
+  <div id='main<%if(jspSource != null && ("login".equals(jspSource) || "bad_login".equals(jspSource))){%>Login<%}else{%>Client<%}%>Layout'>
     <form name="mainForm" method="post" action="${fn:escapeXml(engineUrl)}">
       <% if (results != null) { %>
         <div id="readOnly" class="msg-alert-info">

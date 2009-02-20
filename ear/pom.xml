@@ -168,8 +168,24 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
+                    <archive>
+                      <index>true</index>
+                      <manifest>
+                          <addClasspath>true</addClasspath>
+                          <addExtensions/>
+                        <!-- options
+                        <addClasspath>true</addClasspath>
+                        <addExtensions/>
+                        <classpathPrefix/>
+                        -->
+                      </manifest>
+                      <manifestEntries>
+                        <url>${pom.url}</url>
+                      </manifestEntries>
+                      <!--manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile-->
+                    </archive>
                     <earSourceDirectory>src/main/resources</earSourceDirectory>
-                    <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+                    <!--defaultJavaBundleDir>lib/</defaultJavaBundleDir-->
 
                     <modules>
                         <webModule>
@@ -178,12 +194,6 @@
                             <contextRoot>${jahia.deploy.war.contextPath}</contextRoot>
                             <bundleFileName>jahia.war</bundleFileName>
                         </webModule>
-                        <!-- Reactivate for proper deployment in JEE server
-                        <rarModule>
-                            <groupId>org.jahia.server</groupId>
-                            <artifactId>jackrabbit-rar</artifactId>
-                        </rarModule>
-                        -->
                         <!--
                         <jarModule>
                             <groupId>javax.portlet</groupId>

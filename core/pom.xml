@@ -689,14 +689,14 @@
         </dependency>
         <!-- Oracle Db Server -->
         <dependency>
-            <groupId>oracle</groupId>
-            <artifactId>ojdbc14</artifactId>
-            <version>10.2.0.1.0</version>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc5</artifactId>
+            <version>11.1.0.7.0</version>
         </dependency>
         <dependency>
-            <groupId>oracle</groupId>
+            <groupId>com.oracle</groupId>
             <artifactId>orai18n</artifactId>
-            <version>10.2.0.1.0</version>
+            <version>11.1.0.7.0</version>
         </dependency>
 
 

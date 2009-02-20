@@ -197,8 +197,8 @@
                             String aclShortName = (String)pageContext.getAttribute("aclShortName");
                             String flagCode = aclShortName.substring(aclShortName.lastIndexOf('.') + 1); 
                             %>
-                            <c:set var="curLocale" value="${requestScope['org.jahia.data.JahiaData'].processingContext.locale}"/><%= LanguageCodeConverters.languageCodeToLocale(flagCode).getDisplayName((Locale) pageContext.getAttribute("curLocale")) %>
-                            <internal:displayLanguageFlag code="<%=flagCode%>"/>
+                            &nbsp;<c:set var="curLocale" value="${requestScope['org.jahia.data.JahiaData'].processingContext.locale}"/><%= LanguageCodeConverters.languageCodeToLocale(flagCode).getDisplayName((Locale) pageContext.getAttribute("curLocale")) %>
+                            &nbsp;<internal:displayLanguageFlag code="<%=flagCode%>"/>
                         </c:if>
                         <c:if test="${!languagePermissions}">
                             <internal:adminResourceBundle resourceName="org.jahia.admin.sitepermissions.permission.${aclShortName}.label" defaultValue="org.jahia.admin.sitepermissions.permission.${aclShortName}.label"/>

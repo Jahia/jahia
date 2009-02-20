@@ -1283,9 +1283,10 @@ public class JahiaContainerSet implements Map {
                 // we created the container list but we return a containerlist with id==0 !!!!
                 // The consequence is that in the template, one can check for id==0 and create the
                 // container list again !!!!!!
-
-                theContainerList = ensureContainerList(containerDefinition,
-                        page.getID(), 0, listViewId);
+                    if (containerDefinition != null) {
+                        theContainerList = ensureContainerList(containerDefinition,
+                                                               page.getID(), 0, listViewId);
+                    }
                 }
             }
 

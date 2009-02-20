@@ -63,6 +63,7 @@ public class BoxListTag extends ContainerListTag {
     // reads the container list from a container set
     protected JahiaContainerList getContainerList(final JahiaData jData,
                                                   final String listName) throws JahiaException {
+        if(listName ==null || "".equals(listName)) return null;
         final JahiaContainerList containerList;
         if (pageID > 0 || pageLevel > 0 || (pageKey != null && pageKey.length() > 0)) {
             int id = pageID;

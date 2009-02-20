@@ -313,10 +313,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     }
 
     public int doStartTag() throws JspException {
-        if (getName() == null || getName().length() == 0) {
-            logger.error("Container name must be set in containerList tag...");
-            return SKIP_BODY;
-        }
         
         pushTag();
         if (monitorLogger.isDebugEnabled()) {
@@ -489,8 +485,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         buff.append(";").append(sort);
         switch (fieldType) {
             case ContentFieldTypes.DATE:
-                buff.append(";false");
-                break;
             case ContentFieldTypes.INTEGER:
             case ContentFieldTypes.FLOAT:
                 buff.append(";true");
@@ -632,6 +626,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     
     // reads the container list from a container set
     protected JahiaContainerList getContainerList(JahiaData jData, String listName) throws JahiaException {
+        if(listName ==null || "".equals(listName)) return null;
         return jData.containers().getContainerList(listName, getId());
     }    
 

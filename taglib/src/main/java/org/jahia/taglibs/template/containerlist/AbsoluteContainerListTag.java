@@ -140,7 +140,8 @@ public class AbsoluteContainerListTag extends ContainerListTag {
 
     // reads the container list from a container set
     protected JahiaContainerList getContainerList( JahiaData jData, String listName ) throws JahiaException {
-        JahiaContainerList containerList = null;
+        if(listName ==null || "".equals(listName)) return null;
+        JahiaContainerList containerList;
         int id = pageId;
         if (id == -1 && pageLevel != -1) {
             id = jData.gui().getLevelID(pageLevel);

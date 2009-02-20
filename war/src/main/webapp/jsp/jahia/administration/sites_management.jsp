@@ -635,6 +635,7 @@ else { %>
 </tbody>
 </table>
 </div>
+<br class="clear"/>
 <div id="actionBar">
     <%
         if (session.getAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia") == null) { %>

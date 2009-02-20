@@ -64,10 +64,7 @@ import java.util.StringTokenizer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -239,6 +236,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     static private boolean supportedJDKWarningAlreadyShowed = false;
 
     static private ThreadLocal<ProcessingContext> paramBeanThreadLocal = new ThreadLocal<ProcessingContext>();
+    static private ThreadLocal<HttpServlet> servletThreadLocal = new ThreadLocal<HttpServlet>();
     static private Pipeline authPipeline;
     static private Pipeline processPipeline;
 
@@ -861,7 +859,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                 logger.warn("ParamBean not available, aborting processing...");
                 return;
             }
-
+            servletThreadLocal.set(this);
             ServicesRegistry.getInstance().getSchedulerService().startRequest();
 
             request.setAttribute("org.jahia.params.ParamBean",
@@ -886,7 +884,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                 accessLogger.debug(new StringBuffer(255).append(";").append(jParams.getRealRequest().getRemoteAddr()).append(";").append(jParams.getSiteID()).append(";").append(jParams.getPageID()).append(";").append(jParams.getLocale().toString()).append(";").append(jParams.getUser().getUsername()));
             }
             paramBeanThreadLocal.set(null);
-
+            servletThreadLocal.set(null);
             ServicesRegistry.getInstance().getCacheService().syncClusterNow();
             JahiaBatchingClusterCacheHibernateProvider.syncClusterNow();
             try {
@@ -899,6 +897,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         } finally {
             JahiaSearchBaseService.closeAllOpenLuceneQueryRequestOrSearcher();
             paramBeanThreadLocal.set(null);
+            servletThreadLocal.set(null);
         }
     } // end service
 
@@ -1042,11 +1041,15 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
     }
 
     public static ProcessingContext getThreadParamBean () {
-        return (ProcessingContext) paramBeanThreadLocal.get();
+        return paramBeanThreadLocal.get();
     }
 
     public static void setThreadParamBean(final ProcessingContext processingContext) {
         paramBeanThreadLocal.set(processingContext);
+    }
+
+    public static HttpServlet getJahiaServlet () {
+        return servletThreadLocal.get();
     }
 
     //-------------------------------------------------------------------------

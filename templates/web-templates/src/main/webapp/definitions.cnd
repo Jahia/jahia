@@ -83,7 +83,7 @@ file            pdfVersion
 date            startDate
 date            endDate
 smallText       location
-smallText       eventsType (choicelist) < resourceBundle(events_type)
+sharedSmallText eventsType (choicelist) < resourceBundle(resources.eventsType)
 bigText         body
 
 [web_templates:answerJobContainer] > jnt:container

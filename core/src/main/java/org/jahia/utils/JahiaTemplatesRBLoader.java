@@ -34,6 +34,9 @@ package org.jahia.utils;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +45,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class JahiaTemplatesRBLoader extends ClassLoader {
+    private static transient Logger logger = Logger.getLogger(JahiaTemplatesRBLoader.class);
     private ClassLoader loader = ClassLoader.getSystemClassLoader();
     private JahiaTemplatesPackage aPackage;
 
@@ -77,11 +81,27 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
             if (stream != null)
                 return stream;
             else {
-                final String s = aPackage.getFilePath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                String s = aPackage.getFilePath() + File.separator + name.replaceAll("\\\\.", File.separator);
                 try {
-                    return new FileInputStream(s);
+                    FileInputStream stream1 = new FileInputStream(s);
+                    String bundlename = name.substring(0,name.indexOf(".properties")).replaceAll("/",".");
+                    ServicesRegistry.getInstance().getResourceBundleService().declareResourceBundleDefinition(bundlename,bundlename);
+                    return stream1;
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    // Try to find it inside WEB-INF/classes
+                    s = Jahia.getSettings().getClassDiskPath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                    try {
+                        FileInputStream stream1 = new FileInputStream(s);
+                        String bundlename = name.substring(0,name.indexOf(".properties"));
+                        ServicesRegistry.getInstance().getResourceBundleService().declareResourceBundleDefinition(bundlename,bundlename);
+                        return stream1;
+                    } catch (FileNotFoundException e1) {
+                        logger.error(e1);
+                    } catch (JahiaException e1) {
+                        logger.error(e1);
+                    }
+                } catch (JahiaException e) {
+                    logger.error(e);
                 }
             }
         }

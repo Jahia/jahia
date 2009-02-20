@@ -25,6 +25,7 @@
                 </c:if>
             </div>
             <div class="eventsBody"><!--start eventsBody -->
+                <p class="eventsLocation"><span><template:field name="eventsType"/></span></p>
                 <p class="eventsLocation"><span><template:field name="location"/></span></p>
                 <h4><template:field name="title"/></h4>
 

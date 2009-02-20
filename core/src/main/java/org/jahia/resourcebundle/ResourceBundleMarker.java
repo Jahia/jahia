@@ -46,7 +46,9 @@ import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.JahiaTools;
+import org.jahia.utils.JahiaTemplatesRBLoader;
 import org.jahia.utils.comparator.NumericStringComparator;
+import org.jahia.bin.Jahia;
 
 
 /**
@@ -179,7 +181,7 @@ public class ResourceBundleMarker {
         try {
             ResourceBundle res =
                     ResourceBundle.getBundle(rbDef.getResourceBundleFile(),
-                            locale);
+                            locale,new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), Jahia.getThreadParamBean().getSiteID()));
             /* NOT FINISHED YET
             if ( res instanceof ReloadableResourceBundleInterface ){
                 ReloadableResourceBundleInterface rr = (ReloadableResourceBundleInterface) res;
@@ -222,7 +224,7 @@ public class ResourceBundleMarker {
         try {
             ResourceBundle res =
                     ResourceBundle.getBundle(rbDef.getResourceBundleFile(),
-                            locale);
+                            locale,new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), Jahia.getThreadParamBean().getSiteID()));
             //result = res.getString(this.getResourceKey());
 
             /*
@@ -361,16 +363,15 @@ public class ResourceBundleMarker {
 
         String result = marker.getDefaultValue();
 
-        ResourceBundleDefinition rbDef = getResourceBundleDefinition(marker
-                .getResourceBundleID());
+        ResourceBundleDefinition rbDef = getResourceBundleDefinition(marker.getResourceBundleID());
         if (rbDef == null) {
             return result;
         }
 
         try {
-            ResourceBundle res =
-                    ResourceBundle.getBundle(rbDef.getResourceBundleFile(),
-                            locale);
+            ResourceBundle res = ResourceBundle.getBundle(rbDef.getResourceBundleFile(), locale,
+                                                          new JahiaTemplatesRBLoader(Jahia.getStaticServletConfig().getClass().getClassLoader(),
+                                                                                     Jahia.getThreadParamBean().getSiteID()));
 
             /*
             if ( res instanceof ReloadableResourceBundleInterface ){

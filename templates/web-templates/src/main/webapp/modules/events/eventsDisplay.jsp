@@ -48,8 +48,8 @@
         <c:if test="${param.eventsSort == 'location'}">
             <c:set value="selected" var="locationSelected"/>
         </c:if>
-
-        <select class="eventsSort" name="eventsSort" onchange="document.eventPageForm.submit()">
+        <utility:dropDownFromBundle bundleName="resources.eventsType"/>
+        <select class="eventsSort" name="eventsSort" onchange="document.eventPageForm.submit();">
             <option value="startDate" ${startDateSelected}><utility:resourceBundle resourceName='sortDate'
                                                                                    defaultValue='sort by date'/></option>
             <option value="location" ${locationSelected}><utility:resourceBundle resourceName='sortLocation'

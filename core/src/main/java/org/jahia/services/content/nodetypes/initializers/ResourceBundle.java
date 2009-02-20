@@ -36,6 +36,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.utils.JahiaTemplatesRBLoader;
+import org.jahia.resourcebundle.ResourceBundleMarker;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -56,7 +57,8 @@ import java.util.TreeSet;
 public class ResourceBundle implements ValueInitializer {
     public Value[] getValues(ProcessingContext jParams, ExtendedPropertyDefinition declaringPropertyDefinition, List<String> params) {
         if (jParams != null) {
-            java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(params.get(0),
+            final String bundleName = params.get(0);
+            java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(bundleName,
                     jParams.getCurrentLocale(), new JahiaTemplatesRBLoader(this.getClass().getClassLoader(),
                             declaringPropertyDefinition.getDeclaringNodeType().getSystemId()));
             SortedSet<Value> values = new TreeSet<Value>(new Comparator<Value>() {
@@ -71,7 +73,7 @@ public class ResourceBundle implements ValueInitializer {
             Enumeration<String> keys = bundle.getKeys();
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
-                values.add(new ValueImpl(bundle.getString(key), PropertyType.STRING,false));
+                values.add(new ValueImpl(ResourceBundleMarker.drawMarker(bundleName,key,key), PropertyType.STRING,false));
             }
             return values.toArray(new Value[values.size()]);
         } else return new Value[0];

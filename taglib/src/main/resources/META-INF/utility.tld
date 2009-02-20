@@ -291,7 +291,7 @@
         <description>Generate dropDown list from a resourceBundle file.
         </description>
         <name>dropDownFromBundle</name>
-        <tag-class>org.jahia.taglibs.utility.i18n.DropDownFromBundleFile</tag-class>
+        <tag-class>org.jahia.taglibs.utility.i18n.DropDownFromBundleFileTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>bundleName</name>

@@ -31,11 +31,12 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.taglibs.utility.i18n;
+package org.jahia.taglibs.internal.i18n;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.resourcebundle.JahiaResourceBundle;
 import org.jahia.data.JahiaData;
+import org.jahia.taglibs.utility.i18n.GWTMessageTag;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,13 +50,12 @@ import java.util.MissingResourceException;
  * Date: 1 oct. 2008
  * Time: 17:13:28
  */
-public class GWTAdminResourceBundleTag extends GWTResourceBundleTag {
-    private static final transient Logger logger = Logger.getLogger(GWTAdminResourceBundleTag.class);
+public class GWTEngineMessageTag extends GWTMessageTag {
+    private static final transient Logger logger = Logger.getLogger(GWTEngineMessageTag.class);
 
 
     @Override
-    protected String getResourceValue(String key, ProcessingContext jParams) {
-
+    protected String getResourceValue(String key, ProcessingContext jParams) { 
         HttpServletRequest request = (HttpServletRequest) pageContext.
                 getRequest();
         JahiaData jData = (JahiaData) request.getAttribute(
@@ -75,16 +75,18 @@ public class GWTAdminResourceBundleTag extends GWTResourceBundleTag {
         try {
 
             if (jData != null) {
-                resValue = JahiaResourceBundle.getAdminResource(key, jData.getProcessingContext(), jData.getProcessingContext().getLocale());
+                resValue = JahiaResourceBundle.getEngineResource(key, jData.getProcessingContext(), jData.getProcessingContext().getLocale());
             } else {
                 // for any reason the jData wasn't loaded correctly
-                ResourceBundle resBundle = JahiaResourceBundle.getAdminDefaultResourceBundle(null, currentLocale);
+                ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(null, currentLocale);
                 resValue = JahiaResourceBundle.getString(resBundle, key, currentLocale);
             }
         } catch (MissingResourceException mre) {
             logger.error(mre.toString(), mre);
         }
-
+        if (resValue == null) {
+            resValue = key ;
+        }
         return resValue;
     }
 }

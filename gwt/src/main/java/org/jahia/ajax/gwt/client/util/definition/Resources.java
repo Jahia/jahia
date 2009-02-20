@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.client.util.definition;
 
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,7 +46,7 @@ public class Resources {
     public static final String CONTENTDEFINITION_ID = "contentdefinition" ;
 
     public static String getResource(String key) {
-        return ResourceBundle.getResource("contentdefinition", "contentdefinition", key) ;
+        return Messages.getResource(key) ;
     }
 
 }

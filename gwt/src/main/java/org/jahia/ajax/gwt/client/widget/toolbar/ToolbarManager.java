@@ -40,7 +40,7 @@ import java.util.List;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPreference;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
@@ -496,6 +496,6 @@ public class ToolbarManager {
     }
 
     public String getResource(String key) {
-        return ResourceBundle.getResource(JahiaType.TOOLBARS_MANAGER, JahiaType.TOOLBARS_MANAGER, key);
+        return Messages.getResource(key);
     }
 }

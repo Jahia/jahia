@@ -51,7 +51,7 @@ import org.jahia.ajax.gwt.client.service.versioning.RPCVersioningService;
 import org.jahia.ajax.gwt.client.data.GWTJahiaVersion;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
 import java.util.ArrayList;
@@ -210,7 +210,7 @@ public class VersionsTable extends TopRightComponent {
 
         //version label
         String columnName = GWTJahiaVersion.VERSION_LABEL;
-        TableColumn col = new TableColumn(columnName, ResourceBundle.getNotEmptyResource("versioning_"+ GWTJahiaVersion.VERSION_LABEL,
+        TableColumn col = new TableColumn(columnName, Messages.getNotEmptyResource("versioning_"+ GWTJahiaVersion.VERSION_LABEL,
                 "Version label"), .2f);
         col.setMinWidth(100);
         headerList.add(col);
@@ -223,19 +223,19 @@ public class VersionsTable extends TopRightComponent {
 
         //author
         columnName = GWTJahiaVersion.AUTHOR;
-        col = new TableColumn(columnName, ResourceBundle.getNotEmptyResource("versioning_"+ GWTJahiaVersion.AUTHOR,"Author"), .2f);
+        col = new TableColumn(columnName, Messages.getNotEmptyResource("versioning_"+ GWTJahiaVersion.AUTHOR,"Author"), .2f);
         col.setMinWidth(100);
         headerList.add(col);
 
         //date
         columnName = GWTJahiaVersion.DATE;
-        col = new TableColumn(columnName, ResourceBundle.getNotEmptyResource("versioning_"+ GWTJahiaVersion.DATE,"Version date"), .25f);
+        col = new TableColumn(columnName, Messages.getNotEmptyResource("versioning_"+ GWTJahiaVersion.DATE,"Version date"), .25f);
         col.setMinWidth(150);
         headerList.add(col);
 
         //lang
         columnName = GWTJahiaVersion.LANG;
-        col = new TableColumn(columnName, ResourceBundle.getNotEmptyResource("versioning_"+ GWTJahiaVersion.LANG,"Language"), .15f);
+        col = new TableColumn(columnName, Messages.getNotEmptyResource("versioning_"+ GWTJahiaVersion.LANG,"Language"), .15f);
         col.setMinWidth(80);
         headerList.add(col);
 

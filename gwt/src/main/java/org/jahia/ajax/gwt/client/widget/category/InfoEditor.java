@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryTitle;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 
 public class InfoEditor extends FormPanel {
@@ -217,6 +217,6 @@ public class InfoEditor extends FormPanel {
      * @return
      */
     private String getResource(String key) {
-        return ResourceBundle.getResource("categories_manager", "categories_manager", key);
+        return Messages.getResource(key);
     }
 }

@@ -37,7 +37,5 @@
 <%@ attribute name="name" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="groupName" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 
-<template:gwtJahiaModule id="jobreport" jahiaType="jobreport" name="<%=name%>" groupName="<%=groupName%>">
-
-</template:gwtJahiaModule>
+<template:gwtJahiaModule id="jobreport" jahiaType="jobreport" name="<%=name%>" groupName="<%=groupName%>"/>
 

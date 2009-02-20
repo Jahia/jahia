@@ -63,5 +63,6 @@
     %>
 
 		<internal:workflowManager sitekey="<%=siteKey%>" startpage="<%=startPageId%>" />
+        <internal:gwtGenerateDictionary/>   
 	</body>
 </html>

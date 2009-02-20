@@ -44,5 +44,6 @@
 </head>
 <body>
 <internal:processDisplay state="max" windowHeight="450px" windowWidth="550px"/>
+<internal:gwtGenerateDictionary/>
 </body>
 </html>

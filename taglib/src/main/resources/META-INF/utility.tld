@@ -50,7 +50,7 @@
     <tag>
         <description>Generate a GWT resource bundle Dictionary.</description>
         <name>gwtResourceBundleDictionary</name>
-        <tag-class>org.jahia.taglibs.utility.i18n.GWTResourceBundleDictionaryTag</tag-class>
+        <tag-class>org.jahia.taglibs.internal.i18n.GWTGenerateDictionaryTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>moduleType</name>
@@ -76,7 +76,7 @@
     <tag>
         <description>Generate resource bundle to be used by JahiaModule.</description>
         <name>gwtResourceBundle</name>
-        <tag-class>org.jahia.taglibs.utility.i18n.GWTResourceBundleTag</tag-class>
+        <tag-class>org.jahia.taglibs.utility.i18n.GWTMessageTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>resourceBundle</name>
@@ -94,38 +94,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <description>Generate resource bundle to be used by JahiaModule.</description>
-        <name>gwtAdminResourceBundle</name>
-        <tag-class>org.jahia.taglibs.utility.i18n.GWTAdminResourceBundleTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>resourceName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>aliasResourceName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
-        <description>Generate resource bundle to be used by JahiaModule.</description>
-        <name>gwtEngineResourceBundle</name>
-        <tag-class>org.jahia.taglibs.utility.i18n.GWTEngineResourceBundleTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>resourceName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>aliasResourceName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
+   
+
 
     <tag>
         <description>Displays the content of the current session</description>

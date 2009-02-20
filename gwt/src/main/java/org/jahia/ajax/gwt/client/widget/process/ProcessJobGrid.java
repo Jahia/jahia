@@ -55,7 +55,7 @@ import org.jahia.ajax.gwt.client.service.process.ProcessDisplayServiceAsync;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.*;
 
@@ -262,7 +262,7 @@ public class ProcessJobGrid extends TopRightComponent {
         final List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
 
         //status
-        String columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_status");
+        String columnName = Messages.getResource("pd_column_status");
         ColumnConfig col = new ColumnConfig(GWTJahiaProcessJob.STATUS, columnName, 100);
         col.setRenderer(new GridCellRenderer<GWTJahiaProcessJob>() {
             public String render(GWTJahiaProcessJob gwtJahiaProcessJob, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaProcessJob> gwtJahiaProcessJobListStore) {
@@ -276,21 +276,21 @@ public class ProcessJobGrid extends TopRightComponent {
         col.setSortable(false);
         headerList.add(col);
 
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_title");
+        columnName = Messages.getResource("pd_column_title");
         col = new ColumnConfig(GWTJahiaProcessJob.JOB_TITLE, columnName, 100);
         headerList.add(col);
 
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_sitekey");
+        columnName = Messages.getResource("pd_column_sitekey");
         col = new ColumnConfig(GWTJahiaProcessJob.JOB_SITE_KEY, columnName, 100);
         headerList.add(col);
 
         //owner
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_owner");
+        columnName = Messages.getResource("pd_column_owner");
         col = new ColumnConfig(GWTJahiaProcessJob.OWNER, columnName, 100);
         headerList.add(col);
 
         //type
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_type");
+        columnName = Messages.getResource("pd_column_type");
         col = new ColumnConfig(GWTJahiaProcessJob.TYPE, columnName, 100);
         col.setRenderer(new GridCellRenderer<GWTJahiaProcessJob>() {
             public String render(GWTJahiaProcessJob gwtJahiaProcessJob, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaProcessJob> gwtJahiaProcessJobListStore) {
@@ -306,22 +306,22 @@ public class ProcessJobGrid extends TopRightComponent {
         headerList.add(col);
 
         //created
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_created");
+        columnName = Messages.getResource("pd_column_created");
         col = new ColumnConfig(GWTJahiaProcessJob.CREATED, columnName, 100);
         headerList.add(col);
 
         //start
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_start");
+        columnName = Messages.getResource("pd_column_start");
         col = new ColumnConfig(GWTJahiaProcessJob.START, columnName, 100);
         headerList.add(col);
 
         //end
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_end");
+        columnName = Messages.getResource("pd_column_end");
         col = new ColumnConfig(GWTJahiaProcessJob.END, columnName, 100);
         headerList.add(col);
 
         //duration
-        columnName = ResourceBundle.getResource("pdisplay", "pdisplay", "pd_column_duration");
+        columnName = Messages.getResource("pd_column_duration");
         col = new ColumnConfig(GWTJahiaProcessJob.DURATION, columnName, 100);
         headerList.add(col);
 

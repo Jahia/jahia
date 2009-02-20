@@ -35,6 +35,8 @@ package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.params.AdvPreviewSettings;
@@ -177,6 +179,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 buf.append("<div class=\"markedForDelete\">");
             }
             if (useGwt) {
+                addMandatoryGwtMessages(jData);
                 if (!isLogged() && gwtForGuest) {
                     gwtScript = "guest";
                 } else if (gwtScript == null || gwtScript.equals("")) {
@@ -200,15 +203,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
                 // resource bunlde var fo toolbar
                 if (isLogged()) {
-                    buf.append("<script type='text/javascript'>\n");
-                    buf.append("var " + JahiaType.TOOLBARS_MANAGER + "_rb_" + JahiaType.TOOLBARS_MANAGER + " = {\n");
-                    buf.append("\"display\":\"").append(JahiaResourceBundle.getAdminResource("toolbar.message.display", jData.getProcessingContext(), jData.getProcessingContext().getLocale())).append("\",\n");
-                    buf.append("\"reset\": \"").append(JahiaResourceBundle.getAdminResource("toolbar.message.reset", jData.getProcessingContext(), jData.getProcessingContext().getLocale())).append("\",\n");
-                    buf.append("\"hide_alert\": \"").append(JahiaResourceBundle.getAdminResource("toolbar.message.hide.alert", jData.getProcessingContext(), jData.getProcessingContext().getLocale())).append("\",\n");
-                    buf.append("\"hide_warning\": \"").append(JahiaResourceBundle.getAdminResource("toolbar.message.hide.warning", jData.getProcessingContext(), jData.getProcessingContext().getLocale())).append("\",\n");
-                    buf.append("\"hide_all\": \"").append(JahiaResourceBundle.getAdminResource("toolbar.message.hide.all", jData.getProcessingContext(), jData.getProcessingContext().getLocale())).append("\"\n");
-                    buf.append("};");
-                    buf.append("\n</script>\n");
 
                     // jahia module entry for toobar
                     buf.append("\n\t<div id=\"gwt-jahiatoolbar\" class=\"jahia-admin-gxt " + JahiaType.TOOLBARS_MANAGER + "-gxt\" jahiatype=\"").append(JahiaType.TOOLBARS_MANAGER).append("\" content=\"").append(DEFAULT_CONTENT).append("\"></div>\n");
@@ -221,6 +215,18 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             logger.error("Error while writing to JspWriter", e);
         }
         return EVAL_BODY_INCLUDE;
+    }
+
+    /**
+     * Add mandatory messages
+     * @param jData
+     */
+    private void addMandatoryGwtMessages(JahiaData jData) {
+        addGwtDictionaryMessage("display", JahiaResourceBundle.getAdminResource("toolbar.message.display", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("reset", JahiaResourceBundle.getAdminResource("toolbar.message.reset", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("hide_alert", JahiaResourceBundle.getAdminResource("toolbar.message.hide.alert", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("hide_warning", JahiaResourceBundle.getAdminResource("toolbar.message.hide.warning", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("hide_all", JahiaResourceBundle.getAdminResource("toolbar.message.hide.all", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
     }
 
     public int doEndTag() {
@@ -236,12 +242,20 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             if (checkGAprofileOn(jData)) {
                 buf.append(gaTrackingCode(((JahiaData) request.getAttribute("org.jahia.data.JahiaData"))));
             }
+            // Generate jahia_gwt_dictionnary
+            Map dictionaryMap = getJahiaGwtDictionary();
+            if (dictionaryMap != null) {
+                buf.append("<script type='text/javascript'>\n");
+                buf.append(generateJahiaGwtDictionary());
+                buf.append("</script>\n");
+            }
             buf.append("</body>");
 
             pageContext.getOut().println(buf.toString());
         } catch (Exception e) {
             logger.error("Error while writing to JspWriter", e);
         }
+
         // reset attributes
         gwtScript = null;
         attributes = new HashMap<String, Object>();
@@ -277,7 +291,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             String key = (String) it.next();
             if (key.startsWith("jahiaGAprofile")) {
                 if (Boolean.valueOf(currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"))) {
-                   // enabledProfiles.put(key, currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key)));
+                    // enabledProfiles.put(key, currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key)));
                     String acc = currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount");
                     String tracker = "var " + (currentSite.getSettings().getProperty(key).replace(" ", "")) + "Tracker = _gat._getTracker('" + acc + "');\n";
                     String trackedUrls = currentSite.getSettings().getProperty(currentSite.getSettings().getProperty(key) + "_" + currentSite.getSiteKey() + "_trackedUrls");

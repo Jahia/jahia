@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.category.CategoriesManagerActions;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
@@ -240,6 +240,6 @@ public class CategoriesTopBar extends TopBar {
     }
 
     private String getResource(String key) {
-        return ResourceBundle.getResource("categories_manager", "categories_manager", key);
+        return Messages.getResource(key);
     }
 }

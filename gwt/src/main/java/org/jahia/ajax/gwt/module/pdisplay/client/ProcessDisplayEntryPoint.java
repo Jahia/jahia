@@ -36,7 +36,7 @@ package org.jahia.ajax.gwt.module.pdisplay.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.widget.process.ProcessDisplayPanel;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 //import org.jahia.ajax.gwt.templates.commons.client.util.DOMUtil;
 
 
@@ -60,7 +60,7 @@ public class ProcessDisplayEntryPoint implements EntryPoint {
     }
 
     public static String getResource(String key) {
-        return ResourceBundle.getResource(ID, ID, key);
+        return Messages.getResource(key);
     }
 
 }

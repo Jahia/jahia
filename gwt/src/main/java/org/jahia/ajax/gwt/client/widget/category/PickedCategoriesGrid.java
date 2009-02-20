@@ -46,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -184,7 +184,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
     }
 
     private String getResource(String key) {
-        return ResourceBundle.getResource("categories_manager", "categories_manager", key);
+        return Messages.getResource(key);
     }
 
 

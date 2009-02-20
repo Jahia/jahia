@@ -35,34 +35,34 @@
 <%@ tag body-content="empty" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
+<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ attribute name="aclId" required="false" rtexprvalue="true" type="java.lang.Integer" description="text" %>
 <%@ attribute name="newAcl" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
 <%@ attribute name="sessionIdentifier" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="readOnly" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
 
-<template:gwtJahiaModule id="gwtacleditor" jahiaType="gwtacleditor" aclid="<%= aclId %>" readOnly="<%= readOnly != null ? readOnly : Boolean.FALSE.toString() %>"
-                         newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionIdentifier %>" templateUsage="false">
+<template:gwtJahiaModule id="gwtacleditor" jahiaType="gwtacleditor" aclid="<%= aclId %>"
+                         readOnly="<%= readOnly != null ? readOnly : Boolean.FALSE.toString() %>"
+                         newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionIdentifier %>" templateUsage="false"/>
 
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
-                                     aliasResourceName="ae_principal"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreInheritance.label"
-                                     aliasResourceName="ae_restore_inheritance"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.inheritedFrom.label" 
-                                     aliasResourceName="ae_inherited_from"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"
-                                     aliasResourceName="ae_restore_all_inheritance"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.breakAllInheritance.label"
-                                     aliasResourceName="ae_break_all_inheritance"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.remove.label"
-                                     aliasResourceName="ae_remove"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.save.label"
-                                     aliasResourceName="ae_save"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restore.label"
-                                     aliasResourceName="ae_restore"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"
-                                     aliasResourceName="um_adduser"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
-                                     aliasResourceName="um_addgroup"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
+                                  aliasResourceName="ae_principal"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreInheritance.label"
+                                  aliasResourceName="ae_restore_inheritance"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.inheritedFrom.label"
+                                  aliasResourceName="ae_inherited_from"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"
+                                  aliasResourceName="ae_restore_all_inheritance"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.breakAllInheritance.label"
+                                  aliasResourceName="ae_break_all_inheritance"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.remove.label"
+                                  aliasResourceName="ae_remove"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.save.label"
+                                  aliasResourceName="ae_save"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restore.label"
+                                  aliasResourceName="ae_restore"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"
+                                  aliasResourceName="um_adduser"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
+                                  aliasResourceName="um_addgroup"/>
     
-
-</template:gwtJahiaModule>

@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.service.SessionManagerServiceAsync;
 import org.jahia.ajax.gwt.client.service.toolbar.ToolbarService;
 import org.jahia.ajax.gwt.client.widget.dialog.ErrorDialog;
 import org.jahia.ajax.gwt.client.widget.versioning.VersionField;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.widget.versioning.VersionFieldPanel;
@@ -110,17 +110,17 @@ public class AdvancedCompareModeJahiaToolItemProvider extends AbstractJahiaToolI
 
                     enabledCheckBox = new CheckBox();
                     enabledCheckBox.setValue(enabled);
-                    enabledCheckBox.setFieldLabel(ResourceBundle.getNotEmptyResource("advc_enable",
+                    enabledCheckBox.setFieldLabel(Messages.getNotEmptyResource("advc_enable",
                             "Enable advanced compare mode settings"));
                     panel.add(enabledCheckBox);
 
                     versionField1 = new VersionField(pageContext.getPid(),null,null,false);
-                    versionField1.setFieldLabel(ResourceBundle.getNotEmptyResource("advc_version1",
+                    versionField1.setFieldLabel(Messages.getNotEmptyResource("advc_version1",
                             "Version 1"));
                     versionFieldPanel1 = new VersionFieldPanel(versionField1);
 
                     versionField2 = new VersionField(pageContext.getPid(),null,null,false);
-                    versionField2.setFieldLabel(ResourceBundle.getNotEmptyResource("advc_version2",
+                    versionField2.setFieldLabel(Messages.getNotEmptyResource("advc_version2",
                             "Version 2"));
                     versionFieldPanel2 = new VersionFieldPanel(versionField2);
 
@@ -136,7 +136,7 @@ public class AdvancedCompareModeJahiaToolItemProvider extends AbstractJahiaToolI
                     window.setHeading(gwtToolbarItem.getTitle());
                 }
                 if (save == null){
-                    save = new Button(ResourceBundle.getNotEmptyResource("save","Save"));
+                    save = new Button(Messages.getNotEmptyResource("save","Save"));
                     save.addSelectionListener(new SelectionListener<ComponentEvent>() {
 
 
@@ -202,7 +202,7 @@ public class AdvancedCompareModeJahiaToolItemProvider extends AbstractJahiaToolI
                         }
                     });
 
-                    cancel = new Button(ResourceBundle.getNotEmptyResource("cancel","Cancel"));
+                    cancel = new Button(Messages.getNotEmptyResource("cancel","Cancel"));
                     cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
                         public void componentSelected(ComponentEvent event) {
                             window.hide();

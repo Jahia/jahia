@@ -38,7 +38,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserViewport;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 
 /**
@@ -117,7 +117,7 @@ public class ProcessDisplayPanel extends TriPanelBrowserViewport {
     }
 
     public static String getResource(String key) {
-        return ResourceBundle.getResource("pdisplay", "pdisplay", key);
+        return Messages.getResource(key);
     }
 
 }

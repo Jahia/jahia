@@ -41,7 +41,7 @@ import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryTitle;
 import org.jahia.ajax.gwt.client.service.category.CategoryServiceAsync;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -312,7 +312,7 @@ public class CategoryDetails extends BottomRightComponent {
     }
 
     private String getResource(String key) {
-        return ResourceBundle.getResource("categories_manager", "categories_manager", key);
+        return Messages.getResource(key);
     }
 
 }

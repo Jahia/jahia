@@ -37,7 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
@@ -157,7 +157,7 @@ public class SubscriptionsJahiaToolItemProvider extends
 
         for (SubscriptionInfo subscriptionInfo : subscriptions) {
             CheckBox cb = new CheckBox();
-            cb.setBoxLabel(ResourceBundle.getNotEmptyResource(subscriptionInfo
+            cb.setBoxLabel(Messages.getNotEmptyResource(subscriptionInfo
                     .getEvent(), subscriptionInfo.getEvent()));
             cb.setName(subscriptionInfo.getEvent());
             cb
@@ -169,7 +169,7 @@ public class SubscriptionsJahiaToolItemProvider extends
 
         for (SubscriptionInfo subscriptionInfo : subscriptions) {
             CheckBox cb = new CheckBox();
-            cb.setBoxLabel(ResourceBundle.getNotEmptyResource(
+            cb.setBoxLabel(Messages.getNotEmptyResource(
                     "includeChildren", "include child pages"));
             cb.setName(subscriptionInfo.getEvent() + "_includeChildren");
             cb.setValue(subscriptionInfo.isIncludeChildren());
@@ -182,11 +182,11 @@ public class SubscriptionsJahiaToolItemProvider extends
         panel.add(eventsContainer);
 
         window.add(panel);
-        window.setHeading(ResourceBundle.getNotEmptyResource(
+        window.setHeading(Messages.getNotEmptyResource(
                 "subscriptions.windowTitle",
                 "Subscribe to following events on the current page"));
 
-        save = new Button(ResourceBundle.getNotEmptyResource("save", "Save"));
+        save = new Button(Messages.getNotEmptyResource("save", "Save"));
         save.addSelectionListener(new SelectionListener<ComponentEvent>() {
 
             public void componentSelected(ComponentEvent event) {
@@ -194,7 +194,7 @@ public class SubscriptionsJahiaToolItemProvider extends
             }
         });
 
-        cancel = new Button(ResourceBundle.getNotEmptyResource("cancel",
+        cancel = new Button(Messages.getNotEmptyResource("cancel",
                 "Cancel"));
         cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {

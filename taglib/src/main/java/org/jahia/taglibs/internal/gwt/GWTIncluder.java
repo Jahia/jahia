@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -47,7 +47,7 @@ import org.jahia.taglibs.utility.Utils;
 
 /**
  * Helper class for generating script element with the GWT module.
- * 
+ *
  * @author Romain Felden
  */
 public class GWTIncluder {
@@ -58,73 +58,19 @@ public class GWTIncluder {
      * Generate the import string for a given module.
      *
      * @param pageContext the page context to format the path
-     * @param module the fully qualified module name
+     * @param module      the fully qualified module name
      * @return the string to write to html
      */
     public static String generateGWTImport(PageContext pageContext, String module) {
         StringBuilder ret = new StringBuilder();
-        final HttpServletRequest request = (HttpServletRequest) pageContext
-                .getRequest();
-        final HttpServletResponse response = (HttpServletResponse) pageContext
-                .getResponse();
-        final String gwtModulePath = response.encodeURL(new StringBuilder(64)
-                .append(request.getContextPath()).append(GWT_MODULE_PATH + "/")
+        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        final HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+        final String gwtModulePath = response.encodeURL(new StringBuilder(64).append(request.getContextPath()).append(GWT_MODULE_PATH + "/")
                 .append(module).append("/").append(module)
                 .append(".nocache.js").toString());
-        ret.append("<script id='jahia-gwt' type='text/javascript' src='")
-                .append(gwtModulePath).append("'></script>\n");
-        ret.append("<script type=\"text/javascript\">\n");
-        ret.append("var jahia_rb_commons={\n");
-        includeCommonMessages(ret, pageContext);
-        ret.append("\n};");
-        ret.append("\n</script>\n");
-        
+        ret.append("<script id='jahia-gwt' type='text/javascript' src='").append(gwtModulePath).append("'></script>\n");
         return ret.toString();
     }
 
-    private static void includeCommonMessages(StringBuilder ret,
-            PageContext pageContext) {
-
-        // TODO find a better way of automatically including resources, required by GWT modules
-        String workInProgressTitle = null;
-        String workInProgressProgressText = null;
-
-        ProcessingContext ctx = Utils.getProcessingContext(pageContext);
-        if (ctx != null) {
-            workInProgressTitle = JahiaResourceBundle
-                    .getAdminResource("org.jahia.admin.workInProgressTitle",
-                            ctx, ctx.getLocale());
-            workInProgressProgressText = JahiaResourceBundle.getAdminResource(
-                    "org.jahia.admin.workInProgressProgressText", ctx, ctx
-                            .getLocale());
-
-        } else {
-            Locale currentLocale = null;
-            HttpSession session = pageContext.getSession();
-            if (session != null) {
-                if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
-                    currentLocale = (Locale) session
-                            .getAttribute(ProcessingContext.SESSION_LOCALE);
-                }
-            }
-            if (currentLocale == null) {
-                currentLocale = pageContext.getRequest().getLocale();
-            }
-            ResourceBundle resBundle = JahiaResourceBundle
-                    .getAdminDefaultResourceBundle(null, currentLocale);
-            workInProgressTitle = JahiaResourceBundle.getString(resBundle,
-                    "org.jahia.admin.workInProgressTitle", currentLocale,
-                    "org.jahia.admin.workInProgressTitle");
-            workInProgressProgressText = JahiaResourceBundle
-                    .getString(resBundle,
-                            "org.jahia.admin.workInProgressProgressText",
-                            currentLocale,
-                            "org.jahia.admin.workInProgressProgressText");
-        }
-        ret.append("\"workInProgressTitle\":\"").append(workInProgressTitle)
-                .append("\",\n");
-        ret.append("\"workInProgressProgressText\":\"").append(
-                workInProgressProgressText).append("\"");
-    }
 
 }

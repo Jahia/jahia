@@ -61,6 +61,6 @@ cursor:pointer;
 	</head>
 	<body>
 		<internal:fileManager startPath="" enginemode="true" conf="filemanager"/>
-
+        <internal:gwtGenerateDictionary/>        
 	</body>
 </html>

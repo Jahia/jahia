@@ -45,6 +45,7 @@
 <%@ tag import="org.jahia.engines.JahiaEngine" %>
 <%@ tag import="org.jahia.data.fields.JahiaField" %>
 <%@ tag import="org.jahia.services.usermanager.JahiaUser" %>
+<%@ tag import="org.jahia.ajax.gwt.module.categorypicker.client.CategoryPickerEntryPoint" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
@@ -67,7 +68,7 @@
     final boolean hasRootCategoryAccess = Category.getRootCategory(currentUser) != null;
     if (!hasRootCategoryAccess) { %>
 <utility:resourceBundle resourceBundle="JahiaAdministrationResources"
-        resourceName="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
+                        resourceName="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
 <%} else {%>
 <logic:present name="org.jahia.engines.EngineHashMap" scope="request">
     <script type="text/javascript">
@@ -90,35 +91,34 @@
     }%>];
         var sLocale = '${locale}';
 
-        var sAutoSelectParent='${autoSelectParent}';
+        var sAutoSelectParent = '${autoSelectParent}';
 
     </script>
 </logic:present>
 <input id="removedCategories" type="hidden" name="removedCategories" value=""/>
 
-<template:gwtJahiaModule id="<%=CategoriesPickerEntryPoint.ID%>" jahiaType="<%=CategoriesPickerEntryPoint.ID%>"
-                         rootKey="${startCategoryKey}" readonly="${readonly}">
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.categories"
-                                     aliasResourceName="categories"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.title"
-                                     aliasResourceName="title"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.path"
-                                     aliasResourceName="path"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.search"
-                                     aliasResourceName="search"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.remove"
-                                     aliasResourceName="remove"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.add"
-                                     aliasResourceName="add"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.property"
-                                     aliasResourceName="property"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.name"
-                                     aliasResourceName="name"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.key"
-                                     aliasResourceName="key"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.value"
-                                     aliasResourceName="value"/>
-    <utility:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.path"
-                                     aliasResourceName="path"/>
-</template:gwtJahiaModule>
+<template:gwtJahiaModule id="<%=CategoryPickerEntryPoint.ID%>" jahiaType="<%=CategoryPickerEntryPoint.ID%>"
+                         rootKey="${startCategoryKey}" readonly="${readonly}"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.categories"
+                                  aliasResourceName="categories"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.title"
+                                  aliasResourceName="title"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.path"
+                                  aliasResourceName="path"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.search"
+                                  aliasResourceName="search"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.remove"
+                                  aliasResourceName="remove"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.add"
+                                  aliasResourceName="add"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.property"
+                                  aliasResourceName="property"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.name"
+                                  aliasResourceName="name"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.key"
+                                  aliasResourceName="key"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.value"
+                                  aliasResourceName="value"/>
+<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.categories.path"
+                                  aliasResourceName="path"/>
 <%}%>

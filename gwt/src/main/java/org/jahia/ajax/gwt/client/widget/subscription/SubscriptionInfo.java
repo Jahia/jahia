@@ -32,15 +32,14 @@
  */
 
 package org.jahia.ajax.gwt.client.widget.subscription;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * User subscription data.
  * 
  * @author Sergiy Shyrkov
  */
-public class SubscriptionInfo implements IsSerializable {
+public class SubscriptionInfo implements Serializable {
 
     private String event;
 

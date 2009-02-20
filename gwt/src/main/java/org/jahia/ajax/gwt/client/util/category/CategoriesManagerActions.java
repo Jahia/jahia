@@ -49,7 +49,7 @@ import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.category.ImportFile;
 import org.jahia.ajax.gwt.client.widget.category.InfoEditor;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * User: ktlili
@@ -251,7 +251,7 @@ public abstract class CategoriesManagerActions {
     }
 
     private static String getResource(String key) {
-        return ResourceBundle.getResource("categories_manager", "categories_manager", key);
+        return Messages.getResource(key);
     }
 
 }

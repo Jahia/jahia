@@ -33,8 +33,10 @@
 
 package org.jahia.ajax.gwt.client.data.actionmenu.actions;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+
 import org.jahia.ajax.gwt.client.util.EngineOpener;
+
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,7 +44,7 @@ import org.jahia.ajax.gwt.client.util.EngineOpener;
  * @author rfelden
  * @version 14 f�vr. 2008 - 10:30:11
  */
-public class GWTJahiaEngineAction extends GWTJahiaAction implements IsSerializable {
+public class GWTJahiaEngineAction extends GWTJahiaAction implements Serializable {
 
 
     private String url ;

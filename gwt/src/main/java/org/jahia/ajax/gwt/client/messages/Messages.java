@@ -31,9 +31,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.ajax.gwt.client.util;
-
-import java.util.MissingResourceException;
+package org.jahia.ajax.gwt.client.messages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
@@ -43,35 +41,13 @@ import com.google.gwt.i18n.client.Dictionary;
  * Date: 1 oct. 2008
  * Time: 17:35:39
  */
-public class ResourceBundle {
+public class Messages {
 
     /**
-     * Global resource bundle name
+     * Dictonary name
      */
-    public static final String APPLICATION_RESOURCE_ELEMENT_ID = "application_resource";
+    public static final String DICTIONARY_NAME = "jahia_gwt_messages";
 
-    /**
-     * Default module type for Resource Bundle
-     */
-    public static final String RESOURCE_BUNDLE_MODULE_TYPE = "resource_module";
-
-    /**
-     *
-     * @param jahiaModuleType
-     * @param elementId
-     * @param key
-     * @return
-     */
-    public static String getResource(String jahiaModuleType, String elementId, String key) {
-        try {
-            //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
-            Dictionary jahiaParamDictionary = Dictionary.getDictionary(jahiaModuleType.toLowerCase() + "_rb_" + elementId.toLowerCase());
-            return jahiaParamDictionary.get(key);
-        } catch (Exception e) {
-            Log.error("Can't retrieve [" + key + "]", e);
-            return key;
-        }
-    }
 
     /**
      * Retrieve the resource bundle using <code>RESOURCE_BUNDLE_MODULE_TYPE</code> as default module name
@@ -82,8 +58,7 @@ public class ResourceBundle {
     public static String getResource(String key) {
         try {
             //Log.debug("Dictionary name: " + jahiaModuleType + "_rb_" + elementId);
-            Dictionary jahiaParamDictionary = Dictionary.getDictionary(RESOURCE_BUNDLE_MODULE_TYPE.toLowerCase()
-                    + "_rb_" + APPLICATION_RESOURCE_ELEMENT_ID.toLowerCase());
+            Dictionary jahiaParamDictionary = Dictionary.getDictionary(DICTIONARY_NAME);
             return jahiaParamDictionary.get(key);
         } catch (Exception e) {
             Log.error("Can't retrieve [" + key + "]", e);
@@ -100,39 +75,13 @@ public class ResourceBundle {
      * @return
      */
     public static String getNotEmptyResource(String key, String defaultValue) {
-        return getNotEmptyResource(RESOURCE_BUNDLE_MODULE_TYPE,
-                APPLICATION_RESOURCE_ELEMENT_ID, key, defaultValue);
-    }
-
-    /**
-     * Retrieves the resource bundle message for the specified module, element
-     * and key and fallback to the specified default value if the resource
-     * cannot be found.
-     * 
-     * @param jahiaModuleType
-     * @param elementId
-     * @param key
-     * @param defaultValue
-     * @return the resource bundle message for the specified module, element and
-     *         key and fallback to the specified default value if the resource
-     *         cannot be found
-     */
-    public static String getNotEmptyResource(String jahiaModuleType,
-            String elementId, String key, String defaultValue) {
         String value = defaultValue;
         try {
-            Dictionary jahiaParamDictionary = Dictionary
-                    .getDictionary((jahiaModuleType != null ? jahiaModuleType
-                            : RESOURCE_BUNDLE_MODULE_TYPE)
-                            + "_rb_"
-                            + (elementId != null ? elementId
-                                    : APPLICATION_RESOURCE_ELEMENT_ID));
+            Dictionary jahiaParamDictionary = Dictionary.getDictionary(DICTIONARY_NAME);
             value = jahiaParamDictionary.get(key);
-            if (value == null || "".equals(value.trim())) {
+            if (value == null || "".equals(value.trim())){
                 value = defaultValue;
             }
-        } catch (MissingResourceException e) {
-            Log.debug("Resource is missing for key [" + key + "]");
         } catch (Exception e) {
             Log.error("Can't retrieve [" + key + "]", e);
         }

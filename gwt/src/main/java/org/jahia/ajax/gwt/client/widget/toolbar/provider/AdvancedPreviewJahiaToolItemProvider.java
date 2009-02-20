@@ -50,7 +50,7 @@ import org.jahia.ajax.gwt.client.service.SessionManagerServiceAsync;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -97,7 +97,7 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
 
         enabledCheckBox = new CheckBox();
         enabledCheckBox.setValue(enabled);
-        enabledCheckBox.setFieldLabel(ResourceBundle.getNotEmptyResource("advp_enable",
+        enabledCheckBox.setFieldLabel(Messages.getNotEmptyResource("advp_enable",
                             "Enable advanced preview settings"));
         panel.add(enabledCheckBox);
 
@@ -122,13 +122,13 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
         aliasingName.setTriggerStyle("um-user");
 
         // principal key
-        aliasingName.setFieldLabel(ResourceBundle.getNotEmptyResource("advp_username","Preview content for user"));
+        aliasingName.setFieldLabel(Messages.getNotEmptyResource("advp_username","Preview content for user"));
         aliasingName.setValue(JahiaGWTParameters.getCurrentUser());
         aliasingName.setAllowBlank(true);
         panel.add(aliasingName);
 
         previewDateField = new CalendarField();
-        previewDateField.setFieldLabel(ResourceBundle.getNotEmptyResource("advp_dateofpreview","Date of preview"));
+        previewDateField.setFieldLabel(Messages.getNotEmptyResource("advp_dateofpreview","Date of preview"));
 
         if (previewDate != null && !"".equals(previewDate.trim())){
             previewDateField.setValue(new Date(Long.parseLong(previewDate)));
@@ -150,7 +150,7 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
                 window.setHeading(gwtToolbarItem.getTitle());
 
                 if (save == null){
-                    save = new Button(ResourceBundle.getNotEmptyResource("save","Save"));
+                    save = new Button(Messages.getNotEmptyResource("save","Save"));
                     save.addSelectionListener(new SelectionListener<ComponentEvent>() {
 
 
@@ -212,7 +212,7 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
                             });
                         }
                     });
-                    cancel = new Button(ResourceBundle.getNotEmptyResource("cancel","Cancel"));
+                    cancel = new Button(Messages.getNotEmptyResource("cancel","Cancel"));
                     cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
                         public void componentSelected(ComponentEvent event) {
                             window.hide();

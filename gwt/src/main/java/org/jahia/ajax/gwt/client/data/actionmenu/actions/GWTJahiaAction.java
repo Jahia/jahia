@@ -32,8 +32,7 @@
  */
 
 package org.jahia.ajax.gwt.client.data.actionmenu.actions;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +40,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author rfelden
  * @version 22 janv. 2008 - 14:49:03
  */
-public abstract class GWTJahiaAction implements IsSerializable {
+public abstract class GWTJahiaAction implements Serializable {
 
     public static final String ADD = "add" ;
     public static final String UPDATE = "update " ;

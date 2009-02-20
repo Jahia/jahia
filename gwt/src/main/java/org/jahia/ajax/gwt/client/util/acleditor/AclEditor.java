@@ -55,7 +55,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 
@@ -612,7 +612,7 @@ public class AclEditor {
      * @return
      */
     public String getResource(String key) {
-        return ResourceBundle.getResource("gwtacleditor", "gwtacleditor", key);
+        return Messages.getResource(key);
     }
 
 }

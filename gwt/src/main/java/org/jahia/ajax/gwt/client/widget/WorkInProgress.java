@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.client.widget;
 
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
@@ -62,8 +62,8 @@ public class WorkInProgress {
             MessageBox box = new MessageBox();
             box.setType(MessageBoxType.WAIT);
 
-            box.setMessage(ResourceBundle.getResource("jahia", "commons", "workInProgressTitle"));
-            box.setProgressText(ResourceBundle.getResource("jahia", "commons", "workInProgressProgressText"));
+            box.setMessage(Messages.getResource("workInProgressTitle"));
+            box.setProgressText(Messages.getResource("workInProgressProgressText"));
 
             box.setButtons("");
             box.setClosable(false);

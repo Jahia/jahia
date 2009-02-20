@@ -81,6 +81,7 @@ public class GWTInitTag extends AbstractJahiaTag {
             out.print("<!-- cache:vars var=\""+ SkeletonAggregatorValve.GWT_VARIABLE+"\" -->");
             out.print(GWTInitializer.getInitString(pageContext, standalone)) ;
             out.print("<!-- /cache:vars -->");
+
             if (StringUtils.isNotEmpty(modules)) {
                 for (String module : StringUtils.split(modules, ',')) {
                     out.append(GWTIncluder.generateGWTImport(pageContext, module.trim()));

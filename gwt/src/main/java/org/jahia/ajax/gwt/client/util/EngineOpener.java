@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.client.util;
 
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 
 /**
@@ -59,7 +59,7 @@ public class EngineOpener {
     }
 
     public static void openEngine(String url, String windowName, String windowParams) {
-        if (closePreviousEngine(ResourceBundle
+        if (closePreviousEngine(Messages
                 .getNotEmptyResource(
                         "org.jahia.engines.confirmWindowClose",
                         "Opening a new engine window will close the currently opened one. Do you want to continue?"))) {

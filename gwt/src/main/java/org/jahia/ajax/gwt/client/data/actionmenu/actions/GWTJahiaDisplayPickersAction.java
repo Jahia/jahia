@@ -32,10 +32,8 @@
  */
 
 package org.jahia.ajax.gwt.client.data.actionmenu.actions;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +41,7 @@ import java.util.List;
  * @author rfelden
  * @version 14 f�vr. 2008 - 11:24:58
  */
-public class GWTJahiaDisplayPickersAction extends GWTJahiaAction implements IsSerializable {
+public class GWTJahiaDisplayPickersAction extends GWTJahiaAction implements Serializable {
 
     private List<GWTJahiaRedirectAction> pickersRedirect ;
 

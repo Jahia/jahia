@@ -39,7 +39,7 @@ import java.util.List;
 import org.jahia.ajax.gwt.client.service.process.ProcessDisplayService;
 import org.jahia.ajax.gwt.client.data.process.GWTJahiaProcessJobPreference;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
@@ -78,12 +78,12 @@ public class ProcessJobOptionsComponent extends LeftComponent {
 
         // filter by type
         typeDataList = createOptionDataList(ProcessDisplayPanel.TYPE_OPTIONS_NAMES, ProcessDisplayPanel.TYPE_OPTIONS_VALUES, getGWTJahiaProcessJobPreference().getJobsTypeToIgnore());
-        ContentPanel contentPanel = createFilteringContentPanel(ResourceBundle.getResource("pdisplay", "pdisplay", "pd_filter_type"), typeDataList);
+        ContentPanel contentPanel = createFilteringContentPanel(Messages.getResource("pd_filter_type"), typeDataList);
         m_component.add(contentPanel);
 
         // filter by status
         statusDataList = createOptionDataList(ProcessDisplayPanel.STATUS_OPTIONS_NAMES, ProcessDisplayPanel.STATUS_OPTIONS_VALUES, getGWTJahiaProcessJobPreference().getJobsStatusToIgnore());
-        contentPanel = createFilteringContentPanel(ResourceBundle.getResource("pdisplay", "pdisplay", "pd_filter_status"), statusDataList);
+        contentPanel = createFilteringContentPanel(Messages.getResource("pd_filter_status"), statusDataList);
         m_component.add(contentPanel);
 
         // filter by user

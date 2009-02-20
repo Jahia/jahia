@@ -51,7 +51,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.service.category.CategoryServiceAsync;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
 
@@ -129,7 +129,7 @@ public class CategoriesList extends ContentPanel {
     }
 
     private String getResource(String key) {
-        return ResourceBundle.getResource("categories_manager", "categories_manager", key);
+        return Messages.getResource(key);
     }
 
 

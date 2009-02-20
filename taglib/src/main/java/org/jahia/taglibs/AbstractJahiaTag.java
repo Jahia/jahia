@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -46,14 +46,14 @@ import org.jahia.resourcebundle.ResourceBundleMarker;
 import org.jahia.resourcebundle.ResourceBundleService;
 import org.jahia.taglibs.template.templatestructure.TemplateTag;
 import org.jahia.taglibs.utility.Utils;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.util.Locale;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * This abstract Tag is the starting point for implementing any knew tags. In contains common attributes that should be
@@ -296,6 +296,69 @@ public class AbstractJahiaTag extends BodyTagSupport {
     protected JahiaData getJahiaData() {
         return (JahiaData) pageContext.getAttribute("org.jahia.data.JahiaData",
                 PageContext.REQUEST_SCOPE);
+    }
+
+    /**
+     * @return jahia_gwt_dictionary as map
+     */
+    protected Map<String, String> getJahiaGwtDictionary() {
+        Map<String, String> dictionaryMap = (Map<String, String>) pageContext.getAttribute("org.jahia.ajax.gwt.dictionary", PageContext.REQUEST_SCOPE);
+        if (dictionaryMap == null) {
+            dictionaryMap = new HashMap<String, String>();
+            updateJahiaGwtDictionary(dictionaryMap);
+        }
+        return dictionaryMap;
+    }
+
+    /**
+     * Update jahia_gwt_dictionary
+     *
+     * @param dictionaryMap
+     */
+    protected void updateJahiaGwtDictionary(Map<String, String> dictionaryMap) {
+        pageContext.setAttribute("org.jahia.ajax.gwt.dictionary", dictionaryMap, PageContext.REQUEST_SCOPE);
+    }
+
+    /**
+     * Generate jahia_gwt_dictionary
+     *
+     * @return
+     */
+    protected String generateJahiaGwtDictionary() {
+        Map dictionaryMap = getJahiaGwtDictionary();
+        StringBuffer s = new StringBuffer();
+        s.append("var " + Messages.DICTIONARY_NAME + " = {\n");
+        if (dictionaryMap != null) {
+            Iterator keys = dictionaryMap.keySet().iterator();
+            while (keys.hasNext()) {
+                String name = keys.next().toString();
+                Object value = dictionaryMap.get(name);
+                if (value != null) {
+                    s.append(name).append(":\"").append(value.toString()).append("\"");
+                    if (keys.hasNext()) {
+                        s.append(",");
+                    }
+                    s.append("\n");
+                }
+            }
+        }
+
+        s.append("};\n");
+        return s.toString();
+    }
+
+    /**
+     * Add a message into jahia_gwt_dictionary
+     *
+     * @param aliasName
+     * @param message
+     */
+    protected void addGwtDictionaryMessage(String aliasName, String message) {
+        if (aliasName != null) {
+            Map<String, String> dictionaryMap = getJahiaGwtDictionary();
+            dictionaryMap.put(aliasName, message);
+            updateJahiaGwtDictionary(dictionaryMap);
+        }
     }
 
     protected String resolveIncludeFullPath(final String fileName) {

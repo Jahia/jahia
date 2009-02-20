@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.client.data.config;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * Created by Jahia.
@@ -41,7 +41,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * Date: 11 juil. 2007
  * Time: 10:23:42
  */
-public class GWTJahiaPageContext implements IsSerializable {
+public class GWTJahiaPageContext implements Serializable {
     private int pid;
     private String mode;
     private String windowURL;
@@ -82,6 +82,4 @@ public class GWTJahiaPageContext implements IsSerializable {
     public String toString() {
         return "[ Page with id: " + getPid() + ", mode: " + mode + " ]";
     }
-
-
 }

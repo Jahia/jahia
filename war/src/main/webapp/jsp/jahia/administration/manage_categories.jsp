@@ -41,7 +41,7 @@
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ include file="/jsp/jahia/administration/include/header.inc" %>
 <% stretcherToOpen = 0; %>
-<internal:gwtImport module="org.jahia.ajax.gwt.module.categories.CategoriesManager"/>
+<internal:gwtImport module="org.jahia.ajax.gwt.module.categorymanager.CategoryManager"/>
 <div id="topTitle">
     <h1>Jahia</h1>
 

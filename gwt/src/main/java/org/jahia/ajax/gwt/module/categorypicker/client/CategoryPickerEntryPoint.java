@@ -32,7 +32,7 @@
  */
 
 package org.jahia.ajax.gwt.module.categorypicker.client;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
 import org.jahia.ajax.gwt.client.util.category.CategoryHelper;
 import org.jahia.ajax.gwt.client.widget.category.CategoriesPickerPanel;
@@ -94,6 +94,6 @@ public class CategoryPickerEntryPoint implements EntryPoint {
     }
 
     public static String getResource(String key) {
-        return ResourceBundle.getResource(ID, ID, key);
+        return Messages.getResource(key);
     }
 }

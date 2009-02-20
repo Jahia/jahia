@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  *
@@ -78,7 +78,7 @@ public abstract class SearchField extends ToolBar {
         add(ok) ;
         add(new FillToolItem()) ;
         if (saveSearchbutton) {
-            TextToolItem save = new TextToolItem(ResourceBundle.getResource("filemanager", "filemanager", "fm_saveSearch")) ;
+            TextToolItem save = new TextToolItem(Messages.getResource("fm_saveSearch")) ;
             save.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     onSaveButtonClicked(field.getRawValue());

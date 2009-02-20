@@ -36,16 +36,13 @@ package org.jahia.taglibs.utility.i18n;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.apache.log4j.Logger;
 
-import javax.servlet.jsp.JspWriter;
-import java.io.IOException;
-
 /**
  * User: ktlili
  * Date: 9 sept. 2008
  * Time: 17:23:57
  */
-public class GWTResourceBundleTag extends AbstractJahiaTag {
-    private static final transient Logger logger = Logger.getLogger(GWTResourceBundleTag.class);
+public class GWTMessageTag extends AbstractJahiaTag {
+    private static final transient Logger logger = Logger.getLogger(GWTMessageTag.class);
     private String resourceName;
     private String aliasResourceName;
 
@@ -67,33 +64,8 @@ public class GWTResourceBundleTag extends AbstractJahiaTag {
     }
 
     public int doStartTag() {
-        final JspWriter out = pageContext.getOut();
-        // print output : example: pwd:"Password",
-        try {
-            // generate
-            StringBuffer outBuf = new StringBuffer();
-            boolean isFirstResource = pageContext.getRequest().getAttribute("org.jahia.ajax.gwt.rb") == null;
-            if (!isFirstResource) {
-                outBuf.append(",\n");
-            }
-            if (aliasResourceName != null && !"".equals(aliasResourceName.trim())) {
-                outBuf.append("\"").append(aliasResourceName).append("\"");
-            } else {
-                outBuf.append("\"").append(resourceName).append("\"");
-            }
-            outBuf.append(":\"");
-            GWTResourceBundleDictionaryTag parent = (GWTResourceBundleDictionaryTag) findAncestorWithClass(
-                    this, GWTResourceBundleDictionaryTag.class);
-            outBuf.append(getResourceValue(parent != null
-                    && parent.getResourceNamePrefix() != null ? parent
-                    .getResourceNamePrefix()
-                    + resourceName : resourceName, getProcessingContext()));
-            outBuf.append("\"");
-            out.print(outBuf.toString());
-            pageContext.getRequest().setAttribute("org.jahia.ajax.gwt.rb", Boolean.TRUE);
-        } catch (IOException e) {
-            logger.error(e, e);
-        }
+        // add message to the jahia_gwt_dictionary
+        addGwtDictionaryMessage(aliasResourceName,getResourceValue(resourceName, getProcessingContext()));       
         return SKIP_BODY;
     }
 

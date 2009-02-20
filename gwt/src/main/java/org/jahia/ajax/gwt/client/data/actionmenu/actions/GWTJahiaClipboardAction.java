@@ -33,9 +33,9 @@
 
 package org.jahia.ajax.gwt.client.data.actionmenu.actions;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.module.ActionMenuJahiaModule;
+import java.io.Serializable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.module.ActionMenuJahiaModule;
  * @author rfelden
  * @version 14 f�vr. 2008 - 10:37:52
  */
-public class GWTJahiaClipboardAction extends GWTJahiaAction implements IsSerializable {
+public class GWTJahiaClipboardAction extends GWTJahiaAction implements Serializable {
 
     private String objectKey ;
 

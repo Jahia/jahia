@@ -35,7 +35,7 @@ package org.jahia.ajax.gwt.client.core;
 
 import java.util.List;
 
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 
 import com.google.gwt.user.client.ui.RootPanel;
@@ -61,7 +61,7 @@ public abstract class JahiaModule {
      * @return
      */
     public String getResource(String rootId, String key) {
-        return ResourceBundle.getResource(getJahiaModuleType(), rootId, key);
+        return Messages.getResource(key);
     }
 
     public String getResource(String key) {

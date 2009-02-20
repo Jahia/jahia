@@ -33,7 +33,7 @@
 
 package org.jahia.ajax.gwt.client.util.nodes;
 
-import org.jahia.ajax.gwt.client.util.ResourceBundle;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * User: rfelden
@@ -44,6 +44,6 @@ public class Resources {
     public static final String FILEMANAGER_ID = "filemanager" ;
 
     public static String getResource(String key) {
-        return ResourceBundle.getResource("filemanager", "filemanager", key) ;
+        return Messages.getResource(key) ;
     }
 }

@@ -32,15 +32,14 @@
  */
 
 package org.jahia.ajax.gwt.client.data.toolbar;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
  * User: jahia
  * Date: 9 avr. 2008
  * Time: 11:44:12
  */
-public class GWTJahiaState implements IsSerializable {
+public class GWTJahiaState implements Serializable {
     private int value;
     private int index;
     private int columnIndex;

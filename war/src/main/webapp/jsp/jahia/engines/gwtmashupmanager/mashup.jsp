@@ -62,5 +62,6 @@
                       startPath="/content/mashups"
                       nodeTypes="jnt:portlet"
                       conf="mashupmanager"/>
+<internal:gwtGenerateDictionary/>
 </body>
 </html>

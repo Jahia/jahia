@@ -77,19 +77,7 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
     }
 
     public int doStartTag() throws JspException {
-        final JspWriter out = pageContext.getOut();
-        try {
-            // add jahia parameter dictionary
-            if (getJahiaType() != null && getId() != null) {
-                out.append("<script type=\"text/javascript\">\n");
-                out.append("var ").append(getJahiaType().toLowerCase()).append("_rb_").append(getId().toLowerCase()).
-                        append(" = {\n");
-            } else {
-                logger.error("jahiaType or id is not defined.");
-            }
-        } catch (IOException e) {
-            logger.error(e, e);
-        }
+
         return EVAL_BODY_INCLUDE;
     }
 
@@ -97,10 +85,7 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
         final JspWriter out = pageContext.getOut();
         // print output
         try {
-            if (getJahiaType() != null && getId() != null) {
-                out.append("};");
-                out.append("\n</script>\n");
-            }
+         
             // validate
             if (id == null) {
                 out.print("<!-- gwt-jahiamodule: 'id' must be not null-->");
@@ -140,7 +125,6 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
             logger.error(e, e);
         }
 
-        pageContext.getRequest().removeAttribute("org.jahia.ajax.gwt.rb");
         id = null;
         jahiaType = null;
         return EVAL_PAGE;

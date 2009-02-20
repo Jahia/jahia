@@ -527,10 +527,8 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
-                1. <internal:adminResourceBundle
-                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
-
-                <internal:adminResourceBundle
+                1.&nbsp;<internal:adminResourceBundle
+                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<internal:adminResourceBundle
                         resourceName="org.jahia.admin.virtualSitesManagement.label.default"/>
             </div>
         </div>
@@ -546,9 +544,9 @@ else { %>
                   enctype="multipart/form-data">
                 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                     <tr>
-                        <td><input type="radio" name="siteImportPrepackaged" checked="checked" value="siteImportPrepackaged" onclick="setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], 'siteImportPrepackaged'); setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                            <internal:adminResourceBundle
-                                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
+                        <td><input type="radio" id="siteImportPrepackaged" name="siteImportPrepackaged" checked="checked" value="siteImportPrepackaged" onclick="setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], 'siteImportPrepackaged'); setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
+                            <label for="siteImportPrepackaged"><internal:adminResourceBundle
+                                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/></label>&nbsp;
                         </td>
                         <td>
                             &nbsp;<select name="importpath">
@@ -565,7 +563,7 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
-                2. <internal:adminResourceBundle resourceName="org.jahia.admin.virtualSitesManagement.label.configwizard"/>
+                2.&nbsp;<internal:adminResourceBundle resourceName="org.jahia.admin.virtualSitesManagement.label.configwizard"/>
             </div>
         </div>
 
@@ -574,10 +572,9 @@ else { %>
                 <tr>
                     <td>
                         <form name="blank"  action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' method="post" >
-                            <input type="radio" name="blank" value="blank" onclick="setCheckedValue(document.forms['blank'].elements['blank'], 'blank'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');">
-
-                            <internal:adminResourceBundle
-                                    resourceName="org.jahia.admin.site.ManageSites.addSite.field"/>
+                            <input type="radio" id="blank" name="blank" value="blank" onclick="setCheckedValue(document.forms['blank'].elements['blank'], 'blank'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');">
+                            <label for="blank"><internal:adminResourceBundle
+                                    resourceName="org.jahia.admin.site.ManageSites.addSite.field"/></label>
                         </form>
                     </td>
                 </tr>
@@ -588,7 +585,7 @@ else { %>
         <!--   import backup -->
         <div class="head headtop">
             <div class="object-title">
-                3. <internal:adminResourceBundle
+                3.&nbsp;<internal:adminResourceBundle
                     resourceName="org.jahia.admin.site.ManageSites.multipleimport.label"/>
             </div>
         </div>
@@ -606,10 +603,9 @@ else { %>
                     <tr>
                         <td>
 
-                            <input type="radio" name="siteImport" value="siteImport" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-
-                            <internal:adminResourceBundle
-                                    resourceName="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
+                            <input type="radio" id="siteImport" name="siteImport" value="siteImport" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
+                            <label for="siteImport"><internal:adminResourceBundle
+                                    resourceName="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/></label>&nbsp;
                         </td>
                         <td>
                             :&nbsp;<input type="file" name="import">

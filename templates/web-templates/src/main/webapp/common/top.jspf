@@ -35,6 +35,6 @@
                     </ul>
 	</div><!--stop topshortcuts-->
 	<div class="clear"></div>
-    <template:include page="../modules/login/login.jsp"/>
+    <template:include page="/modules/login/login.jsp"/>
     <div class="clear"></div>
 </div>

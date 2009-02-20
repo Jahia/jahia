@@ -58,7 +58,7 @@ return false;
             <s:results>
                 <div class="resultsList">
                 <h3><utility:resourceBundle resourceName="search.results.found" arg0="${count}" escape="true"/></h3>
-                <template:include page="../modules/search/advancedSearchForm.jsp"/>
+                <template:include page="/modules/search/advancedSearchForm.jsp"/>
                 <c:set var="itemsPerPage" value="${functions:default(param['src_itemsPerPage'], '10')}"/>
                 <pg:pager maxPageItems="${itemsPerPage}" url="${jahia.page.url}" export="currentPageNumber=pageNumber">
                     <c:forEach var="aParam" items="${paramValues}">

@@ -36,8 +36,8 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../common/declarations.jspf" %>
-<template:include page="../modules/search/searchForm.jsp"/>
-<template:include page="../common/nav/sideNav.jsp"/>
-<template:include page="../common/box/box.jsp">
+<template:include page="/modules/search/searchForm.jsp"/>
+<template:include page="/common/nav/sideNav.jsp"/>
+<template:include page="/common/box/box.jsp">
     <template:param name="name" value="columnB_box"/>
 </template:include>

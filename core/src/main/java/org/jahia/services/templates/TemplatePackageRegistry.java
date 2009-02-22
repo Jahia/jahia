@@ -213,6 +213,7 @@ class TemplatePackageRegistry {
      *         repository
      */
     public JahiaTemplatesPackage lookup(String packageName) {
+        if (packageName == null || registry == null) return null;
         return registry.containsKey(packageName) ? registry.get(packageName)
                 : null;
     }
@@ -227,6 +228,7 @@ class TemplatePackageRegistry {
      *         repository
      */
     public JahiaTemplatesPackage lookupByFileName(String fileName) {
+        if (fileName == null || registry == null) return null;
         return fileNameRegistry.containsKey(fileName) ? fileNameRegistry.get(fileName)
                 : null;
     }

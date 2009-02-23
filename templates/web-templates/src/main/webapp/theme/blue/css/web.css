@@ -59,10 +59,16 @@
     margin: 0 0 0 280px;
     overflow: hidden;
 }
+#bodywrapper #position2 .spacer {
+padding:10px 0 10px 20px;
+}
 /*2 colums areaB/mainArea  */
 #bodywrapper #position3 {
     margin: 0 280px 0 0;
     overflow: hidden;
+}
+#bodywrapper #position3 .spacer {
+    padding: 10px 20px 10px 0;
 }
 
 #bodywrapper #areaB {

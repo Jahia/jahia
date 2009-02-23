@@ -64,7 +64,7 @@ p {
 #bodywrapper #navigationN1{
   display:none;
 }
-#bodywrapper #columnA, #bodywrapper #columnB, #bodywrapper #columnC{
+#bodywrapper #areaA, #bodywrapper #areaB, #bodywrapper #areaC{
   display:none;
 }
 
@@ -82,23 +82,32 @@ p {
 }
 
 #bodywrapper #container,
-#bodywrapper #content,
-#bodywrapper #content2,
-#bodywrapper #content3,
-#bodywrapper #content4,
-#bodywrapper #content5,
-#bodywrapper #columnA,
-#bodywrapper #columnB,
-#bodywrapper #columnC{
+#bodywrapper #position,
+#bodywrapper #position2,
+#bodywrapper #position3,
+#bodywrapper #position4,
+#bodywrapper #position5{
 	overflow: visible;
 }
 
 /*  print  */
-
-#bodywrapper #headerPart2{
-border-bottom:5px solid #333
+#bodywrapper .logotop{
+	margin-bottom:10px
  }
-
+#bodywrapper #headerPart2{
+	border-bottom:5px solid #ccc
+ }
+#bodywrapper #wrapper {
+	float:none;
+	width:940px;
+	overflow:visible;
+}
+#bodywrapper #containerdata {
+	float:none;
+	height:auto;
+	width:940px;
+	overflow:visible;
+}
 #bodywrapper #page{
   	background-color:#FFFFFF;
 	text-align: justify;
@@ -106,23 +115,26 @@ border-bottom:5px solid #333
     color:black;
  }
 
- #bodywrapper #content{
+ #bodywrapper #position{
 	margin: 0 20px 0 0;
 	overflow:visible;
-
+	width:940px
 }
 
-#bodywrapper #content2{
+#bodywrapper #position2{
 	margin: 0 20px 0 0;
 	overflow:visible;
+	width:940px
 }
 
-#bodywrapper #content3{
+#bodywrapper #position3{
 	margin: 0 20px 0 0;
 	overflow:visible;
+	width:940px
 }
 
-#bodywrapper #content4{
+#bodywrapper #position4{
 	margin: 0 20px 0 0;
 	overflow:visible;
+	width:940px
 }

@@ -31,23 +31,6 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-#bodywrapper .box3-text {
-	padding-top:10px;
-}
-
-#bodywrapper .box2 { 
-	width:100%;
-	height:auto;
-}
-#bodywrapper .box2-more{
-	bottom:-1px;
-}
-#bodywrapper .box4 { 
-	width:100%;
-	height:auto;
-}
-#bodywrapper .box4-more{
-	bottom:-1px;
-}
+@import "../../default/css/ie6.css";
 
 	

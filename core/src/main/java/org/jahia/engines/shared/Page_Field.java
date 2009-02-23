@@ -526,6 +526,11 @@ public class Page_Field implements FieldSubEngine {
             if (aclService.getSiteActionPermission(LockPrerequisites.URLKEY, jParams.getUser(),
                     JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) {
                 result = setPageURLKeyIfValidAndNotEmpty(jParams, engineMap);
+                if (!result) {
+                    engineMap.put("focus", "url_key");
+                } else {
+                    engineMap.remove("focus");
+                }
             }
 
             if (aclService.getSiteActionPermission(LockPrerequisites.HIDE_FROM_NAVIGATION_MENU, jParams.getUser(),

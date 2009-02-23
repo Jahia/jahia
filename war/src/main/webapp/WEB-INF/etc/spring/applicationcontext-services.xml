@@ -890,13 +890,14 @@
     <bean id="QueryService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.query.QueryService" parent="jahiaServiceTemplate" factory-method="getInstance">
-                <property name="defaultFilterCreatorName" value="DefaultFilterCreator" />
+                <property name="defaultFilterCreators">
+                    <list>
+                        <ref bean="JahiaSearchFilterCreator" />                        
+                        <ref bean="JahiaDBFilterCreator" />                        
+                    </list>
+                </property>
                 <property name="filterCreators">
                     <map>
-                        <entry>
-                            <key><value>DefaultFilterCreator</value></key>
-                            <ref bean="JahiaSearchFilterCreator" />
-                        </entry>
                         <entry>
                             <key><value>JahiaDBFilterCreator</value></key>
                             <ref bean="JahiaDBFilterCreator" />

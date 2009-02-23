@@ -39,6 +39,7 @@ import org.jahia.data.beans.SiteBean;
 import org.jahia.data.containers.*;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.query.QueryService;
 import org.jahia.query.filtercreator.FilterCreator;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerQueryBean;
@@ -116,23 +117,16 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
         }
     }
 
-    public List<FilterCreator> getFilterCreators(ConstraintImpl c){
+    public List<FilterCreator> getFilterCreators(ConstraintImpl c) {
         String filterCreatorNames = this.queryModel.getProperties()
                 .getProperty(JahiaQueryObjectModelConstants.FILTER_CREATORS);
-        if (filterCreatorNames == null || "".equals(filterCreatorNames.trim())){
-            FilterCreator filterCreator = ServicesRegistry.getInstance()
-                    .getQueryService().getDefaultFilterCreator();
-            if ( filterCreator != null ){
-                List<FilterCreator> orderedFilterCreators = new ArrayList<FilterCreator>();
-                orderedFilterCreators.add(filterCreator);
-                return orderedFilterCreators;
-            } else {
-                return null;
-            }
-        } else {
-            return ServicesRegistry.getInstance()
-                    .getQueryService().getFilterCreators(JahiaTools.getTokensList(filterCreatorNames,","));
-        }
+        QueryService queryService = ServicesRegistry.getInstance()
+                .getQueryService();
+        return (filterCreatorNames == null
+                || filterCreatorNames.trim().length() == 0 ? queryService
+                .getDefaultFilterCreators() : queryService
+                .getFilterCreators(JahiaTools.getTokensList(filterCreatorNames,
+                        ",")));
     }
 
     private ContainerSearcher buildSearcher()
@@ -180,23 +174,16 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
         return null;
     }
 
-    private List<FilterCreator> getFilterCreatorsForOrdering(){
+    private List<FilterCreator> getFilterCreatorsForOrdering() {
         String filterCreatorNames = this.queryModel.getProperties()
                 .getProperty(JahiaQueryObjectModelConstants.FILTER_CREATORS);
-        if (filterCreatorNames == null || "".equals(filterCreatorNames.trim())){
-            FilterCreator filterCreator = ServicesRegistry.getInstance()
-                    .getQueryService().getDefaultFilterCreator();
-            if ( filterCreator != null ){
-                List<FilterCreator> orderedFilterCreators = new ArrayList<FilterCreator>();
-                orderedFilterCreators.add(filterCreator);
-                return orderedFilterCreators;
-            } else {
-                return null;
-            }
-        } else {
-            return ServicesRegistry.getInstance()
-                    .getQueryService().getFilterCreators(JahiaTools.getTokensList(filterCreatorNames,","));
-        }
+        QueryService queryService = ServicesRegistry.getInstance()
+                .getQueryService();
+        return (filterCreatorNames == null
+                || filterCreatorNames.trim().length() == 0 ? queryService
+                .getDefaultFilterCreators() : queryService
+                .getFilterCreators(JahiaTools.getTokensList(filterCreatorNames,
+                        ",")));
     }
 
     private ContainerFilterInterface getContainerFilter(ConstraintItem cItem) throws JahiaException {

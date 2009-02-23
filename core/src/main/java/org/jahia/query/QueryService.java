@@ -72,7 +72,7 @@ public class QueryService extends JahiaService {
 
     private static QueryService singletonInstance = null;
 
-    private String defaultFilterCreatorName;
+    private List<FilterCreator> defaultFilterCreators;
 
     private Map<String, FilterCreator> filterCreators;
 
@@ -117,16 +117,12 @@ public class QueryService extends JahiaService {
         this.filterCreators = filterCreators;
     }
 
-    public String getDefaultFilterCreatorName() {
-        return defaultFilterCreatorName;
+    public void setDefaultFilterCreators(List<FilterCreator> defaultFilterCreators) {
+        this.defaultFilterCreators = defaultFilterCreators;
     }
 
-    public void setDefaultFilterCreatorName(String defaultFilterCreatorName) {
-        this.defaultFilterCreatorName = defaultFilterCreatorName;
-    }
-
-    public FilterCreator getDefaultFilterCreator(){
-        return (FilterCreator)this.filterCreators.get(this.defaultFilterCreatorName);
+    public List<FilterCreator> getDefaultFilterCreators(){
+        return defaultFilterCreators;
     }
 
     public List<FilterCreator> getFilterCreators(List<String> orderedNames){
@@ -137,10 +133,11 @@ public class QueryService extends JahiaService {
                 orderedFilterCreators.add(filterCreator);
             }
         }
-        FilterCreator defaultFilterCreator = this.getDefaultFilterCreator();
-        if (defaultFilterCreator !=null &&
-            !orderedFilterCreators.contains(this.getDefaultFilterCreatorName())){
-          orderedFilterCreators.add(defaultFilterCreator);
+        for (FilterCreator defaultFilterCreator : this
+                .getDefaultFilterCreators()) {
+            if (!orderedFilterCreators.contains(defaultFilterCreator)) {
+                orderedFilterCreators.add(defaultFilterCreator);
+            }
         }
         return orderedFilterCreators;
     }

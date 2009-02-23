@@ -44,32 +44,42 @@
 
 package org.jahia.engines.search;
 
-import java.util.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaData;
 import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.engines.*;
+import org.jahia.engines.EngineToolBox;
+import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.JahiaTools;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.search.*;
+import org.jahia.services.search.JahiaSearchConstant;
+import org.jahia.services.search.NumberPadding;
+import org.jahia.services.search.PageSearchResultBuilderImpl;
+import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.jahia.syndication.opensearch.FeedWriter;
-
-import javax.servlet.http.HttpServletResponse;
+import org.jahia.utils.JahiaTools;
 
 /**
  * This engine is called when the user wants to do a search on the jahia site. It displays
@@ -283,16 +293,23 @@ public class Search_Engine implements JahiaEngine {
             // update search lang
             List<String> languageCodes = new ArrayList<String>();
             String[] languageCodesVal = jParams.getParameterValues ("searchlang");
+            boolean isAllLang = JahiaTools.inValues (Search_Engine.SEARCH_ALL_LANG, languageCodesVal);
             if ( languageCodesVal != null ){
-                if (!JahiaTools.inValues (Search_Engine.SEARCH_ALL_LANG, languageCodesVal)) {
+                if (!isAllLang) {
                     for (int i = 0; i < languageCodesVal.length; i++) {
                         languageCodes.add (languageCodesVal[i]);
                     }
                 }
             }
-            if ( languageCodes.size() == 0 ){
+            if ( languageCodes.isEmpty() && !isAllLang ){
                 languageCodes.add (jParams.getLocale ().toString ());
-            }
+            } else if(isAllLang) {
+                for (SiteLanguageSettings siteLangSetting : jParams.getSite().getLanguageSettings()) {
+                    if (siteLangSetting.isActivated()){
+                        languageCodes.add(siteLangSetting.getCode());
+                    }
+                }
+            } 
             engineMap.put ("searchLanguageCodes", languageCodes);
 
         }

@@ -41,6 +41,8 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
@@ -64,7 +66,7 @@ public class ResourceBundleMarker {
     
     private static final transient Logger logger = Logger
             .getLogger(ResourceBundleMarker.class);
-
+    private static Pattern pattern = Pattern.compile("<jahia-resource id=\"(.*)\" key=\"(.*)\" default-value=\"(.*)\"/>");
     /**
      * The unique id that identifies a resource bundle file @see ResourceBundleDefinition
      */
@@ -301,40 +303,17 @@ public class ResourceBundleMarker {
 
         ResourceBundleMarker marker = null;
         String val = markerStr.trim();
-        String resourceBundleID = "";
-        String resourceKey = "";
-        String defaultValue = "";
+        String resourceBundleID;
+        String resourceKey;
+        String defaultValue;
+        Matcher matcher = pattern.matcher(val);
+        if (matcher.matches()) {
 
-        if (val.startsWith("<jahia-resource") && val.endsWith("/>")) {
-
-            try {
-
-                int pos = val.indexOf(" id=\"");
-                if (pos != -1) {
-                    resourceBundleID =
-                            val.substring(pos + 5,
-                                    pos + 5 + val.substring(pos + 5).indexOf("\""));
-                }
-
-                pos = val.indexOf(" key=\"");
-                if (pos != -1) {
-                    resourceKey =
-                            val.substring(pos + 6,
-                                    pos + 6 + val.substring(pos + 6).indexOf("\""));
-                }
-
-                pos = val.indexOf(" default-value=\"");
-                if (pos != -1) {
-                    defaultValue =
-                            val.substring(pos + 16,
-                                    val.lastIndexOf("\""));
-                }
-
-                marker = new ResourceBundleMarker(resourceBundleID, resourceKey,
-                        defaultValue);
-            } catch (Exception e) {
-                logger.debug(e.getMessage(), e);
-            }
+            resourceBundleID = matcher.group(1);
+            resourceKey = matcher.group(2);
+            defaultValue = matcher.group(3);
+            marker = new ResourceBundleMarker(resourceBundleID, resourceKey,
+                                              defaultValue);
         }
 
         return marker;

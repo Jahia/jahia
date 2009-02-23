@@ -43,6 +43,7 @@ import org.jahia.services.search.lucene.JahiaLuceneSort;
 import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.utils.JahiaTools;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
 import java.util.*;
 
@@ -93,34 +94,21 @@ public class QueryModelTools {
                 // lucene only support String sort
                 return null;
             }
-            JahiaFieldDefinition fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                    .getDefinition(context.getSiteID(),propertyName);
-            if ( fieldDef == null ){
-                for (Iterator<String> iterator = queryContext.getContainerDefinitionNames().iterator(); iterator.hasNext() && fieldDef == null;) {
-                    String s = (String) iterator.next();
-                    fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                            .getDefinition(context.getSiteID(),s+"_"+propertyName);
-                    if (fieldDef != null) {
-                        if (fieldDef.getCtnType() != null) {
-                            propertyName = fieldDef.getCtnType().replace(':','_').replace(' ','_');
-                        } else {
-                            propertyName = fieldDef.getName();
-                        }
-                    }
-                }
-            }
-            if ( fieldDef == null ){
-                // maybe it's a metadata
-                fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                        .getDefinition(0,propertyName);
-            }
-            if ( fieldDef == null ){
+            JahiaFieldDefinition fieldDef = QueryModelTools
+                    .getFieldDefinitionForPropertyName(propertyName,
+                            queryContext, context);
+            if (fieldDef == null) {
                 return null;
             }
+            propertyName = fieldDef.getName();
+            if (fieldDef.getCtnType() != null) {
+                propertyName = fieldDef.getCtnType().replaceAll("[ :]", "_")
+                        .toLowerCase();
+            }
             if ( !operand.isMetadata() && !fieldDef.getIsMetadata() ){
-                propertyName = JahiaSearchConstant.CONTAINER_FIELD_PREFIX + propertyName.toLowerCase();
+                propertyName = JahiaSearchConstant.CONTAINER_FIELD_PREFIX + propertyName;
             } else {
-                propertyName = JahiaSearchConstant.METADATA_PREFIX + propertyName.toLowerCase();
+                propertyName = JahiaSearchConstant.METADATA_PREFIX + propertyName;
             }
             if (ordering.isLocaleSensitive() && locale == null) {
                 locale = context.getEntryLoadRequest().getFirstLocale(true);
@@ -167,4 +155,37 @@ public class QueryModelTools {
         return result;
     }
 
+    public static JahiaFieldDefinition getFieldDefinitionForPropertyName(
+            String propertyName, ContainerQueryContext queryContext,
+            ProcessingContext jParams) throws JahiaException {
+        // if (def.getDeclaringNodeType().isMixin() && (def.getDeclaringNodeType().isNodeType("jmix:contentmetadata") ||
+        // def.getDeclaringNodeType().isNodeType("mix:created") ||
+        // def.getDeclaringNodeType().isNodeType("mix:createdBy") || def.getDeclaringNodeType().isNodeType("jmix:lastPublished") ||
+        // def.getDeclaringNodeType().isNodeType("jmix:categorized") || def.getDeclaringNodeType().isNodeType("mix:lastModified"))) {
+        // new metadata
+        // JahiaFieldDefinition contentDefinition = JahiaFieldDefinitionsRegistry.getInstance().getDefinition(0,
+        // StringUtils.substringAfter(def.getName(),":"));
+
+        JahiaFieldDefinition fieldDef = JahiaFieldDefinitionsRegistry
+                .getInstance().getDefinition(jParams.getSiteID(), propertyName);
+
+        if (fieldDef == null) {
+            for (Iterator<String> iterator = queryContext
+                    .getContainerDefinitionNames().iterator(); iterator
+                    .hasNext()
+                    && fieldDef == null;) {
+                String s = (String) iterator.next();
+                fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
+                        .getDefinition(jParams.getSiteID(),
+                                s + "_" + propertyName);
+            }
+        }
+        if (fieldDef == null) {
+            // maybe it's a metadata
+            fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
+                    .getDefinition(0, propertyName);
+        }
+
+        return fieldDef;
+    }
 }

@@ -34,7 +34,6 @@
 package org.jahia.query.filtercreator;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Value;
@@ -66,7 +65,6 @@ import org.jahia.query.qom.PropertyValueImpl;
 import org.jahia.query.qom.QueryModelTools;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.query.qom.StaticOperandImpl;
-import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.services.pages.ContentPage;
@@ -227,20 +225,9 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
             int fieldType = -1;
             if (!propertyName.equals(FilterCreator.CONTENT_DEFINITION_NAME) &&
                 !propertyName.equals(JahiaQueryObjectModelConstants.CATEGORY_LINKS)){
-                JahiaFieldDefinition fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                    .getDefinition(context.getSiteID(),propertyName);
-                if ( fieldDef == null ){
-                    for (Iterator<String> iterator = queryContext.getContainerDefinitionNames().iterator(); iterator.hasNext() && fieldDef == null;) {
-                        String s = iterator.next();
-                        fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                                .getDefinition(context.getSiteID(),s+"_"+propertyName);
-                    }
-                }
-                if ( fieldDef == null ){
-                    // maybe it's a metadata
-                    fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                            .getDefinition(0,propertyName);
-                }
+                JahiaFieldDefinition fieldDef = QueryModelTools
+                        .getFieldDefinitionForPropertyName(propertyName,
+                                queryContext, context);
                 if ( fieldDef == null ){
                     return null;
                 }
@@ -290,8 +277,8 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
      * @return
      * @throws JahiaException
      */
-    public ContainerFilterInterface getRangeQueryFilter(   ComparisonImpl lowerRangeComp,
-                                                                    ComparisonImpl upperRangeComp,
+    public ContainerFilterInterface getRangeQueryFilter(   Comparison lowerRangeComp,
+                                                                    Comparison upperRangeComp,
                                                                     QueryObjectModel queryModel,
                                                                     ContainerQueryContext queryContext,
                                                                     ProcessingContext context)

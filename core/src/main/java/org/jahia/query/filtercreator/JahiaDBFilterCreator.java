@@ -35,7 +35,6 @@ package org.jahia.query.filtercreator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -73,7 +72,6 @@ import org.jahia.query.qom.PropertyValueImpl;
 import org.jahia.query.qom.QueryModelTools;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.query.qom.StaticOperandImpl;
-import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
@@ -138,20 +136,9 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
             filterBean.setMultiValueANDLogic(op2.isMultiValueANDLogic());
             filter = filterBean;
         } else {
-            JahiaFieldDefinition fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                    .getDefinition(context.getSiteID(),propertyName);
-            if ( fieldDef == null ){
-                for (Iterator<String> iterator = queryContext.getContainerDefinitionNames().iterator(); iterator.hasNext() && fieldDef == null;) {
-                    String s = iterator.next();
-                    fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                            .getDefinition(context.getSiteID(),s+"_"+propertyName);
-                }
-            }
-            if ( fieldDef == null ){
-                // maybe it's a metadata
-                fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                        .getDefinition(0,propertyName);
-            }
+            JahiaFieldDefinition fieldDef = QueryModelTools
+                    .getFieldDefinitionForPropertyName(propertyName,
+                            queryContext, context);
             if ( fieldDef == null ){
                 return null;
             }
@@ -384,20 +371,9 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         StaticOperandImpl upperValue = (StaticOperandImpl)upperRangeComp.getOperand2();
 
         String propertyName = operand.getPropertyName();
-        JahiaFieldDefinition fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                .getDefinition(context.getSiteID(),propertyName);
-        if ( fieldDef == null ){
-            for (Iterator<String> iterator = queryContext.getContainerDefinitionNames().iterator(); iterator.hasNext() && fieldDef == null;) {
-                String s = (String) iterator.next();
-                fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                        .getDefinition(context.getSiteID(),s+"_"+propertyName);
-            }
-        }
-        if ( fieldDef == null ){
-            // maybe it's a metadata
-            fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                    .getDefinition(0,propertyName);
-        }
+        JahiaFieldDefinition fieldDef = QueryModelTools
+                .getFieldDefinitionForPropertyName(propertyName, queryContext,
+                        context);
         if ( fieldDef == null ){
             return null;
         }
@@ -478,21 +454,9 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
                         + closeParenthesis;
                 prefixedQuery = true;
             } else {
-                JahiaFieldDefinition fieldDef = JahiaFieldDefinitionsRegistry
-                        .getInstance().getDefinition(context.getSiteID(),
-                                propertyName);
-                if ( fieldDef == null ){
-                    for (Iterator<String> iterator = queryContext.getContainerDefinitionNames().iterator(); iterator.hasNext() && fieldDef == null;) {
-                        String s = (String) iterator.next();
-                        fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                                .getDefinition(context.getSiteID(),s+"_"+propertyName);
-                    }
-                }
-                if (fieldDef == null) {
-                    // maybe it's a metadata
-                    fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                            .getDefinition(0, propertyName);
-                }
+                JahiaFieldDefinition fieldDef = QueryModelTools
+                        .getFieldDefinitionForPropertyName(propertyName,
+                                queryContext, context);
                 String name = propertyName.toLowerCase();
                 if (fieldDef != null && fieldDef.getCtnType() != null) {
                     name = fieldDef.getCtnType().replaceAll("[ :]", "_").toLowerCase();
@@ -632,29 +596,14 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
             sorter.setAscOrdering(ordering.getOrder()== JahiaQueryObjectModelConstants.ORDER_ASCENDING);
             return sorter;
         }
-        JahiaFieldDefinition fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                .getDefinition(context.getSiteID(),propertyName);
-
-        if ( fieldDef == null ){
-            for (Iterator<String> iterator = queryContext.getContainerDefinitionNames().iterator(); iterator.hasNext() && fieldDef == null;) {
-                String s = (String) iterator.next();
-                fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                        .getDefinition(context.getSiteID(),s+"_"+propertyName);
-            }
-        }
-        if ( fieldDef == null ){
-            // maybe it's a metadata
-            fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
-                    .getDefinition(0,propertyName);
-        }
-        if ( fieldDef == null ){
+        JahiaFieldDefinition fieldDef = QueryModelTools
+                .getFieldDefinitionForPropertyName(propertyName, queryContext,
+                        context);
+        if (fieldDef == null) {
             return null;
         }
-        int fieldType = -1;
-        if ( context.getContentPage()!=null ){
-            fieldType = fieldDef.getType();
-        }
-        boolean numberSort =  numberType(fieldType) || operand.getNumberValue();
+        int fieldType = context.getContentPage()!=null ? fieldDef.getType() : -1;
+        boolean numberSort =  operand.getNumberValue() || numberType(fieldType);
         String numberFormat = operand.getNumberFormat();
         if (numberFormat == null){
             numberFormat = numberFormat(fieldType);

@@ -53,12 +53,12 @@
                 </c:if>
                 <c:if test="${fileDisplayDetails}">
                    <span class="docsize"><fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.size/1024)}"/>
-                    (${num} Ko)</span>
+                    (${num} Ko) &nbsp; <template:metadata contentBean="${fileContainer}" metadataName="created" asDate="true" valueID="creationDate"/><fmt:formatDate pattern="dd/MM/yyyy" value="${creationDate}"/></span>
                 </c:if>
 
                 <c:if test="${fileDisplayDetails}">
-                    <span class="resume"><template:field name="fileDesc"/></span>
-                    <template:metadata contentBean="${fileContainer}" metadataName="created" asDate="true" valueID="creationDate"/><fmt:formatDate pattern="dd/MM/yyyy" value="${creationDate}"/></p>
+                    <span class="resume"><template:field name="fileDesc"/>
+                    </span>
                 </c:if>
             </li>
         </template:container>

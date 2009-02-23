@@ -53,7 +53,8 @@ html, body,
 }
 
 #bodywrapper ul, #bodywrapper ol, #bodywrapper dd {
-    padding-left: 2em;
+    margin: 1em 0 1em 0em;
+    padding: 1em 1em 1em 0em;
 }
 
 #bodywrapper li ul, #bodywrapper li ol {
@@ -198,11 +199,6 @@ body {
     color: #900;
     text-decoration: underline;
     background: none;
-}
-
-#bodywrapper ul {
-    margin: 1em 0 1em 2em;
-    padding: 0;
 }
 
 #bodywrapper li {
@@ -2340,7 +2336,7 @@ body {
 /******************************************************************************
 *  links List
 ******************************************************************************/
-#bodywrapper ul.links {
+#bodywrapper .links ul {
     margin: 0;
     padding: 0;
 }
@@ -2358,15 +2354,17 @@ body {
 }
 
 #bodywrapper .links .link {
-    background: url( ../img/link.png ) no-repeat 0.5em 0.6em;
+    background: url( ../img/link.png ) no-repeat 0.5em 0.7em;
     padding: 0.5em;
     padding-left: 30px;
+    display:block;
 }
 
 #bodywrapper .links .externallink {
-    background: url( ../img/externallink.png ) no-repeat 0.5em 0.5em;
+    background: url( ../img/externallink.png ) no-repeat 0.5em 0.7em;
     padding: 0.5em;
     padding-left: 30px;
+    display:block;
 }
 
 #bodywrapper .links .lastlink {
@@ -2429,7 +2427,22 @@ body {
     font-size: 0.9em;
     font-weight: normal
 }
-
+#bodywrapper li.document .docsize {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1em;
+    font-size: 0.9em;
+    font-weight: normal
+}
+#bodywrapper li.document .date {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1em;
+    font-size: 0.9em;
+    font-weight: normal
+}
 #bodywrapper li.document a,
     #bodywrapper li.document a:link,
     #bodywrapper li.document a:visited {

@@ -95,6 +95,7 @@ overflow:hidden
     border: 1px dashed #FF0000 !important;
 }
 #bodywrapper .containerListWrap {
+    overflow:hidden;
     border: 1px solid #b7cbd8 !important;
 }
 #bodywrapper .containerListWrap .action-menu-icons {
@@ -121,6 +122,12 @@ display:block;
 width:638px;
 height:560px;
 background: url( ../img/mockup/bk_article.gif) top left no-repeat;
+}
+.mockup-mainContent  {
+display:block;
+width:633px;
+height:280px;
+background: url( ../img/mockup/bk_mainContent.gif) top left no-repeat;
 }
 .mockup-enventlist {
 display:block;
@@ -160,9 +167,10 @@ background: url( ../img/mockup/bk_publication.gif) top left no-repeat;
 }
 .mockup-boxes {
 display:block;
-width:280px;
-height:412px;
-background: url( ../img/mockup/bk_boxfiles.gif) top left no-repeat;
+width:641px;
+height:542px;
+overflow:hidden;
+background: url( ../img/mockup/bk_boxes.gif) top left no-repeat;
 }
 .mockup-boxfiles {
 display:block;
@@ -175,6 +183,13 @@ display:block;
 width:280px;
 height:277px;
 background: url( ../img/mockup/bk_boxfiles.gif) top left no-repeat;
+}
+.mockup-boxtextLarge {
+display:block;
+width:635px;
+height:277px;
+overflow:hidden;
+background: url( ../img/mockup/bk_textbox_large.gif) top left no-repeat;
 }
 .mockup-menu {
 display:block;

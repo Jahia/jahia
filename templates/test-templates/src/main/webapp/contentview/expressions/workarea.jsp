@@ -43,8 +43,8 @@
 </div>
 <div>
 <fmt:message key="username"/>: ${currentUser.username}<br/>
-<fmt:message key="label.siteKey"/>: ${currentSite.siteKey}<br/>
-<fmt:message key="label.homepage.title"/>: ${currentSite.homePage.title}<br/>
+<fmt:message key="label.siteKey"/>: ${fn:escapeXml(currentSite.siteKey)}<br/>
+<fmt:message key="label.homepage.title"/>: ${fn:escapeXml(currentSite.homePage.title)}<br/>
 <fmt:message key="label.homepage.id"/>: ${currentSite.homePage.pageID}<br/>
 <fmt:message key="label.currentPage.id"/>: ${currentPage.pageID}<br/>
 <fmt:message key="label.currentPage.languageStates"/>: ${currentPage.languageStates}<br/>
@@ -54,10 +54,10 @@
 
 <c:set var="firstContainer" value="${currentPage.containerLists.maincontent.containers['0']}"/>
 <fmt:message key="label.firstContainer.id"/>:${firstContainer.ID}<br/>
-<fmt:message key="label.firstContainer.title"/>: ${firstContainer.fields['maincontent_mainContentTitle'].value}<br/> 
+<fmt:message key="label.firstContainer.title"/>: ${fn:escapeXml(firstContainer.fields['maincontent_mainContentTitle'].value)}<br/> 
 
 <fmt:message key="label.container.name"/>: ${currentPage.containerLists.maincontent.name}<br/>
 <c:forEach var="maincontentContainer" items="${currentPage.containerLists.maincontent}" varStatus="iterationStatus">
-� <fmt:message key="label.container"><fmt:param value="${iterationStatus.count}"/></fmt:message> <fmt:message key="label.title"/>: ${maincontentContainer.fields.maincontent_mainContentTitle.value}<br/>
+ <fmt:message key="label.container"><fmt:param value="${iterationStatus.count}"/></fmt:message> <fmt:message key="label.title"/>: ${fn:escapeXml(maincontentContainer.fields.maincontent_mainContentTitle.value)}<br/>
 </c:forEach>  
 </div>

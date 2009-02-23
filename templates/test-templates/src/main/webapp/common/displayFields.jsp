@@ -37,7 +37,7 @@
 <c:set var="processedContainer" value='<%=pageContext.findAttribute(request.getParameter("containerId"))%>'/>
 <c:forEach items="${processedContainer.fields}" var="processedEntry">
   <c:set var="processedField" value="${processedEntry.value}"/>
-  <div class="fieldTitle"><c:out value="${processedField.title}"/>:</div>
+  <div class="fieldTitle">${processedField.title}:</div>
   <div class="fieldValue">
     <c:choose>
       <c:when test="${processedField.fieldType == fieldTypeConstants.BIGTEXT}">

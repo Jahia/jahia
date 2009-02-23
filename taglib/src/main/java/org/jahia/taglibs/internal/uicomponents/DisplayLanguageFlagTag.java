@@ -227,8 +227,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             String flagName = _code;
             String flagOnPath;
             if ("".equals(_resourceOn)) {
-                flagOnPath = JahiaResourceBundle.getUrlPathCommonResource(
-                    flagName + "FlagOn", jData.getProcessingContext());
+                flagOnPath = request.getContextPath() + "/jsp/jahia/css/images/flags/" + flagName + "_on.png";
             } else {
                 flagOnPath = _resourceOn;
             }
@@ -240,9 +239,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
                 // Should an anchor be written.
                 if (!"".equals(_href)) {
                     if ("".equals(_resourceOff)) {
-                        flagOffPath = JahiaResourceBundle.
-                                      getUrlPathCommonResource(
-                                          flagName + "FlagOff", jData.getProcessingContext());
+                        flagOffPath = request.getContextPath() + "/jsp/jahia/css/images/flags/" + flagName + "_off.png";
                     } else {
                         flagOffPath = _resourceOff;
                     }
@@ -308,7 +305,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
     private String _alt = "";
 
     // Display debug information
-    /** @todo FIXME : change harcoded debug information */
+    /** todo FIXME : change harcoded debug information */
     private boolean debug = false;
     private static long imgID = 0;
 

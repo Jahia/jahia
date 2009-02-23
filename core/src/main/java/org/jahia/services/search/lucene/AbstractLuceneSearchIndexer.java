@@ -34,6 +34,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexDeletionPolicy;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.LogMergePolicy;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.store.Directory;
@@ -99,14 +100,15 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
     private long optimizationInterval;
 
     private long luceneWriteLockTimeOut = IndexWriter.WRITE_LOCK_TIMEOUT;
-    private int luceneMergeFactor = IndexWriter.DEFAULT_MERGE_FACTOR;
+    private int luceneMergeFactor = LogMergePolicy.DEFAULT_MERGE_FACTOR;
     private int luceneMinMergeDocs = 10;
-    private int luceneMaxMergeDocs = IndexWriter.DEFAULT_MAX_MERGE_DOCS;
+    private int luceneMaxMergeDocs = LogMergePolicy.DEFAULT_MAX_MERGE_DOCS;
     private int luceneMaxBufferedDocs = IndexWriter.DEFAULT_MAX_BUFFERED_DOCS;
     private int luceneMaxFieldLength = IndexWriter.DEFAULT_MAX_FIELD_LENGTH;
     private boolean luceneUseCompoundFile = true;
     private IndexDeletionPolicy indexDelitionPolicy = null;
     private boolean luceneIndexerAutoCommit = true;        
+    private Indexer indexer;
 
     public AbstractLuceneSearchIndexer(){
     }
@@ -272,13 +274,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
         synchronized(synchronizedlock){
             long indexingStartTime = System.currentTimeMillis();
             int indexOrderCount = docs.size ();
-            int maxBufferedDoc = 50;
-            try {
-                maxBufferedDoc = Integer.parseInt(getConfig()
-                        .getProperty(JahiaSearchConstant.LUCENE_MAX_BUFFERED_DOCS));
-            } catch ( Exception t ){
-            }
-            Indexer indexer = new Indexer(maxBufferedDoc);
             for (ListIterator<IndexableDocument> it = docs.listIterator(); it.hasNext();) {
                 IndexableDocument doc = it.next();
                 it.remove();
@@ -341,12 +336,15 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                     .getProperty(JahiaSearchConstant.LUCENE_MAX_BUFFERED_DOCS));
         } catch ( Exception t ){
         }
-        Indexer indexer = new Indexer(maxBufferedDoc);
-        long lastOptimizationTime = System.currentTimeMillis();
+        indexer = new Indexer(maxBufferedDoc);
+        if (this.localIndexing){
+             synchronized(synchronizedlock){
+                indexer.optimizeIndex();
+             }
+        }
 
         while (!Thread.currentThread().isInterrupted() && indexingThreadActivated) {
             List<IndexableDocument> validDocs = null;
-            long now = System.currentTimeMillis();
             IndexableDocument doc = null;
 
             int size = 0;
@@ -354,42 +352,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
             synchronized(synchronizedlock){
 
                 synchronized (this) {
-                    /*
-                    for ( int i=0; i<indexOrders.size(); i++ ){
-                        doc = (IndexableDocument)indexOrders.get(i);
-                        if ( doc instanceof RemovableDocument ) {
-                            remDoc = (RemovableDocument)doc;
-                            for ( int j=0; j<v.size() ; j++ ){
-                                doc2 = (IndexableDocument)v.get(j);
-                                if ( doc2 != null && !(doc2 instanceof RemovableDocument) ){
-                                    addDoc = doc2;
-                                    if ( remDoc.getKeyFieldName().equals(addDoc.getKeyFieldName())
-                                            && remDoc.getKey().equals(addDoc.getKey()) ){
-                                        // we are going to remove the same object, so we don't need to add it at all.
-                                        // @todo: we should provide more efficient object equality check
-                                        // i.e, on containerId, not only on comp_id
-                                        v.setElementAt(null,j);
-                                    }
-                                }
-                            }
-                            // process remove first
-                            v.insertElementAt(doc,0);
-                        } else {
-                            // process add at last
-                            v.add(doc);
-                        }
-                    }*/
-                    /*
-                    validDocs = new ArrayList();
-                    int size = v.size();
-                    for ( int i=0; i<size ; i++ ){
-                        doc = (IndexableDocument)indexOrders.get(i);
-                        if ( doc != null){
-                            validDocs.add(doc);
-                        }
-                    }
-                    v = null;
-                    */
                     validDocs = new ArrayList<IndexableDocument>();
                     validDocs.addAll(indexOrders);
                     indexOrders = new ArrayList<IndexableDocument>();
@@ -420,7 +382,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                         t);
                 }
 
-                if (indexOrderCount > 0) {
+                if ( (this.localIndexing && indexer.optimizeIndex(this.optimizationInterval)) || indexOrderCount > 0) {
                     SearchHandler searchHandler = getSearchHandler();
                     searchHandler.notifyIndexUpdate();
                     if (logger.isInfoEnabled()) {
@@ -431,14 +393,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                     }
                 }
 
-                if ( ( now - lastOptimizationTime) > this.optimizationInterval ) {
-                    lastOptimizationTime = now;
-                }
-
-                // FIXME : oops, As we are in a separate thread, this would may have sence
-                // to terminate Connection ?
-                //org.jahia.services.database.ConnectionDispenser.
-                //        terminateConnection ();
                 synchronized (this) {
                     size = indexOrders.size();
                 }
@@ -464,29 +418,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
             return;
         }
         this.indexOrders.add(indObj);
-        /*
-       IndexableDocument doc = null;
-       int size = this.indexOrders.size();
-       List result = new ArrayList();
-       for ( int i=0; i<size; i++ ){
-           doc = (IndexableDocument)this.indexOrders.get(i);
-           if ( !(indObj instanceof RemovableDocument)
-                   && !(doc instanceof RemovableDocument)
-               && indObj.getKeyFieldName().equals(doc.getKeyFieldName())
-               && indObj.getKey().equals(doc.getKey()) ){
-              // same doc, ignore old doc
-          } else if ( (indObj instanceof RemovableDocument)
-                   && (doc instanceof RemovableDocument)
-              && indObj.getKeyFieldName().equals(doc.getKeyFieldName())
-              && indObj.getKey().equals(doc.getKey()) ){
-              // same doc, ignore old doc
-           } else {
-               result.add(doc);
-           }
-       }
-       result.add(indObj);
-       this.indexOrders = result;
-       */
     }
 
     //--------------------------------------------------------------------------
@@ -899,6 +830,9 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
         private int maxDocs = 50;
         private List<IndexableDocument> docs = new ArrayList<IndexableDocument>();
         private int lastOperation = 0;
+        private long lastOptimizationTime;
+        private long lastUpdateTime;
+        
         public Indexer(int maxDocs) {
             this.maxDocs = maxDocs;
             this.docs = new ArrayList<IndexableDocument>();
@@ -948,39 +882,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                 if (logger.isInfoEnabled()) {
                     //logger.info("Last Operation: ADD");
                 }
-                //long startTime2 = System.currentTimeMillis();
-
-                /*
-                RAMDirectory ramDir = new RAMDirectory();
-                IndexWriter ramWriter = new IndexWriter(ramDir, analyzer, true);
-                //ramWriter.mergeFactor = 50;
-                ramWriter.setMergeFactor(luceneMergeFactor);
-                //ramWriter.minMergeDocs = 1000;
-                ramWriter.setMaxBufferedDocs(luceneMaxBufferedDocs);
-                ramWriter.setUseCompoundFile(false);
-                luceneDoc = null;
-                size = luceneDocs.size();
-                for (int i = 0; i < size; i++) {
-                    luceneDoc = (Document) luceneDocs.get(i);
-                    if (luceneDoc != null) {
-                        ramWriter.addDocument(luceneDoc);
-                    }
-                }
-
-                if (logger.isInfoEnabled()) {
-                    //logger.info(
-                    //    "Finished adding docs to ramWriter in "
-                    //            + String.valueOf(System.currentTimeMillis() - startTime2) + "ms.");
-                }
-
-                //startTime2 = System.currentTimeMillis();
-
-                luceneDocs = null;
-                docs = null;
-
-                ramWriter.close();
-                */
-
 
                 IndexWriter fsWriter = null;
                 try {
@@ -1012,17 +913,6 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                                 }
                             }
                         }
-
-                        // use user's preference
-                        /*
-                        if ( fsWriter.getMergeFactor() < 30 ){
-                            fsWriter.setMergeFactor(30);
-                        }
-                        if ( fsWriter.getMaxBufferedDocs() < 1000 ){
-                            fsWriter.setMaxBufferedDocs(1000);
-                        }*/
-                        // Is there any reason ? Thread.yield();
-                        //fsWriter.addIndexes(new Directory[]{ramDir});
                     }
                 } catch (Exception t) {
                     logger.debug("Error adding doc from index", t);
@@ -1038,7 +928,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                     //    "Finished adding docs to fsWriter in "
                     //            + String.valueOf(System.currentTimeMillis() - startTime2) + "ms.");
                 }
-
+                this.lastUpdateTime = System.currentTimeMillis();
             } else if (this.getLastOperation() == REMOVE) {
                 if (logger.isInfoEnabled()) {
                     //logger.info("Last Operation: REMOVE");
@@ -1058,16 +948,10 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                     //    "Finished removing docs in "
                     //            + String.valueOf(System.currentTimeMillis() - startTime2) + "ms.");
                 }
-
+                this.lastUpdateTime = System.currentTimeMillis();
             }
             this.docs = new ArrayList<IndexableDocument>();
             this.setLastOperation(UNDEFINED);
-            /*
-            long indexingElapsedTime = System.currentTimeMillis() - startTime;
-            if (logger.isInfoEnabled()) {
-                logger.info(
-                    "Finished processing " + nbDocs + " docs in " + indexingElapsedTime + "ms.");
-            }*/
         }
 
         public int getMaxDocs() {
@@ -1097,5 +981,57 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
         public void setLastOperation(int lastOperation) {
             this.lastOperation = lastOperation;
         }
+        
+        public boolean optimizeIndex(long optimizationInterval){
+            boolean opDone = false;
+           IndexWriter fsWriter = null;
+           long now = System.currentTimeMillis();
+           if ( (now-this.lastOptimizationTime < optimizationInterval) ||
+                   this.lastUpdateTime < this.lastOptimizationTime ){
+               return false;
+           }
+
+           try {
+               fsWriter = getIndexWriter(defaultAnalyzer, false);
+               if (fsWriter==null){
+                   return false;
+               }
+               opDone = true;
+               fsWriter.setUseCompoundFile(true);
+               fsWriter.optimize();
+           } catch (Throwable t) {
+               logger.debug("Error on optimizing the index", t);
+           } finally {
+               closeIndexWriter(fsWriter);
+               if (opDone){
+                   this.lastOptimizationTime = System.currentTimeMillis();
+               }
+               fsWriter = null;
+           }
+           return opDone;
+       }
+
+       public void optimizeIndex(){
+           IndexWriter fsWriter = null;
+           try {
+               fsWriter = getIndexWriter(defaultAnalyzer, false);
+               if (fsWriter==null){
+                   return;
+               }
+              try {
+                  fsWriter.setUseCompoundFile(true);
+                  fsWriter.optimize();
+              } catch ( Throwable t ){
+                  logger.debug(t);
+              }
+           } catch (Throwable t) {
+               logger.debug("Error on optimizing the index", t);
+           } finally {
+               closeIndexWriter(fsWriter);
+               this.lastOptimizationTime = System.currentTimeMillis();
+               fsWriter = null;
+           }
+       }
+        
     }
 }

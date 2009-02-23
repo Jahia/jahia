@@ -154,16 +154,15 @@
     <tr>
     </c:if>
         <td>
+            <c:if test="${fn:contains(item.icon, '/') || fn:contains(item.icon, '.')}" var="externalIcon">
+                <c:set var="iconUrl" value="${item.icon}"/>
+                <c:set var="iconUrlDisabled" value="${item.icon}"/>
+            </c:if>
+            <c:if test="${!externalIcon}">
+                <c:set var="iconUrl"><%=URL%>images/icons/admin/adromeda/${item.icon}.png</c:set>
+                <c:set var="iconUrlDisabled"><%=URL%>images/icons/admin/adromeda/${item.icon}_grey.png</c:set>
+            </c:if>
             <c:if test="${item.enabled}">
-                <c:if test="${fn:contains(item.icon, '/') || fn:contains(item.icon, '.')}" var="externalIcon">
-                    <c:set var="iconUrl" value="${item.icon}"/>
-                    <c:set var="iconUrlDisabled" value="${item.icon}"/>
-                </c:if>
-                <c:if test="${!externalIcon}">
-                    <c:set var="iconUrl"><%=URL%>images/icons/admin/adromeda/${item.icon}.png</c:set>
-                    <c:set var="iconUrlDisabled"><%=URL%>images/icons/admin/adromeda/${item.icon}_grey.png</c:set>
-                </c:if>
-                
                     <span class="dex-PushButton-big">
                         <span class="first-child">
                             <a href="${item.link}"><img

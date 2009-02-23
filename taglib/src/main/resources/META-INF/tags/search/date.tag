@@ -39,18 +39,18 @@
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
         %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
-<c:set var="display" value="${h:default(display, true)}"/>
 <%@ attribute name="value" required="false" type="java.lang.String"
               description="Initial date value. Supported values are: anytime, today, last_week, last_month, last_three_months, last_six_months, range. In case of range value, the from and to attributes can be provided." %>
 <%@ attribute name="from" required="false" type="java.lang.String"
               description="Initial value for date from in case of the range date type." %>
 <%@ attribute name="to" required="false" type="java.lang.String"
               description="Initial value for date to in case of the range date type." %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<c:set var="display" value="${h:default(display, true)}"/>
 <c:set var="valueParamName" value="${attributes.name}.type"/>
 <c:set var="value" value="${h:default(param[valueParamName], value)}"/>
 <c:if test="${empty requestScope['org.apache.jsp.tag.web.search.dateTag.included']}">

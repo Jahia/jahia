@@ -38,11 +38,6 @@
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
         %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<c:set var="display" value="${h:default(display, true)}"/>
 <%@ attribute name="value" required="false" type="java.lang.String" description="The initial value." %>
 <%@ attribute name="match" required="false" type="java.lang.String" description="The match type for search terms. [as_is]" %>
 <%@ attribute name="searchIn" required="false" type="java.lang.String"
@@ -52,6 +47,11 @@
 <%@ attribute name="searchInSelectionOptions" required="false" type="java.lang.String"
               description="Comma separated list of fields to search in that are available for user selection.
               This option has effrect only in case the searchInAllowSelection attribute is set to true. [content,metadata]" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<c:set var="display" value="${h:default(display, true)}"/>
 <c:set var="formId" value="<%=this.getParent().toString() %>"/>
 <c:set var="termIndex" value="${searchTermIndexes[formId]}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>

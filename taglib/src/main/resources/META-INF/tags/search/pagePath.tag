@@ -41,15 +41,15 @@
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
         %>
+<%@ attribute name="value" required="false" type="java.lang.String" description="Initial value for the page path." %>
+<%@ attribute name="includeChildren" required="false" type="java.lang.Boolean"
+              description="Initial value for the include children field." %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <c:set var="display" value="${h:default(display, true)}"/>
-<%@ attribute name="value" required="false" type="java.lang.String" description="Initial value for the page path." %>
-<%@ attribute name="includeChildren" required="false" type="java.lang.Boolean"
-              description="Initial value for the include children field." %>
 <c:set target="${attributes}" property="type" value="hidden"/>
 <c:set target="${attributes}" property="name" value="src_pagePath.value"/>
 <c:set target="${attributes}" property="id" value="src_pagePath.value"/>

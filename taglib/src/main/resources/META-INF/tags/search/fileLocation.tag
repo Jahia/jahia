@@ -47,7 +47,6 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 
 <c:set var="display" value="${h:default(display, true)}"/>
-<c:set var="display" value="${h:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="${display ? 'text' : 'hidden'}"/>
 <c:set target="${attributes}" property="name" value="src_fileLocation.value"/>
 <c:set target="${attributes}" property="id" value="src_fileLocation.value"/>

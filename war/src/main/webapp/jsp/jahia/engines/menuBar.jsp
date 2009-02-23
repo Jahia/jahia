@@ -65,7 +65,7 @@
       <li class="dex-TabBarItem">
         <div class="display">
           <div>
-            <span class="tab-icon ico-data"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.container.label"/></span>
+            <span class="tab-icon ico-data"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.data.label"/></span>
           </div>
         </div>
       </li>
@@ -79,10 +79,10 @@
           <div>
             <span class="tab-icon ico-data">
               <% if (showEditMenu) { %>
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.container.label"/>
+              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.data.label"/>
               <% } else { %>
               <a href="javascript:handleActionChange('edit')">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.container.label"/>
+                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.data.label"/>
               </a>
               <% } %>
             </span>

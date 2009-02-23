@@ -528,9 +528,7 @@ else { %>
         <div class="head headtop">
             <div class="object-title">
                 1.&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
-
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
+                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                         resourceName="org.jahia.admin.virtualSitesManagement.label.default"/>
             </div>
         </div>
@@ -547,7 +545,7 @@ else { %>
                 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                     <tr>
                         <td><input type="radio" id="siteImportPrepackaged" name="siteImportPrepackaged" checked="checked" value="siteImportPrepackaged" onclick="setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], 'siteImportPrepackaged'); setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
+                            <label for="siteImportPrepackaged"><utility:resourceBundle resourceBundle="JahiaInternalResources"
                                     resourceName="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/></label>&nbsp;
                         </td>
                         <td>

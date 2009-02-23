@@ -34,16 +34,8 @@
 --%>
 
 <%@ tag import="org.jahia.params.ProcessingContext" %>
-<%@ tag import="org.jahia.ajax.gwt.subengines.categoriespicker.client.CategoriesPickerEntryPoint" %>
 <%@ tag import="java.util.Iterator" %>
 <%@ tag import="org.jahia.services.categories.Category" %>
-<%@ tag import="org.jahia.engines.shared.Category_Field" %>
-<%@ tag import="java.util.HashMap" %>
-<%@ tag import="java.util.List" %>
-<%@ tag import="org.jahia.data.JahiaData" %>
-<%@ tag import="org.jahia.engines.EngineLanguageHelper" %>
-<%@ tag import="org.jahia.engines.JahiaEngine" %>
-<%@ tag import="org.jahia.data.fields.JahiaField" %>
 <%@ tag import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ tag import="org.jahia.ajax.gwt.module.categorypicker.client.CategoryPickerEntryPoint" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>

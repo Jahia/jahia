@@ -49,11 +49,11 @@
 - peopleBiography,
 - peoplePicture
 
-[web_templates:pressreleaseContainer]
-- pressReleaseTitle,
-- pressReleaseDate,
-- pressReleaseIntro,
-- pressReleaseBody
+[web_templates:pressContainer]
+- title,
+- date,
+- body,
+- pdfVersion
 
 [web_templates:publicationContainer]
 - title,

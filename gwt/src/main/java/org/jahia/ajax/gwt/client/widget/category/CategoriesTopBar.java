@@ -115,6 +115,7 @@ public class CategoriesTopBar extends TopBar {
         cut.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 CategoriesManagerActions.cut(getLinker());
+                paste.setEnabled(true);
             }
         });
         m_component.add(cut);
@@ -148,7 +149,6 @@ public class CategoriesTopBar extends TopBar {
         m_component.add(importCategories);
 
         topTableMultipleSelectionButtons.add(cut);
-        topTableMultipleSelectionButtons.add(paste);
         topTableMultipleSelectionButtons.add(remove);
 
         topTableSingleSelectionButtons.add(newCategory);

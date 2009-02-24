@@ -55,6 +55,7 @@
 <%@ page import="org.jahia.services.lock.LockPrerequisites" %>
 <%@ page import="org.jahia.services.pages.*" %>
 <%@ page import="org.jahia.services.sites.SiteLanguageSettings" %>
+<%@ page import="org.jahia.taglibs.utility.Utils" %>
 <%@ page import="org.jahia.utils.LanguageCodeConverters" %>
 <%@ page import="javax.servlet.jsp.JspWriter" %>
 <%@ page import="javax.servlet.jsp.PageContext" %>
@@ -121,12 +122,12 @@
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
-    pageContext.setAttribute("jahia", new JahiaBean(jParams));
     final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
     EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
     if (elh != null) {
         jParams.setCurrentLocale(elh.getCurrentLocale());
     }
+    Utils.getJahiaBean(pageContext, true);
     final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
     final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + ".theField");
     final Boolean templateNotFound = (Boolean) engineMap.get("templateNotFound");
@@ -137,8 +138,6 @@
     }
     final JahiaPageEngineTempBean pageBean =
             (JahiaPageEngineTempBean) pageBeans.get(theField.getDefinition().getName());
-
-    logger.debug("pageBean: " + pageBean);
 
     final JahiaPageBaseService jahiaPageBaseService = JahiaPageBaseService.getInstance();
     final Locale processingLocale = (Locale) engineMap.get(JahiaEngine.PROCESSING_LOCALE);

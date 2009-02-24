@@ -220,23 +220,29 @@ final boolean fieldAlone = theField != null && (theField.getType() == FieldTypes
             <%}%>
           <% } %>
         <% } %>
-      <%} catch (JahiaException je) { logger.error("Exception in displaying field", je); } %>
-      <script type="text/javascript">
-        var fields = document.mainForm.elements;
-        for (var i = 0; i < fields.length; i++) {
-          if (fields[i].name != "goToId" && ! fields[i].disabled && fields[i].type == "text") {
-              //alert(fields[i].name);
-              fields[i].focus();
-              break;
-          }
-          //for (var i = 0; i <<!--%=fieldIDs.size()%-->; i++) {
-          //var inputElem = document.getElementById("field_-" + (i + 1));
-          //if (inputElem && ! inputElem.disabled) {
-          //inputElem.focus();
-          //break;
-          //}
-        }
-      </script>
+        <%
+            } catch (JahiaException je) {
+                logger.error("Exception in displaying field", je);
+            }
+        %>
+        <% if (!engineMap.containsKey("focus")) { %>
+        <script type="text/javascript">
+            var fields = document.mainForm.elements;
+            for (var i = 0; i < fields.length; i++) {
+                if (fields[i].name != "goToId" && ! fields[i].disabled && fields[i].type == "text") {
+                    //alert(fields[i].name);
+                    fields[i].focus();
+                    break;
+                }
+                //for (var i = 0; i <<!--%=fieldIDs.size()%-->; i++) {
+                //var inputElem = document.getElementById("field_-" + (i + 1));
+                //if (inputElem && ! inputElem.disabled) {
+                //inputElem.focus();
+                //break;
+                //}
+            }
+        </script>
+        <% } %>
     </div>
   </div>
 </div>

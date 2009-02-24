@@ -1,0 +1,1252 @@
+/**
+ *
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+/* toolbar */
+.gwt-draggable {
+    cursor: hand;
+}
+
+.gwt-toolbar-Panel {
+    z-index: 999;
+}
+
+.gwt-toolbar-activate {
+    background: url( ../images/min/scroll_information.png ) no-repeat!important;
+}
+
+.gwt-toolbar-Panel {
+
+}
+
+.gwt-toolbar-Panel-top {
+
+}
+
+.gwt-toolbar-Panel-horizontal {
+    height: 100%;
+    border-width: 1px;
+    border-color: gray;
+    border-right: solid;
+}
+
+.gwt-toolbar-Panel-box {
+    border: 1px solid gray;
+
+}
+
+.gwt-toolbar-Panel-vertical {
+    width: 100%;
+    border-bottom: solid;
+    border-width: 1px;
+    border-color: gray;
+}
+
+.gwt-toolbar-Panel-bottom {
+    background-color: whitesmoke;
+}
+
+.gwt-toolbar-Panel-left {
+    background-color: whitesmoke;
+}
+
+.gwt-toolbar-Panel-right {
+    background-color: whitesmoke;
+}
+
+.gwt-toolbar-ItemsGroup-separtor {
+    display: inline;
+    margin: 0;
+    padding: 1px 4px 1px 15px;
+}
+
+.gwt-toolbar-ItemsGroup-icons {
+    z-index: 999;
+    border: 0 0 0 0;
+}
+
+.gwt-toolbar-ItemsGroup-icons .gwt-Button {
+    border: none;
+}
+
+.gwt-toolbar-ItemsGroup-icons-label-min {
+    white-space: nowrap;
+    font-weight: bolder;
+    font-size: 10px
+}
+
+.gwt-toolbar-ItemsGroup-icons-panel-normal {
+    border-spacing: 3px;
+}
+
+.gwt-toolbar-ItemsGroup-icons-label-normal {
+    font-weight: bolder;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.gwt-toolbar-title {
+    font-weight:bold;
+}
+
+.gwt-toolbar-ItemsGroup-icons-min {
+    padding: 1px 4px 1px 17px;
+}
+
+.gwt-toolbar-ItemsGroup-icons-notification-stop {
+    background: url( ../images/min/scroll_stop.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-notification-warning {
+    background: url( ../images/min/scroll_warning.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-notification-error {
+    background: url( ../images/min/scroll_error.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-notification-information {
+    background: url( ../images/min/scroll_information.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-notification-ok {
+    background: url( ../images/min/scroll_ok.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-notification-refresh {
+    background: url( ../images/min/scroll_refresh.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-live-min {
+    background: url( ../images/min/live.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-publishpage-min {
+    background: url( ../images/min/gear_run.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-flushall-min {
+    background: url( ../images/min/garbage_empty.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmarkadd-min {
+    background: url( ../images/min/bookmark_add.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmarkdelete-min {
+    background: url( ../images/min/bookmark_delete.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmark-min {
+    background: url( ../images/min/bookmark.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmarks-min {
+    background: url( ../images/min/bookmarks.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-sites-min {
+    background: url( ../images/min/environment.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-page-min {
+    background: url( ../images/min/text.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-preview-min {
+    background: url( ../images/min/preview.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-compare-min {
+    background: url( ../images/min/compare.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-edit-min {
+    background: url( ../images/min/edit.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-mysettings-min {
+    background: url( ../images/min/mysettings.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-pageproperties-min {
+    background: url( ../images/min/pageproperties.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-admin-min {
+    background: url( ../images/min/admin.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-filemanager-min {
+    background: url( ../images/min/filemanager.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-mashupmanager-min {
+    background: url( ../images/min/application_server.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-logout-min {
+    background: url( ../images/min/logout.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-workflow-min {
+    background: url( ../images/min/workflow.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-acldiff-min {
+    background: url( ../images/min/businessmen.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-timebasepublishing-min {
+    background: url( ../images/min/window_time.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-integrity-min {
+    background: url( ../images/min/integrity.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-monitor-min {
+    background: url( ../images/min/monitor.png ) no-repeat scroll 0 center !important;
+
+}
+
+.gwt-toolbar-ItemsGroup-icons-wait-min {
+    background: url( ../images/min/wait.gif ) no-repeat scroll 0 center !important;
+
+}
+
+.gwt-toolbar-ItemsGroup-icons-user-min {
+    background: url( ../images/min/user.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-pagestat-min {
+    background: url( ../images/min/line-chart.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-sitestat-min {
+    background: url( ../images/min/line-chart.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-workflow-warn {
+    background: url( ../images/icons/warning.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-workflow-err {
+    background: url( ../images/icons/error.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-min {
+    background: url( ../images/min/action.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-notify-min {
+    background: url( ../images/min/notify.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-publish-min {
+    background: url( ../images/min/publish.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-first_validate-min {
+    background: url( ../images/min/validate.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-second_validate-min {
+    background: url( ../images/min/validate.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-rollback_to_previous_step-min {
+    background: url( ../images/min/gear_stop.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-rollback_to_author-min {
+    background: url( ../images/min/gear_forbidden.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-action-unlock-min, .gwt-toolbar-ItemsGroup-icons-action-lock-min {
+    background: url( ../images/min/gear_pause.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-logout-normal {
+    background: url( ../images/normal/logout.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-live-normal {
+    background: url( ../images/normal/live.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-publishpage-normal {
+    background: url( ../images/normal/gear_run.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-flushall-normal {
+    background: url( ../images/normal/garbage_empty.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmarkadd-normal {
+    background: url( ../images/normal/bookmark_add.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-sites-normal {
+    background: url( ../images/normal/environment.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmarkdelete-normal {
+    background: url( ../images/normal/bookmark_delete.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmark-normal {
+    background: url( ../images/normal/bookmark.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-bookmarks-normal {
+    background: url( ../images/normal/bookmarks.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-page-normal {
+    background: url( ../images/normal/text.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-preview-normal {
+    background: url( ../images/normal/preview.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-compare-normal {
+    background: url( ../images/normal/compare.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-edit-normal {
+    background: url( ../images/normal/edit.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-mysettings-normal {
+    background: url( ../images/normal/mysettings.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-pageproperties-normal {
+    background: url( ../images/normal/pageproperties.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-admin-normal {
+    background: url( ../images/normal/admin.png ) no-repeat scroll 0 center !important;
+
+}
+
+.gwt-toolbar-ItemsGroup-icons-filemanager-normal {
+    background: url( ../images/normal/filemanager.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-mashupmanager-normal {
+    background: url( ../images/normal/application_server.png ) no-repeat scroll 0 center !important;
+}
+.gwt-toolbar-ItemsGroup-icons-logout-normal {
+    background: url( ../images/normal/logout.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-workflow-normal {
+    background: url( ../images/normal/workflow.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-monitor-normal {
+    background: url( ../images/normal/monitor.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-wait-normal {
+    background: url( ../images/normal/wait.gif ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-user-normal {
+    background: url( ../images/normal/chat.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-logout-normal {
+    background: url( ../images/normal/logout.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-acldiff-normal {
+    background: url( ../images/normal/businessmen.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-timebasepublishing-normal {
+    background: url( ../images/normal/window_time.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-integrity-normal {
+    background: url( ../images/normal/integrity.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-pagestat-normal {
+    background: url( ../images/normal/line-chart.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-sitestat-normal {
+    background: url( ../images/normal/line-chart.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-subscriptions-min {
+    background: url( ../images/min/subscriptions.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-icons-subscriptions-normal {
+    background: url( ../images/normal/subscriptions.png ) no-repeat scroll 0 center !important;
+}
+
+.gwt-toolbar-ItemsGroup-menu, .gwt-toolbar-ItemsGroup-submenu {
+    white-space: nowrap;
+    background-color: whitesmoke;
+    font-size: 11px;
+    border: 1px red;
+}
+
+.gwt-toolbar-ItemsGroup-menu .gwt-MenuItem, .gwt-toolbar-ItemsGroup-menu .gwt-MenuBar, .gwt-toolbar-ItemsGroup-submenu .gwt-MenuBar {
+    background-color: whitesmoke;
+    font-size: 11px;
+    border: none;
+}
+
+.gwt-MenuBar .gwt-toolbar-ItemsGroup-submenu {
+    border: 1px solid gray;
+}
+
+.gwt-MenuItem .gwt-MenuItem-selected {
+    font-weight: bold;
+}
+
+.gwt-toolbar-ItemsGroup-menuitem {
+    font-weight: bold;
+}
+
+/* layoutmanager */
+.gwt-jahiaportal-body {
+    background-color: transparent;
+
+}
+
+.gwt-jahiaportal-body .x-panel-body {
+    background-color: transparent;
+    color: black;
+}
+
+
+
+.gadget {
+    directory( line 1 ) float : left;
+    text-align: center;
+    width: 140px;
+}
+
+.gwt-jahiaportal-x-view-over {
+    background: none;
+}
+
+.gwt-toolbar-item-icons-saveDefault {
+    background: url( ../images/save_as.png ) no-repeat scroll 0 center !important;
+
+}
+
+.gwt-rss-odd {
+    background: whitesmoke;
+}
+
+.gwt-rss-even {
+    background: white;
+}
+
+.gwt-rss-previous {
+    padding-left: 2px;
+    width: 15px;
+    height: 15px;
+    float: left;
+    cursor: pointer;
+    background: transparent url( ../images/arrow_left_blue.png ) no-repeat;
+}
+
+.gwt-rss-next {
+    padding-right: 2px;
+    width: 15px;
+    height: 15px;
+    float: right;
+    cursor: pointer;
+    background: transparent url( ../images/arrow_right_blue.png ) no-repeat;
+}
+
+.gwt-portlet-listview {
+    width: 500px !important;
+    height:100% !important;
+}
+
+/* opensearch*/
+.gwt-opensearch-SearchEngineListItem-checked {
+    background: url( ../images/icons/tick.png ) no-repeat 0 0 !important;
+}
+
+.gwt-opensearch-SearchEngineListItem-unchecked {
+}
+
+/* subscription */
+.subscribe-button {
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+}
+.not-subscribed {
+    background: url(../images/subscribe.png) center left no-repeat;
+}
+.subscribed {
+    background: url(../images/unsubscribe.png) center left no-repeat;
+}
+.subscription-unavailable {
+    background: url(../images/subscription-unavailable.png) center left no-repeat;
+}
+.subscription-unknown {
+    display: none;
+}
+ /* syntac highlighter */
+.dp-highlighter
+{
+	font-family: Courier, "Courier New" , mono;
+	font-size: 12px;
+	border: 1px solid #EBE9ED;
+	background-color: #fff;
+	width: 99%;
+	overflow: auto;
+	margin: 18px 0px 18px 0px;
+	border-left: 8px solid #EBE9ED;
+}
+
+.dp-highlighter .bar
+{
+	padding-left: 45px;
+}
+
+.dp-highlighter.collapsed .bar, .dp-highlighter.nogutter .bar
+{
+	padding-left: 0px;
+}
+
+.dp-highlighter ol
+{
+	margin: 0px 0px 1px 45px; /* 1px bottom margin seems to fix occasional Firefox scrolling */
+	padding: 0px;
+	color: #787878;
+}
+
+.dp-highlighter.nogutter ol
+{
+	list-style-type: none;
+	margin-left: 0px;
+}
+
+.dp-highlighter ol li, .dp-highlighter .columns div
+{
+	border-left: 3px solid #7EADD9;
+	background-color: #fff;
+	padding-left: 10px;
+	line-height: 14px;
+}
+
+.dp-highlighter.nogutter ol li, .dp-highlighter.nogutter .columns div
+{
+	border: 0;
+}
+
+.dp-highlighter .columns
+{
+	color: gray;
+	overflow: hidden;
+	width: 100%;
+}
+
+.dp-highlighter .columns div
+{
+	padding-bottom: 5px;
+}
+
+.dp-highlighter ol li.alt
+{
+	background-color: #F7F6F7;
+}
+
+.dp-highlighter ol li span
+{
+	color: Black;
+}
+
+/* Adjust some properties when collapsed */
+
+.dp-highlighter.collapsed ol
+{
+	margin: 0px;
+}
+
+.dp-highlighter.collapsed ol li
+{
+	display: none;
+}
+
+/* Additional modifications when in print-view */
+
+.dp-highlighter.printing
+{
+	border: none;
+}
+
+.dp-highlighter.printing .tools
+{
+	display: none !important;
+}
+
+.dp-highlighter.printing li
+{
+	display: list-item !important;
+}
+
+/* Styles for the tools */
+
+.dp-highlighter .tools
+{
+	padding: 3px 8px 3px 10px;
+	border-bottom: 1px solid #2B91AF;
+	font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: silver;
+}
+
+.dp-highlighter.collapsed .tools
+{
+	border-bottom: 0;
+}
+
+.dp-highlighter .tools a
+{
+	font-size: 9px;
+	color: gray;
+	text-decoration: none;
+	margin-right: 10px;
+}
+
+.dp-highlighter .tools a:hover
+{
+	color: red;
+	text-decoration: underline;
+}
+
+/* About dialog styles */
+
+.dp-about { background-color: #fff; margin: 0px; padding: 0px; }
+.dp-about table { width: 100%; height: 100%; font-size: 11px; font-family: Tahoma, Verdana, Arial, sans-serif !important; }
+.dp-about td { padding: 10px; vertical-align: top; }
+.dp-about .copy { border-bottom: 1px solid #ACA899; height: 95%; }
+.dp-about .title { color: red; font-weight: bold; }
+.dp-about .para { margin: 0 0 4px 0; }
+.dp-about .footer { background-color: #ECEADB; border-top: 1px solid #fff; text-align: right; }
+.dp-about .close { font-size: 11px; font-family: Tahoma, Verdana, Arial, sans-serif !important; background-color: #ECEADB; width: 60px; height: 22px; }
+
+/* Language specific styles */
+
+.dp-c {}
+.dp-c .comment { color: green; }
+.dp-c .string { color: blue; }
+.dp-c .preprocessor { color: gray; }
+.dp-c .keyword { color: blue; }
+.dp-c .vars { color: #d00; }
+
+.dp-vb {}
+.dp-vb .comment { color: green; }
+.dp-vb .string { color: blue; }
+.dp-vb .preprocessor { color: gray; }
+.dp-vb .keyword { color: blue; }
+
+.dp-sql {}
+.dp-sql .comment { color: green; }
+.dp-sql .string { color: red; }
+.dp-sql .keyword { color: blue; }
+.dp-sql .func { color: #ff1493; }
+.dp-sql .op { color: #808080; }
+
+.dp-xml {}
+.dp-xml .cdata { color: #ff1493; }
+.dp-xml .comments { color: green; }
+.dp-xml .tag { font-weight: bold; color: blue; }
+.dp-xml .tag-name { color: black; font-weight: bold; }
+.dp-xml .attribute { color: red; }
+.dp-xml .attribute-value { color: blue; }
+
+.dp-delphi {}
+.dp-delphi .comment { color: #008200; font-style: italic; }
+.dp-delphi .string { color: blue; }
+.dp-delphi .number { color: blue; }
+.dp-delphi .directive { color: #008284; }
+.dp-delphi .keyword { font-weight: bold; color: navy; }
+.dp-delphi .vars { color: #000; }
+
+.dp-py {}
+.dp-py .comment { color: green; }
+.dp-py .string { color: red; }
+.dp-py .docstring { color: green; }
+.dp-py .keyword { color: blue; font-weight: bold;}
+.dp-py .builtins { color: #ff1493; }
+.dp-py .magicmethods { color: #808080; }
+.dp-py .exceptions { color: brown; }
+.dp-py .types { color: brown; font-style: italic; }
+.dp-py .commonlibs { color: #8A2BE2; font-style: italic; }
+
+.dp-rb {}
+.dp-rb .comment { color: #c00; }
+.dp-rb .string  { color: #f0c; }
+.dp-rb .symbol  { color: #02b902; }
+.dp-rb .keyword { color: #069; }
+.dp-rb .variable { color: #6cf; }
+
+.dp-css {}
+.dp-css .comment { color: green; }
+.dp-css .string { color: red; }
+.dp-css .keyword { color: blue; }
+.dp-css .colors { color: darkred; }
+.dp-css .vars { color: #d00; }
+
+.dp-j {}
+.dp-j .comment { color: rgb(63,127,95); }
+.dp-j .string { color: rgb(42,0,255); }
+.dp-j .keyword { color: rgb(127,0,85); font-weight: bold }
+.dp-j .annotation { color: #646464; }
+.dp-j .number { color: #C00000; }
+
+.dp-cpp {}
+.dp-cpp .comment { color: #e00; }
+.dp-cpp .string { color: red; }
+.dp-cpp .preprocessor { color: #CD00CD; font-weight: bold; }
+.dp-cpp .keyword { color: #5697D9; font-weight: bold; }
+.dp-cpp .datatypes { color: #2E8B57; font-weight: bold; }
+
+/* sitemap */
+.icon-page {
+    background: url(../images/page.gif) center center no-repeat;
+}
+
+/* actionmenu */
+/**
+ *
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license
+ *
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
+ */
+
+/* Action menus */
+.action-menu {
+    background : #F0F0F0 url(../images/action-menu-background.gif) repeat-y scroll 0 0 ;
+    border: 1px solid #718BB7 ;
+    cursor: pointer;
+    padding: 1px;
+    font-size: 11px;
+    font-family: tahoma,verdana,helvetica,sans-serif;
+}
+
+.fillStyle {
+    width:100%;
+}
+
+.action-menu .action-menu-item {
+    border: 1px solid #F0F0F0;
+    padding:3px 21px 3px 25px ;
+    font-size: 11px;
+}
+
+.action-menu .action-menu-item-selected {
+    background-color: #EBF3FD ;
+    border: 1px solid #AACCF6;
+    padding:3px 21px 3px 25px ;
+}
+
+.actionMenuWrap {
+    min-height: 12px;
+    border: 1px dashed #D3D3D3;
+    padding: 2px 2px 2px 2px;
+    margin: 3px 2px 2px 2px;
+}
+
+.actionMenuWrap:hover {
+    border: 1px dashed #FF0000;
+}
+
+.containerWrap {
+    min-height: 12px;
+    border: 1px dashed #D3D3D3;
+    margin: 2px 2px 2px 2px;
+    position: relative ;
+    zoom:1 ;
+}
+
+.containerWrap:hover {
+    border: 1px dashed #FF0000;
+}
+
+.containerListWrap {
+    min-height: 12px;
+    border: 1px dashed #D3D3D3;
+    margin: 2px 2px 2px 2px;
+    position:relative;
+    zoom:1 ;
+}
+
+.containerListWrap .action-menu-icons {
+    line-height: 100% ;
+    background: url(../images/actions/bg.gif) center left repeat-x ;
+    border-right: solid 1px #B7CBD8 ;
+    border-bottom: solid 1px #B7CBD8 ;
+    border-top: solid 1px #f5f5f5 ;
+    border-left: solid 1px #f5f5f5 ;
+}
+
+.containerListWrap:hover {
+    border: 1px dashed #FF0000;
+}
+
+.containerWrap .containerListWrap {
+    position:relative;
+}
+
+.containerWrap .action-menu-icons {
+    line-height: 100% ;
+    background: url(../images/actions/bg.gif) center left repeat-x ;
+    border-right: solid 1px #B7CBD8 ;
+    border-bottom: solid 1px #B7CBD8 ;
+    border-top: solid 1px #f5f5f5 ;
+    border-left: solid 1px #f5f5f5 ;
+}
+
+
+.containerWrap .containerListWrap .action-menu-icons {
+    position:static ;
+}
+
+.addContent {
+    padding-left: 14px ;
+    background: url( ../images/actions/add12.png ) no-repeat scroll left center ;
+    cursor:pointer ;
+    font-size:11px ;
+}
+
+.action-menu-icon {
+    background: url( ../images/actions/action.gif ) center left no-repeat;
+    cursor: pointer;
+    color: rgb( 125, 125, 125 );
+    font-size: 9px;
+    font-family: tahoma,verdana,helvetica,sans-serif;
+    white-space:nowrap;
+}
+
+.addContainer {
+    background-image:url(../images/actions/add12.png) ;
+}
+
+.editContainer {
+    background-image:url(../images/actions/update12.png) ;
+}
+
+.action-menu-icon-unavailable {
+    background: url( ../images/actions/action-unavailable.gif ) center left no-repeat;
+    cursor: pointer;
+    color: rgb( 125, 125, 125 );
+    font-size: 9px;
+    font-family: tahoma,verdana,helvetica,sans-serif;
+}
+
+.action-menu-locked {
+    background: url( ../images/actions/lock.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-update {
+    background: url( ../images/actions/update.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-copy {
+    background: url( ../images/actions/copy.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-paste {
+    background: url( ../images/actions/paste.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-delete {
+    background: url( ../images/actions/delete.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-restore {
+    background: url( ../images/actions/restore.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-add {
+    background: url( ../images/actions/add.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-source {
+    background: url( ../images/actions/source.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-picker {
+    background: url( ../images/actions/picker.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-pickerlist {
+    background: url( ../images/actions/pickerlist.png ) no-repeat scroll 2px center ;
+}
+
+.action-menu-picked {
+    background: url( ../images/actions/picked.png ) no-repeat scroll 2px center ;
+}
+
+/* Clipboard */
+.clipboard-empty {
+    background: url( ../images/clipboard/clipboard_empty.png ) center center no-repeat;
+}
+
+.clipboard-full {
+    background: url( ../images/clipboard/clipboard_full.png ) center center no-repeat;
+}
+
+.clipboard-pasted {
+    background: url( ../images/clipboard/clipboard_pasted.png ) center center no-repeat;
+}
+
+.clipboard-error {
+    background: url( ../images/clipboard/clipboard_error.png ) center center no-repeat;
+}
+
+/* Workflow (argh :/ ) */
+.workflow-waiting {
+    background: url( ../images/workflow/waiting.gif ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-110 {
+    background: url( ../images/workflow/110.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-110h {
+    background: url( ../images/workflow/110_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-111 {
+    background: url( ../images/workflow/111.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-111h {
+    background: url( ../images/workflow/111_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-120 {
+    background: url( ../images/workflow/120.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-120h {
+    background: url( ../images/workflow/120_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-121 {
+    background: url( ../images/workflow/121.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-121h {
+    background: url( ../images/workflow/121_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-130 {
+    background: url( ../images/workflow/130.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-130h {
+    background: url( ../images/workflow/130_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-200 {
+    background: url( ../images/workflow/200.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-200h {
+    background: url( ../images/workflow/200_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-201 {
+    background: url( ../images/workflow/201.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-201h {
+    background: url( ../images/workflow/201_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-210 {
+    background: url( ../images/workflow/210.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-210h {
+    background: url( ../images/workflow/210_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-211 {
+    background: url( ../images/workflow/211.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-211h {
+    background: url( ../images/workflow/211_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-220 {
+    background: url( ../images/workflow/220.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-220h {
+    background: url( ../images/workflow/220_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-221 {
+    background: url( ../images/workflow/221.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-221h {
+    background: url( ../images/workflow/221_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-230 {
+    background: url( ../images/workflow/230.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-230h {
+    background: url( ../images/workflow/230_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-231 {
+    background: url( ../images/workflow/231.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-231h {
+    background: url( ../images/workflow/231_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-240 {
+    background: url( ../images/workflow/240.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-240h {
+    background: url( ../images/workflow/240_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-241 {
+    background: url( ../images/workflow/241.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-241h {
+    background: url( ../images/workflow/241_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-511 {
+    background: url( ../images/workflow/511.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-511h {
+    background: url( ../images/workflow/511_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-600 {
+    background: url( ../images/workflow/600.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-600h {
+    background: url( ../images/workflow/600_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-910 {
+    background: url(../images/workflow/910.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-910h {
+    background: url(../images/workflow/910_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-920 {
+    background: url(../images/workflow/920.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-920h {
+    background: url(../images/workflow/920_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-930 {
+    background: url(../images/workflow/930.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-930 {
+    background: url(../images/workflow/930_h.png ) center center no-repeat;
+}
+
+/* Timebased publishing */
+.green_tbp {
+    background: url( ../images/timebasedpublishing/red_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.grey_tbp {
+    background: url( ../images/timebasedpublishing/grey_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.orange_tbp {
+    background: url( ../images/timebasedpublishing/grey_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.yellow_tbp {
+    background: url( ../images/timebasedpublishing/yellow_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.red_tbp {
+    background: url( ../images/timebasedpublishing/red_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.inherited_green_tbp {
+    background: url( ../images/timebasedpublishing/red_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.inherited_grey_tbp {
+    background: url( ../images/timebasedpublishing/grey_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.inherited_orange_tbp {
+    background: url( ../images/timebasedpublishing/grey_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.inherited_yellow_tbp {
+    background: url( ../images/timebasedpublishing/yellow_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.inherited_red_tbp {
+    background: url( ../images/timebasedpublishing/red_clock.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.timebasedPublishingDetails {
+    border: #CCCCDD solid;
+    background: #EEEEFF;
+}
+
+/* ACL difference */
+.acldiff {
+    background: url( ../images/acldiff/acldiff.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.integrity {
+    background: url( ../images/integrity/integrity.png ) center center no-repeat;
+    cursor: pointer;
+}
+.integrityh {
+    background: url( ../images/integrity/integrity_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+.integrity_blocker {
+    background: url( ../images/integrity/integrity_blocker.png ) center center no-repeat;
+    cursor: pointer;
+}
+.integrity_blockerh {
+    background: url( ../images/integrity/integrity_blocker_h.png ) center center no-repeat;
+    cursor: pointer;
+}

@@ -39,6 +39,6 @@
 
 <%-- Define layout file --%>
 <jsp:include page="positioning.jsp">
-    <jsp:param name="mainArea" value="areas/mySettingsForm.jsp"/>
+    <jsp:param name="mainArea" value="areas/mysettingsForm.jsp"/>
     <jsp:param name="footerNav" value="true"/>
 </jsp:include>

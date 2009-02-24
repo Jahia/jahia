@@ -169,7 +169,7 @@ public class GWTInitializer {
         String context = request.getContextPath();
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/css/gwt/theme/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-gxt-engines.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
 
         /*toolbar set optim.*/

@@ -160,23 +160,6 @@
                                                 </c:if>
                                             </tr>
                                             <tr>
-                                                <c:if test="${not empty availableThemes}">
-                                                    <td>
-                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>&nbsp;:
-                                                    </td>
-                                                    <td>
-                                                        <select name="selectTheme" onChange="submitForm('change');">
-                                                            <c:forEach items="${availableThemes}" var="theme">
-                                                                <option value="<c:out value='${theme.key}'/>"
-                                                                        <c:if test="${theme.key == selectedTheme}">selected="selected"</c:if>>
-                                                                    <c:out value="${theme.value}"/></option>
-                                                            </c:forEach>
-                                                        </select>
-                                                    </td>
-                                                </c:if>
-                                            </tr>
-                                            <tr>
                                                 <c:if test="${not empty selectedPackage && not empty selectedPackage.thumbnail}">
                                                     <td>&nbsp;</td>
                                                     <td>
@@ -189,6 +172,26 @@
                                                     <td>
                                                         <utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                 resourceName="org.jahia.admin.site.ManageSites.NoTemplatePreview.label"/>
+                                                    </td>
+                                                </c:if>
+                                            </tr>
+                                            <tr>
+                                                <c:if test="${not empty availableThemes}">
+                                                    <td>
+                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
+                                                                resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>&nbsp;:
+                                                    </td>
+                                                    <td>
+                                                        <select name="selectTheme" onChange="submitForm('change');">
+                                                            <c:if test="${empty selectedTheme}">
+                                                                <c:set var="selectedTheme" value="default"/>
+                                                            </c:if>
+                                                            <c:forEach items="${availableThemes}" var="theme">
+                                                                <option value="<c:out value='${theme.key}'/>"
+                                                                        <c:if test="${theme.key == selectedTheme}">selected="selected"</c:if>>
+                                                                    <c:out value="${theme.value}"/></option>
+                                                            </c:forEach>
+                                                        </select>
                                                     </td>
                                                 </c:if>
                                             </tr>

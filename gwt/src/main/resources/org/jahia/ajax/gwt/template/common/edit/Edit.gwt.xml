@@ -35,7 +35,4 @@
 
 <module>
     <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
-    <stylesheet src='css/action-menus.css'/>
-    <stylesheet src="css/subscription.css"/>
-    <stylesheet src='css/toolbar.css'/>
 </module>

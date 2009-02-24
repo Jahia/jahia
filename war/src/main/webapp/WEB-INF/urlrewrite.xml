@@ -120,11 +120,18 @@ These rules support multilingual websites
 <to>/$1/pid/$2</to>
 </rule>
 
+<!-- GXT resources-->
+<rule>
+<from>^(.*?)/jsp/jahia/gwt/(.*?)/images/(.*?)</from>
+<to last ="true">$1/jsp/jahia/gwt/resources/images/$3</to>
+</rule>
+
 <!-- rule for any gwt page-->
 <rule>
 <from>^(.*?)/jsp/jahia/gwt/(.*?)</from>
 <to last ="true">$1/jsp/jahia/gwt/$2</to>
 </rule>
+
 
 <!-- Outbound rules-->
 

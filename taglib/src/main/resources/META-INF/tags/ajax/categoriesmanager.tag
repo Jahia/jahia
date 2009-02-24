@@ -54,88 +54,88 @@
 <%} else {%>
 <template:gwtJahiaModule id="categories_manager" jahiaType="categories_manager" importAction="<%=importActionUrl%>"
                          exportUrl="<%=exportUrl%>"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.addNewCategory.label"
-                                 aliasResourceName="cat_create"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.edit.label"
-                                 aliasResourceName="cat_update"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.deleteCategoryAction.label"
-        aliasResourceName="cat_remove"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.include.actionSelector.RightsMgmt.label"
-                                  aliasResourceName="cat_update_acl"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.moveCategoryAction.label"
-                                 aliasResourceName="cat_paste"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.copy.label"
-                                 aliasResourceName="cat_copy"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.site.ManageSites.export.label"
-                                 aliasResourceName="cat_export"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.site.ManageSites.import.label"
-                                 aliasResourceName="cat_import"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.addNewCategory.label"
+                            aliasResourceName="cat_create"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.edit.label"
+                            aliasResourceName="cat_update"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.deleteCategoryAction.label"
+                            aliasResourceName="cat_remove"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.include.actionSelector.RightsMgmt.label"
+                            aliasResourceName="cat_update_acl"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.moveCategoryAction.label"
+                            aliasResourceName="cat_paste"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.copy.label"
+                            aliasResourceName="cat_copy"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.site.ManageSites.export.label"
+                            aliasResourceName="cat_export"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.site.ManageSites.import.label"
+                            aliasResourceName="cat_import"/>
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.parentCategoryKey.label"
         aliasResourceName="cat_parentkey"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.informations.label"
         aliasResourceName="cat_info"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.path.label"
-                                 aliasResourceName="cat_path"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.path.label"
+                            aliasResourceName="cat_path"/>
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.properties.add.label"
         aliasResourceName="cat_prop_add"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.sitepermissions.permission.engines.audit.ManageLogs_Engine.label"
         aliasResourceName="cat_log"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.properties.remove.label"
         aliasResourceName="cat_prop_remove"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.properties.label"
         aliasResourceName="cat_prop"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.title.label"
-                                 aliasResourceName="cat_title"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.titles.label"
-                                 aliasResourceName="cat_titles"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.key.label"
-                                 aliasResourceName="cat_key"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.copyCategoryAction.label"
-                                 aliasResourceName="cat_cut"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.title.label"
+                            aliasResourceName="cat_title"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.titles.label"
+                            aliasResourceName="cat_titles"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.key.label"
+                            aliasResourceName="cat_key"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.copyCategoryAction.label"
+                            aliasResourceName="cat_cut"/>
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.propertyName.label"
         aliasResourceName="cat_prop_name"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.propertyValue.label"
         aliasResourceName="cat_prop_value"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.deleteProperty.label"
         aliasResourceName="title_remove_prop"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.saveProperties.label"
         aliasResourceName="title_new_prop"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.save.label" aliasResourceName="button_save"/>
-<internal:gwtAdminResourceBundle
+<internal:gwtResourceBundle resourceName="org.jahia.admin.save.label" aliasResourceName="button_save"/>
+<internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.deleteCategoryAction.label"
         aliasResourceName="button_remove"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.update.label" aliasResourceName="button_update"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.cancel.label" aliasResourceName="button_cancel"/>
-<internal:gwtAdminResourceBundle resourceName="org.jahia.admin.apply.label" aliasResourceName="button_apply"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
-                                  aliasResourceName="ae_principal"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreInheritance.label"
-                                  aliasResourceName="ae_restore_inheritance"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.inheritedFrom.label"
-                                  aliasResourceName="ae_inherited_from"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"
-                                  aliasResourceName="ae_restore_all_inheritance"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.breakAllInheritance.label"
-                                  aliasResourceName="ae_break_all_inheritance"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.remove.label"
-                                  aliasResourceName="ae_remove"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.save.label"
-                                  aliasResourceName="ae_save"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restore.label"
-                                  aliasResourceName="ae_restore"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"
-                                  aliasResourceName="um_adduser"/>
-<internal:gwtEngineResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
-                                  aliasResourceName="um_addgroup"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.update.label" aliasResourceName="button_update"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.cancel.label" aliasResourceName="button_cancel"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.apply.label" aliasResourceName="button_apply"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
+                            aliasResourceName="ae_principal"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreInheritance.label"
+                            aliasResourceName="ae_restore_inheritance"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.inheritedFrom.label"
+                            aliasResourceName="ae_inherited_from"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"
+                            aliasResourceName="ae_restore_all_inheritance"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.breakAllInheritance.label"
+                            aliasResourceName="ae_break_all_inheritance"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.remove.label"
+                            aliasResourceName="ae_remove"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.save.label"
+                            aliasResourceName="ae_save"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restore.label"
+                            aliasResourceName="ae_restore"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newUsers.label"
+                            aliasResourceName="um_adduser"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
+                            aliasResourceName="um_addgroup"/>
 
 <%}%>

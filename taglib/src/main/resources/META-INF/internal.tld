@@ -36,26 +36,9 @@
         </attribute>
     </tag>
     <tag>
-        <description>Generate resource bundle to be used by JahiaModule.</description>
-        <name>gwtAdminResourceBundle</name>
-        <tag-class>org.jahia.taglibs.internal.i18n.GWTAdminMessageTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>resourceName</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>aliasResourceName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <description>Generate resource bundle to be used by GWT.</description>
-        <name>gwtEngineResourceBundle</name>
-        <tag-class>org.jahia.taglibs.internal.i18n.GWTEngineMessageTag</tag-class>
+        <name>gwtResourceBundle</name>
+        <tag-class>org.jahia.taglibs.internal.i18n.GWTResourceBundleTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>resourceName</name>

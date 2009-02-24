@@ -50,8 +50,8 @@ import java.util.MissingResourceException;
  * Date: 1 oct. 2008
  * Time: 17:13:28
  */
-public class GWTEngineMessageTag extends GWTMessageTag {
-    private static final transient Logger logger = Logger.getLogger(GWTEngineMessageTag.class);
+public class GWTResourceBundleTag extends GWTMessageTag {
+    private static final transient Logger logger = Logger.getLogger(GWTResourceBundleTag.class);
 
 
     @Override

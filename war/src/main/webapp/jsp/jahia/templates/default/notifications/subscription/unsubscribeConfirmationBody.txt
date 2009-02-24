@@ -20,7 +20,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -31,16 +31,20 @@
     for your use, please contact the sales department at sales@jahia.com.
 ====
 
-Dear ${subscriber.fullName},
+${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
 
-you have been requested to stop notifications of changes in the portal content.
+<% if (watchedContentLink != null) { %>
+${i18n.get("notifications.unsubscribeConfirmation.notifiedOfChangesInContent", "you have been requested to stop notifications of changes in the following content:")} ${watchedContentLink.absoluteUrl}
+<% } else { %>
+${i18n.get("notifications.unsubscribeConfirmation.notifiedOfChanges", "you have been requested to stop notifications of changes in the portal content.")}
+<% } %>
 
-Please confirm your request by clicking the following link:
+${i18n.get("notifications.unsubscribeConfirmation.confirm.text", "Please confirm your request by clicking the following link:")}
 ${confirmationLink.absoluteUrl}
 
-Sincerely Yours
-Portal Team
+${i18n.get("notifications.common.farewell", "Sincerely Yours")}
+${i18n.get("notifications.common.farewell.signature", "Portal Team")}
 
 ---
-To update your profile or to stop receiving customized e-mail, please click the link below:
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")}
 ${subscriptionManagementLink.absoluteUrl}

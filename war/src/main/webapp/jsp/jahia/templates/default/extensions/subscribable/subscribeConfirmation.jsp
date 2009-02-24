@@ -34,69 +34,35 @@
 --%>
 
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Subscription Confirmation</title>
+    <title><u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.title" defaultValue="Subscription Confirmation"/></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <style type="text/css">
-    body {
-        margin: 0;
-    }
-    
-    body,p {
-        font-family: Verdana, Arial, Helvetica, sans-serif;
-        font-size: 11px;
-        color: #333333;
-    }
-    
-    #box {
-        border: 1px solid #b7cbd8;
-        width: 500px;
-        margin: 50px auto;
-    }
-    #box .title {
-        background-color: #d8e5ec;
-        color:  #2f3c45;
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-top: 2px;
-        padding-bottom: 2px;
-        white-space: nowrap;
-        font-weight: bold;
-        border-bottom: 1px solid #b7cbd8;
-    }
-    #box .content {
-        font-family:Verdana, Arial, Helvetica, sans-serif;
-        padding: 5px;
-        color: #666666;
-        background-color: #f6f8fa;
-    }
-    </style>
+    <%@ include file="styles.jspf" %>
 </head>
 <body>
 <div id="box">
-    <div class="title">Subscription confirmation</div>
+    <div class="title"><u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.title" defaultValue="Subscription Confirmation"/></div>
     <div class="content">
         <p>
         <c:choose>
             <c:when test="${confirmationResult == 'OK'}">
-                Thank you for confirming your subscription to our Content Update Notification Service.
+                <u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.result.ok" defaultValue="Thank you for confirming your subscription to our Notification Service."/>
             </c:when>
             <c:when test="${confirmationResult == 'CONFIRMATION_KEY_MISMATCH'}">
-                Unfortunately, the confirmation key does not match the one we have. Please repeat the subscription process to request a new confirmation key.
+                <u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.result.keyMismatch" defaultValue="Unfortunately, the confirmation key does not match the one we have. Please repeat the subscription process to request a new confirmation key."/>
             </c:when>
             <c:when test="${confirmationResult == 'ALREADY_CONFIRMED'}">
-                This subscription is already confirmed. Thank you for using our Content Update Notification Service.
+                <u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.result.alreadyConfirmed" defaultValue="This subscription is already confirmed. Thank you for using our Notification Service."/>
             </c:when>
             <c:otherwise>
-                Unfortunately, we are unable to find any subscription, matching your request.
+                <u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.result.unknown" defaultValue="Unfortunately, we are unable to find any subscription, matching your request."/>
             </c:otherwise>
         </c:choose>
         </p>
         
-        <p>Sincerely Yours<br>Portal Team</p>
+        <p><u:resourceBundle resourceName="notifications.common.farewell" defaultValue="Sincerely Yours"/><br/><u:resourceBundle resourceName="notifications.common.farewell.signature" defaultValue="Portal Team"/></p>
     </div>
 </div>
 </body>

@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -36,29 +36,29 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<title>Your confirmation is needed</title>
+<title>${i18n.get("notifications.subscriptionConfirmation.subject", "[Jahia] Your confirmation is needed")}</title>
 </head>
 <body>
-<h2>Your confirmation is needed</h2>
-<p>Dear ${subscriber.fullName},</p>
+<h2>${i18n.get("notifications.subscriptionConfirmation.subject", "[Jahia] Your confirmation is needed")}</h2>
+<p>${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},</p>
 <p>
 <% if (watchedContentLink != null) { %>
-you have been subscribed to be notified of changes in the following content: <a href="${watchedContentLink.absoluteUrl}">Watched content</a>.
+${i18n.get("notifications.subscriptionConfirmation.notifiedOfChangesInContent", "you have been subscribed to be notified of changes in the following content:")} <a href="${watchedContentLink.absoluteUrl}">${i18n.get("notifications.subscriptionConfirmation.watchedContentLink", "Watched content")}</a>.
 <% } else { %>
-you have been subscribed to be notified of changes in the selected portal content.
+${i18n.get("notifications.subscriptionConfirmation.notifiedOfChanges", "you have been subscribed to be notified of changes in the portal content.")}
 <% } %>
 </p>
 
-<p>Please confirm your subscription by clicking the link below:<br>
-<a href="${confirmationLink.absoluteUrl}">Confirm subscription</a></p>
+<p>${i18n.get("notifications.subscriptionConfirmation.confirm.text", "Please confirm your subscription by clicking the link below:")}<br>
+<a href="${confirmationLink.absoluteUrl}">${i18n.get("notifications.subscriptionConfirmation.confirm.link", "Confirm subscription")}</a></p>
 
-<p>If you do not want to receive update notifications on this content, please follow the link:<br>
-<a href="${cancellationLink.absoluteUrl}">Cancel subscription</a></p>
+<p>${i18n.get("notifications.subscriptionConfirmation.cancel.text", "If you do not want to receive update notifications on this content, please follow the link:")}<br>
+<a href="${cancellationLink.absoluteUrl}">${i18n.get("notifications.subscriptionConfirmation.cancel.link", "Cancel subscription")}</a></p>
 
-<p>Sincerely Yours<br>Portal Team</p>
+<p>${i18n.get("notifications.common.farewell", "Sincerely Yours")}<br>${i18n.get("notifications.common.farewell.signature", "Portal Team")}</p>
 
 <hr>
-<p>To unsubscribe from notifications for this content, please use the <a href="${unsubscribeLink.absoluteUrl}">unsubscribe service</a>.<br>
-To update your profile or to stop receiving customized e-mail, please click <a href="${subscriptionManagementLink.absoluteUrl}">here</a>.</p>
+<p>${i18n.get("notifications.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")} <a href="${unsubscribeLink.absoluteUrl}">${i18n.get("notifications.common.unsubscribeLink", "unsubscribe service")}</a><br>
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")} <a href="${subscriptionManagementLink.absoluteUrl}">${i18n.get("notifications.common.updateProfileLink", "here")}</a></p>
 </body>
 </html>

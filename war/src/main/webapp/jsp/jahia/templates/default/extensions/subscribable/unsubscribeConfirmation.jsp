@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -34,66 +34,34 @@
 --%>
 
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="u" uri="http://www.jahia.org/tags/utilityLib" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Unsubscribe Request Confirmation</title>
+    <title><u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.title" defaultValue="Unsubscribe Request Confirmation"/></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <style type="text/css">
-    body {
-        margin: 0;
-    }
-    
-    body,p {
-        font-family: Verdana, Arial, Helvetica, sans-serif;
-        font-size: 11px;
-        color: #333333;
-    }
-    
-    #box {
-        border: 1px solid #b7cbd8;
-        width: 500px;
-        margin: 50px auto;
-    }
-    #box .title {
-        background-color: #d8e5ec;
-        color:  #2f3c45;
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-top: 2px;
-        padding-bottom: 2px;
-        white-space: nowrap;
-        font-weight: bold;
-        border-bottom: 1px solid #b7cbd8;
-    }
-    #box .content {
-        font-family:Verdana, Arial, Helvetica, sans-serif;
-        padding: 5px;
-        color: #666666;
-        background-color: #f6f8fa;
-    }
-    </style>
+    <%@ include file="styles.jspf" %>
 </head>
 <body>
 <div id="box">
-    <div class="title">Unsubscribe Request Confirmation</div>
+    <div class="title"><u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.title" defaultValue="Unsubscribe Request Confirmation"/></div>
     <div class="content">
     <p>
     <c:choose>
         <c:when test="${confirmationResult == 'OK'}">
-            Your unsubscribe request was successful. Thank you for using our Content Update Notification Service.
+            <u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.result.ok" defaultValue="Your unsubscribe request was successful. Thank you for using our Notification Service."/>
         </c:when>
         <c:when test="${confirmationResult == 'CONFIRMATION_KEY_MISMATCH'}">
-            Unfortunately, the confirmation key does not match the one we have. Please repeat the unsubscription process to request a new confirmation key.
+            <u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.result.keyMismatch" defaultValue="Unfortunately, the confirmation key does not match the one we have. Please repeat the unsubscription process to request a new confirmation key."/>
         </c:when>
         <c:otherwise>
-            Unfortunately, we are unable to find any subscription, matching your request.
+            <u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.result.unknown" defaultValue="Unfortunately, we are unable to find any subscription, matching your request."/>
         </c:otherwise>
     </c:choose>
     </p>
     
-    <p>Sincerely Yours<br>Portal Team</p>
+    <p><u:resourceBundle resourceName="notifications.common.farewell" defaultValue="Sincerely Yours"/><br/><u:resourceBundle resourceName="notifications.common.farewell.signature" defaultValue="Portal Team"/></p>
     </div>
 </div>
 </body>

@@ -58,6 +58,7 @@
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.jahia.bin.Jahia" %>
+<%@ page import="org.jahia.operations.valves.ThemeValve" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
@@ -384,9 +385,17 @@
        JahiaTemplatesPackage pkg = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(tplPkgName);
        for (Iterator iterator = pkg.getLookupPath().iterator(); iterator.hasNext();) {
            String rootFolderPath = (String) iterator.next();
-           File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath+"/"+propDef.getName()+"s/"+selected+".png"));
-           if (f.exists()) {
-               path = rootFolderPath+"/"+propDef.getName()+"s/"+selected+".png";
+           // look for theme png name
+           String lookupFile = Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath+"/"+propDef.getName()+"s/"+ selected + "_" + jParams.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + jParams.getSite().getID()) + ".png");
+           File ft = new File(lookupFile);
+           if (ft.exists()) {
+                 path = rootFolderPath+"/"+propDef.getName()+"s/"+ selected+ "_" + jParams.getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + jParams.getSite().getID()) + ".png";
+           }
+           else {
+               File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath+"/"+propDef.getName()+"s/"+selected+".png"));
+               if (f.exists()) {
+                   path = rootFolderPath+"/"+propDef.getName()+"s/"+selected+".png";
+               }
            }
        }
        if (path != null) {

@@ -229,9 +229,13 @@ public class ResourceBundleTag extends AbstractJahiaTag {
                 : getI18n();
         resValue = i18n.get(messageKey, defaultValue);
         if (resValue != null && resValue.contains("{")) {
-            resValue = new MessageFormat(resValue, locale != null ? locale
-                    : getProcessingContext().getLocale()).format(new Object[] {
-                    arg0, arg1, arg2, arg3, arg4 });
+            try {
+                resValue = new MessageFormat(resValue, locale != null ? locale
+                        : getProcessingContext().getLocale()).format(new Object[] {
+                        arg0, arg1, arg2, arg3, arg4 });
+            } catch (IllegalArgumentException e) {
+                logger.warn(e.getMessage(), e);
+            }
         }
 
         if (resValue != null) {

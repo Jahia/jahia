@@ -53,16 +53,24 @@ import org.jahia.ajax.gwt.client.util.URL;
  */
 public class JavaScriptApi {
 
-
-    public JavaScriptApi() {
-        initJavaScriptApi();
+    private static boolean initialized;
+    
+    private JavaScriptApi() {
+        super();
     }
 
-    public static void request(String url, JavaScriptObject options) {
+    public static void init() {
+        if (!initialized) {
+            new JavaScriptApi().initJavaScriptApi();
+            initialized = true;
+        }
+    }
+    
+    static void request(String url, JavaScriptObject options) {
         AjaxRequest.perfom(url, options);
     }
 
-    public static void onBlurEditableContent(final Element e, String containerID, String fieldID) {
+    static void onBlurEditableContent(final Element e, String containerID, String fieldID) {
         Log.info("Blurring field [" + containerID + "," + fieldID + "]: " + e.getInnerHTML() + " contentEditable" + e.getAttribute("contentEditable"));
         if ((e.getAttribute("contentEditable") != null) &&
             (e.getAttribute("contentEditable").equals("true"))) {
@@ -86,7 +94,7 @@ public class JavaScriptApi {
         }
     }
 
-    public static void onClickEditableContent(final Element e, String containerID, String fieldID) {
+    static void onClickEditableContent(final Element e, String containerID, String fieldID) {
         Log.info("Checking if inline editing is allowed for containerID=" + containerID + " fieldID=" + fieldID);
         Integer containerIDInt = Integer.parseInt(containerID);
         Integer fieldIDInt = Integer.parseInt(fieldID);
@@ -108,7 +116,7 @@ public class JavaScriptApi {
     }
 
 
-    public static void renderPortlet(final Element e, String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
+    static void renderPortlet(final Element e, String windowID, String entryPointInstanceID, String pathInfo, String queryString) {
         GWTJahiaPageContext page = new GWTJahiaPageContext(URL.getRelativeURL());
         page.setPid(JahiaGWTParameters.getPID());
         page.setMode(JahiaGWTParameters.getOperationMode());
@@ -125,7 +133,7 @@ public class JavaScriptApi {
     }
 
 
-    public static void releaseLock(String lockType) {
+    static void releaseLock(String lockType) {
             JahiaService.App.getInstance().releaseLock(lockType, new AsyncCallback<Boolean>() {
                 public void onSuccess(Boolean result) {
                     Log.info("Lock released successfully.");

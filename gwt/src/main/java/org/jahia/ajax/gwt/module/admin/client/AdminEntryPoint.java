@@ -59,7 +59,7 @@ public class AdminEntryPoint implements EntryPoint {
         $wnd.jahia.alert = function (title, message) {@org.jahia.ajax.gwt.module.admin.client.AdminEntryPoint::alert(Ljava/lang/String;Ljava/lang/String;)(title, message); };
     }-*/;
     
-    public static void alert(String title, String message) {
+    static void alert(String title, String message) {
         MessageBox.alert(title != null ? title : "Info", message, null);
     } 
 }

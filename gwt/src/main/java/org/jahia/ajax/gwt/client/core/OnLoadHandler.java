@@ -43,12 +43,20 @@ package org.jahia.ajax.gwt.client.core;
  */
 public class OnLoadHandler {
 
+    private static boolean initialized;
+    
     /**
      * Initializes an instance of this class.
      */
-    public OnLoadHandler() {
+    private OnLoadHandler() {
         super();
-        callHandlers();
+    }
+    
+    public static void init() {
+        if (!initialized) {
+            callHandlers();
+            initialized = true;
+        }
     }
 
     private static native void callHandlers()  /*-{

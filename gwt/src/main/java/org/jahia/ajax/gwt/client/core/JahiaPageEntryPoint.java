@@ -65,7 +65,7 @@ public abstract class JahiaPageEntryPoint implements EntryPoint {
 
     public void onModuleLoad() {
         // init javascript api
-        new JavaScriptApi();
+        JavaScriptApi.init();
 
         initJavaScriptApi();
 

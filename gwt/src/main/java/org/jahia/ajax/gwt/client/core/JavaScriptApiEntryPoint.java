@@ -42,7 +42,7 @@ import com.google.gwt.core.client.EntryPoint;
  */
 public class JavaScriptApiEntryPoint implements EntryPoint {
     public void onModuleLoad() {
-        new JavaScriptApi();
-        new OnLoadHandler();
+        JavaScriptApi.init();
+        OnLoadHandler.init();
     }
 }

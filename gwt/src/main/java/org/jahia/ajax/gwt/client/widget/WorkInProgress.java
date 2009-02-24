@@ -46,18 +46,20 @@ import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
  */
 public class WorkInProgress {
 
-    private static MessageBox instance;
+    private static WorkInProgress instance;
+    private MessageBox messageBox;
     
     /**
      * Initializes an instance of this class.
+     * @param messageBox message box
      */
-    public WorkInProgress() {
+    private WorkInProgress(MessageBox messageBox) {
         super();
-        getInstance();
-        init();
+        this.messageBox = messageBox;
+        exposeMethods();
     }
 
-    public static MessageBox getInstance() {
+    private static WorkInProgress getInstance() {
         if (instance == null) {
             MessageBox box = new MessageBox();
             box.setType(MessageBoxType.WAIT);
@@ -70,7 +72,7 @@ public class WorkInProgress {
             box.getDialog().setHeaderVisible(false);
             box.getDialog().setOnEsc(false);
             box.getDialog().setDraggable(false);
-            instance = box;
+            instance = new WorkInProgress(box);
         }
 
         return instance;
@@ -78,11 +80,11 @@ public class WorkInProgress {
 
     public static void hide() {
         if (instance != null) {
-            getInstance().close();
+            getInstance().messageBox.close();
         }
     }
 
-    public static native void init() /*-{
+    private native void exposeMethods() /*-{
         $wnd.workInProgressOverlay = new Object();
         $wnd.workInProgressOverlay.start = $wnd.workInProgressOverlay.launch = @org.jahia.ajax.gwt.client.widget.WorkInProgress::show();
         $wnd.workInProgressOverlay.stop = @org.jahia.ajax.gwt.client.widget.WorkInProgress::hide();
@@ -91,7 +93,11 @@ public class WorkInProgress {
         }
     }-*/;
 
+    public static void init() {
+        getInstance();
+    }
+
     public static void show() {
-        getInstance().show();
+        getInstance().messageBox.show();
     }
 }

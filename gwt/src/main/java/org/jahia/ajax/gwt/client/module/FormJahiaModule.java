@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
+
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -60,11 +61,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * GWT module for displaying an input form with Captcha image.
  * User: toto
  * Date: Dec 1, 2008
  * Time: 10:57:45 AM
- * To change this template use File | Settings | File Templates.
  */
 public class FormJahiaModule extends JahiaModule {
 
@@ -74,15 +74,15 @@ public class FormJahiaModule extends JahiaModule {
 
     public void onModuleLoad(final GWTJahiaPageContext page, final List<RootPanel> rootPanels) {
 
-        if (rootPanels != null && rootPanels.size() == 1) {
-            final RootPanel rootPanel = rootPanels.get(0) ;
-
+        if (rootPanels == null) {
+            return;
+        }
+        final List<Image> captchaImages = new ArrayList<Image>();
+        for (final RootPanel rootPanel : rootPanels) {
             final String nodeType = DOM.getElementAttribute(rootPanel.getElement(), "nodeType");
             final boolean viewInherited = Boolean.parseBoolean(DOM.getElementAttribute(rootPanel.getElement(), "viewInheritedTypes"));
             final String action = DOM.getElementAttribute(rootPanel.getElement(), "action");
             final String target = DOM.getElementAttribute(rootPanel.getElement(), "target");
-            final String excludedItems = DOM.getElementAttribute(rootPanel.getElement(), "excludedItems");
-            final String excludedTypes = DOM.getElementAttribute(rootPanel.getElement(), "excludedTypes");
             final String captcha = DOM.getElementAttribute(rootPanel.getElement(), "captcha");
 
             final List<String> excludedItemsList = new ArrayList<String>();
@@ -104,7 +104,9 @@ public class FormJahiaModule extends JahiaModule {
                         captchaField.setName("j_captcha_response");
                         captchaField.setFieldLabel("Please recopy the code");
                         pe.add(captchaField);
-                        pe.add(new Image(captcha));
+                        Image captchaImage = new Image(captcha);
+                        pe.add(captchaImage);
+                        captchaImages.add(captchaImage);
                     }
                     final Button save = new Button("Save");
                     save.addSelectionListener(new SelectionListener<ComponentEvent>() {
@@ -116,13 +118,17 @@ public class FormJahiaModule extends JahiaModule {
                                     captchaValue = (String) captchaField.getValue();
                                     if (captchaValue == null) captchaValue = "";
                                 }
-                                JahiaNodeService.App.getInstance().createNode(target, "node"+System.currentTimeMillis(), nodeType, pe.getProperties(), captchaValue, new AsyncCallback<GWTJahiaNode>() {
+                                JahiaNodeService.App.getInstance().createNode(target, "node" + System.currentTimeMillis(), nodeType, pe.getProperties(), captchaValue, new AsyncCallback<GWTJahiaNode>() {
                                     public void onFailure(Throwable caught) {
                                         if (caught.getMessage().equals("Invalid captcha")) {
-                                            pe.remove(pe.getWidget(pe.getItemCount()-1));
-                                            pe.add(new Image(captcha+"?"+System.currentTimeMillis()));
-                                            rootPanel.remove(pe);
-                                            rootPanel.add(pe);
+                                            String captchaUrl = captcha + "?" + System.currentTimeMillis();
+                                            for (Image captchaImage : captchaImages) {
+                                                captchaImage.setUrl(captchaUrl);
+                                            }
+//                                            pe.remove(pe.getWidget(pe.getItemCount()-1));
+//                                            pe.add(new Image(captcha + "?" + System.currentTimeMillis()));
+//                                            rootPanel.remove(pe);
+//                                            rootPanel.add(pe);
                                         }
                                         Log.error("error", caught);
                                         save.enable();

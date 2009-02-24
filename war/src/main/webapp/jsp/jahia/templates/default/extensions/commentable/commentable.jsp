@@ -34,6 +34,7 @@
 --%>
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.apache.commons.id.IdentifierUtils" %>
 
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
@@ -65,7 +66,7 @@
 
         <h5><utility:resourceBundle resourceName="postYourComment" defaultValue="Post your comment"/>:</h5>
 
-         <template:gwtJahiaModule isTemplate="true" jahiaType="form" id="form" nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"
+         <template:gwtJahiaModule isTemplate="true" jahiaType="form" id='<%= "form" + IdentifierUtils.nextStringNumericIdentifier() %>' nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"
                          action="createNode" target="${comment.JCRPath}" cssClassName="comment" />
     </div>
 </c:if>

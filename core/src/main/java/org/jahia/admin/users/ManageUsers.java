@@ -37,7 +37,7 @@
 package org.jahia.admin.users;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
-import org.compass.core.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
@@ -688,25 +688,16 @@ public class ManageUsers extends AbstractAdministrationModule {
         }
         String passwd = request.getParameter("passwd");
         // passwd may be null in case of an LDAP user.
-        if (passwd != null) {
+        if (StringUtils.isNotBlank(passwd)) {
             passwd = passwd.trim();
             JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry
                     .getInstance().getJahiaPasswordPolicyService();
-            if (!"".equals(passwd)) {
-                String passwdConfirm = request.getParameter("passwdconfirm").
+            String passwdConfirm = request.getParameter("passwdconfirm").
                                        trim();
-                if (!passwdConfirm.equals(passwd)) {
-                    userMessage = JahiaResourceBundle.getAdminResource(
-                        "org.jahia.admin.userMessage.passwdNotMatch.label",
-                        jParams, jParams.getLocale());
-                    return false;
-                }
-            }
-            if (!"".equals(passwd) && !usr.setPassword(passwd)) {
+            if (!passwdConfirm.equals(passwd)) {
                 userMessage = JahiaResourceBundle.getAdminResource(
-                    "org.jahia.admin.userMessage.cannotChangePasswd.label",
+                    "org.jahia.admin.userMessage.passwdNotMatch.label",
                     jParams, jParams.getLocale());
-                userMessage += " [" + username + "] ";
                 return false;
             }
             if (pwdPolicyService.isPolicyEnabled(usr)) {
@@ -716,6 +707,13 @@ public class ManageUsers extends AbstractAdministrationModule {
                     policyMsgs.saveMessages(((ParamBean) jParams).getRequest());
                     return false;
                 }
+            }
+            if (!usr.setPassword(passwd)) {
+                userMessage = JahiaResourceBundle.getAdminResource(
+                    "org.jahia.admin.userMessage.cannotChangePasswd.label",
+                    jParams, jParams.getLocale());
+                userMessage += " [" + username + "] ";
+                return false;
             }
         }
         // pick out all the user properties parameters, and set it into the

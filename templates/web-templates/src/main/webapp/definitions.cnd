@@ -44,7 +44,7 @@ file            icon
 
 [web_templates:promoContainer] > jnt:container
 file            image (file[mime='image/*'])
-page            link
+page            link (page[type="external,internal"])
 
 [web_templates:fileContainer] > jnt:fileContainer, web_templates:title
 

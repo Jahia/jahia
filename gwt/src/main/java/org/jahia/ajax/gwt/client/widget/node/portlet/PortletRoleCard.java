@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.node.portlet;
 
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,8 +49,8 @@ public class PortletRoleCard extends MashupWizardCard {
     private AclEditor roleMappingEditor;
 
     public PortletRoleCard() {
-        super("Role permissions");
-        setHtmlText("Role permissions");
+        super(Messages.getNotEmptyResource("mw_roles_perm","Roles permissions"));
+        setHtmlText(Messages.getNotEmptyResource("mw_roles_perm_desc","Set roles permissions"));
     }
 
     public void next() {
@@ -62,6 +63,8 @@ public class PortletRoleCard extends MashupWizardCard {
         removeAll();
         roleMappingEditor = new AclEditor(getPortletWizardWindow().getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition().getBaseAcl(), false);
         roleMappingEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
+        roleMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_roles_adduser","Add rode-user permission"));
+        roleMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_roles_addgroup","Add rode-group permission"));
         Widget saveButton = roleMappingEditor.getSaveButton();
         saveButton.setVisible(false);
 

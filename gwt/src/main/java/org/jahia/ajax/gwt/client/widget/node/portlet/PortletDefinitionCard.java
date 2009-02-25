@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.node.portlet;
 
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -56,9 +57,9 @@ public class PortletDefinitionCard extends MashupWizardCard {
     private Grid<GWTJahiaPortletDefinition> grid;
 
     public PortletDefinitionCard() {
-        super("Mashup");
+        super(Messages.getNotEmptyResource("mw_mashups","Mashup"));
         createUI();
-        setHtmlText("Select a portlet definition");
+        setHtmlText(Messages.getNotEmptyResource("mw_select_portlet_def","Select a portlet definition"));
     }
 
 
@@ -76,14 +77,8 @@ public class PortletDefinitionCard extends MashupWizardCard {
 
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("name", "Name", 180));
-        columns.add(new ColumnConfig("description", "Description", 400));
-
-        /*XTemplate tpl = XTemplate.create("<p><b>Name:</b> {name}</p><br><p><b>Description:</b> {description}</p>");
-        RowExpander expander = new RowExpander();
-        expander.setTemplate(tpl);
-        columns.add(expander);*/
-
+        columns.add(new ColumnConfig("name", Messages.getNotEmptyResource("mw_name","Name"), 180));
+        columns.add(new ColumnConfig("description", Messages.getNotEmptyResource("mw_description","Description"), 400));
 
         ColumnModel cm = new ColumnModel(columns);
         grid = new Grid<GWTJahiaPortletDefinition>(store, cm);

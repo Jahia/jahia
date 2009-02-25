@@ -41,6 +41,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
@@ -56,8 +57,8 @@ public class PortletFormCard extends MashupWizardCard {
     private PropertiesEditor pe;
 
     public PortletFormCard() {
-        super("Parameters");
-        setHtmlText("Edit parameters");                
+        super(Messages.getNotEmptyResource("mw_params","Parametes"));
+        setHtmlText(Messages.getNotEmptyResource("mw_edit_params","Edit parameters"));
     }
 
     public void createUI() {
@@ -100,7 +101,7 @@ public class PortletFormCard extends MashupWizardCard {
                     setFormPanel(pe);
                     layout();
                 } else {
-                    add(new Label("Unable to load properties panel"));
+                    add(new Label(Messages.getNotEmptyResource("mw_prop_load_error","Unable to load properties panel")));
                 }
             }
 

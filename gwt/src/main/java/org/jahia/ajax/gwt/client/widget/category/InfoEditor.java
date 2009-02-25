@@ -155,7 +155,7 @@ public class InfoEditor extends FormPanel {
                         newGWTJahiaCategoryNode.setCategoryTitles(gwtCategoryTitles);
                         CategoryService.App.getInstance().createCategory(gwtJahiaCategoryNode, newGWTJahiaCategoryNode, new AsyncCallback() {
                             public void onFailure(Throwable throwable) {
-                                Log.error("Can't update jahia user properties", throwable);
+                                MessageBox.alert("",throwable.getMessage(),null);
                                 window.close();
                             }
 

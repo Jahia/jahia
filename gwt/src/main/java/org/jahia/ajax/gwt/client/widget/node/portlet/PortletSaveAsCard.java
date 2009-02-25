@@ -40,6 +40,7 @@ import com.google.gwt.user.client.Window;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * User: ktlili
@@ -50,14 +51,14 @@ public class PortletSaveAsCard extends MashupWizardCard {
     private TextField<String> saveAs = new TextField<String>();
 
     public PortletSaveAsCard() {
-        super("Finish");
-        setHtmlText("Finish");
+        super(Messages.getNotEmptyResource("mw_finish","Finish"));
+        setHtmlText(Messages.getNotEmptyResource("mw_finish_description",""));
 
     }
 
     public void createUI() {
         FormPanel simple = new FormPanel();
-        saveAs.setFieldLabel("Save as");
+        saveAs.setFieldLabel(Messages.getNotEmptyResource("mw_save_as","Save as"));
         saveAs.setAllowBlank(false);
         saveAs.setMinLength(5);
         simple.add(saveAs);

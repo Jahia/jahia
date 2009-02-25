@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.node.portlet;
 
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 
 /**
@@ -47,8 +48,8 @@ public class PortletModesCard extends MashupWizardCard {
 
 
     public PortletModesCard() {
-        super("Modes mapping");
-        setHtmlText("Set mode mapping");
+        super(Messages.getNotEmptyResource("mw_modes_permissions","Modes permissions"));
+        setHtmlText(Messages.getNotEmptyResource("mw_modes_permissions_description","Set modes permissions"));
 
     }
 
@@ -62,6 +63,8 @@ public class PortletModesCard extends MashupWizardCard {
         removeAll();
         modeMappingEditor = new AclEditor(getPortletWizardWindow().getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition().getBaseAcl(), false);
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
+        modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_modes_adduser","Add mode-user permission"));
+        modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_modes_addgroup","Add mode-group permission"));        
         TextToolItem saveButton = modeMappingEditor.getSaveButton();
         saveButton.setVisible(false);
 

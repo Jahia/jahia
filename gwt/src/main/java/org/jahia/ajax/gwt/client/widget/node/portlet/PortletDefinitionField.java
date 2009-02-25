@@ -41,6 +41,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,7 +63,7 @@ public class PortletDefinitionField extends TriggerField<String> {
         w.setModal(true);
         w.setSize(600, 400);
         ButtonBar bar = new ButtonBar();
-        Button ok = new Button("OK", new SelectionListener<ComponentEvent>() {
+        Button ok = new Button(Messages.getNotEmptyResource("mw_ok","OK"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 GWTJahiaPortletDefinition def = card.getSelectedPortletDefinition();
                 setRawValue(def.getDefinitionName());

@@ -84,6 +84,8 @@ public class AclEditor {
     private boolean readOnly = false;
     private List<String> available;
     private boolean displayInheritanceColumn = true;
+    private String addUsersLabel = getResource("um_adduser");
+    private String addGroupsLabel = getResource("um_addgroup");
 
     public AclEditor(GWTJahiaNodeACL acl, boolean showSiteSelector) {
         this.originalAcl = acl;
@@ -93,6 +95,7 @@ public class AclEditor {
         restoreButton = new RestoreButton();
         reinitAcl();
     }
+
 
     public AclEditor(GWTJahiaNodeACL acl, boolean showSiteSelector, boolean displayInheritanceColumn) {
         this(acl, showSiteSelector);
@@ -109,6 +112,28 @@ public class AclEditor {
 
     public void setAclGroup(String aclGroup) {
         this.aclGroup = aclGroup;
+    }
+
+    public String getAddUsersLabel() {
+        if (addUsersLabel == null) {
+            return getResource("um_adduser");
+        }
+        return addUsersLabel;
+    }
+
+    public void setAddUsersLabel(String addUsersLabel) {
+        this.addUsersLabel = addUsersLabel;
+    }
+
+    public String getAddGroupsLabel() {
+        if (addGroupsLabel == null) {
+            return getResource("um_addgroup");
+        }
+        return addGroupsLabel;
+    }
+
+    public void setAddGroupsLabel(String addGroupsLabel) {
+        this.addGroupsLabel = addGroupsLabel;
     }
 
     public ContentPanel renderNewAclPanel() {
@@ -332,7 +357,7 @@ public class AclEditor {
         };
 
         ToolBar toolBar = new ToolBar();
-        TextToolItem addUsersToolItem = new TextToolItem(getResource("um_adduser"), "um-adduser");
+        TextToolItem addUsersToolItem = new TextToolItem(getAddUsersLabel(), "um-adduser");
         addUsersToolItem.setEnabled(!readOnly);
         addUsersToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
@@ -341,7 +366,7 @@ public class AclEditor {
         });
         toolBar.add(addUsersToolItem);
 
-        addUsersToolItem = new TextToolItem(getResource("um_addgroup"), "um-addgroup");
+        addUsersToolItem = new TextToolItem(getAddGroupsLabel(), "um-addgroup");
         addUsersToolItem.setEnabled(!readOnly);
         addUsersToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {

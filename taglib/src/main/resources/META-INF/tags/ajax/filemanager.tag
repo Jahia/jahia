@@ -255,3 +255,53 @@
                             aliasResourceName="um_adduser"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
                             aliasResourceName="um_addgroup"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.mashups.label"
+                            aliasResourceName="mw_mashups"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.portletdef.label"
+                            aliasResourceName="mw_select_portlet_def"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.ok.label"
+                            aliasResourceName="mw_ok"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.parameters.label"
+                            aliasResourceName="mw_params"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.parameters.edit.label"
+                            aliasResourceName="mw_edit_params"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.props.load.error.label"
+                            aliasResourceName="mw_prop_load_error"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modesperm.label"
+                            aliasResourceName="mw_modes_permissions"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modesperm.description.label"
+                            aliasResourceName="mw_modes_permissions_description"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modes.adduser.label"
+                            aliasResourceName="mw_modes_adduser"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modes.addgroup.label"
+                            aliasResourceName="mw_modes_addgroup"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.roles.adduser.label"
+                            aliasResourceName="mw_roles_adduser"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.roles.addgroup.label"
+                            aliasResourceName="mw_roles_addgroup"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.rolesperm.label"
+                            aliasResourceName="mw_roles_perm"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"
+                            aliasResourceName="mw_roles_description"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.finish.label"
+                            aliasResourceName="mw_finish"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
+                            aliasResourceName="mw_save_as"/>
+
+

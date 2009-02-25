@@ -33,6 +33,8 @@
 
 package org.jahia.ajax.gwt.client.messages;
 
+import java.util.MissingResourceException;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
 
@@ -82,6 +84,8 @@ public class Messages {
             if (value == null || "".equals(value.trim())){
                 value = defaultValue;
             }
+        } catch (MissingResourceException e) {
+            Log.debug("Can't retrieve [" + key + "]", e);
         } catch (Exception e) {
             Log.error("Can't retrieve [" + key + "]", e);
         }

@@ -88,7 +88,7 @@ public class GWTInitializer {
     }
 
     private static String generateInitializerStructure(HttpServletRequest request, HttpSession session, ProcessingContext processingContext) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         Locale locale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE);
         if (locale == null) {
             locale = Locale.ENGLISH;
@@ -109,7 +109,7 @@ public class GWTInitializer {
         }
 
         if (processingContext != null) {
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.append(processingContext.getScheme());
             buffer.append("://");
             buffer.append(processingContext.getServerName());
@@ -162,23 +162,22 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.ENGINE_LANGUAGE, enginelocale.toString());
         }
 
-        // add jahia parameter dictonary
+        // add jahia parameter dictionary
         buf.append("<script type='text/javascript'>\n");
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
         String context = request.getContextPath();
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/css/gwt/theme/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
         buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
 
-        /*toolbar set optim.*/
         return buf.toString();
     }
 
 
     private static String getJahiaGWTConfig(Map params) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("var " + JahiaGWTParameters.JAHIA_GWT_PARAMETERS + " = {\n");
         if (params != null) {
             Iterator keys = params.keySet().iterator();
@@ -201,7 +200,7 @@ public class GWTInitializer {
     }
 
     private static String buildServiceBaseEntrypointUrl(HttpServletRequest request) {
-        return new StringBuffer(request.getContextPath()).append("/gwt/").toString();
+        return new StringBuilder(request.getContextPath()).append("/gwt/").toString();
     }
 
 }

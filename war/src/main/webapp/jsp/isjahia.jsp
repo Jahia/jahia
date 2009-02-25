@@ -36,7 +36,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@page contentType="text/html" language="java" %>
-<%@page import ="java.util.*,java.io.*"%>
+<%@page import ="java.util.*,java.io.*,org.jahia.bin.Jahia"%>
 <%
   String jahiaPropFile = application.getRealPath("/WEB-INF/etc/config/jahia.properties");
   Properties jahiaProps = new Properties();
@@ -51,6 +51,7 @@
 <body>
   <!--
     Jahia-Release : <%=jahiaProps.getProperty("release")%>
+    Jahia <%=Jahia.VERSION%>.<%=Jahia.getPatchNumber()%> r<%=Jahia.getBuildNumber()%>
   -->
 </body>
 </html>

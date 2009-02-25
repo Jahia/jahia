@@ -36,5 +36,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../common/declarations.jspf" %>
-<template:include page="common/searchForm.jsp"/>
+<template:include page="modules/search/searchForm.jsp"/>
 <template:include page="common/nav/sideNav.jsp"/>

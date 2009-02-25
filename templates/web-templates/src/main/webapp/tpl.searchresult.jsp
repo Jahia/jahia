@@ -41,7 +41,7 @@
 <jsp:include page="positioning.jsp">
     <jsp:param name="mainArea" value="areas/searchResults.jsp"/>
     <jsp:param name="useGWT" value="true"/>
-    <jsp:param name="areaB" value="areas/simpleSearch_nav..jsp"/>
+    <jsp:param name="areaB" value="areas/simpleSearch_nav.jsp"/>
     <jsp:param name="footerNav" value="true"/>
     <jsp:param name="opensearch" value="true"/>
 </jsp:include>

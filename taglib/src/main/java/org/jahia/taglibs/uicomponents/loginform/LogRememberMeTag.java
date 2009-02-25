@@ -87,7 +87,7 @@ public class LogRememberMeTag extends AbstractJahiaTag {
                 buff.append("<label for=\"useCookie\" class=\"").append(labelCssClassName).append("\">").
                         append(label).append(":</label>\n");
                 buff.append("<input type=\"checkbox\" name=\"useCookie\" tabindex=\"").
-                        append(tabIndex).append("\"/");
+                        append(tabIndex).append("\"");
                 buff.append(css);
                 buff.append(" />\n");
                 out.print(buff.toString());

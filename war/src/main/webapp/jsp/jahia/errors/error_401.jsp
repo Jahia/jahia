@@ -82,7 +82,7 @@ function keyDown(e) {
             </tbody>
         </table>
         <br/>
-        <table align="center" width="100%" cellspacing="5px">
+        <table align="center" width="100%" cellspacing="5">
           <tr>
             <td class="alignCenter" colspan="2">
               <select name="loginChoice" tabindex="3">
@@ -104,7 +104,6 @@ function keyDown(e) {
                   <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
              </span>
           </span>
-        </div>
         </div>
         
         </ui:loginArea>

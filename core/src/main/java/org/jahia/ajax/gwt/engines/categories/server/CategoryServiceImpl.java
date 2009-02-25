@@ -326,8 +326,8 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
     public void createCategory(GWTJahiaCategoryNode gwtParentCategory, GWTJahiaCategoryNode newCategory) throws GWTJahiaServiceException {
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
-            // test if categoryy exist
-            if(Category.getCategory(gwtParentCategory.getKey()) != null){
+            // test if category exists
+            if(Category.getCategory(newCategory.getKey()) != null){
                 throw new GWTJahiaServiceException(getLocaleJahiaAdminResource("org.jahia.admin.categories.ManageCategories.editCategory.categoryAlreadyExists.label"));
             }
 

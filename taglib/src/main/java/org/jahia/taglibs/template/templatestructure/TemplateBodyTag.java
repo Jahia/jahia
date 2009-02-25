@@ -239,7 +239,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 buf.append("</div>");
             }
 
-            if (checkGAprofileOn(jData)) {
+            if (checkGAprofileOn(jData) && isLiveMode()) {
                 buf.append(gaTrackingCode(((JahiaData) request.getAttribute("org.jahia.data.JahiaData"))));
             }
             // Generate jahia_gwt_dictionnary

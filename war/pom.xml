@@ -159,19 +159,18 @@
                                 <jarFileName>jahia-gwt-${jahia.package.version}.jar</jarFileName>
                             </allowedJars>
                             <compileTargets>
-                                <value>org.jahia.ajax.gwt.module.resources.Resources</value>
                                 <value>org.jahia.ajax.gwt.template.general.edit.Edit</value>
                                 <value>org.jahia.ajax.gwt.template.general.live.Live</value>
-                              <value>org.jahia.ajax.gwt.template.guest.live.Live</value>
+                                <value>org.jahia.ajax.gwt.template.guest.live.Live</value>
                                 <value>org.jahia.ajax.gwt.template.layoutmanager.edit.Edit</value>
                                 <value>org.jahia.ajax.gwt.template.layoutmanager.live.Live</value>
                                 <value>org.jahia.ajax.gwt.template.mediagallery.edit.Edit</value>
                                 <value>org.jahia.ajax.gwt.template.mediagallery.live.Live</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.edit.Edit</value>
                                 <value>org.jahia.ajax.gwt.template.opensearch.live.Live</value>
-                                <!-- <value>org.jahia.ajax.gwt.template.sitemap.edit.Edit</value>-->
-                               <!-- <value>org.jahia.ajax.gwt.template.sitemap.live.Live</value>-->
-                              <value>org.jahia.ajax.gwt.module.acleditor.ACLEditor</value>
+                                <!--value>org.jahia.ajax.gwt.template.sitemap.edit.Edit</value>
+                                <value>org.jahia.ajax.gwt.template.sitemap.live.Live</value-->
+                                <value>org.jahia.ajax.gwt.module.acleditor.ACLEditor</value>
                                 <value>org.jahia.ajax.gwt.module.admin.Admin</value>
                                 <value>org.jahia.ajax.gwt.module.categorymanager.CategoryManager</value>
                                 <value>org.jahia.ajax.gwt.module.categorypicker.CategoryPicker</value>
@@ -182,6 +181,7 @@
                                 <value>org.jahia.ajax.gwt.module.jobreport.JobReport</value>
                                 <value>org.jahia.ajax.gwt.module.pagepicker.PagePicker</value>
                                 <value>org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay</value>
+                                <value>org.jahia.ajax.gwt.module.resources.Resources</value>
                                 <value>org.jahia.ajax.gwt.module.usergroup.UserGroupSelect</value>
                                 <value>org.jahia.ajax.gwt.module.versioning.VersionComparison</value>
                                 <value>org.jahia.ajax.gwt.module.workflow.WorkflowManager</value>

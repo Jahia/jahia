@@ -334,7 +334,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
                 String name = keys.next().toString();
                 Object value = dictionaryMap.get(name);
                 if (value != null) {
-                    s.append(name).append(":\"").append(value.toString()).append("\"");
+                    s.append("\"").append(name).append("\"").append(":\"").append(value.toString()).append("\"");
                     if (keys.hasNext()) {
                         s.append(",");
                     }

@@ -62,7 +62,8 @@ public class SubscribeButton extends HTML {
     }
 
     private static String getMessage(String key) {
-        return Messages.getNotEmptyResource("subscribebutton",key);
+        String fullKey = "subscriptions.button." + key;
+        return Messages.getNotEmptyResource(fullKey, fullKey);
     }
 
     private boolean confirmationRequired;

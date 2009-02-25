@@ -34,7 +34,6 @@
 package org.jahia.taglibs.utility.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.apache.log4j.Logger;
 
 /**
  * User: ktlili
@@ -42,7 +41,7 @@ import org.apache.log4j.Logger;
  * Time: 17:23:57
  */
 public class GWTMessageTag extends AbstractJahiaTag {
-    private static final transient Logger logger = Logger.getLogger(GWTMessageTag.class);
+
     private String resourceName;
     private String aliasResourceName;
 
@@ -65,7 +64,7 @@ public class GWTMessageTag extends AbstractJahiaTag {
 
     public int doStartTag() {
         // add message to the jahia_gwt_dictionary
-        addGwtDictionaryMessage(aliasResourceName,getResourceValue(resourceName, getProcessingContext()));       
+        addGwtDictionaryMessage(aliasResourceName != null ? aliasResourceName : resourceName, getResourceValue(resourceName, getProcessingContext()));       
         return SKIP_BODY;
     }
 

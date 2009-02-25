@@ -693,9 +693,9 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
                     } else {
                         if (siteLanguages.getSimpleValue().equals("all")) {
-                            url = "/Universal_Unique_Id/" + uuid[0] + "/";
+                            url = "/Unique_Universal_id/" + uuid[0] + "/";
                         } else {
-                            url = "/Universal_Unique_Id/" + uuid[0] + "/" + siteLanguages.getSimpleValue() + "/";
+                            url = "/Unique_Universal_id/" + uuid[0] + "/" + siteLanguages.getSimpleValue() + "/";
                         }
                         gaParams.setSiteORpage(url);
                         statType = pageStats.getSimpleValue().toString();

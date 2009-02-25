@@ -225,8 +225,7 @@ public class ResourceBundleTag extends AbstractJahiaTag {
                                 + name);
             }
         }
-        I18nBean i18n = locale != null ? getI18n(getResourceBundle(), locale)
-                : getI18n();
+        I18nBean i18n = locale != null ? getI18n(getResourceBundle(), locale) : getI18n();
         resValue = i18n.get(messageKey, defaultValue);
         if (resValue != null && resValue.contains("{")) {
             try {

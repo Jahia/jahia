@@ -830,14 +830,7 @@ public class JahiaResourceBundle {
                                    final String resName,
                                    final Locale locale,
                                    final String defaultValue) {
-        String resource = null;
-        try {
-            resource = res.getString(resName);
-        } catch (Exception ex) {
-            logger.warn("Resource [" + resName +
-                    "] not found in " + res.getClass() + " using locale [" +
-                    locale + "]");
-        }
+        String resource = getString(res, resName, locale);
 
         if (resource != null && resource.length() > 0) {
             return resource;

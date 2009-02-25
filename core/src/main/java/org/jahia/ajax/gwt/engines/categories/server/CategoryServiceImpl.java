@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -53,6 +53,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.gui.GuiBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.events.JahiaEvent;
+import org.jahia.resourcebundle.JahiaResourceBundle;
 
 
 import java.util.*;
@@ -66,7 +67,7 @@ import java.util.*;
 public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements CategoryService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(CategoryServiceImpl.class);
 
-    public List<GWTJahiaCategoryNode> ls(GWTJahiaCategoryNode gwtJahiaCategoryNode,String categoryLocale) throws GWTJahiaServiceException {
+    public List<GWTJahiaCategoryNode> ls(GWTJahiaCategoryNode gwtJahiaCategoryNode, String categoryLocale) throws GWTJahiaServiceException {
         List<GWTJahiaCategoryNode> gwtJahiaNodes = new ArrayList<GWTJahiaCategoryNode>();
         try {
             final JahiaUser currentUser = getRemoteJahiaUser();
@@ -82,8 +83,8 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
                 parentCategory = Category.getCategory(gwtJahiaCategoryNode.getKey(), currentUser);
                 childrenCategories = parentCategory.getChildCategories(currentUser);
             }
-            String parentKey="";
-            if(parentCategory!=null) {
+            String parentKey = "";
+            if (parentCategory != null) {
                 parentKey = parentCategory.getKey();
             }
 
@@ -95,8 +96,8 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
                 // add category children
                 for (int i = 0; i < sortedChildrenCategories.size(); i++) {
                     final Category cat = it.next();
-                    if (cat!=null) {
-                        GWTJahiaCategoryNode gwtJahiaNode = createGWTJahiaCategoryNode(parentKey, cat, false,categoryLocale);
+                    if (cat != null) {
+                        GWTJahiaCategoryNode gwtJahiaNode = createGWTJahiaCategoryNode(parentKey, cat, false, categoryLocale);
                         logger.debug(gwtJahiaNode.getName() + "," + gwtJahiaNode.getKey() + "," + gwtJahiaNode.getPath());
                         gwtJahiaNodes.add(gwtJahiaNode);
                     }
@@ -256,6 +257,10 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
      * @throws GWTJahiaServiceException
      */
     public void paste(List<GWTJahiaCategoryNode> copiedNode, GWTJahiaCategoryNode newParentJahiaCategoryNode, boolean cut) throws GWTJahiaServiceException {
+        if (copiedNode == null) {
+            logger.debug("Copied node is not set ---> cancle paste action");
+            return;
+        }
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
             Category newParentCat = Category.getCategory(newParentJahiaCategoryNode.getKey(), currentUser);
@@ -304,6 +309,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
      * @param path
      * @return
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
+     *
      */
     public String getDownloadPath(String path) throws GWTJahiaServiceException {
         // No implemented
@@ -320,6 +326,11 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
     public void createCategory(GWTJahiaCategoryNode gwtParentCategory, GWTJahiaCategoryNode newCategory) throws GWTJahiaServiceException {
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
+            // test if categoryy exist
+            if(Category.getCategory(gwtParentCategory.getKey()) != null){
+                throw new GWTJahiaServiceException(getLocaleJahiaAdminResource("org.jahia.admin.categories.ManageCategories.editCategory.categoryAlreadyExists.label"));
+            }
+
             final Category parentCategory = Category.getCategory(gwtParentCategory.getKey(), currentUser);
 
             // create category
@@ -417,7 +428,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
 
             JahiaBaseACL baseACL = cat.getACL();
             final JahiaBaseACL baseACL1 = ACLHelper.saveACL(acl, baseACL, false);
-            ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(new JahiaEvent(cat,retrieveParamBean(),baseACL1));
+            ServicesRegistry.getInstance().getJahiaEventService().fireSetRights(new JahiaEvent(cat, retrieveParamBean(), baseACL1));
         } catch (JahiaException e) {
             logger.error("Unable to set ACL for category [" + node + "] due to:", e);
         }
@@ -486,12 +497,12 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
      * @return
      * @throws JahiaException
      */
-    private GWTJahiaCategoryNode createGWTJahiaCategoryNode (String parentKey, Category category, boolean loadProperties, String categoryLocale) throws JahiaException {
+    private GWTJahiaCategoryNode createGWTJahiaCategoryNode(String parentKey, Category category, boolean loadProperties, String categoryLocale) throws JahiaException {
         final JahiaUser currentUser = getRemoteJahiaUser();
         GWTJahiaCategoryNode gwtJahiaNode = new GWTJahiaCategoryNode();
 
         Locale engineLocale = getEngineLocale();
-        if(categoryLocale!= null) {
+        if (categoryLocale != null) {
             engineLocale = LanguageCodeConverters.languageCodeToLocale(categoryLocale);
         }
         String name = category.getTitle(engineLocale);

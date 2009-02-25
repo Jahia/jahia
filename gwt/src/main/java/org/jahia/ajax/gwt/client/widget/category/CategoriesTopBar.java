@@ -72,6 +72,7 @@ public class CategoriesTopBar extends TopBar {
         TextToolItem cut = new TextToolItem();
         TextToolItem remove = new TextToolItem();
         paste = new TextToolItem();
+        Formatter.disableTextToolItem(paste);
         TextToolItem exportCategories = new TextToolItem();
         TextToolItem importCategories = new TextToolItem();
         TextToolItem newCategory = new TextToolItem();

@@ -53,7 +53,7 @@
 #
 # $Id: catalina.sh 498126 2007-01-20 15:38:39Z markt $
 # -----------------------------------------------------------------------------
-export LD_LIBRARY_PATH=/home/jahia/yourkit/yjp-7.0.7/bin/linux-amd64:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/home/jahia/yourkit/yjp-8.0/bin/linux-x86-64:$LD_LIBRARY_PATH
 export JAVA_TOOL_OPTIONS=-agentlib:yjpagent=sessionname=QA_242  $JAVA_TOOL_OPTIONS
 
 

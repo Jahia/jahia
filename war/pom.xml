@@ -321,12 +321,12 @@
         <version>${jahia.package.version}</version>
         <type>war</type>
       </dependency>
-      <dependency>
+<!--      <dependency>
         <groupId>org.jahia.templates</groupId>
         <artifactId>sandbox-web-templates</artifactId>
         <version>${jahia.package.version}</version>
         <type>war</type>
-      </dependency>
+      </dependency>-->
     <dependency>
       <groupId>org.jahia.templates</groupId>
       <artifactId>web-templates</artifactId>

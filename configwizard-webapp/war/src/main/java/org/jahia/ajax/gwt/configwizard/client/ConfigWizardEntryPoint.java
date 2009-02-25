@@ -44,6 +44,6 @@ import com.google.gwt.core.client.EntryPoint;
 public class ConfigWizardEntryPoint implements EntryPoint {
 
     public void onModuleLoad() {
-        new WorkInProgress();
+        WorkInProgress.init();
     }
 }

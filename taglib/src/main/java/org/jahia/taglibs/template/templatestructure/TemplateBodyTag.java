@@ -35,8 +35,6 @@ package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.params.AdvPreviewSettings;
@@ -201,10 +199,9 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                     buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
                 }
 
-                // resource bunlde var fo toolbar
                 if (isLogged()) {
-
-                    // jahia module entry for toobar
+                    addToolbarMessageResources();
+                    // jahia module entry for toolbar
                     buf.append("\n\t<div id=\"gwt-jahiatoolbar\" class=\"jahia-admin-gxt " + JahiaType.TOOLBARS_MANAGER + "-gxt\" jahiatype=\"").append(JahiaType.TOOLBARS_MANAGER).append("\" content=\"").append(DEFAULT_CONTENT).append("\"></div>\n");
                 }
             }
@@ -215,6 +212,14 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
             logger.error("Error while writing to JspWriter", e);
         }
         return EVAL_BODY_INCLUDE;
+    }
+
+    private void addToolbarMessageResources() {
+        // add messages required by the subscriptions toolbar
+        addGwtDictionaryMessage("subscriptions.toolbar.page.windowTitle", getI18nMessage("subscriptions.toolbar.page.windowTitle"));
+        addGwtDictionaryMessage("subscriptions.toolbar.page.event.contentPublished", getI18nMessage("subscriptions.toolbar.page.event.contentPublished"));
+        addGwtDictionaryMessage("subscriptions.toolbar.page.event.commentAdded", getI18nMessage("subscriptions.toolbar.page.event.commentAdded"));
+        addGwtDictionaryMessage("subscriptions.toolbar.page.includeChildren", getI18nMessage("subscriptions.toolbar.page.includeChildren"));
     }
 
     /**

@@ -84,6 +84,10 @@ public class SubscriptionsJahiaToolItemProvider extends
 
     private Window window;
 
+    private static String getMessage(String key, String defaultMessage) {
+        return Messages.getNotEmptyResource("subscriptions.toolbar.page." + key, defaultMessage);
+    }
+
     /**
      * Initializes an instance of this class.
      */
@@ -157,7 +161,7 @@ public class SubscriptionsJahiaToolItemProvider extends
 
         for (SubscriptionInfo subscriptionInfo : subscriptions) {
             CheckBox cb = new CheckBox();
-            cb.setBoxLabel(Messages.getNotEmptyResource(subscriptionInfo
+            cb.setBoxLabel(getMessage("event." + subscriptionInfo
                     .getEvent(), subscriptionInfo.getEvent()));
             cb.setName(subscriptionInfo.getEvent());
             cb
@@ -169,7 +173,7 @@ public class SubscriptionsJahiaToolItemProvider extends
 
         for (SubscriptionInfo subscriptionInfo : subscriptions) {
             CheckBox cb = new CheckBox();
-            cb.setBoxLabel(Messages.getNotEmptyResource(
+            cb.setBoxLabel(getMessage(
                     "includeChildren", "include child pages"));
             cb.setName(subscriptionInfo.getEvent() + "_includeChildren");
             cb.setValue(subscriptionInfo.isIncludeChildren());
@@ -182,11 +186,11 @@ public class SubscriptionsJahiaToolItemProvider extends
         panel.add(eventsContainer);
 
         window.add(panel);
-        window.setHeading(Messages.getNotEmptyResource(
-                "subscriptions.windowTitle",
+        window.setHeading(getMessage(
+                "windowTitle",
                 "Subscribe to following events on the current page"));
 
-        save = new Button(Messages.getNotEmptyResource("save", "Save"));
+        save = new Button(getMessage("button.save", "Save"));
         save.addSelectionListener(new SelectionListener<ComponentEvent>() {
 
             public void componentSelected(ComponentEvent event) {
@@ -194,7 +198,7 @@ public class SubscriptionsJahiaToolItemProvider extends
             }
         });
 
-        cancel = new Button(Messages.getNotEmptyResource("cancel",
+        cancel = new Button(getMessage("button.cancel",
                 "Cancel"));
         cancel.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {

@@ -61,14 +61,14 @@
 <c:set target="${attributes}" property="confirmationRequired" value="${h:default(confirmationRequired, 'false')}"/>
 <c:if test="${empty requestScope['org.jahia.tags.subscribeButton.resourcesIncluded']}">
     <c:set var="org.jahia.tags.subscribeButton.resourcesIncluded" value="true" scope="request"/>
-    <utility:gwtResourceBundle resourceName="operation.failure"/>
-    <utility:gwtResourceBundle resourceName="provideEmailAddress"/>
-    <utility:gwtResourceBundle resourceName="subscribe.title"/>
-    <utility:gwtResourceBundle resourceName="subscribe.confirm"/>
-    <utility:gwtResourceBundle resourceName="subscribe.success"/>
-    <utility:gwtResourceBundle resourceName="subscribe.success.confirmationEmail"/>
-    <utility:gwtResourceBundle resourceName="unsubscribe.confirm"/>
-    <utility:gwtResourceBundle resourceName="unsubscribe.success"/>
-    <utility:gwtResourceBundle resourceName="unsubscribe.title"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.operation.failure"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.provideEmailAddress"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.title"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.confirm"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.success"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.subscribe.success.confirmationEmail"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.unsubscribe.confirm"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.unsubscribe.success"/>
+    <utility:gwtResourceBundle resourceName="subscriptions.button.unsubscribe.title"/>
 </c:if>
 <span ${h:attributes(attributes)}></span>

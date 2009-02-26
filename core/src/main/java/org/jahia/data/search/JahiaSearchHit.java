@@ -35,13 +35,19 @@
 
 package org.jahia.data.search;
 
-import org.apache.commons.lang.math.NumberUtils;
-import org.jahia.content.*;
-import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.search.ParsedObject;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.jcr.Node;
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.jahia.content.ContentContainerKey;
+import org.jahia.content.ContentContainerListKey;
+import org.jahia.content.ContentFieldKey;
+import org.jahia.content.ContentPageKey;
+import org.jahia.content.ObjectKey;
+import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.search.ParsedObject;
 
 /**
  * This class defines what does a search "hit" looks like.
@@ -67,6 +73,7 @@ public class JahiaSearchHit implements JahiaSearchHitInterface
     private int         pageId;
     private List<String>   languageCodes = new ArrayList<String>();
     private ObjectKey   objectKey;
+    private String      containerType;    
 
     // the sort order
     private int sortOrder = 0;
@@ -102,6 +109,14 @@ public class JahiaSearchHit implements JahiaSearchHitInterface
     public JahiaSearchHit(ParsedObject aParsedObject){
         this.parsedObject = aParsedObject;
     }
+    
+    /**
+    *
+    * @param aNode Node
+    */
+   public JahiaSearchHit(Node aNode){
+       this.object = aNode;
+   }    
 
     public String getId() {
         return id;
@@ -269,6 +284,14 @@ public class JahiaSearchHit implements JahiaSearchHitInterface
 
     public void setSortOrder(int aSortOrder) {
         this.sortOrder = aSortOrder;
+    }
+
+    public String getContainerType() {
+        return containerType;
+    }
+
+    public void setContainerType(String containerType) {
+        this.containerType = containerType;
     }
 
 }

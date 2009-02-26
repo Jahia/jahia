@@ -51,7 +51,7 @@
                 <item>
                     <title><c:out value="${newsTitle}"/></title>
                     <description><![CDATA[<c:out value="${newsDesc}"/>]]></description>
-                    <guid isPermaLink="false"><c:out value="${url}"/>#ContentContainer_${newsContainer.ID}</guid>
+                    <guid isPermaLink="false">${url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}</guid>
                     <template:getContentObjectCategories objectKey="ContentContainer_${newsContainer.ID}" asSet="true"
                                                         valueID="categories"/>
                     <c:forEach items="${categories}" var="category">
@@ -59,7 +59,7 @@
                     </c:forEach>
                     <pubDate><c:out value="${newsDate}"/></pubDate>
                     <dc:date><c:out value="${newsDate}"/></dc:date>
-                    <link><c:out value="${url}"/>#ContentContainer_${newsContainer.ID}</link>
+                    <link>${url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}</link>
                 </item>
             </template:container>
         </template:containerList>

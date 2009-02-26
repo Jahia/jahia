@@ -42,7 +42,7 @@
     <resource>src/main/resources/jahiatemplates/${artifactId}.properties</resource>
     <resource>src/main/webapp/definitions.cnd</resource>
     <resource>src/main/webapp/home.jsp</resource>    
-    <resource>src/main/webapp/rules.dsrl</resource>    
+    <resource>src/main/webapp/rules.drl</resource>    
     <resource>src/main/webapp/skins/</resource>    
     <resource>src/main/webapp/theme/</resource>    
     <resource>src/main/webapp/WEB-INF/templates.xml</resource>

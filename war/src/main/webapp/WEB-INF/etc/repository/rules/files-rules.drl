@@ -2,7 +2,8 @@
 package org.jahia.services.content.automation
 
 #list any import classes here.
-import org.jahia.services.content.JCRStoreProvider
+import org.jahia.services.content.automation.*
+import org.jahia.services.content.*
 import javax.jcr.observation.Event
 import org.apache.log4j.Logger
 

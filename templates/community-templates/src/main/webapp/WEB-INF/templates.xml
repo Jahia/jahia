@@ -41,7 +41,7 @@
     <thumbnail>images/preview.gif</thumbnail>
     <resource-bundle>jahiatemplates.Community_templates</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
-    <rules-file>rules.dsrl</rules-file>
+    <rules-file>rules.drl</rules-file>
     <common-pages>
         <my-settings>mysettings.jsp</my-settings>
         <search-results>searchresult.jsp</search-results>

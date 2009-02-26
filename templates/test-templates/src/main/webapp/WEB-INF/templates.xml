@@ -44,7 +44,7 @@
     <resource-bundle>jahiatemplates.Test_templates</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
     <definitions-file>definitions.grp</definitions-file>
-    <rules-file>rules.dsrl</rules-file>
+    <rules-file>rules.drl</rules-file>
     <templates default="Simple" homepage="TestUnitHome">
         <template name="TestUnitHome" display-name="template.name.testUnitHome" filename="home/testunitshome.jsp"
                   visible="false" page-type="test_templates:home"/>
@@ -129,7 +129,10 @@
         <template name="ContentFormHandler" display-name="template.name.formhandler" filename="contentedit/formhandler.jsp" 
                   page-type="test_templates:ContentFormHandler" description="description.template.formhandler"/>                  
         <template name="SameListViews" display-name="template.name.sameListViews" filename="contentview/samelistviews.jsp" 
-                  page-type="test_templates:samelistviews" description="description.template.samelistviews"/>           
+                  page-type="test_templates:samelistviews" description="description.template.samelistviews"/>                             
+        <template name="Form" display-name="template.name.form" filename="form/form.jsp"
+                  page-type="test_templates:form" description="description.template.form"/>
+                          
         <!-- remove inherited -->
         <template name="FAQ" display-name="template.name.faq" filename="faq.jsp" visible="false"
                   page-type="core_templates:faq"/>
@@ -143,8 +146,6 @@
                   page-type="core_templates:full"/>
         <template name="LayoutManager" display-name="template.name.layoutManager" filename="layoutManager.jsp"
                   visible="false" page-type="core_templates:layoutmanager"/>        
-        <template name="Form" display-name="template.name.form" filename="form/form.jsp"
-                  page-type="test_templates:form" description="description.template.form"/>                  
 
     </templates>
 </template-set>

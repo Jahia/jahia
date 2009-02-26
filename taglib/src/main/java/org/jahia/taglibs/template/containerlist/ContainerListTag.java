@@ -324,26 +324,34 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         ServletRequest request = pageContext.getRequest();
         jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
-        ContainerTag parentContainerTag = (ContainerTag) findAncestorWithClass(this, ContainerTag.class, request);
-        final JahiaContainer parentContainer = parentContainerTag != null ? parentContainerTag.getContainer() : (JahiaContainer) request.getAttribute("parentContainer");
-
-        if (parentContainer != null) {
-            try {
-                this.parentListName = parentContainer.getDefinition().getName();
-                if (!retrieveContainerList(parentContainer)) {
-                    return SKIP_BODY;
+        if (getName() != null && getName().length() > 0) {
+            ContainerTag parentContainerTag = (ContainerTag) findAncestorWithClass(
+                    this, ContainerTag.class, request);
+            final JahiaContainer parentContainer = parentContainerTag != null ? parentContainerTag
+                    .getContainer()
+                    : (JahiaContainer) request.getAttribute("parentContainer");
+            
+            if (parentContainer != null) {
+                try {
+                    this.parentListName = parentContainer.getDefinition()
+                            .getName();
+                    if (!retrieveContainerList(parentContainer)) {
+                        return SKIP_BODY;
+                    }
+                } catch (JahiaException je) {
+                    logger.error(
+                            "Error while retrieving container list for parent container "
+                                    + parentContainer.getID(), je);
                 }
-            } catch (JahiaException je) {
-                logger.error("Error while retrieving container list for parent container " + parentContainer.getID(), je);
-            }
-        } else {
-            // we found no parent, let's try to load a top-level container list.
-            try {
-                if (!retrieveContainerList()) {
-                    return SKIP_BODY;
+            } else {
+                // we found no parent, let's try to load a top-level container list.
+                try {
+                    if (!retrieveContainerList()) {
+                        return SKIP_BODY;
+                    }
+                } catch (JahiaException je) {
+                    logger.error("Error:", je);
                 }
-            } catch (JahiaException je) {
-                logger.error("Error:", je);
             }
         }
         if (getId() != null) {
@@ -553,7 +561,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
             list = jData.containers().ensureContainerList(list.getDefinition(), parentContainer.getPageID(), parentContainer.getID(), getId());
         }
         if (list != null) {
-            list.getFactoryProxy().setlistViewId(getId());
+            list.getFactoryProxy().setListViewId(getId());
             setContainerList(list);
             setSizeAndOffsetSettings();
             // Output a warning in html and in console if this container list is not a subdefintion of its parent
@@ -613,7 +621,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     protected boolean retrieveContainerList() throws JahiaException {
         JahiaContainerList list = getContainerList(jData, getName());
         if (list != null && list.getID() != 0) {
-            list.getFactoryProxy().setlistViewId(getId());
+            list.getFactoryProxy().setListViewId(getId());
             setContainerList(list);
             setSizeAndOffsetSettings();
         } else {

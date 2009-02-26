@@ -73,7 +73,7 @@ public class RulesListener extends DefaultEventListener {
     private RuleBase ruleBase;
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
-    private Set ruleFiles;
+    private Set<String> ruleFiles;
     private String serverId;
 
     public RulesListener() {
@@ -101,11 +101,31 @@ public class RulesListener extends DefaultEventListener {
         return null;
     }
 
-    public Set getRuleFiles() {
+    public Set<String> getRuleFiles() {
         return ruleFiles;
     }
+    
+    private StatelessSession getStatelessSession (Map<String, Object> globals) {
+        StatelessSession session = ruleBase.newStatelessSession();
+        for (Map.Entry<String, Object> entry : globals.entrySet()) {
+            session.setGlobal(entry.getKey(), entry.getValue());
+        }
+        return session;
+    }
+    
+    public void executeRules(Object fact, Map<String, Object> globals) {
+        getStatelessSession(globals).execute(fact);
+    }
+    
+    public void executeRules(Object[] facts, Map<String, Object> globals) {
+        getStatelessSession(globals).execute(facts);
+    }
+    
+    public void executeRules(Collection<?> facts, Map<String, Object> globals) {
+        getStatelessSession(globals).execute(facts);
+    }            
 
-    public void setRuleFiles(Set ruleFiles) {
+    public void setRuleFiles(Set<String> ruleFiles) {
         this.ruleFiles = ruleFiles;
     }
 
@@ -133,8 +153,7 @@ public class RulesListener extends DefaultEventListener {
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
             PackageBuilder builder = new PackageBuilder(cfg);
-            for (Iterator iterator = ruleFiles.iterator(); iterator.hasNext();) {
-                String s = (String) iterator.next();
+            for (String s : ruleFiles) {
                 InputStreamReader drl = new InputStreamReader(new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + s));
                 InputStreamReader dsl = new InputStreamReader(new FileInputStream(SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/rules/rules.dsl"));
                 builder.addPackageFromDrl(drl, dsl);
@@ -185,7 +204,7 @@ public class RulesListener extends DefaultEventListener {
                 logger.info("Rules for "+pkg.getName() + " updated.");
             } else {
                 logger.error("---------------------------------------------------------------------------------");
-                logger.error("Errors when compiling rules : " + errors.toString());
+                logger.error("Errors when compiling rules in " + dsrlFile + " : " + errors.toString());
                 logger.error("---------------------------------------------------------------------------------");
             }
         } catch (ClassNotFoundException e) {
@@ -206,7 +225,7 @@ public class RulesListener extends DefaultEventListener {
             }
         }
 
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<Object>();
 
         try {
             List<Event> events = new ArrayList<Event>();
@@ -273,7 +292,7 @@ public class RulesListener extends DefaultEventListener {
                                 if (!propertiesToIgnore.contains(propertyName)) {
                                     try {
                                         Node n = (Node) s.getItem(nodePath);
-                                        NodeWrapper rn = (NodeWrapper) eventsMap.get(n.getUUID());
+                                        NodeWrapper rn = eventsMap.get(n.getUUID());
                                         if (rn == null) {
                                             rn = new NodeWrapper(n);
                                             eventsMap.put(n.getUUID(), rn);
@@ -298,7 +317,7 @@ public class RulesListener extends DefaultEventListener {
                         logger.info("Executing rules for " + list);
                     }
 
-                    final List delayedUpdates = new ArrayList();
+                    final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
                     try {
                         Node r;
@@ -322,21 +341,18 @@ public class RulesListener extends DefaultEventListener {
                     
                     AggregatedNotificationEvent aggregatedNotificationEvent = new AggregatedNotificationEvent();
                     
-                    StatelessSession session = ruleBase.newStatelessSession();
+                    Map<String, Object> globals = new HashMap<String, Object>();
 
-//                    session.addEventListener(new DebugRuleFlowEventListener());
-//                    session.addEventListener(new DebugAgendaEventListener());
-//                    session.addEventListener(new DebugWorkingMemoryEventListener());
-
-                    session.setGlobal("service", Service.getInstance());
-                    session.setGlobal("imageService", ImageService.getInstance());
-                    session.setGlobal("extractionService", ExtractionService.getInstance());
-                    session.setGlobal("logger", logger);
-                    session.setGlobal("user", new User(username));
-                    session.setGlobal("provider", provider);
-                    session.setGlobal("delayedUpdates", delayedUpdates);
-                    session.setGlobal("aggregatedNotificationEvent", aggregatedNotificationEvent);
-                    session.execute(list);
+                    globals.put("service", Service.getInstance());
+                    globals.put("imageService", ImageService.getInstance());
+                    globals.put("extractionService", ExtractionService.getInstance());
+                    globals.put("logger", logger);
+                    globals.put("user", new User(username));
+                    globals.put("provider", provider);
+                    globals.put("delayedUpdates", delayedUpdates);
+                    globals.put("aggregatedNotificationEvent", aggregatedNotificationEvent);
+                    
+                    executeRules(list, globals);
 
                     if (list.size()>3) {
                         logger.info("Rules executed for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
@@ -355,8 +371,8 @@ public class RulesListener extends DefaultEventListener {
                         NotificationService.getInstance().fireEvents(aggregatedNotificationEvent.getEvents());
                     }
                     
-                    Set objects = new HashSet();
-                    for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+                    Set<Object> objects = new HashSet<Object>();
+                    for (Iterator<Object> iterator = list.iterator(); iterator.hasNext();) {
                         Object o = iterator.next();
                         if (o instanceof NodeWrapper) {
                             objects.add(o);
@@ -364,7 +380,7 @@ public class RulesListener extends DefaultEventListener {
                             objects.add(((PropertyWrapper) o).getNode());
                         }
                     }
-                    for (Iterator iterator = objects.iterator(); iterator.hasNext();) {
+                    for (Iterator<Object> iterator = objects.iterator(); iterator.hasNext();) {
                         NodeWrapper nodeWrapper = (NodeWrapper) iterator.next();
                         Node n = nodeWrapper.getNode();
                         if (n.isNodeType(Constants.MIX_VERSIONABLE)) {
@@ -383,15 +399,15 @@ public class RulesListener extends DefaultEventListener {
 
     class DelayedUpdatesTimerTask extends TimerTask {
         private String username;
-        private List updates;
+        private List<Updateable> updates;
         private int count = 1;
 
-        DelayedUpdatesTimerTask(String username, List updates) {
+        DelayedUpdatesTimerTask(String username, List<Updateable> updates) {
             this.username = username;
             this.updates = updates;
         }
 
-        DelayedUpdatesTimerTask(String username, List updates, int count) {
+        DelayedUpdatesTimerTask(String username, List<Updateable> updates, int count) {
             this.username = username;
             this.updates = updates;
             this.count = count;
@@ -401,10 +417,9 @@ public class RulesListener extends DefaultEventListener {
             try {
                 Session s = provider.getSystemSession(username);
                 try {
-                    List newDelayed = new ArrayList();
+                    List<Updateable> newDelayed = new ArrayList<Updateable>();
 
-                    for (Iterator iterator = updates.iterator(); iterator.hasNext();) {
-                        Updateable p = (Updateable) iterator.next();
+                    for (Updateable p : updates) {
                         p.doUpdate(s, newDelayed);
                     }
                     s.save();

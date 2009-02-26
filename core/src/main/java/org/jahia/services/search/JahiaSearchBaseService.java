@@ -62,7 +62,6 @@ import org.compass.core.mapping.ResourcePropertyMapping;
 import org.compass.core.mapping.rsem.RawResourceMapping;
 import org.compass.core.mapping.rsem.RawResourcePropertyMapping;
 import org.compass.core.spi.InternalCompass;
-import org.compass.core.util.ClassUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -96,6 +95,8 @@ import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.containers.JahiaContainersService;
+import org.jahia.services.content.automation.RulesListener;
+import org.jahia.services.content.automation.URLService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
@@ -2365,8 +2366,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             hitCollector);
                 }
             }
-            return result;
-        }
+        } else {
         MultiReader reader = null;
         Set<LuceneQueryRequest> openRequests = new HashSet<LuceneQueryRequest>();
         try {
@@ -2428,6 +2428,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 ((LuceneQueryRequest)it.next()).close();
             }*/
         }
+        }
         return result;
     }
 
@@ -2457,7 +2458,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     queryString, jParams, languageCodes, searchResultBuilder);
         }
         if (result == null) {
-            result = new JahiaSearchResult(searchResultBuilder);
+            result = executeURLModificationRules(new JahiaSearchResult(searchResultBuilder), jParams);
         }
         return result;
     }
@@ -2501,9 +2502,19 @@ public class JahiaSearchBaseService extends JahiaSearchService
         JahiaSearchResult result = pageSearcher.search(queryString, jcrQueryString, jParams);
 
         if (result == null) {
-            result = new JahiaSearchResult(searchResultBuilder);
+            result = executeURLModificationRules(new JahiaSearchResult(searchResultBuilder), jParams);
         }
         return result;
+    }
+    
+    protected static JahiaSearchResult executeURLModificationRules(
+            JahiaSearchResult searchResult, ProcessingContext jParams) {
+        Map<String, Object> globals = new HashMap<String, Object>();
+        globals.put("processingContext", jParams);
+        globals.put("urlService", URLService.getInstance());        
+        RulesListener.getInstance("jahia").executeRules((Collection<?>)searchResult.results(),
+                globals);
+        return searchResult;
     }
 
     public void addShutdownable(String name,Shutdownable s){

@@ -42,6 +42,7 @@
     <resource-bundle>jahiatemplates.Web_templates</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
     <definitions-file>definitions.grp</definitions-file>
+    <rules-file>rules.drl</rules-file>
     <common-pages>
         <search-results>tpl.searchresult.jsp</search-results>
     </common-pages>

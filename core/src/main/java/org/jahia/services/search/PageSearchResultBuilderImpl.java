@@ -203,9 +203,11 @@ public class PageSearchResultBuilderImpl extends
                     ContentObject contentObject = (ContentObject) ContentObject
                             .getInstanceAsObject(ObjectKey.getInstance(objectKey));
                     if (processObject(contentObject, jParams)) {
+                        info.setObject(contentObject);
                         int pageId = 0;
                         if (contentObject instanceof ContentContainer) {
                             pageId = contentObject.getPageID();
+                            info.setContainerType(parsedObject.getValue(JahiaSearchConstant.CONTAINER_DEFINITION_PRIMARYTYPE));
                         } else if (contentObject instanceof ContentPage) {
                             pageId = contentObject.getID();
                         }
@@ -440,7 +442,7 @@ public class PageSearchResultBuilderImpl extends
             Collections.sort(result.results());
         }
 
-        return result;
+        return JahiaSearchBaseService.executeURLModificationRules(result, jParams);
     }
     
     private boolean shouldAddHit (JahiaSearchHit info, JahiaSearchResult result, String languageCode) {

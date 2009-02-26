@@ -1,0 +1,27 @@
+###############################################################################
+#created on: 18 feb. 2009
+package webtemplates
+
+#list any import classes here.
+import org.jahia.services.content.automation.*
+import org.jahia.content.*
+import org.jahia.data.search.*
+import org.jahia.params.*
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global URLService urlService
+global ProcessingContext processingContext
+
+###############################################################################
+
+rule "Search result hit"
+  when
+        A search result hit is present
+            - the container is of type web_templates:newsContainer
+  then
+        Append URL path "/template/tpl.newsDetail"
+        Append URL query-parameter "queryPath" with ((ContentObject)searchHit.getObject()).getJCRPath(processingContext)   
+end

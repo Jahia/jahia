@@ -5,7 +5,7 @@
                             http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
         version="2.0">
     <description>Provides a tag library for declaring JSR-283 based Query Object Model.</description>
-    <display-name>Jahia Content Tag Library</display-name>
+    <display-name>Jahia Query Tag Library</display-name>
     <tlib-version>6.0</tlib-version>
     <short-name>Jahia_Query_Tag_Library</short-name>
     <uri>http://www.jahia.org/tags/queryLib</uri>

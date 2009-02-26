@@ -119,13 +119,6 @@ public class SkeletonAggregatorValve implements Valve {
              *  restrict it for now. We might be interested in doing more
              *  work here in order to cache more often.
              */
-            SkeletonCache skeletonCache;
-            try {
-                // Get the HTML cache instance
-                skeletonCache = ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance();
-            } catch (JahiaInitializationException ex) {
-                throw new PipelineException(ex);
-            }
             // Get the language code
             String curLanguageCode = processingContext.getLocale().toString();
             GroupCacheKey entryKey = null;
@@ -139,6 +132,15 @@ public class SkeletonAggregatorValve implements Valve {
                 // This page is cacheable
                 if (processingContext.getCacheExpirationDelay() == -1 ||
                     processingContext.getCacheExpirationDelay() > 0) iscacheable = true;
+
+                SkeletonCache skeletonCache;
+                try {
+                    // Get the HTML cache instance
+                    skeletonCache = ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance();
+                } catch (JahiaInitializationException ex) {
+                    throw new PipelineException(ex);
+                }
+                
                 if (service == null) service = ServicesRegistry.getInstance().getCacheKeyGeneratorService();
                 watch.start("computeSkeletonEntryKeyWithGroups");
                 String queryString = processingContext.getQueryString();

@@ -93,7 +93,7 @@ public class SkeletonParseAndStoreValve implements Valve {
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         ProcessingContext processingContext = (ProcessingContext) context;
-        if (processingContext.settings().isOutputContainerCacheActivated()) {
+        if (ProcessingContext.GET_METHOD == processingContext.getHttpMethod() && processingContext.settings().isOutputContainerCacheActivated()) {
             try {
                 // Let's retrieve the generated content from the response wrapper object.
                 String generatedOutput = processingContext.getGeneratedOutput();
@@ -117,7 +117,7 @@ public class SkeletonParseAndStoreValve implements Valve {
                                      generatedOutput,
                                      curContentType);
             } catch (java.io.IOException ioe) {
-                if (logger.isDebugEnabled()) logger.debug("Error while retrieving generated output :", ioe);
+                if (logger.isDebugEnabled()) logger.debug("Error while retrieving generated output: " + ioe.getMessage(), ioe);
             }
         }
         ValveContext.valveResources.set(null);

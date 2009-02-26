@@ -37,7 +37,6 @@
 //
 package org.jahia.data.search;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
@@ -75,15 +74,15 @@ public class JahiaSearchResult
     /**
      * List of JahiaSearchHit
      */
-    private SoftReference<List<JahiaSearchHit>> results = new SoftReference<List<JahiaSearchHit>>(new ArrayList<JahiaSearchHit>());
+    private List<JahiaSearchHit> results = new ArrayList<JahiaSearchHit>();
 
     /**
      * The collection of raw parsedObject instance
      *
      */
-    private SoftReference<Collection<ParsedObject>> parsedObjects = new SoftReference<Collection<ParsedObject>>(new ArrayList<ParsedObject>());
-    private SoftReference<Map<Integer, List<JahiaSearchHit>>> pageHitsMap = new SoftReference<Map<Integer, List<JahiaSearchHit>>>(new HashMap<Integer, List<JahiaSearchHit>>());
-    private SoftReference<Map<String, List<JahiaSearchHit>>> fileHitsMap = new SoftReference<Map<String, List<JahiaSearchHit>>>(new HashMap<String, List<JahiaSearchHit>>());
+    private Collection<ParsedObject> parsedObjects = new ArrayList<ParsedObject>();
+    private Map<Integer, List<JahiaSearchHit>> pageHitsMap = new HashMap<Integer, List<JahiaSearchHit>>();
+    private Map<String, List<JahiaSearchHit>> fileHitsMap = new HashMap<String, List<JahiaSearchHit>>();
 
     /**
      * number of hits     
@@ -104,7 +103,7 @@ public class JahiaSearchResult
         this.searchResultBuilder = searchResultBuilder;
         if ( parsedObjects != null ){
             this.parsedObjectIsValid = true;
-            this.parsedObjects = new SoftReference<Collection<ParsedObject>>(parsedObjects);
+            this.parsedObjects = parsedObjects;
         }
     }
 
@@ -165,10 +164,10 @@ public class JahiaSearchResult
      * @return List results, the results.
      */
     public List<JahiaSearchHit> results(){
-        List<JahiaSearchHit> v = this.results.get();
+        List<JahiaSearchHit> v = this.results;
         if (v == null){
             v = new ArrayList<JahiaSearchHit>();
-            this.results = new SoftReference<List<JahiaSearchHit>>(v);
+            this.results = v;
             this.hitsIsValid = false;
         }
         return v;
@@ -178,7 +177,7 @@ public class JahiaSearchResult
         if ( results != null ){
             hitsIsValid = true;
         }
-        this.results = new SoftReference<List<JahiaSearchHit>>(results);
+        this.results = results;
     }
 
     //--------------------------------------------------------------------------
@@ -198,7 +197,7 @@ public class JahiaSearchResult
      * @return List results, the results.
      */
     public Collection<ParsedObject> parsedObjects(){
-        return parsedObjects.get();
+        return parsedObjects;
     }
 
     //--------------------------------------------------------------------------
@@ -208,7 +207,7 @@ public class JahiaSearchResult
      */
     public void setParsedObjects(Collection<ParsedObject> parsedObjects){
         this.parsedObjectIsValid = true;
-        this.parsedObjects = new SoftReference<Collection<ParsedObject>>(parsedObjects);
+        this.parsedObjects = parsedObjects;
     }
 
     //--------------------------------------------------------------------------
@@ -244,10 +243,10 @@ public class JahiaSearchResult
     }
 
     public Map<Integer, List<JahiaSearchHit>> getPageHitsMap() {
-        Map<Integer, List<JahiaSearchHit>> result = pageHitsMap.get();
+        Map<Integer, List<JahiaSearchHit>> result = pageHitsMap;
         if ( result == null ){
             result = new HashMap<Integer, List<JahiaSearchHit>>();
-            pageHitsMap = new SoftReference<Map<Integer, List<JahiaSearchHit>>>(result);
+            pageHitsMap = result;
             this.pageHitsMapIsValid = false;
         }
         return result;
@@ -255,14 +254,14 @@ public class JahiaSearchResult
 
     public void setPageHitsMap(Map<Integer, List<JahiaSearchHit>> pageHitsMap) {
         this.pageHitsMapIsValid = true;
-        this.pageHitsMap = new SoftReference<Map<Integer, List<JahiaSearchHit>>>(pageHitsMap);
+        this.pageHitsMap = pageHitsMap;
     }
 
     public Map<String, List<JahiaSearchHit>> getFileHitsMap() {
-        Map<String, List<JahiaSearchHit>> result = fileHitsMap.get();
+        Map<String, List<JahiaSearchHit>> result = fileHitsMap;
         if ( result == null ){
             result = new HashMap<String, List<JahiaSearchHit>>();
-            fileHitsMap = new SoftReference<Map<String, List<JahiaSearchHit>>>(result);
+            fileHitsMap = result;
             this.fileHitsMapIsValid = false;
         }
         return result;
@@ -270,7 +269,7 @@ public class JahiaSearchResult
 
     public void setFileHitsMap(Map<String, List<JahiaSearchHit>> fileHitsMap) {
         this.fileHitsMapIsValid = true;
-        this.fileHitsMap = new SoftReference<Map<String, List<JahiaSearchHit>>>(fileHitsMap);
+        this.fileHitsMap = fileHitsMap;
     }
 
 }

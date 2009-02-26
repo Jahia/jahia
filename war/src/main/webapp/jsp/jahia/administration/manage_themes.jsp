@@ -78,9 +78,26 @@
                                 </div>
                             </div>
                             <div class="content-body">
-
-                                <ui:themeSelector scope="site"/>
-                                 <br><br>
+                                <table class="topAlignedTable" cellpadding="5" cellspacing="0">
+                                <form name="jahiathemeSelectorFormsite" method="get" action="/jahia/administration/?do=themes&sub=display">
+                                    <tr><td><select name="jahiaThemeSelector" onchange="document.imageTheme.src='<%=URL%>../templates/${templateName}/images/preview_'+this.value+'.gif'">
+                                        <c:forEach var="themeBean" items="${themesBean}">
+                                            <option name="${themeBean.themeName}" <c:if test="${themeBean.selected}">selected</c:if>>${themeBean.themeName}</option>
+                                            <c:if test="${themeBean.selected}">
+                                                <c:set var="selectedTheme" value="${themeBean.themeName}"/>
+                                            </c:if>
+                                        </c:forEach>
+                                    </select>
+                                    <input type="hidden" name="jahiathemeSelectorScope" value="site">
+                                    <input type="hidden" name="do" value="themes">
+                                    <input type="hidden" name="sub" value="display">
+                                    </td></tr>
+                                    <tr><td><img id="imageTheme" src="<%=URL%>../templates/${templateName}/images/preview_${selectedTheme}.gif" width="270" height="141" alt=""></td></tr>
+                                    <tr><td><input type="submit" name="<utility:resourceBundle resourceBundle="JahiaInternalResources"
+                      resourceName="org.jahia.admin.saveChanges.label"/>" value="<utility:resourceBundle resourceBundle="JahiaInternalResources"
+                      resourceName="org.jahia.admin.saveChanges.label"/>"></td></tr>
+                                </form>
+                                </table>
                             </div>
                             <div class="content-body">
             <%
@@ -91,8 +108,10 @@
                                           defaultValue="New theme selected "/> :
                     </span>
 
-
-                                    <%=request.getParameter("jahiaThemeSelector")%>
+                                    <table class="topAlignedTable" cellpadding="5" cellspacing="0">
+                                        <tr><td>
+                                    <%=request.getParameter("jahiaThemeSelector")%></td></tr>
+                                </table>
                                     <%
                 }
             %>

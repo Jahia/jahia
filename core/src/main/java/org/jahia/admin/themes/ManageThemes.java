@@ -41,6 +41,9 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.License;
 import org.jahia.data.JahiaData;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.beans.SiteBean;
+import org.jahia.data.beans.PageBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.resourcebundle.JahiaResourceBundle;
 import org.jahia.exceptions.JahiaException;
@@ -50,6 +53,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.io.File;
+import java.util.*;
 
 import org.jahia.operations.valves.ThemeValve;
 import org.jahia.admin.AbstractAdministrationModule;
@@ -122,16 +127,9 @@ public class ManageThemes extends AbstractAdministrationModule {
         site = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
 
         if (site != null && user != null && sReg != null) {
-
             // set the new site id to administrate...
             request.setAttribute("site", site);
-
-            if (operation.equals("display")) {
-                displayThemesParams(request, response, session);
-            } else {
-                displayThemesParams(request, response, session);
-            }
-
+            displayThemesParams(request, response, session);
         } else {
             String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
                     jParams, jParams.getLocale());
@@ -168,6 +166,32 @@ public class ManageThemes extends AbstractAdministrationModule {
                     }
                 }
             }
+            String jahiaThemeCurrent = site.getSettings().getProperty(ThemeValve.THEME_ATTRIBUTE_NAME);
+            // map theme object
+            SiteBean siteBean = new SiteBean(site, jParams);
+            PageBean pageBean = new PageBean(jParams.getPage(),jParams);
+            JahiaTemplatesPackage pkg = siteBean.getTemplatePackage();
+            Set<ThemeBean> themes = new TreeSet<ThemeBean>();
+            //ThemeBean[] themes = null;
+            for (Object o : pkg.getLookupPath()) {
+                    String rootFolderPath = (String) o;
+                    File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath + "/theme"));
+                    if (f.exists()) {
+                        for (Object fo : f.list()) {
+                            boolean isSelectedTheme = false;
+                            if (jahiaThemeCurrent.equals(fo)) {
+                               isSelectedTheme = true;
+                            }
+                            ThemeBean themeAdd = new ThemeBean((String) fo,isSelectedTheme);
+                            themes.add(themeAdd);
+                        }
+                    }
+                }
+            // expose themes
+            request.setAttribute("themesBean",themes);
+            request.setAttribute("templateName",pkg.getFileName());
+
+
         }
 
 
@@ -179,5 +203,34 @@ public class ManageThemes extends AbstractAdministrationModule {
 
     }
 
+    public class ThemeBean implements Comparable {
+        private String themeName;
+        private boolean selected;
 
+        public ThemeBean(String themeName, boolean selected) {
+            this.themeName = themeName;
+            this.selected = selected;
+        }
+
+        public String getThemeName() {
+            return themeName;
+        }
+
+        public void setThemeName(String themeName) {
+            this.themeName = themeName;
+        }
+
+        public boolean isSelected() {
+            return selected;
+        }
+
+        public void setSelected(boolean selected) {
+            this.selected = selected;
+        }
+
+        public int compareTo(Object t) throws ClassCastException {
+           ThemeBean themeB = (ThemeBean) t;
+           return getThemeName().compareTo(themeB.getThemeName());
+        };
+    }
 }

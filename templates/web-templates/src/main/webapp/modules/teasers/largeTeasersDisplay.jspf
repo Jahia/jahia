@@ -1,17 +1,21 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:container id="bannerContainer" emptyContainerDivCssClassName="mockup-teasers">
+<template:container id="bannerContainer" emptyContainerDivCssClassName="mockup-teasers" cacheKey="promoLarge">
     <!--start column-item -->
     <div class="column-item">
         <div class="spacer">
             <!--start box -->
-            <div class="box box-fixed-height">
-                <template:image file="image" cssClassName="floatleft"/>
-                <div class="box-content">
-                    <h3><template:field name='title'/></h3>
-                    <p><template:field name='abstract'/></p>
+            <div class="box2 "><!--start box 2 default-->
+                <template:field name="image" valueBeanID="imageBean" display="false"/>
+                <div class="box2-topright"></div><div class="box2-topleft"></div>
+                <h3 class="box2-header"><span><template:field name='title'/></span></h3>
+                <div class="box2-illustration" style="background-image:url(${imageBean.downloadUrl})"></div>
+
+                <div class="box2-text">
+                <template:field name='abstract'/>
                 </div>
-                <div class="more"><span> <template:link page="link" maxChar="20"/><a href="#">Read more </a></span>
-                </div>
+                <div class="box2-more"><template:link page="link" maxChar="20"/></div>
+                <div class="box2-bottomright"></div>
+                <div class="box2-bottomleft"></div>
                 <div class="clear"></div>
             </div>
             <!--stop box -->
@@ -20,4 +24,6 @@
         <div class="clear"></div>
     </div>
     <!--stop column-item -->
+   <%-- here we test if the edit mode is active to change a bit the display avoiding layout problems due to action menus--%>
+    <c:if test="${requestScope.currentRequest.editMode}"><div class="clear"></div></c:if>
 </template:container>

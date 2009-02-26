@@ -37,7 +37,7 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 <div class="columns2"><!--start 2columns -->
-    <template:containerList name="promo" id="promoList" actionMenuNamePostFix="teaser"
+    <template:containerList name="promoLarge" id="promoLargeList" actionMenuNamePostFix="teaser"
                             actionMenuNameLabelKey="teaser">
         <%@ include file="largeTeasersDisplay.jspf" %>
     </template:containerList>

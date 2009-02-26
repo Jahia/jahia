@@ -90,14 +90,14 @@ public class NodeWrapper implements Updateable {
 
         if (node.isLocked()) {
             logger.debug("Node is locked, delay property update to later");
-            List list = (List) drools.getWorkingMemory().getGlobal("delayedUpdates");
+            List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
             this.node = node.addNode(name, type);
         }
     }
 
-    public void doUpdate(Session s, List delayedUpdates) throws RepositoryException {
+    public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
             Node node = (Node) s.getItem(parentNodePath);
 
@@ -144,8 +144,8 @@ public class NodeWrapper implements Updateable {
         return null;
     }
 
-    public List getChildNodes() throws RepositoryException {
-        List results = new ArrayList();
+    public List<NodeWrapper> getChildNodes() throws RepositoryException {
+        List<NodeWrapper> results = new ArrayList<NodeWrapper>();
         NodeIterator it = node.getNodes();
         while (it.hasNext()) {
             Node n = it.nextNode();
@@ -158,8 +158,8 @@ public class NodeWrapper implements Updateable {
         return new NodeWrapper(node.getParent());
     }
 
-    public List getProperties() throws RepositoryException {
-        List results = new ArrayList();
+    public List<PropertyWrapper> getProperties() throws RepositoryException {
+        List<PropertyWrapper> results = new ArrayList<PropertyWrapper>();
         PropertyIterator it = node.getProperties();
         while (it.hasNext()) {
             Property p = it.nextProperty();
@@ -168,7 +168,7 @@ public class NodeWrapper implements Updateable {
         return results;
     }
 
-    public List getTypes() throws RepositoryException {
+    public List<String> getTypes() throws RepositoryException {
         List<String> r = new ArrayList<String>();
         recurseOnTypes(r,node.getPrimaryNodeType());
         recurseOnTypes(r,node.getMixinNodeTypes());

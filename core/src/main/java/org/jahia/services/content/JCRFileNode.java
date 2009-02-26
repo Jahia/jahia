@@ -33,10 +33,6 @@
 
 package org.jahia.services.content;
 
-import org.jahia.services.usermanager.JahiaUser;
-
-import javax.jcr.Session;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 /**

@@ -34,15 +34,11 @@
 package org.jahia.services.content;
 
 import org.jahia.services.content.impl.vfs.VFSContentStoreProvider;
-import org.jahia.api.Constants;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionException;
 import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;

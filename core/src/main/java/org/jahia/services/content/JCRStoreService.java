@@ -58,7 +58,6 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryExecute;
-import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.query.qom.SelectorImpl;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;

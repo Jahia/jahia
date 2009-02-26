@@ -33,7 +33,6 @@
 
 package org.jahia.services.content;
 
-import org.jahia.api.Constants;
 import org.apache.log4j.Logger;
 
 import javax.jcr.query.Query;

@@ -67,7 +67,7 @@ public class CacheListener extends DefaultEventListener {
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(CacheListener.class);
 
-    public static Cache cache;
+    public static Cache<String, ?> cache;
 
     public CacheListener() {
         try {
@@ -90,7 +90,7 @@ public class CacheListener extends DefaultEventListener {
     }
 
     public void onEvent(EventIterator eventIterator) {
-        Set nodes = new HashSet();
+        Set<String> nodes = new HashSet<String>();
         while (eventIterator.hasNext()) {
             Event event = eventIterator.nextEvent();
             try {
@@ -121,8 +121,8 @@ public class CacheListener extends DefaultEventListener {
             try {
                 session = provider.getSystemSession();
 
-                for (Iterator iterator = nodes.iterator(); iterator.hasNext();) {
-                    String s = (String) iterator.next();
+                for (Iterator<String> iterator = nodes.iterator(); iterator.hasNext();) {
+                    String s = iterator.next();
                     JCRNodeWrapper n = provider.getNodeWrapper(provider.decodeInternalName(s), null, session);
                     flushNodeRefs(n);
                     cache.remove(n.getPath());
@@ -141,9 +141,7 @@ public class CacheListener extends DefaultEventListener {
     private void flushNodeRefs(JCRNodeWrapper n) throws RepositoryException, JahiaException {
         if (n.isValid()) {
             if (n.isFile()) {
-                List l = n.findUsages(false);
-                for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
-                    UsageEntry usageEntry = (UsageEntry) iterator1.next();
+                for (UsageEntry usageEntry : n.findUsages(false)) {
                     int id = usageEntry.getId();
                     ContentField field = ContentField.getField(id);
                     ContentContainerKey key = new ContentContainerKey(field.getContainerID());

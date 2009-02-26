@@ -65,7 +65,6 @@ import org.quartz.JobDetail;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -166,19 +165,19 @@ public class Service {
 //                jParams.setServerName(m.getRequest().getServerName());
 //                jParams.setScheme(m.getRequest().getScheme());
 //                jParams.setServerPort(m.getRequest().getServerPort());
-                Class jobClass = ImportJob.class;
+                Class<ImportJob> jobClass = ImportJob.class;
                 String dkey = homeContentPage.getObjectKey().toString();
                 JobDetail jobDetail = BackgroundJob.createJahiaJob("Production job", jobClass, jParams);
 
                 SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
 
-                Set locks = new HashSet();
+                Set<LockKey> locks = new HashSet<LockKey>();
                 synchronized(lockRegistry) {
                     // Export lock might have been set during differential export with filename as lockkey
-                    LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + homeContentPage.getObjectKey().getType(), homeContentPage.getID(), homeContentPage.getID());
+                    LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + homeContentPage.getObjectKey().getType(), homeContentPage.getID());
                     lockRegistry.release(lock, jParams.getUser(), name);
                     // Upgrade to import lock
-                    lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + homeContentPage.getObjectKey().getType(), homeContentPage.getID(), homeContentPage.getID());
+                    lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + homeContentPage.getObjectKey().getType(), homeContentPage.getID());
                     locks.add(lock);
                     if (!lockRegistry.acquire(lock, jParams.getUser(), jobDetail.getName(), BackgroundJob.getMaxExecutionTime(), false)) {
                         logger.info("Cannot acquire lock, do not import");
@@ -228,7 +227,7 @@ public class Service {
 //                jParams.setServerName(m.getRequest().getServerName());
 //                jParams.setScheme(m.getRequest().getScheme());
 //                jParams.setServerPort(m.getRequest().getServerPort());
-                Class jobClass = ImportJob.class;
+                Class<ImportJob> jobClass = ImportJob.class;
 
                 JobDetail jobDetail = BackgroundJob.createJahiaJob("Import content to "+destKey, jobClass, jParams);
 
@@ -238,8 +237,8 @@ public class Service {
                 jobDataMap = jobDetail.getJobDataMap();
 
                 if (dest != null) {
-                    Set locks = new HashSet();
-                    LockKey lock = LockKey.composeLockKey(LockKey.ADD_ACTION + "_" + dest.getObjectKey().getType(), dest.getID(), dest.getID());
+                    Set<LockKey> locks = new HashSet<LockKey>();
+                    LockKey lock = LockKey.composeLockKey(LockKey.ADD_ACTION + "_" + dest.getObjectKey().getType(), dest.getID());
                     locks.add(lock);
                     synchronized (lockRegistry) {
                         if (lockRegistry.isAlreadyAcquiredInContext(lock, jParams.getUser(), jParams.getUser().getUserKey())) {
@@ -302,8 +301,8 @@ public class Service {
                             if ("".equals(tpl)) tpl = null;
                             try {
                                 Locale locale = null;
-                                for (Iterator iterator = infos.keySet().iterator(); iterator.hasNext();) {
-                                    String s = (String) iterator.next();
+                                for (Object obj : infos.keySet()) {
+                                    String s = (String) obj;
                                     if (s.startsWith("language.") && s.endsWith(".rank")) {
                                         String code = s.substring(s.indexOf('.')+1, s.lastIndexOf('.'));
                                         String rank = infos.getProperty(s);

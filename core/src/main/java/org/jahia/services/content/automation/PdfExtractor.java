@@ -58,8 +58,8 @@ public class PdfExtractor implements Extractor {
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(PdfExtractor.class);
 
-    public Map extract(InputStream content) throws Exception {
-        Map m = new HashMap();
+    public Map<String, Object> extract(InputStream content) throws Exception {
+        Map<String, Object> m = new HashMap<String, Object>();
 
         PDDocument pdfDocument = PDDocument.load(content);
         try {
@@ -73,7 +73,7 @@ public class PdfExtractor implements Extractor {
 
         PDDocumentInformation info = pdfDocument.getDocumentInformation();
         COSDictionary dict = info.getDictionary();
-        Iterator iterator = dict.keyList().iterator();
+        Iterator<?> iterator = dict.keyList().iterator();
         String val = null;
         while ( iterator.hasNext() ){
             try {

@@ -70,12 +70,12 @@ public class User {
         return user.getUsername();
     }
 
-    public List getProperties() {
-        List r = new ArrayList();
+    public List<UserProperty> getProperties() {
+        List<UserProperty> r = new ArrayList<UserProperty>();
         JahiaUser jahiaUser = getJahiaUser();
         if (jahiaUser != null) {
             Properties p = jahiaUser.getProperties();
-            for (Iterator iterator = p.keySet().iterator(); iterator.hasNext();) {
+            for (Iterator<?> iterator = p.keySet().iterator(); iterator.hasNext();) {
                 String s = (String) iterator.next();
                 String v = p.getProperty(s);
                 r.add(new UserProperty(this, s,v));
@@ -84,14 +84,13 @@ public class User {
         return r;
     }
 
-    public List getGroups() {
-        List r = new ArrayList();
+    public List<Group> getGroups() {
+        List<Group> r = new ArrayList<Group>();
         JahiaGroupManagerService grpManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         JahiaUser jahiaUser = getJahiaUser();
         if (jahiaUser != null) {
-            List groups = grpManager.getUserMembership(jahiaUser);
-            for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
-                String groupname = (String) iterator.next();
+            List<String> groups = grpManager.getUserMembership(jahiaUser);
+            for (String groupname : groups) {
                 JahiaGroup group = grpManager.lookupGroup(groupname);
                 r.add(new Group(group));
             }

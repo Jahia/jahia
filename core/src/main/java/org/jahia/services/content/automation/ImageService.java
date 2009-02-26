@@ -45,7 +45,6 @@ import java.util.Iterator;
 
 import javax.jcr.Node;
 
-import org.apache.log4j.Logger;
 import org.drools.ObjectFilter;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -60,7 +59,6 @@ import org.jahia.utils.FileUtils;
  * To change this template use File | Settings | File Templates.
  */
 public class ImageService {
-    private static Logger logger = Logger.getLogger(ImageService.class);
     private static ImageService instance;
 
     private ImageService() {
@@ -95,7 +93,7 @@ public class ImageService {
 //    }
 
     private ImageWrapper getImageWrapper(final NodeWrapper imageNode, KnowledgeHelper drools) throws Exception {
-        Iterator it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
+        Iterator<?> it = drools.getWorkingMemory().iterateObjects(new ObjectFilter() {
             public boolean accept(Object o) {
                 if (o instanceof ImageWrapper) {
                     return (((ImageWrapper) o).getParentNode() == imageNode);

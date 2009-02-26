@@ -39,6 +39,7 @@ import org.jahia.services.usermanager.JahiaUser;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,11 +61,11 @@ public class Group {
         return group.getGroupname();
     }
 
-    public List getUsers() {
-        List r = new ArrayList();
-        Iterator en = new EnumerationIterator(group.members());
-        while (en.hasNext()) {
-            Principal p = (Principal) en.next();
+    public List<User> getUsers() {
+        List<User> r = new ArrayList<User>();
+        Enumeration<Principal> en = group.members();
+        while (en.hasMoreElements()) {
+            Principal p = en.nextElement();
             if (p instanceof JahiaUser) {
                 JahiaUser user = (JahiaUser)p;
                 r.add(new User(user));

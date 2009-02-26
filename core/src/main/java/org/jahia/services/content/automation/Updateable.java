@@ -45,5 +45,5 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface Updateable {
-    public void doUpdate(Session s, List delayedUpdates) throws RepositoryException;
+    public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException;
 }

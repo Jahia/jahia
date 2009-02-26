@@ -33,10 +33,8 @@
 
 package org.jahia.services.content.impl.jackrabbit;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,10 +46,6 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.log4j.Logger;
-import org.jahia.bin.Jahia;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.usermanager.JahiaUser;

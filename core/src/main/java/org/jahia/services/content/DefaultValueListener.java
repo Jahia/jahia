@@ -107,13 +107,13 @@ public class DefaultValueListener extends DefaultEventListener {
                             n = (Node) s.getItem(event.getPath().substring(0,event.getPath().lastIndexOf('/')));                            
                         }
                         if (n != null) {
-                            List l = new ArrayList();
+                            List<NodeType> l = new ArrayList<NodeType>();
                             NodeType nt = n.getPrimaryNodeType();
                             l.add(nt);
                             NodeType mixin[] = n.getMixinNodeTypes();
                             l.addAll(Arrays.asList(mixin));
-                            for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-                                NodeType nodeType = (NodeType) iterator.next();
+                            for (Iterator<NodeType> iterator = l.iterator(); iterator.hasNext();) {
+                                NodeType nodeType = iterator.next();
                                 ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
                                 if (ent != null ) {
                                     ExtendedPropertyDefinition[] pds = ent.getPropertyDefinitions();

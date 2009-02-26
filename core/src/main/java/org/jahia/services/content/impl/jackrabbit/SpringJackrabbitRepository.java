@@ -18,11 +18,7 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
-import javax.naming.Referenceable;
-import javax.naming.Reference;
 import javax.servlet.ServletContext;
-import java.io.Serializable;
-import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;

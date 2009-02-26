@@ -39,7 +39,6 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.SelectorType;
-import org.jahia.services.content.JCRContentUtils;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -90,14 +89,14 @@ public class PropertyWrapper implements Updateable  {
 
         if (node == null || node.isLocked()) {
             logger.debug("Node is locked, delay property update to later");
-            List list = (List) drools.getWorkingMemory().getGlobal("delayedUpdates");
+            List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
         } else {
             setProperty(node, name, o);
         }
     }
 
-    public void doUpdate(Session s, List delayedUpdates) throws RepositoryException {
+    public void doUpdate(Session s, List<Updateable> delayedUpdates) throws RepositoryException {
         try {
             Node node = (Node) s.getItem(nodePath);
 
@@ -202,8 +201,8 @@ public class PropertyWrapper implements Updateable  {
         return null;
     }
 
-    public List getStringValues() throws RepositoryException {
-        List r = new ArrayList();
+    public List<String> getStringValues() throws RepositoryException {
+        List<String> r = new ArrayList<String>();
         if (property != null) {
             Value[] vs =  property.getValues();
             for (int i = 0; i < vs.length; i++) {

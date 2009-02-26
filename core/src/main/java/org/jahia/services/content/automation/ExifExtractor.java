@@ -52,14 +52,14 @@ import com.drew.metadata.Tag;
  */
 public class ExifExtractor implements Extractor {
 
-    public Map extract(InputStream content) throws Exception {
-        Map m = new HashMap();
+    public Map<String, Object> extract(InputStream content) throws Exception {
+        Map<String, Object> m = new HashMap<String, Object>();
         Metadata metadata = JpegMetadataReader.readMetadata(content);
-        Iterator directories = metadata.getDirectoryIterator();
+        Iterator<?> directories = metadata.getDirectoryIterator();
         while (directories.hasNext()) {
             Directory directory = (Directory)directories.next();
             // iterate through tags and print to System.out
-            Iterator tags = directory.getTagIterator();
+            Iterator<?> tags = directory.getTagIterator();
             while (tags.hasNext()) {
                 Tag tag = (Tag)tags.next();
                 m.put(directory.getName() + "-" + tag.getTagName(), tag.getDescription());

@@ -50,11 +50,11 @@ import java.util.Set;
  */
 public abstract class DefaultEventListener implements EventListener {
 
-    protected Set propertiesToIgnore;
+    protected Set<String> propertiesToIgnore;
     protected JCRStoreProvider provider;
 
     protected DefaultEventListener() {
-        propertiesToIgnore = new HashSet();
+        propertiesToIgnore = new HashSet<String>();
         propertiesToIgnore.add(Constants.JCR_PRIMARYTYPE);
         propertiesToIgnore.add(Constants.JCR_UUID);
         propertiesToIgnore.add(Constants.JCR_CREATED);

@@ -44,5 +44,5 @@ import java.io.InputStream;
  * To change this template use File | Settings | File Templates.
  */
 public interface Extractor {
-    public Map extract(InputStream content) throws Exception;
+    public Map<String, Object> extract(InputStream content) throws Exception;
 }

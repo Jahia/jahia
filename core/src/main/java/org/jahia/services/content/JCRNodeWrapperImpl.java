@@ -950,9 +950,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (copy != null) {
-            Map props = getPropertiesAsString();
-            for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();) {
-                String s = (String) iterator.next();
+            Map<String, String> props = getPropertiesAsString();
+            for (String s : props.keySet()) {
                 try {
                     if (!copy.hasProperty(s) || !copy.getProperty(s).getDefinition().isProtected()) {
                         copy.setProperty(s, (String) props.get(s));
@@ -964,9 +963,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         if (isCollection()) {
-            List l = getChildren();
-            for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-                JCRNodeWrapper source = (JCRNodeWrapper) iterator.next();
+            for (JCRNodeWrapper source : getChildren()) {
                 source.copyFile(copy, source.getName());
             }
         }
@@ -1355,7 +1352,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return new JCRFileContent(this, objectNode);
     }
 
-    public List findUsages() {
+    public List<UsageEntry> findUsages() {
         return findUsages(false);
     }
 

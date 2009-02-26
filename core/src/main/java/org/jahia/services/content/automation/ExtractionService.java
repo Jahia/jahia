@@ -40,8 +40,6 @@ import org.apache.log4j.Logger;
 
 import javax.jcr.Node;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,7 +52,7 @@ public class ExtractionService {
     private static Logger logger = Logger.getLogger(Service.class);
     private static ExtractionService instance;
 
-    private Map extractors;
+    private Map<String, Extractor> extractors;
 
     public static synchronized ExtractionService getInstance() {
         if (instance == null) {
@@ -66,11 +64,11 @@ public class ExtractionService {
     public ExtractionService() {
     }
 
-    public Map getExtractors() {
+    public Map<String, Extractor> getExtractors() {
         return extractors;
     }
 
-    public void setExtractors(Map extractors) {
+    public void setExtractors(Map<String, Extractor> extractors) {
         this.extractors = extractors;
     }
 
@@ -82,15 +80,13 @@ public class ExtractionService {
         Extractor extractor = (Extractor) extractors.get(node.getMimeType());
         if (extractor != null) {
             try {
-                Map m = extractor.extract(contentNode.getProperty(Constants.JCR_DATA).getStream());
+                Map<String, Object> m = extractor.extract(contentNode.getProperty(Constants.JCR_DATA).getStream());
                 if (m != null) {
                     WorkingMemory memory = drools.getWorkingMemory();
-                    for (Iterator iterator = m.keySet().iterator(); iterator.hasNext();) {
-                        String s = (String) iterator.next();
-                        if (s != null) {
-                            Object v = m.get(s);
-                            s = s.replace("-","_");
-                            memory.insert(new ExtractedVariable(node,s,v));
+                    for (Map.Entry<String, Object> entry : m.entrySet()) {
+                        if (entry.getKey() != null) {
+                            String s = entry.getKey().replace("-","_");
+                            memory.insert(new ExtractedVariable(node,s,entry.getValue()));
                         }
                     }
                 }

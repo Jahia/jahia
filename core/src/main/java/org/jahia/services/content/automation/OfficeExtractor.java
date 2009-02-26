@@ -56,7 +56,7 @@ import java.util.Map;
 public class OfficeExtractor implements Extractor {
     private static Logger logger = Logger.getLogger(OfficeExtractor.class);
 
-    public Map extract(InputStream content) throws Exception {
+    public Map<String, Object> extract(InputStream content) throws Exception {
         OfficePropertiesListener listener = new OfficePropertiesListener();
         try {
             POIFSReader r = new POIFSReader();
@@ -70,9 +70,9 @@ public class OfficeExtractor implements Extractor {
 
     class OfficePropertiesListener implements POIFSReaderListener {
 
-        private Map extractedProperties = new HashMap();
+        private Map<String, Object> extractedProperties = new HashMap<String, Object>();
 
-        public Map getProperties() {
+        public Map<String, Object> getProperties() {
             return extractedProperties;
         }
 
@@ -96,9 +96,9 @@ public class OfficeExtractor implements Extractor {
                 prefix = "si";
             }
 
-            List sections = ps.getSections();
+            List<?> sections = ps.getSections();
 
-            for (Iterator i = sections.iterator(); i.hasNext();) {
+            for (Iterator<?> i = sections.iterator(); i.hasNext();) {
                 Section sec = (Section) i.next();
 
                 Property[] properties = sec.getProperties();
@@ -110,7 +110,7 @@ public class OfficeExtractor implements Extractor {
                         extractedProperties.put(wellKnownPID.substring(4).toLowerCase(), o);
                         logger.info("Well known property : " + wellKnownPID.substring(4).toLowerCase() + " = "+ o);
                     } else if (sec.getProperty(0) != null) {
-                        Map dict = (Map)sec.getProperty(0);
+                        Map<Object, Object> dict = (Map<Object, Object>)sec.getProperty(0);
                         String s = (String) dict.get(new Long(property.getID()));
                         if (o instanceof String) {
                             try {

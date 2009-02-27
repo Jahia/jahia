@@ -103,7 +103,7 @@
 </script>
 <div class="dex-TabPanelBottom">
   <div class="tabContent">
-    <%@ include file="../../../../jsp/jahia/engines/tools.inc" %>
+    <%@ include file="../../../../engines/tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
         <div class="object-title">

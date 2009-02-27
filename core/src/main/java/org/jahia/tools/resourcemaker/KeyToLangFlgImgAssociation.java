@@ -79,7 +79,7 @@ import java.util.Locale;
  * merged to "JahiaInternalResources.properties" file.
  *
  * WARNING ! The image resource flag should exist in path
- * "/jsp/jahia/engines/images/flags/".
+ * "/engines/images/flags/".
  *
  * <p>Copyrights: MAP (Jahia Solution S�rl 2002)</p>
  * <p>Company: Jahia Solutions S�rl 2002</p>
@@ -115,6 +115,6 @@ public final class KeyToLangFlgImgAssociation {
         }
     }
 
-    private static final String _imagePath = "/jsp/jahia/engines/images/flags/";
+    private static final String _imagePath = "/engines/images/flags/";
     private static final String _resourceFileName = "lang_flg_resource_bundle.properties";
 }

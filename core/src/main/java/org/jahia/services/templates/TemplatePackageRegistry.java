@@ -364,7 +364,7 @@ class TemplatePackageRegistry {
                             .getTemplates().get(0)).getName());
                 }
             }
-            pkg.getLookupPath().add("/jsp/jahia/templates/default");
+            pkg.getLookupPath().add("/templates/default");
             pkg.getResourceBundleHierarchy().add("jahiatemplates.common");
             pkg.getResourceBundleHierarchy().add("CommonTag");
         }

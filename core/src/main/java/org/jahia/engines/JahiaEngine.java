@@ -56,11 +56,11 @@ public interface JahiaEngine {
 
     public static final String ENGINE_MODE_ATTRIBUTE = "JahiaEngine.mode";
 
-    public static final String CLOSE_JSP = "/jsp/jahia/engines/shared/close.jsp";
-    public static final String RELOAD_JSP = "/jsp/jahia/engines/shared/reload.jsp";
-    public static final String CANCEL_JSP = "/jsp/jahia/engines/shared/cancel.jsp";
-    public static final String REDIRECT_JSP = "/jsp/jahia/engines/redirect.jsp";
-    public static final String NOT_EDITABLE_FIELD = "/jsp/jahia/engines/shared/not_editable_field.jsp";
+    public static final String CLOSE_JSP = "/engines/shared/close.jsp";
+    public static final String RELOAD_JSP = "/engines/shared/reload.jsp";
+    public static final String CANCEL_JSP = "/engines/shared/cancel.jsp";
+    public static final String REDIRECT_JSP = "/engines/redirect.jsp";
+    public static final String NOT_EDITABLE_FIELD = "/engines/shared/not_editable_field.jsp";
     public static final int LOAD_MODE = 1;
     public static final int UPDATE_MODE = 2;
     public static final int SAVE_MODE = 3;

@@ -72,14 +72,14 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
  *    The result will be as follows, if:
  *        1) the 'header.jsp' is found under custom_v1/common/header.jsp
  *                
- *            &lt;jsp:include page=&quot;/jsp/jahia/templates/custom_v1/common/header.jsp&quot;&gt;
+ *            &lt;jsp:include page=&quot;/templates/custom_v1/common/header.jsp&quot;&gt;
  *              &lt;jsp:param name=&quot;a&quot; value=&quot;1&quot;/&gt;
  *              &lt;jsp:param name=&quot;b&quot; value=&quot;test&quot;/&gt;
  *            &lt;/jsp:include&gt;
  * 
  *        2) the 'header.jsp' is found under basic/common/header.jsp  (in the parent template set)
  * 
- *            &lt;jsp:include page=&quot;/jsp/jahia/templates/basic/common/header.jsp&quot;&gt;
+ *            &lt;jsp:include page=&quot;/templates/basic/common/header.jsp&quot;&gt;
  *              &lt;jsp:param name=&quot;a&quot; value=&quot;1&quot;/&gt;
  *              &lt;jsp:param name=&quot;b&quot; value=&quot;test&quot;/&gt;
  *            &lt;/jsp:include&gt;

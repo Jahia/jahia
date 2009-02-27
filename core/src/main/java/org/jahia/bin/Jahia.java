@@ -725,7 +725,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         if (Jahia.isInitiated() && !checkLockAccess(session)) {
             logger.debug("Jahia is locked by the super admin!");
             config.getServletContext().getRequestDispatcher(
-                    "/jsp/jahia/errors/locked.jsp").forward(request, response);
+                    "/errors/locked.jsp").forward(request, response);
             return;
         }
 
@@ -794,7 +794,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                 Jahia.reInit = false;
                 init(config);
             } else if (maintenance) {
-                jahiaLaunch(request, response, "/jsp/jahia/errors/maintenance.jsp");
+                jahiaLaunch(request, response, "/errors/maintenance.jsp");
                 return;
             }
 

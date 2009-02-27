@@ -127,7 +127,7 @@ public class Search_Engine implements JahiaEngine {
     public static final String UPDATE_CUSTOM_CRITERIAS_SCREEN = "update_criterias_options";
 
     // output
-    private static final String TEMPLATE_JSP = "/jsp/jahia/engines/search/searchresult.jsp";
+    private static final String TEMPLATE_JSP = "/engines/search/searchresult.jsp";
     private static final String SEARCH_JSP_NAME = "searchresult.jsp";
     private EngineToolBox toolBox;
 

@@ -102,7 +102,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class HTMLToolBox {
 
-    public static final String IMAGE_DIRECTORY = "/jsp/jahia/engines/images/actions";
+    public static final String IMAGE_DIRECTORY = "/engines/images/actions";
 
     private static final transient Logger logger = Logger.getLogger(HTMLToolBox.class);
 

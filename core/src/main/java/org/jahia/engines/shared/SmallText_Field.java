@@ -79,8 +79,8 @@ public class SmallText_Field implements FieldSubEngine {
     private static final int MAX_SMALLTEXT_LENGTH = 250;
 
     private static SmallText_Field theObject = null;
-    public static final String JSP_FILE = "/jsp/jahia/engines/shared/smalltext_field.jsp";
-    public static final String READONLY_JSP = "/jsp/jahia/engines/shared/readonly_smalltext_field.jsp";
+    public static final String JSP_FILE = "/engines/shared/smalltext_field.jsp";
+    public static final String READONLY_JSP = "/engines/shared/readonly_smalltext_field.jsp";
 
 
     /**

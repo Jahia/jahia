@@ -619,7 +619,7 @@ public class SettingsBean {
             ramSchedulerConfigFile = JahiaTools.convertContexted (getString("ramSchedulerConfigFile", "$context/WEB-INF/etc/config/quartz-ram.properties"), pathResolver);
             isProcessingServer = getBoolean("processingServer", true);
 
-            siteServerNameTestURLExpr = getString("siteServerNameTestURLExpr", "${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/jsp/isjahia.jsp");
+            siteServerNameTestURLExpr = getString("siteServerNameTestURLExpr", "${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/isjahia.jsp");
             siteServerNameTestConnectTimeout = getInt("siteServerNameTestConnectTimeout", 500);
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);

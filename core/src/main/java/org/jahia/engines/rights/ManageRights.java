@@ -85,9 +85,9 @@ import java.util.*;
 public class ManageRights {
 // ------------------------------ FIELDS ------------------------------
 
-    public static final String GWT_JSP_FILE = "/jsp/jahia/engines/rights/gwtAcl.jsp";
-    public static final String JSP_FILE = "/jsp/jahia/engines/rights/manage_rights.jsp";
-    public static final String READONLY_JSP = "/jsp/jahia/engines/rights/readonly_rights.jsp";
+    public static final String GWT_JSP_FILE = "/engines/rights/gwtAcl.jsp";
+    public static final String JSP_FILE = "/engines/rights/manage_rights.jsp";
+    public static final String READONLY_JSP = "/engines/rights/readonly_rights.jsp";
 
     // Variable used to store the ACL entries submitted by the user, when a
     // refresh is performed due to warnings.

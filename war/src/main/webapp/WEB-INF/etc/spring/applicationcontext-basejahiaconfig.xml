@@ -169,8 +169,7 @@
         <constructor-arg>
             <list>
                 <value>WEB-INF/var/scripts/groovy/</value>
-                <value>jsp/jahia/templates/</value>
-                <value>jsp/jahia/</value>
+                <value>templates/</value>
             </list>
         </constructor-arg>
     </bean>

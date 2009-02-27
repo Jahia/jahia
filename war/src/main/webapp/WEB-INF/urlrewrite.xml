@@ -19,21 +19,6 @@
         <to type="redirect">%{context-path}/rewrite-status</to>
     </rule>
 
-
-    <outbound-rule>
-        <note>
-            The outbound-rule specifies that when response.encodeURL is called (if you are using JSTL c:url)
-            the url /rewrite-status will be rewritten to /test/status/.
-
-            The above rule and this outbound-rule means that end users should never see the
-            url /rewrite-status only /test/status/ both in thier location bar and in hyperlinks
-            in your pages.
-        </note>
-        <from>/rewrite-status</from>
-        <to>/test/status/</to>
-    </outbound-rule>
-
-
     <!--
 
     INSTALLATION
@@ -84,68 +69,79 @@
     browsers whose user agent srtings match Mozilla/1, Mozilla/2, Mozilla/3 or Mozilla/4.
 
     -->
- 
-
-<!-- Inboound rules
-
-The following are only examples and should be rearanged according to your needs and to your specific implementation of Jahia
 
 
-Example usage:
+    <!-- Inboound rules
 
-http://localhost:8080/jahia/page25.html <-> http://localhost:8080/jahia/Jahia/pid/25
-http://localhost:8080/jahia/Jahia/page25.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/UrlKey2/pid/25 (iterativelly you can have as many urlkey as you want)
-
-If you type in the following path on your browser, it will still work:
-
-http://localhost:8080/jahia/Jahia/page5_en.html <-> http://localhost:8080/jahia/Jahia/lang/op/normal/en/pid/25
-http://localhost:8080/jahia/Jahia/UrlKey1/page5.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/lang/en/pid/25 
-http://localhost:8080/jahia/Jahia/UrlKey1/UrlKey2/page5_en.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/UrlKey2/lang/en/pid/25
+    The following are only examples and should be rearanged according to your needs and to your specific implementation of Jahia
 
 
-These rules support multilingual websites
+    Example usage:
+
+    http://localhost:8080/jahia/page25.html <-> http://localhost:8080/jahia/Jahia/pid/25
+    http://localhost:8080/jahia/Jahia/page25.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/UrlKey2/pid/25 (iterativelly you can have as many urlkey as you want)
+
+    If you type in the following path on your browser, it will still work:
+
+    http://localhost:8080/jahia/Jahia/page5_en.html <-> http://localhost:8080/jahia/Jahia/lang/op/normal/en/pid/25
+    http://localhost:8080/jahia/Jahia/UrlKey1/page5.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/lang/en/pid/25
+    http://localhost:8080/jahia/Jahia/UrlKey1/UrlKey2/page5_en.html <-> http://localhost:8080/jahia/Jahia/Urlkey1/UrlKey2/lang/en/pid/25
 
 
---> 
-
-<!-- rule for site export and other pages that could cause problems-->
-<rule>
-<from>^/(.*?)/page([0-9]+).html/(.*?)$</from>
-<to last="true">/$1/pid/$2/$3</to>
-</rule>
-
-<!-- rule for any regular page-->
-<rule>
-<from>^/(.*?)/page([0-9]+).html$</from>
-<to>/$1/pid/$2</to>
-</rule>
-
-<!-- GXT resources-->
-<rule>
-<from>^(.*?)/jsp/jahia/gwt/(.*?)/images/(.*?)</from>
-<to last ="true">$1/jsp/jahia/gwt/resources/images/$3</to>
-</rule>
-
-<!-- rule for any gwt page-->
-<rule>
-<from>^(.*?)/jsp/jahia/gwt/(.*?)</from>
-<to last ="true">$1/jsp/jahia/gwt/$2</to>
-</rule>
+    These rules support multilingual websites
 
 
-<!-- Outbound rules-->
+    -->
 
-<!-- rule for the export module -->
-<outbound-rule>
-<from>/engineName/(.*?)/pid/([0-9]+)$</from>
-<to last="true">/engineName/$1/pid/$2</to>
-</outbound-rule>
+    <!-- rule for site export and other pages that could cause problems-->
+    <rule>
+        <from>^/(.*?)/page([0-9]+).html/(.*?)$</from>
+        <to last="true">/$1/pid/$2/$3</to>
+    </rule>
 
-<!-- rule for any regular page-->
-<outbound-rule>
-<from>/pid/([0-9]+)$</from>
-<to>/page$1.html</to>
-</outbound-rule>
+    <!-- rule for any regular page-->
+    <rule>
+        <from>^/(.*?)/page([0-9]+).html$</from>
+        <to>/$1/pid/$2</to>
+    </rule>
+
+    <!-- GXT resources-->
+    <rule>
+        <from>^(.*?)/gwt/(.*?)/images/(.*?)</from>
+        <to last="true">$1/gwt/resources/images/$3</to>
+    </rule>
+
+    <!-- rule for any gwt page-->
+    <rule>
+        <from>^(.*?)/gwt/(.*?)</from>
+        <to last="true">$1/gwt/$2</to>
+    </rule>
+
+
+    <!-- Outbound rules-->
+    <outbound-rule>
+        <note>
+            The outbound-rule specifies that when response.encodeURL is called (if you are using JSTL c:url)
+            the url /rewrite-status will be rewritten to /test/status/.
+
+            The above rule and this outbound-rule means that end users should never see the
+            url /rewrite-status only /test/status/ both in thier location bar and in hyperlinks
+            in your pages.
+        </note>
+        <from>/rewrite-status</from>
+        <to>/test/status/</to>
+    </outbound-rule>
+    <!-- rule for the export module -->
+    <outbound-rule>
+        <from>/engineName/(.*?)/pid/([0-9]+)$</from>
+        <to last="true">/engineName/$1/pid/$2</to>
+    </outbound-rule>
+
+    <!-- rule for any regular page-->
+    <outbound-rule>
+        <from>/pid/([0-9]+)$</from>
+        <to>/page$1.html</to>
+    </outbound-rule>
 
 </urlrewrite>
 

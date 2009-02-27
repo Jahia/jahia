@@ -57,11 +57,11 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
  *    The result will be as follows, if:
  *        1) the 'header.jsp' is found under custom_v1/common/header.jsp
  * 
- *                /jsp/jahia/templates/custom_v1/common/header.jsp
+ *                /templates/custom_v1/common/header.jsp
  * 
  *        2) the 'header.jsp' is found under basic/common/header.jsp  (in the parent template set)
  * 
- *                /jsp/jahia/templates/basic/common/header.jsp
+ *                /templates/basic/common/header.jsp
  * 
  *        3) the 'header.jsp' is not found --&gt; the path remains unchanged
  * 

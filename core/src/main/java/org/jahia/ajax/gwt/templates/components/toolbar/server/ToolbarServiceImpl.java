@@ -552,7 +552,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         String link = null;
         JobDetail lastExecutedJobDetail = getSchedulerService().getLastCompletedJobDetail();
         if (lastExecutedJobDetail != null) {
-            link = retrieveParamBean().getContextPath() + "/jsp/jahia/processing/jobreport.jsp?name=" + lastExecutedJobDetail.getName() + "&groupName=" + lastExecutedJobDetail.getGroup();
+            link = retrieveParamBean().getContextPath() + "/processing/jobreport.jsp?name=" + lastExecutedJobDetail.getName() + "&groupName=" + lastExecutedJobDetail.getGroup();
             JobDataMap lastExecutedJobDataMap = lastExecutedJobDetail.getJobDataMap();
             if (lastExecutedJobDataMap != null) {
 

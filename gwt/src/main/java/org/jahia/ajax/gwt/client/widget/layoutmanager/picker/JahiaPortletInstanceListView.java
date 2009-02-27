@@ -62,7 +62,7 @@ public class JahiaPortletInstanceListView extends ListView<GWTJahiaNode> {
     protected GWTJahiaNode prepareData(GWTJahiaNode model) {
         model.set("shortName", Util.ellipse(model.getName(), 14));
         if (model.getPreview() == null || model.getPreview().equalsIgnoreCase("")) {
-            model.set("preview", "/jsp/jahia/css/images/portlets/window_application.png");
+            model.set("preview", "/css/images/portlets/window_application.png");
         }
         return model;
     }

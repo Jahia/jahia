@@ -121,7 +121,7 @@ public class SelectPage_Engine implements JahiaEngine {
             homepageID = (Integer) params.get(HOMEPAGE_ID);
         if (params.get(SITE_ID) != null)
             siteID = (Integer) params.get(SITE_ID);
-        return Jahia.getContextPath()+"/jsp/jahia/engines/selectpage/select_page.jsp?homepageID="+
+        return Jahia.getContextPath()+"/engines/selectpage/select_page.jsp?homepageID="+
                 homepageID + "&siteID="+siteID+"&pageID="+pageID+"&selectPageOperation="+operation+"&parentPageID="+parentPageID+
                 "&callback="+callback;
     }

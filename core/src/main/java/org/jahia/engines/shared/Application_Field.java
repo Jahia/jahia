@@ -77,8 +77,8 @@ public class Application_Field implements FieldSubEngine {
             org.apache.log4j.Logger.getLogger(Application_Field.class);
 
     private static Application_Field theObject = null;
-    private static final String JSP_FILE = "/jsp/jahia/engines/shared/application_field.jsp";
-    private static final String READONLY_JSP = "/jsp/jahia/engines/shared/readonly_application_field.jsp";
+    private static final String JSP_FILE = "/engines/shared/application_field.jsp";
+    private static final String READONLY_JSP = "/engines/shared/readonly_application_field.jsp";
     public static final String APPLICATION_ROLES = "applicationRoles";
     private Map<Integer, List> appRoleMembers = null;
 

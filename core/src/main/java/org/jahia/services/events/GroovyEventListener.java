@@ -160,7 +160,7 @@ public class GroovyEventListener extends JahiaEventListener {
 
     private String resolveGroovyFullFileName(ProcessingContext processingContext) {
         String groovyFullFileName;
-        StringBuffer nameBuilder = new StringBuffer("/jsp/jahia/");
+        StringBuffer nameBuilder = new StringBuffer("/");
 
         if (processingContext != null && processingContext.getSiteKey() != null
                 && siteEventFile.containsKey(processingContext.getSiteKey()))

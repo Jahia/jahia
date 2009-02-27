@@ -33,7 +33,7 @@
 
 --%>
 
-<%@include file="/jsp/jahia/administration/include/header.inc"%>
+<%@include file="/admin/include/header.inc"%>
 <%@page language = "java" %>
 <%@page import = "java.util.*"%>
 <%@page import = "org.jahia.bin.Jahia"%>
@@ -50,4 +50,4 @@
 <!-- footer -->
 <tiles:insert attribute="footer" ignore="true"/>
 
-<%@include file="/jsp/jahia/administration/include/footer.inc"%>
+<%@include file="/admin/include/footer.inc"%>

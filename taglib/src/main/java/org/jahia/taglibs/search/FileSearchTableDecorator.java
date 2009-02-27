@@ -69,7 +69,7 @@ public class FileSearchTableDecorator extends TableDecorator {
         String iconType = getHit().getIconType();
         return new StringBuffer(64).append("<img src=\"").append(
                 getRequest().getContextPath()).append(
-                "/jsp/jahia/engines/images/types/").append(iconType).append(
+                "/engines/images/types/").append(iconType).append(
                 ".gif").append("\" alt=\"").append(iconType).append(
                 "\" width=\"16\" height=\"16\" border=\"0\" title=\"").append(
                 getHit().getContentType()).append("\"/>").toString();

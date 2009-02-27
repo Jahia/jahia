@@ -40,5 +40,5 @@
 <a title='<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>'
    href="${targetURL}">
     <img title='<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>'
-         src="${pageContext.request.contextPath}/jsp/jahia/css/images/icones/rss_small.gif" alt="RSS"/>
+         src="${pageContext.request.contextPath}/css/images/icones/rss_small.gif" alt="RSS"/>
 </a>

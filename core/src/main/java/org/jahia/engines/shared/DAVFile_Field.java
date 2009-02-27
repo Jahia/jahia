@@ -71,8 +71,8 @@ public class DAVFile_Field implements FieldSubEngine {
 
 
     private static DAVFile_Field theObject = null;
-    private static final String TREE_MANAGER_JSP = "/jsp/jahia/engines/shared/embedded_filemanager.jsp";
-    public static final String READONLY_JSP = "/jsp/jahia/engines/shared/readonly_davfile_field.jsp";
+    private static final String TREE_MANAGER_JSP = "/engines/shared/embedded_filemanager.jsp";
+    public static final String READONLY_JSP = "/engines/shared/readonly_davfile_field.jsp";
 
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(DAVFile_Field.class);

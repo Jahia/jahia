@@ -69,8 +69,8 @@ public class ManageWorkflow {
             org.apache.log4j.Logger.getLogger(ManageWorkflow.class);
 
     private static ManageWorkflow instance = null;
-    private static final String JSP_FILE = "/jsp/jahia/engines/workflow/changeworkflow.jsp";
-    private static final String READONLY_JSP = "/jsp/jahia/engines/workflow/readonly_changeworkflow.jsp";
+    private static final String JSP_FILE = "/engines/workflow/changeworkflow.jsp";
+    private static final String READONLY_JSP = "/engines/workflow/readonly_changeworkflow.jsp";
     public static final String WORKFLOW_ROLES = "workflowRoles";
 
     /**

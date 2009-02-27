@@ -54,7 +54,7 @@
 
 <%@include file="common-javascript.inc" %>
 <div class="menuwrapper">
-    <%@ include file="../../../../jsp/jahia/engines/tools.inc" %>
+    <%@ include file="../../../../engines/tools.inc" %>
     <div class="content">
         <div id="editor" class="mainPanel">
             <h4 class="versioningIcon">

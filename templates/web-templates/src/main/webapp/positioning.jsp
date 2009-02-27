@@ -67,7 +67,7 @@
                     </div>
                     <c:if test="${ !empty param.illustration }">
                         <div id="illustration"><!--start illustration-->
-                            <img src="${pageContext.request.contextPath}/jsp/jahia/templates/web-templates/theme/${requestScope.currentTheme}/img/illustration.png"
+                            <img src="${pageContext.request.contextPath}/templates/web-templates/theme/${requestScope.currentTheme}/img/illustration.png"
                                  alt="illustration"/>
                         </div>
                     </c:if>

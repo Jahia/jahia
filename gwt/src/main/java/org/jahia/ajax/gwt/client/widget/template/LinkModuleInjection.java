@@ -47,7 +47,7 @@ public class LinkModuleInjection extends Button {
     public LinkModuleInjection(final String module) {
         addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
-                TemplatesDOMUtil.moduleInjection("/jsp/jahia/gwt/" + module + "/" + module + "nocache.js");
+                TemplatesDOMUtil.moduleInjection("/gwt/" + module + "/" + module + "nocache.js");
             }
         });
     }

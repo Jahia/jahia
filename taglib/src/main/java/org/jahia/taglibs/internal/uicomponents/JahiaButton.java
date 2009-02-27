@@ -297,8 +297,8 @@ public class JahiaButton extends AbstractJahiaTag {
 
     /**
      * parse the resource value and replace :
-     * <jahiaEngine> 	: by /jsp/jahia/engines/
-     * <siteTemplate>	: by /jsp/jahia/templates/<mysite>/
+     * <jahiaEngine> 	: by /engines/
+     * <siteTemplate>	: by /templates/<mysite>/
 	 *                                       	  where <mysite> is the sitekey of the current site
      *
      * @param val, the String to parse
@@ -310,10 +310,10 @@ public class JahiaButton extends AbstractJahiaTag {
         if ( (val == null) || (jParams == null) || (jParams.getSite()== null) )
             return val;
         val = JahiaTools.replacePattern(val,JAHIA_ENGINE_TAG,
-                                                         "/jsp/jahia/engines/");
+                                                         "/engines/");
 
         val = JahiaTools.replacePattern(val,SITE_TEMPLATE_TAG,
-                "/jsp/jahia/templates/" + jParams.getSite().getSiteKey() + "/");
+                "/templates/" + jParams.getSite().getSiteKey() + "/");
 
         return val;
 

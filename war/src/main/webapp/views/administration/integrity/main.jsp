@@ -49,14 +49,14 @@
     <tbody>
       <tr>
         <td style="vertical-align: top;" align="left">
-          <%@include file="/jsp/jahia/administration/include/tab_menu.inc" %>
+          <%@include file="/admin/include/tab_menu.inc" %>
         </td>
       </tr>
       <tr>
         <td style="vertical-align: top;" align="left" height="100%">
           <div class="dex-TabPanelBottom">
             <div class="tabContent">
-            <jsp:include page="/jsp/jahia/administration/include/left_menu.jsp">
+            <jsp:include page="/admin/include/left_menu.jsp">
                 <jsp:param name="mode" value="site"/>
             </jsp:include>
             

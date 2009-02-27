@@ -94,6 +94,18 @@
                     </additionalBuildcommands>
                 </configuration>
             </plugin>
+<plugin>
+        <groupId>net.sourceforge.maven-taglib</groupId>
+        <artifactId>maven-taglib-plugin</artifactId>
+      </plugin>
         </plugins>
     </build>
+<reporting>
+<plugins>
+      <plugin>
+        <groupId>net.sourceforge.maven-taglib</groupId>
+        <artifactId>maven-taglib-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

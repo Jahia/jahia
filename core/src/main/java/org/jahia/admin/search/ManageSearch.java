@@ -82,8 +82,8 @@ public class ManageSearch extends AbstractAdministrationModule {
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (ManageSearch.class.getName ());
 
-    private static final String HTTP_FILES = "/jsp/jahia/engines";
-    private static final String JSP = "/jsp/jahia/administration/search/main.jsp?includejsp=";
+    private static final String HTTP_FILES = "/engines";
+    private static final String JSP = "/admin/search/main.jsp?includejsp=";
 
     private ServicesRegistry sReg;
     private JahiaSitesService siteServ;

@@ -69,7 +69,7 @@ public class ManageCategories {
 
     private static ManageCategories singletonInstance = null;
     private static final String JSP_FILE =
-            "/jsp/jahia/engines/categories/manage_categories.jsp";
+            "/engines/categories/manage_categories.jsp";
 
     private static final String SELECTEDCATEGORIES_ENGINEMAPKEY = "selectedCategories";
     private static final String DEFAULTCATEGORIES_SESSIONKEYPREFIX = "defaultCategories_";

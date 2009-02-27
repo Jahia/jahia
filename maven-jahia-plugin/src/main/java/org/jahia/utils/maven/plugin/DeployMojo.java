@@ -207,7 +207,7 @@ public class DeployMojo extends AbstractManagementMojo {
                 }
             }
 
-            File target = new File(getWebappDeploymentDir(),"jsp/jahia/templates/"+outputDir);
+            File target = new File(getWebappDeploymentDir(),"templates/"+outputDir);
             getLog().info("Updated template war resources for " + targetServerType + " v" + targetServerVersion + " in directory " + target);
             int cnt = updateFiles(source, target, Collections.singleton(new File(source,"WEB-INF")));
             cnt += updateFiles(new File(source, "WEB-INF/classes"), new File(webappDir,"WEB-INF/classes"));

@@ -57,8 +57,8 @@ This is the centralized place where all tiles definitions should be defined.
       <put name="tab-buttons" value="/views/engines/common/tab_buttons.jsp" />
       -->
       <put name="multilanguage-links" value="/views/engines/common/multilanguage_links.jsp" />
-      <put name="buttons" value="/jsp/jahia/engines/buttons.jsp" />
-      <put name="menu-bar" value="/jsp/jahia/engines/menuBar.jsp" />
+      <put name="buttons" value="/engines/buttons.jsp" />
+      <put name="menu-bar" value="/engines/menuBar.jsp" />
    </definition>
 
   <!-- versioning engine : for pages -->
@@ -191,8 +191,8 @@ This is the centralized place where all tiles definitions should be defined.
       <!--
       <put name="top-action-menu" value="/views/engines/common/actions_selector.jsp" />
       -->
-      <put name="buttons" value="/jsp/jahia/engines/buttons.jsp" />
-      <put name="body-content" value="/jsp/jahia/engines/calendar/calendar.jsp" />
+      <put name="buttons" value="/engines/buttons.jsp" />
+      <put name="body-content" value="/engines/calendar/calendar.jsp" />
    </definition>
 
   <!--=======================================================================-->

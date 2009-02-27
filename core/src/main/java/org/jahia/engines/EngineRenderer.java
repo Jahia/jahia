@@ -72,7 +72,7 @@ public class EngineRenderer {
 
     public static final String FORM_TOKEN = "<!--ENGINE_CONTENT-->";
     private static final EngineRenderer instance = new EngineRenderer ();
-    private static final String ENGINE_JSP = "/jsp/jahia/engines/engine.jsp";
+    private static final String ENGINE_JSP = "/engines/engine.jsp";
 
     /**
      */

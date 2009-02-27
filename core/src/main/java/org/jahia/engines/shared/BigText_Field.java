@@ -74,8 +74,8 @@ public class BigText_Field implements FieldSubEngine {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(BigText_Field.class);
 
     private static final BigText_Field instance = new BigText_Field();
-    private static final String JSP_FILE = "/jsp/jahia/engines/shared/bigtext_field.jsp";
-    private static final String READONLY_JSP = "/jsp/jahia/engines/shared/readonly_bigtext_field.jsp";
+    private static final String JSP_FILE = "/engines/shared/bigtext_field.jsp";
+    private static final String READONLY_JSP = "/engines/shared/readonly_bigtext_field.jsp";
 
     public static final String HTMLEDITOR_VIEW_HELPER_ATTRIBUTE =
             "org.jahia.engines.shared.BigText_Field.HTMLEditorsViewHelper";

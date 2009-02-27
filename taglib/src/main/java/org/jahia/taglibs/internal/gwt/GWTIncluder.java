@@ -52,7 +52,7 @@ import org.jahia.taglibs.utility.Utils;
  */
 public class GWTIncluder {
 
-    public static final String GWT_MODULE_PATH = "/jsp/jahia/gwt";
+    public static final String GWT_MODULE_PATH = "/gwt";
 
     /**
      * Generate the import string for a given module.

@@ -62,9 +62,9 @@ public class EngineToolBox {
     private static final EngineToolBox instance = new EngineToolBox ();
 
     private static final String MSG_INTERNAL_ERROR = "Audit Log Manager internal error";
-    private static final String JSP_LOGFORM = "/jsp/jahia/engines/audit/viewlogs.jsp";
-    //private static final String JSP_SENDLOG = "/jsp/jahia/engines/audit/sendlogs.jsp";
-    private static final String JSP_FLUSHCONFIRM = "/jsp/jahia/engines/audit/flushconfirm.jsp";
+    private static final String JSP_LOGFORM = "/engines/audit/viewlogs.jsp";
+    //private static final String JSP_SENDLOG = "/engines/audit/sendlogs.jsp";
+    private static final String JSP_FLUSHCONFIRM = "/engines/audit/flushconfirm.jsp";
 
     /** Logger instance */
     private static final org.apache.log4j.Logger logger =

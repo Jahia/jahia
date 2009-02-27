@@ -70,8 +70,8 @@ public class Category_Field implements FieldSubEngine {
             org.apache.log4j.Logger.getLogger(Category_Field.class);
 
     private static Category_Field theObject = null;
-    private static final String JSP_FILE = "/jsp/jahia/engines/shared/category_field.jsp";
-    private static final String READONLY_JSP = "/jsp/jahia/engines/shared/readonly_category_field.jsp";
+    private static final String JSP_FILE = "/engines/shared/category_field.jsp";
+    private static final String READONLY_JSP = "/engines/shared/readonly_category_field.jsp";
 
     public static final String ORIGINALLYSELECTEDCATEGORIES_ENGINEMAPKEY = "originallySelectedCategories";
     public static final String SELECTEDCATEGORIES_ENGINEMAPKEY = "selectedCategories";

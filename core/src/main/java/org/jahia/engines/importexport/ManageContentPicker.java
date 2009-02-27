@@ -88,7 +88,7 @@ public class ManageContentPicker {
             org.apache.log4j.Logger.getLogger(ManageContentPicker.class);
 
     private static ManageContentPicker instance = null;
-    private static final String JSP = "/jsp/jahia/engines/importexport/contentpick.jsp";
+    private static final String JSP = "/engines/importexport/contentpick.jsp";
     private static ImportExportService ie;
     private static JahiaSearchService searchService;
     private static JahiaSitesService siteService;

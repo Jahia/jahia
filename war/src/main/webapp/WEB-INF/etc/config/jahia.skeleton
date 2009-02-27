@@ -63,11 +63,11 @@ serverHomeDiskPath                                     =
 # such as temporary files or content files, or even in some cases where
 # it will retrieve additionnal configuration from.
 
-jahiaJspDiskPath                                       =   /jsp/jahia/
-jahiaEnginesDiskPath                                   =   /jsp/jahia/engines/
-jahiaTemplatesDiskPath                                 =   /jsp/jahia/templates/
-jahiaHtmlEditorsDiskPath                               =   /jsp/jahia/htmleditors/
-jahiaJavaScriptDiskPath                                =   /jsp/jahia/javascript/
+jahiaJspDiskPath                                       =   /
+jahiaEnginesDiskPath                                   =   /engines/
+jahiaTemplatesDiskPath                                 =   /templates/
+jahiaHtmlEditorsDiskPath                               =   /htmleditors/
+jahiaJavaScriptDiskPath                                =   /javascript/
 
 jahiaFilesDiskPath                                     =   $context/WEB-INF
 jahiaEtcDiskPath                                       =
@@ -552,7 +552,7 @@ defautSite                                             =
 # only thing this resource must do is set a header called "jahia-version" that
 # must be present for the siteServerName to be properly identified as a Jahia
 # server.
-siteServerNameTestURLExpr                              = ${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/jsp/isjahia.jsp
+siteServerNameTestURLExpr                              = ${request.scheme}://${siteServerName}:${request.serverPort}${request.contextPath}/isjahia.jsp
 # If you are using ESI caching, we cannot use the default port defined in
 # '${request.serverPort}' since this will resolve to Jahia's port instead
 # of the ESI server's port (or the load-balancer's port that forwards to a cluster

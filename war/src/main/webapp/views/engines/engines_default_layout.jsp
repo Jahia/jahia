@@ -104,11 +104,11 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <title>Jahia Engine - <%=engineTitle%></title>
 <internal:gwtInit modules="org.jahia.ajax.gwt.module.engines.Engines"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/css/andromeda.css" type="text/css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css" />
 <%--
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/engines/css/menu.css" type="text/css"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/css/colorsAndStyles.css" type="text/css"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/jahia/css/actions.css" type="text/css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/engines/css/menu.css" type="text/css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/colorsAndStyles.css" type="text/css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/actions.css" type="text/css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.stylesheet.css"/>" type="text/css"/>
 --%>
 
@@ -142,7 +142,7 @@ function saveContent() {
 //-->
 </script>
 
-<script type="text/javascript" src="<%= request.getContextPath() %>/jsp/jahia/javascript/prototype/proto15sc17-compressed.js"></script>
+<script type="text/javascript" src="<%= request.getContextPath() %>/javascript/prototype/proto15sc17-compressed.js"></script>
 <script type="text/javascript" src="<%=URL%>../javascript/engines.js"></script>
 <script type="text/javascript">
 <!--
@@ -380,7 +380,7 @@ window.onload = windowOnload;
           <!-- End title -->
           <c:set var="navigationPresent"><tiles:getAsString name="navigation" ignore="true"/></c:set>
           <c:if test="${not empty navigationPresent}">
-            <jsp:include page="../../jsp/jahia/engines/navigation.jsp" />
+            <jsp:include page="../../engines/navigation.jsp" />
           </c:if>
         </div>
         <div id="mainContent">

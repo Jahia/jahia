@@ -154,7 +154,7 @@ public class PropertyInputTag extends PropertyValueTag {
         request.setAttribute("value", value);
         request.setAttribute("values", cs);
 
-        pageContext.include("/jsp/jahia/engines/filemanager/types/selectmenu_edit.jsp");
+        pageContext.include("/engines/filemanager/types/selectmenu_edit.jsp");
     }
 
     protected void handleCategory(ExtendedPropertyDefinition propDef, Node objectNode, JCRStoreProvider provider) throws Exception {
@@ -215,7 +215,7 @@ public class PropertyInputTag extends PropertyValueTag {
         request.setAttribute("propertyName", name);
         request.setAttribute("contextId", contextId);
 
-        pageContext.include("/jsp/jahia/engines/filemanager/types/category_edit.jsp");
+        pageContext.include("/engines/filemanager/types/category_edit.jsp");
     }
 
     protected void handleBoolean(ExtendedPropertyDefinition propDef, Node objectNode, JCRStoreProvider provider) throws Exception {

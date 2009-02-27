@@ -352,7 +352,7 @@ public class LockKey implements Serializable {
         final StringBuffer buff = new StringBuffer();
         buff.append("<img border='0' src='");
         buff.append(Jahia.getContextPath());
-        buff.append("/jsp/jahia/engines/images/stopwatch.gif");
+        buff.append("/engines/images/stopwatch.gif");
         buff.append("' title=' ");
         final String remaining = JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.remainingTime.label",
                     jParams, jParams.getLocale());

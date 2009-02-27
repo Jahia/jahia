@@ -70,7 +70,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     public static final String PARENT_TAG_REQUEST_ATTRIBUTE = "parentContainerTag";
     public static final String PARENT_BUNDLE_REQUEST_ATTRIBUTE = "parentBundleTag";
-    public static final String TEMPLATE_PATH = "/jsp/jahia/templates/";
+    public static final String TEMPLATE_PATH = "/templates/";
     public static final String COMMON_TAG_BUNDLE = "CommonTag";
 
     private static final transient Logger logger = Logger.getLogger(AbstractJahiaTag.class);

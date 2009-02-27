@@ -69,8 +69,8 @@ public class Float_Field implements FieldSubEngine
               org.apache.log4j.Logger.getLogger(Float_Field.class);
 
     private static          Float_Field theObject   = null;
-    private static final    String          JSP_FILE    = "/jsp/jahia/engines/shared/float_field.jsp";
-    public  static final    String  READONLY_JSP  		= "/jsp/jahia/engines/shared/readonly_smalltext_field.jsp";
+    private static final    String          JSP_FILE    = "/engines/shared/float_field.jsp";
+    public  static final    String  READONLY_JSP  		= "/engines/shared/readonly_smalltext_field.jsp";
 
 
     /***

@@ -134,7 +134,7 @@
                        target="_blank"
                        style="behavior:url(#default#AnchorClick)"
                        title="<utility:resourceBundle resourceName='searchResults.openIEfolder' defaultValue='Open as a Web folder'/>"><img
-                            src="${pageContext.request.contextPath}/jsp/jahia/engines/images/icons/IEFolder.gif"
+                            src="${pageContext.request.contextPath}/engines/images/icons/IEFolder.gif"
                             alt="IE folder" border="0"
                             title="<utility:resourceBundle resourceName='searchResults.openIEfolder' defaultValue='Open as a Web folder'/>"/></a>
                 </display:column>

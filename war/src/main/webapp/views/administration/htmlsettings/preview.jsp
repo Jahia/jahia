@@ -39,17 +39,17 @@
     <title>FCKeditor - Toolbar - Preview</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="robots" content="noindex, nofollow" />
-    <script type="text/javascript" src="${pageContext.request.contextPath}/jsp/jahia/htmleditors/fckeditor/fckeditor.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/htmleditors/fckeditor/fckeditor.js"></script>
 </head>
 
 <body>
         <script type="text/javascript">
 <!--
 var oFCKeditor = new FCKeditor( 'FCKeditor1' ) ;
-oFCKeditor.BasePath = '${pageContext.request.contextPath}/jsp/jahia/htmleditors/fckeditor/' ;
+oFCKeditor.BasePath = '${pageContext.request.contextPath}/htmleditors/fckeditor/' ;
 oFCKeditor.Height   = 150 ;
 oFCKeditor.Value    = '<p>This is some <strong>sample text<\/strong>.<\/p>' ;
-oFCKeditor.Config["CustomConfigurationsPath"] = "${pageContext.request.contextPath}/jsp/jahia/htmleditors/fckeditor/fckconfig_jahia.js"
+oFCKeditor.Config["CustomConfigurationsPath"] = "${pageContext.request.contextPath}/htmleditors/fckeditor/fckconfig_jahia.js"
 oFCKeditor.ToolbarSet = "${not empty param.toolbar ? param.toolbar : 'Basic'}";
 oFCKeditor.Create() ;
 //-->

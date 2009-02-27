@@ -62,7 +62,7 @@ import org.jahia.params.ProcessingContext;
  */
 public class AdminAction extends org.apache.struts.actions.DispatchAction {
 
-    protected static final String HTTP_FILES  = "/jsp/jahia/engines/";
+    protected static final String HTTP_FILES  = "/engines/";
 
     /**
      *

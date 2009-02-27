@@ -227,7 +227,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             String flagName = _code;
             String flagOnPath;
             if ("".equals(_resourceOn)) {
-                flagOnPath = request.getContextPath() + "/jsp/jahia/css/images/flags/" + flagName + "_on.png";
+                flagOnPath = request.getContextPath() + "/css/images/flags/" + flagName + "_on.png";
             } else {
                 flagOnPath = _resourceOn;
             }
@@ -239,7 +239,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
                 // Should an anchor be written.
                 if (!"".equals(_href)) {
                     if ("".equals(_resourceOff)) {
-                        flagOffPath = request.getContextPath() + "/jsp/jahia/css/images/flags/" + flagName + "_off.png";
+                        flagOffPath = request.getContextPath() + "/css/images/flags/" + flagName + "_off.png";
                     } else {
                         flagOffPath = _resourceOff;
                     }

@@ -44,7 +44,7 @@ import com.google.gwt.core.client.GWT;
  */
 public class URL {
 
-    private static final String GWT_SCRIPT_PATH = "/jsp/jahia/gwt/";
+    private static final String GWT_SCRIPT_PATH = "/gwt/";
 
     public static String getServerBaseURL() {
         String absoluteURLContext = GWT.getModuleBaseURL();

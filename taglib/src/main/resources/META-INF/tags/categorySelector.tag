@@ -60,7 +60,7 @@
        value="${functions:default(param[fieldIdIncludeChildren], empty paramValues[fieldId] ? includeChildren : 'false')}"/>
 <c:set var="root" value="${not empty root ? root : 'root'}"/>
 &nbsp;<a href="#select"
-onclick="javascript:{var categoriesSelector = window.open('${pageContext.request.contextPath}/jsp/jahia/engines/categories/launcher.jsp?autoSelectParent=${autoSelectParent}&pid=${jahia.page.ID}&contextId=${fieldId}@${root}&selectedCategories=' + document.getElementById('${fieldId}').value, '<%="categoriesSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable=yes,scrollbars=yes,height=800,width=600'); categoriesSelector.focus(); return false;}"
+onclick="javascript:{var categoriesSelector = window.open('${pageContext.request.contextPath}/engines/categories/launcher.jsp?autoSelectParent=${autoSelectParent}&pid=${jahia.page.ID}&contextId=${fieldId}@${root}&selectedCategories=' + document.getElementById('${fieldId}').value, '<%="categoriesSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable=yes,scrollbars=yes,height=800,width=600'); categoriesSelector.focus(); return false;}"
 title='<utility:resourceBundle resourceName="selectors.categorySelector.selectCategories"
                                       defaultValue="Select categories"/>'><utility:resourceBundle  resourceName="selectors.select" defaultValue="select"/></a>
 <c:if test="${displayIncludeChildren}">

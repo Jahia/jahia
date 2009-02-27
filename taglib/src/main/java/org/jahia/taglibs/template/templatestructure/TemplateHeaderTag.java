@@ -166,16 +166,16 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         buf.append(DefaultIncludeProvider.getServerConfigImport((HttpServletRequest) request));
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
-        buf.append("/jsp/jahia/css/styles.css\"/>");
+        buf.append("/css/styles.css\"/>");
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
-        buf.append("/jsp/jahia/css/languageSwitchingLinks.css\"/>");
+        buf.append("/css/languageSwitchingLinks.css\"/>");
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
-        buf.append("/jsp/jahia/css/portlet-spec-1.0.css\"/>");
+        buf.append("/css/portlet-spec-1.0.css\"/>");
         buf.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         buf.append(((HttpServletRequest) request).getContextPath());
-        buf.append("/jsp/jahia/css/portlets.css\"/>");
+        buf.append("/css/portlets.css\"/>");
         buf.append("\t<title>").append(title).append("</title>\n");
 
         // write StringBuffer to JspWriter

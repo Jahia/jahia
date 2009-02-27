@@ -100,11 +100,10 @@ public class ThemeValve implements Valve {
             } else if (theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME) != null) {
                 jahiaThemeCurrent = theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME);
             }
-            if (jahiaThemeCurrent == null) {
+            if (jahiaThemeCurrent == null || "".equals(jahiaThemeCurrent.trim())) {
                 jahiaThemeCurrent = "default";
             }
-            if (jahiaThemeCurrent != null && !"".equals(jahiaThemeCurrent.trim()))
-                request.setAttribute(THEME_ATTRIBUTE_NAME +"_"+theSite.getID(), jahiaThemeCurrent);
+            request.setAttribute(THEME_ATTRIBUTE_NAME +"_"+theSite.getID(), jahiaThemeCurrent);
         }
         valveContext.invokeNext(context);
     }

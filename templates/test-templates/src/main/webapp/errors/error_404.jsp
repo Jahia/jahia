@@ -38,7 +38,7 @@
     <title>Custom 404 error page</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/jsp/jahia/templates/test_templates/common/css/styles.css"
+          href="${pageContext.request.contextPath}/templates/test_templates/common/css/styles.css"
           type="text/css"/>
 </head>
 

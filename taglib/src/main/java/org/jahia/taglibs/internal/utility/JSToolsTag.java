@@ -58,7 +58,7 @@ import org.jahia.utils.JahiaConsole;
  *         <p>&lt;content:JSTools/&gt;
  *         <p>generates the following HTML:
  *         <p/>
- *         &lt;script type=\"text/javascript\" src=\"/jahia/jsp/jahia/javascript/jahia.js\"&gt;&lt;/script&gt;
+ *         &lt;script type=\"text/javascript\" src=\"/jahia/javascript/jahia.js\"&gt;&lt;/script&gt;
  *         <p/>
  *         </attriInfo>"
  */
@@ -81,7 +81,7 @@ public class JSToolsTag extends AbstractJahiaTag {
             buf.append("img {\n");
             buf.append("behavior: url(\"");
             buf.append(request.getContextPath());
-            buf.append("/jsp/jahia/css/pngbehavior.jsp\")");
+            buf.append("/css/pngbehavior.jsp\")");
             buf.append("}\n");
             buf.append("</style>\n");
             buf.append("<![endif]-->\n");

@@ -66,8 +66,8 @@ public class TimeBasedPublishingEngine {
     public static final String ENGINE_NAME = "timebasedpublishing_engine";
     public static final String SUB_ENGINE_MAP_NAME = "timebasedpublishing_engine_map";
     private static TimeBasedPublishingEngine instance = null;
-    private static final String JSP = "/jsp/jahia/engines/timebasedpublishing/timebasedpublishing.jsp";
-    public static final String READONLY_JSP = "/jsp/jahia/engines/timebasedpublishing/readonly_timebasedpublishing.jsp";
+    private static final String JSP = "/engines/timebasedpublishing/timebasedpublishing.jsp";
+    public static final String READONLY_JSP = "/engines/timebasedpublishing/readonly_timebasedpublishing.jsp";
     private JahiaObjectManager jahiaObjectMgr = null;
     private Map oldRules = new HashMap();
 

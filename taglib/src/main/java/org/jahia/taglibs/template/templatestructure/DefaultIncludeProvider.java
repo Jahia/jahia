@@ -109,7 +109,7 @@ public class DefaultIncludeProvider {
         buf.append("img {\n");
         buf.append("behavior: url(\"");
         buf.append(request.getContextPath());
-        buf.append("/jsp/jahia/css/pngbehavior.jsp\")");
+        buf.append("/css/pngbehavior.jsp\")");
         buf.append("}\n");
         buf.append("</style>\n");
         buf.append("<![endif]-->\n");
@@ -117,7 +117,7 @@ public class DefaultIncludeProvider {
     }
 
     /**
-     * Translation of <%@ include file="/jsp/jahia/javascript/serverconfig_js.inc"%>
+     * Translation of <%@ include file="/javascript/serverconfig_js.inc"%>
      *
      * @param request the request
      * @return the script to include

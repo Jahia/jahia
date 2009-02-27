@@ -78,10 +78,10 @@ public class ManageImportExport {
             org.apache.log4j.Logger.getLogger(ManageImportExport.class);
 
     private static ManageImportExport instance = null;
-    private static final String JSP_IMPORT_FILE = "/jsp/jahia/engines/importexport/import.jsp";
-    private static final String JSP_CLOSE_FILE = "/jsp/jahia/engines/importexport/close.jsp";
-    private static final String JSP_EXPORT_FILE = "/jsp/jahia/engines/importexport/export.jsp";
-    //private static final String JSP_XML_FILE = "/jsp/jahia/engines/importexport/xml.jsp";
+    private static final String JSP_IMPORT_FILE = "/engines/importexport/import.jsp";
+    private static final String JSP_CLOSE_FILE = "/engines/importexport/close.jsp";
+    private static final String JSP_EXPORT_FILE = "/engines/importexport/export.jsp";
+    //private static final String JSP_XML_FILE = "/engines/importexport/xml.jsp";
 
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 

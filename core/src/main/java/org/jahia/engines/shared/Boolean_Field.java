@@ -69,8 +69,8 @@ public class Boolean_Field implements FieldSubEngine
               org.apache.log4j.Logger.getLogger(Boolean_Field.class);
 
     private static          Boolean_Field theObject   = null;
-    private static final    String          JSP_FILE    = "/jsp/jahia/engines/shared/boolean_field.jsp";
-    public  static final    String  READONLY_JSP  		= "/jsp/jahia/engines/shared/readonly_boolean_field.jsp";
+    private static final    String          JSP_FILE    = "/engines/shared/boolean_field.jsp";
+    public  static final    String  READONLY_JSP  		= "/engines/shared/readonly_boolean_field.jsp";
 
 
     /***

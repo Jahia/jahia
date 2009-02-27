@@ -49,7 +49,7 @@
     <!--
 # Activate the JSP Event listener if you want to be able to implement JSP
 # listeners using JSP files. In order to do this you can either modify the
-# default /jsp/jahia/events/eventlistener.jsp file or include an
+# default /events/eventlistener.jsp file or include an
 # "eventlistener.jsp" file in your template directory.
 -->
     <bean id="JSPEventListener" class="org.jahia.services.events.JSPEventListener" />
@@ -57,7 +57,7 @@
 <!--
 # Activate the Groovy Event listener if you want to be able to implement event
 # listeners using Groovy files. In order to do this you can either modify the
-# default /jsp/jahia/events/eventlistener.groovy file or include an
+# default /events/eventlistener.groovy file or include an
 # "eventlistener.groovy" file in your template directory.
 -->
     <bean id="GroovyEventListener" class="org.jahia.services.events.GroovyEventListener" >

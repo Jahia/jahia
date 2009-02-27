@@ -70,7 +70,7 @@ public class SiteCheckValve implements Valve {
                     processingContext.setAttribute("Jahia_ParamBean",
                         processingContext);
                     servletContext.getRequestDispatcher(
-                        "/jsp/jahia/errors/site_not_found.jsp").forward(
+                        "/errors/site_not_found.jsp").forward(
                         paramBean.getRequest(), paramBean.getResponse());
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);

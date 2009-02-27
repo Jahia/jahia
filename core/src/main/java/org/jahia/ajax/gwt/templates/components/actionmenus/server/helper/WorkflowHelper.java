@@ -121,7 +121,7 @@ public class WorkflowHelper {
      */
     public static String drawWorkflowUrl(ProcessingContext jParams, String wfKey) throws JahiaException {
         return new StringBuilder(jParams.getContextPath())
-                .append("/jsp/jahia/engines/gwtworkflow/workflow.jsp")
+                .append("/engines/gwtworkflow/workflow.jsp")
                 .append("?startpage=").append(wfKey).toString();
     }
 

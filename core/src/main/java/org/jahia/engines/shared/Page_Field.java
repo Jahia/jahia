@@ -82,8 +82,8 @@ public class Page_Field implements FieldSubEngine {
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(Page_Field.class);
 
-    public static final String READONLY_JSP = "/jsp/jahia/engines/shared/readonly_page_field.jsp";
-    public static final String ACCESSDENIED_JSP = "/jsp/jahia/engines/shared/accessdenied_page_field.jsp";
+    public static final String READONLY_JSP = "/engines/shared/readonly_page_field.jsp";
+    public static final String ACCESSDENIED_JSP = "/engines/shared/accessdenied_page_field.jsp";
     public static final String CREATE_PAGE = "createPage";
     // Page update consists to change templae, change title or change (if possible)
     // page type.
@@ -98,7 +98,7 @@ public class Page_Field implements FieldSubEngine {
 
     private static Page_Field instance;
     private static final String[] DEFAULT_OPERATION = {UPDATE_PAGE, LINK_JAHIA_PAGE, LINK_URL};
-    private static final String JSP_FILE = "/jsp/jahia/engines/shared/page_field.jsp";
+    private static final String JSP_FILE = "/engines/shared/page_field.jsp";
 
 
     /**

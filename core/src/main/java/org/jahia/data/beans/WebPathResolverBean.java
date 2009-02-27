@@ -57,11 +57,11 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
  *    The result will be as follows, if:
  *        1) the 'logo.gif' is found under custom_v1/common/logo.gif 
  * 
- *                &lt;img src=&quot;/jahia/jsp/jahia/templates/custom_v1/common/logo.gif&quot; alt=&quot;logo&quot;/&gt;
+ *                &lt;img src=&quot;/jahia/templates/custom_v1/common/logo.gif&quot; alt=&quot;logo&quot;/&gt;
  * 
  *        2) the 'logo.gif' is found under basic/common/logo.gif  (in the parent template set)
  * 
- *                &lt;img src=&quot;/jahia/jsp/jahia/templates/basic/common/logo.gif&quot; alt=&quot;logo&quot;/&gt;
+ *                &lt;img src=&quot;/jahia/templates/basic/common/logo.gif&quot; alt=&quot;logo&quot;/&gt;
  * 
  *        3) the 'logo.gif' is not found --&gt; the path remains unchanged
  * 

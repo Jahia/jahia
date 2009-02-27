@@ -69,7 +69,7 @@
 <c:set var="useUrl" value="${not empty useUrl ? useUrl : 'false'}"/>
 <script type="text/javascript">
     function openFolderSelector(){
-        return window.open('${pageContext.request.contextPath}/jsp/jahia/engines/webdav/filePicker.jsp?foldersOnly=true&amp;callback=setSelectedFilePath${fieldIdHash}&amp;rootPath=${rootPath}&amp;startPath=${startPath}&amp;filters=${filters}', '<%="pathSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=510,width=700');
+        return window.open('${pageContext.request.contextPath}/engines/webdav/filePicker.jsp?foldersOnly=true&amp;callback=setSelectedFilePath${fieldIdHash}&amp;rootPath=${rootPath}&amp;startPath=${startPath}&amp;filters=${filters}', '<%="pathSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=510,width=700');
     }
 </script>
 &nbsp;<a href="#select"

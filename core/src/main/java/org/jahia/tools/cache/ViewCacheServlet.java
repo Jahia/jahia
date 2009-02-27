@@ -73,7 +73,7 @@ public class ViewCacheServlet extends HttpServlet implements Servlet {
     private void doWork(HttpServletRequest aRequest,
             HttpServletResponse aResponse) throws ServletException, IOException {
         aRequest.getSession(true);
-        String nextJSP = "/jsp/jahia/tools/listCaches.jsp";
+        String nextJSP = "/tools/listCaches.jsp";
         String cacheName = null;
         String cacheKey = null;
         for (Object parameter : aRequest.getParameterMap().keySet()) {
@@ -149,7 +149,7 @@ public class ViewCacheServlet extends HttpServlet implements Servlet {
             }
         }
         if (cacheName != null) {
-            nextJSP = "/jsp/jahia/tools/viewCache.jsp";
+            nextJSP = "/tools/viewCache.jsp";
             aRequest.setAttribute("cacheName", cacheName);
             aRequest.setAttribute("cacheKey", cacheKey);
         }

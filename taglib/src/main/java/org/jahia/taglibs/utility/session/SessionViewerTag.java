@@ -117,7 +117,7 @@ import org.jahia.utils.JahiaTools;
  javaScriptPath<br>
  java.lang.String<br>
  java.lang.String<br>
- /jahia/jsp/jahia/javascript/jahia.js<br>
+ /jahia/javascript/jahia.js<br>
  containerParentID<br>
  java.lang.String<br>
  java.lang.Integer<br>
@@ -157,7 +157,7 @@ import org.jahia.utils.JahiaTools;
  ManageCategories.fieldForm<br>
  java.lang.String<br>
  java.lang.String<br>
- <!-- FIXME : The following javascript file path are hardcoded. --> <script language=&amp;quot;javascript&amp;quot; src=&amp;quot;/jahia/jsp/jahia/javascript/selectbox.js&amp;quot;></script> <script language=&amp;quot;javascript&amp;quot; src=&amp;quot;/jahia/jsp/jahia/javascript/checkbox.js&amp;quot;></script> <!--#HELP# <script language=&amp;quot;javascript&amp;quot; src=&amp;quot;/jahia/jsp/jahia/javascript/help.js&amp;quot;></script> --> <script language=&amp;quot;javascript&amp;quot;> // Overide the previous check function function check() { return true; } function sendForm(method,params) { document.mainForm.method = &amp;quot;POST&amp;quot;; document.mainForm.action = &amp;apos;/jahia/Jahia/engineName/addcontainer/op/edit/pid/1?clistid=0&amp;cdefid=20&amp;cpid=1&amp;cparentid=0&amp;screen=categories&amp;apos; if ( params.charAt(0) == &amp;quot;&amp;&amp;quot; ){ document.mainForm.action += params; } else { document.mainForm.action += &amp;quot;&amp;&amp;quot; + params; } document.mainForm.submit(); } </script> <table class=&amp;quot;text&amp;quot; border=&amp;quot;0&amp;quot; cellspacing=&amp;quot;0&amp;quot; cellpadding=&amp;quot;0&amp;quot; width=&amp;quot;600&amp;quot; align=&amp;quot;center&amp;quot;> <tr> <td>&amp;nbsp;</td> <td>Please select the categories this object should be associated with.</td> </tr> <tr> <td>&amp;nbsp;</td> <td><br> <table class=&amp;quot;text&amp;quot; border=&amp;quot;0&amp;quot; cellspacing=&amp;quot;0&amp;quot; cellpadding=&amp;quot;0&amp;quot;> <tr class=&amp;quot;sitemap1&amp;quot;> <td>&amp;nbsp;</td> <td class=&amp;quot;text&amp;quot; nowrap> <img alt=&amp;quot;&amp;quot; border=&amp;quot;0&amp;quot; src=&amp;quot;/jahia/jsp/jahia/engines/images/pix.gif&amp;quot; height=&amp;quot;0&amp;quot; width=&amp;quot;14&amp;quot; align=&amp;quot;absmiddle&amp;quot;> <input type=&amp;quot;checkbox&amp;quot; name=&amp;quot;category_root&amp;quot;>(key=root) </td> <td>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</td> </tr> </table> </td> </tr> </table> <!-- --><br>
+ <!-- FIXME : The following javascript file path are hardcoded. --> <script language=&amp;quot;javascript&amp;quot; src=&amp;quot;/jahia/javascript/selectbox.js&amp;quot;></script> <script language=&amp;quot;javascript&amp;quot; src=&amp;quot;/jahia/javascript/checkbox.js&amp;quot;></script> <!--#HELP# <script language=&amp;quot;javascript&amp;quot; src=&amp;quot;/jahia/javascript/help.js&amp;quot;></script> --> <script language=&amp;quot;javascript&amp;quot;> // Overide the previous check function function check() { return true; } function sendForm(method,params) { document.mainForm.method = &amp;quot;POST&amp;quot;; document.mainForm.action = &amp;apos;/jahia/Jahia/engineName/addcontainer/op/edit/pid/1?clistid=0&amp;cdefid=20&amp;cpid=1&amp;cparentid=0&amp;screen=categories&amp;apos; if ( params.charAt(0) == &amp;quot;&amp;&amp;quot; ){ document.mainForm.action += params; } else { document.mainForm.action += &amp;quot;&amp;&amp;quot; + params; } document.mainForm.submit(); } </script> <table class=&amp;quot;text&amp;quot; border=&amp;quot;0&amp;quot; cellspacing=&amp;quot;0&amp;quot; cellpadding=&amp;quot;0&amp;quot; width=&amp;quot;600&amp;quot; align=&amp;quot;center&amp;quot;> <tr> <td>&amp;nbsp;</td> <td>Please select the categories this object should be associated with.</td> </tr> <tr> <td>&amp;nbsp;</td> <td><br> <table class=&amp;quot;text&amp;quot; border=&amp;quot;0&amp;quot; cellspacing=&amp;quot;0&amp;quot; cellpadding=&amp;quot;0&amp;quot;> <tr class=&amp;quot;sitemap1&amp;quot;> <td>&amp;nbsp;</td> <td class=&amp;quot;text&amp;quot; nowrap> <img alt=&amp;quot;&amp;quot; border=&amp;quot;0&amp;quot; src=&amp;quot;/jahia/engines/images/pix.gif&amp;quot; height=&amp;quot;0&amp;quot; width=&amp;quot;14&amp;quot; align=&amp;quot;absmiddle&amp;quot;> <input type=&amp;quot;checkbox&amp;quot; name=&amp;quot;category_root&amp;quot;>(key=root) </td> <td>&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;</td> </tr> </table> </td> </tr> </table> <!-- --><br>
  addcontainer.fieldForms<br>
  java.lang.String<br>
  java.util.Map<br>
@@ -184,7 +184,7 @@ import org.jahia.utils.JahiaTools;
  engineOutputFile<br>
  java.lang.String<br>
  java.lang.String<br>
- /jsp/jahia/engines/engine.jsp<br>
+ /engines/engine.jsp<br>
  enableCategories<br>
  java.lang.String<br>
  java.lang.Boolean<br>
@@ -196,7 +196,7 @@ import org.jahia.utils.JahiaTools;
  imagesPath<br>
  java.lang.String<br>
  java.lang.String<br>
- /jsp/jahia/engines/engines/images/<br>
+ /engines/engines/images/<br>
  addcontainer.theContainer<br>
  java.lang.String<br>
  org.jahia.data.containers.JahiaContainer<br>

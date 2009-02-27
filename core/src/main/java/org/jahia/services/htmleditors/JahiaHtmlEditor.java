@@ -97,7 +97,7 @@ public class JahiaHtmlEditor implements Serializable, HtmlEditor, Comparable {
     /**
      * Returns the base directory relative to
      *
-     * <jahia-home>/jsp/jahia/htmleditors
+     * <jahia-home>/htmleditors
      *
      * @return
      */
@@ -110,7 +110,7 @@ public class JahiaHtmlEditor implements Serializable, HtmlEditor, Comparable {
      * This file will be included in Content Editor View ( Jahia Update Engine ).
      * The path must be relative to Jahia's HtmlEditor root path:
      *
-     * <jahia-home>/jsp/jahia/htmleditors
+     * <jahia-home>/htmleditors
      *
      * @return
      */

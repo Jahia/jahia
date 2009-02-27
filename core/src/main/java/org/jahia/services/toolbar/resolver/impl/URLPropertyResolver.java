@@ -141,7 +141,7 @@ public class URLPropertyResolver implements PropertyResolver {
                 } else if (input.equalsIgnoreCase(PREVIEW)) {
                     value = jData.gui().drawPreviewModeLink();
                 } else if (input.equalsIgnoreCase(MONITOR)) {
-                    value = jData.getProcessingContext().getContextPath() + "/jsp/jahia/processing/processing.jsp";
+                    value = jData.getProcessingContext().getContextPath() + "/processing/processing.jsp";
                 } else if (input.equalsIgnoreCase(WORKFLOW)) {
                     final StringBuffer keyBuff = new StringBuffer();
                     keyBuff.append(ContentPageKey.PAGE_TYPE).append("_").append(jData.getProcessingContext().getPage().getID());
@@ -151,11 +151,11 @@ public class URLPropertyResolver implements PropertyResolver {
                 } else if (input.equalsIgnoreCase(LOGOUT)) {
                     value = jData.gui().drawLogoutUrl();
                 } else if (input.equalsIgnoreCase(GWT_FILEMANAGER)) {
-                    value = jData.getProcessingContext().getContextPath() + "/jsp/jahia/engines/gwtfilemanager/filemanager.jsp";
+                    value = jData.getProcessingContext().getContextPath() + "/engines/gwtfilemanager/filemanager.jsp";
                 } else if (input.equalsIgnoreCase(GWT_WORKFLOWMANAGER)) {
-                    value = jData.getProcessingContext().getContextPath() + "/jsp/jahia/engines/gwtworkflow/workflow.jsp?startpage=" + jData.getProcessingContext().getContentPage().getObjectKey().getKey();
+                    value = jData.getProcessingContext().getContextPath() + "/engines/gwtworkflow/workflow.jsp?startpage=" + jData.getProcessingContext().getContentPage().getObjectKey().getKey();
                 } else if (input.equalsIgnoreCase(GWT_MASHUPMANAGER)) {      
-                    value = jData.getProcessingContext().getContextPath() + "/jsp/jahia/engines/gwtmashupmanager/mashup.jsp";
+                    value = jData.getProcessingContext().getContextPath() + "/engines/gwtmashupmanager/mashup.jsp";
                 } else if (input.equalsIgnoreCase(PAGE_PROPERTIES)) {
                     value = jData.gui().drawPagePropertiesUrl();
                 } else if (input.equalsIgnoreCase(CacheModeSelectedResolver.CACHE_DEBUG)) {

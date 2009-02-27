@@ -167,10 +167,10 @@ public class GWTInitializer {
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
         String context = request.getContextPath();
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
-        buf.append("<link type=\"text/css\" href=\"").append(context).append("/jsp/jahia/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-ext-all.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/xtheme-jahia.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-engines.css\" rel=\"stylesheet\"/>\n");
+        buf.append("<link type=\"text/css\" href=\"").append(context).append("/gwt/resources/css/jahia-gwt-templates.css\" rel=\"stylesheet\"/>\n");
 
         return buf.toString();
     }

@@ -20,8 +20,8 @@
 		<css>
 			<id>Test_templates</id>
 			<name>Doc templates styles</name>
-			<url>/jsp/jahia/templates/%SITE_NAME%/test_templates/common/css/web.css</url>
-			<stylesdef>/jsp/jahia/templates/%SITE_NAME%/test_templates/common/css/web_css.xml</stylesdef>
+			<url>/templates/%SITE_NAME%/test_templates/common/css/web.css</url>
+			<stylesdef>/templates/%SITE_NAME%/test_templates/common/css/web_css.xml</stylesdef>
 			<shared>false</shared>
 			<allowed-sites>
 				<site-key>testUnitSite</site-key>
@@ -30,8 +30,8 @@
         <css>
 			<id>FCKEditor</id>
 			<name>FCKEditor default styles</name>
-			<url>/jsp/jahia/htmleditors/fckeditor/editor/css/fck_editorarea.css</url>
-			<stylesdef>/jsp/jahia/htmleditors/fckeditor/fckstyles.xml</stylesdef>
+			<url>/htmleditors/fckeditor/editor/css/fck_editorarea.css</url>
+			<stylesdef>/htmleditors/fckeditor/fckstyles.xml</stylesdef>
 			<shared>true</shared>
 		</css>
 	</style-sheets>

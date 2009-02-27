@@ -69,8 +69,8 @@ public class Integer_Field implements FieldSubEngine
                 org.apache.log4j.Logger.getLogger(Integer_Field.class);
 
     private static          Integer_Field theObject   = null;
-    private static final    String          JSP_FILE    = "/jsp/jahia/engines/shared/integer_field.jsp";
-    public  static final    String  READONLY_JSP  		= "/jsp/jahia/engines/shared/readonly_smalltext_field.jsp";
+    private static final    String          JSP_FILE    = "/engines/shared/integer_field.jsp";
+    public  static final    String  READONLY_JSP  		= "/engines/shared/readonly_smalltext_field.jsp";
 
 
     /***

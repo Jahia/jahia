@@ -153,19 +153,19 @@ public class ConfigureMojo extends AbstractManagementMojo
     /**
      * properties file path
      *
-     * @parameter default-value="$webContext/jsp/jahia/templates/"
+     * @parameter default-value="$webContext/templates/"
      */
     protected String jahiaTemplatesHttpPath;
     /**
      * properties file path
      *
-     * @parameter default-value="$webContext/jsp/jahia/engines/"
+     * @parameter default-value="$webContext/engines/"
      */
     protected String jahiaEnginesHttpPath;
     /**
      * properties file path
      *
-     * @parameter default-value="$webContext/jsp/jahia/javascript/jahia.js"
+     * @parameter default-value="$webContext/javascript/jahia.js"
      */
     protected String jahiaJavaScriptHttpPath;
     /**

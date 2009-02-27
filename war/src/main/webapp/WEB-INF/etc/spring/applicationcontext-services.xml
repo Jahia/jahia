@@ -837,7 +837,7 @@
         <property name="syncUrl" value="http://${localIp}:8080" />
         <property name="pathsToSync">
             <set>
-                <value>/jsp/jahia/templates</value>
+                <value>/templates</value>
                 <value>/WEB-INF/classes/*.properties</value>
                 <value>/WEB-INF/classes/*.class</value>
             </set>

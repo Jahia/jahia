@@ -76,8 +76,8 @@ public class Date_Field implements FieldSubEngine
               org.apache.log4j.Logger.getLogger(Date_Field.class);
 
     private static          Date_Field theObject   = null;
-    public  static final    String          JSP_FILE    = "/jsp/jahia/engines/shared/date_field.jsp";
-    public  static final    String  READONLY_JSP  		= "/jsp/jahia/engines/shared/readonly_date_field.jsp";
+    public  static final    String          JSP_FILE    = "/engines/shared/date_field.jsp";
+    public  static final    String  READONLY_JSP  		= "/engines/shared/readonly_date_field.jsp";
 
 
     /***

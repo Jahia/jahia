@@ -71,7 +71,7 @@ public class JSPEventListener extends JahiaEventListener {
     private String jspFileName = null;
 
     private static final String DEFAULT_PATH_TO_JSP =
-            "/jsp/jahia/events/eventlistener.jsp";
+            "/events/eventlistener.jsp";
     private static final String JSP_FILE_NAME = "eventlistener.jsp";
 
     private boolean checkConfig (ProcessingContext processingContext) {

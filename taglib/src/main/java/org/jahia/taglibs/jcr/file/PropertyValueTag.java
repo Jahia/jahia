@@ -239,7 +239,7 @@ public class PropertyValueTag extends TagSupport {
         request.setAttribute("propertyName", name);
         request.setAttribute("value", value);
 
-        pageContext.include("/jsp/jahia/engines/filemanager/types/date"+jspSuffix);
+        pageContext.include("/engines/filemanager/types/date"+jspSuffix);
     }
 
     protected void handleReference(ExtendedPropertyDefinition propDef, Node objectNode, JCRStoreProvider provider) throws Exception {
@@ -262,7 +262,7 @@ public class PropertyValueTag extends TagSupport {
         name = name.replace(':','_');
         request.setAttribute("propertyName", name);
 
-        pageContext.include("/jsp/jahia/engines/filemanager/types/reference"+jspSuffix);
+        pageContext.include("/engines/filemanager/types/reference"+jspSuffix);
     }
 
     protected void handleBoolean(ExtendedPropertyDefinition propDef, Node objectNode, JCRStoreProvider provider) throws Exception {
@@ -284,6 +284,6 @@ public class PropertyValueTag extends TagSupport {
 
         name = name.replace(':','_');
         request.setAttribute("nodeName", name);
-        pageContext.include("/jsp/jahia/engines/filemanager/types/content"+jspSuffix);
+        pageContext.include("/engines/filemanager/types/content"+jspSuffix);
     }
 }

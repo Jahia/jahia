@@ -61,5 +61,5 @@
     if (templatePackage.getSearchResultsPageName() != null) {
         path = templateMgr.resolveResourcePath(templatePackage.getSearchResultsPageName(), templatePackage.getName());
     }
-    path = path != null ? path : "/jsp/jahia/engines/search/searchresult_v2.jsp";
+    path = path != null ? path : "/engines/search/searchresult_v2.jsp";
 %><c:set var="varName"><%= path %></c:set>

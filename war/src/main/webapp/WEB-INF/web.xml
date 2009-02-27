@@ -160,7 +160,7 @@
             <!-- Cache everything that is not dynamic (see noCachePatternList param) -->
             <param-value>.*</param-value>
             <!-- Cache only JS, CCS and images 
-            <param-value>.*/jsp/jahia/.*\.(js|css|gif|png|jpg|ico|htc)(\?.*)?</param-value>
+            <param-value>.*/.*\.(js|css|gif|png|jpg|ico|htc)(\?.*)?</param-value>
              -->
         </init-param>
         <init-param>
@@ -221,10 +221,10 @@
         <filter-class>org.jahia.bin.errors.ErrorLoggingFilter</filter-class>
     </filter>
 
-    <filter-mapping>
+    <!--<filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
-        <url-pattern>/jsp/jahia/*</url-pattern>
-    </filter-mapping>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>-->
     <filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>${jahia.deploy.war.servletPath}</url-pattern>
@@ -1633,7 +1633,7 @@
     </mime-mapping>
 
     <welcome-file-list>
-        <welcome-file>jsp/index.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
     <error-page>
@@ -1719,7 +1719,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>admin</web-resource-name>
-            <url-pattern>/jsp/jahia/tools/*</url-pattern>
+            <url-pattern>/tools/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>jahiaManager</role-name>

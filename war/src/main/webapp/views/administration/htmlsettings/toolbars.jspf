@@ -16,21 +16,21 @@ function previewToolbar(toolbar) {
           </td>
       </tr>
       <tr class="oddLine">
-        <td width="50%">Full&nbsp;<a href="#preview" onclick="previewToolbar('Full'); return false;"><img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/about.gif" alt="preview"/></a></td>
+        <td width="50%">Full&nbsp;<a href="#preview" onclick="previewToolbar('Full'); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="preview"/></a></td>
         <td width="50%">
             <input type="hidden" name="toolbarFull" id="toolbarFull" value=""/>
             <span id="gwtaclnameeditor-0" aclid="${toolbarFullAclId}" height="120px" fieldId="toolbarFull"></span>
         </td>
       </tr>
       <tr class="oddLine">
-        <td width="50%">Basic&nbsp;<a href="#preview" onclick="previewToolbar('Basic'); return false;"><img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/about.gif" alt="preview"/></a></td>
+        <td width="50%">Basic&nbsp;<a href="#preview" onclick="previewToolbar('Basic'); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="preview"/></a></td>
         <td width="50%">
             <input type="hidden" name="toolbarBasic" id="toolbarBasic" value=""/>
             <span id="gwtaclnameeditor-1" aclid="${toolbarBasicAclId}" height="120px" fieldId="toolbarBasic"></span>
         </td>
       </tr>
       <tr class="oddLine">
-        <td width="50%">Light&nbsp;<a href="#preview" onclick="previewToolbar('Light'); return false;"><img src="${pageContext.request.contextPath}/jsp/jahia/engines/images/about.gif" alt="preview"/></a></td>
+        <td width="50%">Light&nbsp;<a href="#preview" onclick="previewToolbar('Light'); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="preview"/></a></td>
         <td width="50%">
             <input type="hidden" name="toolbarLight" id="toolbarLight" value=""/>
             <span id="gwtaclnameeditor-2" aclid="${toolbarLightAclId}" height="120px" fieldId="toolbarLight"></span>

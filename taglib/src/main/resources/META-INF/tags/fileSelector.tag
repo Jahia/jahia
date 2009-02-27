@@ -55,7 +55,7 @@
 </c:set>
 <c:set var="useUrl" value="${not empty useUrl ? useUrl : 'false'}"/>
 &nbsp;<a href="#select"
-onclick="javascript:{var fileSelector = window.open('${pageContext.request.contextPath}/jsp/jahia/engines/webdav/filePicker.jsp?callback=setSelectedFile${fieldIdHash}&amp;rootPath=${rootPath}&amp;startPath=${startPath}&amp;filters=${filters}&amp;mimeTypes=${mimeTypes}', '<%="fileSelector" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=800'); fileSelector.focus(); return false;}"
+onclick="javascript:{var fileSelector = window.open('${pageContext.request.contextPath}/engines/webdav/filePicker.jsp?callback=setSelectedFile${fieldIdHash}&amp;rootPath=${rootPath}&amp;startPath=${startPath}&amp;filters=${filters}&amp;mimeTypes=${mimeTypes}', '<%="fileSelector" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=800'); fileSelector.focus(); return false;}"
 title='<utility:resourceBundle resourceName="selectors.fileSelector.selectFile"
                                       defaultValue="Select file"/>'><utility:resourceBundle resourceName="selectors.select" defaultValue="select"/></a>
 <script type="text/javascript">

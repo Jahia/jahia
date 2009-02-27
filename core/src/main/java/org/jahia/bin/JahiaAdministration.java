@@ -148,7 +148,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
     private static ServletContext context;
 
     public static final String CLASS_NAME = "org.jahia.bin.JahiaAdministration";
-    public static final String JSP_PATH = "/jsp/jahia/administration/";
+    public static final String JSP_PATH = "/admin/";
     private static final int SUPERADMIN_SITE_ID = 0;
 
     private static final long DAY_MILLIS = 1000L * 60L * 60L * 24L;

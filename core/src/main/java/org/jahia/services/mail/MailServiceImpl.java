@@ -216,17 +216,17 @@ public class MailServiceImpl extends MailService {
             String authPart = StringUtils.substringBeforeLast(settings
                     .getHost(), "@");
             host = StringUtils.substringAfterLast(settings.getHost(), "@");
-            if (host.contains(":")) {
-                port = Integer.parseInt(StringUtils.substringAfterLast(host,
-                        ":"));
-                host = StringUtils.substringBeforeLast(host, ":");
-            }
             if (authPart.contains(":")) {
                 user = StringUtils.substringBefore(authPart, ":");
                 pwd = StringUtils.substringAfter(authPart, ":");
             } else {
                 user = authPart;
             }
+        }
+        if (host.contains(":")) {
+            port = Integer.parseInt(StringUtils.substringAfterLast(host,
+                    ":"));
+            host = StringUtils.substringBeforeLast(host, ":");
         }
         sender.setHost(host);
         if (port > 0) {

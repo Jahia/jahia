@@ -44,7 +44,7 @@
   </c:otherwise>
 </c:choose>
 
-<template:container id="testSubcontainer${level}">
+<template:container id="testSubcontainer${level}" cache="${functions:default(param.activateFragmentCache, 'true')}">
   <div class="level${level}">
     <div class="containerTitle">
       <fmt:message key="containerListLevel">

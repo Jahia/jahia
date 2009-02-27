@@ -35,7 +35,7 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.utils.JahiaTemplatesRBLoader;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.resourcebundle.ResourceBundleMarker;
 
 import javax.jcr.RepositoryException;

@@ -30,7 +30,7 @@
  * between you and Jahia Limited. If you are unsure which license is appropriate
  * for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.utils;
+package org.jahia.utils.i18n;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -55,6 +55,7 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     }
 
     public JahiaTemplatesRBLoader(ClassLoader loader, int siteId) {
+        if(siteId>0)
         aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(siteId);
         if (loader != null) this.loader = loader;
     }
@@ -81,7 +82,12 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
             if (stream != null)
                 return stream;
             else {
-                String s = aPackage.getFilePath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                String s;
+                if(aPackage!=null) {
+                    s = aPackage.getFilePath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                } else {
+                    s = Jahia.getSettings().getClassDiskPath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                }
                 try {
                     FileInputStream stream1 = new FileInputStream(s);
                     String bundlename = name.substring(0,name.indexOf(".properties")).replaceAll("/",".");

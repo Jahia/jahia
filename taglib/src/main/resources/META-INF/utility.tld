@@ -273,7 +273,27 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-
+    <tag>
+        <description>Define The Bundle For Further Calls to fmt:message </description>
+        <name>setBundle</name>
+        <tag-class>org.jahia.taglibs.utility.i18n.SetBundleTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>basename</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
     <tag-file>
         <description>add declaration of GWT common application resource bundles</description>
         <name>applicationResources</name>

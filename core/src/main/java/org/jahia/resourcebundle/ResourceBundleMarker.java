@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.JahiaTemplatesRBLoader;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.utils.comparator.NumericStringComparator;
 import org.jahia.bin.Jahia;
 

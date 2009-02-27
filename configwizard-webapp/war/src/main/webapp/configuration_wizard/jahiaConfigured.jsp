@@ -22,7 +22,7 @@ limitations under the License.
     request.setAttribute(JahiaAdministration.CLASS_NAME + "configWizard", Boolean.TRUE);
     final String ajaxpath = request.getContextPath() + "/ajaxaction/PDisp";//url of ajax call
     final String readmefilePath = response.encodeURL(new StringBuffer().append(request.getContextPath()).append("/html/startup/readme.html").toString()); %>
-<%@ include file="/jsp/jahia/administration/include/header.inc" %>
+<%@ include file="/admin/include/header.inc" %>
 <script type="text/javascript">
     function loadFirstPage(){
         var divElement = document.getElementById('connectButtonDiv');
@@ -76,4 +76,4 @@ limitations under the License.
     openReadmeFile();
 </script>
 <%} %>
-<%@ include file="/jsp/jahia/administration/include/footer.inc" %>
+<%@ include file="/admin/include/footer.inc" %>

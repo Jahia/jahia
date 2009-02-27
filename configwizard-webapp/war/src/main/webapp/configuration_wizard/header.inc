@@ -74,7 +74,7 @@ final boolean openReadmeFile = jsp.equals("site_values.jsp"); %>
             </fmt:bundle>
         };
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/jsp/jahia/configuration_wizard/gwt/org.jahia.configwizard.gwt.commons.ConfigWizard/org.jahia.configwizard.gwt.commons.ConfigWizard.nocache.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/configuration_wizard/gwt/org.jahia.configwizard.gwt.commons.ConfigWizard/org.jahia.configwizard.gwt.commons.ConfigWizard.nocache.js"></script>
     <script type="text/javascript">
               function focus() {
                   document.body.style.cursor = "default";

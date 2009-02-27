@@ -145,8 +145,8 @@ public class JahiaConfigurationWizard extends HttpServlet {
     private  Locale defaultLocale = Locale.ENGLISH;
     private  Locale newSelectedLocale;
     private final String CTX_PARAM_DEFAULT_SERVLET_PATH = "defaultJahiaServletPath";
-    private  final String WIZARD_CONTEXT = "/jsp/jahia/configuration_wizard/";
-    private  final String HTTP_FILES = "/jsp/jahia";
+    private  final String WIZARD_CONTEXT = "/configuration_wizard/";
+    private  final String HTTP_FILES = "";
     protected  final String CLASS_NAME = "org.jahia.bin.JahiaConfigurationWizard";
 
     final String WIZARD_KEY_COOKIE = "jahiaWizardKey";
@@ -1479,10 +1479,10 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 File newDir = new File((String) values.get("server_home")+"webapps/"+deployToDir);
 
 
-                logger.info("unzipping jahia GWT folder from "+pathResolver.resolvePath("WEB-INF/jahia/jsp/jahia/gwt.zip")+ " to "+(String)values.get("server_home")+"webapps/"+deployToDir+"jsp/jahia/gwt" );
-                FileUtils.unzipFile(pathResolver.resolvePath("WEB-INF/jahia/jsp/jahia/gwt.zip"),(String) values.get("server_home")+"webapps/"+deployToDir+"/jsp/jahia/gwt/" );
+                logger.info("unzipping jahia GWT folder from "+pathResolver.resolvePath("WEB-INF/jahia/gwt.zip")+ " to "+(String)values.get("server_home")+"webapps/"+deployToDir+"/gwt" );
+                FileUtils.unzipFile(pathResolver.resolvePath("WEB-INF/jahia/gwt.zip"),(String) values.get("server_home")+"webapps/"+deployToDir+"/gwt/" );
                 logger.info("deleting GWT zip file");
-                FileUtils.deleteFile(pathResolver.resolvePath((String) values.get("server_home")+"webapps/"+deployToDir+"/jsp/jahia/gwt.zip"));
+                FileUtils.deleteFile(pathResolver.resolvePath((String) values.get("server_home")+"webapps/"+deployToDir+"/gwt.zip"));
                 logger.info("copying "+ oldDir.getCanonicalFile()+ " to "+newDir+"" );
                 FileUtils.copyDirectory(oldDir,newDir);
 

@@ -203,7 +203,7 @@
                 <configuration>
                     <sourcesOnPath>true</sourcesOnPath>
                     <runTarget>com.me.MyModule/MyHostPage.jsp</runTarget>
-                    <output>${project.build.directory}/${project.build.finalName}/jsp/jahia/configuration_wizard/gwt/</output>
+                    <output>${project.build.directory}/${project.build.finalName}/configuration_wizard/gwt/</output>
                     <extraJvmArgs>-Xmx1024m</extraJvmArgs>
                     <allowedJars>
                         <jarFileName>java</jarFileName>
@@ -247,7 +247,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.0</version>
                 <configuration>
-                    <dependentWarIncludes>jsp/jahia/css/gwt/**,jsp/jahia/gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/**,jsp/jahia/org.jahia.ajax.gwt.engines.commons.Engines/**</dependentWarIncludes>
+                    <dependentWarIncludes>css/gwt/**,gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/**,gwt/org.jahia.ajax.gwt.engines.commons.Engines/**</dependentWarIncludes>
                     <archive>
                         <manifestEntries>
                             <Implementation-Build>${buildNumber}</Implementation-Build>
@@ -271,7 +271,7 @@
                         <configuration>
                             <tasks>
                                 <echo message="Deleting temporary GWT files..."/>
-                                <delete dir="${project.build.directory}/${project.build.finalName}/jsp/jahia/configuration_wizard/gwt/.gwt-tmp"/>
+                                <delete dir="${project.build.directory}/${project.build.finalName}/configuration_wizard/gwt/.gwt-tmp"/>
                                 <echo message="...done"/>
                             </tasks>
                         </configuration>
@@ -283,11 +283,11 @@
                         <configuration>
                             <tasks>
                                 <echo message="zipping gwt directory in Jahia..."/>
-                                <zip destfile="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/jsp/jahia/gwt.zip"
-                                     basedir="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/jsp/jahia/gwt"
+                                <zip destfile="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/gwt.zip"
+                                     basedir="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/gwt"
                                         />
                                 <delete includeemptydirs="true">
-                                    <fileset dir="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/jsp/jahia/gwt/" includes="**/*"/>
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/WEB-INF/jahia/gwt/" includes="**/*"/>
                                 </delete>
                             </tasks>
                         </configuration>

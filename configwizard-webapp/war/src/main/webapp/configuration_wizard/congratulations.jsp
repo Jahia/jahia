@@ -57,7 +57,7 @@ function testContextNonAvailability() {
         // correct values are "POST" or "GET" (HTTP methods).
         var method = "GET" ;
 
-        var url = '<%= request.getContextPath()%>' + "/jsp/ping.jsp";
+        var url = '<%= request.getContextPath()%>' + "/ping.jsp";
 
             // Create new XMLHttpRequest request
         if (window.XMLHttpRequest) {
@@ -110,7 +110,7 @@ function testContextAvailability() {
         // correct values are "POST" or "GET" (HTTP methods).
         var method = "GET" ;
 
-        var url = '<%= request.getContextPath()%>' + "/jsp/ping.jsp";
+        var url = '<%= request.getContextPath()%>' + "/ping.jsp";
 
             // Create new XMLHttpRequest request
         if (window.XMLHttpRequest) {

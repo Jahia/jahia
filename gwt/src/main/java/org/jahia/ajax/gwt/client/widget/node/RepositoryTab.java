@@ -87,6 +87,7 @@ public class RepositoryTab extends ContentPanel {
      * @param service the repository rpc service
      * @param type the repository type (see constants)
      * @param label the repository label
+     * @param config the configuration to use
      */
     public RepositoryTab(FolderTree container, final JahiaNodeServiceAsync service, String type, String label, final ManagerConfiguration config) {
         super(new FitLayout()) ;

@@ -348,6 +348,9 @@ public class SettingsBean {
 
     private boolean considerPreferredLanguageAfterLogin;
 
+    // enable ACL check when displaying the current page path
+    private boolean checkAclInPagePath ;
+
     /**
      * Default constructor.
      *
@@ -701,6 +704,8 @@ public class SettingsBean {
             preloadDBGroupMembersActivated = getBoolean(PRELOAD_DBGROUP_MEMBERS_ACTIVATED,true);
 
             gmailPasswordExported = getBoolean("gmailPasswordExported", true);
+
+            checkAclInPagePath = getBoolean("checkAclInPagePath", true) ;
 
             try {
                 DatabaseScripts scriptsManager = new DatabaseScripts();
@@ -1909,5 +1914,13 @@ public class SettingsBean {
 
     public int getPaginationWindowSize() {
         return paginationWindowSize;
+    }
+
+    public void setCheckAclInPagePath(boolean checkAclInPagePath) {
+        this.checkAclInPagePath = checkAclInPagePath ;
+    }
+
+    public boolean isCheckAclInPagePath() {
+        return this.checkAclInPagePath ;
     }
 }

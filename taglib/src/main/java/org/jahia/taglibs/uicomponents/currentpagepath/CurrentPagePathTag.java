@@ -48,6 +48,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.settings.SettingsBean;
 
 /**
  * Class CurrentPagePathTag : returns the formated path of the current page
@@ -154,11 +155,15 @@ public class CurrentPagePathTag extends AbstractJahiaTag {
             // check page status
             Integer pageState = null;
 
+            boolean checkAcl = SettingsBean.getInstance().isCheckAclInPagePath() ;
+
             for (ContentPage thePage : vPath) {
                 if (thePage != null) {
-                    if (!thePage.isAclSameAsParent()) {
-                        isAccessible = thePage.checkReadAccess(jParams.getUser());
-                        unreachablePageDisplayed = false;
+                    if (checkAcl) {
+                        if (!thePage.isAclSameAsParent()) {
+                            isAccessible = thePage.checkReadAccess(jParams.getUser());
+                            unreachablePageDisplayed = false;
+                        }
                     }
                     Integer currentPageState = thePage.getLanguagesStates().get(jParams.getLocale().toString());
                     if (pageState == null || !pageState.equals(currentPageState)) {
@@ -167,7 +172,9 @@ public class CurrentPagePathTag extends AbstractJahiaTag {
                     }
                     // Check current page to remove link on title.
                     boolean isCurrentPage = false;
-                    if (thePage.equals(jParams.getThePage().getContentPage())) isCurrentPage = true;
+                    if (thePage.equals(jParams.getThePage().getContentPage())) {
+                        isCurrentPage = true;
+                    }
 
                     final String title = thePage.getTitle(jParams);
                     if (title != null && isAccessible) {
@@ -178,11 +185,11 @@ public class CurrentPagePathTag extends AbstractJahiaTag {
                             try {
                                 path.append(thePage.getURL(jData.getProcessingContext()));
                             } catch (JahiaException e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                                logger.error(e.getMessage(), e) ;
                             }
                             path.append("\">");
                         }
-                            if (this.maxchar == 0) {
+                        if (this.maxchar == 0) {
                             path.append(title);
                         } else {
                             path.append(GuiBean.glueTitle(title, this.maxchar));

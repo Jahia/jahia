@@ -337,6 +337,10 @@ org.jahia.acl.preload_active                           =   true
 # not LDAP) are preloaded, when the group is loaded.
 preloadDBGroupMembersActivated                         = true
 
+# Enable ACL check when displaying the current page path
+# (using CurrentPagePathTag)
+checkAclInPagePath                                     = true
+
 ######################################################################
 ### Page properties ##################################################
 ######################################################################

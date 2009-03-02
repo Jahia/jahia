@@ -133,7 +133,7 @@
                                                                 resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;:
                                                     </td>
                                                     <td>
-                                                        <select name="selectTmplSet" onChange="submitForm('change');">
+                                                        <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
                                                             <option value="">
                                                                 ---------&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
                                                                     resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
@@ -159,11 +159,28 @@
                                                     </td>
                                                 </c:if>
                                             </tr>
-                                            <tr>
+                                            <script type="text/javascript">
+                                            function swapImage(imgId,imgToSwitch){
+                                                var image = document.getElementById(imgId);
+                                                var dropd = document.getElementById(imgToSwitch);
+                                                var themePreview = '${selectedPackage.thumbnail}';
+                                                var themePreviewBegin = themePreview.substr(0,themePreview.lastIndexOf("."));
+                                                var themePreviewEnd = themePreview.substr(themePreview.lastIndexOf("."),themePreview.length);
+                                                if (image != null) {
+                                                    if (dropd.value.length > 0) {
+                                                        image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreviewBegin + '_' + dropd.value + themePreviewEnd;
+                                                    } else {
+                                                        image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreview;
+                                                    }
+                                                }
+                                            };
+                                            swapImage('themePreview','selectTmplSet');
+                                            </script>
+                                                    <tr>
                                                 <c:if test="${not empty selectedPackage && not empty selectedPackage.thumbnail}">
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <img src="<%=URL%>../templates/<c:out value="${selectedPackage.rootFolder}"/>/<c:out value="${selectedPackage.thumbnail}"/>"
+                                                        <img id ="themePreview" src="<%=URL%>../templates/<c:out value="${selectedPackage.rootFolder}"/>/<c:out value="${selectedPackage.thumbnail}"/>"
                                                              width="270" height="141" alt="">
                                                     </td>
                                                 </c:if>
@@ -182,7 +199,7 @@
                                                                 resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>&nbsp;:
                                                     </td>
                                                     <td>
-                                                        <select name="selectTheme" onChange="submitForm('change');">
+                                                        <select id="selectTheme" name="selectTheme"  onChange="swapImage('themePreview','selectTheme');">
                                                             <c:if test="${empty selectedTheme}">
                                                                 <c:set var="selectedTheme" value="default"/>
                                                             </c:if>

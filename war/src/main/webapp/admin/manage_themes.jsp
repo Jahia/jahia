@@ -77,12 +77,23 @@
                                             resourceName="org.jahia.admin.themes.ManageThemes.label"/>&nbsp;
                                 </div>
                             </div>
+                            
+                           <script type="text/javascript">
+                                    function swapImage(imgId,imgToSwitch){
+                                        var image = document.getElementById(imgId);
+                                        var dropd = document.getElementById(imgToSwitch);
+                                        var themePreview = '${templatePkg.thumbnail}';
+                                        var themePreviewBegin = themePreview.substr(0,themePreview.lastIndexOf("."));
+                                        var themePreviewEnd = themePreview.substr(themePreview.lastIndexOf("."),themePreview.length);
+                                        image.src = '<%=URL%>../${templatePkg.rootFolderPath}/' + themePreviewBegin + '_' + dropd.value + themePreviewEnd;
+                                    };
+                                    </script>
                             <div class="content-body">
                                 <table class="topAlignedTable" cellpadding="5" cellspacing="0">
                                 <form name="jahiathemeSelectorFormsite" method="get" action="/jahia/administration/?do=themes&sub=display">
-                                    <tr><td><select name="jahiaThemeSelector" onchange="document.imageTheme.src='<%=URL%>../templates/${templateName}/images/preview_'+this.value+'.gif'">
+                                    <tr><td><select id="switchTheme" name="jahiaThemeSelector" onchange="swapImage('imageTheme','switchTheme')">
                                         <c:forEach var="themeBean" items="${themesBean}">
-                                            <option name="${themeBean.themeName}" <c:if test="${themeBean.selected}">selected</c:if>>${themeBean.themeName}</option>
+                                            <option value="${themeBean.themeName}" <c:if test="${themeBean.selected}">selected</c:if>>${themeBean.themeName}</option>
                                             <c:if test="${themeBean.selected}">
                                                 <c:set var="selectedTheme" value="${themeBean.themeName}"/>
                                             </c:if>
@@ -92,7 +103,11 @@
                                     <input type="hidden" name="do" value="themes">
                                     <input type="hidden" name="sub" value="display">
                                     </td></tr>
-                                    <tr><td><img id="imageTheme" src="<%=URL%>../templates/${templateName}/images/preview_${selectedTheme}.gif" width="270" height="141" alt=""></td></tr>
+
+                                    <tr><td><img id="imageTheme" src="#" width="270" height="141" alt=""></td></tr>
+                                     <script type="text/javascript">
+                                        swapImage('imageTheme','switchTheme')
+                                    </script>
                                     <tr><td><input type="submit" name="<utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.saveChanges.label"/>" value="<utility:resourceBundle resourceBundle="JahiaInternalResources"
                       resourceName="org.jahia.admin.saveChanges.label"/>"></td></tr>

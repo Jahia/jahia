@@ -189,7 +189,7 @@ public class ManageThemes extends AbstractAdministrationModule {
                 }
             // expose themes
             request.setAttribute("themesBean",themes);
-            request.setAttribute("templateName",pkg.getFileName());
+            request.setAttribute("templatePkg",pkg);
 
 
         }

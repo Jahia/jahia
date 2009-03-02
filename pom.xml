@@ -33,6 +33,35 @@
     </repository>
   </repositories>
 
+    <profiles>
+
+      <profile>
+          <id>code-coverage</id>
+          <build>
+              <plugins>
+                  <plugin>
+                      <groupId>com.atlassian.maven.plugins</groupId>
+                      <artifactId>maven-clover2-plugin</artifactId>
+                      <!--
+                      <configuration>
+                        <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
+                        <singleCloverDatabase>true</singleCloverDatabase>
+                      </configuration>
+                      -->
+                      <executions>
+                          <execution>
+                              <id>clover</id>
+                              <goals>
+                                  <goal>setup</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
+    </profiles>
+    
   <modules>
     <module>maven-jahia-plugin</module>
     <module>archetypes</module>

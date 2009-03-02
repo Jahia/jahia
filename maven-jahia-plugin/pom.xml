@@ -29,6 +29,34 @@
         </repository>
     </repositories>
 
+    <profiles>
+
+      <profile>
+          <id>code-coverage</id>
+          <build>
+              <plugins>
+                  <plugin>
+                      <groupId>com.atlassian.maven.plugins</groupId>
+                      <artifactId>maven-clover2-plugin</artifactId>
+                      <configuration>
+                        <excludes>
+                            <exclude>**/*.java</exclude>
+                        </excludes>
+                      </configuration>
+                      <executions>
+                          <execution>
+                              <id>clover</id>
+                              <goals>
+                                  <goal>setup</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>

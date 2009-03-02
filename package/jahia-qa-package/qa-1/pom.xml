@@ -66,7 +66,7 @@
                                     <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
                                     <destFileName>probe.war</destFileName>
                                 </artifactItem>
-																<artifactItem>
+								<artifactItem>
                                     <groupId>testsuite-jahia</groupId>
                                     <artifactId>testsuite-jahia</artifactId>
                                     <version>1.0</version>

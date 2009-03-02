@@ -73,7 +73,7 @@
         <pg:item>
         <li>
           <dl>
-            <dt><a href="${hit.link}">${fn:escapeXml(hit.title)}</a></dt>
+            <dt><a class="${hit.iconType}" href="${hit.link}">${fn:escapeXml(hit.title)}</a></dt>
             <dd>${hit.summary}</dd>
             <dd>File format: ${hit.contentType}</dd>
             <dd>created: <fmt:formatDate value="${hit.created}" pattern="dd.MM.yyyy HH:mm"/>&nbsp;by&nbsp;${fn:escapeXml(hit.createdBy)}</dd>

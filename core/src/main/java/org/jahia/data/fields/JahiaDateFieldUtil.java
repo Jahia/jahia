@@ -220,8 +220,7 @@ public class JahiaDateFieldUtil {
                     }
                 } else {
                     try {
-                        Date parsedDate = new SimpleDateFormat(format,
-                                new Locale(languageCode))
+                        Date parsedDate = new SimpleDateFormat(format)
                                 .parse(defaultValueString);
                         values = new DateValues(defaultValueString, String
                                 .valueOf(parsedDate.getTime()));

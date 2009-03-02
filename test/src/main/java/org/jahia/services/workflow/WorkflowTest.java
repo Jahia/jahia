@@ -60,6 +60,8 @@ public class WorkflowTest extends TestCase {
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
                 importResult, new HashMap<String,String>(), null,null, importedMapping);
 
+        ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
+
         WorkflowService service = ServicesRegistry.getInstance().getWorkflowService();
 
         Set<String> allStagingAndWaitingObjects = service.getAllStagingAndWaitingObject(site.getID()).keySet();
@@ -96,6 +98,7 @@ public class WorkflowTest extends TestCase {
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
                 importResult, new HashMap<String,String>(), null,null, importedMapping);
 
+        ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
 
         Set<String> allStagingAndWaitingObjects = service.getAllStagingAndWaitingObject(site.getID()).keySet();
 
@@ -111,7 +114,7 @@ public class WorkflowTest extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        TestHelper.deleteSite("testSite");
+        TestHelper.cleanDatabase();
     }
 
 }

@@ -8,7 +8,7 @@
 
         <p class="newsInfo">
             <span class="newsLabelDate"><utility:resourceBundle resourceName="news.date"/> :</span>
-            <template:field name='newsDate' display="false" valueBeanID="newsDate"/>
+            <template:field name='newsDate' display="false" valueBeanID="newsDate" inlineEditingActivated="false"/>
             <span class="newsDate">
                 <fmt:formatDate value="${newsDate}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate value="${newsDate}" pattern="HH:mm" var="dateTimeNews"/>
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>
@@ -16,7 +16,7 @@
         </p>
         <%--<div class="newsImg-right"><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}"><template:image file="newsImage"/></a></div>--%>
         <p class="newsResume">
-            <template:field name="newsDesc" maxChar="300"/>
+            <template:field name="newsDesc" maxChar="300" inlineEditingActivated="false"/>
         </p>
 
         <div class="more"><span><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}">

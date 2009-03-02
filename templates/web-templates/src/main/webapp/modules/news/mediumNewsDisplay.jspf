@@ -6,10 +6,10 @@
             <template:field name="newsImage" valueBeanID="newsImage" display="false"/>
 
             <div class="summaryImg"><img src="${newsImage.downloadUrl}" alt='<template:field
-                    name="newsTitle"/>'/></div>
+                    name="newsTitle" inlineEditingActivated="false"/>'/></div>
             <h4><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}"><template:field
-                    name='newsTitle'/></a></h4>
-            <p class="summaryresume"><template:field name="newsDesc" maxChar="120"/></p>
+                    name='newsTitle' inlineEditingActivated="false"/></a></h4>
+            <p class="summaryresume"><template:field name="newsDesc" maxChar="120" inlineEditingActivated="false"/></p>
             <div class="clear"></div>
         </li>
         <!--stop newsListItem -->

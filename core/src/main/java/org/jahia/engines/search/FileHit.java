@@ -234,14 +234,20 @@ public class FileHit extends AbstractHit {
     }
 
     public String getSummary() {
-        String summary = getContent();
-        if (summary != null){
-            if (summary.length()>175){
-                return summary.substring(0,175);
+        String summary = searchHit.getTeaser();
+
+        if (summary == null || summary.length() == 0) {
+            summary = getContent();
+            if (summary != null) {
+                if (summary.length() > 175) {
+                    return summary.substring(0, 175);
+                }
+                return summary;
+            } else {
+                summary = node.getName();
             }
-            return summary;
         }
-        return node.getName();
+        return summary;
     }
 
     /**

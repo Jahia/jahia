@@ -279,3 +279,9 @@ div.main {
 .expectedResultTitle {
     font-weight:bold;
 }
+
+.searchHighlightedText {
+    font-weight:bold;
+    font-size:larger;
+    background:#FF00FF;
+}

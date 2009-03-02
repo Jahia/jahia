@@ -2622,6 +2622,12 @@ body {
     margin: 0 0.2em;
 }
 
+#bodywrapper .resultsList .searchHighlightedText {
+    font-weight:bold;
+    font-size:larger;
+    background:#FF00FF;
+}
+
 /*****************************************************************************	*
 *  publicationSearchForm Form
 ******************************************************************************/

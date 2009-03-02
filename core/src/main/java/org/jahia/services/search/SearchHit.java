@@ -71,6 +71,20 @@ public interface SearchHit {
     public abstract void setScore(float score);
 
     /**
+     * Returns the excerpt
+     *
+     * @return String
+     */
+    public abstract String getExcerpt();
+
+    /**
+     * Set the excerpt
+     *
+     * @param excerpt String
+     */
+    public abstract void setExcerpt(String excerpt);        
+    
+    /**
      * Return an hastable of fieldname/values pair of information as they were
      * stored
      *

@@ -137,6 +137,12 @@ public class JcrSearchHandler extends SearchHandlerImpl {
 
                 searchHit.setScore((float) (row.getValue(JcrConstants.JCR_SCORE)
                         .getDouble() / 1000.));
+                
+                // this is Jackrabbit specific, so if other implementations
+                // throw exceptions, we have to do a check here 
+                String excerpt = row.getValue("rep:excerpt(jcr:content)").getString();
+                searchHit.setExcerpt(excerpt);
+                
                 searchResult.add(searchHit);
                 searchHit.setSearchResult(searchResult);
             }

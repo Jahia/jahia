@@ -85,6 +85,7 @@ public class WebDavSearchResultBuilderImpl extends
                 hit.setId(uri);
                 hit.setObject(node);
                 hit.setScore(obj.getScore());
+                hit.setTeaser(obj.getSearchHit().getExcerpt());
                 result.addHit(hit);
             }
         }
@@ -115,9 +116,10 @@ public class WebDavSearchResultBuilderImpl extends
             JahiaUser user, String[] queriesArray) {
 
         try {
-        return buildResult(SearchTools.getParsedObjects(jcrResult), user, queriesArray);
+            return buildResult(SearchTools.getParsedObjects(jcrResult), user,
+                    queriesArray);
         } catch (Exception e) {
-            logger.error ("Error",e);
+            logger.error("Error", e);
         }
         return null;
     }

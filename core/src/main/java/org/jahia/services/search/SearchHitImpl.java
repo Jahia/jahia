@@ -53,6 +53,7 @@ public class SearchHitImpl implements SearchHit {
     private Object rawHit;
     private Map<String, List<Object>> fields;
     private SearchResult searchResult;
+    private String excerpt;
 
     public SearchHitImpl(Object rawHit){
         super();
@@ -175,4 +176,11 @@ public class SearchHitImpl implements SearchHit {
         return highlighter;
     }
 
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+    }    
 }

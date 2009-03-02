@@ -213,8 +213,9 @@ public class JahiaDateFieldUtil {
                                     .valueOf(evaluationResult));
                         } catch (Exception ex) {
                             throw new IllegalArgumentException(
-                                    "Unable to parse the default date value marker: "
-                                            + ex);
+                                    "Unable to parse the default date value marker '"
+                                            + defaultValueString + "'. Cause: "
+                                            + ex.getMessage(), ex);
                         }
                     }
                 } else {
@@ -226,8 +227,11 @@ public class JahiaDateFieldUtil {
                                 .valueOf(parsedDate.getTime()));
                     } catch (ParseException ex) {
                         throw new IllegalArgumentException(
-                                "Unable to parse the default date value marker: "
-                                        + ex);
+                                "Unable to parse the default date value marker '"
+                                        + defaultValueString
+                                        + "' using format '" + format
+                                        + "' and language '" + languageCode
+                                        + "'. Cause: " + ex.getMessage(), ex);
                     }
                 }
             }

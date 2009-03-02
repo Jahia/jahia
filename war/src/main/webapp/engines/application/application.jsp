@@ -45,7 +45,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String warningMsg = (String) request.getAttribute("Template_Engine.warningMsg");
@@ -77,7 +78,7 @@
 </script>
 <div id="header">
   <h1>Jahia</h1>
-  <h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.applicationSettings.label"/></h2>
+  <h2><fmt:message key="org.jahia.engines.application.applicationSettings.label"/></h2>
 </div>
 <div id="mainContent">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -105,19 +106,19 @@
               <div id="content" class="fit w2">
                 <% if (!warningMsg.equals("")) { %>
                   <p class="errorbold">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.warning.label"/>
+                    <fmt:message key="org.jahia.warning.label"/>
                   </p>
                   <p class="error"><%=warningMsg%></p>
                 <% } %>
                 <div class="head">
                   <div class="object-title">
-                    <a href="#informations"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.portlets.informations" defaultValue="Informations"/></a>
+                    <a href="#informations"><fmt:message key="org.jahia.engines.application.portlets.informations"/></a>
                   </div>
                 </div>
                 <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
                   <tr>
                     <th>
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.name.label"/>
+                      <fmt:message key="org.jahia.engines.name.label"/>
                     </th>
                     <td>
                       <%=theTempoApplicationBean.getName()%>
@@ -125,7 +126,7 @@
                   </tr>
                   <tr>
                     <th>
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.context.label"/>
+                      <fmt:message key="org.jahia.engines.application.context.label"/>
                     </th>
                     <td>
                       <%=theTempoApplicationBean.getContext()%>
@@ -133,7 +134,7 @@
                   </tr>
                   <tr>
                     <th>
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.description.label"/>
+                      <fmt:message key="org.jahia.engines.application.description.label"/>
                     </th>
                     <td>
                       <input type="text" name="applicationDescription" value="<%=theTempoApplicationBean.getdesc()%>" size="<%=inputSize%>">
@@ -144,9 +145,9 @@
                   <div class="object-title">
                     <% final boolean isPortlet = theTempoApplicationBean.getType().equals("portlet");
                         if (isPortlet) { %>
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.portlets.label"/>
+                      <fmt:message key="org.jahia.engines.application.portlets.label"/>
                     <% } else { %>
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.entries.label"/>
+                      <fmt:message key="org.jahia.engines.application.entries.label"/>
                     <% } %>
                   </div>
                 </div>
@@ -155,7 +156,7 @@
                 <%if (theTempoApplicationBean.getUserAttributes() != null) {%>
                 <div class="head">
                   <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.portlets.user.attributes.label" defaultValue="User Attributes Mapping"/>
+                    <fmt:message key="org.jahia.engines.application.portlets.user.attributes.label"/>
                   </div>
                 </div>
                 <!-- table user mapping (only for portlet JSR168)-->
@@ -187,16 +188,16 @@
                               %>
                               <tr>
                                 <th colspan="2" align="center">
-                                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.portlets.user.attributes.jahia.prefs.labels" defaultValue="Property list for jahia user"/>
+                                  <fmt:message key="org.jahia.engines.application.portlets.user.attributes.jahia.prefs.labels"/>
                                 </th>
                               </tr>
 
                               <tr>
                                 <th>
-                                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.portlets.user.attributes.jahia.prefs.labels.keyname" defaultValue="Key name of the jahia user property"/>
+                                  <fmt:message key="org.jahia.engines.application.portlets.user.attributes.jahia.prefs.labels.keyname"/>
                                 </th>
                                 <th>
-                                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.application.portlets.user.attributes.jahia.prefs.labels.value" defaultValue="Value for the current user"/>
+                                  <fmt:message key="org.jahia.engines.application.portlets.user.attributes.jahia.prefs.labels.value"/>
                                 </th>
                               </tr>
                               <%

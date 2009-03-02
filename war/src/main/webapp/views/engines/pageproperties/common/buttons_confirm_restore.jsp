@@ -72,40 +72,40 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
     <%if("confirm_restore_container_nav".equals(confirmRestoreNav)){%>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a class="ico-back" href="javascript:sendForm('showRevisionsList','')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/>&nbsp;1&nbsp;:&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.showRevisionsList" defaultValue="Show revisions list" /></a>
+          <a class="ico-back" href="javascript:sendForm('showRevisionsList','')"><fmt:message key="org.jahia.engines.version.backToStep"/>&nbsp;1&nbsp;:&nbsp;<fmt:message key="org.jahia.engines.version.showRevisionsList"/></a>
         </span>
       </span>
     <%}else {%>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a class="ico-back" href="javascript:sendForm('showOperationChoices','')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/>&nbsp;1&nbsp;:&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.selectAnotherTask" defaultValue="Select another versioning task"/></a>
+          <a class="ico-back" href="javascript:sendForm('showOperationChoices','')"><fmt:message key="org.jahia.engines.version.backToStep"/>&nbsp;1&nbsp;:&nbsp;<fmt:message key="org.jahia.engines.version.selectAnotherTask"/></a>
         </span>
       </span>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a class="ico-back" href="javascript:sendForm('showSiteMap','')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/>&nbsp;2&nbsp;:&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.selectingPagesToRestore" defaultValue="Selecting pages to restore"/></a>
+          <a class="ico-back" href="javascript:sendForm('showSiteMap','')"><fmt:message key="org.jahia.engines.version.backToStep"/>&nbsp;2&nbsp;:&nbsp;<fmt:message key="org.jahia.engines.version.selectingPagesToRestore"/></a>
         </span>
       </span>
     <%}%>
     <% if ("locks".equals(engineName)) { %>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a href="javascript:sendFormApply();" class="ico-ok" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
+          <a href="javascript:sendFormApply();" class="ico-ok" title="<fmt:message key="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
+            <fmt:message key="org.jahia.button.ok"/></a>
         </span>
       </span>
     <% } else if (!engineMap.containsKey("errorMessage") || (engineMap.get("errorMessage") == Boolean.FALSE)) { %>
       <% if (results != null) { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="#" onclick="return false;" class="ico-ok"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
+            <a href="#" onclick="return false;" class="ico-ok"><fmt:message key="org.jahia.button.ok"/></a>
           </span>
         </span>
       <% } else { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="javascript:sendFormSave();" class="ico-ok" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/></a>
+            <a href="javascript:sendFormSave();" class="ico-ok" title="<fmt:message key="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">
+              <fmt:message key="org.jahia.button.ok"/></a>
           </span>
         </span>
       <% } %>
@@ -114,14 +114,14 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
       <% if (results != null) { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.apply"/>
+            <fmt:message key="org.jahia.button.apply"/>
           </span>
         </span>
       <% } else { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="javascript:sendFormApply();" class="ico-apply" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.apply"/></a>
+            <a href="javascript:sendFormApply();" class="ico-apply" title="<fmt:message key="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
+              <fmt:message key="org.jahia.button.apply"/></a>
           </span>
         </span>
       <% } %>
@@ -129,8 +129,8 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
   <% } %>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:window.close();" class="ico-cancel" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altCloseWithoutSave.label"/>">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.cancel"/></a>
+      <a href="javascript:window.close();" class="ico-cancel" title="<fmt:message key="org.jahia.altCloseWithoutSave.label"/>">
+        <fmt:message key="org.jahia.button.cancel"/></a>
     </span>
   </span>
 </div>

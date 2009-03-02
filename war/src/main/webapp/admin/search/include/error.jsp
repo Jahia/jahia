@@ -37,13 +37,15 @@
 <%@page import="org.jahia.bin.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="url"     	class="java.lang.String"              scope="request"/>     <% // http files path. %>
 <jsp:useBean id="input"   	class="java.lang.String"              scope="request"/>     <% // inputs size. %>
 <jsp:useBean id="values"	class="java.util.HashMap" 		  scope="request"/>     <% // Map containing values. %>
 <jsp:useBean id="warningMsg"  class="java.lang.String" 			  scope="request"/>     <% // warning Msg. %>
 
 <h2>
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.error.label"/>&nbsp;:
+  <fmt:message key="org.jahia.admin.error.label"/>&nbsp;:
 </h2>
 
 <p class="errorbold">

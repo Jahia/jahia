@@ -46,6 +46,8 @@
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -73,7 +75,7 @@
 %>
 
 <p>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.application.label"/>&nbsp;:&nbsp;<%=appName%>
+<fmt:message key="org.jahia.engines.shared.Application_Field.application.label"/>&nbsp;:&nbsp;<%=appName%>
 </p>
 
 <table width="100%">
@@ -82,7 +84,7 @@
         if (roles.size() > 0) { %>
     <tr>
         <td colspan="1">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.definesRoles.label"/>:
+            <fmt:message key="org.jahia.engines.shared.Application_Field.definesRoles.label"/>:
         </td>
     </tr><%
     Map applicationRoles = (Map) engineMap.get(Application_Field.APPLICATION_ROLES);
@@ -108,8 +110,7 @@
         </option><%
             }
             if (membersSet.size() == 0) {
-        %><option value="null">-- - -&nbsp;- <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.engines.shared.Application_Field.noMembersDefined.label"/> -&nbsp;&nbsp;-&nbsp;&nbsp;-
+        %><option value="null">-- - -&nbsp;- <fmt:message key="org.jahia.engines.shared.Application_Field.noMembersDefined.label"/> -&nbsp;&nbsp;-&nbsp;&nbsp;-
             - --</option><%
             } %>
         </select>
@@ -123,8 +124,7 @@
 </tr>
     <% }
     } else { %>
-    <b><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.shared.Application_Field.notDefineRoles.label"/></b>
+    <b><fmt:message key="org.jahia.engines.shared.Application_Field.notDefineRoles.label"/></b>
     <% } %>
 </table>
 

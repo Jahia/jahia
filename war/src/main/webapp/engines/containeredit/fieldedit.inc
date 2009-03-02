@@ -76,11 +76,11 @@
             if (theValue == "true") {
               theValue = "false";
               callingElement.className = "sharedLanguageNo";
-              callingElement.title = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>';
+              callingElement.title = '<fmt:message key="org.jahia.applyToSingleLanguage.label"/>';
             } else {
               theValue = "true";
               callingElement.className = "sharedLanguageYes";
-              callingElement.title = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>';
+              callingElement.title = '<fmt:message key="org.jahia.applyToAllLanguages.label"/>';
             }
             element.value = theValue;
           }
@@ -108,9 +108,9 @@
           <td class="sharedLanguage">
             <%if (localeList.size() > 1 && !readOnlyMode && !aField.isShared() && ServicesRegistry.getInstance().getJahiaACLManagerService().hasWriteAccesOnAllLangs(jParams)) { %>
               <% if (allSameTitles) { %>
-                <a id="switchIcons_<%=aField.getID()%>" href="javascript:switchIcons('switchIcons_<%=aField.getID()%>', 'apply_change_to_all_lang_<%=aField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
+                <a id="switchIcons_<%=aField.getID()%>" href="javascript:switchIcons('switchIcons_<%=aField.getID()%>', 'apply_change_to_all_lang_<%=aField.getID()%>');" title='<fmt:message key="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
               <% } else { %>
-                <a id="switchIcons_<%=aField.getID()%>" href="javascript:switchIcons('switchIcons_<%=aField.getID()%>', 'apply_change_to_all_lang_<%=aField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
+                <a id="switchIcons_<%=aField.getID()%>" href="javascript:switchIcons('switchIcons_<%=aField.getID()%>', 'apply_change_to_all_lang_<%=aField.getID()%>');" title='<fmt:message key="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
               <% } %>
             <% } %>
           </td>

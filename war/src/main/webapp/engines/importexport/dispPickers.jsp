@@ -56,6 +56,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
 
     /**
@@ -532,8 +534,7 @@
 <tr><td colspan="2">
 
 <table border="0" width="100%"><tr><td width="48"><img name="logo" src="../../css/images/logo/logo-jahia.gif" border="0" width="45" height="34"></td><td><img src="../images/pix.gif" border="0" width="1" height="10">
-<div id="copyright"><%=Jahia.COPYRIGHT%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
- resourceName="org.jahia.Jahia.copyright.label"/></div><span class="version">Jahia <%=Jahia.VERSION%>.<%=Jahia.getPatchNumber()%> r<%=Jahia.getBuildNumber()%></span>
+<div id="copyright"><%=Jahia.COPYRIGHT%>&nbsp;<fmt:message key="org.jahia.Jahia.copyright.label"/></div><span class="version">Jahia <%=Jahia.VERSION%>.<%=Jahia.getPatchNumber()%> r<%=Jahia.getBuildNumber()%></span>
 </td></tr></table>
 </td></tr>
 </table>

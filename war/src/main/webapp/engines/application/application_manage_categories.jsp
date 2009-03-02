@@ -42,6 +42,8 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%
     // common declaration
@@ -70,7 +72,7 @@
 
 %>
 <h3 class="template">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.portletCategories.label"/>
+    <fmt:message key="org.jahia.engines.portletCategories.label"/>
 </h3>
 <!-- End Langs -->
 <!-- Buttons -->

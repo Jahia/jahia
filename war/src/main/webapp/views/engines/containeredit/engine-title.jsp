@@ -46,5 +46,5 @@
     final JahiaContainer theEditedContainer = (JahiaContainer) engineMap.get("theContainer");
 %>
 <h2 class="edit">
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.updatecontainer.UpdateContainer_Engine.updateContainer.label"/>
+  <fmt:message key="org.jahia.engines.updatecontainer.UpdateContainer_Engine.updateContainer.label"/>
 </h2>

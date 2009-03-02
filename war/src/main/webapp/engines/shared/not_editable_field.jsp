@@ -38,8 +38,10 @@
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <p class="error">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.fileNotModified.label"/>
+    <fmt:message key="org.jahia.engines.shared.fileNotModified.label"/>
 </p>
 
 <%
@@ -50,7 +52,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="90%">
 <tr>
 	<td class="text" align="left" nowrap>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> :
+<fmt:message key="org.jahia.engines.value.label"/> :
 </td>
 </tr>
 <tr>

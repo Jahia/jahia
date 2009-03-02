@@ -66,6 +66,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("jsp.jahia.engines.shared.Page_Field");
 
@@ -372,11 +374,11 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
             if (theValue == "true") {
                 theValue = "false";
                 callingElement.className = "sharedLanguageNo";
-                callingElement.title = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>';
+                callingElement.title = '<fmt:message key="org.jahia.applyToSingleLanguage.label"/>';
             } else {
                 theValue = "true";
                 callingElement.className = "sharedLanguageYes";
-                callingElement.title = '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>';
+                callingElement.title = '<fmt:message key="org.jahia.applyToAllLanguages.label"/>';
             }
             element.value = theValue;
         }
@@ -388,37 +390,32 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
             <th width="100%">
                 <% if (isNewPage) { %>
                 <% if (!isDirectPage) { %>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkCreation.label"/>
+                <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaLinkCreation.label"/>
                 <% } else { %>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.engines.shared.Page_Field.jahiaPageCreation.label"/>
+                <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaPageCreation.label"/>
                 <% } %>
                 <% } else { %>
                 <% if (!isDirectPage) { %>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkEdition.label"/>
+                <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaLinkEdition.label"/>
                 <% } else { %>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.engines.shared.Page_Field.jahiaPageEdition.label"/>
+                <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaPageEdition.label"/>
                 <% } %>
                 <% } %>
             </th>
             <% if (jParams.getSite().getLanguageSettings(true).size() > 1 && ServicesRegistry.getInstance().getJahiaACLManagerService().hasWriteAccesOnAllLangs(jParams)) { %>
             <td nowrap="nowrap">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
+                <fmt:message key="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
             </td>
             <td>
                 <% if (allSameTitles) { %>
                 <a id="switchIcons_<%=pageBean.getID()%>"
                    href="javascript:switchIcons('switchIcons_<%=pageBean.getID()%>', 'shared_title');"
-                   title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>'
+                   title='<fmt:message key="org.jahia.applyToAllLanguages.label"/>'
                    class="sharedLanguageYes">&nbsp;</a>
                 <% } else { %>
                 <a id="switchIcons_<%=pageBean.getID()%>"
                    href="javascript:switchIcons('switchIcons_<%=pageBean.getID()%>', 'shared_title');"
-                   title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>'
+                   title='<fmt:message key="org.jahia.applyToSingleLanguage.label"/>'
                    class="sharedLanguageNo">&nbsp;</a>
                 <% } %>
                 <input id="shared_title" type="hidden" name="shared_title"
@@ -431,15 +428,13 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 
 <% if (hasDirectTypeChange) { %>
 <p class="error">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.warning.label"/> !!
-    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.engines.shared.Page_Field.ifThisPageIsChanged.label"/>.
+    <fmt:message key="org.jahia.warning.label"/> !!
+    <fmt:message key="org.jahia.engines.shared.Page_Field.ifThisPageIsChanged.label"/>.
 </p>
 <% } %>
 <logic:present name="engineMessages">
     <p class="errorbold">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.BigText_Field.error.label"/>:
+        <fmt:message key="org.jahia.engines.shared.BigText_Field.error.label"/>:
     </p>
     <ul>
         <logic:iterate name="engineMessages" property="messages" id="curMessage">
@@ -451,15 +446,12 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <tr>
     <th width="100">
         <% if (pageBean == null) { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.noTempPageBean.label"/>.
+        <fmt:message key="org.jahia.engines.shared.Page_Field.noTempPageBean.label"/>.
         <% } %>
         <% if (!isDirectPage) { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkTitle.label"/>
+        <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaLinkTitle.label"/>
         <% } else { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.jahiaPageTitle.label"/>
+        <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaPageTitle.label"/>
         <% } %>
     </th>
     <td>
@@ -496,11 +488,9 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <tr>
     <th>
         <%if (localeList.size() > 1) { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared.label"/><br/>
+        <fmt:message key="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared.label"/><br/>
         <% } else { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/><br/>
+        <fmt:message key="org.jahia.engines.pages.PageProperties_Engine.pageURLKey.label"/><br/>
         <% } %>
     </th>
     <td>
@@ -512,8 +502,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <% if (displayHideFromNavigationMenuInput) { %>
 <tr>
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.hideFromNavigationMenu.label"/><br/>
+        <fmt:message key="org.jahia.engines.shared.Page_Field.hideFromNavigationMenu.label"/><br/>
     </th>
     <td>
         <input type="checkbox" name="hideFromNavigationMenu" <% if (hideFromNavigationMenu) { %>
@@ -523,8 +512,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <% } %>
 <tr>
 <th valign="top">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.engines.shared.Page_Field.pageType.label"/>
+    <fmt:message key="org.jahia.engines.shared.Page_Field.pageType.label"/>
 </th>
 <td>
 <table>
@@ -591,11 +579,9 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     <td>
         <label>
             <% if (isNewPage) { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.engines.shared.Page_Field.createPageTemplate.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.createPageTemplate.label"/>
             <% } else { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.engines.shared.Page_Field.changePageTemplate.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.changePageTemplate.label"/>
             <% } %>
         </label>
         <br/>
@@ -629,24 +615,20 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                checked="checked"<% } %>>&nbsp;
     </td>
     <td>
-        <label><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                       resourceName="org.jahia.engines.shared.Page_Field.moveExistingPage.label"/></label>
+        <label><fmt:message key="org.jahia.engines.shared.Page_Field.moveExistingPage.label"/></label>
         <br/>
-        <a href="javascript:callSelectPageMove()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                          resourceName="org.jahia.engines.shared.Page_Field.selectPageToMove.label"/></a>
+        <a href="javascript:callSelectPageMove()"><fmt:message key="org.jahia.engines.shared.Page_Field.selectPageToMove.label"/></a>
         <input type="hidden" name="moveSourcePageID" value="<%=sourcePageID%>"/>
         <% if (Page_Field.MOVE_PAGE.equals(pageBean.getOperation())) {
             if (sourcePageID != -1) { %>
         <ul>
             <li>
-                <%=sourceTitle%>&nbsp;(<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                               resourceName="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>
+                <%=sourceTitle%>&nbsp;(<fmt:message key="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>
                 )
             </li>
         </ul>
         <% } else { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
+        <fmt:message key="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
         <%
                 }
             }
@@ -669,11 +651,9 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                checked="checked"<% } %>>&nbsp;
     </td>
     <td>
-        <label><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                       resourceName="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/></label>
+        <label><fmt:message key="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/></label>
         <br/>
-        <a href="javascript:callSelectPageLink()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                          resourceName="org.jahia.engines.shared.Page_Field.selectPageToLink.label"/></a>
+        <a href="javascript:callSelectPageLink()"><fmt:message key="org.jahia.engines.shared.Page_Field.selectPageToLink.label"/></a>
         <input type="hidden" name="linkSourcePageID" value="<%=sourcePageID%>"/>
         <%
             if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) {
@@ -681,14 +661,12 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <ul>
             <li>
                 <%drawTimeBasedPublishingStatusIcon(timeBasedPublishingObject, jParams, pageContext);%>
-                &nbsp;<%=sourceTitle%>&nbsp;(<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                     resourceName="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>
+                &nbsp;<%=sourceTitle%>&nbsp;(<fmt:message key="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>
                 )
             </li>
         </ul>
         <% } else { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
+        <fmt:message key="org.jahia.engines.shared.Page_Field.noPageSelected.label"/>.
         <% } %>
         <% } %>
     </td>
@@ -704,8 +682,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                onclick="document.mainForm.pageURLKey.disabled = 'disabled';">&nbsp;
     </td>
     <td>
-        <label><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                       resourceName="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/></label>
+        <label><fmt:message key="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/></label>
         <br/>
         <!-- option 1 if linkonly page, 3 if page does not exist. -->
         <input <% if (isNewPage) { %>
@@ -726,20 +703,16 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     <td>
         <label>
             <% if (isNewPage) { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.engines.shared.Page_Field.differPageCreation.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.differPageCreation.label"/>
             <% } else { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.engines.shared.Page_Field.removePageLink.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.removePageLink.label"/>
             <% } %>
         </label>
         <br/>
         <% if (isNewPage) { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.differPageCreationBody.label"/>.
+        <fmt:message key="org.jahia.engines.shared.Page_Field.differPageCreationBody.label"/>.
         <% } else { %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.shared.Page_Field.removePageLinkBody.label"/>.
+        <fmt:message key="org.jahia.engines.shared.Page_Field.removePageLinkBody.label"/>.
         <% } %>
     </td>
 </tr>

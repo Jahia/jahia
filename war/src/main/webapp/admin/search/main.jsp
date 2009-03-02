@@ -38,6 +38,7 @@
 <%@page import="java.util.*" %>
 <%@page import="org.jahia.services.sites.JahiaSite" %>
 <%@page import="org.jahia.bin.*" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
 String contenttypestr = (String) request.getAttribute("content-type");
 response.setContentType(contenttypestr);
@@ -79,8 +80,8 @@ includePage = includes.getProperty("error");
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageSearchEngine.label" /> <% if ( currentSite!= null ){ %>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label" />&nbsp;<%=currentSite.getServerName() %>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.manageSearchEngine.label" /> <% if ( currentSite!= null ){ %>
+    <fmt:message key="org.jahia.admin.site.label" />&nbsp;<%=currentSite.getServerName() %>
     <%} %>
   </h2>
 </div>
@@ -103,7 +104,7 @@ includePage = includes.getProperty("error");
             <div id="content" class="fit">
             <div class="head headtop">
                 <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageSearchEngine.label"/>
+                    <fmt:message key="org.jahia.admin.manageSearchEngine.label"/>
                 </div>
             </div>
             <div  class="content-item-noborder">
@@ -125,24 +126,24 @@ includePage = includes.getProperty("error");
 <% if (includeJsp.equals("operations")) { %>
   <span class="dex-PushButton">
     <span class="first-child">        
-      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label" /></a>
+      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label" /></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">        
-      <a class="ico-next" href="javascript:document.formular.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.nextStep.button.label"/></a>
+      <a class="ico-next" href="javascript:document.formular.submit();"><fmt:message key="org.jahia.admin.nextStep.button.label"/></a>
     </span>
   </span>  
   <% } %>
   <% if (includeJsp.equals("index")) { %>
   <span class="dex-PushButton">
     <span class="first-child">        
-      <a class="ico-back" href="javascript:submitFormular('<%=subAction%>','back');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.previousStep.button.label"/></a>
+      <a class="ico-back" href="javascript:submitFormular('<%=subAction%>','back');"><fmt:message key="org.jahia.admin.previousStep.button.label"/></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">        
-      <a class="ico-ok" href="javascript:submitFormular('<%=subAction%>','ok');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
+      <a class="ico-ok" href="javascript:submitFormular('<%=subAction%>','ok');"><fmt:message key="org.jahia.admin.ok.label"/></a>
     </span>
   </span>  
   <% } %>
@@ -150,7 +151,7 @@ includePage = includes.getProperty("error");
   
   <span class="dex-PushButton">
     <span class="first-child">        
-       <a class="ico-ok" href="javascript:document.formular.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
+       <a class="ico-ok" href="javascript:document.formular.submit();"><fmt:message key="org.jahia.admin.ok.label"/></a>
     </span>
   </span>  
   <% } %>
@@ -158,7 +159,7 @@ includePage = includes.getProperty("error");
   
   <span class="dex-PushButton">
     <span class="first-child">        
-        <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label" /></a>
+        <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label" /></a>
     </span>
   </span>  
   <% } %>

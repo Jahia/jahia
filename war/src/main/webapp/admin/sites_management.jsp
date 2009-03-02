@@ -82,7 +82,7 @@ limitations under the License.
     }
 
     function sendIndexForm(selectedSite) {
-        if (confirm("<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.search.ManageSearch.indexOptimizSiteIndexingIsRunning.label' defaultValue='This will start a background job for site re-indexation.'/> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.continue.confirm' defaultValue='Would you like to continue?'/>")) {
+        if (confirm("<fmt:message key='org.jahia.admin.search.ManageSearch.indexOptimizSiteIndexingIsRunning.label'/> <fmt:message key='org.jahia.admin.continue.confirm'/>")) {
             jahia.request('${pageContext.request.contextPath}/ajaxaction/IndexSite?id=' + selectedSite, {onSuccess: sendIndexFormCallback});
         }
     }
@@ -99,8 +99,7 @@ limitations under the License.
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -119,8 +118,7 @@ limitations under the License.
 </jsp:include>
 <div id="content" class="fit">
 <div class="head headtop">
-    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.virtualSitesManagement.label"/>
+    <div class="object-title"><fmt:message key="org.jahia.admin.virtualSitesManagement.label"/>
     </div>
 </div>
 <div class="content-body">
@@ -128,36 +126,31 @@ limitations under the License.
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-siteAdd"
-                           href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.admin.site.ManageSites.addSite.label"/></a>
+                           href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-export"
                            href='<%=jParams.composeSiteUrl() + "/engineName/export/jahia.zip?exportformat=all" %>'
-                           alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.exportall.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                              resourceName="org.jahia.admin.site.ManageSites.exportall.label"/></a>
+                           alt="<fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/>"><fmt:message key="org.jahia.admin.site.ManageSites.exportall.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-export" href="javascript:sendExportForm()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.admin.site.ManageSites.exportsites.label"/></a>
+                        <a class="ico-export" href="javascript:sendExportForm()"><fmt:message key="org.jahia.admin.site.ManageSites.exportsites.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
                         <a class="ico-siteDelete" class="operationLink"
-                           href="javascript:sendDeleteForm()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.admin.site.ManageSites.deletesites.label"/></a>
+                           href="javascript:sendDeleteForm()"><fmt:message key="org.jahia.admin.site.ManageSites.deletesites.label"/></a>
                       </span>
                     </span>
     </div>
 </div>
 <div class="head headtop">
-    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/>
+    <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/>
     </div>
 </div>
 <div  class="content-item-noborder">
@@ -173,19 +166,19 @@ limitations under the License.
                 &nbsp;
             </th>
             <th width="35%">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.name.label"/>
+                <fmt:message key="org.jahia.admin.name.label"/>
             </th>
             <th width="12%" style="white-space: nowrap">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>
+                <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>
             </th>
             <th width="3%">
                 &nbsp;
             </th>
             <th width="30%">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.templateSet.label"/>
+                <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>
             </th>
             <th width="15%" class="lastCol">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.actions.label"/>
+                <fmt:message key="org.jahia.admin.site.ManageSites.actions.label"/>
             </th>
         </tr>
         </thead>
@@ -210,7 +203,7 @@ limitations under the License.
                 </td>
                 <td>
                     <a href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + site.getID())%>'
-                       title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>"><%=site.getTitle() %>
+                       title="<fmt:message key='org.jahia.admin.edit.label'/>"><%=site.getTitle() %>
                     </a>
                 </td>
                 <td>
@@ -223,7 +216,7 @@ limitations under the License.
                     <img
                             src="<%=URL%>images/icons/workflow/accept.gif"
                             alt="+"
-                            title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.site.ManageSites.isTheDefaultSite.label'/>" width="10"
+                            title="<fmt:message key='org.jahia.admin.site.ManageSites.isTheDefaultSite.label'/>" width="10"
                             height="10" border="0"/>
                     <%
                     } else {
@@ -235,27 +228,27 @@ limitations under the License.
                 </td>
                 <td class="lastCol">
                     <a href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=edit&siteid=" + site.getID())%>'
-                       title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>"><img
+                       title="<fmt:message key='org.jahia.admin.edit.label'/>"><img
                             src="<%=URL%>images/icons/admin/adromeda/edit.png"
-                            alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>"
-                            title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>" width="16"
+                            alt="<fmt:message key='org.jahia.admin.edit.label'/>"
+                            title="<fmt:message key='org.jahia.admin.edit.label'/>" width="16"
                             height="16" border="0"/></a>&nbsp;<a href="#delete"
                                                                  onclick="sendDeleteForm('<%=site.getSiteKey()%>'); return false;"
-                                                                 title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/>"><img
+                                                                 title="<fmt:message key='org.jahia.admin.delete.label'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/delete.png"
-                        alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/>"
-                        title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/>" width="16"
+                        alt="<fmt:message key='org.jahia.admin.delete.label'/>"
+                        title="<fmt:message key='org.jahia.admin.delete.label'/>" width="16"
                         height="16" border="0"/></a>&nbsp;<a href="#index"
                                                              onclick="sendIndexForm('<%=site.getID()%>'); return false;"
-                                                             title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/>"><img
+                                                             title="<fmt:message key='org.jahia.admin.delete.label'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/scroll_view.png" alt="index"
-                        title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label'/>"
+                        title="<fmt:message key='org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label'/>"
                         width="16" height="16" border="0"/></a><% if (homeContentPage != null) { %>
                     &nbsp;<a href="#export" onclick="sendExportForm('<%=site.getSiteKey()%>'); return false;"
-                             title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.site.ManageSites.export.label'/>"><img
+                             title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"><img
                         src="<%=URL%>images/icons/admin/adromeda/export1.png"
-                        alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.site.ManageSites.export.label'/>"
-                        title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.site.ManageSites.export.label'/>"
+                        alt="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"
+                        title="<fmt:message key='org.jahia.admin.site.ManageSites.export.label'/>"
                         width="16" height="16" border="0"/></a><% } %>
                 </td>
             </tr>
@@ -269,8 +262,7 @@ limitations under the License.
     <!-- prepackaged site -->
     <div class="head headtop">
         <div class="object-title">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
+            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
         </div>
     </div>
     <div  class="content-item">
@@ -286,8 +278,7 @@ limitations under the License.
             <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                 <tr>
                     <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
+                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
@@ -300,8 +291,7 @@ limitations under the License.
                 	                    <span class="dex-PushButton">
                                           <span class="first-child">
                                             <a class="ico-import"
-                                               href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
+                                               href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
                                           </span>
                                         </span>
 
@@ -315,8 +305,7 @@ limitations under the License.
     <!--   import backup -->
     <div class="head headtop">
         <div class="object-title">
-           <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+           <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
         </div>
     </div>
     <div  class="content-item">
@@ -335,8 +324,7 @@ limitations under the License.
 
 
 
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
+                        <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
                         :&nbsp;<input type="file" name="import">
@@ -348,8 +336,7 @@ limitations under the License.
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"
-                                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                        resourceName="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
+                                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
                                               </span>
                                             </span><%
                         } %>
@@ -367,8 +354,7 @@ else { %>
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.site.ManageSites.virtualSitesListe.label"/></h2>
 </div>
 <div id="main">
 <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -389,8 +375,7 @@ else { %>
 </jsp:include>
 <div id="content" class="fit">
 <div class="head headtop">
-    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.virtualSitesManagement.label"/>
+    <div class="object-title"><fmt:message key="org.jahia.admin.virtualSitesManagement.label"/>
     </div>
 </div>
 
@@ -400,8 +385,7 @@ else { %>
         <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
             <tr>
                 <td>
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.admin.site.ManageSites.addSite.field"/>&nbsp;
+                    <fmt:message key="org.jahia.admin.site.ManageSites.addSite.field"/>&nbsp;
                 </td>
 
                 <td>
@@ -409,8 +393,7 @@ else { %>
                                           <span class="first-child">
 
                                             <a class="ico-siteAdd"
-                                               href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageSites.addSite.label"/></a>
+                                               href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.addSite.label"/></a>
                                           </span>
                                         </span>
                 </td>
@@ -421,11 +404,9 @@ else { %>
     <!-- prepackaged site -->
     <div class="head headtop">
         <div class="object-title">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
+            <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>
 
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.virtualSitesManagement.label.default"/>
+            <fmt:message key="org.jahia.admin.virtualSitesManagement.label.default"/>
 
         </div>
     </div>
@@ -442,8 +423,7 @@ else { %>
             <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                 <tr>
                     <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
+                        <fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/>&nbsp;
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
@@ -456,8 +436,7 @@ else { %>
                 	                    <span class="dex-PushButton">
                                           <span class="first-child">
                                             <a class="ico-import"
-                                               href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
+                                               href="javascript:{showWorkInProgress();document.siteImportPrepackaged.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.proceed"/></a>
                                           </span>
                                         </span>
 
@@ -470,8 +449,7 @@ else { %>
     <!--   import backup -->
     <div class="head headtop">
         <div class="object-title">
-             <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+             <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
         </div>
     </div>
     <div  class="content-item">
@@ -490,8 +468,7 @@ else { %>
 
 
 
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
+                        <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
                         :&nbsp;<input type="file" name="import">
@@ -503,8 +480,7 @@ else { %>
                                             <span class="dex-PushButton">
                                               <span class="first-child">
                                                 <a class="ico-import"
-                                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                        resourceName="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
+                                                   href="javascript:{showWorkInProgress(); document.siteImport.submit();}"><fmt:message key="org.jahia.admin.site.ManageSites.fileImport.label"/></a>
                                               </span>
                                             </span><%
                         } %>
@@ -527,9 +503,7 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
-                1.&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.admin.virtualSitesManagement.label.default"/>
+                1.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="org.jahia.admin.virtualSitesManagement.label.default"/>
             </div>
         </div>
         <div  class="content-item">
@@ -545,8 +519,7 @@ else { %>
                 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                     <tr>
                         <td><input type="radio" id="siteImportPrepackaged" name="siteImportPrepackaged" checked="checked" value="siteImportPrepackaged" onclick="setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], 'siteImportPrepackaged'); setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                            <label for="siteImportPrepackaged"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/></label>&nbsp;
+                            <label for="siteImportPrepackaged"><fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.fileselect"/></label>&nbsp;
                         </td>
                         <td>
                             &nbsp;<select name="importpath">
@@ -563,7 +536,7 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
-                2.&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.virtualSitesManagement.label.configwizard"/>
+                2.&nbsp;<fmt:message key="org.jahia.admin.virtualSitesManagement.label.configwizard"/>
             </div>
         </div>
 
@@ -573,8 +546,7 @@ else { %>
                     <td>
                         <form name="blank"  action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' method="post" >
                             <input type="radio" id="blank" name="blank" value="blank" onclick="setCheckedValue(document.forms['blank'].elements['blank'], 'blank'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['siteImport'].elements['siteImport'], '');">
-                            <label for="blank"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.admin.site.ManageSites.addSite.field"/></label>
+                            <label for="blank"><fmt:message key="org.jahia.admin.site.ManageSites.addSite.field"/></label>
                         </form>
                     </td>
                 </tr>
@@ -585,8 +557,7 @@ else { %>
         <!--   import backup -->
         <div class="head headtop">
             <div class="object-title">
-                3.&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+                3.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
             </div>
         </div>
         <div  class="content-item">
@@ -603,8 +574,7 @@ else { %>
                     <tr>
                         <td>
                             <input type="radio" id="siteImport" name="siteImport" value="siteImport" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
-                            <label for="siteImport"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/></label>
+                            <label for="siteImport"><fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/></label>
                         </td>
                         <td>
                             :&nbsp;<input type="file" name="import">
@@ -641,8 +611,7 @@ else { %>
                             <span class="dex-PushButton">
                               <span class="first-child">
                                 <a class="ico-back"
-                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.admin.backToMenu.label"/></a>
+                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
                               </span>
                             </span>
 

@@ -118,7 +118,7 @@ stretcherToOpen   = 0; %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.manageComponents.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -138,7 +138,7 @@ stretcherToOpen   = 0; %>
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/>
+                  <fmt:message key="org.jahia.admin.manageComponents.label"/>
                 </div>
               </div>
               <div class="content-body">                  
@@ -148,13 +148,13 @@ stretcherToOpen   = 0; %>
                     <thead>
                       <tr>
                         <th width="50%">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.name.label"/>
+                          <fmt:message key="org.jahia.admin.name.label"/>
                         </th>
                         <th width="25%">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.context.label"/>
+                          <fmt:message key="org.jahia.admin.components.ManageComponents.context.label"/>
                         </th>
                         <th width="25%" class="lastCol">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.components.ManageComponents.actions.label"/>
+                          <fmt:message key="org.jahia.admin.site.components.ManageComponents.actions.label"/>
                         </th>
                       </tr>
                     </thead>
@@ -172,13 +172,13 @@ stretcherToOpen   = 0; %>
                       lineCounter++; %>
                       <tr class="<%=lineClass%>">
                         <td>
-                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.editProperties.label"/>"><%=app.getName() %></a>
+                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<fmt:message key="org.jahia.admin.editProperties.label"/>"><%=app.getName() %></a>
                         </td>
                         <td>
                           <%=app.getContext() %>
                         </td>
                         <td class="lastCol">
-                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.editProperties.label"/>"><img src="<%=URL%>images/icons/admin/adromeda/edit.png" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>" width="16" height="16" border="0"/></a>
+                          <a href="javascript:doEdit(<%=app.getID()%>)" alt="<fmt:message key="org.jahia.admin.editProperties.label"/>"><img src="<%=URL%>images/icons/admin/adromeda/edit.png" alt="<fmt:message key='org.jahia.admin.edit.label'/>" title="<fmt:message key='org.jahia.admin.edit.label'/>" width="16" height="16" border="0"/></a>
                         </td>
                       </tr>
                       <script type="text/javascript">
@@ -205,7 +205,7 @@ stretcherToOpen   = 0; %>
                       } else { %>
                       <tr>
                         <td colspan="3" class="text">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.noApplicationsFound.label"/>
+                          <fmt:message key="org.jahia.admin.components.ManageComponents.noApplicationsFound.label"/>
                         </td>
                       </tr><%
                       } %>
@@ -223,7 +223,7 @@ stretcherToOpen   = 0; %>
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
         </div>

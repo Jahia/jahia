@@ -64,7 +64,8 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <!-- Begin Smalltext_field.jsp -->
 
 <%!
@@ -196,12 +197,12 @@
                     }
                 %>
             </map><img id="imgcolmap_<%=contextID%>" name="imgcolmap_<%=contextID%>" usemap="#colmap_<%=contextID%>"
-                       src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.jahiaTools.colorTable.image"/>"
+                       src="${pageContext.request.contextPath}<fmt:message key="org.jahia.engines.jahiaTools.colorTable.image"/>"
                        border="0" width="289" height="67"><img alt=""
-                                                               src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image"/>"
+                                                               src="${pageContext.request.contextPath}<fmt:message key="org.jahia.pix.image"/>"
                                                                border="0"
                                                                width="73" height="1"><br><img alt=""
-                                                                                              src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.jahiaTools.pix.image"/>"
+                                                                                              src="${pageContext.request.contextPath}<fmt:message key="org.jahia.engines.jahiaTools.pix.image"/>"
                                                                                               border="0" width="1"
                                                                                               height="4"><br>
             <input id="field_<%=theField.getID()%>" name="_<%=theField.getID()%>"

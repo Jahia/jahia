@@ -94,7 +94,7 @@ ProcessingContext jParams = jData.getProcessingContext(); %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label"/><% if ( site!= null ){ %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;:&nbsp;<%=site.getServerName() %><%} %></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.manageTemplates.label"/><% if ( site!= null ){ %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;:&nbsp;<%=site.getServerName() %><%} %></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -114,35 +114,35 @@ ProcessingContext jParams = jData.getProcessingContext(); %>
           <div id="content" class="fit">
             <div class="head">
               <div class="object-title">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label"/>
+                <fmt:message key="org.jahia.admin.manageTemplates.label"/>
               </div>
             </div>
             <div class="content-body">
               <div id="operationMenu">
                 <span class="dex-PushButton">
                   <span class="first-child">
-                     <a class="ico-tpl-view" href="javascript:doEdit()" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.editSelectedTemplate.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.edit.label"/></a>
+                     <a class="ico-tpl-view" href="javascript:doEdit()" alt="<fmt:message key="org.jahia.admin.templates.ManageTemplates.editSelectedTemplate.label"/>"><fmt:message key="org.jahia.admin.edit.label"/></a>
                   </span>
                 </span>
 <%-- 
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-tpl-delete" href="javascript:doDelete()" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.deleteSelectedTemplate.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></a>
+                    <a class="ico-tpl-delete" href="javascript:doDelete()" alt="<fmt:message key="org.jahia.admin.templates.ManageTemplates.deleteSelectedTemplate.label"/>"><fmt:message key="org.jahia.admin.delete.label"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-tpl-new" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.deployNewTemplates.label"/></a>
+                    <a class="ico-tpl-new" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><fmt:message key="org.jahia.admin.templates.ManageTemplates.deployNewTemplates.label"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-tpl-add" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.manuallyAddNewTemplate.label"/></a>
+                    <a class="ico-tpl-add" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><fmt:message key="org.jahia.admin.templates.ManageTemplates.manuallyAddNewTemplate.label"/></a>
                   </span>
                 </span>
                 <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-tpl-opts" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=options")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.templatesManagementOptions.label"/></a>
+                    <a class="ico-tpl-opts" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=options")%>'><fmt:message key="org.jahia.admin.templates.ManageTemplates.templatesManagementOptions.label"/></a>
                   </span>
                 </span>
 --%>            
@@ -216,7 +216,7 @@ ProcessingContext jParams = jData.getProcessingContext(); %>
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+      <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
     </span>
   </span>
 </div>

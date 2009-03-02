@@ -46,6 +46,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
 public String getAdminResource(String messageKey, HttpServletRequest request) {
     ProcessingContext jParams = ((JahiaData) request.getAttribute("org.jahia.data.JahiaData")).getProcessingContext();
@@ -96,7 +98,7 @@ public String getAdminResource(String messageKey, HttpServletRequest request) {
     int stretcherToOpen = 1;
 %>
 <head>
-    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.jahiaAdministration.label"/></title>
+    <title><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <internal:gwtInit/>
     <link rel="stylesheet" href="<%=contextPath%>/css/andromeda.css" type="text/css" />

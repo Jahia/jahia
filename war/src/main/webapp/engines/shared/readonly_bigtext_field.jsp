@@ -41,6 +41,8 @@
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -55,7 +57,7 @@
 
 <fieldset>
     <legend>
-        &nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/></b>&nbsp;
+        &nbsp;<b><fmt:message key="org.jahia.engines.value.label"/></b>&nbsp;
     </legend>
     <%= (value == null || value.length() == 0) ? "&nbsp;" : value %>
 </fieldset>

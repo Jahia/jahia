@@ -71,11 +71,11 @@ function sendFormSave()
     <div id="content" class="fit w2">
       <div class="head">
         <div class="object-title">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
         </div>
       </div>
       <div class="content-body padded">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.clickOnOkOrApplyToUndoStaging" />.
+        <fmt:message key="org.jahia.engines.version.clickOnOkOrApplyToUndoStaging" />.
       </div>
     </div>
   </div>

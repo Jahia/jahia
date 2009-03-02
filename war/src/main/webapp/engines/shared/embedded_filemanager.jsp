@@ -48,7 +48,8 @@
 
 <internal:gwtImport module="org.jahia.ajax.gwt.module.filepicker.FilePicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     String path = jParams.getParameter("select-file");
@@ -91,13 +92,13 @@
       </th>
       <% if (jParams.getSite().getLanguageSettings(true).size() > 1 &&  ServicesRegistry.getInstance().getJahiaACLManagerService().hasWriteAccesOnAllLangs(jParams)) { %>
       <td nowrap="nowrap">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
+        <fmt:message key="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
       </td>
       <td>
         <% if (allSameTitles) { %>
-        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
+        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<fmt:message key="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
         <% } else { %>
-        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
+        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<fmt:message key="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
         <% } %>
         <input id="apply_change_to_all_lang_<%=theField.getID()%>" type="hidden" name="apply_change_to_all_lang_<%=theField.getID()%>" value="<%=applyChangeToAllLang || allSameTitles %>"/>
       </td>

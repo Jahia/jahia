@@ -70,11 +70,10 @@ function sendFormSave()
     <div class="content">
         <div id="editor" class="mainPanel">
         <h4 class="versioningIcon">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
         </h4>
 
-<h5><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepThreeOfThree" /> : <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.confirmation" /></h5>
+<h5><fmt:message key="org.jahia.engines.version.stepThreeOfThree" /> : <fmt:message key="org.jahia.engines.version.confirmation" /></h5>
 
 <table border="0" width="100%">
 <tr>
@@ -86,27 +85,27 @@ function sendFormSave()
         <table>
         <tr>
           <td class="text" align="left" colspan="2">
-            <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.clickOnOkOrApplyToRestore" />.</b>
+            <b><fmt:message key="org.jahia.engines.version.clickOnOkOrApplyToRestore" />.</b>
           </td>
         </tr>
         <tr>
           <td class="text" align="left" colspan="2">
-            <span class="text2"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.warning" />&nbsp;:&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stagingContentWillBeOverriden" /></b></span>
+            <span class="text2"><b><fmt:message key="org.jahia.engines.version.warning" />&nbsp;:&nbsp;<fmt:message key="org.jahia.engines.version.stagingContentWillBeOverriden" /></b></span>
             <br><br><br>
-            <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreOptionsSummary" /> : </b>
+            <b><fmt:message key="org.jahia.engines.version.restoreOptionsSummary" /> : </b>
             <br><br>
           </td>
         </tr>
         <tr>
           <td>&nbsp;&nbsp;</td>
           <td class="text" align="left">
-            <li><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreDate" />:&nbsp;<bean:write name="contentVersioning.full_restore_date" />
+            <li><fmt:message key="org.jahia.engines.version.restoreDate" />:&nbsp;<bean:write name="contentVersioning.full_restore_date" />
           </td>
         </tr>
         <tr>
           <td>&nbsp;&nbsp;</td>
           <td class="text" align="left">
-            <li><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.exactRestore" defaultValue="Exact restore" /> : <% if ("yes".equals(restoreExactLabel)){%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.yes.label" /><%}else{%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.no.label" /><%}%>
+            <li><fmt:message key="org.jahia.engines.version.exactRestore"/><%}%>
           </td>
         </tr>
         <!--
@@ -134,8 +133,8 @@ function sendFormSave()
                 <div class="previousStep">
                 <div class="button" style="font-weight: bold;">
                     <a href="javascript:sendForm('showSiteMap','')"><<
-                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/> 2 :
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.selectingPagesToRestore"/>.</a>
+                            <fmt:message key="org.jahia.engines.version.backToStep"/> 2 :
+                        <fmt:message key="org.jahia.engines.version.selectingPagesToRestore"/>.</a>
                     <br><br>
                 </div>
                 </div>
@@ -143,8 +142,8 @@ function sendFormSave()
                 <div class="previousStep">
                 <div class="button" style="font-weight: bold;">
                     <a href="javascript:sendForm('showOperationChoices','')"><<
-                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/> 1 :
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.selectAnotherTask"/>.</a>
+                            <fmt:message key="org.jahia.engines.version.backToStep"/> 1 :
+                        <fmt:message key="org.jahia.engines.version.selectAnotherTask"/>.</a>
                 </div>
                 </div>
             </div>

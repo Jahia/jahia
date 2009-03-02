@@ -69,11 +69,11 @@ function sendFormSave()
     <div id="content" class="fit w2">
       <div class="head">
         <div class="object-title">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>&nbsp;-&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepThreeOfThree" /> : <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.confirmation" />
+          <fmt:message key="org.jahia.engines.include.actionSelector.PageVersioning.label"/>&nbsp;-&nbsp;<fmt:message key="org.jahia.engines.version.stepThreeOfThree" /> : <fmt:message key="org.jahia.engines.version.confirmation" />
         </div>
       </div>
       <div class="content-body padded">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.clickOnOkOrApplyToUndoStaging" />.
+        <fmt:message key="org.jahia.engines.version.clickOnOkOrApplyToUndoStaging" />.
       </div>
     </div>
   </div>

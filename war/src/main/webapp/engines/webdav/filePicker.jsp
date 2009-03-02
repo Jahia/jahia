@@ -38,12 +38,14 @@
 %><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" 
 %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.filemanager.Filemanager_Engine.fileLocation.label"/></title>
+<title><fmt:message key="org.jahia.engines.filemanager.Filemanager_Engine.fileLocation.label"/></title>
 <internal:gwtInit modules="org.jahia.ajax.gwt.module.filepicker.FilePicker"/>
 <script type="text/javascript">
 function handleSelection(path) {

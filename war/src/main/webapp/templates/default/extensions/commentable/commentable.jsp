@@ -47,15 +47,15 @@
     <div class="comments">
         <template:containerList name="comment" id="comment" displayActionMenu="false"
                                 actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment">
-            <!-- <h4><utility:resourceBundle resourceName="comments" defaultValue="Comments"/>:</h4> -->
+            <!-- <h4><fmt:message key="comments"/>:</h4> -->
             <ul>
                 <template:container id="commentContainer" displayActionMenu="false">
                     <li>
                         <template:field name="commentTitle"/><br/>
                         <template:field name="commentBody"/><br/>
-                        <utility:resourceBundle resourceName="postedOn" defaultValue="Posted on"/>
+                        <fmt:message key="postedOn"/>
                         <template:field name="commentDate"/>
-                        <utility:resourceBundle resourceName="by" defaultValue="by"/>
+                        <fmt:message key="by"/>
                         <template:field name="commentAuthor"/>
                     </li>
                 </template:container>
@@ -64,7 +64,7 @@
 
         <template:getContainerField fieldName="newsTitle" containerBean="${container}" valueID="newsTitle"/>
 
-        <h5><utility:resourceBundle resourceName="postYourComment" defaultValue="Post your comment"/>:</h5>
+        <h5><fmt:message key="postYourComment"/>:</h5>
 
          <template:gwtJahiaModule isTemplate="true" jahiaType="form" id='<%= "form" + IdentifierUtils.nextStringNumericIdentifier() %>' nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"
                          action="createNode" target="${comment.JCRPath}" cssClassName="comment" />

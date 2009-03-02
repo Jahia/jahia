@@ -180,9 +180,9 @@
       var str = <%=datas%>;
       //str.fieldDiffs
       var containerCompareController = new ContainerCompareController("fieldDiffsContainer");
-      containerCompareController.addTab('<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.fieldsTab" defaultValue="Fields"/>',str.fieldDiffs);
+      containerCompareController.addTab('<fmt:message key="org.jahia.engines.version.fieldsTab"/>',str.fieldDiffs);
       //It's an hack for IE ----------------------------------------------------
-      containerCompareController.addTab('<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.metadatasTab" defaultValue="Metadatas"/>',str.metadataDiffs);
+      containerCompareController.addTab('<fmt:message key="org.jahia.engines.version.metadatasTab"/>',str.metadataDiffs);
       //containerCompareController._tabView._tabBar._tbuttons[2].setVisible(false);
       // -----------------------------------------------------------------------
       containerCompareController.displayGUI();

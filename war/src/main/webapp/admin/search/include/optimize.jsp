@@ -37,6 +37,8 @@
 <%@page import="org.jahia.bin.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="url"     		class="java.lang.String"        scope="request"/>     <% // http files path. %>
 <jsp:useBean id="input"   		class="java.lang.String"        scope="request"/>     <% // inputs size. %>
 <jsp:useBean id="values" 		class="java.util.HashMap" 	scope="request"/>     <% // Map containing values. %>
@@ -47,22 +49,22 @@
 %>
 
 <h3>
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.whatIndexOptimiz.label"/>
+  <fmt:message key="org.jahia.admin.search.ManageSearch.whatIndexOptimiz.label"/>
 </h3>
 
 <p>
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.indexOptimCompact.label"/>.
+  <fmt:message key="org.jahia.admin.search.ManageSearch.indexOptimCompact.label"/>.
 </p>
 <p>
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.noteWhenOptimiz.label"/>.
+  <fmt:message key="org.jahia.admin.search.ManageSearch.noteWhenOptimiz.label"/>.
 </p>
 
 <h3>
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.whenToIndexOptimiz.label"/>
+  <fmt:message key="org.jahia.admin.search.ManageSearch.whenToIndexOptimiz.label"/>
 </h3>
 
 <p>
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.performIndexOptimiz.label"/>.
+  <fmt:message key="org.jahia.admin.search.ManageSearch.performIndexOptimiz.label"/>.
 </p>
 
 <table border="0" cellpadding="1" cellspacing="0" style="width:100%">
@@ -70,14 +72,14 @@
     <td align="left">
       <div class="buttonList" style="padding-top: 30px; padding-bottom : 10px">
         <div class="button">
-          <a href="javascript:submitFormular('<%=subAction%>','back');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.previousStep.button.label"/></a>
+          <a href="javascript:submitFormular('<%=subAction%>','back');"><fmt:message key="org.jahia.admin.previousStep.button.label"/></a>
         </div>
       </div>
     </td>
     <td align="right">
       <div class="buttonList" style="padding-top: 30px; padding-bottom : 10px">
         <div class="button">
-          <a href="javascript:submitFormular('<%=subAction%>','ok');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
+          <a href="javascript:submitFormular('<%=subAction%>','ok');"><fmt:message key="org.jahia.admin.ok.label"/></a>
         </div>
       </div>
     </td>
@@ -87,11 +89,11 @@
 
   <div id="operationMenu">
   	<div id="operationMenuLabel">
-			<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
+			<fmt:message key="org.jahia.admin.otherOperations.label"/>&nbsp;:
 		</div>
 		<ul id="operationList">
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
       </li>     		
     </ul>
   </div>

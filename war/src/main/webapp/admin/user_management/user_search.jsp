@@ -48,7 +48,8 @@ Prerequisites :
 <%@ page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     List providerList     = (List) request.getAttribute( "providerList" );
 int stretcherToOpen   = 1;
@@ -64,7 +65,7 @@ int stretcherToOpen   = 1;
             <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <td colspan="2">
-                        <br><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.search.label"/>&nbsp;:
+                        <br><fmt:message key="org.jahia.admin.users.ManageUsers.search.label"/>&nbsp;:
                         <input type="text" name="searchString" size="10"
                             <%
                             String searchString = request.getParameter("searchString");
@@ -75,35 +76,35 @@ int stretcherToOpen   = 1;
                     </td>
                 </tr>
                 <tr>
-                    <td>&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.in.label"/>&nbsp;:</td>
+                    <td>&nbsp;&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.in.label"/>&nbsp;:</td>
                     <td>
                         <input type="radio" name="searchIn" value="allProps" checked
-                               onclick="disableCheckBox(properties);">&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.allProp.label"/>
+                               onclick="disableCheckBox(properties);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.allProp.label"/>
                     </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
                     <td valign="top">
                         <input type="radio" name="searchIn" value="properties"
-                               onclick="enableCheckbox(properties);">&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.properties.label"/><br>
+                               onclick="enableCheckbox(properties);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.properties.label"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="username" disabled><nobr> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/></nobr><br>
+                        <input type="checkbox" name="properties" value="username" disabled><nobr> <fmt:message key="org.jahia.admin.username.label"/></nobr><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="firstname" disabled> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.firstName.label"/><br>
+                        <input type="checkbox" name="properties" value="firstname" disabled> <fmt:message key="org.jahia.admin.firstName.label"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="lastname" disabled> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.lastName.label"/><br>
+                        <input type="checkbox" name="properties" value="lastname" disabled> <fmt:message key="org.jahia.admin.lastName.label"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="email" disabled> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.eMail.label"/><br>
+                        <input type="checkbox" name="properties" value="email" disabled> <fmt:message key="org.jahia.admin.eMail.label"/><br>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="checkbox" name="properties" value="organization" disabled><nobr> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.organization.label"/></nobr><br>
+                        <input type="checkbox" name="properties" value="organization" disabled><nobr> <fmt:message key="org.jahia.admin.organization.label"/></nobr><br>
                     </td>
                 </tr>
                 <tr>
-                    <td>&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.on.label"/>&nbsp;:&nbsp;</td>
+                    <td>&nbsp;&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.on.label"/>&nbsp;:&nbsp;</td>
                     <td>
                         <input type="radio" name="storedOn" value="everywhere"
                                <%if (providerList.size() > 1) { %> checked <% } %>
-                               onclick="disableCheckBox(providers);">&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.everyWhere.label"/>
+                               onclick="disableCheckBox(providers);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.everyWhere.label"/>
                     </td>
                 </tr>
                 <tr>
@@ -111,7 +112,7 @@ int stretcherToOpen   = 1;
                     <td><nobr>
                         <input type="radio" name="storedOn" value="providers"
                                <%if (providerList.size() <= 1) { %> checked <% } %>
-                               onclick="enableCheckbox(providers);">&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.providers.label"/></nobr>&nbsp;:<br>
+                               onclick="enableCheckbox(providers);">&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.providers.label"/></nobr>&nbsp;:<br>
 <%
                         Iterator providerEnum = providerList.iterator();
                         while (providerEnum.hasNext()) {
@@ -133,7 +134,7 @@ int stretcherToOpen   = 1;
 
                         <span class="dex-PushButton">
                           <span class="first-child">
-                              <a class="ico-search" href="javascript:submitForm('search');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.search.label"/></a>
+                              <a class="ico-search" href="javascript:submitForm('search');"><fmt:message key="org.jahia.admin.users.ManageUsers.search.label"/></a>
                           </span>
                          </span>
                     </td>
@@ -150,7 +151,7 @@ int stretcherToOpen   = 1;
             <table class="text" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <td>
-                       <center> <i><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.searchResult.label"/></i></center> <br>
+                       <center> <i><fmt:message key="org.jahia.admin.users.ManageUsers.searchResult.label"/></i></center> <br>
                         <table class="text" width="100%" border="0" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td>
@@ -158,8 +159,7 @@ int stretcherToOpen   = 1;
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{2}/);"
-                                           title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageUsers.sortByProvider.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                resourceName="org.jahia.admin.users.ManageUsers.sortByProvider.label"/></a>
+                                           title="<fmt:message key='org.jahia.admin.users.ManageUsers.sortByProvider.label'/>"><fmt:message key="org.jahia.admin.users.ManageUsers.sortByProvider.label"/></a>
                                     </span>
                                 </span>
 
@@ -167,8 +167,7 @@ int stretcherToOpen   = 1;
                                     <span class="first-child">
                                         <a class="sort"
                                            href="javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{8}/);"
-                                           title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageUsers.sortByUserName.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                resourceName="org.jahia.admin.users.ManageUsers.sortByUserName.label"/></a>
+                                           title="<fmt:message key='org.jahia.admin.users.ManageUsers.sortByUserName.label'/>"><fmt:message key="org.jahia.admin.users.ManageUsers.sortByUserName.label"/></a>
                                     </span>
                                 </span>
 
@@ -176,8 +175,7 @@ int stretcherToOpen   = 1;
                                     <span class="first-child">
                                         <a class="sort"
                                            href='<%= "javascript:sortSelectBox(document.mainForm.selectedUsers, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>'
-                                           title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageUsers.sortByProperty.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                resourceName="org.jahia.admin.users.ManageUsers.sortByProperty.label"/></a>
+                                           title="<fmt:message key='org.jahia.admin.users.ManageUsers.sortByProperty.label'/>"><fmt:message key="org.jahia.admin.users.ManageUsers.sortByProperty.label"/></a>
                                     </span>
                                 </span>
 
@@ -196,7 +194,7 @@ int stretcherToOpen   = 1;
                             <%
                             if (resultSet.size() == 0) {
                                 %><option value="null" selected>
-                                -- - -&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; - <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.noUserFound.label"/> -&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;- - --
+                                -- - -&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; - <fmt:message key="org.jahia.admin.users.ManageUsers.noUserFound.label"/> -&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;- - --
                                   </option><%
                             } else {
                                 Iterator it = resultSet.iterator();

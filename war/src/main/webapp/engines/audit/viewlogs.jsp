@@ -37,8 +37,10 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.engines.EngineLanguageHelper"%>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
 final List logData = (List) engineMap.get("logData");
@@ -65,7 +67,7 @@ if (userAgent != null) {
     <%@ include file="../tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.administrativeAuditLog.label"/></div>
+        <div class="object-title"><fmt:message key="org.jahia.engines.EngineToolBox.administrativeAuditLog.label"/></div>
       </div>
       <% if (!(deletedRows.intValue() > 0)) { %>
         <% if (! (readOnlyMode && (results.getReadOnlyTabs().contains(LockPrerequisites.LOGS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)))) { %>
@@ -73,7 +75,7 @@ if (userAgent != null) {
             <div id="operationMenu">
               <span class="dex-PushButton">
                 <span class="first-child">
-                  <a class="ico-flush" href="javascript:submittedCount++;window.location.href='<%=engineURL%><%=URLSep%>screen=logs&flush=1'" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.flush.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.flush.label"/></a>
+                  <a class="ico-flush" href="javascript:submittedCount++;window.location.href='<%=engineURL%><%=URLSep%>screen=logs&flush=1'" title="<fmt:message key="org.jahia.engines.EngineToolBox.flush.label"/>"><fmt:message key="org.jahia.engines.EngineToolBox.flush.label"/></a>
                 </span>
               </span>
             </div>
@@ -102,9 +104,9 @@ if (userAgent != null) {
           <p class="error">
             <%=deletedRows%>
             <% if (deletedRows.intValue() > 1) {%>
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.logDeletedPlural.label"/>
+              <fmt:message key="org.jahia.engines.EngineToolBox.logDeletedPlural.label"/>
             <%} else {%>
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.EngineToolBox.logDeletedSingular.label"/>
+              <fmt:message key="org.jahia.engines.EngineToolBox.logDeletedSingular.label"/>
             <% } %>
           </p>
         <% } %>

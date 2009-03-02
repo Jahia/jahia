@@ -46,5 +46,5 @@
     final JahiaPage thePage = (JahiaPage) engineMap.get("thePage");
 %>
 <h2 class="page">
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.pages.PageProperties_Engine.pageSettings.label"/>
+  <fmt:message key="org.jahia.engines.pages.PageProperties_Engine.pageSettings.label"/>
 </h2>

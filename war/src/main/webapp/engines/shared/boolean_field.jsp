@@ -43,6 +43,8 @@
 <%@page import="org.jahia.data.JahiaData"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
@@ -79,8 +81,7 @@
 
 if (val.equals("true")) { %>
        checked="checked"
-<% } %>>&nbsp;<label for="_<%=theField.getID()%>checkBoolean"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-        resourceName="org.jahia.engines.shared.Boolean_Field.checkForTrue.label"/></label>
+<% } %>>&nbsp;<label for="_<%=theField.getID()%>checkBoolean"><fmt:message key="org.jahia.engines.shared.Boolean_Field.checkForTrue.label"/></label>
 <input type="hidden" name="_<%=theField.getID()%>" value="<%=val%>">
 
 <script type="text/javascript">

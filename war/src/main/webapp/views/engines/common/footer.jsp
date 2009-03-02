@@ -41,7 +41,7 @@
 <table width="100%" height="37" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td height="37" width="100%" bgcolor="#FFFFFF">&nbsp;</td>
-        <td width="126" height="37" bgcolor="#FFFFFF"><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.jahiaTools.pix.image"/>" width="95" height="37"></td>
+        <td width="126" height="37" bgcolor="#FFFFFF"><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.engines.jahiaTools.pix.image"/>" width="95" height="37"></td>
     </tr>
 </table>
 <br>

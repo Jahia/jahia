@@ -47,7 +47,8 @@
 <%@taglib uri="http://displaytag.sf.net" prefix="display"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
 		//get resource bundle
 		JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
@@ -193,13 +194,13 @@
 
 <b>
     <%if(selectedEntryPointDefName!=null && !selectedEntryPointDefName.equalsIgnoreCase("")){%>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field_displyTag.selectedPortlet.label"/>
+        <fmt:message key="org.jahia.engines.shared.Application_Field_displyTag.selectedPortlet.label"/>
         <a href="javascript:searchSelectedWebapp();"><%=selectedEntryPointDefName%> </a> .
-        <a title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field_displyTag.unselectedPortlet.label"/>" href="javascript:changeSelectedWebapp('no_webapp');">
+        <a title="<fmt:message key="org.jahia.engines.shared.Application_Field_displyTag.unselectedPortlet.label"/>" href="javascript:changeSelectedWebapp('no_webapp');">
             <img src="${pageContext.request.contextPath}/engines/images/icons/delete3.gif" alt="search"  border="0"/>
         </a>
     <%}else{%>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field_displyTag.noselectedPortlet"/>
+        <fmt:message key="org.jahia.engines.shared.Application_Field_displyTag.noselectedPortlet"/>
     <%}%>
 
     <input style="display:none;" id="no_webapp" name="_<%=theField.getID()%>"  value="-1" type="radio" onchange="javascript:check();javascript:handleActionChange('edit');" <%if(appID == -1){%> checked <%}%>/>
@@ -213,14 +214,14 @@
 <input type="hidden" name="<%=paramSort%>" value="<%=paramSortValue%>"/>
 <input type="hidden" name="<%=paramOrder%>" value="<%=paramOrderValue%>"/>
 <% if(!appListIsEmpty) {%>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field_displyTag.search.label"/>
+<fmt:message key="org.jahia.engines.shared.Application_Field_displyTag.search.label"/>
 <input onkeyup="javascript:doSeachOnEnterClick(event);" id="<%=portletSearchName%>" name="<%=portletSearchName%>" value="<%=portletSearchCastedValue%>"/>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field_displyTag.searchBy.label"/>
+<fmt:message key="org.jahia.engines.shared.Application_Field_displyTag.searchBy.label"/>
 <select id="<%=portletSearchType%>" name="<%=portletSearchType%>" value="<%=portletSearchTypeValue%>">
 	<option value="name" <%if(portletSearchTypeValue.equalsIgnoreCase("name")){%>selected <%}%>><%=titleNameColumn%></option>
 	<option value="context"<%if(portletSearchTypeValue.equalsIgnoreCase("context")){%>selected <%}%>><%=titleContextColumn%></option>
 	<option value="description"<%if(portletSearchTypeValue.equalsIgnoreCase("description")){%>selected <%}%>><%=titleDescriptionColumn%></option>
-	<option value="all"<%if(portletSearchTypeValue.equalsIgnoreCase("all")){%>selected <%}%>><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field_displyTag.all.label"/></option>
+	<option value="all"<%if(portletSearchTypeValue.equalsIgnoreCase("all")){%>selected <%}%>><fmt:message key="org.jahia.engines.shared.Application_Field_displyTag.all.label"/></option>
 </select>
 <a href="javascript:check();javascript:handleActionChange('edit');">
 <img src="${pageContext.request.contextPath}/css/images/icones/find.gif" alt="search" width="24" height="24" border="0"/>

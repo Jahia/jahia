@@ -55,9 +55,9 @@ autoDeploy = (val.intValue()==1);
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label"/>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.manageTemplates.label"/>
     <br>
-    <% if ( site!= null ){ %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;:&nbsp;<%=site.getServerName() %><%} %>
+    <% if ( site!= null ){ %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;:&nbsp;<%=site.getServerName() %><%} %>
   </h2>
 </div>
 <div id="main">
@@ -78,7 +78,7 @@ autoDeploy = (val.intValue()==1);
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.generalOptions.label"/>
+                    <fmt:message key="org.jahia.admin.generalOptions.label"/>
                   </div>
                 </div>
                 <div class="content-body">
@@ -86,12 +86,12 @@ autoDeploy = (val.intValue()==1);
                   <div id="operationMenu">
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-tpl-new" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.deployNewTemplates.label"/></a>
+                        <a class="ico-tpl-new" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=displaynewlist")%>'><fmt:message key="org.jahia.admin.templates.ManageTemplates.deployNewTemplates.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-tpl-add" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.manuallyAddNewTemplate.label"/></a>
+                        <a class="ico-tpl-add" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=add")%>'><fmt:message key="org.jahia.admin.templates.ManageTemplates.manuallyAddNewTemplate.label"/></a>
                       </span>
                     </span>
                   </div>
@@ -101,7 +101,7 @@ autoDeploy = (val.intValue()==1);
                   <table border="0" cellpadding="5" cellspacing="0">
                     <tr>
                       <td>
-                        <label for="autoDeploy"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.automaticDeployment.label"/></label>
+                        <label for="autoDeploy"><fmt:message key="org.jahia.admin.templates.ManageTemplates.automaticDeployment.label"/></label>
                       </td>
                       <td>
                         :&nbsp;<input type="checkbox" id="autoDeploy" name="autoDeploy" value="1"<% if ( autoDeploy ) { %>checked<% } %> />
@@ -119,17 +119,17 @@ autoDeploy = (val.intValue()==1);
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><fmt:message key="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-reset" href="javascript:document.mainForm.reset()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.resetChanges.label"/></a>
+              <a class="ico-reset" href="javascript:document.mainForm.reset()"><fmt:message key="org.jahia.admin.resetChanges.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:sendForm('save');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/></a>
+              <a class="ico-ok" href="javascript:sendForm('save');"><fmt:message key="org.jahia.admin.save.label"/></a>
             </span>
           </span>
         </div>

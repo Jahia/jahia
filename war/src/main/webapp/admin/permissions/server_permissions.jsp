@@ -55,7 +55,7 @@ stretcherToOpen   = 0; %>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.serverpermissions.title.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.serverpermissions.title.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -75,14 +75,13 @@ stretcherToOpen   = 0; %>
               <div id="content" class="fit">
               <div class="head">
                   <div class="object-title">
-                       <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.serverpermissions.mainMenu.label"/>
+                       <fmt:message key="org.jahia.admin.serverpermissions.mainMenu.label"/>
                   </div>
               </div>
               <div class="content-item-noborder">
                 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"serverPermissions","&sub=process")%>' method="post">
                 <p>
-                  &nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.serverpermissions.introduction.label"/>
+                  &nbsp;&nbsp;<fmt:message key="org.jahia.admin.serverpermissions.introduction.label"/>
                 </p>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="permissions">
                 <c:forEach items="${aclNameList}" var="curAclName" varStatus="status">
@@ -90,7 +89,7 @@ stretcherToOpen   = 0; %>
                     <td>
                       <div class="head headtop">
                         <div class="object-title">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.serverpermissions.permission.${fn:substringAfter(curAclName.aclName, 'org.jahia.actions.server.')}.label"/>
+                          <fmt:message key="org.jahia.admin.serverpermissions.permission.${fn:substringAfter(curAclName.aclName, 'org.jahia.actions.server.')}.label"/>
                         </div>
                       </div>
                         <c:set var="aclName" value="${curAclName.aclName}"/>
@@ -116,12 +115,12 @@ stretcherToOpen   = 0; %>
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a  class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+              <a  class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="#ok" onclick="document.jahiaAdmin.submit(); return false;"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.saveChanges.label"/></a>
+              <a class="ico-ok" href="#ok" onclick="document.jahiaAdmin.submit(); return false;"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
             </span>
           </span>
         </div>

@@ -42,11 +42,11 @@
 <!--
 function testSettings() {
     if (document.jahiaAdmin.host.value.length == 0) {
-        alert("<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label'/>");
+        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label'/>");
     } else if (document.jahiaAdmin.to.value.length == 0) {
-        alert("<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label'/>");
+        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label'/>");
     } else if (document.jahiaAdmin.from.value.length == 0) {
-        alert("<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label'/>");
+        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label'/>");
     } else {
         if (typeof workInProgressOverlay != 'undefined') {
         	workInProgressOverlay.start();
@@ -65,23 +65,23 @@ function testSettingsSuccess(text, code, statusText) {
         workInProgressOverlay.stop();
     }
 	if (code == 200) {
-        alert("<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.server.ManageServer.testSettings.success'/>");
+        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.success'/>");
     } else {
-        alert("<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n" + code + " " + statusText + (code >= 500 ? ("\n" + text) : ''));
+        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n" + code + " " + statusText + (code >= 500 ? ("\n" + text) : ''));
     }
 }
 function testSettingsFailure(text, code, statusText) {
     if (typeof workInProgressOverlay != 'undefined') {
         workInProgressOverlay.stop();
     }
-    alert("<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n'" + code + " " + statusText + "\n" + text);
+    alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n'" + code + " " + statusText + "\n" + text);
 }
 //-->
 </script>
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.emailSettings.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.emailSettings.label"/></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -100,8 +100,7 @@ function testSettingsFailure(text, code, statusText) {
                             </jsp:include>
                             <div id="content" class="fit">
                                 <div class="head headtop">
-                                    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                            resourceName="org.jahia.admin.emailSettings.label"/>
+                                    <div class="object-title"><fmt:message key="org.jahia.admin.emailSettings.label"/>
                                     </div>
                                 </div>
                                 <div  class="content-item">
@@ -124,8 +123,7 @@ function testSettingsFailure(text, code, statusText) {
                                         <tr>
                                             <td>
                                                 <label for="serviceActivated">
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.server.ManageServer.serviceEnabled.label"/>&nbsp;:
+                                                    <fmt:message key="org.jahia.admin.server.ManageServer.serviceEnabled.label"/>&nbsp;:
                                                 </label>
                                             </td>
                                             <td>
@@ -138,8 +136,7 @@ function testSettingsFailure(text, code, statusText) {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                        resourceName="org.jahia.admin.server.ManageServer.mailServer.label"/>&nbsp;:
+                                                <fmt:message key="org.jahia.admin.server.ManageServer.mailServer.label"/>&nbsp;:
                                             </td>
                                             <td>
                                                 <input class="input" type="text" name="host" size="<%=inputSize%>"
@@ -149,8 +146,7 @@ function testSettingsFailure(text, code, statusText) {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                        resourceName="org.jahia.admin.server.ManageServer.mailAdministrator.label"/>&nbsp;:
+                                                <fmt:message key="org.jahia.admin.server.ManageServer.mailAdministrator.label"/>&nbsp;:
                                             </td>
                                             <td>
                                                 <input class="input" type="text" name="to" size="<%=inputSize%>"
@@ -159,8 +155,7 @@ function testSettingsFailure(text, code, statusText) {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                        resourceName="org.jahia.admin.server.ManageServer.mailFrom.label"/>&nbsp;:
+                                                <fmt:message key="org.jahia.admin.server.ManageServer.mailFrom.label"/>&nbsp;:
                                             </td>
                                             <td>
                                                 <input class="input" type="text" name="from" size="<%=inputSize%>"
@@ -170,19 +165,14 @@ function testSettingsFailure(text, code, statusText) {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                        resourceName="org.jahia.admin.server.ManageServer.eventNotificationLevel.label"/>&nbsp;:
+                                                <fmt:message key="org.jahia.admin.server.ManageServer.eventNotificationLevel.label"/>&nbsp;:
                                             </td>
                                             <td>
                                                 <select class="input" name="notificationLevel">
-                                                    <option value="Disabled" ${jahiaMailSettings.notificationLevel == 'Disabled' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.server.ManageServer.disabled.label"/></option>
-                                                    <option value="Standard" ${jahiaMailSettings.notificationLevel == 'Standard' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.server.ManageServer.standard.label"/></option>
-                                                    <option value="Wary" ${jahiaMailSettings.notificationLevel == 'Wary' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.server.ManageServer.wary.label"/></option>
-                                                    <option value="Paranoid" ${jahiaMailSettings.notificationLevel == 'Paranoid' ? 'selected="selected"' : ''}><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.server.ManageServer.paranoid.label"/></option>
+                                                    <option value="Disabled" ${jahiaMailSettings.notificationLevel == 'Disabled' ? 'selected="selected"' : ''}><fmt:message key="org.jahia.admin.server.ManageServer.disabled.label"/></option>
+                                                    <option value="Standard" ${jahiaMailSettings.notificationLevel == 'Standard' ? 'selected="selected"' : ''}><fmt:message key="org.jahia.admin.server.ManageServer.standard.label"/></option>
+                                                    <option value="Wary" ${jahiaMailSettings.notificationLevel == 'Wary' ? 'selected="selected"' : ''}><fmt:message key="org.jahia.admin.server.ManageServer.wary.label"/></option>
+                                                    <option value="Paranoid" ${jahiaMailSettings.notificationLevel == 'Paranoid' ? 'selected="selected"' : ''}><fmt:message key="org.jahia.admin.server.ManageServer.paranoid.label"/></option>
                                                 </select>
                                             </td>
                                         </tr>
@@ -190,7 +180,7 @@ function testSettingsFailure(text, code, statusText) {
                                             <td colspan="2" align="right">
                                               <span class="dex-PushButton">
                                                 <span class="first-child">
-                                                  <a class="ico-mail-test" href="#" onclick="testSettings(); return false;"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.server.ManageServer.testSettings.label" defaultValue="Test settings"/></a>
+                                                  <a class="ico-mail-test" href="#" onclick="testSettings(); return false;"><fmt:message key="org.jahia.admin.server.ManageServer.testSettings.label"/></a>
                                                 </span>
                                               </span>
 
@@ -210,14 +200,12 @@ function testSettingsFailure(text, code, statusText) {
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.backToMenu.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.saveChanges.label"/></a>
+              <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
             </span>
           </span>
 </div>

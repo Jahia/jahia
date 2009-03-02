@@ -39,7 +39,7 @@
 <html>
 <head>
     <internal:gwtInit standalone="true"/>
-    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.processDisplay.jobresult.label" defaultValue="Job Report"/></title>
+    <title><fmt:message key="org.jahia.engines.processDisplay.jobresult.label"/></title>
 </head>
 <body>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.jobreport.JobReport"/>

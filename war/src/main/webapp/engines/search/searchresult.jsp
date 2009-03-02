@@ -41,6 +41,8 @@
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     Map<String, Object> engineMap   = (Map<String, Object>) request.getAttribute( "org.jahia.engines.EngineHashMap" );
     String engineUrl    = (String) engineMap.get( "engineUrl" );
@@ -56,21 +58,21 @@
 
 <html>
 <head>
-    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.Search_Engine.searchResultsTitle.label"/></title>
+    <title><fmt:message key="org.jahia.engines.search.Search_Engine.searchResultsTitle.label"/></title>
     <script language="javascript" src="<%=javaScriptPath%>"></script>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.stylesheet.css"/>" type="text/css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}<fmt:message key="org.jahia.stylesheet.css"/>" type="text/css">
 </head>
 
-<body class="text" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="window.focus(); MM_preloadImages('${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancelOn.button"/>','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.okOn.button"/>');">
+<body class="text" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="window.focus(); MM_preloadImages('${pageContext.request.contextPath}<fmt:message key="org.jahia.cancelOn.button"/>','${pageContext.request.contextPath}<fmt:message key="org.jahia.okOn.button"/>');">
 <table width="100%" height="63" border="0" cellspacing="0" cellpadding="0">
     <tr>
-        <td width="126" height="63"><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.header.image"/>" width="126" height="63"></td>
-        <td height="63" width="100%" background="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.headerBg.image"/>">&nbsp;</td>
+        <td width="126" height="63"><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.header.image"/>" width="126" height="63"></td>
+        <td height="63" width="100%" background="${pageContext.request.contextPath}<fmt:message key="org.jahia.headerBg.image"/>">&nbsp;</td>
     </tr>
 </table>
 <br>
 <p class="text">
-&nbsp;&nbsp;&nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.Search_Engine.searchResultsFor.label"/>[</b><%=searchString%><b>]</b>
+&nbsp;&nbsp;&nbsp;<b><fmt:message key="org.jahia.engines.search.Search_Engine.searchResultsFor.label"/>[</b><%=searchString%><b>]</b>
 </p>
 
 <%  if ((searchResults != null) && (searchResults.results().size() != 0))
@@ -80,7 +82,7 @@
             %>
             &nbsp;&nbsp;&nbsp;
            <a href="<%=thisHit.getPage().getUrl(jParams)%>"> <%=thisHit.getPage().getTitle()%></a>
-           - <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.Search_Engine.score.label"/> : <%=thisHit.getScore()%><br>
+           - <fmt:message key="org.jahia.engines.search.Search_Engine.score.label"/> : <%=thisHit.getScore()%><br>
            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <%=thisHit.getTeaser()%><br><br>
 <%      }
     } %>

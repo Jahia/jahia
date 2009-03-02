@@ -52,10 +52,12 @@
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <jsp:useBean id="engineTitle" class="java.lang.String" scope="request"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <jsp:useBean id="javaScriptPath" class="java.lang.String" scope="request"/>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
 private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("jsp.jahia.engines.engine");
 // include pages
@@ -190,9 +192,9 @@ if (elh != null) {
 jahia.config = {
   contextPath: '${pageContext.request.contextPath}',
   i18n: {
-      'org.jahia.button.ok':          '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.ok"/>',
-      'org.jahia.button.saveAddNew':  '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.saveAddNew"/>',
-      'org.jahia.button.apply':       '<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.apply"/>'
+      'org.jahia.button.ok':          '<fmt:message key="org.jahia.button.ok"/>',
+      'org.jahia.button.saveAddNew':  '<fmt:message key="org.jahia.button.saveAddNew"/>',
+      'org.jahia.button.apply':       '<fmt:message key="org.jahia.button.apply"/>'
   },
   theScreen: '<%=theScreen%>',
   <% if (results != null) {%>lockResults: true,<% } %>
@@ -225,7 +227,7 @@ jahia.config = {
     <form name="mainForm" method="post" action="${fn:escapeXml(engineUrl)}">
       <% if (results != null) { %>
         <div id="readOnly" class="msg-alert-info">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.readOnlyMode.label"/>: <%=LockKey.getFriendlyMessage(lockKey, jParams)%>
+          <fmt:message key="org.jahia.engines.readOnlyMode.label"/>: <%=LockKey.getFriendlyMessage(lockKey, jParams)%>
           <%
           final List locksInfo = LockRegistry.getInstance().getInfo(lockKey);
           final Iterator iterator = locksInfo.iterator();
@@ -238,8 +240,8 @@ jahia.config = {
             %>
               <span class="dex-PushButton">
           			<span class="first-child">
-                		<a class="ico-remove-lock" href="javascript:sendFormSteal();" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.stealLock.label"/>">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.stealLock.label"/></a>
+                		<a class="ico-remove-lock" href="javascript:sendFormSteal();" title="<fmt:message key="org.jahia.engines.lock.stealLock.label"/>">
+                  <fmt:message key="org.jahia.engines.lock.stealLock.label"/></a>
              		</span>
               </span>
               <input type="hidden" name="whichKeyToSteal" value=""/>

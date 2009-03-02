@@ -41,7 +41,7 @@
 <%@include file="/admin/include/header.inc"%>
 
 <tr>
-    <td align="center" class="text"><img name="language" src="<%=URL%>images/icons/admin/signpost.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.deleteLanguages.label"/></h3></td>
+    <td align="center" class="text"><img name="language" src="<%=URL%>images/icons/admin/signpost.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.deleteLanguages.label"/></h3></td>
 </tr>
 </table>
 <br><br>
@@ -57,9 +57,9 @@
         <table cellpadding="2" cellspacing="0" border="0">
         <tr>
             <td nowrap class="text">
-                <b><font color="#FF0000"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.pleaseBeCareful.label"/>&nbsp;:</font></b>
+                <b><font color="#FF0000"><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.pleaseBeCareful.label"/>&nbsp;:</font></b>
                 <br><br>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.definitelyDelete.label"/><br>
+                <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.definitelyDelete.label"/><br>
                 <br>
 <%
     Iterator languagesToDeleteEnum = languagesToDelete.iterator();
@@ -71,15 +71,15 @@
 <%
     }
 %>
-                <br><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.reallyWantContinue.label"/>
+                <br><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.reallyWantContinue.label"/>
                 <br><br>
             </td>
         </tr>
         <tr>
             <td align="right">
                 &nbsp;<br>
-                <a href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=display")%>' onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Cancel','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancelOn.button"/>',1)"><img name="Cancel" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancelOff.button"/>" width="69" height="17" border="0"></a>
-                <a href="javascript:document.jahiaAdmin.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('delete','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.deleteOn.button"/>',1)"><img name="delete" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.deleteOff.button"/>" width="69" height="17" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.delete.label"/>"></a>
+                <a href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=display")%>' onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Cancel','','${pageContext.request.contextPath}<fmt:message key="org.jahia.cancelOn.button"/>',1)"><img name="Cancel" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.cancelOff.button"/>" width="69" height="17" border="0"></a>
+                <a href="javascript:document.jahiaAdmin.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('delete','','${pageContext.request.contextPath}<fmt:message key="org.jahia.deleteOn.button"/>',1)"><img name="delete" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.deleteOff.button"/>" width="69" height="17" border="0" alt="<fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.delete.label"/>"></a>
             </td>
         </tr>
         <tr>
@@ -87,11 +87,11 @@
                 &nbsp;<br><br><br>
                 <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td nowrap width="145" valign="top"><font class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
+                    <td nowrap width="145" valign="top"><font class="text"><b><fmt:message key="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
                     <td valign="top">
                         <font class="text">
-                            <li> <a href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.backToLanguageList.label"/></a><br>
-                            <li> <a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a><br>
+                            <li> <a href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=display")%>'><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.backToLanguageList.label"/></a><br>
+                            <li> <a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a><br>
                         </font>
                     </td>
                 </tr>

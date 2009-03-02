@@ -51,8 +51,8 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.themes.ManageThemes.label"/>
-        : <% if (currentSite != null) { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.themes.ManageThemes.label"/>
+        : <% if (currentSite != null) { %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %>
         &nbsp;&nbsp;<%} %></h2>
 </div>
 <div id="main">
@@ -73,8 +73,7 @@
                         <div id="content" class="fit">
                             <div class="head">
                                 <div class="object-title">
-                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                            resourceName="org.jahia.admin.themes.ManageThemes.label"/>&nbsp;
+                                    <fmt:message key="org.jahia.admin.themes.ManageThemes.label"/>&nbsp;
                                 </div>
                             </div>
                             
@@ -108,9 +107,7 @@
                                      <script type="text/javascript">
                                         swapImage('imageTheme','switchTheme')
                                     </script>
-                                    <tr><td><input type="submit" name="<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.saveChanges.label"/>" value="<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.saveChanges.label"/>"></td></tr>
+                                    <tr><td><input type="submit" name="<fmt:message key="org.jahia.admin.saveChanges.label"/>" value="<fmt:message key="org.jahia.admin.saveChanges.label"/>"></td></tr>
                                 </form>
                                 </table>
                             </div>
@@ -119,8 +116,7 @@
                 if (request.getParameter("jahiaThemeSelector") != null ) {
             %>
                               <span style="padding: 5px;display:block;border-bottom: 1px solid #B7CBD8;">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.changeTheme'
-                                          defaultValue="New theme selected "/> :
+            <fmt:message key='org.jahia.admin.changeTheme'/> :
                     </span>
 
                                     <table class="topAlignedTable" cellpadding="5" cellspacing="0">
@@ -140,15 +136,13 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.backToMenu.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-ok" href="#"
-                 onclick="document.jahiathemeSelectorFormsite.submit()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.saveChanges.label"/></a>
+                 onclick="document.jahiathemeSelectorFormsite.submit()"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
             </span>
           </span>
 </div>

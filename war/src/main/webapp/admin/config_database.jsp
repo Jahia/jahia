@@ -62,13 +62,13 @@
     }
 %>
 <!-- Supprim� du switch mais remplac� par autre switch (cf. N.B.) :
-jahiaWhichActionMessage  = <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.message1.label"/>;
-jahiaWhichActionMessage  = <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.message2.label"/>;
+jahiaWhichActionMessage  = <fmt:message key="org.jahia.admin.database.ManageDatabase.message1.label"/>;
+jahiaWhichActionMessage  = <fmt:message key="org.jahia.admin.database.ManageDatabase.message2.label"/>;
 -->
 
 
 <tr>
-    <td align="center" class="text"><img name="db" src="<%=URL%>images/icons/admin/data.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.databaseSettings.label"/></h3></td>
+    <td align="center" class="text"><img name="db" src="<%=URL%>images/icons/admin/data.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><fmt:message key="org.jahia.admin.databaseSettings.label"/></h3></td>
 </tr>
 </table>
 <br><br>
@@ -118,15 +118,15 @@ jahiaWhichActionMessage  = <utility:resourceBundle resourceBundle="JahiaInternal
             <td nowrap>
                 <font class="text"><!-- N.B. : " <%=jahiaWhichActionMessage%> " supprim� en m�me temps que le switch mais remplac� par : -->
                 <%    switch(jahiaDBWhichAction.intValue())
-                            { case 1 : %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.message1.label"/><%
+                            { case 1 : %><fmt:message key="org.jahia.admin.database.ManageDatabase.message1.label"/><%
                                        break;
-                              case 2 : %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.message2.label"/><%
+                              case 2 : %><fmt:message key="org.jahia.admin.database.ManageDatabase.message2.label"/><%
                                        break;
                             }
                 %>
                 </font>
                 <br><br>
-                <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.database.label"/>&nbsp;:</font><br>
+                <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.database.label"/>&nbsp;:</font><br>
                 <select class="input" name="dbtype" onChange="changeDatabaseType()">
                     <%
                         boolean already_selected = false;
@@ -142,36 +142,36 @@ jahiaWhichActionMessage  = <utility:resourceBundle resourceBundle="JahiaInternal
                     %>
                 </select>
                 <br>&nbsp;<br>
-                <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.databaseDriver.label"/>&nbsp;:</font><br>
+                <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.databaseDriver.label"/>&nbsp;:</font><br>
                 <input class="input" type="text" name="dbdriver" size="<%=inputSize%>" maxlength="250" value="<%=jahiaDBDriver%>">
                 <br>&nbsp;<br>
-                <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.databaseUrl.label"/>&nbsp;:</font><br>
+                <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.databaseUrl.label"/>&nbsp;:</font><br>
                 <input class="input" type="text" name="dburl" size="<%=inputSize%>" maxlength="250" value="<%=jahiaDBUrl%>">
                 <br>&nbsp;<br>
-                <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.databaseUsername.label"/>&nbsp;:</font><br>
+                <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.databaseUsername.label"/>&nbsp;:</font><br>
                 <input class="input" type="text" name="dbusername" size="<%=inputSize%>" maxlength="250" value="<%=jahiaDBUsername%>">
                 <br>&nbsp;<br>
-                <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.databasePassword.label"/>&nbsp;:</font><br>
+                <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.databasePassword.label"/>&nbsp;:</font><br>
                 <input class="input" type="password" name="dbpassword" size="<%=inputSize%>" maxlength="250" value="<%=jahiaDBPassword%>">
                 <% if(displaySpecialSettings){ %>
                     <br>&nbsp;<br>
-                    <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.databaseWaitIfBusy.label"/><br>
-                    <input class="input" type="radio" name="dbwait" value="true" <%if(jahiaDBWaitIfBusy.equals("true")) {%>checked<%}%>> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.yes.label"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input class="input" type="radio" name="dbwait" value="false" <%if(jahiaDBWaitIfBusy.equals("false")) {%>checked<%}%>> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.no.label"/>
+                    <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.databaseWaitIfBusy.label"/><br>
+                    <input class="input" type="radio" name="dbwait" value="true" <%if(jahiaDBWaitIfBusy.equals("true")) {%>checked<%}%>> <fmt:message key="org.jahia.admin.yes.label"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input class="input" type="radio" name="dbwait" value="false" <%if(jahiaDBWaitIfBusy.equals("false")) {%>checked<%}%>> <fmt:message key="org.jahia.admin.no.label"/>
                     </font>
                     <br>&nbsp;<br>
-                    <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.databaseWriteInConsole.label"/>&nbsp;:<br>
-                    <input class="input" type="radio" name="dbverbose" value="true" <%if(jahiaDBVerbose.equals("true")) {%>checked<%}%>> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.yes.label"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input class="input" type="radio" name="dbverbose" value="false" <%if(jahiaDBVerbose.equals("false")) {%>checked<%}%>> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.no.label"/>
+                    <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.databaseWriteInConsole.label"/>&nbsp;:<br>
+                    <input class="input" type="radio" name="dbverbose" value="true" <%if(jahiaDBVerbose.equals("true")) {%>checked<%}%>> <fmt:message key="org.jahia.admin.yes.label"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input class="input" type="radio" name="dbverbose" value="false" <%if(jahiaDBVerbose.equals("false")) {%>checked<%}%>> <fmt:message key="org.jahia.admin.no.label"/>
                     </font>
                     <!-- deactivated because we've changed the connection pool settings configuration
                     <br>&nbsp;<br>
-                    <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.minimumConnections.label"/></font><br>
+                    <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.minimumConnections.label"/></font><br>
                     -->
                     <input class="input" type="hidden" name="dbminconnect" size="<%=inputSize%>" maxlength="250" value="<%=jahiaDBMinConnections%>">
                     <!-- deactivated because we've changed the connection pool settings configuration
                     <br>&nbsp;<br>
-                    <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.maximumConnections.label"/></font><br>
+                    <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.maximumConnections.label"/></font><br>
                     -->
                     <input class="input" type="hidden" name="dbmaxconnect" size="<%=inputSize%>" maxlength="250" value="<%=jahiaDBMaxConnections%>">
                 <% } %>
@@ -181,10 +181,10 @@ jahiaWhichActionMessage  = <utility:resourceBundle resourceBundle="JahiaInternal
             <td align="right">
                 &nbsp;<br>
                 <%if(!isLynx){%>
-                    <a href="javascript:document.jahiaAdmin.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('save','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.saveChangeOn.button"/>',1)"><img name="save" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.saveChangeOff.button"/>" width="114" height="17" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.saveChanges.label"/>"></a>
+                    <a href="javascript:document.jahiaAdmin.submit();" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('save','','${pageContext.request.contextPath}<fmt:message key="org.jahia.saveChangeOn.button"/>',1)"><img name="save" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.saveChangeOff.button"/>" width="114" height="17" border="0" alt="<fmt:message key="org.jahia.admin.saveChanges.label"/>"></a>
                 <%}else{%>
                     &nbsp;<br>
-                    <input type="submit" name="submit" value="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.saveChanges.label"/> >>">
+                    <input type="submit" name="submit" value="<fmt:message key="org.jahia.admin.saveChanges.label"/> >>">
                 <%}%>
             </td>
         </tr>
@@ -193,11 +193,11 @@ jahiaWhichActionMessage  = <utility:resourceBundle resourceBundle="JahiaInternal
                 &nbsp;<br><br>
                 <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td nowrap width="145" valign="top"><font class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
+                    <td nowrap width="145" valign="top"><font class="text"><b><fmt:message key="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
                     <td valign="top">
                         <font class="text">
-                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.previousStep.label"/></a><br>
-                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a><br>
+                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=display")%>'><fmt:message key="org.jahia.admin.previousStep.label"/></a><br>
+                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a><br>
                         </font>
                     </td>
                 </tr>

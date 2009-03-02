@@ -116,7 +116,7 @@
 <h1>Jahia</h1>
 <h2 class="edit">
 <%if(!isConfigWizard){%>
-      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
+      <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
       <%}else{%>
       <internal:message key="org.jahia.createSite.siteFactory"/>
       <%}%>
@@ -155,7 +155,7 @@
                 </div>
 <%if(!isConfigWizard){%>
     <div  class="object-shared">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.step.label"/> 3 / 3
+        <fmt:message key="org.jahia.step.label"/> 3 / 3
     </div>
    <% } %>
              </div>
@@ -166,12 +166,11 @@
       method="post" enctype="multipart/form-data">
 <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0" style="width:100%">
     <tr>
-        <th colspan="2"class="lastCol" align="left"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.site.ManageSites.newsite.properties.values"/></th>
+        <th colspan="2"class="lastCol" align="left"><fmt:message key="org.jahia.admin.site.ManageSites.newsite.properties.values"/></th>
     </tr>
     <tr class="evenLine">
         <td class="t3" style="width: 40%; ">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteKey.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.siteKey.label"/>&nbsp;
         </td>
         <td headers="t2" class="lastCol">
             &nbsp;<%=siteKey%>
@@ -179,7 +178,7 @@
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteTitle.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.siteTitle.label"/>&nbsp;
         </td>
         <td headers="t2" class="lastCol">
             &nbsp;<%=siteTitle%>
@@ -187,7 +186,7 @@
     </tr>
     <tr class="evenLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteServerName.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.siteServerName.label"/>&nbsp;
         </td>
         <td headers="t2" class="lastCol">
             &nbsp;<%=siteServerName%>
@@ -195,27 +194,25 @@
     </tr>
     <tr class="oddLine">
         <td class="t3">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.setAsDefaultSite.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.setAsDefaultSite.label"/>&nbsp;
         </td>
         <td headers="t2" class="lastCol">
-            &nbsp;<c:if test="${defaultSite}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.yes.label"/></c:if><c:if test="${!defaultSite}"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.no.label"/></c:if>
+            &nbsp;<c:if test="${defaultSite}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!defaultSite}"><fmt:message key="org.jahia.admin.no.label"/></c:if>
         </td>
     </tr>
     <% if (ServicesRegistry.getInstance().getJahiaACLManagerService().getServerActionPermission("admin.pwdpolicy.ManagePasswordPolicies", jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) { %>
     <tr class="evenLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.enforcePasswordPolicy.label"/>&nbsp;
         </td>
         <td headers="t2" class="lastCol">
-            &nbsp;<c:if test="${enforcePasswordPolicy}"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.yes.label"/></c:if><c:if test="${!enforcePasswordPolicy}"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.no.label"/></c:if>
+            &nbsp;<c:if test="${enforcePasswordPolicy}"><fmt:message key="org.jahia.admin.yes.label"/></c:if><c:if test="${!enforcePasswordPolicy}"><fmt:message key="org.jahia.admin.no.label"/></c:if>
         </td>
     </tr>
     <% } %>
     <tr class="oddLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.siteDesc.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=siteDescr%>
@@ -223,7 +220,7 @@
     </tr>
     <tr class="evenLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.templateSet.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.templateSet.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=templateName%>
@@ -232,7 +229,7 @@
     </tr>
     <tr class="evenLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.theme.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.site.ManageSites.theme.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=selectedThemeName%>
@@ -241,7 +238,7 @@
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.language.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.language.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=selectedLocale.getDisplayName(jParams.getLocale())%>
@@ -254,12 +251,11 @@ if (!"2".equals(siteAdminOption)) {
 %>
 <table border="0" cellpadding="5" cellspacing="0" style="width:100%" class="evenOddTable">
     <tr>
-        <th class="lastCol" colspan="2" align="left"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.site.ManageSites.newsite.administratorAccount.values"/></th>
+        <th class="lastCol" colspan="2" align="left"><fmt:message key="org.jahia.admin.site.ManageSites.newsite.administratorAccount.values"/></th>
     </tr>
     <tr class="evenLine">
         <td class="t3" style="width: 40%; ">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.username.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=adminUsername%>
@@ -267,7 +263,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.firstName.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.firstName.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=adminFirstName%>
@@ -275,7 +271,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="evenLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.lastName.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.lastName.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=adminLastName%>
@@ -283,7 +279,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.eMail.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.eMail.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=adminEmail%>
@@ -291,7 +287,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="evenLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.organization.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.organization.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;<%=adminOrganization%>
@@ -299,7 +295,7 @@ if (!"2".equals(siteAdminOption)) {
     </tr>
     <tr class="oddLine">
         <td class="t3" >
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.password.label"/>&nbsp;
+            <fmt:message key="org.jahia.admin.password.label"/>&nbsp;
         </td>
         <td class="lastCol">
             &nbsp;********************
@@ -327,8 +323,7 @@ if (!isConfigWizard) {
     <span class="dex-PushButton"> 
       <span class="first-child">
          <a class="ico-back"
-               href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
+               href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
       </span>
      </span>
       

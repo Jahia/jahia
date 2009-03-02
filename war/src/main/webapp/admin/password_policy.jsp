@@ -49,7 +49,7 @@ stretcherToOpen   = 0; %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.passwordPolicies.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.passwordPolicies.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -69,15 +69,14 @@ stretcherToOpen   = 0; %>
               <div id="content" class="fit">
                   <div class="head">
                       <div class="object-title">
-                           <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.passwordPolicies.mainMenu.label"/>
+                           <fmt:message key="org.jahia.admin.passwordPolicies.mainMenu.label"/>
                       </div>
                   </div>
                   <div  class="content-item-noborder">
                 <c:if test="${not empty confirmationMessage}">
                   <% String msgKey = (String)request.getAttribute("confirmationMessage"); %>
                   <div class="blueColor">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%= msgKey %>"/>
+                    <fmt:message key="<%= msgKey %>"/>
                   </div>
                 </c:if>
                 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"passwordPolicies","")%>' method="post">
@@ -88,13 +87,13 @@ stretcherToOpen   = 0; %>
                     <thead>
                       <tr>
                         <th width="7%">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.passwordPolicies.active.label"/>
+                          <fmt:message key="org.jahia.admin.passwordPolicies.active.label"/>
                         </th>
                         <th width="50%">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.passwordPolicies.name.label"/>
+                          <fmt:message key="org.jahia.admin.passwordPolicies.name.label"/>
                         </th>
                         <th width="43%" class="lastCol">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.passwordPolicies.parameters.label"/>
+                          <fmt:message key="org.jahia.admin.passwordPolicies.parameters.label"/>
                         </th>
                       </tr>
                     </thead>
@@ -109,7 +108,7 @@ stretcherToOpen   = 0; %>
                         </td>
                         <c:set var="i18nKey" value='org.jahia.admin.passwordPolicies.rule.${rule.name}'/>
                         <td>
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='<%= (String)pageContext.getAttribute("i18nKey") %>'/>
+                          <fmt:message key='<%= (String)pageContext.getAttribute("i18nKey") %>'/>
                         </td>
                         <td class="lastCol">
                           <table width="100%">
@@ -117,7 +116,7 @@ stretcherToOpen   = 0; %>
                               <tr>
                                 <c:set var="i18nKey" value='org.jahia.admin.passwordPolicies.rule.${rule.name}.param.${condParam.name}'/>
                                 <td width="45%" align="right">
-                                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='<%= (String)pageContext.getAttribute("i18nKey") %>'/>:
+                                  <fmt:message key='<%= (String)pageContext.getAttribute("i18nKey") %>'/>:
                                 </td>
                                 <td width="55%">
                                   <input type="text" name="rules[<c:out value='${rlzStatus.index}'/>].conditionParameters[<c:out value='${paramsStatus.index}'/>].value" value="<c:out value='${condParam.value}'/>"/>
@@ -143,17 +142,17 @@ stretcherToOpen   = 0; %>
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-restore" href="#reset" onclick="return doAction('reset')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.restore.label"/></a>
+              <a class="ico-restore" href="#reset" onclick="return doAction('reset')"><fmt:message key="org.jahia.admin.restore.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="#save" onclick="return doAction('save')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.saveChanges.label"/></a>
+              <a class="ico-ok" href="#save" onclick="return doAction('save')"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
             </span>
           </span>
         </div>

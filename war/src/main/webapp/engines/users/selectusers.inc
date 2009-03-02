@@ -114,8 +114,8 @@
                 setfocus();
               </script>
 
-              <a class="ico-search" href="javascript:sendForm('searchUsers');" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.searchItems.label"/>">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.search.label"/></a>
+              <a class="ico-search" href="javascript:sendForm('searchUsers');" title="<fmt:message key="org.jahia.engines.users.SelectUG_Engine.searchItems.label"/>">
+                <fmt:message key="org.jahia.engines.users.SelectUG_Engine.search.label"/></a>
             </span>
           </span>
         </div>
@@ -124,7 +124,7 @@
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr class="evenLine">
             <th valign="top">
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.search.label"/> :
+              <fmt:message key="org.jahia.engines.users.SelectUG_Engine.search.label"/> :
             </th>
             <td>
               <input type="text" name="searchString" size="20" onkeypress="return getkey2(event);"
@@ -132,41 +132,41 @@
               if (searchString != null) { %>
                      value='<%=(String) request.getAttribute("searchString")%>'
               <% } %>>
-              <br/><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.useTest.label"/>
+              <br/><fmt:message key="org.jahia.engines.users.SelectUG_Engine.useTest.label"/>
             </td>
           </tr>
           <tr class="oddLine">
             <th valign="top">
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.in.label"/> :
+              <fmt:message key="org.jahia.engines.users.SelectUG_Engine.in.label"/> :
             </th>
             <td>
               <ul class="noStyle">
                 <li>
-                  <input type="radio" name="searchIn" value="allProps" checked="checked" onclick="disableCheckBox(properties);">&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.allProperties.label"/>
+                  <input type="radio" name="searchIn" value="allProps" checked="checked" onclick="disableCheckBox(properties);">&nbsp;<fmt:message key="org.jahia.engines.users.SelectUG_Engine.allProperties.label"/>
                 </li>
                 <li>
                   <input type="radio" name="searchIn" value="properties" onclick="enableCheckbox(properties);">&nbsp;
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.properties.label"/>:
+                  <fmt:message key="org.jahia.engines.users.SelectUG_Engine.properties.label"/>:
                   <ul>
                     <li>
                       <input type="checkbox" name="properties" value="username" disabled="disabled">&nbsp;
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.username.label"/>
+                      <fmt:message key="org.jahia.engines.username.label"/>
                     </li>
                     <li>
                       <input type="checkbox" name="properties" value="firstname" disabled="disabled">&nbsp;
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.firstName.label"/>
+                      <fmt:message key="org.jahia.engines.users.SelectUG_Engine.firstName.label"/>
                     </li>
                     <li>
                       <input type="checkbox" name="properties" value="lastname" disabled="disabled">&nbsp;
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.lastName.label"/>
+                      <fmt:message key="org.jahia.engines.users.SelectUG_Engine.lastName.label"/>
                     </li>
                     <li>
                       <input type="checkbox" name="properties" value="email" disabled="disabled">&nbsp;
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.eMail.label"/>
+                      <fmt:message key="org.jahia.engines.users.SelectUG_Engine.eMail.label"/>
                     </li>
                     <li>
                       <input type="checkbox" name="properties" value="organization" disabled="disabled">&nbsp;
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.organization.label"/>
+                      <fmt:message key="org.jahia.engines.users.SelectUG_Engine.organization.label"/>
                     </li>
                   </ul>
                 </li>
@@ -175,13 +175,13 @@
           </tr>
           <tr class="evenLine">
             <th valign="top">
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.on.label"/> :
+              <fmt:message key="org.jahia.engines.users.SelectUG_Engine.on.label"/> :
             </th>
             <td>
               <ul class="noStyle">
                 <%  if (selectSite.booleanValue()) { %>
                   <li>
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.selectSite.label"/>:
+                    <fmt:message key="org.jahia.engines.users.SelectUG_Engine.selectSite.label"/>:
                     <select name="selectedSite">
                       <% while(siteEnum.hasNext()) {
                         JahiaSite site = (JahiaSite) siteEnum.next(); %>
@@ -192,11 +192,11 @@
                 <%  } %>
                 <li>
                   <input type="radio" name="storedOn" value="everywhere"<% if (providerList.size() > 1) { %> checked="checked"<% } %> onclick="disableCheckBox(providers);">&nbsp;
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.everywhere.label"/>
+                  <fmt:message key="org.jahia.engines.users.SelectUG_Engine.everywhere.label"/>
                 </li>
                 <li>
                   <input type="radio" name="storedOn" value="providers"<% if (providerList.size() <= 1) { %> checked="checked"<% } %>onclick="enableCheckbox(providers);">&nbsp;
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.providers.label"/> :
+                  <fmt:message key="org.jahia.engines.users.SelectUG_Engine.providers.label"/> :
                   <ul>
                     <%
                     final Iterator providerEnum = providerList.iterator();
@@ -205,7 +205,7 @@
                     %>
                     <li>
                       <input type="checkbox" name="providers" value="<%=curProvider.getKey()%>" disabled="disabled"<% if (providerList.size() <= 1) { %> checked="checked" <% } %>>
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='<%="org.jahia.engines.users.SelectUG_Engine.providers." + curProvider.getKey() + ".label"%>'/> (<%=curProvider.getKey()%>)
+                      <fmt:message key='<%="org.jahia.engines.users.SelectUG_Engine.providers." + curProvider.getKey() + ".label"%>'/> (<%=curProvider.getKey()%>)
                     </li>
                     <% } %>
                   </ul>
@@ -218,7 +218,7 @@
     </td>
     <td class="split noadding">
       <div class="head">
-        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.searchResults.label"/></div>
+        <div class="object-title"><fmt:message key="org.jahia.engines.users.SelectUG_Engine.searchResults.label"/></div>
       </div>
       <div class="content-body padded">
         <!-- Display user/group list -->
@@ -228,18 +228,18 @@
         <table border="0" width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td valign="top" width="40" align="center">
-              <a href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{2}/);" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortBySource.label"/>">
+              <a href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{2}/);" title="<fmt:message key="org.jahia.engines.sortBySource.label"/>">
                 <img src="${pageContext.request.contextPath}/engines/images/icons/sort_descending.gif" border="0" alt="sortBySource"/></a>
             </td>
             <td width="40" align="center">
-              <a href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{8}/);" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
+              <a href="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{8}/);" title="<fmt:message key="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
                 <img src="${pageContext.request.contextPath}/engines/images/icons/sort_descending.gif" border="0" alt="sortByUserId"/></a>
             </td>
             <td valign="top" width="50">
               &nbsp;
             </td>
             <td>
-              <a href='<%="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortByProperty.label"/>">
+              <a href='<%="javascript:sortSelectBox(document.mainForm.selectedUG, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<fmt:message key="org.jahia.engines.sortByProperty.label"/>">
                 <img src="${pageContext.request.contextPath}/engines/images/icons/sort_descending.gif" border="0" alt="sortByProperty"/></a>
             </td>
           </tr>
@@ -264,10 +264,10 @@
             <td colspan="3">
               <div>
                 <a href="javascript:selectAllOptionsSelectBox(document.mainForm.selectedUG);">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.selectAll.label"/></a>
+                  <fmt:message key="org.jahia.engines.users.SelectUG_Engine.selectAll.label"/></a>
                 &nbsp;|&nbsp;
                 <a href="javascript:invertSelectionSelectBox(document.mainForm.selectedUG);">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.invertSelection.label"/></a>
+                  <fmt:message key="org.jahia.engines.users.SelectUG_Engine.invertSelection.label"/></a>
               </div>
             </td>
           </tr>
@@ -275,24 +275,24 @@
       </div>
 
       <div class="headtop">
-        <div class="object-title"><a href="javascript:viewGroupMembership()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.viewGroupMembershipButton.label"/></a></div>
+        <div class="object-title"><a href="javascript:viewGroupMembership()"><fmt:message key="org.jahia.engines.users.SelectUG_Engine.viewGroupMembershipButton.label"/></a></div>
       </div>
       <div class="content-body padded">
         <table border="0" width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td valign="top" width="40" align="center">
-              <a href="javascript:sortSelectBox(document.mainForm.groupMembership, false, /.{2}/);" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortBySource.label"/>">
+              <a href="javascript:sortSelectBox(document.mainForm.groupMembership, false, /.{2}/);" title="<fmt:message key="org.jahia.engines.sortBySource.label"/>">
                 <img src="${pageContext.request.contextPath}/engines/images/icons/sort_descending.gif" border="0" alt="sortBySource"/></a>
             </td>
             <td width="70" align="center">
-              <a href="javascript:sortSelectBox(document.mainForm.groupMembership, false, /.{8}/);" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
+              <a href="javascript:sortSelectBox(document.mainForm.groupMembership, false, /.{8}/);" title="<fmt:message key="org.jahia.engines.users.SelectUG_Engine.sortByUserId.label"/>">
                 <img src="${pageContext.request.contextPath}/engines/images/icons/sort_descending.gif" border="0" alt="sortByUserId"/></a>
             </td>
             <td valign="top" width="30">
               &nbsp;
             </td>
             <td>
-              <a href='<%="javascript:sortSelectBox(document.mainForm.groupMembership, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.sortByProperty.label"/>">
+              <a href='<%="javascript:sortSelectBox(document.mainForm.groupMembership, false, /.{" + (userNameWidth.intValue() + 9) + "}/);" %>' title="<fmt:message key="org.jahia.engines.sortByProperty.label"/>">
                 <img src="${pageContext.request.contextPath}/engines/images/icons/sort_descending.gif" border="0" alt="sortByProperty"/></a>
             </td>
           </tr>

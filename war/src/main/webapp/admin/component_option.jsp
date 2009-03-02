@@ -55,7 +55,7 @@ autoDeploy = (val.intValue()==1);
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.manageComponents.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -75,14 +75,14 @@ autoDeploy = (val.intValue()==1);
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.generalOptions.label"/>
+                    <fmt:message key="org.jahia.admin.generalOptions.label"/>
                   </div>
                 </div>
                 <div class="content-body">
                   <div id="operationMenu">
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-app-add" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.manuallyAddNewComponent.label"/></a>
+                        <a class="ico-app-add" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=add")%>'><fmt:message key="org.jahia.admin.components.ManageComponents.manuallyAddNewComponent.label"/></a>
                       </span>
                     </span>
                   </div>
@@ -91,7 +91,7 @@ autoDeploy = (val.intValue()==1);
                   <table border="0" cellpadding="5" cellspacing="0">
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.automaticDeployment.label"/>&nbsp;:
+                        <fmt:message key="org.jahia.admin.components.ManageComponents.automaticDeployment.label"/>&nbsp;:
                       </td>
                       <td>
                         <input type="checkbox" name="autoDeploy" value="1"<% if ( autoDeploy ) { %>checked<% } %>>
@@ -112,17 +112,17 @@ autoDeploy = (val.intValue()==1);
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><fmt:message key="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-restore" href="javascript:document.mainForm.reset()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.resetChanges.label"/></a>
+              <a class="ico-restore" href="javascript:document.mainForm.reset()"><fmt:message key="org.jahia.admin.resetChanges.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:sendForm('save');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/></a>
+              <a class="ico-ok" href="javascript:sendForm('save');"><fmt:message key="org.jahia.admin.save.label"/></a>
             </span>
           </span>
         </div>

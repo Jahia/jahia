@@ -88,7 +88,7 @@ function sendForm(subAction)
 	<div id="topTitleLogo">
 		<img src="<%=URL%>images/icons/admin/briefcase_document.gif" width="48" height="48" />
   </div>
-  <h1 id="topTitleLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
+  <h1 id="topTitleLabel"><fmt:message key="org.jahia.admin.manageTemplates.label"/><br><% if ( site!= null ){%><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=site.getServerName()%><%}%></h1>
 </div>
 
 <div id="adminMainContent">
@@ -98,17 +98,17 @@ function sendForm(subAction)
         <%  if ( currAction != null && currAction.equals("confirmdelete") ){  %>
         
         <h2>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.deleteTemplate.label"/>
+          <fmt:message key="org.jahia.admin.templates.ManageTemplates.deleteTemplate.label"/>
         </h2>
         
         <p>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.confirmDeleteTemplate.label"/>
+          <fmt:message key="org.jahia.admin.templates.ManageTemplates.confirmDeleteTemplate.label"/>
         </p>
 
         <table border="0" cellpadding="5" cellspacing="0" style="width:100%" class="topAlignedTable">
         <tr>
             <td>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.templateName.label"/>
+                <fmt:message key="org.jahia.admin.templates.ManageTemplates.templateName.label"/>
             </td>
             <td>
                 : <b><%=templ.getName()%></b>
@@ -116,7 +116,7 @@ function sendForm(subAction)
         </tr>
         <tr>
             <td>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.templateFileName.label"/>&nbsp;
+                <fmt:message key="org.jahia.admin.templates.ManageTemplates.templateFileName.label"/>&nbsp;
             </td>
             <td>
                 : <%=templ.getSourcePath().substring(templatesContext.length(),templ.getSourcePath().length())%>
@@ -124,12 +124,12 @@ function sendForm(subAction)
         </tr>
         <tr>
             <td>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.availableToUsers.label"/>&nbsp;
+                <fmt:message key="org.jahia.admin.availableToUsers.label"/>&nbsp;
             </td>
             <td>
                 :
                 <% if (templ.isAvailable() ){
-                %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.yes.label"/><% } else { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.no.label"/><% } %>
+                %><fmt:message key="org.jahia.admin.yes.label"/><% } else { %><fmt:message key="org.jahia.admin.no.label"/><% } %>
             </td>
         </tr>
 
@@ -145,11 +145,11 @@ function sendForm(subAction)
           
           <input type="hidden" name="subaction" value="">
           <div class="button">
-            <a href="<%=requestURI%>?do=templates&sub=display"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
+            <a href="<%=requestURI%>?do=templates&sub=display"><fmt:message key="org.jahia.admin.cancel.label"/></a>
           </div>
           <% if ( canDelete.booleanValue() ) {%>
             <div class="button">
-              <a href="javascript:sendForm('delete');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></a>
+              <a href="javascript:sendForm('delete');"><fmt:message key="org.jahia.admin.delete.label"/></a>
             </div>
           <% } %>
         </div>
@@ -157,13 +157,13 @@ function sendForm(subAction)
         <%  } else {  %>
         
         <h2>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.templateDetails.label"/>&nbsp;:
+          <fmt:message key="org.jahia.admin.templates.ManageTemplates.templateDetails.label"/>&nbsp;:
         </h2>
 
         <table border="0" cellpadding="0" width="100%" class="topAlignedTable">
         <tr>
             <td align="right">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.name.label"/>&nbsp;:
+                <fmt:message key="org.jahia.admin.name.label"/>&nbsp;:
             </td>
             <td>
                 <input name="templName" class="input" type="text" size="<%=inputSize%>" value="<%=templ.getName()%>">
@@ -171,7 +171,7 @@ function sendForm(subAction)
         </tr>
         <tr>
             <td align="right">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.sourcePath.label"/>&nbsp;:
+                <fmt:message key="org.jahia.admin.templates.ManageTemplates.sourcePath.label"/>&nbsp;:
             </td>
             <td>
                 <%=templ.getSourcePath().substring(templatesContext.length(),templ.getSourcePath().length())%>
@@ -179,7 +179,7 @@ function sendForm(subAction)
         </tr>
         <tr>
             <td align="right">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.available.label"/>&nbsp;:
+                <fmt:message key="org.jahia.admin.templates.ManageTemplates.available.label"/>&nbsp;:
             </td>
             <td>
                 <input class="input" type="checkbox" name="visible_status" value="<%=templ.getID()%>" <% if (templ.isAvailable() ){	%> checked<% } %>>
@@ -187,7 +187,7 @@ function sendForm(subAction)
         </tr>
         <tr>
             <td align="right">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.setAsDefault.label"/>&nbsp;:
+                <fmt:message key="org.jahia.admin.templates.ManageTemplates.setAsDefault.label"/>&nbsp;:
             </td>
             <td >
                 <input type="checkbox" name ="isDefault" value="<%=templ.getID()%>" <% if ( site.getDefaultTemplateID() == templ.getID() ){ %>checked<% } %> onclick="setVisible(this)">
@@ -198,14 +198,14 @@ function sendForm(subAction)
         <div class="buttonList" style="text-align: right; padding : 10px">
           <input type="hidden" name="subaction" value="">
           <div class="button">
-            <a href="javascript:document.mainForm.reset()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.resetChanges.label"/></a>
+            <a href="javascript:document.mainForm.reset()"><fmt:message key="org.jahia.admin.resetChanges.label"/></a>
           </div>
           <div class="button">                            
-            <a href="javascript:sendForm('save');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/></a>
+            <a href="javascript:sendForm('save');"><fmt:message key="org.jahia.admin.save.label"/></a>
           </div>
           <% if ( canDelete.booleanValue() ) {%>
             <div class="button">
-              <a href="javascript:sendForm('confirmdelete');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></a>
+              <a href="javascript:sendForm('confirmdelete');"><fmt:message key="org.jahia.admin.delete.label"/></a>
             </div>
           <% } %>
         </div>
@@ -216,14 +216,14 @@ function sendForm(subAction)
 
   <div id="operationMenu">
   	<div id="operationMenuLabel">
-			<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:
+			<fmt:message key="org.jahia.admin.otherOperations.label"/>&nbsp;:
 		</div>
 		<ul id="operationList">
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"templates","&sub=display")%>'><fmt:message key="org.jahia.admin.templates.ManageTemplates.backToTemplatesList.label"/></a>
       </li>     		
       <li class="operationEntry">
-      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	<a class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
       </li>     		
     </ul>
   </div>

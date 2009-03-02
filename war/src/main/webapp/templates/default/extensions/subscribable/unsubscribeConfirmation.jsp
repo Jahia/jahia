@@ -37,31 +37,33 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="u" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<u:setBundle basename="JahiaInternalResources"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title><u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.title" defaultValue="Unsubscribe Request Confirmation"/></title>
+    <title><fmt:message key="subscriptions.unsubscribeConfirmation.title"/></title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <%@ include file="styles.jspf" %>
 </head>
 <body>
 <div id="box">
-    <div class="title"><u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.title" defaultValue="Unsubscribe Request Confirmation"/></div>
+    <div class="title"><fmt:message key="subscriptions.unsubscribeConfirmation.title"/></div>
     <div class="content">
     <p>
     <c:choose>
         <c:when test="${confirmationResult == 'OK'}">
-            <u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.result.ok" defaultValue="Your unsubscribe request was successful. Thank you for using our Notification Service."/>
+            <fmt:message key="subscriptions.unsubscribeConfirmation.result.ok"/>
         </c:when>
         <c:when test="${confirmationResult == 'CONFIRMATION_KEY_MISMATCH'}">
-            <u:resourceBundle resourceName="subscriptions.unsubscribeConfirmation.result.keyMismatch" defaultValue="Unfortunately, the confirmation key does not match the one we have. Please repeat the unsubscription process to request a new confirmation key."/>
+            <fmt:message key="subscriptions.unsubscribeConfirmation.result.keyMismatch"/>
         </c:when>
         <c:otherwise>
-            <u:resourceBundle resourceName="subscriptions.subscriptionConfirmation.result.unknown" defaultValue="Unfortunately, we are unable to find any subscription, matching your request."/>
+            <fmt:message key="subscriptions.subscriptionConfirmation.result.unknown"/>
         </c:otherwise>
     </c:choose>
     </p>
     
-    <p><u:resourceBundle resourceName="notifications.common.farewell" defaultValue="Sincerely Yours"/><br/><u:resourceBundle resourceName="notifications.common.farewell.signature" defaultValue="Portal Team"/></p>
+    <p><fmt:message key="notifications.common.farewell"/><br/><u:resourceBundle resourceName="notifications.common.farewell.signature"/></p>
     </div>
 </div>
 </body>

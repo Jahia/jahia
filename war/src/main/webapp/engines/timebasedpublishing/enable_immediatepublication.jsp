@@ -37,6 +37,8 @@
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
   Boolean enableImmediatePublication = (Boolean)request.getAttribute("enableImmediatePublication");
   if ( enableImmediatePublication == null ){
@@ -44,7 +46,7 @@
   }
 %>
 <input class="input immediatePublication" type="radio" name="enableImmediatePublication" value="true" <%if(enableImmediatePublication.booleanValue()){%>checked<%}%> ${inherited ? ' disabled="disabled"' : ''}>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.allowedToStartImmediately" defaultValue="allowed to start immediately"/><br/>
+<fmt:message key="org.jahia.engines.timebasedpublishing.allowedToStartImmediately"/>
 <input class="input immediatePublication" type="radio" name="enableImmediatePublication" value="false" <%if(!enableImmediatePublication.booleanValue()){%>checked<%}%> ${inherited ? ' disabled="disabled"' : ''}>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.onlyAtNextFullPeriod" defaultValue="only at next full publish period"/>
+<fmt:message key="org.jahia.engines.timebasedpublishing.onlyAtNextFullPeriod"/>
 

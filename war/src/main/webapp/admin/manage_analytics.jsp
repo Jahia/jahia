@@ -47,8 +47,8 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.analytics.ManageAnalytics.label"/>
-        : <% if (currentSite != null) { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.analytics.ManageAnalytics.label"/>
+        : <% if (currentSite != null) { %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
 </div>
 
 <div id="main">
@@ -70,8 +70,7 @@
                         <div id="content" class="fit">
                             <div class="head headtop">
                                 <div class="object-title">
-                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                            resourceName="org.jahia.admin.analytics.ManageAnalytics.label"/>
+                                    <fmt:message key="org.jahia.admin.analytics.ManageAnalytics.label"/>
                                 </div>
                             </div>
                             <!--div class="head headtop">
@@ -81,7 +80,7 @@
                              <div id="operationMenu">
                     <span class="dex-PushButton">
                   <span class="first-child">
-                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile=all")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></a>
+                    <a class="ico-delete" href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile=all")%>'><fmt:message key="org.jahia.admin.delete.label"/></a>
                   </span>
                 </span>
 
@@ -99,32 +98,25 @@
                                             &nbsp;
                                         </th>
                                         <th width="35%">
-                                             <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/>
+                                             <fmt:message key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/>
                                         </th>
                                         <th width="35%">
-                                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/>
+                                            <fmt:message key="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
-                                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/>
+                                            <fmt:message key="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
-                                             <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.realUrlsTracked.label"/>
+                                             <fmt:message key="org.jahia.admin.site.ManageAnalytics.realUrlsTracked.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
-                                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.virtualUrlsTracked.label"/>
+                                            <fmt:message key="org.jahia.admin.site.ManageAnalytics.virtualUrlsTracked.label"/>
                                         </th>
                                         <th width="12%" style="white-space: nowrap">
-                                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.trackingEnabled.label"/>
+                                            <fmt:message key="org.jahia.admin.site.ManageAnalytics.trackingEnabled.label"/>
                                         </th>
                                         <th width="15%" class="lastCol">
-                                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageSites.actions.label"/>
+                                            <fmt:message key="org.jahia.admin.site.ManageSites.actions.label"/>
                                         </th>
                                     </tr>
                                     </thead>
@@ -166,17 +158,17 @@
                                                    id="<%=jahiaGAprofile%>TrackingEnabled"/></td>
                                         <td class="lastCol">
                                             <a href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=displayEdit&profile="+jahiaGAprofile )%>'
-                                               title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>"><img
+                                               title="<fmt:message key='org.jahia.admin.edit.label'/>"><img
                                                     src="<%=URL%>images/icons/admin/adromeda/edit.png"
-                                                    alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>"
-                                                    title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.edit.label'/>"
+                                                    alt="<fmt:message key='org.jahia.admin.edit.label'/>"
+                                                    title="<fmt:message key='org.jahia.admin.edit.label'/>"
                                                     width="16"
                                                     height="16" border="0"/></a>&nbsp;
                                             <a href='<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=delete&profile="+jahiaGAprofile )%>'
-                                               title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/>"><img
+                                               title="<fmt:message key='org.jahia.admin.delete.label'/>"><img
                                                     src="<%=URL%>images/icons/admin/adromeda/delete.png"
-                                                    alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/>"
-                                                    title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/>"
+                                                    alt="<fmt:message key='org.jahia.admin.delete.label'/>"
+                                                    title="<fmt:message key='org.jahia.admin.delete.label'/>"
                                                     width="16"
                                                     height="16" border="0"/></a>&nbsp;
                                         </td>
@@ -191,51 +183,41 @@
                                 <tbody>
 
                                 <div class="head headtop">
-                                    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageAnalytics.jahiaAnalyticsProfile.label"/></div>
+                                    <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageAnalytics.jahiaAnalyticsProfile.label"/></div>
                                 </div>
                                 <tr>
                                     <td width="88%">
-                                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ManageAnalytics.description.jahiaGAprofile.label"/>
+                                        <fmt:message key="org.jahia.admin.ManageAnalytics.description.jahiaGAprofile.label"/>
                                         <table class="evenOddTable" border="0" cellpadding="5" cellspacing="0"
                                                width="100%">
                                             <tr class="evenLine">
-                                                <td><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/></td>
+                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.jahiaGAprofile.label"/></td>
                                                 <td>
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.ManageAnalytics.description.jahiaGAprofileName.label"/>
+                                                    <fmt:message key="org.jahia.admin.ManageAnalytics.description.jahiaGAprofileName.label"/>
                                                     </td>
                                             </tr>
                                             <tr class="oddLine">
-                                                <td><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/></td>
+                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.gaUserAcc.label"/></td>
                                                 <td>
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.description.gaUserAcc.label"/>
+                                                    <fmt:message key="org.jahia.admin.site.ManageAnalytics.description.gaUserAcc.label"/>
                                                 </td>
                                             </tr>
                                             <tr class="evenLine">
-                                                <td><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/></td>
-                                                <td><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.description.gaProfileName.label"/>
+                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.gaProfileName.label"/></td>
+                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.description.gaProfileName.label"/>
                                                 </td>
                                             </tr>
                                             <tr class="oddLine">
-                                                <td><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.gaCredentials.label"/>
+                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.gaCredentials.label"/>
                                                     </td>
                                                 <td>
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.description.gaCredentials.label"/>
+                                                    <fmt:message key="org.jahia.admin.site.ManageAnalytics.description.gaCredentials.label"/>
                                                 </td>
                                             </tr>
                                             <tr class="oddLine">
-                                                <td><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.trackedUrls.label"/></td>
+                                                <td><fmt:message key="org.jahia.admin.site.ManageAnalytics.trackedUrls.label"/></td>
                                                 <td>
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                    resourceName="org.jahia.admin.site.ManageAnalytics.description.trackedUrls.label"/>
+                                                    <fmt:message key="org.jahia.admin.site.ManageAnalytics.description.trackedUrls.label"/>
                                                 </td>
                                             </tr>
                                         </table>
@@ -244,8 +226,7 @@
                                         <span class="dex-PushButton">
                                             <span class="first-child">
                                               <a class="ico-add"
-                                                 href="<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=new")%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                      resourceName='org.jahia.admin.add.label'/></a>
+                                                 href="<%=JahiaAdministration.composeActionURL(request,response,"analytics","&sub=new")%>"><fmt:message key="org.jahia.admin.add.label"/></a>
                                             </span>
                                         </span>
                                     </td>
@@ -257,14 +238,12 @@
                             <span class="dex-PushButton">
                               <span class="first-child">
                                 <a class="ico-back"
-                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.admin.backToMenu.label"/></a>
+                                   href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
                               </span>
                             </span>
                            <span class="dex-PushButton">
                             <span class="first-child">
-                              <a class="ico-ok" href="javascript:sendForm();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                      resourceName="org.jahia.admin.save.label"/></a>
+                              <a class="ico-ok" href="javascript:sendForm();"><fmt:message key="org.jahia.admin.save.label"/></a>
                             </span>
                           </span>
 

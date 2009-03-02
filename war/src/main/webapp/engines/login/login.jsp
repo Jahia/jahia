@@ -38,9 +38,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <jsp:useBean id="engineTitle" class="java.lang.String" scope="request"/>
 <jsp:useBean id="javaScriptPath" class="java.lang.String" scope="request"/>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
 String username = request.getParameter("username");
 username = (username == null) ? "" : username;
@@ -86,23 +88,23 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
 </script>
 <center>
 <div id="adminLogin">
-<h3 class="loginIcon"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.loginToJahia.label"/></h3>
+<h3 class="loginIcon"><fmt:message key="org.jahia.engines.loginToJahia.label"/></h3>
 <br class="clearFloat" />
 <c:if test="${not empty param.badLogin}">
     <p class="error">
         <c:if test="${requestScope['org.jahia.engines.EngineHashMap'].notAllowedToLoginFromThisPage}" var="notAllowedToLoginFromThisPage">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.notAllowedToLog.label"/>
+            <fmt:message key="org.jahia.engines.login.Login_Engine.notAllowedToLog.label"/>
         </c:if>
         <c:if test="${!notAllowedToLoginFromThisPage}">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.invalidUsernamePassword.label"/>.
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.pleaseTryAgain.label"/>
+            <fmt:message key="org.jahia.engines.login.Login_Engine.invalidUsernamePassword.label"/>.
+            <fmt:message key="org.jahia.engines.login.Login_Engine.pleaseTryAgain.label"/>
         </c:if>
     </p>
 </c:if>
 <table class="formTable" cellpadding="0" cellspacing="1" border="0">
   <tr>
     <th>
-      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.username.label"/>
+      <fmt:message key="org.jahia.engines.username.label"/>
     </th>
     <td>
       <%
@@ -118,7 +120,7 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
   </tr>
   <tr>
     <th>
-      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.password.label"/>
+      <fmt:message key="org.jahia.engines.login.Login_Engine.password.label"/>
     </th>
     <td>
       <input type="password" name="password" size="<%=columns%>" maxlength="250" tabindex="2" style="width:150px;">
@@ -130,8 +132,8 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
   <tr>
     <td class="alignCenter" colspan="2">
       <select name="loginChoice" tabindex="3">
-        <option value="1"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.stayAtCurrentPage.label"/></option>
-        <option value="2"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.jumpToHomePage.label"/></option>
+        <option value="1"><fmt:message key="org.jahia.engines.login.Login_Engine.stayAtCurrentPage.label"/></option>
+        <option value="2"><fmt:message key="org.jahia.engines.login.Login_Engine.jumpToHomePage.label"/></option>
       </select>
     </td>
   </tr>
@@ -139,7 +141,7 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
     <tr>
       <td class="alignCenter" colspan="2">
         <input type="checkbox" id="useCookie" name="useCookie" value="on" tabindex="4"/>
-        <label for="useCookie"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.rememberMe.label"/></label>
+        <label for="useCookie"><fmt:message key="org.jahia.engines.login.Login_Engine.rememberMe.label"/></label>
       </td>
     </tr>
   <% } %>
@@ -147,14 +149,14 @@ final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.Par
 <div id="actionBar" class="alignCenter">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-ok" href="javascript:sendFormSave();" tabindex="5" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.ok.button"/>">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
+      <a class="ico-ok" href="javascript:sendFormSave();" tabindex="5" title="<fmt:message key="org.jahia.ok.button"/>">
+          <fmt:message key="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
      </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-cancel" href="javascript:cancelButton();" tabindex="6" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancel.button"/>">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.cancel.button"/></a>
+      <a class="ico-cancel" href="javascript:cancelButton();" tabindex="6" title="<fmt:message key="org.jahia.cancel.button"/>">
+        <fmt:message key="org.jahia.cancel.button"/></a>
     </span>
   </span>
 </div>

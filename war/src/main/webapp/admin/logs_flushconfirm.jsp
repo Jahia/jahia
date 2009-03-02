@@ -46,7 +46,7 @@ stretcherToOpen = 0;
 %>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.flushLogs.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.audit.ManageLogs.flushLogs.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -66,7 +66,7 @@ stretcherToOpen = 0;
         
         <div id="content" class="fit">
           <p>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.reallyWantFlushAll.label"/><%=engineMsg %>?
+          <fmt:message key="org.jahia.admin.audit.ManageLogs.reallyWantFlushAll.label"/><%=engineMsg %>?
 		  </p>
         </div>
 		</div>
@@ -78,12 +78,12 @@ stretcherToOpen = 0;
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=view")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
+      <a class="ico-cancel" href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=view")%>'><fmt:message key="org.jahia.admin.cancel.label"/></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-ok" href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=flush")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
+      <a class="ico-ok" href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=flush")%>'><fmt:message key="org.jahia.admin.ok.label"/></a>
     </span>
   </span>
 </div>

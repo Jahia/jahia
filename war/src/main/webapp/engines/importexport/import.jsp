@@ -38,6 +38,9 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper"%>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String theScreen = (String) engineMap.get("screen");
@@ -60,12 +63,12 @@
     <%@ include file="../tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-         <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Import.label"/></div>
+         <div class="object-title"><fmt:message key="org.jahia.engines.include.actionSelector.Import.label"/></div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
           <th>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.import.importFile"/>
+            <fmt:message key="org.jahia.engines.importexport.import.importFile"/>
           </th>
           <td>
             <input class="input" type="file" name="data"/>

@@ -57,7 +57,9 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String theScreen = (String) engineMap.get("screen");
@@ -92,16 +94,16 @@
     <%@ include file="../menu.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.RightsMgmt.label"/></div>
+        <div class="object-title"><fmt:message key="org.jahia.engines.include.actionSelector.RightsMgmt.label"/></div>
       </div>
       <logic:present name="manageRights.warning.engineMessages">
-        <p class="errorbold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.BigText_Field.warning.label"/>:</p>
+        <p class="errorbold"><fmt:message key="org.jahia.engines.shared.BigText_Field.warning.label"/>:</p>
         <ul>
           <logic:iterate name="manageRights.warning.engineMessages" property="messages" id="curMessage">
             <li><internal:message name="curMessage"/></li>
           </logic:iterate>
         </ul>
-        <input type="checkbox" name="ignoreWarnings">&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.BigText_Field.ignoreWarning.label"/>
+        <input type="checkbox" name="ignoreWarnings">&nbsp;<fmt:message key="org.jahia.engines.shared.BigText_Field.ignoreWarning.label"/>
       </logic:present>
 
              <%
@@ -121,7 +123,7 @@
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr>
             <th width="100">
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.currentFiled.label"/>:&nbsp;
+              <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.currentFiled.label"/>:&nbsp;
             </th>
             <td>
               <select name="aclfieldname" onchange="handleActionChanges('<%=theScreen%>','&aclfieldname='+this.options[this.options.selectedIndex].value)">

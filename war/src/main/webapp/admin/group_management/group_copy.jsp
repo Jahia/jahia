@@ -39,6 +39,8 @@
 <%@page import = "org.jahia.data.JahiaData" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/><jsp:useBean id="groupMessage" class="java.lang.String" scope="session"/><%
 String groupName = (String)session.getAttribute("selectedGroup");
 String newGroup = (String)request.getAttribute("newGroup");
@@ -51,7 +53,7 @@ int stretcherToOpen   = 1; %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.copyGroup.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageGroups.copyGroup.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -71,8 +73,7 @@ int stretcherToOpen   = 1; %>
               <div id="content" class="fit">
                   <div class="head">
                       <div class="object-title">
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                  resourceName="org.jahia.admin.users.ManageGroups.copySelectedGroup.label"/>
+                          <fmt:message key="org.jahia.admin.users.ManageGroups.copySelectedGroup.label"/>
                       </div>
                   </div>
                   <div class="content-item">
@@ -85,21 +86,21 @@ int stretcherToOpen   = 1; %>
                 <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=processCopy")%>' method="post">
                   <!-- Copy group -->
                   <p>
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.createCopyGroup.label"/>&nbsp;: <b><%= groupName %></b>
+                    <fmt:message key="org.jahia.admin.users.ManageGroups.createCopyGroup.label"/>&nbsp;: <b><%= groupName %></b>
                     <br>
                     <br>
-                    <input type="hidden" name="sourceGroupName" value="<%= groupName%>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.pleaseCopyGroup.label"/>
+                    <input type="hidden" name="sourceGroupName" value="<%= groupName%>"><fmt:message key="org.jahia.admin.users.ManageGroups.pleaseCopyGroup.label"/>
                     <br>
                   </p>
                   <table border="0" style="width:100%">
                     <tr>
                       <td align="right">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;
+                        <fmt:message key="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;
                       </td>
                       <td>
                         <input type="text" name="newGroup" class="input" size="40" maxlength="255" value="<%= newGroup%>">&nbsp;
                         <font class="text2">
-                          (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.required.label"/>)
+                          (<fmt:message key="org.jahia.admin.required.label"/>)
                         </font>
                       </td>
                     </tr>
@@ -117,12 +118,12 @@ int stretcherToOpen   = 1; %>
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-cancel" href="<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>
-" ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
+" ><fmt:message key="org.jahia.admin.cancel.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:document.mainForm.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
+              <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key="org.jahia.admin.ok.label"/></a>
             </span>
           </span>
         </div>

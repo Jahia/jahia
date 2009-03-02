@@ -46,6 +46,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
 
@@ -73,7 +75,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
 </script>
 <div id="header">
   <h1>Jahia</h1>
-  <h2><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editOrAddCategory.label"/></h2>
+  <h2><fmt:message key="org.jahia.admin.categories.ManageCategories.editOrAddCategory.label"/></h2>
 </div>
 <div id="mainContent">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -104,7 +106,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                  <table cellpadding="5" cellspacing="0" border="0">
                     <tr>
                     <td>
-                        <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.key.label"/>&nbsp;:&nbsp;</b>
+                        <b><fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.key.label"/>&nbsp;:&nbsp;</b>
                     </td>
                     <td>
                       <!-- we can only edit a category key for a new category -->
@@ -116,7 +118,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                     </td>
                     </tr>
                     <tr>
-                    <td><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.titles.label"/></b></td>
+                    <td><b><fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.titles.label"/></b></td>
                     <td><%if (categoryTemporaryBean.getTitles().size() > 0) {%>
                     <table cellpadding="3" cellspacing="0" border="0">
                     <%
@@ -146,18 +148,18 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                     <tr>
                         <td colspan="2"><%if(parentCategoryKey!=null){%>
                   <% final Category cat = Category.getCategory(Integer.parseInt(parentCategoryKey),jData.getProcessingContext().getUser()); %>
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.parentCategoryKey.label"/> : <%= cat.getKey() %> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.title.label"/> = <%=cat.getTitle(jParams.getLocale())%>) <br/>
+                  <fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.parentCategoryKey.label"/> : <%= cat.getKey() %> (<fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.title.label"/> = <%=cat.getTitle(jParams.getLocale())%>) <br/>
                   <br/>
                 <%}%>
-                <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.properties.label"/></b>
+                <b><fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.properties.label"/></b>
                 <br/>
                 <table border="0" cellpadding="3" cellspacing="0">
                   <tr>
                     <td class="text">
-                      <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.propertyName.label"/></b>
+                      <b><fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.propertyName.label"/></b>
                     </td>
                     <td class="text" colspan="2">
-                      <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.propertyValue.label"/></b>
+                      <b><fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.propertyValue.label"/></b>
                     </td>
                   </tr>
                   <% if (categoryTemporaryBean.getKey() != null) {
@@ -177,8 +179,8 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                         <td>
                           <div id="buttons">
                             <div class="button">
-                              <a href="javascript:deleteProperty('<%=curPropertyName%>');" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.delete"/>">
-                                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.delete"/>
+                              <a href="javascript:deleteProperty('<%=curPropertyName%>');" title="<fmt:message key="org.jahia.button.delete"/>">
+                                  <fmt:message key="org.jahia.button.delete"/>
                               </a>
                             </div>
                           </div>
@@ -194,7 +196,7 @@ request.setAttribute("showEditMenu", Boolean.valueOf(showEditMenu));
                       <input type="text" name="newPropertyValue" />
                     </td>
                     <td class="text">
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.categories.ManageCategories.editCategory.newPropertyExplanation.label"/>
+                      <fmt:message key="org.jahia.admin.categories.ManageCategories.editCategory.newPropertyExplanation.label"/>
                     </td>
                   </tr>
                 </table>

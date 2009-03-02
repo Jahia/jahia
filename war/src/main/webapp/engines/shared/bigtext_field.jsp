@@ -56,6 +56,8 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     private static final Pattern siteNamePattern = Pattern.compile("%SITE_NAME%");
 %>
@@ -216,13 +218,13 @@ for (int i = 0; i < strToRemove.length; i++) {
       </th>
       <% if (jParams.getSite().getLanguageSettings(true).size() > 1 &&  ServicesRegistry.getInstance().getJahiaACLManagerService().hasWriteAccesOnAllLangs(jParams)) { %>
       <td nowrap="nowrap">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
+        <fmt:message key="org.jahia.applyToAllLanguages.label"/>&nbsp;:&nbsp;
       </td>
       <td>
         <% if (allSameTitles) { %>
-        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
+        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<fmt:message key="org.jahia.applyToAllLanguages.label"/>' class="sharedLanguageYes">&nbsp;</a>
         <% } else { %>
-        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
+        <a id="switchIcons_<%=theField.getID()%>" href="javascript:switchIcons('switchIcons_<%=theField.getID()%>', 'apply_change_to_all_lang_<%=theField.getID()%>');" title='<fmt:message key="org.jahia.applyToSingleLanguage.label"/>' class="sharedLanguageNo">&nbsp;</a>
         <% } %>
         <input id="apply_change_to_all_lang_<%=theField.getID()%>" type="hidden" name="apply_change_to_all_lang_<%=theField.getID()%>" value="<%=applyChangeToAllLang || allSameTitles %>"/>
       </td>
@@ -244,7 +246,7 @@ for (int i = 0; i < strToRemove.length; i++) {
 </div>
 <logic:present name='<%=theField.getID()+".engineMessages"%>'>
   <p class="errorbold">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.BigText_Field.error.label"/>:
+    <fmt:message key="org.jahia.engines.shared.BigText_Field.error.label"/>:
   </p>
   <ul>
     <logic:iterate name='<%=theField.getID()+".engineMessages"%>' property="messages" id="curMessage">
@@ -258,7 +260,7 @@ for (int i = 0; i < strToRemove.length; i++) {
     pageContext.setAttribute("warnings", request.getAttribute(theField.getID()+".warning.engineMessages")); 
   %>
   <p>
-    <span class="errorbold">${warnings.size}&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.BigText_Field.warning.label"/>:</span>&nbsp;&nbsp;
+    <span class="errorbold">${warnings.size}&nbsp;<fmt:message key="org.jahia.engines.shared.BigText_Field.warning.label"/>:</span>&nbsp;&nbsp;
     <br>
     <ul>
       <logic:iterate name='<%=theField.getID()+".warning.engineMessages"%>' property="messages" id="curMessage">
@@ -272,7 +274,7 @@ for (int i = 0; i < strToRemove.length; i++) {
     pageContext.setAttribute("warnings", request.getAttribute(theField.getID()+".WAIwarning.engineMessages")); 
   %>
   <p>
-    <span class="errorbold">${warnings.size}&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.BigText_Field.WAIwarning.label"/>:</span>
+    <span class="errorbold">${warnings.size}&nbsp;<fmt:message key="org.jahia.engines.shared.BigText_Field.WAIwarning.label"/>:</span>
     <br>
     <ul>
       <logic:iterate name='<%=theField.getID()+".WAIwarning.engineMessages"%>' property="messages" id="curMessage">
@@ -285,7 +287,7 @@ for (int i = 0; i < strToRemove.length; i++) {
 if (displayIgnoreCheckBox) {
   final JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(jParams.getSiteID());
   if (site.isURLIntegrityCheckEnabled() || site.isWAIComplianceCheckEnabled()) { %>
-    <input type="checkbox" name="ignoreAllWarnings" id="ignoreAllWarnings"/>&nbsp;<label for="ignoreAllWarnings"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.BigText_Field.ignoreAllWarning.label"/></label>
+    <input type="checkbox" name="ignoreAllWarnings" id="ignoreAllWarnings"/>&nbsp;<label for="ignoreAllWarnings"><fmt:message key="org.jahia.engines.shared.BigText_Field.ignoreAllWarning.label"/></label>
   <% } %>
 <% } %>
 <% if (defaultEditor == null) {

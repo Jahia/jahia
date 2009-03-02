@@ -67,8 +67,8 @@
 %>
 <p>
     <div>
-    <input class="simpleTextEditorButton" type="button" value='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.simpleText.replaceCRWithBR.label" defaultValue="Replace Carriage Returns with &lt;br&gt; tag"/>' onmousedown="replaceLineBreakByBr(document.getElementById('jahiaEditor'))">
-    <input class="simpleTextEditorButton" type="button" value='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.simpleText.selectAll.label" defaultValue="Select all"/>' onClick="selectAll(document.getElementById('jahiaEditor'))">
+    <input class="simpleTextEditorButton" type="button" value='<fmt:message key="org.jahia.engines.simpleText.replaceCRWithBR.label"/>' onmousedown="replaceLineBreakByBr(document.getElementById('jahiaEditor'))">
+    <input class="simpleTextEditorButton" type="button" value='<fmt:message key="org.jahia.engines.simpleText.selectAll.label"/>' onClick="selectAll(document.getElementById('jahiaEditor'))">
     <textarea id="jahiaEditor" name="_<%=theField.getID()%>" cols="75" rows="20"><%=JahiaTools.replacePattern(FormDataManager.formEncode(theOldField),"<","&lt;")%></textarea>
     </div>
 </p>

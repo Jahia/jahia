@@ -39,6 +39,8 @@
 <%@ page import="java.util.*" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
 <%
@@ -57,8 +59,7 @@
 </script>
 
 <h3 class="restore">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restore.label"/>
+    <fmt:message key="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restore.label"/>
     <span>
         [ID = <%=theContainer.getID()%>]
     </span>
@@ -71,7 +72,7 @@
 <div class="clearing">&nbsp;</div>
 
 <h5>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restoretext.label"/>
+    <fmt:message key="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restoretext.label"/>
 </h5>
 
 <div class="clearing">&nbsp;</div>

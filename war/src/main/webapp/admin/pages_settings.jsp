@@ -80,7 +80,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.pageSettings.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.pageSettings.label"/></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -101,7 +101,7 @@
                             <div id="content" class="fit">
                                 <div class="head headtop">
                                     <div class="object-title">
-                                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.pageSettings.label"/>
+                                        <fmt:message key="org.jahia.admin.pageSettings.label"/>
                                     </div>
                                 </div>
                                 <div class="content-item">
@@ -111,33 +111,28 @@
                                         <table cellpadding="5" cellspacing="0" border="0" class="topAlignedTable">
                                             <tr>
                                                 <td style="width:25%">
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.pages.ManagePages.forThisPage.label"/>
+                                                    <fmt:message key="org.jahia.admin.pages.ManagePages.forThisPage.label"/>
                                                 </td>
                                                 <td>
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.homepages.ManageHomepages.selectedpage.label"/>: <%=title %>
+                                                    <fmt:message key="org.jahia.admin.homepages.ManageHomepages.selectedpage.label"/>: <%=title %>
                                                     [<%=basePageID > 0 ? String.valueOf(basePageID) : "" %>]&nbsp;&nbsp;
                                                 </td>
                                                 <td>
                       <span class="dex-PushButton">
                         <span class="first-child">
                           <a class="ico-page-select"
-                             href="javascript:<%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.SELECT_ANY_PAGE_OPERATION, -1, -1, "setPid", jParams.getSiteID(), -1)%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                  resourceName="org.jahia.admin.selectAPage.label"/></a>
+                             href="javascript:<%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.SELECT_ANY_PAGE_OPERATION, -1, -1, "setPid", jParams.getSiteID(), -1)%>"><fmt:message key="org.jahia.admin.selectAPage.label"/></a>
                         </span>
                       </span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.pages.ManagePages.useThisTemplate.label"/>
+                                                    <fmt:message key="org.jahia.admin.pages.ManagePages.useThisTemplate.label"/>
                                                 </td>
                                                 <td colspan="2">
                                                     <select class="input" name="templateid">
-                                                        <option value="0">--&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                resourceName="org.jahia.admin.chooseATemplate.label"/>&nbsp;&nbsp;--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                                        <option value="0">--&nbsp;&nbsp;<fmt:message key="org.jahia.admin.chooseATemplate.label"/>&nbsp;&nbsp;--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                                                         <%
                                                             while (allTemplatesIterator.hasNext()) {
                                                                 JahiaPageDefinition pageDefinition = (JahiaPageDefinition) allTemplatesIterator.next();
@@ -167,14 +162,12 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.backToMenu.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:sendForm('save');"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.saveChanges.label"/></a>
+              <a class="ico-ok" href="javascript:sendForm('save');"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
             </span>
           </span>
 </div>

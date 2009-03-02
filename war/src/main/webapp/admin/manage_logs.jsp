@@ -45,7 +45,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.administrativeAuditLog.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.administrativeAuditLog.label"/></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0"
@@ -67,8 +67,7 @@
                             <div id="content" class="fit">
                                 <div class="head">
                                     <div class="object-title">
-                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                            resourceName="org.jahia.admin.administrativeAuditLog.label"/>
+                                        <fmt:message key="org.jahia.admin.administrativeAuditLog.label"/>
                                     </div>
                                 </div>
                                 <div class="content-item">
@@ -81,21 +80,19 @@
                 <span class="dex-PushButton"> 
                     <span class="first-child">
                     <a class="ico-log-disable"
-                       href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=disable")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.admin.audit.ManageLogs.disableLogs.label"/></a>
+                       href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=disable")%>'><fmt:message key="org.jahia.admin.audit.ManageLogs.disableLogs.label"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">
                     <a class="ico-log-view"
-                       href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=view")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.admin.audit.ManageLogs.viewLogs.label"/></a>
+                       href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=view")%>'><fmt:message key="org.jahia.admin.audit.ManageLogs.viewLogs.label"/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">                    
                      <a class="ico-log-flush" href="javascript:document.jahiaAdmin.submit();">
-                         <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.flushLogs.label"/>
+                         <fmt:message key="org.jahia.admin.audit.ManageLogs.flushLogs.label"/>
                      </a>
                     </span> 
                 </span>
@@ -103,8 +100,7 @@
                 <span class="dex-PushButton"> 
                     <span class="first-child">
                     <a class="ico-log-enable"
-                       href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=enable")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.admin.audit.ManageLogs.enableLogs.label"/></a>
+                       href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=enable")%>'><fmt:message key="org.jahia.admin.audit.ManageLogs.enableLogs.label"/></a>
                     </span> 
                 </span>
                                             <% } %>
@@ -123,8 +119,7 @@
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
       	 <a class="ico-back"
-              href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                   resourceName="org.jahia.admin.backToMenu.label"/></a>
+              href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
       </span>
      </span>
 </div>

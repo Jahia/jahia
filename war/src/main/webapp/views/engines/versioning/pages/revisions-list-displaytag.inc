@@ -116,7 +116,7 @@
     <% revisionEntryIndex += 1; %>
     <input type="radio" name="revisionEntrySet" value="<%=revisionEntrySet.toString()%>"<% if ( revisionEntrySet.equals(selRevisionEntrySet) ){ %> checked<% } %>/>
     <a href="<%=currentPage.getURL(jParams,jParams.getLocale().toString())%>/op/compare/entrystate/<%=revisionEntrySet.getVersionID()%>/showrevdiff/s?pageid=<%=currentPage.getID()%>" target="_blank" onClick="selectRevisionEntry(<%=(revisionEntryIndex-1)%>)"><%=dateStr%>
-      <img src='${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="infoIcon" />' width="11" height="11" border="0" alt="<%=revisionEntrySet.getVersionID()%>" /></a>
+      <img src='${pageContext.request.contextPath}<fmt:message key="infoIcon" />' width="11" height="11" border="0" alt="<%=revisionEntrySet.getVersionID()%>" /></a>
   </d:column>
 
   <%/* Object state : unused */%>
@@ -134,7 +134,7 @@
   <%/* Description */%>
   <d:column  title="<%=titleDescription%>" sortable="true" headerClass="lastCol" sortName="page">
     <a href="javascript:OpenJahiaScrollableWindow('<%=actionURL%>&engineview=<%=engineView%>&method=revisionsDetail&revisionEntrySet=<%=revisionEntrySet.toString()%>&useRevisionEntry=yes&sortAttribute=<%=pagesVersViewHelper.getSortAttribute()%>&sortOrder=<%=pagesVersViewHelper.getSortOrder()%>','revisions_detail',950, 600)" onClick="selectRevisionEntry(<%=(revisionEntryIndex-1)%>)">
-     <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=revisionTypeLabel%>"/></a>
+     <fmt:message key="<%=revisionTypeLabel%>"/></a>
   </d:column>
     <% } else { %>
       <d:column title="<%=titleDate%>" />

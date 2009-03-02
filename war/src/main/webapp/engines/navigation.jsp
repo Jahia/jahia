@@ -48,9 +48,11 @@
 <%@ page import="org.jahia.services.lock.LockKey" %>
 <%@ page import="org.jahia.services.lock.LockPrerequisites" %>
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult" %>
-<jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
 //  private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("jsp.jahia.engines.navigation");
 
@@ -180,18 +182,18 @@ if (parentListID > -1) {
         <tr>
           <td valign="top">
           <% if (enablePrevious) { %>
-            <a href="#" onclick="navigate('first'); return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toFirst.button"/>" class="navigationButton ico-nav-first<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="navigate('first'); return false;" title="<fmt:message key="org.jahia.navigation.toFirst.button"/>" class="navigationButton ico-nav-first<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
             <input type="hidden" name="first" value="<%= getFirstCtnID(ctnIds)%>"/>
           <% } else { %>
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toFirst.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-first<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toFirst.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-first<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           <% } %>
           </td>
           <td valign="top">
           <% if (enablePrevious) { %>
-            <a href="#" onclick="navigate('previous'); return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toPrevious.button"/>" class="navigationButton ico-nav-previous<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="navigate('previous'); return false;" title="<fmt:message key="org.jahia.navigation.toPrevious.button"/>" class="navigationButton ico-nav-previous<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
             <input type="hidden" name="previous" value="<%=getPreviousCtnID(ctnIds, theEditedContainer.getID(), isAddContainer)%>"/>
           <% } else { %>
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toPrevious.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-previous<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toPrevious.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-previous<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           <% } %>
           </td>
           <% if (isAddContainer) { %>
@@ -205,31 +207,31 @@ if (parentListID > -1) {
           <% } %>
           <td valign="top">
           <% if (!isAddContainer && enableNext) { %>
-            <a href="#" onclick="navigate('next'); return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toNext.button"/>" class="navigationButton ico-nav-next<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="navigate('next'); return false;" title="<fmt:message key="org.jahia.navigation.toNext.button"/>" class="navigationButton ico-nav-next<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
             <input type="hidden" name="next" value="<%=getNextCtnID(ctnIds, theEditedContainer.getID())%>"/>
           <% } else { %>
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toNext.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-next<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toNext.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-next<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           <% } %>
           </td>
           <td valign="top">
           <% if (!isAddContainer && enableNext) { %>
-            <a href="#" onclick="navigate('last'); return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toLast.button"/>" class="navigationButton ico-nav-last<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="navigate('last'); return false;" title="<fmt:message key="org.jahia.navigation.toLast.button"/>" class="navigationButton ico-nav-last<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
             <input type="hidden" name="last" value="<%=getLastCtnID(ctnIds)%>"/>
           <% } else { %>
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toLast.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-last<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toLast.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-last<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           <% } %>
           </td>
             <td valign="top">
-              <a href="#" onclick="navigate('new'); return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.addcontainer.AddContainer.label"/>" class="navigationButton ico-nav-add<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+              <a href="#" onclick="navigate('new'); return false;" title="<fmt:message key="org.jahia.engines.addcontainer.AddContainer.label"/>" class="navigationButton ico-nav-add<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
             </td>
         </tr>
       <% } else { %>
         <tr>
           <td valign="top">
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toFirst.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-first<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toFirst.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-first<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           </td>
           <td valign="top">
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toPrevious.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-previous<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toPrevious.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-previous<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           </td>
           <% if (isAddContainer) { %>
             <td valign="top">
@@ -241,13 +243,13 @@ if (parentListID > -1) {
             </td>
           <% } %>
           <td valign="top">
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toNext.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-next<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toNext.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-next<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           </td>
           <td valign="top">
-            <a href="#" onclick="return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.navigation.toLast.button"/> (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.disabled"/>)" class="navigationButton ico-nav-last<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+            <a href="#" onclick="return false;" title="<fmt:message key="org.jahia.navigation.toLast.button"/> (<fmt:message key="org.jahia.disabled"/>)" class="navigationButton ico-nav-last<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
           </td>
             <td valign="top">
-              <a href="#" onclick="navigate('new'); return false;" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.addcontainer.AddContainer.label"/>" class="navigationButton ico-nav-add<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
+              <a href="#" onclick="navigate('new'); return false;" title="<fmt:message key="org.jahia.engines.addcontainer.AddContainer.label"/>" class="navigationButton ico-nav-add<%=(results != null ? " disabled" : "")%>">&nbsp;</a>
             </td>
         </tr>
       <% } %>

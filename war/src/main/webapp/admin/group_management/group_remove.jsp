@@ -39,6 +39,8 @@
 <%@page import = "org.jahia.data.JahiaData" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="groupErrorMessage" class="java.lang.String" scope="session"/><jsp:useBean id="URL" class="java.lang.String" scope="request"/><%
 JahiaData jData = (JahiaData)request.getAttribute("org.jahia.data.JahiaData");
 String groupName = (String)request.getAttribute("groupName");
@@ -46,7 +48,7 @@ int stretcherToOpen   = 1; %>
 <!-- Adiministration page position -->
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.removeGroup.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageGroups.removeGroup.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -70,7 +72,7 @@ int stretcherToOpen   = 1; %>
                     <tr>
                       <br>
                       <td>
-                        <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= groupName %>
+                        <b><fmt:message key="org.jahia.admin.users.ManageGroups.groupName.label"/>&nbsp;:</b>&nbsp;&nbsp;&nbsp;<%= groupName %>
                         <input type="hidden" name="groupName" value="<%= groupName%>">
                       </td>
                     </tr>
@@ -78,7 +80,7 @@ int stretcherToOpen   = 1; %>
                       <td>
                         <br>
                         <br>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.areYouSure.label"/>
+                        <fmt:message key="org.jahia.admin.users.ManageGroups.areYouSure.label"/>
                       </td>
                     </tr>
                   </table>
@@ -94,12 +96,12 @@ int stretcherToOpen   = 1; %>
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-cancel" href="<%=JahiaAdministration.composeActionURL(request,response,"groups","&sub=display")%>
-" ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.cancel.label"/></a>
+" ><fmt:message key="org.jahia.admin.cancel.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:document.mainForm.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ok.label"/></a>
+              <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key="org.jahia.admin.ok.label"/></a>
             </span>
           </span>
         </div>

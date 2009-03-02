@@ -78,9 +78,9 @@ stretcherToOpen   = 1;
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.editLanguageMappings.label"/>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.editLanguageMappings.label"/>
     <br>
-    <% if ( currentSite!= null ){ %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %>
+    <% if ( currentSite!= null ){ %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %>
   </h2>
 </div>
 <div id="main">
@@ -102,7 +102,7 @@ stretcherToOpen   = 1;
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.configuredMappings.label"/>
+                  <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.configuredMappings.label"/>
                 </div>
               </div>
               <form name="mainForm" action='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=commitMappings")%>' method="post">
@@ -111,7 +111,7 @@ stretcherToOpen   = 1;
                   if (iso639ToLocale.size() == 0) { %>
                   <tr>
                     <td colspan="2">
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.noMappingConfigured.label"/>
+                      <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.noMappingConfigured.label"/>
                     </td>
                   </tr><%
                   }
@@ -133,7 +133,7 @@ stretcherToOpen   = 1;
                       <td align="right">
                         <%=curIso639Locale.getDisplayName(currentLocale) %>(<%=curIso639Locale.toString() %>) 
                         <br>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.isMappedTo.label"/>
+                        <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.isMappedTo.label"/>
                       </td>
                       <td align="left">
                         &nbsp;
@@ -160,7 +160,7 @@ stretcherToOpen   = 1;
                     </table>                    
                   </form>
                   <p>
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.hint.label"/>
+                    <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.hint.label"/>
                   </p>
                   </div>
                 </div>
@@ -173,12 +173,12 @@ stretcherToOpen   = 1;
           <div id="actionBar">
             <span class="dex-PushButton">
               <span class="first-child">
-                <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.languages.ManageSiteLanguages.backToLanguageSettings.label"/></a>
+                <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"siteLanguages","&sub=display")%>'><fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.backToLanguageSettings.label"/></a>
               </span>
             </span>
             <span class="dex-PushButton">
               <span class="first-child">
-                <a class="ico-ok" href="javascript:document.mainForm.submit();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.save.label'/></a>
+                <a class="ico-ok" href="javascript:document.mainForm.submit();"><fmt:message key='org.jahia.admin.save.label'/></a>
               </span>
             </span>
           </div>

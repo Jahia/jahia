@@ -58,47 +58,47 @@
       <div class="head">
         <div class="object-title">
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringPage}">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
+            <fmt:message key="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
           </c:if>
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringContainer}">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
+            <fmt:message key="org.jahia.engines.include.actionSelector.ContainerVersioning.label"/>
           </c:if>
           <c:if test="${requestScope.jahiaEngineViewHelper.restoringContainerList}">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
+            <fmt:message key="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
           </c:if>
-          &nbsp;-&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.stepOneOfThree"/>
+          &nbsp;-&nbsp;<fmt:message key="org.jahia.engines.version.stepOneOfThree"/>
         </div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
           <td colspan="2">
-            <strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.selectTheTaskToPerform"/></strong>.
+            <strong><fmt:message key="org.jahia.engines.version.selectTheTaskToPerform"/></strong>.
           </td>
         </tr>
         <tr>
           <th valign="top" width="100">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.availableTasks"/>:
+            <fmt:message key="org.jahia.engines.version.availableTasks"/>:
           </th>
           <td>
             <ul class="noStyle">
               <li>
                 <input type="radio" name="operationType" value="1" <%if(versViewHelper.getOperationType()==1){%> checked="checked"<%}%>>
-                A)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.undoStagingModification"/>
+                A)&nbsp;<fmt:message key="org.jahia.engines.version.undoStagingModification"/>
               </li>
               <li>
                 <input type="radio" name="operationType" value="2" <%if(versViewHelper.getOperationType()==2){%> checked=checked<%}%>>
-                B)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreArchivedContent"/>
+                B)&nbsp;<fmt:message key="org.jahia.engines.version.restoreArchivedContent"/>
               </li>
               <c:if test="${!empty versioningUndeletePage }">
                 <li>
                   <input type="radio" name="operationType" value="3" <%if(versViewHelper.getOperationType()==3){%> checked=checked<%}%>>
-                  C)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreDeletedPages" defaultValue="Restore deleted pages" />
+                  C)&nbsp;<fmt:message key="org.jahia.engines.version.restoreDeletedPages"/>
                 </li>
               </c:if>
               <c:if test="${!empty versioningUndeleteContainer }">
                 <li>
                   <input type="radio" name="operationType" value="3" <%if(versViewHelper.getOperationType()==3){%> checked=checked<%}%>>
-                  C)&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restoreDeletedContainer" defaultValue="Restore deleted containers" />
+                  C)&nbsp;<fmt:message key="org.jahia.engines.version.restoreDeletedContainer"/>
                 </li>
               </c:if>
             </ul>

@@ -37,6 +37,8 @@
 %><%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -44,7 +46,7 @@
 <head>
     <meta name="robots" content="noindex, nofollow"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
-    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.httpUnauthorized.label"/></title>
+    <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.httpUnauthorized.label"/></title>
 <script type="text/javascript">
 function autoFocus() {
     document.loginForm.username.focus();
@@ -66,17 +68,17 @@ function keyDown(e) {
 <center>
     <div id="adminLogin">
         <ui:loginArea>
-        <h3 class="loginIcon"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.loginToJahia.label"/></h3>
+        <h3 class="loginIcon"><fmt:message key="org.jahia.engines.loginToJahia.label"/></h3>
         <br class="clearFloat"/>
         <ui:loginErrorMessage bundleKey="JahiaInternalResources" invalidUsernamePasswordKey="org.jahia.engines.login.Login_Engine.invalidUsernamePassword.label" cssClassName="error"/>
         <table cellspacing="1" cellpadding="0" border="0" class="formTable">
             <tbody>
             <tr>
-                <th><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.username.label"/></th>
+                <th><fmt:message key="org.jahia.engines.username.label"/></th>
                 <td><input type="text" value="" style="width: 150px;" tabindex="1" maxlength="250" size="13" name="username"/></td>
             </tr>
             <tr>
-                <th><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.password.label"/></th>
+                <th><fmt:message key="org.jahia.engines.login.Login_Engine.password.label"/></th>
                 <td><input type="password" style="width: 150px;" tabindex="2" maxlength="250" size="13" name="password"/></td>
             </tr>
             </tbody>
@@ -86,8 +88,8 @@ function keyDown(e) {
           <tr>
             <td class="alignCenter" colspan="2">
               <select name="loginChoice" tabindex="3">
-                <option value="1"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.stayAtCurrentPage.label"/></option>
-                <option value="2"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.login.Login_Engine.jumpToHomePage.label"/></option>
+                <option value="1"><fmt:message key="org.jahia.engines.login.Login_Engine.stayAtCurrentPage.label"/></option>
+                <option value="2"><fmt:message key="org.jahia.engines.login.Login_Engine.jumpToHomePage.label"/></option>
               </select>
             </td>
           </tr>
@@ -100,8 +102,8 @@ function keyDown(e) {
         <div id="actionBar" class="alignCenter">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="#login" onclick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.login.label"/>">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
+              <a class="ico-ok" href="#login" onclick="document.forms.loginForm.submit(); return false;" tabindex="5" title="<fmt:message key="org.jahia.bin.JahiaErrorDisplay.login.label"/>">
+                  <fmt:message key="org.jahia.bin.JahiaErrorDisplay.login.label"/></a>
              </span>
           </span>
         </div>

@@ -37,6 +37,8 @@
 <%@ page import="org.displaytag.tags.*" %>
 <%@ page import="org.displaytag.util.*" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <script type="text/javascript">
   // OpenJahiaScrollableWindow
   function OpenJahiaScrollableWindow(url, name, width, height) {

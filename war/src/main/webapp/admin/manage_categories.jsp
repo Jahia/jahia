@@ -45,7 +45,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageCategories.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.manageCategories.label"/></h2>
 </div>
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -65,8 +65,7 @@
                         <div id="content" class="fit">
                             <div class="head headtop">
                                 <div class="object-title">
-                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                            resourceName="org.jahia.admin.manageCategories.label"/>
+                                    <fmt:message key="org.jahia.admin.manageCategories.label"/>
                                 </div>
                             </div>
                             <div class="content-item-noborder">
@@ -83,8 +82,7 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.backToMenu.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
             </span>
           </span>
 </div>

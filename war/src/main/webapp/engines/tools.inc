@@ -1,4 +1,4 @@
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+
 <%--
 
     
@@ -40,6 +40,9 @@
 <%@ page import="org.jahia.services.lock.LockPrerequisites"%>
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult"%>
 <%@ page import="org.jahia.services.lock.LockKey"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     int tabCounter = 0;
 
@@ -119,7 +122,7 @@
     %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('contentPick'); return false;"<% if (theScreen.equals("contentPick")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContentPick.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.ContentPick.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.CONTENT_PICKER) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -129,7 +132,7 @@
     %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('workflow'); return false;"<% if (theScreen.equals("workflow")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Workflow.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Workflow.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.MANAGE_WORKFLOW) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -139,7 +142,7 @@
     %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('import'); return false;"<% if (theScreen.equals("import")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Import.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Import.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.IMPORT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -149,7 +152,7 @@
     %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('export'); return false;"<% if (theScreen.equals("export")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Export.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Export.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EXPORT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -159,7 +162,7 @@
     %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('versioning'); return false;"<% if (theScreen.equals("versioning")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Versioning.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Versioning.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.VERSIONNING) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -169,7 +172,7 @@
     %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('logs'); return false;"<% if (theScreen.equals("logs")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Logs.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Logs.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.LOGS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -177,7 +180,7 @@
     <% if (tabCounter == 0) { %>
       <li class="section first">
         <a href="#" onclick=" return false;" class="singleOpen">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.noTools.label"/></a>
+          <fmt:message key="org.jahia.engines.noTools.label"/></a>
       </li>
     <% } %>
   </ul>

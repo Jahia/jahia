@@ -1,4 +1,4 @@
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+
 <%--
 
     
@@ -42,6 +42,9 @@
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult"%>
 <%@ page import="org.jahia.services.lock.LockKey"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
 final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
 final ProcessingContext paramBean = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -105,14 +108,14 @@ if (aclService.getSiteActionPermission(LockPrerequisites.FIELD_RIGHTS, paramBean
     <% if (enableAuthoring.booleanValue()) { %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('edit'); return false;"<% if (theScreen.equals("edit")) { %> class="open"<%}else{%> class="closed"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Authoring.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Authoring.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EDIT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %></a>
       </li>
     <% } %>
     <% if (enableMetadata.booleanValue()) { %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('metadata'); return false;"<% if (theScreen.equals("metadata")) { %> class="open"<%}else{%> class="closed"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Metadata.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Metadata.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.METADATA) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -120,7 +123,7 @@ if (aclService.getSiteActionPermission(LockPrerequisites.FIELD_RIGHTS, paramBean
     <% if (enableRightView.booleanValue() && adminAccess.booleanValue()) { %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('rightsMgmt'); return false;"<% if (theScreen.equals("rightsMgmt")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.RightsMgmt.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.RightsMgmt.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.RIGHTS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -128,7 +131,7 @@ if (aclService.getSiteActionPermission(LockPrerequisites.FIELD_RIGHTS, paramBean
     <% if (doAddEditViewRight.booleanValue() && adminAccess.booleanValue()) { %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('ctneditview_rights'); return false;"<% if (theScreen.equals("ctneditview_rights")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.FieldsRightsMgmt.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.FieldsRightsMgmt.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.FIELD_RIGHTS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -136,7 +139,7 @@ if (aclService.getSiteActionPermission(LockPrerequisites.FIELD_RIGHTS, paramBean
     <% if (enableTimeBasedPublishing.booleanValue()) { %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('timeBasedPublishing'); return false;"<% if (theScreen.equals("timeBasedPublishing")) { %> class="singleOpen"<%}else{%> class="single"<%}%>>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.TIME_BASED_PUBLISHING) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>

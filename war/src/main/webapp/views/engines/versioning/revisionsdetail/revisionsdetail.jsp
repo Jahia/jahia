@@ -147,11 +147,11 @@ function sendForm(method,params)
   <div class="tabContent">
     <div id="content" class="full">
       <div class="head">
-        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.revisionDetail" /></div>
+        <div class="object-title"><fmt:message key="org.jahia.engines.version.revisionDetail" /></div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
-          <th width="100"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.dateOfRevision" />&nbsp;:&nbsp;</th>
+          <th width="100"><fmt:message key="org.jahia.engines.version.dateOfRevision" />&nbsp;:&nbsp;</th>
           <td align="left" valign="top">
             <%=dateStr%>
           </td>
@@ -161,14 +161,14 @@ function sendForm(method,params)
         <tr>
           <td colspan="2" align="right" valign="top" nowrap>
             <br />
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.legend" />&nbsp;:&nbsp;<span style='color:aqua'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.added" /></span>&nbsp;|&nbsp;<span style='color:lime'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.changed" /></span>&nbsp;|&nbsp;<span style='color:red;text-decoration:line-through;'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.deleted" /></span>&nbsp;&nbsp;&nbsp;<br />
+            <fmt:message key="org.jahia.engines.version.legend" />&nbsp;:&nbsp;<span style='color:aqua'><fmt:message key="org.jahia.engines.version.added" /></span>&nbsp;|&nbsp;<span style='color:lime'><fmt:message key="org.jahia.engines.version.changed" /></span>&nbsp;|&nbsp;<span style='color:red;text-decoration:line-through;'><fmt:message key="org.jahia.engines.version.deleted" /></span>&nbsp;&nbsp;&nbsp;<br />
             <br />
           </td>
         </tr>
         <tr>
           <td align="left" width="50%" valign="top">
             <div class="headtop">
-              <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.revisionTree" /></div>
+              <div class="object-title"><fmt:message key="org.jahia.engines.version.revisionTree" /></div>
             </div>
             <table class="text" border="0" cellspacing="0" cellpadding="0">
               <%
@@ -233,7 +233,7 @@ function sendForm(method,params)
                     String languageCode = revEntry.getLanguageCode();
                   %>
                   <input type="radio" class="input" name="revisionEntry" value="<%=revEntry.toString()%>" onclick="javascript:flagSubmit();sendForm('revisionsDetail','')"
-                  <% if ( selRevEntry != null && selRevEntry.equals(revEntry) ){ %>checked<% } %> ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='<%= "org.jahia.services.version.entryState." + revEntry.getWorkflowState()%>'
+                  <% if ( selRevEntry != null && selRevEntry.equals(revEntry) ){ %>checked<% } %> ><fmt:message key='<%= "org.jahia.services.version.entryState." + revEntry.getWorkflowState()%>'
                   /><% if ( !ContentObject.SHARED_LANGUAGE.equals(languageCode) ){ %>&nbsp;<internal:displayLanguageFlag code="<%=languageCode%>" /><% } %><br>
                 <% } %>
                   </td>
@@ -244,28 +244,28 @@ function sendForm(method,params)
           </td>
           <td class="split" valign="top" align="left">
             <div class="headtop">
-              <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=oldValueStatus%>" />&nbsp;:&nbsp;</div>
+              <div class="object-title"><fmt:message key="<%=oldValueStatus%>" />&nbsp;:&nbsp;</div>
             </div>
             <div class="padded">
               <br><%=oldValue%><br /><br />
             </div>
             <% if ( selRevEntry != null && selRevEntry.getWorkflowState()>0 && !isStagingValue.booleanValue() ){ %>
               <div class="head">
-                <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.valueStatus.3" />&nbsp;:&nbsp;</div>
+                <div class="object-title"><fmt:message key="org.jahia.engines.version.valueStatus.3" />&nbsp;:&nbsp;</div>
               </div>
               <div class="padded">
                 <br>No Staging<br /><br />
               </div>
             <% } else { %>
               <div class="head">
-                <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=newValueStatus%>" />&nbsp;:&nbsp;</div>
+                <div class="object-title"><fmt:message key="<%=newValueStatus%>" />&nbsp;:&nbsp;</div>
               </div>
               <div class="padded">
                 <br><%=newValue%><br /><br />
               </div>
             <% } %>
             <div class="head">
-              <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.mergedDifference" />&nbsp;:&nbsp;</div>
+              <div class="object-title"><fmt:message key="org.jahia.engines.version.mergedDifference" />&nbsp;:&nbsp;</div>
             </div>
             <div class="padded">
               <br><%=mergedValue%><br /><br />

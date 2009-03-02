@@ -143,13 +143,13 @@ function handleRevisionDetails(version1){
     <div id="content" class="fit w2">
       <div class="head">
         <div class="object-title">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.dateRange"/>
+          <fmt:message key="org.jahia.engines.version.dateRange"/>
         </div>
       </div>
       <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
         <tr>
           <th align="left" width="100">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.from"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.engines.version.from"/>&nbsp;:&nbsp;
           </th>
           <td nowrap="nowrap">
             <%
@@ -172,7 +172,7 @@ function handleRevisionDetails(version1){
         </tr>
         <tr>
           <th align="left" nowrap>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.to"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.engines.version.to"/>&nbsp;:&nbsp;
           </th>
           <td nowrap="nowrap">
             <%
@@ -198,7 +198,7 @@ function handleRevisionDetails(version1){
           <td>
             <select class="input" name="nbmax_rev" onChange="sendForm('showRevisionsList','');">
               <option value="-1"<logic:equal name="jahiaEngineViewHelper" property="nbMaxOfRevisionsAsStr" value="-1"> selected</logic:equal>>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.allRevisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <fmt:message key="org.jahia.engines.version.allRevisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </option>
               <option value="10"<logic:equal name="jahiaEngineViewHelper" property="nbMaxOfRevisionsAsStr" value="10"> selected</logic:equal>>10</option>
               <option value="20"<logic:equal name="jahiaEngineViewHelper" property="nbMaxOfRevisionsAsStr" value="20"> selected</logic:equal>>20</option>
@@ -209,15 +209,15 @@ function handleRevisionDetails(version1){
         </tr>
         <tr>
           <th nowrap align="left">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.typeOfRevisions" defaultValue="Type of revisions"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.engines.version.typeOfRevisions"/>&nbsp;:&nbsp;
           </th>
           <td>
             <select class="input" name="typeOfRevisions" onChange="sendForm('showRevisionsList','');">
               <option value="1"<logic:equal name="jahiaEngineViewHelper" property="contentOrMetadataRevisionsAsString" value="1"> selected</logic:equal>>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.contentRevisions" defaultValue="Content revisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <fmt:message key="org.jahia.engines.version.contentRevisions"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               </option>
               <option value="2"<logic:equal name="jahiaEngineViewHelper" property="contentOrMetadataRevisionsAsString" value="2"> selected</logic:equal>>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.metadataRevisions" defaultValue="Metadata revisions"/>
+                <fmt:message key="org.jahia.engines.version.metadataRevisions"/>
               </option>
             </select>
           </td>
@@ -226,7 +226,7 @@ function handleRevisionDetails(version1){
           <th align="left" nowrap colspan="2">
               <span class="dex-PushButton">
                 <span class="first-child">
-                  <a title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.apply.button'/>" onclick="sendForm('showRevisionsList',''); return false;" href="#filter" class="ico-refresh"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.apply.button"/></a>
+                  <a title="<fmt:message key='org.jahia.apply.button'/>" onclick="sendForm('showRevisionsList',''); return false;" href="#filter" class="ico-refresh"><fmt:message key="org.jahia.apply.button"/></a>
                 </span>
               </span>
           </th>
@@ -251,15 +251,15 @@ function handleRevisionDetails(version1){
       %>
       <div class="head">
         <div class="object-title">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.nbOfRevisions"/>&nbsp;:&nbsp;<%=nbRevisions%>&nbsp;/&nbsp;<%=allRevisions.size()%>
+          <fmt:message key="org.jahia.engines.version.nbOfRevisions"/>&nbsp;:&nbsp;<%=nbRevisions%>&nbsp;/&nbsp;<%=allRevisions.size()%>
         </div>
       </div>
       <%-- 
       <div id="operationMenu">
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="javascript:handleCompare();" class="ico-compare" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.compare"/>">
-              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.compare" defaultValue="Compare" /></a>
+            <a href="javascript:handleCompare();" class="ico-compare" title="<fmt:message key="org.jahia.engines.version.compare"/>">
+              <fmt:message key="org.jahia.engines.version.compare"/></a>
           </span>
         </span>
       </div>
@@ -271,7 +271,7 @@ function handleRevisionDetails(version1){
         <display:setProperty name="css.tr.even" value="evenLine" />
         <display:setProperty name="css.tr.odd" value="oddLine" />
         <display:setProperty name="basic.msg.empty_list">
-          <div class="content-body padded"><center><strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.noresults.label"/></strong></center></div>
+          <div class="content-body padded"><center><strong><fmt:message key="org.jahia.engines.importexport.contentpick.noresults.label"/></strong></center></div>
         </display:setProperty>
 
         <%
@@ -287,9 +287,9 @@ function handleRevisionDetails(version1){
         <display:column property="lastContributor" title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.services.metadata.lastContributor", jParams, jParams.getLocale(),"Last contributor")%>' sortable="true" comparator="<%= comparator %>"/>
         <display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.operations", jParams, jParams.getLocale(),"Operations")%>' sortable="false" headerClass="lastCol" class="lastCol">
           <%if ( revEntrySet.getWorkflowState() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){%>
-            <a href="javascript:sendForm('showConfirmContainerUndoStaging');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.undoStaging" defaultValue="undo staging"/></a>
+            <a href="javascript:sendForm('showConfirmContainerUndoStaging');"><fmt:message key="org.jahia.engines.version.undoStaging"/></a>
           <%} else if ( allowRestoreOperation && count > 1){%>
-            <a href="javascript:restoreVersion('<%=revEntrySet.toString()%>');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.restore" defaultValue="restore" /></a>
+            <a href="javascript:restoreVersion('<%=revEntrySet.toString()%>');"><fmt:message key="org.jahia.engines.version.restore"/></a>
           <%}%>
         </display:column>
       </display:table>

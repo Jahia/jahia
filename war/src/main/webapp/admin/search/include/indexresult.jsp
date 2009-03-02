@@ -37,6 +37,8 @@
 <%@page import="org.jahia.bin.*"%>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="url"     		class="java.lang.String"        scope="request"/>     <% // http files path. %>
 <jsp:useBean id="input"   		class="java.lang.String"        scope="request"/>     <% // inputs size. %>
 <jsp:useBean id="values" 		class="java.util.HashMap" 	scope="request"/>     <% // Map containing values. %>
@@ -51,13 +53,13 @@
       if ( result.booleanValue() ) {
   %>
     <h3>
-      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.indexOptimizSiteIndexingIsRunning.label"/>.
+      <fmt:message key="org.jahia.admin.search.ManageSearch.indexOptimizSiteIndexingIsRunning.label"/>.
     </h3>
   <%
       } else {
   %>
     <h3>
-      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.search.ManageSearch.anErrorReIndexed.label"/>
+      <fmt:message key="org.jahia.admin.search.ManageSearch.anErrorReIndexed.label"/>
     </h3>
   <% } %>
 

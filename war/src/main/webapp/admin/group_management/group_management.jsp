@@ -39,6 +39,8 @@
 <%@page import = "org.jahia.data.JahiaData" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/><% // http files path. %>
 <jsp:useBean id="groupMessage" class="java.lang.String" scope="session"/><%
 String groupSearch = (String)request.getAttribute("groupSearch");
@@ -94,7 +96,7 @@ int stretcherToOpen = 1; %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.groupManagement.label"/> : <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%= currentSite %></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageGroups.groupManagement.label"/> : <fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%= currentSite %></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -114,7 +116,7 @@ int stretcherToOpen = 1; %>
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageGroups.label"/>
+                    <fmt:message key="org.jahia.admin.manageGroups.label"/>
                   </div>
                 </div>
                 <div class="content-body">
@@ -122,34 +124,34 @@ int stretcherToOpen = 1; %>
                   <div id="operationMenu">
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-group-add" href="javascript:submitForm('create');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.createNewGroup.label"/></a>
+                        <a class="ico-group-add" href="javascript:submitForm('create');"><fmt:message key="org.jahia.admin.users.ManageGroups.createNewGroup.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-group-copy" href="javascript:submitForm('copy');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.copySelectedGroup.label"/></a>
+                        <a class="ico-group-copy" href="javascript:submitForm('copy');"><fmt:message key="org.jahia.admin.users.ManageGroups.copySelectedGroup.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-group-edit" href="javascript:submitForm('edit');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.editSelectedGroup.label"/></a>
+                        <a class="ico-group-edit" href="javascript:submitForm('edit');"><fmt:message key="org.jahia.admin.users.ManageGroups.editSelectedGroup.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-group-remove" href="javascript:submitForm('remove');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.removeSelectedGroup.label"/></a>
+                        <a class="ico-group-remove" href="javascript:submitForm('remove');"><fmt:message key="org.jahia.admin.users.ManageGroups.removeSelectedGroup.label"/></a>
                       </span>
                     </span>
                     <span class="dex-PushButton">
                       <span class="first-child">
-                        <a class="ico-group-view" href="javascript:submitForm('membership');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.viewSelectedGroup.label"/></a>
+                        <a class="ico-group-view" href="javascript:submitForm('membership');"><fmt:message key="org.jahia.admin.users.ManageGroups.viewSelectedGroup.label"/></a>
                       </span>
                     </span>
                   </div><!-- For future version : <li><a href="group_share.html">Share selected group</a></li> -->
                 </div>
                   <div class="head">
                     <div class="object-title">
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.groupList.label"/>
+                      <fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/>
                     </div>
                   </div>
                   <div  class="content-item-noborder">
@@ -180,7 +182,7 @@ int stretcherToOpen = 1; %>
           <div id="actionBar">
             <span class="dex-PushButton">
               <span class="first-child">
-                <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+                <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
               </span>
             </span>
           </div>

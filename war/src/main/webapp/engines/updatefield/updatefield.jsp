@@ -41,6 +41,8 @@
 <%@ page import="org.jahia.data.fields.FieldTypes"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     private static String getIconClassName(final int type, final boolean small) {
         final String className;
@@ -130,7 +132,7 @@
 %>
 <!-- Begin updateField.jsp -->
 <h3 class="field">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.updatefiled.UpdateField_Engine.updateField.label"/>
+    <fmt:message key="org.jahia.engines.updatefiled.UpdateField_Engine.updateField.label"/>
     <span>
         [ID = <%=theField.getID()%>]
     </span>
@@ -140,11 +142,9 @@
     if (theField.getPageID() != jParams.getPageID()) {
 %>
 <p class="error">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.updatefiled.UpdateField_Engine.rememberValidate.label"/>
+    <fmt:message key="org.jahia.engines.updatefiled.UpdateField_Engine.rememberValidate.label"/>
     <%=theField.getPageID()%>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.updatefiled.UpdateField_Engine.toPublishContent.label"/>
+    <fmt:message key="org.jahia.engines.updatefiled.UpdateField_Engine.toPublishContent.label"/>
 </p>
 <% } %>
 
@@ -174,8 +174,7 @@
     <%@ include file="../menu.inc" %>
     <div class="content">
         <div id="editor">
-            <h4 class="<%=getIconClassName(theField.getType(), false)%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.engines.updatefiled.UpdateField_Engine.fieldName.label"/>:
+            <h4 class="<%=getIconClassName(theField.getType(), false)%>"><fmt:message key="org.jahia.engines.updatefiled.UpdateField_Engine.fieldName.label"/>:
                 <%=theField.getDefinition().getTitle(jParams.getLocale())%>
             </h4>
             <%
@@ -187,7 +186,7 @@
             <% if (theField.isShared()) { %>
                           disabled="disabled" checked="checked"
             <% } else if (applyChangeToAllLang) {%>
-                          checked="checked"<% } %> >&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.applyToAllLanguages.label"/>
+                          checked="checked"<% } %> >&nbsp;<fmt:message key="org.jahia.applyToAllLanguages.label"/>
             <% } %>
             <% } %>
             <%=fieldForm%>

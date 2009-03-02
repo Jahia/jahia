@@ -63,7 +63,7 @@
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="${dialogTitle}" defaultValue="${dialogTitle}"/>
+                  <fmt:message key="${dialogTitle}"/>
                 </div>
               </div>
               <div  class="content-item-noborder">
@@ -94,12 +94,12 @@
         <div id="actionBar">
           <span class="dex-PushButton">
              <span class="first-child">
-               <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=site")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+               <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=site")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
              </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-            <a class="ico-ok" href="javascript:document.mainForm.submit()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/></a>
+            <a class="ico-ok" href="javascript:document.mainForm.submit()"><fmt:message key="org.jahia.admin.save.label"/></a>
             </span>
           </span>
         </div>

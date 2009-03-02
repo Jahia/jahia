@@ -63,7 +63,7 @@ stretcherToOpen   = 0;
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.administrativeAuditLog.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.administrativeAuditLog.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -84,18 +84,18 @@ stretcherToOpen   = 0;
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.ManageLogs.lastLogsSection.label"/>
+                  <fmt:message key="org.jahia.admin.ManageLogs.lastLogsSection.label"/>
                 </div>
               </div>
               <form style="padding-top: 10px; padding-bottom: 10px" name="modifyLastLogs" action='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=view")%>' method="post">
                 <table border="0" cellpadding="4" cellspacing="0">
                     <tr>
-                        <td><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.viewLastLogsPrefix.label"/><input type="text" name="viewLastDays" value="<%=viewLastDays%>" size="5" />
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.viewLastLogsPostfix.label"/></td>
+                        <td><fmt:message key="org.jahia.admin.audit.ManageLogs.viewLastLogsPrefix.label"/><input type="text" name="viewLastDays" value="<%=viewLastDays%>" size="5" />
+                        <fmt:message key="org.jahia.admin.audit.ManageLogs.viewLastLogsPostfix.label"/></td>
                         <td>
                             <span class="dex-PushButton">
                                 <span class="first-child">
-                                    <a class="ico-apply" href="javascript:document.modifyLastLogs.submit()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.change.label"/></a>
+                                    <a class="ico-apply" href="javascript:document.modifyLastLogs.submit()"><fmt:message key="org.jahia.admin.change.label"/></a>
                                 </span>
                             </span>
                         </td>
@@ -112,15 +112,15 @@ stretcherToOpen   = 0;
                 </display-el:table>
                 <div class="head headtop">
                   <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.flushLogs.label"/>
+                    <fmt:message key="org.jahia.admin.audit.ManageLogs.flushLogs.label"/>
                   </div>
                 </div>
                 <ul style="list-style-type: none">
                   <li>
-                    <input class="input" type="radio" name="keeprecent" value="false"<%if(!keeprecentlogs.booleanValue()){ %>checked<%} %>> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.deleteAllLogEntries.label"/>
+                    <input class="input" type="radio" name="keeprecent" value="false"<%if(!keeprecentlogs.booleanValue()){ %>checked<%} %>> <fmt:message key="org.jahia.admin.audit.ManageLogs.deleteAllLogEntries.label"/>
                   </li>
                   <li>
-                    <input class="input" type="radio" name="keeprecent" value="true"<%if(keeprecentlogs.booleanValue()){ %>checked<%} %>> <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.keepEntriesMoreRecentThan.label"/><input type="text" size="5" name="maxlogsdays" value="<%=maxlogsdays%>" onFocus="keeprecent[1].checked = true"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.day.label"/>
+                    <input class="input" type="radio" name="keeprecent" value="true"<%if(keeprecentlogs.booleanValue()){ %>checked<%} %>> <fmt:message key="org.jahia.admin.audit.ManageLogs.keepEntriesMoreRecentThan.label"/><input type="text" size="5" name="maxlogsdays" value="<%=maxlogsdays%>" onFocus="keeprecent[1].checked = true"><fmt:message key="org.jahia.admin.audit.ManageLogs.day.label"/>
                   </li>
                 </ul>
                 
@@ -135,12 +135,12 @@ stretcherToOpen   = 0;
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=settings")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.audit.ManageLogs.backToLogSettings.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=settings")%>'><fmt:message key="org.jahia.admin.audit.ManageLogs.backToLogSettings.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-flush" href="javascript:document.jahiaAdmin.submit()"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.flush.label"/></a>
+              <a class="ico-flush" href="javascript:document.jahiaAdmin.submit()"><fmt:message key="org.jahia.admin.flush.label"/></a>
             </span>
           </span>
         </div>

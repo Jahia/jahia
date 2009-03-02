@@ -45,6 +45,8 @@
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
 private static String getIconClassName(final int type, final boolean small) {
   final String className;
@@ -169,10 +171,10 @@ final boolean fieldAlone = theField != null && (theField.getType() == FieldTypes
       <%
       try {
         if (theField == null) {%>
-          <p class="errorbold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.noFieldToEdit.label"/></p>
+          <p class="errorbold"><fmt:message key="org.jahia.engines.noFieldToEdit.label"/></p>
         <% } else { %>
           <% if (evh != null && evh.hasErrors()) { %>
-            <p class="errorbold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.validation.errors.label"/></p>
+            <p class="errorbold"><fmt:message key="org.jahia.engines.validation.errors.label"/></p>
             <%
             for (ValidationError ve : evh.getErrors()) {
               final String msg = ve.getMsgError();

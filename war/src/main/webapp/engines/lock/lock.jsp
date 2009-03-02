@@ -48,6 +48,8 @@
 <%@ page import="org.jahia.services.lock.LockKey" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
 <%!
@@ -63,7 +65,7 @@ final LockKey lockKey = (LockKey) engineMap.get("lockKey");
 %>
 <div id="header">
   <h1>Jahia</h1>
-  <h2 class="lock"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.jahiaLocks.label"/></h2>
+  <h2 class="lock"><fmt:message key="org.jahia.engines.lock.jahiaLocks.label"/></h2>
   <% if (session.getAttribute("showNavigationInLockEngine") != null) { %>
     <jsp:include page="../navigation.jsp" flush="true" />
   <% } %>
@@ -87,7 +89,7 @@ final LockKey lockKey = (LockKey) engineMap.get("lockKey");
             <div class="tabContent">
               <div id="content" class="full">
                 <% if (lockPrerequisitesResult == null) { %>
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.lockPrerequisites.label"/>
+                  <fmt:message key="org.jahia.engines.lock.lockPrerequisites.label"/>
                 <% } else {
                     final List resultsList = lockPrerequisitesResult.getResultsList();
                   %>
@@ -109,7 +111,7 @@ final LockKey lockKey = (LockKey) engineMap.get("lockKey");
                       <li class="noStyle">
                         <span class="celllarge">
                           <% if (isAlreadyLocked) { %>
-                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.resourceLockedForModification.label"/>
+                            <fmt:message key="org.jahia.engines.lock.resourceLockedForModification.label"/>
                           <% } else { %>
                             <span class="msg-alert-info"><%= LockKey.getFriendlyMessage(blockingLockKey, jParams) %></span>
                           <% } %>
@@ -120,7 +122,7 @@ final LockKey lockKey = (LockKey) engineMap.get("lockKey");
                             <span class="dex-PushButton">
                                 <span class="first-child">
                                     <a class="ico-remove-lock" href="#steal" onclick="javascript:{document.getElementById('<%=blockingLockKey%>').disabled = false; sendFormSave(); return false;}" 
-                                        title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.engines.lock.stealLock.label'/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.lock.stealLock.label"/></a>
+                                        title="<fmt:message key='org.jahia.engines.lock.stealLock.label'/>"><fmt:message key="org.jahia.engines.lock.stealLock.label"/></a>
                                     </span>
                               </span>
                           <% } else { %>

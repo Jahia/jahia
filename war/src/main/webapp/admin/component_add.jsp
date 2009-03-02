@@ -61,7 +61,7 @@ stretcherToOpen   = 0; %>
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.manageComponents.label"/></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -81,7 +81,7 @@ stretcherToOpen   = 0; %>
               <div id="content" class="fit">
                 <div class="head">
                   <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.manuallyRegister.label"/>
+                    <fmt:message key="org.jahia.admin.components.ManageComponents.manuallyRegister.label"/>
                   </div>
                 </div>
                 <form name="mainForm" action="<%=requestURI%>?do=sharecomponents&sub=add" method="post">
@@ -95,24 +95,24 @@ stretcherToOpen   = 0; %>
                     <tr>
                       <td>
                         <p>
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.manuallyAddComponent.label"/>
+                          <fmt:message key="org.jahia.admin.components.ManageComponents.manuallyAddComponent.label"/>
                         </p>
                         <p>
-                          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.note.label"/>&nbsp;:<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.onlyFiles.label"/>
+                          <fmt:message key="org.jahia.admin.components.ManageComponents.note.label"/>&nbsp;:<fmt:message key="org.jahia.admin.components.ManageComponents.onlyFiles.label"/>
                         </p>
                       </td>
                     </tr>
                     <tr>
                       <td colspan="2">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.fullPath.label"/>&nbsp;:<input class="input" type="text" name="appPath" value="<%=appPath%>" size="<%=inputSize%>">
+                        <fmt:message key="org.jahia.admin.components.ManageComponents.fullPath.label"/>&nbsp;:<input class="input" type="text" name="appPath" value="<%=appPath%>" size="<%=inputSize%>">
                       </td>
                     </tr>
                   </table><% if ( aPackage != null ){ %>
                   <div class="head headtop">
                     <div class="object-title">
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.componentDetails.label"/>
+                      <fmt:message key="org.jahia.admin.components.ManageComponents.componentDetails.label"/>
                     </div>
-                  </div><h4>&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.listWebApplications.label"/>&nbsp;:</h4>
+                  </div><h4>&nbsp;&nbsp;<fmt:message key="org.jahia.admin.components.ManageComponents.listWebApplications.label"/>&nbsp;:</h4>
                   <table border="0" cellpadding="5" cellspacing="0" width="100%">
                     <%
                     JahiaWebAppDef webApp = null;
@@ -126,7 +126,7 @@ stretcherToOpen   = 0; %>
                     count +=1; %>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.webAppName.label"/>&nbsp;:
+                        <fmt:message key="org.jahia.admin.components.ManageComponents.webAppName.label"/>&nbsp;:
                       </td>
                       <td>
                         &nbsp;<input class="input" type="text" name="appName" value="<%=appName%>" size="<%=inputSize%>">
@@ -135,7 +135,7 @@ stretcherToOpen   = 0; %>
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.webAppContext.label"/>&nbsp;:
+                        <fmt:message key="org.jahia.admin.components.ManageComponents.webAppContext.label"/>&nbsp;:
                         <br>
                       </td>
                       <td>
@@ -145,7 +145,7 @@ stretcherToOpen   = 0; %>
                     </tr>
                     <tr>
                       <td style="vertical-align: top;">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.description.label"/>&nbsp;:
+                        <fmt:message key="org.jahia.admin.description.label"/>&nbsp;:
                       </td>
                       <td>
                         &nbsp;
@@ -157,7 +157,7 @@ stretcherToOpen   = 0; %>
                     </tr>
                     <tr>
                       <td style="vertical-align : top">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.listServelts.label"/>&nbsp;:
+                        <fmt:message key="org.jahia.admin.components.ManageComponents.listServelts.label"/>&nbsp;:
                       </td>
                       <td>
                         <table width="100%" cellspacing="0" border="0" cellpadding="5">
@@ -172,7 +172,7 @@ stretcherToOpen   = 0; %>
                           servlet = (Servlet_Element)servlets.get(j); %>
                           <tr>
                             <td>
-                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.name.label"/>&nbsp;:
+                              <fmt:message key="org.jahia.admin.name.label"/>&nbsp;:
                             </td>
                             <td>
                               <%=servlet.getName() %>
@@ -180,7 +180,7 @@ stretcherToOpen   = 0; %>
                           </tr>
                           <tr>
                             <td>
-                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.source.label"/>&nbsp;:
+                              <fmt:message key="org.jahia.admin.components.ManageComponents.source.label"/>&nbsp;:
                             </td>
                             <td>
                               <%=servlet.getSource() %>
@@ -188,7 +188,7 @@ stretcherToOpen   = 0; %>
                           </tr>
                           <tr>
                             <td>
-                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.type.label"/>&nbsp;:
+                              <fmt:message key="org.jahia.admin.type.label"/>&nbsp;:
                             </td>
                             <td>
                               <%=servlet.getTypeLabel() %>
@@ -196,7 +196,7 @@ stretcherToOpen   = 0; %>
                           </tr>
                           <tr>
                             <td>
-                              <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.description.label"/>&nbsp;:
+                              <fmt:message key="org.jahia.admin.description.label"/>&nbsp;:
                             </td>
                             <td>
                               <%=servlet.getdesc() %>
@@ -212,7 +212,7 @@ stretcherToOpen   = 0; %>
                   </table>
                   <% if ( count==0 ){ %>
                   <div style="text-align : right">
-                    <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.noWebComponents.label"/></b>
+                    <b><fmt:message key="org.jahia.admin.components.ManageComponents.noWebComponents.label"/></b>
                   </div><% } %>
                   <% } %>
                   <input type="hidden" name="subaction" value="">
@@ -227,17 +227,17 @@ stretcherToOpen   = 0; %>
         <div id="actionBar">
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
+              <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=display")%>'><fmt:message key="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
             </span>
           </span>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-app-scan" href="javascript:sendForm('scanDir');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.scanComponent.label"/></a>
+              <a class="ico-app-scan" href="javascript:sendForm('scanDir');"><fmt:message key="org.jahia.admin.components.ManageComponents.scanComponent.label"/></a>
             </span>
           </span><% if ( aPackage != null ){ %>
           <span class="dex-PushButton">
             <span class="first-child">
-              <a class="ico-ok" href="javascript:sendForm('deploy');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.deploy.label"/></a>
+              <a class="ico-ok" href="javascript:sendForm('deploy');"><fmt:message key="org.jahia.admin.deploy.label"/></a>
             </span>
           </span><% } %>
         </div>

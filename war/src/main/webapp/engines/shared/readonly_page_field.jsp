@@ -49,6 +49,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     /**
      * utility method
@@ -194,15 +196,15 @@
 <h4 class="page_type_big">
     <% if (isNewPage) { %>
     <% if (isLinkOnly) { %>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkCreation.label"/>
+    <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaLinkCreation.label"/>
     <% } else { %>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.jahiaPageCreation.label"/>
+    <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaPageCreation.label"/>
     <% } %>
     <% } else { %>
     <% if (isLinkOnly) { %>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkEdition.label"/>
+    <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaLinkEdition.label"/>
     <% } else { %>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.jahiaPageEdition.label"/>
+    <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaPageEdition.label"/>
     <% } %>
     <% } %>
 </h4>
@@ -211,12 +213,12 @@
     <tr>
         <td width="50%">
             <% if (pageBean == null) { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.noTempPageBean.label"/>.
+            <fmt:message key="org.jahia.engines.shared.Page_Field.noTempPageBean.label"/>.
             <% } %>
             <% if (isLinkOnly) { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.jahiaLinkTitle.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaLinkTitle.label"/>
             <% } else { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.jahiaPageTitle.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.jahiaPageTitle.label"/>
             <% } %>
             :
         </td>
@@ -226,9 +228,9 @@
     <tr>
         <td width="50%">
             <% if (isNewPage) { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.createPageTemplate.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.createPageTemplate.label"/>
             <% } else { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.changePageTemplate.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.changePageTemplate.label"/>
             <% } %>
         </td>
         <td>
@@ -279,13 +281,11 @@
     <% if (isInternalLink && sourcePageID != -1) { %>
     <tr>
         <td width="50%">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/>
             :
         </td>
         <td>
-            <%=sourceTitle%>&nbsp;(<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>)
+            <%=sourceTitle%>&nbsp;(<fmt:message key="org.jahia.pageId.label"/>:&nbsp;<%=sourcePageID%>)
 
         </td>
     </tr>
@@ -294,8 +294,7 @@
     <% if (remoteURL != null && remoteURL.length() > 7) { %>
     <tr>
         <td width="50%">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/>
+            <fmt:message key="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/>
             :
         </td>
         <td>

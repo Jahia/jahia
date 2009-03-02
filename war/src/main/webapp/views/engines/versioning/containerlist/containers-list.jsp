@@ -80,11 +80,11 @@ function handleRevisionDetails(containerId){
     <div id="content" class="fit w2">
       <div class="head">
         <div class="object-title">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.ContainerListVersioning.label"/>
         </div>
       </div>
       <div class="content-body padded">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.containerListVersioningExplanation.label" defaultValue="This interface only let you restore DELETED Containers." />
+        <fmt:message key="org.jahia.engines.version.containerListVersioningExplanation.label"/>
       </div>
       <%
       org.jahia.utils.displaytag.CaseInsensitiveComparator comparator = new org.jahia.utils.displaytag.CaseInsensitiveComparator(request.getLocale());
@@ -93,7 +93,7 @@ function handleRevisionDetails(containerId){
       %>
       <div class="headtop">
         <div class="object-title">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.searchHitType.4"/>
+          <fmt:message key="org.jahia.engines.search.searchHitType.4"/>
         </div>
       </div>
       <display:table name="containersList" class="evenOddTable" pagesize="20" requestURI="<%=requestURI%>" excludedParams="*" id="listItem" htmlId="listItem" style="width: 100%;" cellpadding="0" cellspacing="0" export="false">
@@ -103,7 +103,7 @@ function handleRevisionDetails(containerId){
         <display:setProperty name="css.tr.even" value="evenLine" />
         <display:setProperty name="css.tr.odd" value="oddLine" />
         <display:setProperty name="basic.msg.empty_list">
-          <div class="content-body padded"><center><strong><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.importexport.contentpick.noresults.label"/></strong></center></div>
+          <div class="content-body padded"><center><strong><fmt:message key="org.jahia.engines.importexport.contentpick.noresults.label"/></strong></center></div>
         </display:setProperty>
         <%
           ContainerVersioningBean ctnVB = (ContainerVersioningBean) pageContext.getAttribute("listItem");
@@ -134,7 +134,7 @@ function handleRevisionDetails(containerId){
         </display:column>
         <display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.operations", jParams, jParams.getLocale(),"Operations")%>' sortable="false" headerClass="lastCol" class="lastCol">
           <%if ( ctnVB.getIsDeleted() || ctnVB.getIsMarkedForDelete() ){ String params = "containerId=" + ctnVB.getId();%>
-            <a href="javascript:sendForm('showConfirmUndelete','<%=params%>');"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.undelete" defaultValue="undelete"/></a>
+            <a href="javascript:sendForm('showConfirmUndelete','<%=params%>');"><fmt:message key="org.jahia.engines.version.undelete"/></a>
           <%}%>
         </display:column>
       </display:table>

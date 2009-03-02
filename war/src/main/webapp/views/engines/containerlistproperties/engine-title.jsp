@@ -46,5 +46,5 @@
     final JahiaContainerList theEditedContainerList = (JahiaContainerList) engineMap.get("theContainerList");
 %>
 <h2 class="edit">
-  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListSettings.label" />
+  <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.containerListSettings.label" />
 </h3>

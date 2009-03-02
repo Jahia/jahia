@@ -53,8 +53,9 @@
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
-<c:set var="noneLabel"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.userMessage.none" defaultValue="none"/></c:set>
 <%@include file="/admin/include/header.inc" %>
+
+<c:set var="noneLabel"><fmt:message key="org.jahia.userMessage.none"/></c:set>
 
 
 <jsp:useBean id="userMessage" class="java.lang.String" scope="session"/>
@@ -139,11 +140,9 @@
 <div id="topTitle">
     <h1>Jahia</h1>
     <% if (provider.equalsIgnoreCase("ldap")) { %>
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.users.ManageUsers.editUser.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageUsers.editUser.label"/></h2>
     <% } else { %>
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.users.ManageUsers.viewUserProperties.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageUsers.viewUserProperties.label"/></h2>
     <% } %>
 
 </div>
@@ -169,8 +168,7 @@
 <div id="content" class="fit">
 <div class="head headtop">
     <div class="object-title">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.users.ManageUsers.editUser.label"/>
+        <fmt:message key="org.jahia.admin.users.ManageUsers.editUser.label"/>
     </div>
 </div>
 <div class="content-item">
@@ -200,18 +198,17 @@
       method="post">
 <!-- Edit user -->
     <span style="padding: 5px 5px 5px 20px;display: block">
-    <p><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.pleaseOk.label"/></p>
-    <p><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.noteThat.label"/>&nbsp;:</p>
+    <p><fmt:message key="org.jahia.admin.users.ManageUsers.pleaseOk.label"/></p>
+    <p><fmt:message key="org.jahia.admin.users.ManageUsers.noteThat.label"/>&nbsp;:</p>
     <ul>
-        <li><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.removeSpace.label"/></li>
-        <li><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.users.ManageUsers.inputMaxCharacter.label"/></li>
+        <li><fmt:message key="org.jahia.admin.users.ManageUsers.removeSpace.label"/></li>
+        <li><fmt:message key="org.jahia.admin.users.ManageUsers.inputMaxCharacter.label"/></li>
     </ul>
     </span>
 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable" width="100%">
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.username.label"/>&nbsp;
     </td>
     <td>
         <!-- This hidden field is here when one will decide that a user name can be changed -->
@@ -224,7 +221,7 @@
 </tr>
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.firstName.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.firstName.label"/>&nbsp;
     </td>
     <td>
         <%if (!isPopup) {%>
@@ -240,7 +237,7 @@
 </tr>
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.lastName.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.lastName.label"/>&nbsp;
     </td>
     <td>
         <%if (!isPopup) {%>
@@ -256,7 +253,7 @@
 </tr>
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.eMail.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.eMail.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" size="40" maxlength="255"
@@ -267,7 +264,7 @@
 </tr>
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.organization.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.organization.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="text" size="40" maxlength="255"
@@ -278,9 +275,7 @@
 </tr>
 <tr>
     <td align="right">
-        <label for="emailNotificationsDisabledView"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.emailNotifications.label"
-                defaultValue="emailNotifications"/>&nbsp;</label>
+        <label for="emailNotificationsDisabledView"><fmt:message key="org.jahia.admin.emailNotifications.label"/>&nbsp;</label>
     </td>
     <td>
         <%
@@ -298,8 +293,7 @@
 </tr>
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.preferredLanguage.label"
-                                      defaultValue="preferredLanguage"/>&nbsp;
+        <fmt:message key="org.jahia.admin.preferredLanguage.label"/>&nbsp;
     </td>
     <td>
         <%
@@ -324,33 +318,31 @@
 <% if (!jUser.isPasswordReadOnly()) { %>
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.password.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.password.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="password" name="passwd"
                size="40" maxlength="255"
                value='<%=JahiaTools.nnString(passwd)%>'>
-        &nbsp;<span class="text2"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
+        &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
     </td>
 </tr>
 <tr>
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.confirmPassword.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.confirmPassword.label"/>&nbsp;
     </td>
     <td>
         <input class="input" type="password" name="passwdconfirm"
                size="40" maxlength="255"
                value='<%=JahiaTools.nnString(passwdConfirm)%>'>
-        &nbsp;<span class="text2"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
+        &nbsp;<span class="text2"><fmt:message key="org.jahia.admin.users.ManageUsers.noChangeBlank.label"/></span>
     </td>
 </tr>
 <% } %>
 <% if (isSuperAdminProp == null) {%>
 <tr style="height: 35px; vertical-align: top;">
     <td align="right">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.homePage.label"/>&nbsp;
+        <fmt:message key="org.jahia.admin.homePage.label"/>&nbsp;
     </td>
     <td>
         <b id="homePageLabel">${not empty homePageLabel ? homePageLabel : noneLabel}</b>
@@ -359,14 +351,14 @@
         <br/>
         <span class="dex-PushButton">
             <span class="first-child">
-                <c:set var="label"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.select.label' defaultValue='select'/></c:set>
-                <c:set var="title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.users.ManageUsers.setHomePage.label' defaultValue='select'/></c:set>
+                <c:set var="label"><fmt:message key='org.jahia.admin.select.label' /></c:set>
+                <c:set var="title"><fmt:message key='org.jahia.admin.users.ManageUsers.setHomePage.label'/></c:set>
                 <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" class="ico-home-add" label="${label}" title="${title}"/>
             </span>
         </span>
         <span class="dex-PushButton">
             <span class="first-child">
-                <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label" defaultValue="remove"/></a>
+                <a href="#remove" class="ico-delete" onclick="homePageRemoved(); return false;"><fmt:message key="org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroupToNone.label"/></a>
             </span>
         </span>
         <% } %>
@@ -381,7 +373,7 @@
                 String[] textPattern = jUser.isRoot() ? new String [] {"Principal", "Provider, 6", "Name, 15", "SiteTitle, 15", "Properties, 20"} : new String [] {"Principal", "Provider, 6", "Name, 15", "Properties, 20"};
                 PrincipalViewHelper principalViewHelper = new PrincipalViewHelper(textPattern);
         %>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageGroups.groupList.label"/>
+        <fmt:message key="org.jahia.admin.users.ManageGroups.groupList.label"/>
         <br>
         <select class="fontfix" name="selectMember" size="6" multiple
                 <%if (groups.size() == 0) {%>disabled<%}%> >
@@ -451,24 +443,21 @@
             cancelURL = "javascript:window.close();";
         }
     %>
-        <a class="ico-cancel" href="<%=cancelURL%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.cancel.label"/></a>
+        <a class="ico-cancel" href="<%=cancelURL%>"><fmt:message key="org.jahia.admin.cancel.label"/></a>
     <% } else {
         String cancelURL = JahiaAdministration.composeActionURL(request, response, "displaymenu", "");
         if (isPopup) {
             cancelURL = "javascript:window.close();";
         }
     %>
-        <a class="ico-cancel" href="<%=cancelURL%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.admin.cancel.label"/></a>
+        <a class="ico-cancel" href="<%=cancelURL%>"><fmt:message key="org.jahia.admin.cancel.label"/></a>
     <% } %>
       </span>
      </span>
      <span class="dex-PushButton"> 
       <span class="first-child">
          <a class="ico-ok"
-            href="javascript:document.mainForm.submit();<%if(isPopup){%>closeWindowAndReloadParent();<%}%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                 resourceName="org.jahia.admin.ok.label"/></a>
+            href="javascript:document.mainForm.submit();<%if(isPopup){%>closeWindowAndReloadParent();<%}%>"><fmt:message key="org.jahia.admin.ok.label"/></a>
       </span>
      </span>
 

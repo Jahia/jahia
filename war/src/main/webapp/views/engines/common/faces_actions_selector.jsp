@@ -59,7 +59,7 @@ window.onresize = function() {
 <table border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
 <form name="selector" action="">
 <tr>
-    <td><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image" />" width="5" height="24"></td>
+    <td><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.pix.image" />" width="5" height="24"></td>
     <td width="100%" align="right" valign="bottom" class="text">
     	<logic:iterate id="button" name="jahiaEngineButtonsHelper" property="buttons" type="java.lang.String">
 	        <logic:equal name="button" value="OK_BUTTON">
@@ -89,16 +89,16 @@ window.onresize = function() {
 	        </logic:equal>
 	    </logic:iterate>
     </td>
-    <td><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image" />" width="5" height="24"></td>
+    <td><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.pix.image" />" width="5" height="24"></td>
 </tr>
 <!-- tab buttons -->
 <logic:present name="tab-buttons">
 <tr>
-    <td><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image" />" width="5" height="24"></td>
+    <td><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.pix.image" />" width="5" height="24"></td>
     <td width="100%" class="text" valign="bottom">
 	    	<tiles:insert beanName="tab-buttons"/>
     </td>
-    <td><img src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.pix.image" />" width="5" height="24"></td>
+    <td><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.pix.image" />" width="5" height="24"></td>
 </tr>
 </logic:present>
 </form>

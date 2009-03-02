@@ -55,7 +55,7 @@
 <h1>Jahia</h1>
 <h2 class="edit">
 <%if(!isConfigWizard){%>
-      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
+      <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
       <%}else{%>
       <internal:message key="org.jahia.createSite.siteFactory"/>
       <%}%>   
@@ -90,12 +90,12 @@
              <% } %>
 			<div class="head">
 				<div class="object-title">
-					 <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.createAdministrator.label"/>
+					 <fmt:message key="org.jahia.admin.site.ManageSites.createAdministrator.label"/>
 				</div>
 				
 				<%if(!isConfigWizard){%>
     <div  class="object-shared">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.step.label"/> 1a / 3
+        <fmt:message key="org.jahia.step.label"/> 1a / 3
     </div>
    <% } %>
 
@@ -124,7 +124,7 @@
     <tr>
         <td class="asterisk">*&nbsp;</td>
         <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.admin.username.label"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input  class="input" type="text" name="adminUsername" size="<%=inputSize%>" maxlength="255" value="<%=adminUsername%>">
@@ -133,7 +133,7 @@
     <tr>
         <td></td>
         <td nowrap>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.firstName.label"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.admin.firstName.label"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="text" name="adminFirstName" size="<%=inputSize%>" maxlength="255" value="<%=adminFirstName%>">
@@ -142,7 +142,7 @@
     <tr>
         <td></td>
         <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.lastName.label"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.admin.lastName.label"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="text" name="adminLastName" size="<%=inputSize%>" maxlength="255" value="<%=adminLastName%>">
@@ -151,7 +151,7 @@
     <tr>
         <td>&nbsp;</td>
         <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.eMail.label"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.admin.eMail.label"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="text" name="adminEmail" size="<%=inputSize%>" maxlength="255" value="<%=adminEmail%>">
@@ -160,7 +160,7 @@
     <tr>
         <td>&nbsp;</td>
         <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.organization.label"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.admin.organization.label"/>&nbsp;:&nbsp;
         </td>
         <td>              
             <input class="input" type="text" name="adminOrganization" size="<%=inputSize%>" maxlength="255" value="<%=adminOrganization%>">
@@ -169,7 +169,7 @@
     <tr>
         <td class="asterisk">*</td>
         <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.password.label"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.admin.password.label"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="password" name="adminPassword" size="<%=inputSize%>" maxlength="255" value="<%=adminPassword%>">
@@ -178,7 +178,7 @@
     <tr>
         <td class="asterisk">*</td>
         <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.confirmPassword.label"/>&nbsp;:&nbsp;
+            <fmt:message key="org.jahia.admin.confirmPassword.label"/>&nbsp;:&nbsp;
         </td>
         <td>
             <input class="input" type="password" name="adminConfirm" size="<%=inputSize%>" maxlength="255" value="<%=adminConfirm%>">
@@ -202,9 +202,9 @@
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
       	 <% if (session.getAttribute(JahiaAdministration.CLASS_NAME + "noSites") != null) { %>
-        		<a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+        		<a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
 		<% } else { %>
-		        <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+		        <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
 		<% } %>
       </span>
      </span> 
@@ -212,7 +212,7 @@
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
       	 <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();">          
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/>
+          <fmt:message key="org.jahia.admin.save.label"/>
         </a>
       </span>
      </span>

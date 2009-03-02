@@ -44,7 +44,9 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -94,29 +96,29 @@
     <%@ include file="../tools.inc" %>
     <div id="content" class="fit w2">
       <div class="head">
-         <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Workflow.label"/></div>
+         <div class="object-title"><fmt:message key="org.jahia.engines.include.actionSelector.Workflow.label"/></div>
       </div>
 
       <% if(hasLocksActivated) {%>
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr>
-            <td><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.error.locks.activated.label"/></td>
+            <td><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.error.locks.activated.label"/></td>
           </tr>
         </table>
       <% } else { %>
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr>
-            <th><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.wfmode.label"/></th>
+            <th><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.wfmode.label"/></th>
             <td>
             <%
                 final int mode = workflowMode.intValue();
                 switch (mode) {
                     case 0:
-            %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.noworkflow.label"/><%
+            %><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.noworkflow.label"/><%
                 break;
 
             case 1:
-        %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.standard.label"/><%
+        %><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.standard.label"/><%
                 break;
 
             case 2:
@@ -124,11 +126,11 @@
                 break;
 
             case 3:
-        %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.inherited.label"/><%
+        %><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.inherited.label"/><%
                 break;
 
             case 4:
-        %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.linked.label"/><%
+        %><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.linked.label"/><%
                     break;
             }
         %>
@@ -138,13 +140,13 @@
             <tr>
               <% if (workflowMode.intValue() == WorkflowService.LINKED) { %>
               <th>
-                  <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.linkedto.label"/>
+                  <fmt:message key="org.jahia.engines.workflow.WorkflowEngine.linkedto.label"/>
               </th>
               <td>
                 <%= engineMap.get("linked") %>
             <% } else { %>
               <th>
-                <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.inheritfrom.label"/>:
+                <fmt:message key="org.jahia.engines.workflow.WorkflowEngine.inheritfrom.label"/>:
               </th>
               <td>
                 <%= engineMap.get("inheritingParent") %>
@@ -153,17 +155,17 @@
                 switch (inheritedMode.intValue()) {
                 case WorkflowService.INACTIVE:
                 %>
-                (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.noworkflow.label"/>)
+                (<fmt:message key="org.jahia.engines.workflow.WorkflowEngine.noworkflow.label"/>)
                 <%
                    break;
                 case WorkflowService.JAHIA_INTERNAL:
                 %>
-                (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.standard.label"/>)
+                (<fmt:message key="org.jahia.engines.workflow.WorkflowEngine.standard.label"/>)
                 <%
                   break;
                 case WorkflowService.EXTERNAL:
                 %>
-                (<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.external.label"/>
+                (<fmt:message key="org.jahia.engines.workflow.WorkflowEngine.external.label"/>
                  - <%= engineMap.get("inheritedProcess") %>)
                 <%
                   break;
@@ -180,7 +182,7 @@
         roleNb = roles.size();
         if (roleNb > 0) { %>
           <div class="head">
-            <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.definesRoles.label"/></div>
+            <div class="object-title"><fmt:message key="org.jahia.engines.workflow.definesRoles.label"/></div>
           </div>
 
           <%
@@ -202,7 +204,7 @@
 
                 <% if (roles.get(i).equals(infos.getNextRole())) { %>
                 <img src="${pageContext.request.contextPath}/engines/images/arrow_right_green.png"
-                alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.nextStep.label"/>' border="0"
+                alt='<fmt:message key="org.jahia.engines.workflow.nextStep.label"/>' border="0"
                 style="float: left; margin-left: -25px; margin-top: 40px;"/>
                     <strong><%=rolesMapping.get(roles.get(i))%></strong>
                 <% } else { %>
@@ -230,8 +232,7 @@
                         }
                         if (inheritedMemberSet.size() + membersSet.size() == 0) {
                     %>
-                    <option value="null">-----&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----
+                    <option value="null">-----&nbsp;<fmt:message key="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----
                     </option>
                     <%}%>
                 </select>
@@ -248,7 +249,7 @@
                     <td width="45%">
                         <% if (roles.get(i).equals(infos.getNextRole())) { %>
                         <img src="${pageContext.request.contextPath}/engines/images/arrow_right_green.png"
-                        alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.nextStep.label"/>' border="0"
+                        alt='<fmt:message key="org.jahia.engines.workflow.nextStep.label"/>' border="0"
                         style="float: left; margin-left: -25px; margin-top: 40px;"/>
                             <strong><%=rolesMapping.get(roles.get(i))%></strong>
                         <% } else { %>
@@ -276,8 +277,7 @@
                                 }
                                 if (inheritedMemberSet.size() + membersSet.size() == 0) {
                             %>
-                            <option value="null">-----&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----
+                            <option value="null">-----&nbsp;<fmt:message key="org.jahia.engines.users.SelectUG_Engine.noMembers.label"/>&nbsp;-----
                             </option>
                             <%}%>
                         </select>
@@ -290,12 +290,12 @@
             </div>
             <%}%>
             <%} else { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.notDefineRoles.label"/>
+            <fmt:message key="org.jahia.engines.shared.Application_Field.notDefineRoles.label"/>
             <% } %>
 
             <div><img src="${pageContext.request.contextPath}/engines/images/arrow_right_green.png"
-                        alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.nextStep.label"/>' border="0"
-                        style="float: left; margin-top: -3px;"/> - <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.nextStep.label"/>
+                        alt='<fmt:message key="org.jahia.engines.workflow.nextStep.label"/>' border="0"
+                        style="float: left; margin-top: -3px;"/> - <fmt:message key="org.jahia.engines.workflow.nextStep.label"/>
            </div>
 
       <% } else { %>

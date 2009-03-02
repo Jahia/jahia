@@ -55,8 +55,7 @@
 <div class="content">
 <div id="editor" class="mainPanel">
 <h4 class="versioningIcon">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
+    <fmt:message key="org.jahia.engines.include.actionSelector.PageVersioning.label"/>
 </h4>
 <div class="clearing">&nbsp;</div>
 <html:messages id="currentMessage" message="true">

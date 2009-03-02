@@ -52,6 +52,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     boolean inherited = false;
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -99,30 +101,28 @@
 <%@page import="org.jahia.content.ContentContainerListKey" %>
 
 <div class="head headtop">
-    <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.timebasedpublishing.rule.settings.label"/></div>
+    <div class="object-title"><fmt:message key="org.jahia.engines.timebasedpublishing.rule.settings.label"/></div>
 </div>
 
 <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
 <tr>
     <th align="left" width="120">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.inheritfromparent.label"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.inheritfromparent.label"/>
     </th>
     <td align="left">
         <input class="input" type="radio" name="inherited" value="1" ${inherited ? 'checked="checked"' : ''}
                onclick="handleActionChange('timeBasedPublishing')">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.yes.label"/>&nbsp;<input class="input"
+        <fmt:message key="org.jahia.engines.yes.label"/>&nbsp;<input class="input"
                                                                                                type="radio"
                                                                                                name="inherited"
                                                                                                value="0" ${!inherited ? 'checked="checked"' : ''}
                                                                                                onclick="handleActionChange('timeBasedPublishing')">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.no.label"/>
+        <fmt:message key="org.jahia.engines.no.label"/>
     </td>
 </tr>
 <tr class="ruleSettings">
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.schedulingType.label"
-                                      defaultValue="Scheduling type"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.schedulingType.label"/>
     </th>
     <td>
         <input type="hidden" name="oldRuleType" value="<%=currentRule.getRuleType()%>">
@@ -132,11 +132,9 @@
                 while (iterator.hasNext()) {
                     String ruleType = (String) iterator.next();
             %>
-            <option class="input" value="<%=ruleType%>"
-                    <% if (ruleType.equals(currentRule.getRuleType())){ %>selected="selected"<% } %> >
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName='<%="org.jahia.engines.timebasedpublishing.schedulingType." + ruleType %>'
-                        defaultValue="<%=ruleType%>"/>
+            <option class="input" value="<%=ruleType%>" <% if (ruleType.equals(currentRule.getRuleType())){ %>selected="selected"<% } %> >
+                <fmt:message key='<%="org.jahia.engines.timebasedpublishing.schedulingType." + ruleType %>'/>
+            </option>
                 <% } %>
         </select>
     </td>
@@ -144,7 +142,7 @@
 <% if (RetentionRule.RULE_START_AND_END_DATE.equals(currentRule.getRuleType())) {%>
 <tr class="ruleSettings">
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.rangerule.validFrom.label"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.rangerule.validFrom.label"/>
     </th>
     <td nowrap>
         <ui:dateSelector fieldName="${fromDateCalHandler.identifier}"
@@ -158,7 +156,7 @@
 </tr>
 <tr class="ruleSettings">
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.rangerule.validTo.label"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.rangerule.validTo.label"/>
     </th>
     <td>
         <ui:dateSelector fieldName="${toDateCalHandler.identifier}"
@@ -173,7 +171,7 @@
 <% } else if (RetentionRule.RULE_DAILY.equals(currentRule.getRuleType())) {%>
 <tr class="ruleSettings">
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.from" defaultValue="From"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.from"/>
     </th>
     <td nowrap>
         <%
@@ -186,7 +184,7 @@
 </tr>
 <tr class="ruleSettings">
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.until" defaultValue="until"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.until"/>
     </th>
     <td>
         <%
@@ -201,8 +199,7 @@
 </tr>
 <tr class="ruleSettings">
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.firstOccurence"
-                                      defaultValue="first occurence"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.firstOccurence"/>
     </th>
     <td>
         <jsp:include page="enable_immediatepublication.jsp" flush="true"/>
@@ -211,8 +208,7 @@
 <% } else if (RetentionRule.RULE_XDAYINWEEK.equals(currentRule.getRuleType())) {%>
 <tr>
     <td colspan="2">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.rangerule.daysInWeek.label"
-                                      defaultValue="Days in week"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.rangerule.daysInWeek.label"/>
         <table>
             <c:forEach var="dayItem" items="${requestScope['daysInWeek']}">
                 <c:set scope="page" var="dayBean" value="${dayItem}"/>
@@ -223,12 +219,9 @@
                     <td>
                         <input class="input" type="checkbox" id="daysInWeek${dayItem.day}" name="daysInWeek" value="${dayItem.day}" ${dayItem.selected ? 'checked="checked"' : ''} ${inherited ? 'disabled="disabled"' : ''}>
                         <label for="daysInWeek${dayItem.day}">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName='<%="org.jahia.engines.timebasedpublishing.days."+dayBean.getDay()%>'
-                                defaultValue="<%=dayBean.getDay()%>"/></label>
+                        <fmt:message key='<%="org.jahia.engines.timebasedpublishing.days."+dayBean.getDay()%>'/></label>
                     </td>
-                    <td style="width:50px;padding-left:20px;padding-right:5px;"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.engines.timebasedpublishing.from" defaultValue="from"/>
+                    <td style="width:50px;padding-left:20px;padding-right:5px;"><fmt:message key="org.jahia.engines.timebasedpublishing.from"/>
                     </td>
                     <td>
                         <%
@@ -240,8 +233,7 @@
                         <jsp:include page="hours_input.jsp" flush="true"/>
                     </td>
                     <td style="width:50px;padding-left:15px;padding-right:5px;">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.until"
-                                                      defaultValue="until"/>
+                        <fmt:message key="org.jahia.engines.timebasedpublishing.until"/>
                     </td>
                     <td>
                         <%
@@ -259,8 +251,7 @@
 </tr>
 <tr class="ruleSettings">
     <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.firstOccurence"
-                                      defaultValue="first occurence"/>
+        <fmt:message key="org.jahia.engines.timebasedpublishing.firstOccurence"/>
     </th>
     <td>
         <jsp:include page="enable_immediatepublication.jsp" flush="true"/>

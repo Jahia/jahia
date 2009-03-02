@@ -226,8 +226,7 @@
                             height="10">
 
                         <div id="copyright"><%=Jahia.COPYRIGHT%>&nbsp;
-                            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                    resourceName="org.jahia.Jahia.copyright.label"/>
+                            <fmt:message key="org.jahia.Jahia.copyright.label"/>
                         </div><span
                             class="version">Jahia <%=Jahia.VERSION%>.<%=Jahia.getPatchNumber()%> r<%=
                     Jahia.getBuildNumber()%></span>

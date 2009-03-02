@@ -41,7 +41,8 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
@@ -54,8 +55,7 @@
 
         <% if (engineMap.containsKey("NoCategories")) { %>
         <p>
-            <b><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.engines.categories.noCategoriesAvailable.label"/></b>
+            <b><fmt:message key="org.jahia.engines.categories.noCategoriesAvailable.label"/></b>
         </p>
         <% } else { %>
         <internal:gwtImport module="org.jahia.ajax.gwt.module.categorypicker.CategoryPicker"/>
@@ -65,15 +65,15 @@
 <div id="actionBar">
   <span class="dex-PushButton">
        <span class="first-child">
-           <a href="javascript:sendFormSave();" class="ico-ok" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.ok.button"/>'>
-                 <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.ok.button"/>
+           <a href="javascript:sendFormSave();" class="ico-ok" title='<fmt:message key="org.jahia.ok.button"/>'>
+                 <fmt:message key="org.jahia.ok.button"/>
             </a>
         </span>
   </span>
   <span class="dex-PushButton">
         <span class="first-child">
-             <a href="javascript:window.close();" class="ico-cancel" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.close.button"/>'>
-                   <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.close.button"/>
+             <a href="javascript:window.close();" class="ico-cancel" title='<fmt:message key="org.jahia.close.button"/>'>
+                   <fmt:message key="org.jahia.close.button"/>
               </a>
         </span>
   </span>

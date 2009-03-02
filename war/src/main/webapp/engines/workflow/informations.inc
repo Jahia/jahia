@@ -37,7 +37,7 @@
     <td class="text6" colspan="100"> <!-- W3C compliant 0 value doesn't work !-->
         &nbsp;&nbsp;&nbsp;
         <% if (activationTestResults.getErrors().size() == 0) { %>
-            <internal:displayIcon src="workflowErrors" alt="No errors to show" />&nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.no.label"/></b>
+            <internal:displayIcon src="workflowErrors" alt="No errors to show" />&nbsp;<b><fmt:message key="org.jahia.engines.shared.Page_Field.no.label"/></b>
         <% } else { %>
             <% if (treeJahiaSiteMap.shouldShowErrors(i)) { %>
                 <a href="javascript:handleActionChanges('<%=screen%>&sitemap=hideerror|<%=i%>#<%=i%>')">
@@ -47,7 +47,7 @@
                     <internal:displayIcon src="workflowErrors" alt="Show errors" /></a>
             <% } %>
         <% } %>
-        &nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.errors.label"/> (<%=activationTestResults.getErrors().size()%>)</b><br>
+        &nbsp;<b><fmt:message key="org.jahia.engines.shared.Page_Field.errors.label"/> (<%=activationTestResults.getErrors().size()%>)</b><br>
         <% if (treeJahiaSiteMap.shouldShowErrors(i)) { %>
             <ul>
             <% for (int j = 0; j < activationTestResults.getErrors().size(); j++) {
@@ -58,7 +58,7 @@
         } %>
         &nbsp;&nbsp;&nbsp;
         <% if (activationTestResults.getWarnings().size() == 0) { %>
-            <internal:displayIcon src="workflowWarnings" alt="No warnings to show" />&nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.no.label"/></b>
+            <internal:displayIcon src="workflowWarnings" alt="No warnings to show" />&nbsp;<b><fmt:message key="org.jahia.engines.shared.Page_Field.no.label"/></b>
         <% } else { %>
             <% if (treeJahiaSiteMap.shouldShowWarnings(i)) { %>
                 <a href="javascript:handleActionChanges('<%=screen%>&sitemap=hidewarning|<%=i%>#<%=i%>')">
@@ -68,7 +68,7 @@
                     <internal:displayIcon src="workflowWarnings" alt="Show warnings" /></a>
             <% } %>
         <% } %>
-        &nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.warning.label"/> (<%=activationTestResults.getWarnings().size()%>)</b><br>
+        &nbsp;<b><fmt:message key="org.jahia.warning.label"/> (<%=activationTestResults.getWarnings().size()%>)</b><br>
         <% if (treeJahiaSiteMap.shouldShowWarnings(i)) { %>
             <ul>
             <% for (int j = 0; j < activationTestResults.getWarnings().size(); j++) {
@@ -79,7 +79,7 @@
         } %>
         &nbsp;&nbsp;&nbsp;
         <internal:displayIcon src="workflowEvents" alt="No events to show" />
-        &nbsp;<b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Page_Field.events.label"/>&nbsp;:&nbsp;</b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.notImplemented.label"/><br>
+        &nbsp;<b><fmt:message key="org.jahia.engines.shared.Page_Field.events.label"/>&nbsp;:&nbsp;</b><fmt:message key="org.jahia.notImplemented.label"/><br>
     </td>
 </tr>
 <!-- End informations.inc -->

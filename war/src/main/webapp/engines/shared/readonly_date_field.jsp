@@ -41,6 +41,8 @@
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute( "org.jahia.engines.EngineHashMap" );
     final String fieldsEditCallingEngineName = (String) engineMap.get( "fieldsEditCallingEngineName" );
@@ -51,7 +53,7 @@
         jParams.setCurrentLocale(elh.getCurrentLocale());
     }
 %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/>&nbsp;:&nbsp;<%=theField.getValue()%>&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Date_Field.dateField.label"/>
+<fmt:message key="org.jahia.engines.value.label"/>&nbsp;:&nbsp;<%=theField.getValue()%>&nbsp;<fmt:message key="org.jahia.engines.shared.Date_Field.dateField.label"/>
 
 
 

@@ -47,6 +47,8 @@
 <%@ page import="java.util.Map" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     List aclNameList = (List) request.getAttribute("aclNameList");
     final Integer userNameWidth = new Integer(15);
@@ -56,7 +58,7 @@
 <div id="topTitle">
     <h1>Jahia</h1>
 
-    <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.title.label"/></h2>
+    <h2 class="edit"><fmt:message key="org.jahia.admin.sitepermissions.title.label"/></h2>
 </div>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin" />
 
@@ -78,7 +80,7 @@
 <div id="content" class="fit">
 <div class="head headtop">
     <div class="object-title">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.mainMenu.label"/>
+        <fmt:message key="org.jahia.admin.sitepermissions.mainMenu.label"/>
     </div>
 </div>
 <div class="content-item">
@@ -97,7 +99,7 @@
 <input type="hidden" name="currentGroup" value="<%=curPermissionGroup%>"/>
 
 <p>
-    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.introduction.label"/>
+    <fmt:message key="org.jahia.admin.sitepermissions.introduction.label"/>
 </p>
 
 <div class="dex-subTabBar">
@@ -107,8 +109,7 @@
                 <div>
                               <span>
                                 <a href="#"
-                                   onclick="changePermissionGroup('administration')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.admin.sitepermissions.permissionGroup.administration.label"/></a>
+                                   onclick="changePermissionGroup('administration')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.administration.label"/></a>
                               </span>
                 </div>
             </div>
@@ -117,8 +118,7 @@
             <div>
                 <div>
                               <span>
-                                <a href="#" onclick="changePermissionGroup('data')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.admin.sitepermissions.permissionGroup.data.label"/></a>
+                                <a href="#" onclick="changePermissionGroup('data')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.data.label"/></a>
                               </span>
                 </div>
             </div>
@@ -127,8 +127,7 @@
             <div>
                 <div>
                               <span>
-                                <a href="#" onclick="changePermissionGroup('tools')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                        resourceName="org.jahia.admin.sitepermissions.permissionGroup.tools.label"/></a>
+                                <a href="#" onclick="changePermissionGroup('tools')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.tools.label"/></a>
                               </span>
                 </div>
             </div>
@@ -137,8 +136,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('actions')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                       resourceName="org.jahia.admin.sitepermissions.permissionGroup.actions.label"/></a>
+                               <a href="#" onclick="changePermissionGroup('actions')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.actions.label"/></a>
                               </span>
                 </div>
             </div>
@@ -147,8 +145,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('languages')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                       resourceName="org.jahia.admin.sitepermissions.permissionGroup.languages.label"/></a>
+                               <a href="#" onclick="changePermissionGroup('languages')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.languages.label"/></a>
                               </span>
                 </div>
             </div>
@@ -157,8 +154,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('toolbars')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                       resourceName="org.jahia.admin.sitepermissions.permissionGroup.toolbars.label"/></a>
+                               <a href="#" onclick="changePermissionGroup('toolbars')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.toolbars.label"/></a>
                               </span>
                 </div>
             </div>
@@ -167,8 +163,7 @@
             <div>
                 <div>
                               <span>
-                               <a href="#" onclick="changePermissionGroup('integrity')"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                       resourceName="org.jahia.admin.sitepermissions.permissionGroup.integrity.label" defaultValue="Integrity checks"/></a>
+                               <a href="#" onclick="changePermissionGroup('integrity')"><fmt:message key="org.jahia.admin.sitepermissions.permissionGroup.integrity.label"/></a>
                               </span>
                 </div>
             </div>
@@ -178,8 +173,7 @@
 <div class="buttonList" style="text-align:right; padding:10px">
                     <span class="dex-PushButton">
                         <span class="first-child">
-                          <a class="ico-ok" href="javascript:saveContent();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                  resourceName="org.jahia.admin.saveChanges.label"/></a>
+                          <a class="ico-ok" href="javascript:saveContent();"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
                         </span>
                     </span>
 </div>
@@ -192,7 +186,7 @@
                     <div class="object-title">
                         <c:set var="aclShortName" value="${fn:substringAfter(fn:substringAfter(curAclName.aclName, 'org.jahia.actions.sites.'), '.')}"/>
                         <c:if test="${fn:contains(aclShortName, 'engines.languages.')}" var="languagePermissions">
-                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.permission.engines.languages.label"/>
+                            <fmt:message key="org.jahia.admin.sitepermissions.permission.engines.languages.label"/>
                             <%
                             String aclShortName = (String)pageContext.getAttribute("aclShortName");
                             String flagCode = aclShortName.substring(aclShortName.lastIndexOf('.') + 1); 
@@ -201,7 +195,7 @@
                             &nbsp;<internal:displayLanguageFlag code="<%=flagCode%>"/>
                         </c:if>
                         <c:if test="${!languagePermissions}">
-                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.sitepermissions.permission.${aclShortName}.label" defaultValue="org.jahia.admin.sitepermissions.permission.${aclShortName}.label"/>
+                            <fmt:message key="org.jahia.admin.sitepermissions.permission.${aclShortName}.label"/>
                         </c:if>
                     </div>
                 </div>
@@ -229,8 +223,7 @@
 <div id="actionBar">
             <span class="dex-PushButton">
                 <span class="first-child">
-                  <a class="ico-ok" href="javascript:saveContent();"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                          resourceName="org.jahia.admin.saveChanges.label"/></a>
+                  <a class="ico-ok" href="javascript:saveContent();"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
                 </span>
             </span>
 </div>

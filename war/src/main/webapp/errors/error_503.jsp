@@ -46,6 +46,8 @@
 %><%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal"
 %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <c:set var="isDuringFirstRequest" value="${not empty requestScope['org.jahia.exception'] && requestScope['org.jahia.exception'].class.name == 'org.jahia.exceptions.JahiaServerOverloadedException' && requestScope['org.jahia.exception'].duringFirstRequest}"/>
 <c:set var="timeInSeconds" value="${not empty requestScope['org.jahia.exception'] && requestScope['org.jahia.exception'].class.name == 'org.jahia.exceptions.JahiaServerOverloadedException' ? requestScope['org.jahia.exception'].suggestedRetryTime : 0}"/>
@@ -56,7 +58,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/error.css" type="text/css"/>
 <c:choose>
     <c:when test="${pageContext.request.method == 'GET' && isDuringFirstRequest && timeInSeconds > 0}">
-        <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.ajax.loading"/></title>
+        <title><fmt:message key="org.jahia.ajax.loading"/></title>
         <script type="text/javascript">
         <!--
           function reloadPage()  {
@@ -70,7 +72,7 @@
         </script>        
     </c:when>
     <c:otherwise>
-        <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.httpServiceUnavailable.label"/></title>
+        <title><fmt:message key="org.jahia.bin.JahiaErrorDisplay.httpServiceUnavailable.label"/></title>
     </c:otherwise>
 </c:choose>
 </head>
@@ -78,17 +80,17 @@
 <body>
 <c:choose>
     <c:when test="${pageContext.request.method == 'GET' && isDuringFirstRequest && timeInSeconds > 0}">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.ajax.loading"/>
+        <fmt:message key="org.jahia.ajax.loading"/>
     </c:when>
     <c:otherwise>
         <br/><br/><br/>
         <table class="errorbox" align="center" width="530" height="63" border="0" cellspacing="0" cellpadding="0">
         <tr>
-            <td class="boxtitle"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
+            <td class="boxtitle"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.errorPage.label"/></td>
         </tr>
         <tr>
             <td class="boxcontent">
-                <p class="bold"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.serviceUnavailable.label"/></p>
+                <p class="bold"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.serviceUnavailable.label"/></p>
             <%
             final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
             int timeInSeconds = (Integer) pageContext.getAttribute("timeInSeconds");
@@ -110,7 +112,7 @@
                         jParams.getLocale()), arguments);                
             }
             %>
-            <p><%=retryInMessage%>&nbsp;<a href="#reload" onclick="location.reload(); return false;" title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.retry.label"/>'><img name="Retry" src="${pageContext.request.contextPath}/css/images/andromeda/icons/refresh.png" border="0" alt='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.retry.label"/>' title='<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaErrorDisplay.retry.label"/>'></a></p>
+            <p><%=retryInMessage%>&nbsp;<a href="#reload" onclick="location.reload(); return false;" title='<fmt:message key="org.jahia.bin.JahiaErrorDisplay.retry.label"/>'><img name="Retry" src="${pageContext.request.contextPath}/css/images/andromeda/icons/refresh.png" border="0" alt='<fmt:message key="org.jahia.bin.JahiaErrorDisplay.retry.label"/>' title='<fmt:message key="org.jahia.bin.JahiaErrorDisplay.retry.label"/>'></a></p>
             </td>
         </tr>
         </table>

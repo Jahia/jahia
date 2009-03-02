@@ -40,13 +40,15 @@
 %><%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" 
 %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/andromeda.css" type="text/css"/>
-    <title><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.search.Search_Engine.searchResultsTitle.label"/></title>
+    <title><fmt:message key="org.jahia.engines.search.Search_Engine.searchResultsTitle.label"/></title>
 </head>
 <body>
 <center>

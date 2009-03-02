@@ -53,7 +53,7 @@
 
     <h2 class="edit">
         <%if (!isConfigWizard) {%>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
+        <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
         <%} else {%>
         <internal:message key="org.jahia.createSite.siteFactory"/>
         <%}%>
@@ -111,12 +111,11 @@
                                 <div class="full">
                                     <% } %>
                                     <div class="head">
-                                        <div class="object-title"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>
+                                        <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>
                                         </div>
                                         <%if (!isConfigWizard) {%>
                                         <div class="object-shared">
-                                            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.step.label"/> 2 / 3
+                                            <fmt:message key="org.jahia.step.label"/> 2 / 3
                                         </div>
                                         <% } %>
                                     </div>
@@ -129,14 +128,12 @@
                                             <tr>
                                                 <c:if test="${not empty tmplSets}">
                                                     <td>
-                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;:
+                                                        <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;:
                                                     </td>
                                                     <td>
                                                         <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
                                                             <option value="">
-                                                                ---------&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                    resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
+                                                                ---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                                                             <c:forEach items="${tmplSets}" var="tmplPack">
                                                                 <c:set var="displayName" value="" scope="request"/>
                                                                 <c:forEach items="${tmplPack.invertedHierarchy}"
@@ -154,8 +151,7 @@
                                                 </c:if>
                                                 <c:if test="${empty tmplSets}">
                                                     <td colspan="2">
-                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                resourceName="org.jahia.admin.site.ManageSites.noTemplatesHasbeenFound.label"/>
+                                                        <fmt:message key="org.jahia.admin.site.ManageSites.noTemplatesHasbeenFound.label"/>
                                                     </td>
                                                 </c:if>
                                             </tr>
@@ -187,16 +183,14 @@
                                                 <c:if test="${empty selectedPackage || empty selectedPackage.thumbnail}">
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                resourceName="org.jahia.admin.site.ManageSites.NoTemplatePreview.label"/>
+                                                        <fmt:message key="org.jahia.admin.site.ManageSites.NoTemplatePreview.label"/>
                                                     </td>
                                                 </c:if>
                                             </tr>
                                             <tr>
                                                 <c:if test="${not empty availableThemes}">
                                                     <td>
-                                                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                resourceName="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>&nbsp;:
+                                                        <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTheme.label"/>&nbsp;:
                                                     </td>
                                                     <td>
                                                         <select id="selectTheme" name="selectTheme"  onChange="swapImage('themePreview','selectTheme');">
@@ -214,8 +208,7 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                            resourceName="org.jahia.admin.site.ManageSites.pleaseChooseLanguage.label"/>&nbsp;:
+                                                    <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseLanguage.label"/>&nbsp;:
                                                 </td>
                                                 <td>
                                                     <select name="languageList">
@@ -262,24 +255,21 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displaycreateadmin")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                      resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displaycreateadmin")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
             </span>
           </span>
     <% } else if ("1".equals(((String) session.getAttribute("siteAdminOption")).trim())) { %>
           <span class="dex-PushButton">
             <span class="first-child">
                 <a class="ico-back"
-                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displayselectexistantadmin")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displayselectexistantadmin")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
            </span>
           </span>
     <% } else { %>
           <span class="dex-PushButton">
             <span class="first-child">
                 <a class="ico-back"
-                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
            </span>
           </span>
     <% } %>
@@ -288,7 +278,7 @@
                   <span class="dex-PushButton">
                     <span class="first-child">
                     <a class="ico-ok" href="javascript:submitForm('save');">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/>
+                        <fmt:message key="org.jahia.admin.save.label"/>
                     </a>
                   </span>
                 </span>

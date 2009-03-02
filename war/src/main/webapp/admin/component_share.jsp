@@ -59,9 +59,9 @@ autoDeploy = (val.intValue()==1);
     <img name="component" src="<%=URL%>images/icons/admin/application.gif" width="48" height="48" border="0" align="middle">
   </td>
   <td align="left" class="text">
-    <h3><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.manageComponents.label"/>
+    <h3><fmt:message key="org.jahia.admin.manageComponents.label"/>
       <br>
-      <% if ( currentSite!= null ){ %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %>
+      <% if ( currentSite!= null ){ %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %>
     </h3>
   </td>
 </tr>
@@ -91,7 +91,7 @@ autoDeploy = (val.intValue()==1);
               <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="text"align="left" valign="top">
-                    <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.generalOptions.label"/>&nbsp;:</b>
+                    <b><fmt:message key="org.jahia.admin.generalOptions.label"/>&nbsp;:</b>
                   </td>
                   <td class="text"align="left" valign="top">
                   </td>
@@ -105,7 +105,7 @@ autoDeploy = (val.intValue()==1);
                 <tr>
                   <td valign="top" align="left" nowrap>
                     <font class="text">
-                      <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.automaticDeployment.label"/>
+                      <fmt:message key="org.jahia.admin.components.ManageComponents.automaticDeployment.label"/>
                     </font>
                   </td>
                   <td valign="top" align="left">
@@ -134,7 +134,7 @@ autoDeploy = (val.intValue()==1);
             <td align="right" colspan="2">
               &nbsp;
               <br>
-              <input type="hidden" name="subaction" value=""><a href="javascript:document.mainForm.reset()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Cancel','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.resetChangesOn.button"/>',1)"><img name="Cancel" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.resetChangesOff.button"/>" width="133" height="17" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.resetChanges.label"/>"></a><a href="javascript:sendForm('save');" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('save','','${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.saveOn.button"/>',1)"><img name="save" src="${pageContext.request.contextPath}<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.saveOff.button"/>" border="0" alt="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/>"></a>
+              <input type="hidden" name="subaction" value=""><a href="javascript:document.mainForm.reset()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Cancel','','${pageContext.request.contextPath}<fmt:message key="org.jahia.resetChangesOn.button"/>',1)"><img name="Cancel" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.resetChangesOff.button"/>" width="133" height="17" border="0" alt="<fmt:message key="org.jahia.admin.resetChanges.label"/>"></a><a href="javascript:sendForm('save');" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('save','','${pageContext.request.contextPath}<fmt:message key="org.jahia.saveOn.button"/>',1)"><img name="save" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.saveOff.button"/>" border="0" alt="<fmt:message key="org.jahia.admin.save.label"/>"></a>
             </td>
           </tr>
           <tr>
@@ -151,22 +151,22 @@ autoDeploy = (val.intValue()==1);
                 <tr>
                   <td nowrap width="145" valign="top">
                     <font class="text">
-                      <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b>
+                      <b><fmt:message key="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b>
                     </font>
                   </td>
                   <td valign="top">
                     <font class="text">
                       <%if(!isLynx){ %>
                       <li>
-                        <%} %><a href='<%=JahiaAdministration.composeActionURL(request,response,"components","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
+                        <%} %><a href='<%=JahiaAdministration.composeActionURL(request,response,"components","&sub=display")%>'><fmt:message key="org.jahia.admin.components.ManageComponents.backToComponentsList.label"/></a>
                         <br>
                         <%if(!isLynx){ %>
                         <li>
-                          <%} %><a href='<%=JahiaAdministration.composeActionURL(request,response,"components","&sub=add")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.components.ManageComponents.manuallyAddNewComponent.label"/></a>
+                          <%} %><a href='<%=JahiaAdministration.composeActionURL(request,response,"components","&sub=add")%>'><fmt:message key="org.jahia.admin.components.ManageComponents.manuallyAddNewComponent.label"/></a>
                           <br>
                           <%if(!isLynx){ %>
                           <li>
-                            <%} %><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+                            <%} %><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
                             <br>
                             </font>
                           </td>

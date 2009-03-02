@@ -70,8 +70,7 @@
             <div>
                 <div>
           <span class="tab-icon ico-server">
-            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=server")%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.serverSettings.label"/></a>
+            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=server")%>"><fmt:message key="org.jahia.admin.serverSettings.label"/></a>
           </span>
                 </div>
             </div>
@@ -83,8 +82,7 @@
             <div>
                 <div>
           <span class="tab-icon ico-site">
-            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=site")%>"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.siteSettings.label"/>: <span id="siteName"><%=siteName%></span></a>
+            <a href="<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","&sub=site")%>"><fmt:message key="org.jahia.admin.siteSettings.label"/>: <span id="siteName"><%=siteName%></span></a>
           </span>
                 </div>
             </div>
@@ -94,10 +92,7 @@
             <div>
                 <div>
                     <span class="tab-icon ico-quit"><a href='<%=Jahia.getContextPath() + Jahia.getServletPath() + "/" + ParamBean.SITE_KEY_PARAMETER + "/" + theSite.getSiteKey()%>'
-                       title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.exit.label"/>"
-                    ><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.admin.exit.label"
-                        /></a></span>
+                       title="<fmt:message key='org.jahia.admin.exit.label'/>" ><fmt:message key="org.jahia.admin.exit.label"/></a></span>
                 </div>
             </div>
         </li>
@@ -112,8 +107,7 @@
     <ul class="dex-license-wrapper" style="width: 30%;">
         <li>
             <% if (daysLeft != null) { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                    resourceName="org.jahia.admin.daysLeftWarning.label"/>&nbsp;:&nbsp;<%=daysLeft %>
+            <fmt:message key="org.jahia.admin.daysLeftWarning.label"/>&nbsp;:&nbsp;<%=daysLeft %>
             <% } else { %>
             &nbsp;
             <% } %>

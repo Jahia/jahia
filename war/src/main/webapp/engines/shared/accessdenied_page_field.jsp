@@ -35,7 +35,8 @@
 
 <%@ page language="java" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <h4 class="page_type_big">
-    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.shared.Page_Field.accessDenied.label"/>
+    <fmt:message key="org.jahia.engines.shared.Page_Field.accessDenied.label"/>
 </h4>

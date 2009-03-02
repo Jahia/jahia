@@ -43,6 +43,8 @@
 <%@ page import="org.jahia.engines.JahiaEngine"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     final static private org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger("jsp.jahia.engines.shared.readonly_smalltext_field");  %>
@@ -73,7 +75,7 @@
 %>
 
 <% if (theField.getValue().indexOf("#") != -1 && theField.getValue().length() > 6 && theField.getValue().length() < 10) { %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.SmallText_Field.colorValue.label"/>
+<fmt:message key="org.jahia.engines.shared.SmallText_Field.colorValue.label"/>
 : <%=theField.getValue()%>
 <% } else if (defValue != null && !defValue.equals("") && defValue.toUpperCase().indexOf("JAHIA_MULTIVALUE") != -1) { %>
 <%
@@ -108,12 +110,12 @@
                 theSelection = theList.substring(0, endStr);
                 theList = theList.substring(endStr + 1, theList.length());
                 if (theSelection.equals(theSelectedField)) { %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> : <%=theSelection%>
+<fmt:message key="org.jahia.engines.value.label"/> : <%=theSelection%>
 <% }
 } else {
     theSelection = theList.substring(0, theList.length());
     if (theSelection.equals(theSelectedField)) { %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> : <%=theSelection%>
+<fmt:message key="org.jahia.engines.value.label"/> : <%=theSelection%>
 <% }
     break;
 }
@@ -127,11 +129,11 @@
 
     if (value.length() > 100) {
 %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/>
+<fmt:message key="org.jahia.engines.value.label"/>
 : <%=value.substring(0, 100) + "..."%>
 <% } else {
 %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.value.label"/> : <%=value%>
+<fmt:message key="org.jahia.engines.value.label"/> : <%=value%>
 <% }
 }
 %>

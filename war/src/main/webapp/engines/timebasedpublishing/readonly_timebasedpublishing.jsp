@@ -43,7 +43,10 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper"%>
 <%@ page import="org.jahia.params.ParamBean"%>
 <%@ page import="org.jahia.engines.JahiaEngine"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final Map subEngineMap = (Map) engineMap.get(TimeBasedPublishingEngine.SUB_ENGINE_MAP_NAME);
@@ -80,28 +83,25 @@
     <div class="content">
         <div id="editor">
             <h4 class="clock">
-                <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
+                <fmt:message key="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
             </h4>
 
             <table>
                 <caption>
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.status.label"/>
+                    <fmt:message key="org.jahia.engines.timebasedpublishing.status.label"/>
                 </caption>
                 <tr>
                     <td class="t1">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.timebasedpublishing.currentstatus.label"/>
+                        <fmt:message key="org.jahia.engines.timebasedpublishing.currentstatus.label"/>
 
                     </td>
                     <td class="t22">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="<%=labelResourceName%>"/>
+                        <fmt:message key="<%=labelResourceName%>"/>
                     </td>
                 </tr>
                 <tr>
                     <td class="t1">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.servertime.label"/>
+                        <fmt:message key="org.jahia.engines.servertime.label"/>
                     </td>
                     <td class="t22">
                         <span id="serverTime"/>
@@ -111,18 +111,16 @@
 
             <table>
                 <caption>
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.engines.timebasedpublishing.retentionrule.label"/>
+                    <fmt:message key="org.jahia.engines.timebasedpublishing.retentionrule.label"/>
                 </caption>
                 <tr>
-                    <td class="t1"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.engines.timebasedpublishing.currentrule.label"/></td>
+                    <td class="t1"><fmt:message key="org.jahia.engines.timebasedpublishing.currentrule.label"/></td>
                     <td class="t22">
                         <% final Iterator iterator = ruleDefs.iterator();
                             while (iterator.hasNext()) {
                                 final RetentionRuleDef ruleDef = (RetentionRuleDef) iterator.next();
                                 if (String.valueOf(ruleDef.getId().intValue()).equals(selectedRuleDef)) { %>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="<%=ruleDef.getBundleKey() %>"/>
+                        <fmt:message key="<%=ruleDef.getBundleKey() %>"/>
                         <% } %>
                         <% } %>
                     </td>
@@ -134,26 +132,23 @@
 
             %>
             <table>
-                <caption><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.engines.timebasedpublishing.rule.settings.label"/></caption>
+                <caption><fmt:message key="org.jahia.engines.timebasedpublishing.rule.settings.label"/></caption>
                 <tr>
-                    <td class="t1"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                            resourceName="org.jahia.engines.timebasedpublishing.inheritfromparent.label"/>
+                    <td class="t1"><fmt:message key="org.jahia.engines.timebasedpublishing.inheritfromparent.label"/>
                     </td>
                     <td class="t22">
                         <input class="input" type="radio" disabled="disabled" name="inherited" value="1" <% if ( inherited ){ %>
                                checked="checked"<% } %>>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.yes.label"/>&nbsp;
+                        <fmt:message key="org.jahia.engines.yes.label"/>&nbsp;
                         <input class="input" type="radio" disabled="disabled" name="inherited" value="0" <% if ( !inherited ){ %>
                                checked="checked"<% } %>>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.no.label"/>
+                        <fmt:message key="org.jahia.engines.no.label"/>
                     </td>
                 </tr>
                 <% if (!inherited) { %>
                 <tr id="rangerule.settings1">
                     <td class="t1">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.timebasedpublishing.rangerule.validFrom.label"/>
+                        <fmt:message key="org.jahia.engines.timebasedpublishing.rangerule.validFrom.label"/>
                     </td>
                     <td class="t22">
                         &nbsp;
@@ -161,8 +156,7 @@
                 </tr>
                 <tr id="rangerule.settings2">
                     <td class="t1">
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                resourceName="org.jahia.engines.timebasedpublishing.rangerule.validTo.label"/>
+                        <fmt:message key="org.jahia.engines.timebasedpublishing.rangerule.validTo.label"/>
                     </td>
                     <td class="t22">
                         &nbsp;
@@ -171,7 +165,7 @@
                 <% } %>
             </table>
             <% } else { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.timebasedpublishing.rule.none.label"/>
+            <fmt:message key="org.jahia.engines.timebasedpublishing.rule.none.label"/>
             <% } %>
 
         </div>

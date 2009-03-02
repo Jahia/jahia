@@ -309,7 +309,7 @@ function viewCronHelp() {
 </script>
 <div id="topTitle">
   <h1>Jahia</h1>
-  <h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.label"/> : <% if (currentSite != null) { %><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
+  <h2 class="edit"><fmt:message key="org.jahia.admin.productionManager.label"/> : <% if (currentSite != null) { %><fmt:message key="org.jahia.admin.site.label"/>&nbsp;<%=currentSite.getServerName() %><%} %></h2>
 </div>
 <div id="main">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
@@ -330,7 +330,7 @@ function viewCronHelp() {
             <div id="content" class="fit">
             <div class="head headtop">
                 <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.label"/>
+                    <fmt:message key="org.jahia.admin.productionManager.label"/>
                 </div>
             </div>
             
@@ -339,22 +339,22 @@ function viewCronHelp() {
             <div id="operationMenu">
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-add" href="javascript:addNewTarget();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.add.label'/></a>
+                    <a class="ico-add" href="javascript:addNewTarget();"><fmt:message key='org.jahia.admin.add.label'/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-apply" href="javascript:if(document.mainForm.targetLists.selectedIndex>=0)applyChangesOnTarget(document.mainForm.targetLists.options[document.mainForm.targetLists.selectedIndex].value);"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.apply.label'/></a>
+                    <a class="ico-apply" href="javascript:if(document.mainForm.targetLists.selectedIndex>=0)applyChangesOnTarget(document.mainForm.targetLists.options[document.mainForm.targetLists.selectedIndex].value);"><fmt:message key='org.jahia.admin.apply.label'/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton"> 
                     <span class="first-child">                  
-                    <a class="ico-delete" href="javascript:if(document.mainForm.targetLists.selectedIndex>=0)deleteTarget(document.mainForm.targetLists.options[document.mainForm.targetLists.selectedIndex].value);"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.delete.label'/></a>
+                    <a class="ico-delete" href="javascript:if(document.mainForm.targetLists.selectedIndex>=0)deleteTarget(document.mainForm.targetLists.options[document.mainForm.targetLists.selectedIndex].value);"><fmt:message key='org.jahia.admin.delete.label'/></a>
                     </span> 
                 </span>
                 <span class="dex-PushButton">
                 <span class="first-child">
-                  <a class="ico-ok" href="javascript:sendForm();"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName='org.jahia.admin.save.label'/></a>
+                  <a class="ico-ok" href="javascript:sendForm();"><fmt:message key='org.jahia.admin.save.label'/></a>
                 </span>
               </span>
                 </div>
@@ -370,7 +370,7 @@ function viewCronHelp() {
                 <input type="hidden" name="targetSites" value=""><input type="hidden" name="usernames" value=""><input type="hidden" name="sitenames" value=""><input type="hidden" name="passwords" value=""><input type="hidden" name="crons" value=""><input type="hidden" name="profiles" value=""><input type="hidden" name="aliases" value=""><input type="hidden" name="metadatas" value=""><input type="hidden" name="workflows" value=""><input type="hidden" name="acls" value=""><input type="hidden" name="publishes" value=""><input type="hidden" name="maxId" value="">
                 <div class="head">
                   <div class="object-title">
-                    <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.configuredSite.label"/>&nbsp;:
+                    <fmt:message key="org.jahia.admin.productionManager.configuredSite.label"/>&nbsp;:
                   </div>
                 </div>
 
@@ -390,9 +390,9 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.targetSite"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.targetSite"/>
                         <br>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.targetSite.example"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.targetSite.example"/>
                       </td>
                       <td>
                         <input type="text" name="targetSite" value="">
@@ -400,7 +400,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.sitename"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.sitename"/>
                       </td>
                       <td>
                         <input type="text" name="sitename" value="">
@@ -408,7 +408,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.alias"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.alias"/>
                       </td>
                       <td>
                         <input type="text" name="alias" value="">
@@ -416,7 +416,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.username"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.username"/>
                       </td>
                       <td>
                         <input type="text" name="username" value="">
@@ -424,7 +424,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.password"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.password"/>
                       </td>
                       <td>
                         <input type="password" name="password" value="">
@@ -432,7 +432,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.profile"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.profile"/>
                       </td>
                       <td>
                         <input type="text" name="profile" value="">
@@ -440,7 +440,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.metadata"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.metadata"/>
                       </td>
                       <td>
                         <input type="checkbox" name="metadata" checked="true" value="">
@@ -448,7 +448,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.workflow"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.workflow"/>
                       </td>
                       <td>
                         <input type="checkbox" name="workflow" value="">
@@ -456,7 +456,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.acls"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.acls"/>
                       </td>
                       <td>
                         <input type="checkbox" name="acl" checked="true" value="">
@@ -464,7 +464,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.publish"/>
+                        <fmt:message key="org.jahia.admin.productionManager.form.publish"/>
                       </td>
                       <td>
                         <input type="checkbox" name="publish" checked="false" value="">
@@ -472,7 +472,7 @@ function viewCronHelp() {
                     </tr>
                     <tr>
                       <td>
-                        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.productionManager.form.cron"/>&nbsp;<a href="#cronhelp" onclick="viewCronHelp(); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="show cron help"/></a>
+                        <fmt:message key="org.jahia.admin.productionManager.form.cron"/>&nbsp;<a href="#cronhelp" onclick="viewCronHelp(); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="show cron help"/></a>
                       </td>
                       <td>
                         <input type="text" name="cron" value="">

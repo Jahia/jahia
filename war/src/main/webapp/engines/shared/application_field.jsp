@@ -48,6 +48,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.filepicker.FilePicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
 <%!
@@ -139,9 +141,9 @@
             for (i = 0; i < index; i++) {
                 badName += "- ";
                 if (usrgrpname[i].substr(0, 1) == "u") {
-                    badName += "<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.userName.label"/>";
+                    badName += "<fmt:message key="org.jahia.engines.shared.Application_Field.userName.label"/>";
                 } else {
-                    badName += "<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.shared.Application_Field.groupName.label"/>";
+                    badName += "<fmt:message key="org.jahia.engines.shared.Application_Field.groupName.label"/>";
                 }
                 badName += usrgrpname[i].substr(1, usrgrpname[i].lastIndexOf(':') - 1) + "\n";
             }

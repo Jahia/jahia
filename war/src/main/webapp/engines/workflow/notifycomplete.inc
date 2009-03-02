@@ -57,9 +57,9 @@ function checkAllBoxes(language) {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
         <td><br><br>
-            <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.theUser.label"
+            <b><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.theUser.label"
             /><i>'<%=user.getUsername()%>'</i
-            ><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.noSuffisantRights.label"/></b>
+            ><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.noSuffisantRights.label"/></b>
         </td>
     </tr>
 </table>
@@ -71,15 +71,15 @@ function checkAllBoxes(language) {
         </td>
         <td>
             <internal:displayIcon src="workflowEditAnimState"
-            />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.stateEditing.label"/>&nbsp;&nbsp;&nbsp;
+            />&nbsp;<fmt:message key="org.jahia.engines.workflow.WorkflowEngine.stateEditing.label"/>&nbsp;&nbsp;&nbsp;
         </td>
         <td>
             <internal:displayIcon src="workflowWaitingState"
-            />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.stateApproval.label"/>&nbsp;&nbsp;&nbsp;
+            />&nbsp;<fmt:message key="org.jahia.engines.workflow.WorkflowEngine.stateApproval.label"/>&nbsp;&nbsp;&nbsp;
         </td>
         <td>
             <internal:displayIcon src="workflowActiveState"
-            />&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.statePublished.label"/>&nbsp;&nbsp;&nbsp;
+            />&nbsp;<fmt:message key="org.jahia.engines.workflow.WorkflowEngine.statePublished.label"/>&nbsp;&nbsp;&nbsp;
         </td>
     </tr>
     <tr>
@@ -87,7 +87,7 @@ function checkAllBoxes(language) {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
         <td colspan="3">
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.mandatoryLanguage.label"/>
+            <fmt:message key="org.jahia.engines.workflow.WorkflowEngine.mandatoryLanguage.label"/>
         </td>
     </tr>
 </table>
@@ -95,7 +95,7 @@ function checkAllBoxes(language) {
 <table class="text" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-        <td><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.approvalPages.label"/></b></td>
+        <td><b><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.approvalPages.label"/></b></td>
         <td>&nbsp;</td>
         <%
         Set languageCodes = new HashSet();
@@ -116,7 +116,7 @@ function checkAllBoxes(language) {
         <% } %>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="40%">
-            <b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.workflow.WorkflowEngine.comments.label"/></b>&nbsp;:
+            <b><fmt:message key="org.jahia.engines.workflow.WorkflowEngine.comments.label"/></b>&nbsp;:
         </td>
     </tr>
     <% String[] resourceBundleState =
@@ -240,8 +240,7 @@ function checkAllBoxes(language) {
 
                     boolean isWaitingState = languageState.intValue() == EntryLoadRequest.STAGING_WORKFLOW_STATE;
                     if (contentPage.hasSameParentID() == treeJahiaSiteMap.getParentPageID(i)) { %>
-                        <td colspan="<%=languageSettings.size()%>"><i><utility:resourceBundle resourceBundle="JahiaInternalResources"
-            resourceName="org.jahia.engines.workflow.SelectPage_Engine.pageMoved.label"/></i></td>
+                        <td colspan="<%=languageSettings.size()%>"><i><fmt:message key="org.jahia.engines.workflow.SelectPage_Engine.pageMoved.label"/></i></td>
                         <% break;
                     } else if ( contentPage.getTitles(true).containsKey(languageCode) ){
                         %><td align="center">

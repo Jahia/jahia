@@ -46,7 +46,7 @@
 
 <div id="topTitle">
 <h1>Jahia</h1>
-<h2 class="edit"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.registerExistingUser.label"/></h2>
+<h2 class="edit"><fmt:message key="org.jahia.admin.users.ManageUsers.registerExistingUser.label"/></h2>
 </div>
 <div id="main">
 
@@ -88,7 +88,7 @@
             <div id="content" class="fit">
 <div class="head">
     <div class="object-title">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.registerExistingUser.label"/>
+        <fmt:message key="org.jahia.admin.users.ManageUsers.registerExistingUser.label"/>
     </div>
 </div>
 <div class="content-item">
@@ -98,11 +98,11 @@
         <% if(allSites != null) { %>
           <td>
 
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.virtualSiteWhereUser.label"/>&nbsp;:
+            <fmt:message key="org.jahia.admin.users.ManageUsers.virtualSiteWhereUser.label"/>&nbsp;:
           </td>
           <td>
             <select name="selectSite" onChange="changeSite();">
-                <option value="0"<% if(selectedSite.intValue()==0) { %> selected<%}%>> ---------&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.site.ManageSites.pleaseChooseASite.label"/>&nbsp;&nbsp;---------&nbsp;</option>
+                <option value="0"<% if(selectedSite.intValue()==0) { %> selected<%}%>> ---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseASite.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                 <% while(allSites.hasNext()) {
                       JahiaSite site = (JahiaSite) allSites.next(); %>
                 <option value="<%=site.getID()%>"<%if(selectedSite.intValue()==site.getID()){%> selected<%}%>><%=site.getTitle()%> </option>
@@ -111,19 +111,19 @@
           </td>
         <% } else { %>
           <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.singleVirtualSite.label"/>
+            <fmt:message key="org.jahia.admin.users.ManageUsers.singleVirtualSite.label"/>
           </td>
         <% } %>
      </tr>
      <tr>
         <% if(selectedSite.intValue()>0) { %>
           <td>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.selectTheUser.label"/>&nbsp;:
+            <fmt:message key="org.jahia.admin.users.ManageUsers.selectTheUser.label"/>&nbsp;:
           </td>
           <td>
             <select name="userSelected" size="10" style="width: 200px">
                 <% if (!usersList.hasNext()) { %>
-                <option value="" disabled="disabled">------------------&nbsp;&nbsp;<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.users.ManageUsers.noUserFound.label"/>&nbsp;&nbsp;------------------</option>
+                <option value="" disabled="disabled">------------------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.users.ManageUsers.noUserFound.label"/>&nbsp;&nbsp;------------------</option>
                 <% } %>
                 <% while(usersList.hasNext()) {
                       Map userHash = (Map) usersList.next(); %>
@@ -148,14 +148,14 @@
   <div id="actionBar">
     <span class="dex-PushButton"> 
 	  <span class="first-child">
-      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a>
+      	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a>
       </span>
      </span>
       <% if(selectedSite.intValue()>0) { %>
      <span class="dex-PushButton"> 
       <span class="first-child">
           <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();">
-           <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.save.label"/>
+           <fmt:message key="org.jahia.admin.save.label"/>
          </a>
       </span>
      </span> 

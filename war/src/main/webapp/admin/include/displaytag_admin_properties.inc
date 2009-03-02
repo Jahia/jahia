@@ -45,16 +45,16 @@
 <display-el:setProperty name="locale.resolver"
                      value="org.jahia.taglibs.html.controls.displaytag.AdminBundleProvider"/>
 
-<display-el:setProperty name="basic.msg.empty_list"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.basic.msg.empty_list"/></display-el:setProperty>
-<display-el:setProperty name="basic.msg.empty_list_row"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.basic.msg.empty_list_row"/></display-el:setProperty>
-<display-el:setProperty name="export.banner"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.export.banner"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.item_name"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.item_name"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.items_name"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.items_name"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.no_items_found"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.no_items_found"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.one_item_found"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.one_item_found"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.all_items_found"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.all_items_found"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.some_items_found"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.some_items_found"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.full"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.full"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.first"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.first"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.last"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.last"/></display-el:setProperty>
-<display-el:setProperty name="paging.banner.page.link"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="net.sf.displaytag.paging.banner.page.link"/></display-el:setProperty>
+<display-el:setProperty name="basic.msg.empty_list"><fmt:message key="net.sf.displaytag.basic.msg.empty_list"/></display-el:setProperty>
+<display-el:setProperty name="basic.msg.empty_list_row"><fmt:message key="net.sf.displaytag.basic.msg.empty_list_row"/></display-el:setProperty>
+<display-el:setProperty name="export.banner"><fmt:message key="net.sf.displaytag.export.banner"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.item_name"><fmt:message key="net.sf.displaytag.paging.banner.item_name"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.items_name"><fmt:message key="net.sf.displaytag.paging.banner.items_name"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.no_items_found"><fmt:message key="net.sf.displaytag.paging.banner.no_items_found"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.one_item_found"><fmt:message key="net.sf.displaytag.paging.banner.one_item_found"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.all_items_found"><fmt:message key="net.sf.displaytag.paging.banner.all_items_found"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.some_items_found"><fmt:message key="net.sf.displaytag.paging.banner.some_items_found"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.full"><fmt:message key="net.sf.displaytag.paging.banner.full"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.first"><fmt:message key="net.sf.displaytag.paging.banner.first"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.last"><fmt:message key="net.sf.displaytag.paging.banner.last"/></display-el:setProperty>
+<display-el:setProperty name="paging.banner.page.link"><fmt:message key="net.sf.displaytag.paging.banner.page.link"/></display-el:setProperty>

@@ -65,13 +65,13 @@ inputSize = 22;
 <center>
 <div id="adminLogin">
 <h1 class="big">Jahia</h1>
-<h3 class="loginIcon"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.jahiaAdministration.label"/></h3>
+<h3 class="loginIcon"><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></h3>
 <br class="clearFloat" />
 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"processlogin","&redirectTo=" + URLEncoder.encode(redirectTo))%>' method="post">
   <table align="center" class="formTable" cellpadding="0" cellspacing="1" border="0">
     <tr>
       <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.username.label"/>
+        <fmt:message key="org.jahia.admin.username.label"/>
       </th>
       <td>
         <input class="input" type="text" name="login_username" size="<%=inputSize%>" maxlength="250" value="<%=jahiaLoginUsername%>" tabindex="1">
@@ -79,7 +79,7 @@ inputSize = 22;
     </tr>
     <tr>
       <th>
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.password.label"/>
+        <fmt:message key="org.jahia.admin.password.label"/>
       </th>
       <td>
         <input class="input" type="password" name="login_password" size="<%=inputSize%>" maxlength="250" tabindex="2" onkeydown="if (event.keyCode == 13) javascript:document.jahiaAdmin.submit();">
@@ -102,7 +102,7 @@ if(message!=null) { %>
 <div id="actionBar" class="alignCenter">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();" tabindex="5" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaAdministration.login.label"/>"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.bin.JahiaAdministration.login.label"/></a>
+      <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();" tabindex="5" title="<fmt:message key="org.jahia.bin.JahiaAdministration.login.label"/>"><fmt:message key="org.jahia.bin.JahiaAdministration.login.label"/></a>
     </span>
   </span>
   

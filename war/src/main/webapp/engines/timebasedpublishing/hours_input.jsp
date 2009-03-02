@@ -38,6 +38,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
   String inputNamePrefix = (String)request.getAttribute("inputNamePrefix");
   String hours = (String)request.getAttribute("hours");
@@ -55,8 +57,7 @@ HH: <select class="input" name="<%=inputNamePrefix%>Hours" ${inherited ? 'disabl
   <% 
     for ( int i=0; i<hoursMax.intValue(); i++ ){
     %>
-     <option class="input" style="width: 20px;" value="<%=String.valueOf(i)%>" <%if (String.valueOf(i).equals(hours)){%>selected<%}%>/><utility:resourceBundle resourceBundle="JahiaInternalResources"
-      resourceName='<%="org.jahia.engines.timebasedpublishing.hours."+String.valueOf(i)%>' defaultValue="<%=org.apache.commons.lang.StringUtils.leftPad(String.valueOf(i),2,'0')%>"/>
+     <option class="input" style="width: 20px;" value="<%=String.valueOf(i)%>" <%if (String.valueOf(i).equals(hours)){%>selected<%}%>/><fmt:message key='<%="org.jahia.engines.timebasedpublishing.hours."+String.valueOf(i)%>'"/>
     <%
     }
   %>  

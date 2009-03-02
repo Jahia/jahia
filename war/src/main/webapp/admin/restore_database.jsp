@@ -44,7 +44,7 @@
 <%@include file="/admin/include/header.inc"%>
 
 <tr>
-    <td align="center" class="text"><img name="db" src="<%=URL%>images/icons/admin/data.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.manageBackups.label"/></h3>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="center" class="text"><img name="db" src="<%=URL%>images/icons/admin/data.gif" width="48" height="48" border="0" align="middle"></td><td align="left" class="text"><h3><fmt:message key="org.jahia.admin.database.ManageDatabase.manageBackups.label"/></h3>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 </tr>
 </table>
 <br><br>
@@ -72,9 +72,9 @@
                         <td width="15">&nbsp;</td>
                         <td class="text" nowrap valign="top"><font size="1">[<%=backupHash.get("backup.date")%>, <%=backupHash.get("backup.type")%>, b=<%=backupHash.get("backup.build")%>, rel=<%=backupHash.get("backup.release")%>]</font></td>
                         <td width="15">&nbsp;</td>
-                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=restore&epoch=" + backupHash.get("backup.epoch") + "&build=" + backupHash.get("backup.build") + "&release=" + backupHash.get("backup.release"))%>' border="0"><font size="1"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.restore.label"/></font></a></td>
+                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=restore&epoch=" + backupHash.get("backup.epoch") + "&build=" + backupHash.get("backup.build") + "&release=" + backupHash.get("backup.release"))%>' border="0"><font size="1"><fmt:message key="org.jahia.admin.restore.label"/></font></a></td>
                         <td width="10">&nbsp;</td>
-                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=flush&epoch=" + backupHash.get("backup.epoch"))%>' border="0"><font size="1"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.delete.label"/></font></a></td>
+                        <td class="text" valign="top"><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=flush&epoch=" + backupHash.get("backup.epoch"))%>' border="0"><font size="1"><fmt:message key="org.jahia.admin.delete.label"/></font></a></td>
                     </tr>
                     <tr>
                         <td><font size="5">&nbsp;</font></td>
@@ -85,7 +85,7 @@
                         %>
                     </table>
                 <% } else { %>
-                    <font class="text"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.database.ManageDatabase.noBackup.label"/></font>
+                    <font class="text"><fmt:message key="org.jahia.admin.database.ManageDatabase.noBackup.label"/></font>
                 <% } %>
             </td>
         </tr>
@@ -94,11 +94,11 @@
                 &nbsp;<br><br>
                 <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td nowrap width="145" valign="top"><font class="text"><b><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
+                    <td nowrap width="145" valign="top"><font class="text"><b><fmt:message key="org.jahia.admin.otherOperations.label"/>&nbsp;:&nbsp;&nbsp;&nbsp;</b></font></td>
                     <td valign="top">
                         <font class="text">
-                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=display")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.previousStep.label"/></a><br>
-                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.backToMenu.label"/></a><br>
+                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"database","&sub=display")%>'><fmt:message key="org.jahia.admin.previousStep.label"/></a><br>
+                        <%if(!isLynx){%><li> <%}%><a href='<%=JahiaAdministration.composeActionURL(request,response,"displaymenu","")%>'><fmt:message key="org.jahia.admin.backToMenu.label"/></a><br>
                         </font>
                     </td>
                 </tr>

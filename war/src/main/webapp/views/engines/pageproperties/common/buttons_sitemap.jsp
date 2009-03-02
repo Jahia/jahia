@@ -38,18 +38,18 @@
 <div id="actionBar">
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-back" href="javascript:sendForm('showOperationChoices')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.backToStep"/> 1</a>
+      <a class="ico-back" href="javascript:sendForm('showOperationChoices')"><fmt:message key="org.jahia.engines.version.backToStep"/> 1</a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a href="javascript:window.close();" class="ico-cancel" title="<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.altCloseWithoutSave.label"/>">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.button.cancel"/></a>
+      <a href="javascript:window.close();" class="ico-cancel" title="<fmt:message key="org.jahia.altCloseWithoutSave.label"/>">
+        <fmt:message key="org.jahia.button.cancel"/></a>
     </span>
   </span>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-next" href="javascript:sendForm('showConfirmRestore')"><utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.version.proceedToStep"/> 3</a>
+      <a class="ico-next" href="javascript:sendForm('showConfirmRestore')"><fmt:message key="org.jahia.engines.version.proceedToStep"/> 3</a>
     </span>
   </span>
 </div>

@@ -117,7 +117,7 @@
     <% if (theScreen.equals("edit")) { %>
     <li class="section first">
       <a href="#" onclick="return false;" class="open">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Authoring.label"/>
+        <fmt:message key="org.jahia.engines.include.actionSelector.Authoring.label"/>
         <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EDIT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %></a>
     </li>
     <%
@@ -146,7 +146,7 @@
               <li class="item">
                 <div class="<%=className%>">
                   <a href="#" onclick="return false;" class="selected"><%=name%>
-                    <% if (isMandatory) { %><span class="error">(<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.required.label"/>)</span><% } %>
+                    <% if (isMandatory) { %><span class="error">(<fmt:message key="org.jahia.admin.required.label"/>)</span><% } %>
                   </a>
                 </div>
               </li>
@@ -154,7 +154,7 @@
               <li class="item">
                 <div class="<%=className%>">
                   <a href="javascript:changeField('<%=firstField.getID()%>');">
-                    <%=name != null ? name.trim() : ""%><% if (isMandatory) { %><span class="error">(<utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.admin.required.label"/>)</span><% } %></a>
+                    <%=name != null ? name.trim() : ""%><% if (isMandatory) { %><span class="error">(<fmt:message key="org.jahia.admin.required.label"/>)</span><% } %></a>
                 </div>
               </li>
             <%}
@@ -164,7 +164,7 @@
     <% } else { %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('edit'); return false;" class="closed">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Authoring.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Authoring.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EDIT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         </a>
       </li>
@@ -174,7 +174,7 @@
     <% if (theScreen.equals("metadata")) { %>
     <li class="section first">
       <a href="#" onclick="return false;" class="open">
-        <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Metadata.label"/>
+        <fmt:message key="org.jahia.engines.include.actionSelector.Metadata.label"/>
         <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.METADATA) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
       </a>
     </li>
@@ -216,7 +216,7 @@
     <% } else { %>
       <li class="section first">
         <a href="#" onclick="handleActionChange('metadata'); return false;" class="closed">
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.Metadata.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.Metadata.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.METADATA) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %></a>
       </li>
     <% } %>
@@ -225,10 +225,10 @@
     <li class="section first">
       <a href="#" onclick="handleActionChange('rightsMgmt'); return false;" class="single">
         <% if (theScreen.equals("rightsMgmt")) { %>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.RightsMgmt.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.RightsMgmt.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.RIGHTS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         <% } else { %>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.RightsMgmt.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.RightsMgmt.label"/>
             <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.RIGHTS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         <% } %>
       </a>
@@ -238,10 +238,10 @@
     <li class="section first">
       <a href="#" onclick="handleActionChange('ctneditview_rights'); return false;" class="single">
         <% if (theScreen.equals("ctneditview_rights")) { %>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.FieldsRightsMgmt.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.FieldsRightsMgmt.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.FIELD_RIGHTS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         <% } else { %>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.FieldsRightsMgmt.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.FieldsRightsMgmt.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.FIELD_RIGHTS) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         <% } %>
       </a>
@@ -251,10 +251,10 @@
     <li class="section first">
       <a href="#" onclick="handleActionChange('timeBasedPublishing'); return false;" class="single">
         <% if (theScreen.equals("timeBasedPublishing")) { %>
-          <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
+          <fmt:message key="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
           <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.TIME_BASED_PUBLISHING) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div><% } %>
         <% } else { %>
-            <utility:resourceBundle resourceBundle="JahiaInternalResources" resourceName="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
+            <fmt:message key="org.jahia.engines.include.actionSelector.TimeBasedPublishing.label"/>
             <% if (readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.TIME_BASED_PUBLISHING) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) { %> <div class="transparentLock">&nbsp;</div> <% } %>
         <% } %>
       </a>

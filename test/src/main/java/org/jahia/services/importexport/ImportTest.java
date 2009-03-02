@@ -40,6 +40,7 @@ public class ImportTest extends XMLTestCase {
 
     @Override
     protected void setUp() throws Exception {
+        TestHelper.cleanDatabase();
         site = TestHelper.createSite("testSite");
         ctx = Jahia.getThreadParamBean();
         assertNotNull(site);
@@ -55,9 +56,9 @@ public class ImportTest extends XMLTestCase {
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
                 importResult, new HashMap<String,String>(), null,null, importedMapping);
 
-        assertEquals(importResult.getStatus(),ImportResult.COMPLETED_OPERATION_STATUS);
-        assertEquals(importResult.getWarnings().size(), 0);
-        assertEquals(importResult.getErrors().size(), 0);
+        assertEquals("Invalid status code : "+importResult.getStatus(), importResult.getStatus(),ImportResult.COMPLETED_OPERATION_STATUS);
+        assertEquals(importResult.getWarnings().size() + " warnings",importResult.getWarnings().size(), 0);
+        assertEquals(importResult.getErrors().size() + " errors", importResult.getErrors().size(), 0);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         HashMap params = new HashMap();
@@ -83,7 +84,7 @@ public class ImportTest extends XMLTestCase {
         };                         
         Diff myDiff = new Diff(new InputSource(getClass().getClassLoader().getResourceAsStream("imports/import.xml")), new InputSource(new ByteArrayInputStream(out.toByteArray())));
         myDiff.overrideDifferenceListener(myDifferenceListener);
-        assertTrue(myDiff.similar());
+        assertTrue("XML not equals", myDiff.similar());
     }
 
     @Override

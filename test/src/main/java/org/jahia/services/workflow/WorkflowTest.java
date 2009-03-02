@@ -45,6 +45,7 @@ public class WorkflowTest extends TestCase {
     private ProcessingContext ctx;
 
     protected void setUp() throws Exception {
+        TestHelper.cleanDatabase();
         site = TestHelper.createSite("testSite");
         ctx = Jahia.getThreadParamBean();
         assertNotNull(site);
@@ -73,13 +74,13 @@ public class WorkflowTest extends TestCase {
         }
 
         allStagingAndWaitingObjects = service.getAllStagingAndWaitingObject(site.getID()).keySet();
-        assertTrue(allStagingAndWaitingObjects.isEmpty());
+        assertTrue("Still some staging and waiting objects : "+allStagingAndWaitingObjects, allStagingAndWaitingObjects.isEmpty());
 
-//        Iterator<JahiaPage> it = JahiaPageBaseService.getInstance().getAllPages(site.getID(), LoadFlags.ALL, ctx, ctx.getUser());
-//        while (it.hasNext()) {
-//            JahiaPage o = it.next();
-//            assertTrue(o.hasActiveEntries());
-//        }
+        Iterator<JahiaPage> it = JahiaPageBaseService.getInstance().getAllPages(site.getID(), LoadFlags.ALL, ctx, ctx.getUser());
+        while (it.hasNext()) {
+            JahiaPage o = it.next();
+            assertTrue("A page is not validated :"+o.getID(), o.hasActiveEntries());
+        }
     }
 
     public void testNoWorkflow() throws Exception {
@@ -98,13 +99,13 @@ public class WorkflowTest extends TestCase {
 
         Set<String> allStagingAndWaitingObjects = service.getAllStagingAndWaitingObject(site.getID()).keySet();
 
-        assertTrue(allStagingAndWaitingObjects.isEmpty());
+        assertTrue("Still some staging and waiting objects : "+allStagingAndWaitingObjects, allStagingAndWaitingObjects.isEmpty());
 
-//        Iterator<JahiaPage> it = JahiaPageBaseService.getInstance().getAllPages(site.getID(), LoadFlags.ALL, ctx, ctx.getUser());
-//        while (it.hasNext()) {
-//            JahiaPage o = it.next();
-//            assertTrue(o.hasActiveEntries());
-//        }
+        Iterator<JahiaPage> it = JahiaPageBaseService.getInstance().getAllPages(site.getID(), LoadFlags.ALL, ctx, ctx.getUser());
+        while (it.hasNext()) {
+            JahiaPage o = it.next();
+            assertTrue("A page is not validated :"+o.getID(),o.hasActiveEntries());
+        }
     }
 
 

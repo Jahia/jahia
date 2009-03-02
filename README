@@ -358,6 +358,40 @@ The plugin will use the url set in the parameter " <jahia.test.url> " in your se
 
 - Open the file target/site/surefire-report.html and look at the result.
 
+ Code coverage generation
+------------------------------------------------------------------------------
+Jahia's maven project structure is now integrated with the Atlassian Clover
+reporting tool. The new "code-coverage" profile must be activated in your
+settings.xml. You must also add the following plugin group in the same file: 
+
+    <pluginGroup>com.atlassian.maven.plugins</pluginGroup>
+
+Then do from root :
+
+mvn clean install
+
+In your Tomcat, add to the shared library directory the clover*.jar that you
+should find in your Maven repository in the
+
+.m2/repository/com/cenqua/clover/clover/2.4.2
+
+directory. Deploy to tomcat/shared/lib under Tomcat 5.x and under tomcat/lib
+under Tomcat 6.x.
+
+Then run the tests using
+
+cd test
+mvn jahia:test surefire-report:report-only
+
+Then :
+
+cd ..
+mvn clover2:aggregate clover2:clover
+
+The resulting report will be generated in target/site/clover/
+
+Still needs to be integrated with the QA packages substructure.
+
  Troubleshooting
 ------------------------------------------------------------------------------
 

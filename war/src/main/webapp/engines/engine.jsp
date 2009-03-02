@@ -268,7 +268,7 @@ jahia.config = {
 </center>
 <c:if test="${empty requestScope['jahia.engines.gwtModuleIncluded']}">
     <internal:gwtImport module="org.jahia.ajax.gwt.module.engines.Engines"/>
-    <internal:gwtGenerateDictionary/>
 </c:if>
+<internal:gwtGenerateDictionary/>
 </body>
 </html>

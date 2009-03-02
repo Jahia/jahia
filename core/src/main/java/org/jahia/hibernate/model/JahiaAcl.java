@@ -1056,7 +1056,7 @@ public class JahiaAcl implements Serializable,Cloneable, ParentACLFinder, ACLRes
                     buildPickerPermissions(recursedMaps[1], getPickedAcl().getRecursedGroupEntries());                    
                 }
             }
-            if (inheritance.intValue() == 0) {
+            if (inheritance.intValue() == ACLInfo.INHERITANCE) {
                 if (parentACLFinder == null) {
                     parent = getParent();
                 } else {
@@ -1079,7 +1079,7 @@ public class JahiaAcl implements Serializable,Cloneable, ParentACLFinder, ACLRes
                     }
                 }
 
-                boolean readBreak = getPickedAcl() != null && getPickedAcl().getInheritance().intValue() == 1;
+                boolean readBreak = getPickedAcl() != null && getPickedAcl().getInheritance().intValue() == ACLInfo.NO_INHERITANCE;
 
                 buildPermissions(recursedMaps[0], parents[0], readBreak);
                 buildPermissions(recursedMaps[1], parents[1], readBreak);

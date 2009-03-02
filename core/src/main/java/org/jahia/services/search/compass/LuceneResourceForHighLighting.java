@@ -34,17 +34,16 @@
  package org.jahia.services.search.compass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
 import org.compass.core.lucene.LuceneResource;
-import org.compass.core.lucene.engine.LuceneSearchEngine;
 import org.compass.core.lucene.engine.LuceneSearchEngineFactory;
 import org.jahia.bin.Jahia;
 import org.jahia.data.fields.JahiaField;
@@ -72,7 +71,7 @@ public class LuceneResourceForHighLighting extends LuceneResource {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(LuceneResourceForHighLighting.class);
 
-    private Map<String, String> fields = new WeakHashMap<String, String>();
+    private Map<String, String> fields = new HashMap<String, String>();
 
     public LuceneResourceForHighLighting(LuceneSearchEngineFactory searchEngineFactory) {
         this(new Document(), -1, searchEngineFactory);

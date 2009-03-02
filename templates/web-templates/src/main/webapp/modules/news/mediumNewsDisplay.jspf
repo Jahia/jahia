@@ -10,7 +10,7 @@
             <h4><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}"><template:field
                     name='newsTitle' inlineEditingActivated="false"/></a></h4>
             <p class="summaryresume"><template:field name="newsDesc" maxChar="120" inlineEditingActivated="false"/></p>
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </li>
         <!--stop newsListItem -->
     </template:container>

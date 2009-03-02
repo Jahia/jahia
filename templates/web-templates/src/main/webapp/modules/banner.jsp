@@ -44,7 +44,7 @@
         <div class="illustration2-text" style='margin-top:<template:field name="positionTop"/>px; margin-left:<template:field name="positionLeft"/>px'>
             <h2><template:field name="title"/></h2>
             <p><template:field name="cast"/></p>
-        <div class="clear"></div></div>
+        <div class="clear"> </div></div>
     </div>
     </template:container>
 </template:containerList>

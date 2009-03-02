@@ -44,8 +44,8 @@
         <template:include page="modules/introduction/introductionDisplay.jsp"/>
         <template:layoutManagerArea/>
         <div>
-            <a class="bottomanchor" href="introduction_layoutmanager.jsp#pagetop"><utility:resourceBundle
-                    resourceName='pageTop' defaultValue="Page Top"/></a>
+            <a class="bottomanchor" href="introduction_layoutmanager.jsp#pagetop"><fmt:message
+                    key='pageTop'/></a>
         </div>
     </div>
 </div>

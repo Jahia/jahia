@@ -23,22 +23,22 @@
 
 				<div class="publicationBody"><!--start publicationBody -->
 					    <h5><template:field name="title"/></h5>
-					    <p class="publicationAuthor"><c:if test="${!empty author && author !=''}"><utility:resourceBundle resourceName="web_templates_publicationContainer.author"/>: <template:field name="author"/></c:if></p>
-					    <p class="publicationSource"><c:if test="${!empty source && source != ''}"><utility:resourceBundle resourceName="web_templates_publicationContainer.source"/>: <template:field name="source"/></c:if></p>
+					    <p class="publicationAuthor"><c:if test="${!empty author && author !=''}"><fmt:message key="web_templates_publicationContainer.author"/>: <template:field name="author"/></c:if></p>
+					    <p class="publicationSource"><c:if test="${!empty source && source != ''}"><fmt:message key="web_templates_publicationContainer.source"/>: <template:field name="source"/></c:if></p>
 					    <p class="publicationDate"><c:if test="${!empty date && date !=''}"><template:field name="date"/></c:if></p>
 					    <div class="publicationDescription"><template:field name="body"/></div>
 					    <div class="publicationAction">
 					        <c:if test="${file.size > 0}">
                                 <fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.size/1024)}"/>
-                                <a class="publicationDownload" href="${file.downloadUrl}" ><utility:resourceBundle resourceName="web_templates_publicationContainer.download" escape="true"/></a><span class="publicationDocSize">(${num} Ko)</c:if>
+                                <a class="publicationDownload" href="${file.downloadUrl}" ><fmt:message key="web_templates_publicationContainer.download"/></a><span class="publicationDocSize">(${num} Ko)</c:if>
                         </span>
 					</div>
-					<div class="clear"></div>
+					<div class="clear"> </div>
 				</div><!--stop publicationBody -->
 
-			<div class="clear"></div>
+			<div class="clear"> </div>
 		</div><!--stop publicationListSpace -->
-		<div class="clear"></div>
+		<div class="clear"> </div>
 		</ui:actionMenu>
 	</div><!--stop publicationListItem -->
     <c:choose>
@@ -46,7 +46,7 @@
            <c:set var="loop" value="1"/>
         </c:when>
         <c:otherwise>
-            <div class="clear"></div>
+            <div class="clear"> </div>
             <c:set var="loop" value="0"/>
         </c:otherwise>
     </c:choose>

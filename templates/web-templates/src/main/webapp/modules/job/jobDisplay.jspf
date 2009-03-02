@@ -9,9 +9,9 @@
 	</colgroup>
 	<thead>
 		<tr>
-			<th id="job" scope="col"><utility:resourceBundle resourceName="web_templates_jobContainer.jobtitle"/></th>
-			<th id="location" scope="col"><utility:resourceBundle resourceName="web_templates.location"/></th>
-			<th id="Date" scope="col"><utility:resourceBundle resourceName="web_templates_jobContainer.businessUnit"/></th>
+			<th id="job" scope="col"><fmt:message key="web_templates_jobContainer.jobtitle"/></th>
+			<th id="location" scope="col"><fmt:message key="web_templates.location"/></th>
+			<th id="Date" scope="col"><fmt:message key="web_templates_jobContainer.businessUnit"/></th>
 		</tr>
 	</thead>
     <div class="box4-text">
@@ -30,7 +30,7 @@
      <!-- tag to display metadata is not available - this feature is intentionnaly hidden
      <tfoot>
 	<tr>
-		<td colspan="3"><utility:resourceBundle resourceName="web_templates.lastModification"/><template:meta name="lastPublishingDate" metadata="lastPublishingDate"/></td>
+		<td colspan="3"><fmt:message key="web_templates.lastModification"/><template:meta name="lastPublishingDate" metadata="lastPublishingDate"/></td>
 	</tr>
 	</tfoot>   -->
 </table>

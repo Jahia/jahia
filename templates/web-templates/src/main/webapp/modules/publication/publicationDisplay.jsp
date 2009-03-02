@@ -42,7 +42,7 @@
 		<h3 class="box4-header"><span class="publicationTitle">Publications</span></h3>
 		<div class="box4-bottomright"></div>
 		<div class="box4-bottomleft"></div>
-		<div class="clear"></div>
+		<div class="clear"> </div>
 </div>
 
 

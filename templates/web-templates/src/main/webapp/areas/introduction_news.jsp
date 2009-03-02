@@ -51,11 +51,11 @@
             <h3 class="box4-header"><span class="newsTitle"><c:out
                     value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></span></h3>
 
-            <div class="newsRss"><a href="${param.rssFeed}"><utility:resourceBundle resourceName="rss.subscribe"/></a>
+            <div class="newsRss"><a href="${param.rssFeed}"><fmt:message key="rss.subscribe"/></a>
             </div>
             <div class="box4-bottomright"></div>
             <div class="box4-bottomleft"></div>
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div>
         <template:include page="modules/news/newsDisplay.jsp"/>
     </div>

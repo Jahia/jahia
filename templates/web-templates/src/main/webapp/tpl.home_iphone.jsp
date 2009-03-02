@@ -49,14 +49,12 @@
 <div id="WebApp">
     <div id="iHeader">
         <a href="#" id="waBackButton">Back</a>
-        <span id="waHeadTitle"><utility:resourceBundle resourceName='iphone.label.home'
-                                                       defaultValue='Jahia iPhone View'/></span>
+        <span id="waHeadTitle"><fmt:message key='iphone.label.home'/></span>
     </div>
     <div id="iGroup">
-        <div id="iLoader"><utility:resourceBundle resourceName='iphone.label.loading'
-                                                  defaultValue='Loading, please wait...'/></div>
+        <div id="iLoader"><fmt:message key='iphone.label.loading'/></div>
         <div class="iLayer" id="waNews"
-             title="<utility:resourceBundle resourceName='iphone.label.teasers' defaultValue='Teasers'/>">
+             title="<fmt:message key='iphone.label.teasers'/>">
             <div class="iMenu">
                 <h3>Teasers</h3>
                 <template:containerList name="promo" id="promoList" displayActionMenu="false">
@@ -78,7 +76,7 @@
                                 displaySkins="false" displayContainerAnchor="false">
 
                 <div class="iLayer" id="waContainer<c:out value='${promoContainer.ID}'/>"
-                     title="<utility:resourceBundle resourceName='iphone.label.teaser.detail' defaultValue='Teaser detail'/>">
+                     title="<fmt:message key='iphone.label.teaser.detail'/>">
                     <div class="iBlock">
                         <h4><template:field name="title" diffActive="false"/></h4>
 

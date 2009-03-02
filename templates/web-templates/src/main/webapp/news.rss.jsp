@@ -34,10 +34,9 @@
     <%@include file="common/declarations.jspf" %>
     <template:composePageURL fullURL="true" valueID="url"/>
     <channel>
-        <title><utility:resourceBundle name="newsChannelTitle" defaultValue="Homepage news"/></title>
+        <title><fmt:message key="newsChannelTitle"/></title>
         <link><c:out value="${url}"/></link>
-        <description><utility:resourceBundle name="newsChannelDescription"
-                                             defaultValue="Lists all the news that are on the given page"/></description>
+        <description><fmt:message key="newsChannelDescription"/></description>
         <language>${requestScope.currentRequest.locale}</language>
         <dc:language>${requestScope.currentRequest.locale}</dc:language>
         <generator>Jahia 6.0, http://www.jahia.org</generator>

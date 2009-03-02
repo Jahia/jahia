@@ -42,7 +42,7 @@
 <div id="content4">
     <div class="spacer">
         <template:include page="common/breadcrumb.jsp"/>
-        <h2><utility:resourceBundle resourceName="statictitle.pressreale" escape="true"/></h2>
+        <h2><fmt:message key="statictitle.pressreale"/></h2>
         <template:include page="modules/pressReleases/pressDetailDisplay.jsp"/>
     </div>
 </div><!--stopContent-->

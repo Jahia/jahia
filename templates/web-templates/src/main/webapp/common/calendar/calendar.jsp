@@ -39,11 +39,11 @@
 <div class="box2 box2-style1"><!--start box 2 style1 -->
         <div class="box2-topright"> </div>
         <div class="box2-topleft"> </div>
-        <h3 class="box2-header"><span><utility:resourceBundle
-                    resourceName='statictitle.calendar.events' defaultValue='Events calendar'/></span></h3>
+        <h3 class="box2-header"><span><fmt:message
+                    key='statictitle.calendar.events'/></span></h3>
             <div class="box2-text">
-                <p><utility:resourceBundle
-                    resourceName='static.calendar.viewfromdate' defaultValue='View events from the following date:'/></p>
+                <p><fmt:message
+                    key='static.calendar.viewfromdate'/></p>
                 <form action="" name="calendarStartDate" method="get">
                     <input type="hidden" name="startDate"/>
                 </form>

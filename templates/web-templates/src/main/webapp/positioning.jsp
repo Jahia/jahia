@@ -103,15 +103,15 @@
                                 <!--stop areaC-->
                             </div>
                         </c:if>
-                        <div class="clear"></div>
+                        <div class="clear"> </div>
                     </div>
                     <div>&nbsp;</div>
                     <%@ include file="common/footer.jspf" %>
-                    <div class="clear"></div>
+                    <div class="clear"> </div>
                 </div>
-                <div class="clear"></div>
+                <div class="clear"> </div>
             </div>
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div>
     </template:templateBody>
 </template:template>

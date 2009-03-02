@@ -47,10 +47,10 @@
 <!--start jobsSearchForm -->
 		<div class="jobsSearchForm">
 		<template:jahiaPageForm name="jobPageForm" method="get">
-			<fieldset><legend><utility:resourceBundle resourceName='jobSearchForm' defaultValue="job search form"/></legend>
-			<p class="jobsSearchKeyword"><label for="jobsSearchKeyword"><utility:resourceBundle resourceName='job.keywordSearch' defaultValue="search by keyword"/></label>
+			<fieldset><legend><fmt:message key='jobSearchForm'/></legend>
+			<p class="jobsSearchKeyword"><label for="jobsSearchKeyword"><fmt:message key='job.keywordSearch'/></label>
 			<input type="text" name="jobsSearchKeyword" id="jobsSearchKeyword" class="field jobsSearchKeyword" value="${param.jobsSearchKeyword}" tabindex="4" /></p>
-			<div class="divButton"><input type="submit" name="submit" id="submit" class="button" value="<utility:resourceBundle resourceName="search"/>" tabindex="5" /></div>
+			<div class="divButton"><input type="submit" name="submit" id="submit" class="button" value="<fmt:message key="search"/>" tabindex="5" /></div>
 			</fieldset>
 		</template:jahiaPageForm>
 		</div>

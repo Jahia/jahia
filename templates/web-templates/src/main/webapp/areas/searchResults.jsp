@@ -54,10 +54,12 @@ return false;
 <div id="position2">
     <div class="spacer">
         <template:include page="common/breadcrumb.jsp"/>
-            <h2><utility:resourceBundle resourceName="search.results.title" escape="true"/></h2>
+            <h2><fmt:message key="search.results.title"/></h2>
             <s:results>
                 <div class="resultsList">
-                <h3><utility:resourceBundle resourceName="search.results.found" arg0="${count}" escape="true"/></h3>
+                <h3><fmt:message key="search.results.found">
+                        <fmt:param value="${count}"/>
+                    </fmt:message></h3>
                 <template:include page="/modules/search/advancedSearchForm.jsp"/>
                 <c:set var="itemsPerPage" value="${functions:default(param['src_itemsPerPage'], '10')}"/>
                 <pg:pager maxPageItems="${itemsPerPage}" url="${jahia.page.url}" export="currentPageNumber=pageNumber">
@@ -84,7 +86,7 @@ return false;
                         </ol>
                     </c:if>
                     <c:if test="${count == 0}">
-                        <h4><utility:resourceBundle resourceName="search.results.no.results" escape="true"/></h4>
+                        <h4><fmt:message key="search.results.no.results"/></h4>
                     </c:if>
                     </div>
                     <pg:index export="itemCount">
@@ -97,12 +99,10 @@ return false;
                                         <div class="paginationNavigation">
                                             <pg:prev ifnull="true">
                                                 <c:if test="${not empty pageUrl}"><a
-                                                        href="${pageUrl}"><strong><utility:resourceBundle
-                                                        resourceName="search.results.pagination.previous"
-                                                        escape="true"/></strong></a></c:if>
-                                                <c:if test="${empty pageUrl}"><span><strong><utility:resourceBundle
-                                                        resourceName="search.results.pagination.previous"
-                                                        escape="true"/></strong></span></c:if>
+                                                        href="${pageUrl}"><strong><fmt:message
+                                                        key="search.results.pagination.previous"/></strong></a></c:if>
+                                                <c:if test="${empty pageUrl}"><span><strong><fmt:message
+                                                        key="search.results.pagination.previous"/></strong></span></c:if>
                                             </pg:prev>
                                             <pg:pages>
                                                 <c:if test="${pageNumber != currentPageNumber}"><a
@@ -111,19 +111,18 @@ return false;
                                             </pg:pages>
                                             <pg:next ifnull="true">
                                                 <c:if test="${not empty pageUrl}"><a
-                                                        href="${pageUrl}"><strong><utility:resourceBundle
-                                                        resourceName="search.results.pagination.next"
-                                                        escape="true"/></strong></a></c:if>
-                                                <c:if test="${empty pageUrl}"><span><strong><utility:resourceBundle
-                                                        resourceName="search.results.pagination.next"
-                                                        escape="true"/></strong></span></c:if>
+                                                        href="${pageUrl}"><strong><fmt:message
+                                                        key="search.results.pagination.next"/></strong></a></c:if>
+                                                <c:if test="${empty pageUrl}"><span><strong><fmt:message
+                                                        key="search.results.pagination.next""/></strong></span></c:if>
                                             </pg:next>
                                         </div>
-                                        <div class="paginationPosition"><utility:resourceBundle
-                                                resourceName="search.results.pagination.results"
-                                                arg0="${itemsPerPage * (currentPageNumber - 1) + 1}"
-                                                arg1="${itemsPerPage * currentPageNumber < itemCount ? itemsPerPage * currentPageNumber : itemCount}"
-                                                arg2="${itemCount}" escape="true"/></div>
+                                        <div class="paginationPosition"><fmt:message
+                                                key="search.results.pagination.results">
+                                            <fmt:param value="${itemsPerPage * (currentPageNumber - 1) + 1}"/>
+                                            <fmt:param value="${itemsPerPage * currentPageNumber < itemCount ? itemsPerPage * currentPageNumber : itemCount}"/>
+                                            <fmt:param value="${itemCount}"/>
+                                            </fmt:message></div>
                                     </div>
                                     <!--stop pagination-->
                             <div class="box4-bottomleft"></div>

@@ -34,7 +34,8 @@
 --%>
 
 <%@ include file="../../common/declarations.jspf" %>
-<div id="peoplebox0" class="collapsible"><!--start collapsible loginFormTop-->
+<!--start collapsible loginFormTop-->
+<div id="peoplebox0" class="collapsible">
     <div class="boxloginFormTop"><!--start box 4 default-->
         <div class="boxloginFormTop-topright"></div>
         <div class="boxloginFormTop-topleft"></div>
@@ -51,17 +52,16 @@
                     <p class="loginFormTopCheckbox"><input type="checkbox" name="remember" id="remember"
                                                            class="loginFormTopInputCheckbox" value="checked"
                                                            tabindex="1"/>
-                        <label class="loginFormTopRememberLabel" for="remember"><utility:resourceBundle
-                                resourceName="rememberMe" defaultValue="Remember me"/></label></p>
+                        <label class="loginFormTopRememberLabel" for="remember"><fmt:message key="rememberMe"/></label></p>
                 </ui:loginArea>
             </div>
             <!--stop loginFormTop-->
         </div>
         <div class="box4-bottomright"></div>
         <div class="box4-bottomleft"></div>
-        <div class="clear"></div>
+        <div class="clear"> </div>
     </div>
-    <div class="clear"></div>
+    <div class="clear"> </div>
     <!--stop box 4 default-->
 </div>
 <!--stop collapsible loginFormTop-->

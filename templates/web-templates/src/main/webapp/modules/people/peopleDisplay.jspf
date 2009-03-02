@@ -20,14 +20,14 @@ Styles for jQuery
 
 				<div class="peopleAction">
 <a class="peopleDownload" href="${peoplePicture.downloadUrl}" rel="facebox">View full size</a>
-<a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><utility:resourceBundle
-                            resourceName='web_templates_peopleContainer.peopleBiography' defaultValue='web_templates_peopleContainer.peopleBiography'/></a>
+<a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><fmt:message
+                            key='web_templates_peopleContainer.peopleBiography'/></a>
 				</div>
 				<div id="collapseBox${peopleContainer.ID}" class="collapsible"><!--start collapsible -->
 							 <template:field name="peopleBiography"/>
 				</div><!--stop collapsible -->
-					<div class="clear"></div></div><!--stop peopleBody -->
-				<div class="clear"></div></div><!--stop peopleListItem -->
+					<div class="clear"> </div></div><!--stop peopleBody -->
+				<div class="clear"> </div></div><!--stop peopleListItem -->
     </ui:actionMenu>
 </template:container>
 

@@ -44,9 +44,9 @@
     </c:if>
     <div class="box4-bottomright"></div>
     <div class="box4-bottomleft"></div>
-    <div class="clear"></div>
+    <div class="clear"> </div>
 </div>
 <div class="box4-text">
     <template:includeContent/>
 </div>
-<div class="clear"></div>
+<div class="clear"> </div>

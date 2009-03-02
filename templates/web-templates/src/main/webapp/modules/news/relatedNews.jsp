@@ -48,8 +48,7 @@
 
             <div class="box2-topright"></div>
             <div class="box2-topleft"></div>
-            <h3 class="box2-header"><span><utility:resourceBundle
-                    resourceName='relatedNews' defaultValue='Related News'/></span></h3>
+            <h3 class="box2-header"><span><fmt:message key='relatedNews'/></span></h3>
 
             <div class="box2-text">
                 <ul class="summary"><!--start summary -->
@@ -70,7 +69,7 @@
             </div>
             <div class="box2-bottomright"></div>
             <div class="box2-bottomleft"></div>
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div>
         <!--stop box 2 style 1-->
     </template:containerList>

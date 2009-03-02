@@ -35,35 +35,34 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 
-<div class="box4 "><!--start box 4 default-->
-	<div class="box4-topright"></div>
-	<div class="box4-topleft"></div>
-    <h3 class="box4-header"><span class="publicationTitle"><utility:resourceBundle resourceName='statictitle.lastevents' defaultValue='Last events'/></span></h3>
-    <template:jahiaPageForm name="eventPageForm" method="get">
-        <c:set value="" var="startDateSelected"/>
-        <c:set value="" var="locationSelected"/>
-        <c:if test="${param.eventsSort == 'startDate'}">
-            <c:set value="selected" var="startDateSelected"/>
-        </c:if>
-        <c:if test="${param.eventsSort == 'location'}">
-            <c:set value="selected" var="locationSelected"/>
-        </c:if>
-        <utility:dropDownFromBundle bundleName="resources.eventsType"/>
-        <select class="eventsSort" name="eventsSort" onchange="document.eventPageForm.submit();">
-            <option value="startDate" ${startDateSelected}><utility:resourceBundle resourceName='sortDate'
-                                                                                   defaultValue='sort by date'/></option>
-            <option value="location" ${locationSelected}><utility:resourceBundle resourceName='sortLocation'
-                                                                                 defaultValue='sort by location'/></option>
-        </select>
-    </template:jahiaPageForm>
+    <div class="box4 "><!--start box 4 default-->
+        <div class="box4-topright"></div>
+        <div class="box4-topleft"></div>
+        <h3 class="box4-header"><span class="publicationTitle"><fmt:message key='statictitle.lastevents'/></span></h3>
+        <template:jahiaPageForm name="eventPageForm" method="get">
+            <c:set value="" var="startDateSelected"/>
+            <c:set value="" var="locationSelected"/>
+            <c:if test="${param.eventsSort == 'startDate'}">
+                <c:set value="selected" var="startDateSelected"/>
+            </c:if>
+            <c:if test="${param.eventsSort == 'location'}">
+                <c:set value="selected" var="locationSelected"/>
+            </c:if>
 
-		<div class="box4-bottomright"></div>
-		<div class="box4-bottomleft"></div>
-		<div class="clear"></div>
-</div>
+            <select class="eventsSort" name="eventsSort" onchange="document.eventPageForm.submit();">
+                <option value="startDate" ${startDateSelected}><fmt:message key='sortDate'/></option>
+                <option value="location" ${locationSelected}><fmt:message key='sortLocation'/></option>
+            </select>
+            <span class="eventsSort"><utility:dropDownFromBundle bundleName="resources.eventsType"/></span>
+        </template:jahiaPageForm>
 
-    <div class="clear"></div>
-</div>
+            <div class="box4-bottomright"></div>
+            <div class="box4-bottomleft"></div>
+            <div class="clear"> </div>
+    </div>
+
+    <div class="clear"> </div>
+
 <c:set var="sortBy" value="startDate"/>
 <c:set var="order" value="desc"/>
 

@@ -44,6 +44,6 @@ todo : change site to siteAdmin
 --%>
 <div class="themeSelector">
     <c:if test="${requestScope.currentRequest.admin}">
-        <utility:resourceBundle resourceName='siteThemeSelector' defaultValue="Theme for site"/>: <ui:themeSelector scope="site"/>
+        <fmt:message key='siteThemeSelector'/>: <ui:themeSelector scope="site"/>
     </c:if>
 </div>

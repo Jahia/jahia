@@ -3,47 +3,45 @@
 <template:container id="jobContainer" displayActionMenu="false" cacheKey="jobContainerDetail">
         <h2><template:field name="title"/></h2>
         <div class="jobAction">
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div>
         <div class="jobListItem">
         <div class="jobInfo">
             <p class="jobLocation">
-                <span class="jobLabel"><utility:resourceBundle
-                        resourceName="web_templates_jobContainer.location"/>: </span> <span
+                <span class="jobLabel"><fmt:message
+                        key="web_templates_jobContainer.location"/>: </span> <span
                     class="jobtxt"><template:field
                     name="town"/></span><span class="jobtxt"><template:field name="country"/></span>
             </p>
             <p class="jobType">
                 <template:field name="contract" valueBeanID="contractBean" display="false"/>
-                <span class="jobLabel"><utility:resourceBundle resourceName="web_templates_jobContainer.contract"/>:
+                <span class="jobLabel"><fmt:message key="web_templates_jobContainer.contract"/>:
                 </span><span class="jobtxt">${contractBean}</span>
             </p>
-            <p class="jobBusinessUnit"><span class="jobLabel"><utility:resourceBundle
-                    resourceName="web_templates_jobContainer.businessUnit"/>: </span> <span
+            <p class="jobBusinessUnit"><span class="jobLabel"><fmt:message
+                    key="web_templates_jobContainer.businessUnit"/>: </span> <span
                     class="jobtxt"><template:field name="businessUnit"/></span></p>
-            <p class="jobReference"><span class="jobLabel"><utility:resourceBundle
-                    resourceName="web_templates_jobContainer.reference"/>: </span> <span class="jobtxt"><template:field
+            <p class="jobReference"><span class="jobLabel"><fmt:message
+                    key="web_templates_jobContainer.reference"/>: </span> <span class="jobtxt"><template:field
                     name="reference"/></span></p>
-            <p class="educationLevel"><span class="jobLabel"><utility:resourceBundle
-                    resourceName="web_templates_jobContainer.educationLevel"/>: </span><span
+            <p class="educationLevel"><span class="jobLabel"><fmt:message
+                    key="web_templates_jobContainer.educationLevel"/>: </span><span
                     class="jobtxt"><template:field
                     name="educationLevel"/></span></p>
         </div>
-        <p class="jobDescription"><span class="jobLabel"><utility:resourceBundle
-                resourceName="web_templates_jobContainer.description"/>: </span>
+        <p class="jobDescription"><span class="jobLabel"><fmt:message
+                key="web_templates_jobContainer.description"/>: </span>
             <span class="jobtxt"><template:field name="description"/></span></p>
-        <p class="jobSkills"><span class="jobLabel"><utility:resourceBundle
-                resourceName="web_templates_jobContainer.skills"/>:</span>
+        <p class="jobSkills"><span class="jobLabel"><fmt:message
+                key="web_templates_jobContainer.skills"/>:</span>
             <span class="jobtxt"><template:field name="skills"/> </span></p>
         <div class="jobAction">
-            <a class="jobApply" href="javascript:;" onclick="ShowHideLayer(1);"><utility:resourceBundle
-                    resourceName="web_templates_jobContainer.apply"/></a>
+            <a class="jobApply" href="javascript:;" onclick="ShowHideLayer(1);"><fmt:message
+                    key="web_templates_jobContainer.apply"/></a>
 
-            <a class="returnJobsList" href="${requestScope.currentPage.url}" title='<utility:resourceBundle
-            resourceName="backToPreviousPage" defaultValue="Back to previous page"/>'><utility:resourceBundle
-                    resourceName="backToPreviousPage"
-                    defaultValue="Back to previous page"/></a>
-            <div class="clear"></div>
+            <a class="returnJobsList" href="${requestScope.currentPage.url}" title='<fmt:message
+            key="backToPreviousPage"/>'><fmt:message key="backToPreviousPage"/></a>
+            <div class="clear"> </div>
         </div>
 
 

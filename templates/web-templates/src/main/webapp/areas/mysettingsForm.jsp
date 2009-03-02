@@ -43,7 +43,7 @@
 <!-- Change id to modify positioning :  #position1=areaB/mainArea/areaA  #position2=areaB/mainArea #position3=mainArea/areaA   position4=mainArea only #position5=50%areaB/50% mainArea -->
 <div id="position2">
     <div class="spacer">
-        <h2><utility:resourceBundle resourceName="mySettings.title"/></h2>
+        <h2><fmt:message key="mySettings.title"/></h2>
 
         <template:gwtJahiaModule id="mysettings" jahiaType="mySettings">
             <utility:gwtResourceBundle resourceName="mySettings.password"
@@ -71,10 +71,8 @@
         </template:gwtJahiaModule>
 
         <div style="margin-top:15px;" id="addproperty">
-            <a href="${requestScope.currentPage.url}" title="<utility:resourceBundle
-            resourceName='backToPreviousPage' defaultValue="Back to previous page"/>"><utility:resourceBundle
-                    resourceName='backToPreviousPage'
-                    defaultValue="Back to previous page"/></a>
+            <a href="${requestScope.currentPage.url}" title="<fmt:message
+            key='backToPreviousPage'><fmt:message key='backToPreviousPage'/></a>
         </div>
     </div>
 </div>

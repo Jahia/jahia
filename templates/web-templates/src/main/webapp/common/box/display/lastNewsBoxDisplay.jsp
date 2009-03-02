@@ -57,10 +57,10 @@
         <template:field name="maxNews" valueBeanID="maxNews"  defaultValue="10" display="false"/>
         <c:if test="${requestScope.currentRequest.editMode}">
         <div class="preferences">    
-        <h2><utility:resourceBundle resourceName="web_templates_newsList.preferences"/></h2>
-        <p class="preference-item"><span class="preference-label"><utility:resourceBundle resourceName="web_templates_newsList.categoryFilter"/>: </span><span class="preference-value">${categoriesDisplay} </span></p>
-        <p class="preference-item"><span class="preference-label"><utility:resourceBundle resourceName="web_templates_newsList.rowsDisplay"/>: </span><span class="preference-value">${maxNews}</span></p>
-        <p class="preference-item"><span class="preference-label"><utility:resourceBundle resourceName="web_templates_newsList.display"/>: </span><span class="preference-value">${display}</span></p>
+        <h2><fmt:message key="web_templates_newsList.preferences"/></h2>
+        <p class="preference-item"><span class="preference-label"><fmt:message key="web_templates_newsList.categoryFilter"/>: </span><span class="preference-value">${categoriesDisplay} </span></p>
+        <p class="preference-item"><span class="preference-label"><fmt:message key="web_templates_newsList.rowsDisplay"/>: </span><span class="preference-value">${maxNews}</span></p>
+        <p class="preference-item"><span class="preference-label"><fmt:message key="web_templates_newsList.display"/>: </span><span class="preference-value">${display}</span></p>
         </div>    
         </c:if>
         <c:set var="newsCategoryFilter" value="${newsCategoryFilter}"/>

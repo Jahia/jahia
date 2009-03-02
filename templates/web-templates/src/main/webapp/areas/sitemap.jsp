@@ -41,7 +41,7 @@
 <!-- Change id to modify positioning :  #position1=areaB/mainArea/areaA  #position2=areaB/mainArea #position3=mainArea/areaA   position4=mainArea only #position5=50%areaB/50% mainArea -->
 <div id="position2">
     <div class="spacer">
-        <h2><utility:resourceBundle resourceName="web_templates.sitemap"/></h2>
+        <h2><fmt:message key="web_templates.sitemap"/></h2>
         <ui:sitemap enableDescription="true" showRoot="true"/>
     </div>
 </div>

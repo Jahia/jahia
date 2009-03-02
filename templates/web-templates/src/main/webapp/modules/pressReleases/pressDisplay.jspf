@@ -7,12 +7,12 @@
             <template:getContentObjectCategories valueID="pressReleaseContainerCatKeys" objectKey="contentContainer_${pageScope.pressReleaseContainer.ID}"/>
         <c:if test="${!empty pressReleaseContainerCatKeys }">
             <span class="pressRealeseCategory">
-                <utility:resourceBundle resourceName='category' defaultValue='category'/> : <ui:displayCategoryTitle categoryKeys="${pressReleaseContainerCatKeys}"/>
+                <fmt:message key='category'/> : <ui:displayCategoryTitle categoryKeys="${pressReleaseContainerCatKeys}"/>
             </span>
         </c:if>
             <h4><a href="${currentPage.url}/template/tpl.pressReleasesDetail?queryPath=${pressReleaseContainer.JCRPath}">
                 <template:field name='title'/></a></h4>
-        <div class="clear"></div>
+        <div class="clear"> </div>
     </li>
 </template:container>
 

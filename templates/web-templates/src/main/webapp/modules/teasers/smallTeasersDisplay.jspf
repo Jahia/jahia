@@ -16,10 +16,10 @@
                  </div>
                 </c:if>
             </div><!--stop box -->
-        <div class="clear"></div>
+        <div class="clear"> </div>
         </div><!--stop columnspace -->
     </div><!--stop column-item -->
 
     <!-- here we test if the edit mode is active to change a bit the display avoiding layout problems due to action menus -->
-    <c:if test="${requestScope.currentRequest.editMode}"><div class="clear"></div></c:if>
+    <c:if test="${requestScope.currentRequest.editMode}"><div class="clear"> </div></c:if>
 </template:container>

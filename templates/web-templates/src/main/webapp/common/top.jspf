@@ -8,33 +8,31 @@
                     <ul>
                     <c:if test="${requestScope.currentRequest.logged}">
                     <li class="topshortcuts-login">
-                        <a class="loginFormTopLogoutShortcuts"href="<template:composePageURL page="logout"/>"><utility:resourceBundle resourceName="web_templates.logout" defaultValue="Logout"/></a>
+                        <a class="loginFormTopLogoutShortcuts"href="<template:composePageURL page="logout"/>"><fmt:message key="web_templates.logout"/></a>
                     </li>
                     <li>
                         <span class="currentUser" ><utility:userProperty/></span>
                     </li>
                     <li>
-                        <a class="loginFormTopMySettingsShortcuts" href="<template:composePageURL page="mySettings"/>" ><utility:resourceBundle resourceName="web_templates.mySettings.title" defaultValue="My settings"/></a>
+                        <a class="loginFormTopMySettingsShortcuts" href="<template:composePageURL page="mySettings"/>" ><fmt:message key="web_templates.mySettings.title"/></a>
                     </li>
                     </c:if>
                     <li class="topshortcuts-print"><a href="#" onclick="javascript:window.print()">
-                        <utility:resourceBundle resourceName="web_templates.print" defaultValue="Print this page"/></a>
+                        <fmt:message key="web_templates.print"/></a>
                     </li>
                     <li class="topshortcuts-typoincrease">
-                        <a href="javascript:ts('body',1)"><utility:resourceBundle resourceName="web_templates.up" defaultValue="Increase fonts size"/></a>
+                        <a href="javascript:ts('body',1)"><fmt:message key="web_templates.up"/></a>
                     </li>
                     <li class="topshortcuts-typoreduce">
-                        <a  href="javascript:ts('body',-1)"><utility:resourceBundle resourceName="web_templates.down" defaultValue="Decrease fonts size"/></a>
+                        <a  href="javascript:ts('body',-1)"><fmt:message key="web_templates.down"/></a>
                     </li>
                     <li class="topshortcuts-home">
-                        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>'><utility:resourceBundle resourceName="web_templates.home" defaultValue="Home"/></a>
+                        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>'><fmt:message key="web_templates.home"/></a>
                     </li>
                     <li class="topshortcuts-sitemap">
-                        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>/engineName/sitemap'><utility:resourceBundle resourceName="web_templates.sitemap" defaultValue="Sitemap"/></a>
+                        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>/engineName/sitemap'><fmt:message key="web_templates.sitemap"/></a>
                     </li>
                     </ul>
 	</div><!--stop topshortcuts-->
-	<div class="clear"></div>
-    <template:include page="/modules/login/login.jsp"/>
-    <div class="clear"></div>
+	<div class="clear"> </div>
 </div>

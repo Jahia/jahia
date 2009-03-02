@@ -46,7 +46,7 @@
         <template:include page="modules/banner.jsp"/>
         <template:include page="modules/teasers/smallTeasers.jsp"/>
         <template:include page="modules/teasers/largeTeasers.jsp"/>
-        <div class="clear"></div>
+        <div class="clear"> </div>
         <template:include page="common/box/box.jsp">
             <template:param name="name" value="columnA_box"/>
         </template:include>

@@ -17,6 +17,6 @@
         <div>
             <template:field name="mainContentBody"/>
         </div>
-        <div class="clear"></div>
+        <div class="clear"> </div>
     </template:container>
 </template:containerList>

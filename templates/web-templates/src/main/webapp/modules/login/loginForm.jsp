@@ -36,12 +36,12 @@
 <%@ include file="../../common/declarations.jspf" %>
 <c:if test="${!requestScope.currentRequest.logged}">
 <div class="loginForm"><!--start box -->
-    <h3><utility:resourceBundle resourceName='login' defaultValue="login"/></h3>
+    <h3><fmt:message key='login'/></h3>
 
     <div class="loginForm"><!--start loginForm -->
         <ui:loginArea>
             <fieldset>
-                <legend><utility:resourceBundle resourceName='login' defaultValue="login"/></legend>
+                <legend><fmt:message key='login'/></legend>
                 <p>
                     <ui:loginUsername labelCssClassName="" cssClassName="username" labelKey="username" tabIndex="6"/>
                 </p>

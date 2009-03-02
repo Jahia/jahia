@@ -14,8 +14,7 @@
                 </div>
                 <c:if test="${(!empty endDate.value) && (endDate.value ne '')}">
                     <div class="eventsTxtDate">
-                        <span><utility:resourceBundle
-                            resourceName='to' defaultValue='to'/></span>
+                        <span><fmt:message key='to'/></span>
                     </div>
                     <div class="eventsDate">
                         <span class="day"><fmt:formatDate pattern="dd" value="${endDateP}"/></span>
@@ -35,14 +34,13 @@
                                                      objectKey="contentContainer_${pageScope.eventContainer.ID}"/>
                 <c:if test="${!empty eventsContainerCatKeys }">
                     <div class="eventsMeta">
-        	    <span class="categoryLabel"><utility:resourceBundle
-                    resourceName='category' defaultValue='category'/>  :</span>
+        	    <span class="categoryLabel"><fmt:message key='category'/>  :</span>
                         <ui:displayCategoryTitle categoryKeys="${eventsContainerCatKeys}"/>
                     </div>
                 </c:if>
             </div>
             <!--start eventsBody -->
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div>
 
 </template:container>

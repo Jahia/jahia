@@ -41,5 +41,5 @@
                             actionMenuNameLabelKey="teaser">
         <%@ include file="largeTeasersDisplay.jspf" %>
     </template:containerList>
-    <div class="clear"></div>
+    <div class="clear"> </div>
 </div><!--stop 2 columns -->

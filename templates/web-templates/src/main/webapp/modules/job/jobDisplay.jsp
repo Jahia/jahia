@@ -37,10 +37,10 @@
 <div class="box4">
 		<div class="box4-topright"></div>
 		<div class="box4-topleft"></div>
-		<h3 class="box4-header"><span class="jobsTitle"><utility:resourceBundle resourceName='jobList' defaultValue="job list"/></span></h3>
+		<h3 class="box4-header"><span class="jobsTitle"><fmt:message key='jobList'/></span></h3>
 		<div class="box4-bottomright"></div>
 		<div class="box4-bottomleft"></div>
-	    <div class="clear"></div>
+	    <div class="clear"> </div>
 </div>
 <template:containerList name="job" id="jobContainer"
                        actionMenuNamePostFix="job" actionMenuNameLabelKey="job">

@@ -19,14 +19,14 @@
                 </c:if>
                 <div class="box2-bottomright"></div>
                 <div class="box2-bottomleft"></div>
-                <div class="clear"></div>
+                <div class="clear"> </div>
             </div>
             <!--stop box -->
         </div>
 
-        <div class="clear"></div>
+        <div class="clear"> </div>
     </div>
     <!--stop column-item -->
    <%-- here we test if the edit mode is active to change a bit the display avoiding layout problems due to action menus--%>
-    <c:if test="${requestScope.currentRequest.editMode}"><div class="clear"></div></c:if>
+    <c:if test="${requestScope.currentRequest.editMode}"><div class="clear"> </div></c:if>
 </template:container>

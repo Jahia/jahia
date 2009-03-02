@@ -3,14 +3,14 @@
     <c:if test="${ !empty param.footerNav}">
         <div id="footerPart1"><!--start footerPart1-->
             <template:include page="common/nav/footerNav.jsp"/>
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div>
     </c:if>
     <!--stop footerPart1-->
     <!--start footerPart2-->
     <div id="footerPart2"><!--start footerPart2content-->
         <div id="footerPart2content"></div>
-        <div class="clear"></div>
+        <div class="clear"> </div>
     </div>
     <!--stop footerPart2-->
     <!--start footerPart3-->
@@ -24,7 +24,7 @@
                         <template:param name="id" value="Footer"/>
                     </template:include>
                 </div>
-                <div class="clear"></div>
+                <div class="clear"> </div>
             </div>
             <!--stop column-item -->
             <!--start column-item -->
@@ -42,15 +42,15 @@
                         <p><template:include page="modules/footer.jsp"/></p>
                     </div><!--stop copyright-->
                 </div>
-                <div class="clear"></div>
+                <div class="clear"> </div>
             </div><!--stop column-item -->
 
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div><!--stop 2 columns -->
 
-        <div class="clear"></div>
+        <div class="clear"> </div>
     </div><!--stop footerPart3-->
 
-    <div class="clear"></div>
-    <div class="clear"></div>
+    <div class="clear"> </div>
+    <div class="clear"> </div>
 </div><!--stop footer-->

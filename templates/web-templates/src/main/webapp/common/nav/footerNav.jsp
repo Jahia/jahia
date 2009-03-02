@@ -50,11 +50,11 @@
                         </ui:actionMenu>
                     </div>
                 </div>
-                <div class="clear"></div>
+                <div class="clear"> </div>
             </div>
         </template:container>
-        <div class="clear"></div>
+        <div class="clear"> </div>
     </div>
     </template:absoluteContainerList>
 <!--stop 5 columns -->
-<div class="clear"></div>
+<div class="clear"> </div>

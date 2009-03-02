@@ -40,22 +40,22 @@
     <div class="pressRealeseForm"><!--start pressRealeseForm -->
         <template:jahiaPageForm name="pressPageForm" method="get">
             <fieldset>
-                <legend><utility:resourceBundle resourceName="web_templates_pressContainer.legend"/></legend>
+                <legend><fmt:message key="web_templates_pressContainer.legend"/></legend>
                 <p class="pressdatefrom">
 
-                <div><label><utility:resourceBundle resourceName="web_templates_pressContainer.from"/> :</label>
+                <div><label><fmt:message key="web_templates_pressContainer.from"/> :</label>
                     <ui:dateSelector cssClassName="dateSelection" fieldName="pressdatefrom"
                                      value="${param.pressdatefrom}"/>
                 </div>
                 </p>
                 <p class="pressdateto">
 
-                <div><label><utility:resourceBundle resourceName="web_templates_pressContainer.to"/> :</label>
+                <div><label><fmt:message key="web_templates_pressContainer.to"/> :</label>
                     <ui:dateSelector cssClassName="dateSelection" fieldName="pressdateto" value="${param.pressdateto}"/>
                 </div>
                 </p>
                 <div class="divButton"><input type="submit" name="submit" id="submit" class="button"
-                                              value='<utility:resourceBundle resourceName="search"/>'
+                                              value='<fmt:message key="search"/>'
                                               tabindex="7"/>
                 </div>
             </fieldset>
@@ -99,6 +99,6 @@
         </ul>
         <!--stop pressRealeseList -->
     </template:containerList>
-    <div class="clear"></div>
+    <div class="clear"> </div>
 </div>
 <!--stop pressRealeses list -->

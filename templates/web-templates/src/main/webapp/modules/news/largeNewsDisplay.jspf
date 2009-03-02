@@ -4,7 +4,7 @@
                     displayActionMenu="false">
 
     <div class="newsListItem"><!--start newsListItem -->
-        <h4><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}"><template:field name='newsTitle'/></a></h4>
+        <h4><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}"><template:field name='newsTitle'/></a></h4>
 
         <p class="newsInfo">
             <span class="newsLabelDate"><utility:resourceBundle resourceName="news.date"/> :</span>

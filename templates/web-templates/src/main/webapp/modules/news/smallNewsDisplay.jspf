@@ -2,7 +2,7 @@
 
 <ul class="newsList3">
     <template:container id="newsContainer" cacheKey="listNews" displayActionMenu="false"  displayExtensions="false">
-        <li><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}"><template:field
+        <li><a href="${currentPage.url}/template/tp.newsDetail?queryPath=${newsContainer.JCRPath}"><template:field
                     name='newsTitle'/></a></li>
         <!--stop newsListItem -->
     </template:container>

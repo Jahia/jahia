@@ -58,7 +58,7 @@
                         <c:if test="${param.containerid != newsRelatedContainer.ID}">
                             <li class="summary">
                                 <h4>
-                                    <a href="${currentPage.url}/template/newsDetail?queryPath=${newsRelatedContainer.JCRPath}"><template:field
+                                    <a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsRelatedContainer.JCRPath}"><template:field
                                             name='newsTitle'/></a></h4>
 
                                 <p class="summaryresume"><template:field name="newsDesc" maxChar="150"/></p>

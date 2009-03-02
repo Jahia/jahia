@@ -58,7 +58,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * Created by IntelliJ IDEA.
  *
  * @author rfelden
- * @version 8 janv. 2008
+ * @version 2 march 2009
  */
 public class SitemapTag extends AbstractJahiaTag {
 
@@ -119,7 +119,7 @@ public class SitemapTag extends AbstractJahiaTag {
             try {
                 out.print("<div id=\"default_sitemap\" class=\"sitemap\">\n") ;
 
-                if (startPid == -1) {
+                if (startPid < 1) {
                     startPage = jParams.getSite().getHomePage() ;
                     startPid = startPage.getID() ;
                 } else {

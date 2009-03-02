@@ -346,8 +346,10 @@ public class FieldSearchIndexProcessValveImpl implements
         String[] values = new String[] { "" };
         try {
             String strVal = null;
+            ProcessingContext context = (ProcessingContext) contextMap.get(SearchIndexationPipeline.PROCESSING_CONTEXT);
+
             JCRNodeWrapper file = JCRStoreService.getInstance().getFileNode(
-                    jcrPath, null);
+                    jcrPath, context.getUser());
 
             if (file != null && file.isValid() && !file.isCollection()) {
                 JCRFileContent fileContent = file.getFileContent();

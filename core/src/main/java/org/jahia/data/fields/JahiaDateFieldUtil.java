@@ -200,7 +200,7 @@ public class JahiaDateFieldUtil {
                     } else {
                         try {
                             Expression expr = ExpressionFactory
-                                    .createExpression(defaultValueLower);
+                                    .createExpression(defaultValueString);
                             JexlContext ctx = JexlHelper.createContext();
                             ctx.getVars().put("now",
                                     new Long(System.currentTimeMillis()));

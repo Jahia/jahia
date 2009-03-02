@@ -19,7 +19,7 @@
             <template:field name="newsDesc" maxChar="300" inlineEditingActivated="false"/>
         </p>
 
-        <div class="more"><span><a href="${currentPage.url}/template/newsDetail?queryPath=${newsContainer.JCRPath}">
+        <div class="more"><span><a href="${currentPage.url}/tpl.template/newsDetail?queryPath=${newsContainer.JCRPath}">
             <utility:resourceBundle resourceName="news.readmore"/>
         </a></span></div>
         <template:getContentObjectCategories valueID="newsContainerCatKeys"

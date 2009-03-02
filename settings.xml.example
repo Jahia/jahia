@@ -132,11 +132,22 @@
      deployed on JEE application servers.
     -->
     <!--activeProfile>configure-before-packaging</activeProfile-->
+
+    <!--
+      Activate the code-coverage plugin to generate the code
+      coverage reports. Check the README for more details on how to
+      use it. Also remember to uncomment the pluginGroup below.
+    -->
+    <!--activeProfile>code-coverage</activeProfile-->
   </activeProfiles>         
 
   <!-- Jahia plugin -->
   <pluginGroups>
     <pluginGroup>org.jahia.server</pluginGroup>
+      <pluginGroup>org.apache.pluto</pluginGroup>
+    <!-- Uncomment the following if you activate the code-coverage profile -->
+      <!--pluginGroup>com.atlassian.maven.plugins</pluginGroup-->
+
   </pluginGroups>
 
   <localRepository>C:/java/m2repository</localRepository>

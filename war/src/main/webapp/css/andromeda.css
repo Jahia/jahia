@@ -1221,7 +1221,21 @@ li.section a:hover {
     background: url(images/andromeda/icons/mail_write.png) no-repeat 4px 5px;
 }
 
+.ico-navigate-top {
+    background: url(images/andromeda/icons/navigate_up2.png) no-repeat 4px 5px;
+}
 
+.ico-navigate-up {
+    background: url(images/andromeda/icons/navigate_up.png) no-repeat 4px 5px;
+}
+
+.ico-navigate-down {
+    background: url(images/andromeda/icons/navigate_down.png) no-repeat 4px 5px;
+}
+
+.ico-navigate-bottom {
+    background: url(images/andromeda/icons/navigate_down2.png) no-repeat 4px 5px;
+}
 
 
 /*

@@ -43,6 +43,8 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
+<%@ page import="org.jahia.params.ParamBean" %>
+<%@ page import="org.jahia.services.lock.LockPrerequisites" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
@@ -272,7 +274,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                             <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.cursorField.label"/>
                           </th>
                           <td>
-                            <select name="cursorField" onchange="changeCursorField()">
+                            <select name="cursorField" onchange="changeCursorField();">
                               <%
                               for (Iterator it = fields.iterator(); it.hasNext();) {
                                 JahiaFieldDefinition jcd = ((JahiaFieldDefinition) it.next());
@@ -349,7 +351,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                               <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.maxContainersToDisplay.label"/>
                             </th>
                             <td>
-                              <select name="maxContainersToDisplay" onchange="changeMaxContainersToDisplay()">
+                              <select name="maxContainersToDisplay" onchange="changeMaxContainersToDisplay();">
                                 <option value="100" <% if(maxContainersToDisplay.intValue()==100){%> selected="selected" <% } %>>100
                                 <option value="200" <% if(maxContainersToDisplay.intValue()==200){%> selected="selected" <% } %>>200
                                 <option value="300" <% if(maxContainersToDisplay.intValue()==300){%> selected="selected" <% } %>>300
@@ -368,7 +370,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                             <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.cursorField.label"/>
                           </th>
                           <td>
-                            <select name="cursorField" onchange="changeCursorField()">
+                            <select name="cursorField" onchange="changeCursorField();">
                               <%
                               for (Iterator it = fields.iterator(); it.hasNext();) {
                                 JahiaFieldDefinition jcd = ((JahiaFieldDefinition) it.next());
@@ -388,7 +390,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                             (<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.sortBy.label"/>)
                           </th>
                           <td>
-                            <select name="autRank" onchange="automaticRanking()">
+                            <select name="autRank" onchange="automaticRanking();">
                               <option value="none">
                                 <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.chooseAnAutomaticSort.label"/>
                               </option>
@@ -445,17 +447,17 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                                   </div>
                                 </td>
                                 <td width="100%" class="text" align="left" valign="top">
-                                  <a href="javascript:moveTop()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Top','','${pageContext.request.contextPath}<fmt:message key="org.jahia.moveTopOn.button"/>',1)">
-                                    <img name="Top" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.moveTopOff.button"/>"  width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveOnTop.label"/>"></a>
+                                  <a href="javascript:moveTop();" title="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveOnTop.label"/>">
+                                    <img name="Top" src="${pageContext.request.contextPath}/css/images/andromeda/icons/navigate_up2.png" width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveOnTop.label"/>"></a>
                                   <br>
-                                  <a href="javascript:moveUp()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Up','','${pageContext.request.contextPath}<fmt:message key="org.jahia.moveUpOn.button"/>',1)">
-                                    <img name="Up" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.moveUpOff.button"/>" width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveUp.label"/>"></a>
+                                  <a href="javascript:moveUp();" title="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveUp.label"/>">
+                                    <img name="Up" src="${pageContext.request.contextPath}/css/images/andromeda/icons/navigate_up.png" width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveUp.label"/>"></a>
                                   <br>
-                                  <a href="javascript:moveDown()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Down','','${pageContext.request.contextPath}<fmt:message key="org.jahia.moveDownOn.button"/>',1)">
-                                    <img name="Down" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.moveDownOff.button"/>" width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveDown.label"/>"></a>
+                                  <a href="javascript:moveDown();" title="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveDown.label"/>">
+                                    <img name="Down" src="${pageContext.request.contextPath}/css/images/andromeda/icons/navigate_down.png" width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveDown.label"/>"></a>
                                   <br>
-                                  <a href="javascript:moveBottom()" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Bottom','','${pageContext.request.contextPath}<fmt:message key="org.jahia.moveBottomOn.button"/>',1)">
-                                    <img name="Bottom" src="${pageContext.request.contextPath}<fmt:message key="org.jahia.moveBottomOff.button"/>" width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAtBottom.label"/>"></a>
+                                  <a href="javascript:moveBottom();" title="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAtBottom.label"/>">
+                                    <img name="Bottom" src="${pageContext.request.contextPath}/css/images/andromeda/icons/navigate_down2.png" width="16" height="16" border="0" alt="<fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.moveAtBottom.label"/>"></a>
                                   <br>
                                 </td>
                               </tr>
@@ -467,7 +469,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                             <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.useOptimizedSort.label"/>
                           </th>
                           <td>
-                            <input type="checkbox" name="useOptimizedMode" onchange="changeUseOptimizedMode()" <%if(useOptimizedMode.booleanValue()){%>checked<%}%> value="true">
+                            <input type="checkbox" name="useOptimizedMode" onchange="changeUseOptimizedMode();" <%if(useOptimizedMode.booleanValue()){%>checked<%}%> value="true">
                             <fmt:message key="org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.useOptimizedSortExplanation.label"/>
                           </td>
                         </tr>

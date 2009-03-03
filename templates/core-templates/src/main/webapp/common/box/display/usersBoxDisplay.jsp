@@ -42,7 +42,7 @@
         <template:field name='userDisplayLimit' defaultValue="5" valueBeanID="boxUserDisplayLimit" display="false"/>
         <template:field name='userQuery' defaultValue="*" valueBeanID="boxUserQuery" display="false"/>
         <h4>
-            <utility:resourceBundle resourceName="queryResult"/>
+            <fmt:message key="queryResult"/>
         </h4>
         <ui:userList displayLimit="${boxUserDisplayLimit}" query="${boxUserQuery}" scope="all" styleClass=""/>
     </template:container>

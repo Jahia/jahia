@@ -40,7 +40,7 @@
     <div class="content">
         <a name="pagetop"></a>
         <span class="breadcrumbs">
-            <utility:resourceBundle resourceName='youAreHere' defaultValue="You are here"/>:
+            <fmt:message key='youAreHere'/>:
         </span>
         <ui:currentPagePath cssClassName="breadcrumbs"/>
         <ui:languageSwitchingLinks display="horizontal" linkDisplay="flag" displayLanguageState="true"/>

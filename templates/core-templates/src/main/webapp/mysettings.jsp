@@ -76,9 +76,7 @@
                                                    aliasResourceName="label_fieldvalue_new_property"/>
                     </template:gwtJahiaModule>
                     <div>
-                        <a href="${requestScope.currentPage.url}" title="<utility:resourceBundle
-                                                resourceName='backToPreviousPage' defaultValue="Back to previous page"/>"><utility:resourceBundle
-                                resourceName='backToPreviousPage' defaultValue="Back to previous page"/></a>
+                        <a href="${requestScope.currentPage.url}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
                     </div>
                 </div>
 

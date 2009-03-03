@@ -68,12 +68,12 @@
                 <template:container id="qaContainer" cacheKey="questionAndAnswer" actionMenuNamePostFix="qa"
                                     actionMenuNameLabelKey="qa.update">
                     <h5 id="ctn_<c:out value="${qaContainer.ID}"/>" class="question">
-                        <utility:resourceBundle resourceName='question' defaultValue="Question"/>:
+                        <fmt:message key='question'/>:
                         <template:field name="question"/>
                     </h5>
 
                     <p class="answer">
-                        <strong><utility:resourceBundle resourceName='answer' defaultValue="Answer"/></strong>:
+                        <strong><fmt:message key='answer'/></strong>:
                         <template:field name="answer"/>
                     </p>
                 </template:container>

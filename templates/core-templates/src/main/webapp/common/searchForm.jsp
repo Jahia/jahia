@@ -41,9 +41,9 @@
 <div class="searchform">
     <s:form>
         <fieldset>
-            <legend>&nbsp;<utility:resourceBundle resourceName='search' defaultValue="Search"/>&nbsp;</legend>
+            <legend>&nbsp;<fmt:message key='search'/>&nbsp;</legend>
             <p><s:term class="field"/></p>
-            <p><input type="submit" name="submit" class="button" value="<utility:resourceBundle resourceName='search' defaultValue='Search'/>"/></p>
+            <p><input type="submit" name="submit" class="button" value="<fmt:message key='search'/>"/></p>
         </fieldset>
     </s:form>
 </div>

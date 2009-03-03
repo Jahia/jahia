@@ -40,8 +40,7 @@
 <ui:loginArea>
     <div class="loginform">
         <fieldset>
-            <legend>&nbsp;<utility:resourceBundle resourceName='login'
-                                                  defaultValue="Login"/>&nbsp;</legend>
+            <legend>&nbsp;<fmt:message key='login'/>&nbsp;</legend>
             <p>
                 <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username"/>
             </p>

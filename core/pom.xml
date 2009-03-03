@@ -1218,9 +1218,15 @@
         </dependency>
         <dependency>
           <groupId>rome</groupId>
+          <artifactId>rome-fetcher</artifactId>
+          <version>0.9</version>
+        </dependency>
+        <dependency>
+          <groupId>rome</groupId>
           <artifactId>opensearch</artifactId>
           <version>0.1</version>
         </dependency>
+
 
         <!--<dependency>
             <groupId>xpp3</groupId>

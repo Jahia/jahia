@@ -59,7 +59,7 @@ public class FormQuickGoogleGadget extends FormPanel {
 
 
         // save properties button
-        Button saveButton = new Button(Messages.getResource("button_save"));
+        Button saveButton = new Button(Messages.getResource("fm_save"));
         saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent componentEvent) {
                 JahiaNodeService.App.getInstance().createRSSPortletInstance(folderPath, (String) scriptField.getValue(), (String) nameField.getValue(), new AsyncCallback<GWTJahiaNode>() {

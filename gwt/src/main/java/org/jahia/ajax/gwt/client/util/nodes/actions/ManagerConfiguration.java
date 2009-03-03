@@ -59,6 +59,11 @@ public class ManagerConfiguration {
     private String mimeTypes;
 
     private short defaultView;
+    private boolean enableFileDoubleClick = true;
+    private boolean displaySize = true;
+    private boolean displayExt = true;
+    private boolean displayLock = true;
+    private boolean displayDate = true;
 
     public ManagerConfiguration() {
         items = new ArrayList<FileActionItemItf>();
@@ -166,5 +171,45 @@ public class ManagerConfiguration {
 
     public void setDefaultView(short defaultView) {
         this.defaultView = defaultView;
+    }
+
+    public boolean isEnableFileDoubleClick() {
+        return enableFileDoubleClick;
+    }
+
+    public void setEnableFileDoubleClick(boolean enableFileDoubleClick) {
+        this.enableFileDoubleClick = enableFileDoubleClick;
+    }
+
+    public boolean isDisplaySize() {
+        return displaySize;
+    }
+
+    public void setDisplaySize(boolean displaySize) {
+        this.displaySize = displaySize;
+    }
+
+    public boolean isDisplayExt() {
+        return displayExt;
+    }
+
+    public void setDisplayExt(boolean displayExt) {
+        this.displayExt = displayExt;
+    }
+
+    public boolean isDisplayLock() {
+        return displayLock;
+    }
+
+    public void setDisplayLock(boolean displayLock) {
+        this.displayLock = displayLock;
+    }
+
+    public boolean isDisplayDate() {
+        return displayDate;
+    }
+
+    public void setDisplayDate(boolean displayDate) {
+        this.displayDate = displayDate;
     }
 }

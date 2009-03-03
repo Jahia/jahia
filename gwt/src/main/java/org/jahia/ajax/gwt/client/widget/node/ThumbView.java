@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -80,10 +80,10 @@ public class ThumbView extends TopRightComponent {
     private MyListView<GWTJahiaNode> view;
     private SimpleComboBox<String> sort;
 
-    private ManagerConfiguration configuration ;
+    private ManagerConfiguration configuration;
 
-    public ThumbView(ManagerConfiguration config) {
-        configuration = config ;
+    public ThumbView(final ManagerConfiguration config) {
+        configuration = config;
 
         m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
@@ -118,17 +118,17 @@ public class ThumbView extends TopRightComponent {
         bar.add(new LabelToolItem(Resources.getResource("fm_thumbSort")));
 
         // please keep same order as in sort() method
-        List<String> sorts = new ArrayList<String>() ;
-        sorts.add(Resources.getResource("fm_thumbSortName")) ;
-        sorts.add(Resources.getResource("fm_thumbSortSize")) ;
-        sorts.add(Resources.getResource("fm_thumbSortLastModif")) ;
-        
+        List<String> sorts = new ArrayList<String>();
+        sorts.add(Resources.getResource("fm_thumbSortName"));
+        sorts.add(Resources.getResource("fm_thumbSortSize"));
+        sorts.add(Resources.getResource("fm_thumbSortLastModif"));
+
         sort = new SimpleComboBox<String>();
         sort.setTriggerAction(ComboBox.TriggerAction.ALL);
         sort.setEditable(false);
         sort.setForceSelection(true);
         sort.setWidth(250);
-        sort.add(sorts) ;
+        sort.add(sorts);
         sort.setSimpleValue(sorts.get(0));
         sort.addListener(Events.Change, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
@@ -168,13 +168,16 @@ public class ThumbView extends TopRightComponent {
                 if (selection != null && selection.size() > 0) {
                     GWTJahiaNode selected = selection.get(0);
                     if (selected.isFile()) {
-                        if (selected.isDisplayable()) {
-                            ImagePopup.popImage(selected);
-                        } else {
-                            FileActions.download(getLinker());
+                        if (config.isEnableFileDoubleClick()) {
+                            if (selected.isDisplayable()) {
+                                ImagePopup.popImage(selected);
+                            } else {
+                                FileActions.download(getLinker());
+                            }
                         }
                     } else {
                         getLinker().onTableItemDoubleClicked(selected);
+
                     }
                 }
             }
@@ -188,7 +191,7 @@ public class ThumbView extends TopRightComponent {
     }
 
     private void sort() {
-        int index = sort.getSelectedIndex() ;
+        int index = sort.getSelectedIndex();
         if (index == 0) {
             store.sort("name", Style.SortDir.ASC);
         } else if (index == 1) {

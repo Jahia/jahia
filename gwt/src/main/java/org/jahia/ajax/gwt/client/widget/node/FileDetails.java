@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.table.Table;
 import com.extjs.gxt.ui.client.widget.table.TableColumn;
@@ -61,13 +62,13 @@ import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.*;
 
@@ -116,32 +117,32 @@ public class FileDetails extends BottomRightComponent {
         infoPanel = new FlowPanel();
         infoPanel.addStyleName("infoPane");
         infoTabItem = new AsyncTabItem();
-        infoTabItem.setText(Resources.getResource("fm_information"));
+        infoTabItem.setText(Messages.getResource("fm_information"));
         infoTabItem.add(infoPanel);
 
         // properties
         propertiesTabItem = new AsyncTabItem();
         propertiesTabItem.setLayout(new FitLayout());
-        propertiesTabItem.setText(Resources.getResource("fm_properties"));
+        propertiesTabItem.setText(Messages.getResource("fm_properties"));
 
         // roles
         rolesTabItem = new AsyncTabItem();
         rolesTabItem.setLayout(new FitLayout());
-        rolesTabItem.setText(Resources.getResource("fm_roles"));
+        rolesTabItem.setText(Messages.getResource("fm_roles"));
 
         // modes
         modesTabItem = new AsyncTabItem();
         modesTabItem.setLayout(new FitLayout());
-        modesTabItem.setText(Resources.getResource("fm_modes"));
+        modesTabItem.setText(Messages.getResource("fm_modes"));
 
         // authorizations
         authorizationsTabItem = new AsyncTabItem();
         authorizationsTabItem.setLayout(new FitLayout());
-        authorizationsTabItem.setText(Resources.getResource("fm_authorizations"));
+        authorizationsTabItem.setText(Messages.getResource("fm_authorizations"));
 
         // usage
         usagesTabItem = new AsyncTabItem();
-        usagesTabItem.setText(Resources.getResource("fm_usages"));
+        usagesTabItem.setText(Messages.getResource("fm_usages"));
         usagesTabItem.setLayout(new FitLayout());
 
         // add all tabs
@@ -279,24 +280,26 @@ public class FileDetails extends BottomRightComponent {
                     }
                     String name = selectedNode.getName();
                     if (name != null) {
-                        flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_name") + " :</b> " + name));
+                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_name") + " :</b> " + name));
                     }
                     String path = selectedNode.getPath();
                     if (path != null) {
-                        flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_path") + " :</b> " + path));
+                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_path") + " :</b> " + path));
                     }
-                    if (selectedNode.isFile()) {
+                    if (config.isDisplaySize() && selectedNode.isFile()) {
                         Long s = selectedNode.getSize();
                         if (s != null) {
-                            flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_size") + " :</b> " + Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
+                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_size") + " :</b> " + Formatter.getFormattedSize(s.longValue()) + " (" + s.toString() + " bytes)"));
                         }
                     }
-                    Date date = selectedNode.getDate();
-                    if (date != null) {
-                        flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_lastModif") + " :</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
+                    if (config.isDisplayDate()) {
+                        Date date = selectedNode.getDate();
+                        if (date != null) {
+                            flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lastModif") + " :</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedDate(date, "d/MM/y")));
+                        }
                     }
-                    if (selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
-                        flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_lock") + " :</b> " + selectedNode.getLockOwner()));
+                    if (config.isDisplayLock() && selectedNode.isLocked() && selectedNode.getLockOwner() != null) {
+                        flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_lock") + " :</b> " + selectedNode.getLockOwner()));
                     }
                 }
             } else {
@@ -312,9 +315,9 @@ public class FileDetails extends BottomRightComponent {
                         numberFolders++;
                     }
                 }
-                flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_nbFiles") + " :</b> " + numberFiles));
-                flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_nbFolders") + " :</b> " + numberFolders));
-                flowPanel.add(new HTML("<b>" + Resources.getResource("fm_info_totalSize") + " :</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedSize(size)));
+                flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_nbFiles") + " :</b> " + numberFiles));
+                flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_nbFolders") + " :</b> " + numberFolders));
+                flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_totalSize") + " :</b> " + org.jahia.ajax.gwt.client.util.Formatter.getFormattedSize(size)));
             }
             g.setWidget(0, 1, flowPanel);
             infoPanel.add(g);
@@ -322,32 +325,6 @@ public class FileDetails extends BottomRightComponent {
         }
 
     }
-    // image Crop TAB
-
-//    public void displayImageCrop() {
-//        if (!image.isProcessed()) {
-//            final GWTJahiaNode selectedNode = selectedNodes.get(0);
-//            imagePanel.add(new Button("Crop", new SelectionListener<ComponentEvent>() {
-//                public void componentSelected(ComponentEvent event) {
-//                    new ImageCrop(getLinker(),selectedNode).show();
-//                }
-//            }));
-//            imagePanel.add(new Button("Resize", new SelectionListener<ComponentEvent>() {
-//                public void componentSelected(ComponentEvent event) {
-//                    new ImageResize(getLinker(),selectedNode).show();
-//                }
-//            }));
-//            imagePanel.add(new Button("Rotate", new SelectionListener<ComponentEvent>() {
-//                public void componentSelected(ComponentEvent event) {
-//                    new ImageRotate(getLinker(),selectedNode).show();
-//                }
-//            }));
-//            image.setProcessed(true);
-//        }
-//
-//    }
-
-    // PROPERTIES TAB
 
     public void displayProperties() {
         if (!propertiesTabItem.isProcessed()) {
@@ -372,7 +349,9 @@ public class FileDetails extends BottomRightComponent {
                         final PropertiesEditor propertiesEditor = new PropertiesEditor(result.getNodeTypes(), result.getProperties(), false, true, list, null);
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
-                        TextToolItem item = new TextToolItem(Resources.getResource("fm_save"), "fm-save");
+                        TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
+                        item.setIconStyle("gwt-icons-save");
+
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 JahiaNodeService.App.getInstance().saveProperties(elements, propertiesEditor.getProperties(), new AsyncCallback() {
@@ -388,8 +367,10 @@ public class FileDetails extends BottomRightComponent {
                                 });
                             }
                         });
+                        toolBar.add(new FillToolItem());
                         toolBar.add(item);
-                        item = new TextToolItem(Resources.getResource("fm_restore"), "fm-restore");
+                        item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
+                        item.setIconStyle("gwt-icons-restore");
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 propertiesEditor.resetForm();
@@ -428,7 +409,7 @@ public class FileDetails extends BottomRightComponent {
                         final PropertiesEditor propertiesEditor = new PropertiesEditor(gwtJahiaNodeTypes, true, false);
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
-                        TextToolItem item = new TextToolItem(Resources.getResource("fm_save"), "fm-save");
+                        TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 JahiaNodeService.App.getInstance().saveProperties(selectedNodes, propertiesEditor.getProperties(), new AsyncCallback() {
@@ -445,7 +426,7 @@ public class FileDetails extends BottomRightComponent {
                             }
                         });
                         toolBar.add(item);
-                        item = new TextToolItem(Resources.getResource("fm_restore"), "fm-restore");
+                        item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 propertiesEditor.resetForm();
@@ -520,6 +501,8 @@ public class FileDetails extends BottomRightComponent {
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
                         roleAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
+                        roleAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_roles","Add group-role mapping"));
+                        roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles","Add user-role mapping"));                                                                        
                         roleAclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
                         roleAclEditor.setCanBreakInheritance(false);
                         roleAclEditor.setReadOnly(!selectedNode.isWriteable());
@@ -561,6 +544,8 @@ public class FileDetails extends BottomRightComponent {
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
                         modeAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
+                        modeAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_modes","Add group-mode mapping"));
+                        modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes","Add user-mode mapping"));
                         modeAclEditor.setAclGroup(JCRClientUtils.MODES_ACL);
                         modeAclEditor.setCanBreakInheritance(false);
                         modeAclEditor.setReadOnly(!selectedNode.isWriteable());
@@ -635,14 +620,14 @@ public class FileDetails extends BottomRightComponent {
 
             List<TableColumn> columns = new ArrayList<TableColumn>();
 
-            TableColumn col = new TableColumn(Resources.getResource("fm_page"), .30f);
+            TableColumn col = new TableColumn(Messages.getResource("fm_page"), .30f);
             columns.add(col);
             col = new TableColumn("URL", .50f);
             columns.add(col);
-            col = new TableColumn(Resources.getResource("fm_language"), .10f);
+            col = new TableColumn(Messages.getResource("fm_language"), .10f);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
-            col = new TableColumn(Resources.getResource("fm_workflow"), .10f);
+            col = new TableColumn(Messages.getResource("fm_workflow"), .10f);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             columns.add(col);
 
@@ -667,7 +652,7 @@ public class FileDetails extends BottomRightComponent {
                             values[0] = gwtJahiaNodeUsage.getPageTitle();
                             values[1] = gwtJahiaNodeUsage.getUrl();
                             values[2] = gwtJahiaNodeUsage.getLang();
-                            String[] ws = new String[]{Resources.getResource("fm_versioned"), Resources.getResource("fm_live"), Resources.getResource("fm_staging"), Resources.getResource("fm_notify")};
+                            String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
                             String[] images = new String[]{"600", "111", "211", "220"};
                             values[3] = "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
                             TableItem item = new TableItem(values);

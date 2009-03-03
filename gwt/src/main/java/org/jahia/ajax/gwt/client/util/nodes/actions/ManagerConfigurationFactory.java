@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -44,12 +44,12 @@ import com.extjs.gxt.ui.client.GXT;
  */
 public class ManagerConfigurationFactory {
 
-    public static final String MANAGER_CONFIG = "conf" ;
-    public static final String FILEMANAGER = "filemanager" ;
-    public static final String MASHUPMANAGER = "mashupmanager" ;
-    public static final String FILEPICKER = "filepicker" ;
-    public static final String MASHUPPICKER = "mashuppicker" ;
-    public static final String COMPLETE = "complete" ;
+    public static final String MANAGER_CONFIG = "conf";
+    public static final String FILEMANAGER = "filemanager";
+    public static final String MASHUPMANAGER = "mashupmanager";
+    public static final String FILEPICKER = "filepicker";
+    public static final String MASHUPPICKER = "mashuppicker";
+    public static final String COMPLETE = "complete";
 
     public static ManagerConfiguration getConfiguration(String config, BrowserLinker linker) {
         if (config != null) {
@@ -69,14 +69,14 @@ public class ManagerConfigurationFactory {
                 return getCompleteManagerConfiguration(linker);
             }
         }
-        return getCompleteManagerConfiguration(linker) ;
+        return getCompleteManagerConfiguration(linker);
     }
 
     public static ManagerConfiguration getCompleteManagerConfiguration(final BrowserLinker linker) {
-        ManagerConfiguration completeManagerConfig = new ManagerConfiguration() ;
+        ManagerConfiguration completeManagerConfig = new ManagerConfiguration();
         completeManagerConfig.setEnableTextMenu(true);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         completeManagerConfig.addItem(newFolder);
@@ -88,30 +88,30 @@ public class ManagerConfigurationFactory {
         file.addItem(newGadget);
         completeManagerConfig.addItem(newMashup);
         FileActionItem upload = ItemCreator.createUploadItem(linker);
-        file.addItem(upload) ;
+        file.addItem(upload);
         completeManagerConfig.addItem(upload);
         FileActionItem download = ItemCreator.createDownloadItem(linker);
-        file.addItem(download) ;
+        file.addItem(download);
         completeManagerConfig.addItem(download);
         if (GXT.isIE) {
             FileActionItem webFolder = ItemCreator.createWebfolderItem(linker);
-            file.addItem(webFolder) ;
+            file.addItem(webFolder);
             completeManagerConfig.addItem(webFolder);
         }
         file.addItem(new FileActionItemSeparator());
         completeManagerConfig.addItem(new FileActionItemSeparator());
         FileActionItem lock = ItemCreator.createLockItem(linker);
-        file.addItem(lock) ;
+        file.addItem(lock);
         FileActionItem unlock = ItemCreator.createUnlockItem(linker);
-        file.addItem(unlock) ;
+        file.addItem(unlock);
         file.addItem(new FileActionItemSeparator());
         FileActionItem zip = ItemCreator.createZipItem(linker);
-        file.addItem(zip) ;
+        file.addItem(zip);
         FileActionItem unzip = ItemCreator.createUnzipItem(linker);
-        file.addItem(unzip) ;
+        file.addItem(unzip);
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
-        FileActionItem refresh = ItemCreator.createRefreshItem(linker) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
+        FileActionItem refresh = ItemCreator.createRefreshItem(linker);
         edit.addItem(refresh);
         completeManagerConfig.addItem(refresh);
         edit.addItem(new FileActionItemSeparator());
@@ -134,17 +134,17 @@ public class ManagerConfigurationFactory {
         edit.addItem(paste);
         completeManagerConfig.addItem(paste);
 
-        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu")) ;
+        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu"));
         FileActionItem mount = ItemCreator.createMountItem(linker);
         remote.addItem(mount);
         FileActionItem unmount = ItemCreator.createUnmountItem(linker);
         remote.addItem(unmount);
 
-        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu")) ;
+        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu"));
         FileActionItem crop = ItemCreator.createCropItem(linker);
         image.addItem(crop);
         FileActionItem resize = ItemCreator.createResizeItem(linker);
-        image.addItem(resize) ;
+        image.addItem(resize);
         FileActionItem rotate = ItemCreator.createRotateItem(linker);
         image.addItem(rotate);
 
@@ -158,55 +158,55 @@ public class ManagerConfigurationFactory {
 
         // show all repository
         completeManagerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY) ;
-        completeManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
-        completeManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
+        completeManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
+        completeManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY);
         completeManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
-        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
-        completeManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
-        completeManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY) ;
+        completeManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
+        completeManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
+        completeManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
 
 
         // show the current site (first) tab by default
 
         // do not hide the left panel (default)
 
-        return completeManagerConfig ;
+        return completeManagerConfig;
     }
 
     public static ManagerConfiguration getFileManagerConfiguration(final BrowserLinker linker) {
-        ManagerConfiguration fileManagerConfig = new ManagerConfiguration() ;
+        ManagerConfiguration fileManagerConfig = new ManagerConfiguration();
         fileManagerConfig.setEnableTextMenu(true);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         fileManagerConfig.addItem(newFolder);
         FileActionItem upload = ItemCreator.createUploadItem(linker);
-        file.addItem(upload) ;
+        file.addItem(upload);
         fileManagerConfig.addItem(upload);
         FileActionItem download = ItemCreator.createDownloadItem(linker);
-        file.addItem(download) ;
+        file.addItem(download);
         fileManagerConfig.addItem(download);
         if (GXT.isIE) {
             FileActionItem webFolder = ItemCreator.createWebfolderItem(linker);
-            file.addItem(webFolder) ;
+            file.addItem(webFolder);
             fileManagerConfig.addItem(webFolder);
         }
         file.addItem(new FileActionItemSeparator());
         fileManagerConfig.addItem(new FileActionItemSeparator());
         FileActionItem lock = ItemCreator.createLockItem(linker);
-        file.addItem(lock) ;
+        file.addItem(lock);
         FileActionItem unlock = ItemCreator.createUnlockItem(linker);
-        file.addItem(unlock) ;
+        file.addItem(unlock);
         file.addItem(new FileActionItemSeparator());
         FileActionItem zip = ItemCreator.createZipItem(linker);
-        file.addItem(zip) ;
+        file.addItem(zip);
         FileActionItem unzip = ItemCreator.createUnzipItem(linker);
-        file.addItem(unzip) ;
+        file.addItem(unzip);
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
-        FileActionItem refresh = ItemCreator.createRefreshItem(linker) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
+        FileActionItem refresh = ItemCreator.createRefreshItem(linker);
         edit.addItem(refresh);
         fileManagerConfig.addItem(refresh);
         edit.addItem(new FileActionItemSeparator());
@@ -229,17 +229,17 @@ public class ManagerConfigurationFactory {
         edit.addItem(paste);
         fileManagerConfig.addItem(paste);
 
-        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu")) ;
+        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu"));
         FileActionItem mount = ItemCreator.createMountItem(linker);
         remote.addItem(mount);
         FileActionItem unmount = ItemCreator.createUnmountItem(linker);
         remote.addItem(unmount);
 
-        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu")) ;
+        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu"));
         FileActionItem crop = ItemCreator.createCropItem(linker);
         image.addItem(crop);
         FileActionItem resize = ItemCreator.createResizeItem(linker);
-        image.addItem(resize) ;
+        image.addItem(resize);
         FileActionItem rotate = ItemCreator.createRotateItem(linker);
         image.addItem(rotate);
 
@@ -253,23 +253,23 @@ public class ManagerConfigurationFactory {
 
         // hide the mashup repository and the global repository
         fileManagerConfig.addAccordion(JCRClientUtils.WEBSITE_REPOSITORY);
-        fileManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY) ;
-        fileManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY) ;
-        fileManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY) ;
+        fileManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
+        fileManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
+        fileManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY);
 
         // show the current site (first) tab by default
 
         // do not hide the left panel (default)
         fileManagerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
 
-        return fileManagerConfig ;
+        return fileManagerConfig;
     }
 
     public static ManagerConfiguration getFilePickerConfiguration(final BrowserLinker linker) {
-        ManagerConfiguration filePickerConfig = new ManagerConfiguration() ;
+        ManagerConfiguration filePickerConfig = new ManagerConfiguration();
         filePickerConfig.setEnableTextMenu(false);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         filePickerConfig.addItem(newFolder);
         file.addItem(newFolder);
@@ -278,7 +278,7 @@ public class ManagerConfigurationFactory {
         file.addItem(upload);
         filePickerConfig.addItem(new FileActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
         FileActionItem rename = ItemCreator.createRenameItem(linker);
         filePickerConfig.addItem(rename);
         edit.addItem(rename);
@@ -311,14 +311,17 @@ public class ManagerConfigurationFactory {
         filePickerConfig.setHideLeftPanel(true);
         filePickerConfig.setNodeTypes(JCRClientUtils.FILE_NODETYPES);
 
-        return filePickerConfig ;
+        return filePickerConfig;
     }
 
     public static ManagerConfiguration getMashupManagerConfiguration(final BrowserLinker linker) {
-        ManagerConfiguration mashupManagerConfig = new ManagerConfiguration() ;
+        ManagerConfiguration mashupManagerConfig = new ManagerConfiguration();
         mashupManagerConfig.setEnableTextMenu(true);
+        mashupManagerConfig.setEnableFileDoubleClick(false);
+        mashupManagerConfig.setDisplayExt(false);
+        mashupManagerConfig.setDisplaySize(false);
         mashupManagerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         mashupManagerConfig.addItem(newFolder);
@@ -330,11 +333,11 @@ public class ManagerConfigurationFactory {
         mashupManagerConfig.addItem(newRSS);
         FileActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
         file.addItem(newGadget);
-        mashupManagerConfig.addItem(newGadget);        
+        mashupManagerConfig.addItem(newGadget);
         mashupManagerConfig.addItem(new FileActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
-        FileActionItem refresh = ItemCreator.createRefreshItem(linker) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
+        FileActionItem refresh = ItemCreator.createRefreshItem(linker);
         edit.addItem(refresh);
         mashupManagerConfig.addItem(refresh);
         edit.addItem(new FileActionItemSeparator());
@@ -365,13 +368,13 @@ public class ManagerConfigurationFactory {
 
         // show only the mashup repository
         mashupManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
-        mashupManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY) ;
-        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
-        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY) ;
+        mashupManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
+        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
+        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
 
-        mashupManagerConfig.addTab(JCRClientUtils.ROLES_ACL) ;
-        mashupManagerConfig.addTab(JCRClientUtils.MODES_ACL) ;
-        mashupManagerConfig.addTab(JCRClientUtils.AUTHORIZATIONS_ACL) ;
+        mashupManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
+        mashupManagerConfig.addTab(JCRClientUtils.MODES_ACL);
+        mashupManagerConfig.addTab(JCRClientUtils.AUTHORIZATIONS_ACL);
 
 
         // show the mashup tab by default
@@ -379,15 +382,19 @@ public class ManagerConfigurationFactory {
         // do not hide the left panel (default)
 
         mashupManagerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
-        return mashupManagerConfig ;
+        return mashupManagerConfig;
     }
 
     public static ManagerConfiguration getMashupPickerConfiguration(final BrowserLinker linker) {
-        ManagerConfiguration mashupPickerConfig = new ManagerConfiguration() ;
+        ManagerConfiguration mashupPickerConfig = new ManagerConfiguration();
         mashupPickerConfig.setEnableTextMenu(false);
+        mashupPickerConfig.setEnableFileDoubleClick(false);
+        mashupPickerConfig.setDisplayExt(false);
+        mashupPickerConfig.setDisplaySize(false);
+
         mashupPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
-        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu"));
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         mashupPickerConfig.addItem(newFolder);
@@ -396,7 +403,7 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.addItem(newMashup);
         mashupPickerConfig.addItem(new FileActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
         FileActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         mashupPickerConfig.addItem(rename);
@@ -406,13 +413,13 @@ public class ManagerConfigurationFactory {
         edit.addItem(new FileActionItemSeparator());
         mashupPickerConfig.addItem(new FileActionItemSeparator());
         FileActionItem copy = ItemCreator.createCopyItem(linker);
-        edit.addItem(copy) ;
+        edit.addItem(copy);
         mashupPickerConfig.addItem(copy);
         FileActionItem cut = ItemCreator.createCutItem(linker);
-        edit.addItem(cut) ;
+        edit.addItem(cut);
         mashupPickerConfig.addItem(cut);
         FileActionItem paste = ItemCreator.createPasteItem(linker);
-        edit.addItem(paste) ;
+        edit.addItem(paste);
         mashupPickerConfig.addItem(paste);
 
         // add menus to the config as well
@@ -429,7 +436,7 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.setHideLeftPanel(true);
 
         mashupPickerConfig.setNodeTypes(JCRClientUtils.PORTLET_NODETYPES);
-        return mashupPickerConfig ;
+        return mashupPickerConfig;
     }
 
 
@@ -437,16 +444,17 @@ public class ManagerConfigurationFactory {
      * Item creation methods
      */
     private static class ItemCreator {
-        
+
         private static FileActionItem createRefreshItem(final BrowserLinker linker) {
             FileActionItem refresh = new FileActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
                 public void onSelection() {
                     linker.refreshTable();
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection);
                 }
-            } ;
+            };
             return refresh;
         }
 
@@ -455,10 +463,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.rotateImage(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && parentWritable && singleFile && isImage);
                 }
-            } ;
+            };
             return rotate;
         }
 
@@ -467,10 +476,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.cropImage(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && parentWritable && singleFile && isImage);
                 }
-            } ;
+            };
             return crop;
         }
 
@@ -479,10 +489,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.unzip(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && parentWritable && singleFile && isZip);
                 }
-            } ;
+            };
             return unzip;
         }
 
@@ -491,10 +502,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.lock(false, linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && lockable && writable);
                 }
-            } ;
+            };
             return unlock;
         }
 
@@ -503,10 +515,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.openWebFolder(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection || tableSelection && singleFolder);
                 }
-            } ;
+            };
             return webFolder;
         }
 
@@ -515,10 +528,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.createFolder(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
                 }
-            } ;
+            };
             return newFolder;
         }
 
@@ -527,10 +541,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.cut(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
-                    setEnabled(tableSelection && writable) ;
+                    setEnabled(tableSelection && writable);
                 }
-            } ;
+            };
             return cut;
         }
 
@@ -539,10 +554,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.remove(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
-                    setEnabled(tableSelection && writable && !isMount) ;
+                    setEnabled(tableSelection && writable && !isMount);
                 }
-            } ;
+            };
             return remove;
         }
 
@@ -551,10 +567,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.paste(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
-                    setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed) ;
+                    setEnabled(treeSelection && parentWritable && pasteAllowed || tableSelection && writable && pasteAllowed);
                 }
-            } ;
+            };
             return paste;
         }
 
@@ -563,10 +580,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.copy(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
-                    setEnabled(tableSelection) ;
+                    setEnabled(tableSelection);
                 }
-            } ;
+            };
             return copy;
         }
 
@@ -575,10 +593,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.rename(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && writable && (singleFile || singleFolder));
                 }
-            } ;
+            };
             return rename;
         }
 
@@ -587,10 +606,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.resizeImage(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && parentWritable && singleFile && isImage);
                 }
-            } ;
+            };
             return resize;
         }
 
@@ -599,10 +619,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.mountFolder(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(true);
                 }
-            } ;
+            };
             return mount;
         }
 
@@ -611,10 +632,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.unmountFolder(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && writable && isMount);
                 }
-            } ;
+            };
             return mount;
         }
 
@@ -623,10 +645,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.zip(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && parentWritable);
                 }
-            } ;
+            };
             return zip;
         }
 
@@ -635,10 +658,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.lock(true, linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && lockable && writable);
                 }
-            } ;
+            };
             return lock;
         }
 
@@ -647,10 +671,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.download(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && singleFile);
                 }
-            } ;
+            };
             return download;
         }
 
@@ -659,10 +684,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.upload(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
                 }
-            } ;
+            };
             return upload;
         }
 
@@ -671,10 +697,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.showMashupWizard(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
                 }
-            } ;
+            };
             return newMashup;
         }
 
@@ -683,10 +710,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.showRSSForm(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
                 }
-            } ;
+            };
             return newMashup;
         }
 
@@ -695,10 +723,11 @@ public class ManagerConfigurationFactory {
                 public void onSelection() {
                     FileActions.showGoogleGadgetForm(linker);
                 }
+
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
                 }
-            } ;
+            };
             return newMashup;
         }
 

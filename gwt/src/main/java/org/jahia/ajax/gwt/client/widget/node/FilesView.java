@@ -44,10 +44,10 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.SearchField;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
 
@@ -91,14 +91,14 @@ public class FilesView extends TopRightComponent {
         m_component.setHeaderVisible(false);
         m_component.setBorders(false);
         m_component.setBodyBorder(false);
-        searchField = new SearchField(Resources.getResource("fm_search") + ": ", true) {
+        searchField = new SearchField(Messages.getResource("fm_search") + ": ", true) {
             public void onFieldValidation(String value) {
                 setSearchContent(value);
             }
 
             public void onSaveButtonClicked(String value) {
                 if (value != null && value.length() > 0) {
-                    String name = Window.prompt("Please enter a name for this search", JCRClientUtils.cleanUpFilename(value));
+                    String name = Window.prompt(Messages.getNotEmptyResource("fm_search_warning_entername","Please enter a name for this search"), JCRClientUtils.cleanUpFilename(value));
                     if (name != null && name.length() > 0) {
                         name = JCRClientUtils.cleanUpFilename(name);
                         final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
@@ -113,7 +113,7 @@ public class FilesView extends TopRightComponent {
                             }
                         });
                     } else {
-                        Window.alert("The entered name is invalid");
+                        Window.alert(Messages.getNotEmptyResource("fm_search_error_nameinvalid","The entered name is invalid"));
                     }
                 }
             }

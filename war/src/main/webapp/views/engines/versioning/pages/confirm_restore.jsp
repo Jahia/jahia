@@ -105,7 +105,7 @@ function sendFormSave()
         <tr>
           <td>&nbsp;&nbsp;</td>
           <td class="text" align="left">
-            <li><fmt:message key="org.jahia.engines.version.exactRestore"/>
+            <li><fmt:message key="org.jahia.engines.version.exactRestore"/> : <% if ("yes".equals(restoreExactLabel)){%><fmt:message key="org.jahia.engines.yes.label" /><%}else{%><<fmt:message key="org.jahia.engines.no.label" /><%}%>
           </td>
         </tr>
         <!--

@@ -60,6 +60,6 @@
 [consequence][]Log {message}= logger.info({message});
 [consequence][]Fire {eventType} notification event for {node}=service.notify({node}, "{eventType}", drools);
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
-[condition][]- the container is of type {containerType}=containerType == "{containerType}"
+[condition][]- the container is of type {containerType}=type == JahiaSearchHitInterface.CONTAINER_TYPE && containerType == "{containerType}"
 [consequence][]Append URL path "{urlPath}"=urlService.addURLPath(searchHit, "{urlPath}");
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});

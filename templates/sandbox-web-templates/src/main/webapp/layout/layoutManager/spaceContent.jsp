@@ -61,8 +61,7 @@ limitations under the License.
        <template:layoutManagerArea/>
 
         <div>
-            <a class="bottomanchor" href="#pagetop"><utility:resourceBundle
-                    resourceName='pageTop' defaultValue="Page Top"/></a>
+            <a class="bottomanchor" href="#pagetop"><fmt:message key='pageTop'/></a>
         </div>
     </div>
     <!--stop space content-->

@@ -73,10 +73,10 @@
 }
 
 .fm-newrssmashup {
-    background-image: url( ../images/rss_add.gif ) !important;
+    background-image: url( ../images/rss.gif ) !important;
 }
 
-.fm-newgooglegaadgetmashup {
+.fm-newgooglegadgetmashup {
     background-image: url( ../images/google_gadget.png ) !important;
 }
 
@@ -161,11 +161,11 @@
 }
 
 .fm-newrssmashup-bw {
-    background-image: url( ../images/disabled/application_add.png ) !important;
+    background-image: url( ../images/disabled/rss.gif ) !important;
 }
 
-.fm-newgooglegaadgetmashup-bw {
-    background-image: url( ../images/disabled/application_add.png ) !important;
+.fm-newgooglegadgetmashup-bw {
+    background-image: url( ../images/disabled/google_gadget.png ) !important;
 }
 
 .fm-remove-bw {

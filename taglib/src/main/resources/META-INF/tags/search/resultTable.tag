@@ -50,6 +50,8 @@
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <%
     ResultsTag resultTag = (ResultsTag) findAncestorWithClass(this, ResultsTag.class);
     if (resultTag == null) {
@@ -133,10 +135,10 @@
                        folder="${webdavPath}${row.folderPath}"
                        target="_blank"
                        style="behavior:url(#default#AnchorClick)"
-                       title="<utility:resourceBundle resourceName='searchResults.openIEfolder' defaultValue='Open as a Web folder'/>"><img
+                       title="<fmt:message key='searchResults.openIEfolder'/>"><img
                             src="${pageContext.request.contextPath}/engines/images/icons/IEFolder.gif"
                             alt="IE folder" border="0"
-                            title="<utility:resourceBundle resourceName='searchResults.openIEfolder' defaultValue='Open as a Web folder'/>"/></a>
+                            title="<fmt:message key='searchResults.openIEfolder'/>"/></a>
                 </display:column>
             </c:if>
         </c:forEach>

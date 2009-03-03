@@ -58,6 +58,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="fieldIdHash"><%= Math.abs(jspContext.getAttribute("fieldId").hashCode()) %>
 </c:set>
 <c:set var="displayIncludeChildren" value="${not empty displayIncludeChildren ? displayIncludeChildren : 'true'}"/>
@@ -79,11 +81,11 @@
 <c:set var="link"><%= ((SelectPage_Engine) EnginesRegistry.getInstance().getEngineByBeanName("selectPageEngine")).renderLink((ProcessingContext) jspContext.getAttribute("ctx"), (Map) jspContext.getAttribute("engineParams")) %></c:set>
 <c:set target="${attributes}" property="href" value="#select"/>
 <c:set target="${attributes}" property="onclick" value="<%= null %>"/>
-<c:if test="${empty attributes.title}"><c:set target="${attributes}" property="title"><utility:resourceBundle resourceName="selectors.pageSelector.selectPage" defaultValue="Select page"/></c:set></c:if>
-<c:if test="${empty label}"><c:set var="label"><utility:resourceBundle resourceName="selectors.select" defaultValue="select"/></c:set></c:if>
+<c:if test="${empty attributes.title}"><c:set target="${attributes}" property="title"><fmt:message key="selectors.pageSelector.selectPage"/></c:set></c:if>
+<c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.select"/></c:set></c:if>
 <a ${h:attributes(attributes)} onclick="javascript:{var pageSelector = window.open('${link}', '<%="pageSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=600'); pageSelector.focus(); return false;}">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
-    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle resourceName="selectors.pageSelector.selectPage.includeChildren" defaultValue="include subpages"/></label>
+    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><fmt:message key="selectors.pageSelector.selectPage.includeChildren"/></label>
 </c:if>
 <script type="text/javascript">
     function setSelectedPage${fieldIdHash}(pid, url, title) {

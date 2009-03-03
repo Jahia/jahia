@@ -36,9 +36,7 @@
 <%@ tag body-content="empty" description="Displays a button to subscribe to a RSS feed" %>
 <%@ attribute name="targetURL" required="true" rtexprvalue="true" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
+<a title='<fmt:message key="rssFeed"/>'  href="${targetURL}"> <img title='<fmt:message key="rssFeed"/>' src="${pageContext.request.contextPath}/css/images/icones/rss_small.gif" alt="RSS"/></a>
 
-<a title='<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>'
-   href="${targetURL}">
-    <img title='<utility:resourceBundle resourceName="rssFeed" defaultValue="Subscribe to the RSS feed"/>'
-         src="${pageContext.request.contextPath}/css/images/icones/rss_small.gif" alt="RSS"/>
-</a>

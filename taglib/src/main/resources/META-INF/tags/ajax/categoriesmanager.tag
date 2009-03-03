@@ -42,6 +42,8 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
     final String importActionUrl = JahiaAdministration.composeActionURL(request, response, "categories", "&sub=import");
@@ -49,8 +51,7 @@
     final JahiaUser currentUser = jParams.getUser();
     final boolean hasRootCategoryAccess = Category.getRootCategory(currentUser) != null;
     if (!hasRootCategoryAccess) { %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
+<fmt:message key="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
 <%} else {%>
 <template:gwtJahiaModule id="categories_manager" jahiaType="categories_manager" importAction="<%=importActionUrl%>"
                          exportUrl="<%=exportUrl%>"/>

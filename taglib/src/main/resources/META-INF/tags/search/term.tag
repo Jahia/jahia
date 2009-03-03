@@ -51,6 +51,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:set var="formId" value="<%=this.getParent().toString() %>"/>
 <c:set var="termIndex" value="${searchTermIndexes[formId]}"/>
@@ -68,12 +70,12 @@
     <input type="hidden" name="${key}" value="${h:default(param[key], match)}"/>
 </c:if>
 <c:if test="${searchInAllowSelection}">
-    <div class="searchFields"><utility:resourceBundle resourceName="searchForm.term.searchIn" defaultValue="search in:"/>
+    <div class="searchFields"><fmt:message key="searchForm.term.searchIn"/>
 <c:forTokens items="${searchInSelectionOptions}" delims="," var="field">
     <c:set var="key" value="src_terms[${termIndex}].fields.${field}"/>
     <c:set var="fieldSelected" value="${h:default(param[key], fn:contains(searchIn, field))}"/>
     <input type="hidden" id="src_terms[${termIndex}].fields.${field}" name="src_terms[${termIndex}].fields.${field}" value="${fieldSelected}"/>
-    <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view"><utility:resourceBundle resourceName="searchForm.term.searchIn.${field}" defaultValue="${field}"/></label></span>
+    <span class="searchField"><input type="checkbox" id="src_terms[${termIndex}].fields.${field}_view" name="src_terms[${termIndex}].fields.${field}_view" value="true" ${fieldSelected ? 'checked="checked"' : ''} onchange="document.getElementById('src_terms[${termIndex}].fields.${field}').value = this.checked;"/>&nbsp;<label for="src_terms[${termIndex}].fields.${field}_view"><fmt:message key="searchForm.term.searchIn.${field}"/></label></span>
 </c:forTokens>
     </div>
 </c:if>

@@ -49,6 +49,8 @@
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:set target="${attributes}" property="name" value="src_created"/>
 <c:set var="valueParamName" value="${attributes.name}.type"/>
@@ -74,21 +76,21 @@
 </c:if>
 <c:if test="${display}">
     <select name="${valueParamName}" onchange="searchDateTypeToggle(this);">
-        <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.anytime" defaultValue="anytime"/></option>
-        <option value="today" ${value == 'today' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.today" defaultValue="today"/></option>
-        <option value="last_week" ${value == 'last_week' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.lastWeek" defaultValue="last week"/></option>
-        <option value="last_month" ${value == 'last_month' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.lastMonth" defaultValue="last month"/></option>
+        <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.anytime"/></option>
+        <option value="today" ${value == 'today' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.today"/></option>
+        <option value="last_week" ${value == 'last_week' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.lastWeek"/></option>
+        <option value="last_month" ${value == 'last_month' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.lastMonth"/></option>
         <option value="last_three_months" ${value == 'last_three_months' ? 'selected="selected"' : ''}>
-            <utility:resourceBundle resourceName="searchForm.date.lastThreeMonths" defaultValue="last three months"/></option>
+            <fmt:message key="searchForm.date.lastThreeMonths"/></option>
         <option value="last_six_months" ${value == 'last_six_months' ? 'selected="selected"' : ''}>
-            <utility:resourceBundle resourceName="searchForm.date.lastSixMonths" defaultValue="last six months"/></option>
-        <option value="range" ${value == 'range' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.date.range" defaultValue="date range..."/></option>
+            <fmt:message key="searchForm.date.lastSixMonths"/></option>
+        <option value="range" ${value == 'range' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.range"/></option>
     </select><div ${value != 'range' ? 'style="display:none"' : ''} class="dateRange">
             <c:set var="valueParamName" value="${attributes.name}.from"/>
-            <utility:resourceBundle resourceName="searchForm.date.from" defaultValue="from"/>:&nbsp;
+            <fmt:message key="searchForm.date.from"/>:&nbsp;
             <ui:dateSelector fieldName="${valueParamName}" value="${h:default(param[valueParamName], from)}"/>
             <c:set var="valueParamName" value="${attributes.name}.to"/>
-            <utility:resourceBundle resourceName="searchForm.date.to" defaultValue="to"/>:&nbsp;
+            <fmt:message key="searchForm.date.to"/>:&nbsp;
             <ui:dateSelector fieldName="${valueParamName}" value="${h:default(param[valueParamName], to)}"/>
     </div>
 </c:if>

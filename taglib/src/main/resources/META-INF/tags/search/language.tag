@@ -48,6 +48,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:if test="${display}">
     <c:set var="value" value="${not empty value ? value : ''}"/>
@@ -58,7 +60,7 @@
     </c:if>
     <c:set target="${attributes}" property="name" value="src_languages.values"/>
     <select ${h:attributes(attributes)}>
-        <option value="" ${selectedValues == ',,' ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.currentLanguage" defaultValue="---"/></option>
+        <option value="" ${selectedValues == ',,' ? 'selected="selected"' : ''}><fmt:message key="searchForm.currentLanguage"/></option>
         <c:set var="currentLocale" value="${jahia.processingContext.locale}"/>
         <c:forTokens items="${valueOptions}" delims="," var="lang">
             <c:set var="langCode" value="${fn:trim(lang)}"/>

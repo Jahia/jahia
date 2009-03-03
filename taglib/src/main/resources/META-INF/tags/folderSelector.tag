@@ -56,6 +56,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="displayIncludeChildren" value="${not empty displayIncludeChildren ? displayIncludeChildren : 'true'}"/>
 <c:if test="${empty fieldIdIncludeChildren}"><c:set var="fieldIdIncludeChildren"
                                                     value="${fieldId}_includeChildren"/></c:if>
@@ -74,12 +76,9 @@
 </script>
 &nbsp;<a href="#select"
 onclick="{var pathSelector = openFolderSelector(); pathSelector.focus(); return false;}"
-title='<utility:resourceBundle resourceName="selectors.folderSelector.selectFolder"
-                               defaultValue="Select folder"/>'><utility:resourceBundle
-        resourceName="selectors.select" defaultValue="select"/></a>
+title='<fmt:message key="selectors.folderSelector.selectFolder"/>'><<fmt:message key="selectors.select"/></a>
 <c:if test="${displayIncludeChildren}">
-    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><utility:resourceBundle
-        resourceName="selectors.folderSelector.selectFolder.includeChildren" defaultValue="include subfolders"/></label>
+    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><fmt:message key="selectors.folderSelector.selectFolder.includeChildren"/></label>
 </c:if>
 <script type="text/javascript">
     function setSelectedFilePath${fieldIdHash}(path, url) {

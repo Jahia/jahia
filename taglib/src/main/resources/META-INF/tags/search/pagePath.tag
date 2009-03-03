@@ -49,6 +49,8 @@
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:set target="${attributes}" property="type" value="hidden"/>
 <c:set target="${attributes}" property="name" value="src_pagePath.value"/>
@@ -69,7 +71,7 @@
            if (pageTitle != null && pageTitle.length() > 0) {
                jspContext.setAttribute("pageTitle", pageTitle);
            } else { 
-           %><c:set var="pageTitle"><utility:resourceBundle resourceName="searchForm.pagePicker.noTitle" defaultValue="n.a."/></c:set><%
+           %><c:set var="pageTitle"><fmt:message key="searchForm.pagePicker.noTitle"/></c:set><%
            }
         %>
     </c:if>

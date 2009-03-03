@@ -39,6 +39,8 @@
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <%@ attribute name="value" required="false" type="java.lang.String" %>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
@@ -54,9 +56,9 @@
 <c:if test="${display}">
     <c:set target="${attributes}" property="name" value="src_fileType"/>
     <select ${h:attributes(attributes)}>
-        <option value=""><utility:resourceBundle resourceName="searchForm.any" defaultValue="any"/></option>
+        <option value=""><fmt:message key="searchForm.any"/></option>
         <c:forEach items="${fileTypes}" var="type">
-            <option value="${type.key}" ${value == type.key ? 'selected="selected"' : ''}><utility:resourceBundle resourceName="searchForm.fileType.${type.key}" defaultValue="${type.key}"/></option>
+            <option value="${type.key}" ${value == type.key ? 'selected="selected"' : ''}><fmt:message key="searchForm.fileType.${type.key}"/></option>
         </c:forEach>
     </select>
 </c:if>

@@ -56,6 +56,8 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:set var="propName" value="src_properties(${documentType}).${name}.value"/>
 <c:set var="value" value="${h:default(param[propName], value)}"/>
@@ -74,7 +76,7 @@
             <c:when test="${descriptor.type == 'TEXT'}">
                 <c:if test="${descriptor.constrained}">
                     <select ${h:attributes(attributes)}>
-                        <option value=""><utility:resourceBundle resourceName="searchForm.any.any" defaultValue="any"/></option>
+                        <option value=""><fmt:message key="searchForm.any.any"/></option>
                         <c:forEach items="${descriptor.allowedValues}" var="allowedValue">
                             <option value="${fn:escapeXml(allowedValue)}" ${value == allowedValue ? 'selected="selected"' : ''}>${fn:escapeXml(allowedValue)}</option>
                         </c:forEach>

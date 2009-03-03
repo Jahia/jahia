@@ -41,7 +41,8 @@
 <%@ attribute name="cssClassName" required="false" rtexprvalue="true" %>
 <%@ attribute name="readOnlyInput" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
 <%@ attribute name="displayInput" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="jahiatemplates.common"/>
 <c:set var="thePath" value="<%=request.getParameter(inputName)%>" scope="request"/>
 <c:set var="readOnlyInput" value="${not empty readOnlyInput ? readOnlyInput : true}"/>
 <c:set var="displayInput" value="${not empty displayInput ? displayInput : true}"/>
@@ -62,8 +63,7 @@
     <c:if test="${requestScope.currentRequest.editMode}">
         <ui:folderSelector fieldId="${inputName}" displayIncludeChildren="false"
                            onSelect="function (path) { document.${name}.${inputName}.value=path; document.${name}.submit(); return false; }"/>
-        <utility:resourceBundle resourceName="mediagallery.imagefolder"
-                                defaultValue="the directory containing the images to display"/>
+        <fmt:message key="mediagallery.imagefolder"/>
     </c:if>
     <ui:thumbView path="${thePath}" cssClassName="thumbView"/>
 </div>

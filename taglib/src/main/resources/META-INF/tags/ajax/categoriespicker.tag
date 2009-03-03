@@ -54,13 +54,14 @@
 <%@ attribute name="autoSelectParent" required="false" rtexprvalue="true" type="java.lang.String"
               description="allows to control if we have to auto check the parent of a category when selected or not." %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
     final JahiaUser currentUser = jParams.getUser();
     final boolean hasRootCategoryAccess = Category.getRootCategory(currentUser) != null;
     if (!hasRootCategoryAccess) { %>
-<utility:resourceBundle resourceBundle="JahiaInternalResources"
-                        resourceName="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
+<fmt:message key="org.jahia.actions.server.admin.categories.ManageCategories.rootAccessDenied"/>
 <%} else {%>
 <logic:present name="org.jahia.engines.EngineHashMap" scope="request">
     <script type="text/javascript">

@@ -33,17 +33,14 @@
 
 --%>
 
-<%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ include file="../declarations.jspf" %>
 
 <div class="box2 box2-style1"><!--start box 2 style1 -->
         <div class="box2-topright"> </div>
         <div class="box2-topleft"> </div>
-        <h3 class="box2-header"><span><fmt:message
-                    key='statictitle.calendar.events'/></span></h3>
+        <h3 class="box2-header"><span><fmt:message key='statictitle.calendar.events'/></span></h3>
             <div class="box2-text">
-                <p><fmt:message
-                    key='static.calendar.viewfromdate'/></p>
+                <p><fmt:message key='static.calendar.viewfromdate'/></p>
                 <form action="" name="calendarStartDate" method="get">
                     <input type="hidden" name="startDate"/>
                 </form>
@@ -55,7 +52,6 @@
                     }
                 </script>
                 <ui:calendar callback="setDate"/>
-
     <!--stop calendar-->
             </div>
         <div class="box2-bottomright"> </div>

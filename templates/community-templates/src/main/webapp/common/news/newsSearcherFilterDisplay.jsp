@@ -58,24 +58,21 @@ limitations under the License.
 <div class="newslist">
     <template:jahiaPageForm name="newsPageForm" method="get">
         <fieldset>
-            <legend>&nbsp;<utility:resourceBundle resourceName='filtersAndSearchers'
-                                                  defaultValue="Filters and searchers"/>&nbsp;</legend>
+            <legend>&nbsp;<fmt:message key='filtersAndSearchers'/>&nbsp;</legend>
             <div class="search">
-                <span><utility:resourceBundle resourceName="search" defaultValue="Search"/></span>
+                <span><fmt:message key="search" /></span>
                 <input type="text" name="searchString" value="${param.searchString}"/>
-                - <utility:resourceBundle resourceName="display" defaultValue="Display"/>
+                - <fmt:message key="display"/>
             </div>
             <div class="windowSizeComboBox">
                 <ui:displayWindowSizeComboBox form="newsPageForm" listName="community_templates_news_news${param.id}"/>
             </div>
-            <div class="itemsPerPage"><utility:resourceBundle resourceName="itemsPerPage"
-                                                              defaultValue="(Items / Page)"/></div>
+            <div class="itemsPerPage"><fmt:message key="itemsPerPage"/></div>
             <input type="submit" name="submitbutton" class="button"
-                   value="<utility:resourceBundle resourceName='submit' defaultValue='Submit'/>"/>
+                   value="<fmt:message key='submit'/>"/>
 
             <div class="categorySelectionDiv">
-                <utility:resourceBundle resourceName="categoryFilter"
-                                        defaultValue="Filter by categories"/>:
+                <fmt:message key="categoryFilter"/>:
                 <!-- displayCategorySelection (start) -->
                 <query:categoryFilter startingCategoryKey="root"
                                       display="selectBoxSingle"
@@ -88,18 +85,17 @@ limitations under the License.
                 <!-- displayCategorySelection (end) -->
             </div>
             <div class="dateSelectionDiv">
-                <utility:resourceBundle resourceName="dateFilter" defaultValue="Date filter"/>:
+                <fmt:message key="dateFilter"/>:
                 <ui:dateSelector cssClassName="dateSelection" fieldName="dateFilter" value="${dateFilter}"/>
                 <c:if test="$(empty listCategories)">
                     <c:set var="listCategories" value="${requestScope.listCategories}" scope="request"/>
                 </c:if>
             </div>
             <div class="currentFilters">
-                <span><utility:resourceBundle resourceName="currentFilters"
-                                              defaultValue="Category filters currently applied"/>:
+                <span><fmt:message key="currentFilters"/>:
         <c:choose>
             <c:when test="${empty listCategories}">
-                <utility:resourceBundle resourceName="none" defaultValue="None"/>
+                <fmt:message key="none"/>
             </c:when>
             <c:otherwise>
                 <ui:displayCategoryTitle categoryKeys="${listCategories}"/>

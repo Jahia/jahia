@@ -35,17 +35,17 @@
 
 <%@ include file="declarations.jspf" %>
 <div class="box searchForm"><!--start box searchForm -->
-    <h3><utility:resourceBundle resourceName='search' defaultValue="Search"/></h3>
+    <h3><fmt:message key='search'/></h3>
 
     <div class="searchForm"><!--start searchForm -->
 
         <s:form>
             <fieldset>
-                <legend><utility:resourceBundle resourceName='search' defaultValue="Search"/></legend>
+                <legend><fmt:message key='search'/></legend>
                 <p><s:term class="searchFormField" tabindex="6"/></p>
 
                 <p><input type="submit" class="button" tabindex="7"
-                          value="<utility:resourceBundle resourceName='submit' defaultValue="Submit"/>"/>
+                          value="<fmt:message key='submit'/>"/>
                 </p>
             </fieldset>
         </s:form>

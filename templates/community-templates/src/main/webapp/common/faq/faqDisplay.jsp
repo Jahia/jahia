@@ -87,12 +87,12 @@ limitations under the License.
             <ol>
                 <template:container id="qaContainer" cacheKey="questionAndAnswer" actionMenuNamePostFix="qa" actionMenuNameLabelKey="qa.update">
                     <li id="ctn_<c:out value="${qaContainer.ID}"/>">
-                        <h5 class="question"><strong><utility:resourceBundle resourceName='question' defaultValue="Question"/></strong>
+                        <h5 class="question"><strong><fmt:message key='question'/></strong>
                         <template:field name="question"/></h5>
                     
 
                     <div class="answer">
-                        <strong><utility:resourceBundle resourceName='answer' defaultValue="Answer"/></strong>
+                        <strong><fmt:message key='answer'/></strong>
                         <template:field name="answer"/></div>
                     </li>
                 </template:container>

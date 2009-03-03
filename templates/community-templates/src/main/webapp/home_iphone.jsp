@@ -59,7 +59,7 @@
         <div class="iLayer" id="waNews" title="News">
 
             <div class="iMenu">
-                <h3><utility:resourceBundle resourceName='news' defaultValue="News"/></h3>
+                <h3><fmt:message key='news'/></h3>
 
                 <!--start newslist -->
                 <template:containerList id="newsList" windowSize="10" displayActionMenu="false">
@@ -112,8 +112,7 @@
                         </p>
 
                         <div class="newsMeta">
-                            <span class="categoryLabel"><utility:resourceBundle resourceName='category'
-                                                                                defaultValue='category'/>  :</span>
+                            <span class="categoryLabel"><fmt:message key='category'/>  :</span>
                             <template:getContentObjectCategories valueID="newsContainerCatKeys"
                                                                  objectKey="contentContainer_${pageScope.newsContainer.ID}"/>
                             <ui:displayCategoryTitle categoryKeys="${newsContainerCatKeys}"/>

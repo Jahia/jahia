@@ -35,7 +35,7 @@
 
 <%@ include file="declarations.jspf" %>
 <div class="box5"><!--start Box5 -->
-    <h3><utility:resourceBundle resourceName='shortcuts' defaultValue="Shortcuts"/></h3>
+    <h3><fmt:message key='shortcuts'/></h3>
     <template:include page="common/links/imageLinksDisplay.jsp">
         <template:param name="cssClassName" value="homeShortcuts"/>
     </template:include>

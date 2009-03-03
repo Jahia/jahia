@@ -32,4 +32,4 @@ limitations under the License.
                       scope="application"/>
 <utility:useConstants var="fieldTypeConstants" className="org.jahia.data.fields.FieldTypes"
                       scope="application"/>
-<fmt:setBundle basename="jahiatemplates.Community_templates"/>                      
+<utility:setBundle basename="jahiatemplates.Community_templates"/>                     

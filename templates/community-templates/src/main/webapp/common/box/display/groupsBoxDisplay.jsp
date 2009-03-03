@@ -58,7 +58,7 @@ limitations under the License.
         <template:field name='groupDisplayLimit' defaultValue="5" valueBeanID="boxGroupDisplayLimit" display="false"/>
         <template:field name='groupQuery' defaultValue="*" valueBeanID="boxGroupQuery" display="false"/>
         <h4>
-            <utility:resourceBundle resourceName="queryResult"/>
+            <fmt:message key="queryResult"/>
         </h4>
         <ui:groupList
                 displayLimit="${boxGroupDisplayLimit}"

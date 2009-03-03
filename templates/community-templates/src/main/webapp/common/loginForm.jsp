@@ -50,7 +50,7 @@
 <c:if test="${requestScope.currentRequest.logged}">
     <p id="loginFormTopTools">
         <span class="currentUser" ><c:out value="${requestScope.currentRequest.currentUserName}"/></span>
-        <a class="loginFormTopMySettingsShortcuts" href="<template:composePageURL page="mySettings"/>" ><utility:resourceBundle resourceName="mySettings.title" defaultValue="My settings"/></a>
-        <a class="loginFormTopLogoutShortcuts"href="<template:composePageURL page="logout"/>"><utility:resourceBundle resourceName="logout" defaultValue="Logout"/></a>
+        <a class="loginFormTopMySettingsShortcuts" href="<template:composePageURL page="mySettings"/>" ><fmt:message key="mySettings.title"/></a>
+        <a class="loginFormTopLogoutShortcuts"href="<template:composePageURL page="logout"/>"><fmt:message key="logout"/></a>
     </p>
 </c:if>

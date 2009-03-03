@@ -37,7 +37,7 @@
 <div class="box lastTools"><!--start box lastTools -->
 
     <div class="colA"><!--start colA lastTools -->
-        <h3><utility:resourceBundle resourceName='lastSubscribers' defaultValue="Last Subscribers"/></h3>
+        <h3><fmt:message key='lastSubscribers'/></h3>
 
         <ul class="lastSubscribers"><!--start lastSubscribers -->
             <ui:userList displayLimit="10" styleClass="lastSubscribers"/>
@@ -47,7 +47,7 @@
     </div>
     <!--stop colA lastTools -->
     <div class="colB"><!--start colB lastTools -->
-        <h3><utility:resourceBundle resourceName='availableGroups' defaultValue="Available Groups"/></h3>
+        <h3><fmt:message key='availableGroups'/></h3>
 
         <ul class="lastSubscribersGroup"><!--start lastSubscribersGroup -->
             <ui:groupList displayLimit="10" styleClass="lastSubscribersGroup" viewMembers="false"/>

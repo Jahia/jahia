@@ -34,58 +34,60 @@
 --%>
 
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<utility:setBundle basename="jahiatemplates.Community_templates"/>
 <div id="openclose">
-<div class="clasp"><a href="#toggle" onclick="return toggleSearch('pages');"><utility:resourceBundle resourceName="search.advancedSearch.portalContent" escape="true"/></a></div>
+<div class="clasp"><a href="#toggle" onclick="return toggleSearch('pages');"><fmt:message key="search.advancedSearch.portalContent"/></a></div>
     <div id="searchTypePages" class="lunchbox" style="display: ${param['src_mode'] == 'pages' ? 'block' : 'none'}">
         <s:form searchFor="pages" class="advancedSearchForm">
             <fieldset>
-                <legend><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.title" escape="true"/></legend>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.allWords" escape="true"/></span><s:term match="all_words"/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.exactPhrase" escape="true"/></span><s:term match="exact_phrase"/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.anyWord" escape="true"/></span><s:term match="any_word"/><br/>
+                <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.allWords"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.exactPhrase"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.anyWord"/>
             </fieldset>
             <fieldset>
-                <legend><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.title" escape="true"/></legend>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.createdBy" escape="true"/></span><s:createdBy/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.created" escape="true"/></span><s:created/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.modifiedBy" escape="true"/></span><s:lastModifiedBy/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.modified" escape="true"/></span><s:lastModified/>
+                <legend><fmt:message key="search.advancedSearch.criteria.authorAndDate.title"/></legend>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.createdBy"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.created"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modifiedBy"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modified"/>
             </fieldset>
             <fieldset>
-                <legend><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.title" escape="true"/></legend>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.language" escape="true"/></span><s:language/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.pagePath" escape="true"/></span><s:pagePath/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.itemsPerPage" escape="true"/></span><s:itemsPerPage/>
+                <legend><fmt:message key="search.advancedSearch.criteria.miscellanea.title"/></legend>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.language"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.pagePath"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.itemsPerPage"/>
             </fieldset>
-            <input type="submit" name="search" class="button" value="<utility:resourceBundle resourceName='search.advancedSearch.submit' escape='true'/>"/>
+            <input type="submit" name="search" class="button" value="<fmt:message key='search.advancedSearch.submit'/>"/>
         </s:form>
     <div class="clear"></div>
 </div>
-<div class="clasp"><a href="#toggle" onclick="return toggleSearch('files');"><utility:resourceBundle resourceName="search.advancedSearch.fileRepository" escape="true"/></a></div>
+<div class="clasp"><a href="#toggle" onclick="return toggleSearch('files');"><fmt:message key="search.advancedSearch.fileRepository"/></a></div>
     <div id="searchTypeFiles" class="lunchbox advancedSearchForm" style="display: ${param['src_mode'] == 'files' ? 'block' : 'none'}">
         <s:form searchFor="files">
             <fieldset>
-                <legend><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.title" escape="true"/></legend>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.allWords" escape="true"/></span><s:term match="all_words"/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.exactPhrase" escape="true"/></span><s:term match="exact_phrase"/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.text.anyWord" escape="true"/></span><s:term match="any_word"/><br/>
+                <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.allWords"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.exactPhrase"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.anyWord"/>
             </fieldset>
             <fieldset>
-                <legend><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.title" escape="true"/></legend>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.createdBy" escape="true"/></span><s:createdBy/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.created" escape="true"/></span><s:created/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.modifiedBy" escape="true"/></span><s:lastModifiedBy/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.authorAndDate.modified" escape="true"/></span><s:lastModified/>
+                <legend><fmt:message key="search.advancedSearch.criteria.authorAndDate.title"/></legend>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.createdBy"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.created"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modifiedBy"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modified"/>
             </fieldset>
             <fieldset>
-                <legend><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.title" escape="true"/></legend>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.fileType" escape="true"/></span><s:fileType/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.documentType" escape="true"/></span><s:documentType value="nt:file"/><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.location" escape="true"/></span><s:fileLocation /><br/>
-                <span class="label"><utility:resourceBundle resourceName="search.advancedSearch.criteria.miscellanea.itemsPerPage" escape="true"/></span><s:itemsPerPage/>
+                <legend><fmt:message key="search.advancedSearch.criteria.miscellanea.title"/></legend>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.fileType"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.documentType"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.location"/>
+                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.itemsPerPage"/>
             </fieldset>
-                <input type="submit" name="search" class="button" value="<utility:resourceBundle resourceName='search.advancedSearch.submit' escape='true'/>"/>
+                <input type="submit" name="search" class="button" value="<fmt:message key='search.advancedSearch.submit'/>"/>
         </s:form>
     <div class="clear"></div>
     </div>

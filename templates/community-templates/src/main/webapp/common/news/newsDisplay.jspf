@@ -18,8 +18,7 @@
         </p>
 
         <div class="newsMeta">
-        	<span class="categoryLabel"><utility:resourceBundle
-                    resourceName='category' defaultValue='category'/>  :</span>
+        	<span class="categoryLabel"><fmt:message key='category'/>  :</span>
             <template:getContentObjectCategories valueID="newsContainerCatKeys"
                                                 objectKey="contentContainer_${pageScope.newsContainer.ID}"/>
             <ui:displayCategoryTitle categoryKeys="${newsContainerCatKeys}"/>

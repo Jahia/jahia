@@ -58,7 +58,7 @@ limitations under the License.
         <template:field name='userDisplayLimit' defaultValue="5" beanID="boxUserDisplayLimit" display="false"/>
         <template:field name='userQuery' defaultValue="*" beanID="boxUserQuery" display="false"/>
         <h4>
-            <utility:resourceBundle resourceName="queryResult"/>
+            <fmt:message key="queryResult"/>
         </h4>
         <ui:userList displayLimit="${boxUserDisplayLimit}" query="${boxUserQuery}" scope="all" styleClass=""/>
     </template:container>

@@ -64,7 +64,7 @@
     <div id="headerPart3"><!--start headerPart3-->
         <div id="formSearchTop"><!--start formSearchTop-->
             <s:form>
-                <p><label class="hide"><utility:resourceBundle resourceName='search' defaultValue="Search"/>: </label>
+                <p><label class="hide"><fmt:message key='search'/>: </label>
                     <s:term class="text" value="" tabindex="4"/>
                     <c:set var="myImagePath" value="theme/${requestScope.currentTheme}/img/go-button.png"/>
                     <input type="image" class="gobutton png"
@@ -74,7 +74,7 @@
         </div>
         <!--stop formSearchTop-->
         <div class="languages"><!--start languages-->
-            <p><utility:resourceBundle resourceName="languageSelector" defaultValue="Choose a language"/>:</p>
+            <p><fmt:message key="languageSelector"/>:</p>
             <ui:languageSwitchingLinks display="horizontal" linkDisplay="doubleLetter"
                                        displayLanguageState="true"/>
         </div>

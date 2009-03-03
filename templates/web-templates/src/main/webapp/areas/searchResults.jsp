@@ -114,7 +114,7 @@ return false;
                                                         href="${pageUrl}"><strong><fmt:message
                                                         key="search.results.pagination.next"/></strong></a></c:if>
                                                 <c:if test="${empty pageUrl}"><span><strong><fmt:message
-                                                        key="search.results.pagination.next""/></strong></span></c:if>
+                                                        key="search.results.pagination.next"/></strong></span></c:if>
                                             </pg:next>
                                         </div>
                                         <div class="paginationPosition"><fmt:message

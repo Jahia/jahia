@@ -357,4 +357,14 @@ public class CategoryBean extends AbstractJahiaObjectBean {
         }
         return result;
     }
+    
+    /**
+     * Returns the category key.
+     * 
+     * @return the category key
+     */
+    public String getKey() {
+        return category.getKey();
+    }
+
 }

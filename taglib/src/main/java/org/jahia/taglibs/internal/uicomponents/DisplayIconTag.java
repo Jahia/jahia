@@ -35,7 +35,7 @@ package org.jahia.taglibs.internal.uicomponents;
 
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
@@ -231,8 +231,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
         // now let's resolve the alt text if resource bundle keys are being
 		// used.
         if (altKey != null) {
-            _alt = JahiaResourceBundle.getResource(altBundle, altKey, jParams
-					.getLocale(), jParams);
+            _alt = JahiaResourceBundle.getString(altBundle, altKey, jParams.getLocale(), jParams.getSiteID());
         }
 
         // Produce the HTML code
@@ -261,8 +260,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
     					jParams.getContentPage().getObjectKey()).append(
     					(_lang != null ? "&flaglang=" + _lang : "")).toString();
     		} else {
-    			imagePath = JahiaResourceBundle.getUrlPathCommonResource(_src,
-    					jParams);
+    			imagePath = JahiaResourceBundle.getString(getResourceBundle(),_src,jParams.getLocale(),jParams.getSiteID());
     		}
             if ( ("".equals(_resource)) && (imagePath == null)) {
                 str.append("<!-- couldn't find resource with key " + _src +

@@ -32,9 +32,11 @@
  */
 package org.jahia.utils.i18n;
 
+import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.apache.log4j.Logger;
+import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
 
 import java.util.*;
 
@@ -50,14 +52,23 @@ public class JahiaResourceBundle extends ResourceBundle {
     private final String basename;
     private final Locale locale;
     private final JahiaTemplatesPackage templatesPackage;
+    public static final String JAHIA_INTERNAL_RESOURCES = "JahiaInternalResources";
+    private static final String MISSING_RESOURCE = "???";
+    public static final String JAHIA_MESSAGE_RESOURCES = "JahiaMessageResources";
 
     public JahiaResourceBundle(String basename, Locale locale,
                                ClassLoader classLoader, JahiaTemplatesPackage templatesPackage) {
         this.basename = basename;
         this.locale = locale;
         this.templatesPackage = templatesPackage;
-        //To change body of created methods use File | Settings | File Templates.
         ResourceBundle.getBundle(basename, locale, classLoader);
+    }
+
+    public JahiaResourceBundle(String basename, Locale locale) {
+        this.basename = basename;
+        this.locale = locale;
+        this.templatesPackage = null;
+        ResourceBundle.getBundle(basename, locale);
     }
 
 
@@ -65,7 +76,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     public Object handleGetObject(String s) {
         final JahiaTemplatesRBLoader templatesRBLoader = getClassLoader();
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(basename, locale, templatesRBLoader);
-        Object o = null;
+        Object o;
         try {
             o = resourceBundle.getString(s);
         } catch (MissingResourceException e) {
@@ -83,7 +94,7 @@ public class JahiaResourceBundle extends ResourceBundle {
                     }
                 }
             }
-            throw new MissingResourceException("Cannot find resource", basename, s);
+            throw new MissingResourceException("Cannot find resource "+s, basename, s);
         }
         return o;
     }
@@ -108,5 +119,45 @@ public class JahiaResourceBundle extends ResourceBundle {
             templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), Jahia.getThreadParamBean().getSiteID());
         }
         return templatesRBLoader;
+    }
+
+    /**
+     * Shortcut methods to call a resource key from the engine resource bundle
+     * @param key, the key to search inside the JahiaInternalResources bundle
+     * @param locale, the locale in which we want to find the key
+     * @param defaultValue, the defaultValue (surrounded by ???) if not found
+     * @return the resource in locale langauge or defaultValue surrounded by (???)
+     */
+    public static String getJahiaInternalResource(String key, Locale locale, String defaultValue) {
+        final ResourceBundle resourceBundle = ResourceBundle.getBundle(JAHIA_INTERNAL_RESOURCES, locale);
+        try{
+            return resourceBundle.getString(key);
+        } catch (MissingResourceException e) {
+            return MISSING_RESOURCE +defaultValue!=null?defaultValue:key+ MISSING_RESOURCE;
+        }
+    }
+
+    public static String getJahiaInternalResource(String key, Locale locale) {
+        return getJahiaInternalResource(key, locale,null);
+    }
+
+    public static String getMessageResource(String key, Locale locale,String defaultValue) {
+        final ResourceBundle resourceBundle = ResourceBundle.getBundle(JAHIA_MESSAGE_RESOURCES, locale);
+        try{
+            return resourceBundle.getString(key);
+        } catch (MissingResourceException e) {
+            return MISSING_RESOURCE +defaultValue!=null?defaultValue:key+ MISSING_RESOURCE;
+        }
+    }
+
+    public static String getMessageResource(String key, Locale locale) {
+        return getMessageResource(key, locale,null);
+    }
+
+    public static String getString(String bundle, String key, Locale locale, int siteID) {
+        final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(siteID);
+        final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), siteID);
+        JahiaResourceBundle resourceBundle = new JahiaResourceBundle(bundle,locale, templatesRBLoader, aPackage);
+        return resourceBundle.getString(key);
     }
 }

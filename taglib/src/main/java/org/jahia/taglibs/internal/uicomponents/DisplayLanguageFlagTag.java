@@ -72,7 +72,7 @@
 package org.jahia.taglibs.internal.uicomponents;
 
 import org.jahia.data.JahiaData;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;

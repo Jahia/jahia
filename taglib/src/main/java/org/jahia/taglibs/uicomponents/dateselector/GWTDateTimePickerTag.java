@@ -98,7 +98,7 @@ public class GWTDateTimePickerTag extends AbstractDateTag {
             if (displayTime) {
                 datePattern = DATE_PATTERNE_TIME;
             } else {
-                datePattern = DATE_PATTERNE_NO_TIME;
+                datePattern = ((SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG,jData.getProcessingContext().getLocale())).toPattern();
             }
         }
         /*if (jData.gui().isLogged()) {*/

@@ -40,7 +40,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.exceptions.JahiaException;
 import org.apache.log4j.Logger;
 

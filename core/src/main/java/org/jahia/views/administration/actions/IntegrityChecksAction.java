@@ -51,7 +51,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.sites.JahiaSite;
 
@@ -146,10 +146,9 @@ public class IntegrityChecksAction extends AdminAction {
                 ServicesRegistry.getInstance().getJahiaSitesService()
                         .updateSiteProperties(site, site.getSettings());
                 ActionMessages messages = new ActionMessages();
-                messages.add("default", new ActionMessage(JahiaResourceBundle
-                        .getAdminResource(
+                messages.add("default", new ActionMessage(JahiaResourceBundle.getJahiaInternalResource(
                                 "org.jahia.admin.warningMsg.changSaved.label",
-                                ctx, ctx.getLocale()), false));
+                                 ctx.getLocale()), false));
                 saveMessages(request, messages);
             } catch (JahiaException e) {
                 logger.error(e.getMessage(), e);

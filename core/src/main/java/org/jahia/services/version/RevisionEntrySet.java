@@ -38,7 +38,7 @@ import java.util.*;
 import org.jahia.content.ObjectKey;
 import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 public abstract class RevisionEntrySet implements Comparable {
 
@@ -200,10 +200,10 @@ public abstract class RevisionEntrySet implements Comparable {
         versionNumber = "v." + revEntrySet.getVersionNumber();
         if ( revEntrySet.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
             versionNumber += " - " + JahiaResourceBundle
-            .getEngineResource( "org.jahia.engines.version.liveVersion", jParams, locale,"live");
+            .getJahiaInternalResource( "org.jahia.engines.version.liveVersion", locale,"live");
         } else if ( revEntrySet.getWorkflowState() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
             versionNumber += " - " + JahiaResourceBundle
-            .getEngineResource( "org.jahia.engines.version.stagingVersion", jParams, locale,"staging");
+            .getJahiaInternalResource( "org.jahia.engines.version.stagingVersion", locale,"staging");
         }
         return versionNumber;
     }
@@ -214,14 +214,14 @@ public abstract class RevisionEntrySet implements Comparable {
     {
         String workflowState = "";
         if ( revEntrySet.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
-            workflowState = JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.liveVersion",
-                    jParams, locale,"live");
+            workflowState = JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.liveVersion",
+                    locale,"live");
         } else if ( revEntrySet.getWorkflowState() > EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
-            workflowState = JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.stagingVersion",
-                    jParams, locale,"staging");
+            workflowState = JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.stagingVersion",
+                    locale,"staging");
         } else {
-            workflowState = JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.archivedVersion",
-                    jParams, locale,"archived");
+            workflowState = JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.archivedVersion",
+                    locale,"archived");
         }
         return workflowState;
     }
@@ -233,13 +233,11 @@ public abstract class RevisionEntrySet implements Comparable {
                                 String defaultValue){
         String lastContributor = null;
         if ( revEntrySet == null ) {
-            return JahiaResourceBundle
-                .getEngineResource( unknownKey, jParams,locale, defaultValue);
+            return JahiaResourceBundle.getJahiaInternalResource( unknownKey,locale, defaultValue);
         }
         lastContributor = revEntrySet.getLastContributor();
         if ( lastContributor == null || "".equals(lastContributor) ){
-            lastContributor = JahiaResourceBundle
-                .getEngineResource( unknownKey, jParams,locale, defaultValue);
+            lastContributor = JahiaResourceBundle.getJahiaInternalResource( unknownKey, locale, defaultValue);
         }
         return lastContributor;
     }
@@ -251,13 +249,11 @@ public abstract class RevisionEntrySet implements Comparable {
                                 String defaultValue){
         String validator = null;
         if ( revEntrySet == null ) {
-            return JahiaResourceBundle
-                .getEngineResource( unknownKey, jParams,locale, defaultValue);
+            return JahiaResourceBundle.getJahiaInternalResource( unknownKey,locale, defaultValue);
         }
         validator = revEntrySet.getLastContributor();
         if ( validator == null || "".equals(validator) ){
-            validator = JahiaResourceBundle
-                .getEngineResource( unknownKey, jParams,locale, defaultValue);
+            validator = JahiaResourceBundle.getJahiaInternalResource( unknownKey,locale, defaultValue);
         }
         return validator;
     }

@@ -61,7 +61,7 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.TokenAuthValveImpl;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.keygenerator.JahiaKeyGen;

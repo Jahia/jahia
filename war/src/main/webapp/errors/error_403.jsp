@@ -43,7 +43,7 @@
 <%@page import="java.text.MessageFormat"
 %><%@page import="org.jahia.bin.Jahia" 
 %><%@page import="org.jahia.params.ParamBean" 
-%><%@page import="org.jahia.resourcebundle.JahiaResourceBundle" 
+%><%@page import="org.jahia.utils.i18n.JahiaResourceBundle"
 %><?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><%!
@@ -89,8 +89,8 @@
             <p class="bold"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.invalidModeRequested.label"/></p>
 
             <p><a href="#redirect" onclick="redirectToPage(); return false;">
-                <%=MessageFormat.format(JahiaResourceBundle.getEngineResource(
-                    "org.jahia.bin.JahiaErrorDisplay.redirectToNormal.label", jParams,
+                <%=MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(
+                    "org.jahia.bin.JahiaErrorDisplay.redirectToNormal.label",
                     jParams.getLocale()), new Object[]{new Integer(REDIRECTION_DELAY / 1000)})%>
                 </a>
             </p>

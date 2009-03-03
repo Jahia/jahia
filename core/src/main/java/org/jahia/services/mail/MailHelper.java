@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -81,14 +81,14 @@ public class MailHelper {
 
     public static List<Locale> getAvailableBundleLocales() {
         return LanguageCodeConverters.getAvailableBundleLocales(
-                JahiaResourceBundle.MESSAGE_DEFAULT_RESOURCE_BUNDLE, null);
+                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null);
     }
 
     public static List<Locale> getAvailableBundleLocalesSorted(
             Locale currentLocale) {
         Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
         for (Locale locale : LanguageCodeConverters.getAvailableBundleLocales(
-                JahiaResourceBundle.MESSAGE_DEFAULT_RESOURCE_BUNDLE, null)) {
+                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null)) {
             sortedLocales.put(locale.getDisplayName(currentLocale), locale);
         }
         return new LinkedList<Locale>(sortedLocales.values());

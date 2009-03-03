@@ -58,7 +58,7 @@ import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.beans.factory.BeanFactory;
 
 import javax.servlet.ServletContext;
@@ -73,6 +73,7 @@ import java.util.ResourceBundle;
 import java.net.URL;
 import java.net.URLConnection;
 import java.io.IOException;
+import java.text.MessageFormat;
 
 /**
  * Created by IntelliJ IDEA.
@@ -452,10 +453,10 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         }
         String value = I18nBean.getInstance(paramBean.getLocale(), paramBean).get(key, null);
         if (value == null || value.equalsIgnoreCase("")) {
-            value = JahiaResourceBundle.getAdminResource(key, paramBean, paramBean.getLocale());
+            value = JahiaResourceBundle.getJahiaInternalResource(key, paramBean.getLocale());
         }
         if (value == null || value.equalsIgnoreCase("")) {
-            value = JahiaResourceBundle.getEngineResource(key, paramBean, paramBean.getLocale());
+            value = JahiaResourceBundle.getJahiaInternalResource(key, paramBean.getLocale());
         }
 
         if (logger.isDebugEnabled()) {
@@ -485,8 +486,8 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
     public String getLocaleMessageResource(EngineMessage message) {
         return message.getValues() == null ? JahiaResourceBundle
                 .getMessageResource(message.getKey(), getLocale())
-                : JahiaResourceBundle.getMessageResource(message.getKey(),
-                getLocale(), message.getValues());
+                : MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(),
+                        getLocale()),message.getValues());
     }
 
     /**

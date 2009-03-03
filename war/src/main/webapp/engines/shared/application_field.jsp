@@ -37,7 +37,7 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper" %>
 <%@ page import="org.jahia.engines.JahiaEngine" %>
 <%@ page import="org.jahia.engines.rights.ManageRights" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ page import="org.jahia.services.categories.Category" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.util.Map" %>
@@ -147,8 +147,7 @@
                 }
                 badName += usrgrpname[i].substr(1, usrgrpname[i].lastIndexOf(':') - 1) + "\n";
             }
-            alert("<%=JahiaTools.html2text(JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field.alertUsersGroupAlreadyMember.label",
-                jParams, jParams.getLocale()))%>" + badName);
+            alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field.alertUsersGroupAlreadyMember.label",jParams.getLocale()))%>" + badName);
             index = 0;
         }
     }

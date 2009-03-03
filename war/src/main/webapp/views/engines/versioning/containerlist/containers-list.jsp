@@ -45,6 +45,7 @@
 <%@ page import="org.jahia.views.engines.JahiaEngineViewHelper" %>
 <%@ page import="org.jahia.views.engines.versioning.ContentVersioningViewHelper" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 
@@ -108,31 +109,31 @@ function handleRevisionDetails(containerId){
         <%
           ContainerVersioningBean ctnVB = (ContainerVersioningBean) pageContext.getAttribute("listItem");
         %>
-        <display:column sortProperty="id" title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.container", jParams, jParams.getLocale(),"Container")%>' sortable="true">
+        <display:column sortProperty="id" title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.container", jParams.getLocale(),"Container")%>' sortable="true">
 <%--
-          <a href="javascript:handleRevisionDetails('<%=ctnVB.getId()%>')"><%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.container", jParams, jParams.getLocale(),"Container") + "&nbsp;" + ctnVB.getId()%></a>
+          <a href="javascript:handleRevisionDetails('<%=ctnVB.getId()%>')"><%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.container", jParams.getLocale(),"Container") + "&nbsp;" + ctnVB.getId()%></a>
 --%>
-          <%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.container", jParams, jParams.getLocale(),"Container") + "&nbsp;" + ctnVB.getId()%>
+          <%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.container", jParams.getLocale(),"Container") + "&nbsp;" + ctnVB.getId()%>
         </display:column>
-        <!--display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.services.metadata.creator", jParams, jParams.getLocale(),"Creator")%>' sortable="true" sortProperty="creator" comparator="<%= comparator %>" headerClass="itemsListingHeader"-->
+        <!--display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.services.metadata.creator", jParams.getLocale(),"Creator")%>' sortable="true" sortProperty="creator" comparator="<%= comparator %>" headerClass="itemsListingHeader"-->
         <!--%=ctnVB.getCreator()%-->
         <!--/display:column-->
-        <!--display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.services.metadata.creationDate", jParams, jParams.getLocale(),"Creation date")%>' sortable="true" sortProperty="creationDate" comparator="<%= comparator %>" headerClass="itemsListingHeader"-->
+        <!--display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.services.metadata.creationDate", jParams.getLocale(),"Creation date")%>' sortable="true" sortProperty="creationDate" comparator="<%= comparator %>" headerClass="itemsListingHeader"-->
         <!--%=ContainerVersioningBean.getFormattedDate(ctnVB.getCreationDate(),jParams.getLocale(),"")%-->
         <!--/display:column-->
-        <!--display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.services.metadata.lastContributor", jParams, jParams.getLocale(),"Last contributor")%>' sortable="true" sortProperty="creator" comparator="<%= comparator %>" headerClass="itemsListingHeader"-->
+        <!--display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.services.metadata.lastContributor", jParams.getLocale(),"Last contributor")%>' sortable="true" sortProperty="creator" comparator="<%= comparator %>" headerClass="itemsListingHeader"-->
         <!--%=ctnVB.getLastContributor()%-->
         <!--/display:column-->
-        <display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.services.metadata.lastModificationDate", jParams, jParams.getLocale(),"Creation date")%>' sortable="true" sortProperty="lastContributionDate" comparator="<%= comparator %>">
+        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.services.metadata.lastModificationDate", jParams.getLocale(),"Creation date")%>' sortable="true" sortProperty="lastContributionDate" comparator="<%= comparator %>">
           <%=ContainerVersioningBean.getFormattedDate(ctnVB.getLastContributionDate(),jParams.getLocale(),"")%>
         </display:column>
-        <display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.deletedBy", jParams, jParams.getLocale(),"Deleted by")%>' sortable="true" sortProperty="deleter" comparator="<%= comparator %>">
+        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.deletedBy", jParams.getLocale(),"Deleted by")%>' sortable="true" sortProperty="deleter" comparator="<%= comparator %>">
           <%=ctnVB.getDeleter()%>
         </display:column>
-        <display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.deleteDate", jParams, jParams.getLocale(),"Delete date")%>' sortable="true" sortProperty="deleteDate" comparator="<%= comparator %>">
+        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.deleteDate", jParams.getLocale(),"Delete date")%>' sortable="true" sortProperty="deleteDate" comparator="<%= comparator %>">
           <%=ContainerVersioningBean.getFormattedDate(ctnVB.getDeleteDate(),jParams.getLocale(),"")%>
         </display:column>
-        <display:column title='<%=JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.operations", jParams, jParams.getLocale(),"Operations")%>' sortable="false" headerClass="lastCol" class="lastCol">
+        <display:column title='<%=JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.operations", jParams.getLocale(),"Operations")%>' sortable="false" headerClass="lastCol" class="lastCol">
           <%if ( ctnVB.getIsDeleted() || ctnVB.getIsMarkedForDelete() ){ String params = "containerId=" + ctnVB.getId();%>
             <a href="javascript:sendForm('showConfirmUndelete','<%=params%>');"><fmt:message key="org.jahia.engines.version.undelete"/></a>
           <%}%>

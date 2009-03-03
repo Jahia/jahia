@@ -37,7 +37,6 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.TextExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.exoplatform.services.jcr.impl.storage.value.fs.FileValueStorage;
 import org.jahia.ajax.gwt.client.util.EngineOpener;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
@@ -48,13 +47,12 @@ import org.jahia.data.beans.FieldValueBean;
 import org.jahia.data.beans.PageBean;
 import org.jahia.data.beans.ResourceBean;
 import org.jahia.data.fields.FieldTypes;
-import org.jahia.data.fields.JahiaDateFieldUtil;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.categories.Category;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageInfoInterface;
@@ -68,8 +66,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -445,7 +441,7 @@ public class FieldTag extends AbstractFieldTag {
             buff.append("</a>");
 
         } else if (defaultValue != null && defaultValue.length() > 0) {
-            buff.append(resolveTitle(defaultValue, getBundleKey(), defaultValue, getProcessingContext().getLocale()));
+            buff.append(getMessage(defaultValue, defaultValue));
         }
         return buff.toString();
     }
@@ -510,7 +506,7 @@ public class FieldTag extends AbstractFieldTag {
             buff.append("</a>\n</span>");
 
         } else if (defaultValue != null && defaultValue.length() > 0) {
-            buff.append(resolveTitle(defaultValue, getBundleKey(), defaultValue, processingContext.getLocale()));
+            buff.append(getMessage(defaultValue, defaultValue));
         }
         return buff.toString();
     }
@@ -548,7 +544,7 @@ public class FieldTag extends AbstractFieldTag {
             buff.append(renderEditableContentMarkup(theField, truncatedValue, processingContext));
 
         } else if (defaultValueSet) {
-            final String defValue = resolveTitle(defaultValue, getBundleKey(), defaultValue, getProcessingContext().getLocale());
+            final String defValue = getMessage(defaultValue, defaultValue);
             buff.append(renderEditableContentMarkup(theField, defValue, processingContext));
         }
 
@@ -600,7 +596,7 @@ public class FieldTag extends AbstractFieldTag {
             }
 
         } else if (defaultValueSet) {
-            buff.append(resolveTitle(defaultValue, getBundleKey(), defaultValue, getProcessingContext().getLocale()));
+            buff.append(getMessage(defaultValue, defaultValue));
         }
         if (createDiv) {
             buff.append("</div>");

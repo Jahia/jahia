@@ -604,12 +604,6 @@
             </bean>
         </property>
     </bean>
-    <bean id="JahiaResourceBundleService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.resourcebundle.ResourceBundleBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
-            </bean>
-        </property>
-    </bean>
     <bean id="JahiaSiteMapService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.sitemap.JahiaSiteMapService" parent="jahiaServiceTemplate" factory-method="getInstance">
@@ -855,7 +849,6 @@
 
     <bean id="org.jahia.services.templates.TemplatePackageRegistry" class="org.jahia.services.templates.TemplatePackageRegistry">
         <property name="settingsBean" ref="settingsBean" />
-        <property name="resourceBundleService" ref="JahiaResourceBundleService" />
     </bean>
 
     <bean id="JahiaTemplateManagerService" parent="proxyTemplate">

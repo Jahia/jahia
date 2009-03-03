@@ -45,7 +45,7 @@
 <%@ page import="org.jahia.services.metadata.FieldDefinition" %>
 <%@ page import="java.util.*" %>
 <%@page import="org.jahia.data.fields.ExpressionMarker"%>
-<%@page import="org.jahia.resourcebundle.ResourceBundleMarker"%>
+<%@page import="org.jahia.utils.i18n.ResourceBundleMarker"%>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");

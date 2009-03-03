@@ -40,7 +40,7 @@ import java.util.Map;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.search.savedsearch.JahiaSavedSearch;
 import org.jahia.utils.JahiaTools;
 
@@ -195,12 +195,12 @@ public class SearchOptionsHandler {
                 }
             }
             if ( "".equals(savedSearch.getTitle()) ){
-                this.addMsg(jParams,engineMap, JahiaResourceBundle.getEngineResource(NAME_REQUIRED,jParams,jParams.getLocale(),"Name required"));
+                this.addMsg(jParams,engineMap, JahiaResourceBundle.getJahiaInternalResource(NAME_REQUIRED,jParams.getLocale(),"Name required"));
             } else {
                 try {
                     ServicesRegistry.getInstance().getJahiaSearchService()
                             .saveSearch(savedSearch,searchViewHandler,jParams);
-                    this.addMsg(jParams,engineMap,JahiaResourceBundle.getEngineResource(SAVED_SUCCESSFULLY,jParams,jParams.getLocale(),"Saved successfully"));
+                    this.addMsg(jParams,engineMap,JahiaResourceBundle.getJahiaInternalResource(SAVED_SUCCESSFULLY,jParams.getLocale(),"Saved successfully"));
                 } catch ( Exception t ){
                     logger.debug("An error occured when saving the search",t);
                     this.addMsg(jParams,engineMap,"An error occured when saving the search");
@@ -221,9 +221,9 @@ public class SearchOptionsHandler {
             handleFormSubmit(jParams,engineMap);
             try {
                 ServicesRegistry.getInstance().getJahiaSearchService()
-                        .deleteSearch(savedSearch.getId().intValue());
+                        .deleteSearch(savedSearch.getId());
                 this.savedSearch = null;
-                this.addMsg(jParams,engineMap,JahiaResourceBundle.getEngineResource(DELETED_SUCCESSFULLY,jParams,jParams.getLocale(),"Deleted successfully"));
+                this.addMsg(jParams,engineMap,JahiaResourceBundle.getJahiaInternalResource(DELETED_SUCCESSFULLY,jParams.getLocale(),"Deleted successfully"));
                 engineMap.put(OPERATION_VIEW,"delete_success");
             } catch ( Exception t ){
                 logger.debug("An error occured when deleging the search",t);

@@ -35,7 +35,7 @@ package org.jahia.services.toolbar.resolver.impl;
 
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.toolbar.resolver.PropertyResolver;
 
 /**
@@ -59,14 +59,14 @@ public class ResourceBundlePropertyResolver implements PropertyResolver {
      */
     private String getResources(ProcessingContext processingContext, String key) {
         logger.debug("Resources key: " + key);
-        String value = JahiaResourceBundle.getAdminResource(key, processingContext, null);
+        String value = JahiaResourceBundle.getJahiaInternalResource(key, processingContext.getLocale());
         if (value == null || value.equalsIgnoreCase("")) {
-            value = JahiaResourceBundle.getEngineResource(key, processingContext, null);
+            value = JahiaResourceBundle.getJahiaInternalResource(key, processingContext.getLocale());
         }
         if (value == null || value.equalsIgnoreCase("")) {
             // value = JahiaResourceBundle.getMessageResource(key, processingContext.getLocale(), null);
         }
         logger.debug("Resources value: " + value);
-        return JahiaResourceBundle.getAdminResource(key, processingContext, null);
+        return JahiaResourceBundle.getJahiaInternalResource(key, processingContext.getLocale());
     }
 }

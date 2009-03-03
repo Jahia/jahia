@@ -249,7 +249,7 @@ public class AdvCompareModeSettings implements Cloneable {
         return new GWTJahiaRevision(setting.getDate(),setting.getVersion(),setting.isUseVersion());
     }
 
-    public Object clone(){
+    public Object clone() throws CloneNotSupportedException {
         VersionSetting setting1 = null;
         VersionSetting setting2 = null;
         if (this.version1 != null){
@@ -258,7 +258,11 @@ public class AdvCompareModeSettings implements Cloneable {
         if (this.version2 != null){
             setting2 = (VersionSetting)this.version2.clone();
         }
-        return new AdvCompareModeSettings(this.isEnabled(),setting1,setting2);
+        AdvCompareModeSettings settings = (AdvCompareModeSettings) super.clone();
+        settings.setEnabled(enabled);
+        settings.setVersion1(setting1);
+        settings.setVersion2(setting2);
+        return settings;
     }
 
     public String toString(){
@@ -269,7 +273,7 @@ public class AdvCompareModeSettings implements Cloneable {
                 .toString();
     }
 
-    public class VersionSetting implements Cloneable {
+    public static class VersionSetting implements Cloneable {
         private long date;
         private GWTJahiaVersion version;
         private boolean useVersion;
@@ -341,8 +345,12 @@ public class AdvCompareModeSettings implements Cloneable {
                     .append("useVersion",this.useVersion).toString();
         }
 
-        public Object clone(){
-            return new VersionSetting(this.date,this.version,this.useVersion);
+        public Object clone() throws CloneNotSupportedException {
+            VersionSetting setting = (VersionSetting) super.clone();
+            setting.setDate(date);
+            setting.setVersion(version);
+            setting.setUseVersion(useVersion);
+            return setting;
         }
     }
 }

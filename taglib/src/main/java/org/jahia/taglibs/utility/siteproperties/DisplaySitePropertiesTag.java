@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 /**
  * @author Xavier Lawrence
@@ -71,41 +72,41 @@ public class DisplaySitePropertiesTag extends AbstractJahiaTag {
             final ProcessingContext jParams = jData.getProcessingContext();
             final JahiaSite theSite = jParams.getSite();
             final StringBuilder buff = new StringBuilder();
-            I18nBean i18n = getI18n();
+            ResourceBundle i18n = retrieveResourceBundle();
 
             buff.append("<ul>\n");
             buff.append("<li class=\"siteID\">");
-            buff.append(i18n.get("siteproperty.siteID"));
+            buff.append(i18n.getString("siteproperty.siteID"));
             buff.append(": ");
             buff.append(theSite.getID());
             buff.append("</li>\n");
 
             buff.append("<li class=\"siteKey\">");
-            buff.append(i18n.get("siteproperty.siteKey"));
+            buff.append(i18n.getString("siteproperty.siteKey"));
             buff.append(": ");
             buff.append(theSite.getSiteKey());
             buff.append("</li>\n");
 
             buff.append("<li class=\"sitename\">");
-            buff.append(i18n.get("siteproperty.sitename"));
+            buff.append(i18n.getString("siteproperty.sitename"));
             buff.append(": ");
             buff.append(theSite.getTitle());
             buff.append("</li>\n");
 
             buff.append("<li class=\"servername\">");
-            buff.append(i18n.get("siteproperty.servername"));
+            buff.append(i18n.getString("siteproperty.servername"));
             buff.append(": ");
             buff.append(theSite.getServerName());
             buff.append("</li>\n");
 
             buff.append("<li class=\"templates\">");
-            buff.append(i18n.get("siteproperty.templates"));
+            buff.append(i18n.getString("siteproperty.templates"));
             buff.append(": ");
             buff.append(theSite.getTemplatePackageName());
             buff.append("</li>\n");
 
             buff.append("<li class=\"creationDate\">");
-            buff.append(i18n.get("siteproperty.creationDate"));
+            buff.append(i18n.getString("siteproperty.creationDate"));
             buff.append(": ");
             final Date creationDate = theSite.getHomeContentPage().
                     getMetadataAsDate(CoreMetadataConstant.CREATION_DATE, jParams);

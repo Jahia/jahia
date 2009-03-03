@@ -35,7 +35,7 @@
 
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.version.IsValidForActivationResults;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.engines.EngineMessage;
 
 import java.util.*;
@@ -104,7 +104,7 @@ public class PageNotifData implements Comparable {
         Map<String, String> allTitles = contentPage.getTitles(true);
         Map<String, String> workflowTitles = new HashMap<String, String>();
         for (String curLanguageCode : languageCodes) {
-            String curLanguageTitle = (String) allTitles.get(curLanguageCode);
+            String curLanguageTitle = allTitles.get(curLanguageCode);
             workflowTitles.put(curLanguageCode, curLanguageTitle);
         }
         return workflowTitles;
@@ -166,8 +166,7 @@ public class PageNotifData implements Comparable {
                         s = msgFormat.format(message.getValues());
                     }
                 }
-                Object[] arguments = {s, validationResult.getObjectType(), new Integer(
-                        validationResult.getObjectID()), validationResult.getLanguageCode()};
+                Object[] arguments = {s, validationResult.getObjectType(), validationResult.getObjectID(), validationResult.getLanguageCode()};
 
                 result.append(MessageFormat.format(resultFormat, arguments));
             }

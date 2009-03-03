@@ -34,7 +34,7 @@
 package org.jahia.ajax.gwt.engines.versioning.server;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.textdiff.HunkTextDiffVisitor;
 
@@ -62,8 +62,8 @@ public class VersionComparisonUtils {
      */
     public static String getTitleAssert(String version1Assert, String version2Assert, String contentAssert,
                                         ProcessingContext context, Locale locale){
-        String titleAssert = JahiaResourceBundle.getEngineResource(
-                "org.jahia.engines.version.versioningComparisonTitleAssert",context,
+        String titleAssert = JahiaResourceBundle.getJahiaInternalResource(
+                "org.jahia.engines.version.versioningComparisonTitleAssert",
                 locale,"Difference between {version1} and {version2} of {content}");
         titleAssert = JahiaTools.replacePattern(titleAssert,"{version1}",version1Assert);
         titleAssert = JahiaTools.replacePattern(titleAssert,"{version2}",version2Assert);
@@ -73,19 +73,19 @@ public class VersionComparisonUtils {
 
     public static String getAddedDiffLegendAssert(ProcessingContext context, Locale locale){
         String addedDiffLegend = HunkTextDiffVisitor.getAddedText(JahiaResourceBundle
-            .getEngineResource("org.jahia.engines.version.added", context, locale,"added"));
+            .getJahiaInternalResource("org.jahia.engines.version.added",  locale,"added"));
         return addedDiffLegend;
     }
 
     public static String getRemovedDiffLegendAssert(ProcessingContext context, Locale locale){
         String addedDiffLegend = HunkTextDiffVisitor.getDeletedText(JahiaResourceBundle
-            .getEngineResource("org.jahia.engines.version.deleted", context, locale,"deleted"));
+            .getJahiaInternalResource("org.jahia.engines.version.deleted",  locale,"deleted"));
         return addedDiffLegend;
     }
 
     public static String getChangedDiffLegendAssert(ProcessingContext context, Locale locale){
         String addedDiffLegend = HunkTextDiffVisitor.getChangedText(JahiaResourceBundle
-            .getEngineResource("org.jahia.engines.version.changed", context, locale,"changed"));
+            .getJahiaInternalResource("org.jahia.engines.version.changed",  locale,"changed"));
         return addedDiffLegend;
     }
     

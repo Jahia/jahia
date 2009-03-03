@@ -41,7 +41,6 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
-import org.jahia.resourcebundle.ResourceBundleMarker;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
@@ -80,8 +79,7 @@ public class LogButtonTag extends AbstractJahiaTag {
         final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         if (!jData.gui().isLogged()) {
             try {
-                String label = ResourceBundleMarker.getValue("Connect", getBundleKey(), getLabelKey(),
-                        jData.getProcessingContext().getLocale());
+                String label = getMessage(getLabelKey(), "Connect");
 
                 String css = "";
                 if (cssClassName != null && cssClassName.length() > 0) {

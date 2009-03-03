@@ -39,7 +39,7 @@
 <%@page import = "org.jahia.bin.JahiaAdministration"%>
 <%@page import = "org.jahia.bin.Jahia"%>
 <%@page import="org.jahia.params.ProcessingContext"%>
-<%@page import="org.jahia.resourcebundle.JahiaResourceBundle"%>
+<%@page import="org.jahia.utils.i18n.JahiaResourceBundle"%>
 <%@page import = "org.jahia.utils.JahiaTools"%>
 <%@page import = "org.jahia.services.sites.JahiaSite"%>
 <%@page import = "org.jahia.data.JahiaData"%>
@@ -51,7 +51,7 @@
 <%!
 public String getAdminResource(String messageKey, HttpServletRequest request) {
     ProcessingContext jParams = ((JahiaData) request.getAttribute("org.jahia.data.JahiaData")).getProcessingContext();
-    return JahiaResourceBundle.getAdminResource(messageKey, jParams, jParams.getLocale());    
+    return JahiaResourceBundle.getJahiaInternalResource(messageKey, jParams.getLocale());    
 }
 %>
 

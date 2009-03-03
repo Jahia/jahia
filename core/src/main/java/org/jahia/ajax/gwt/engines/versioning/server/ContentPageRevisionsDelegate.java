@@ -42,7 +42,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.version.ContentTreeRevisionsVisitor;
 import org.jahia.services.version.EntryLoadRequest;
@@ -221,18 +221,18 @@ public class ContentPageRevisionsDelegate {
     protected GWTJahiaVersionsData getRevisionsData(List<RevisionEntrySet> revisions, ParamBean jParams, String languageCode){
 
         GWTJahiaVersionsData data = new GWTJahiaVersionsData();
-        List versionRowDataHeadLabels = new ArrayList();
-        versionRowDataHeadLabels.add(JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.version",
-                jParams,jParams.getLocale(),"Version"));
-        versionRowDataHeadLabels.add(JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.workflowStatus",
-                jParams,jParams.getLocale(),"Workflow Status"));
-        versionRowDataHeadLabels.add(JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.author",
-                jParams,jParams.getLocale(),"Author"));
-        versionRowDataHeadLabels.add(JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.dateOfRevision",
-                jParams,jParams.getLocale(),"Date of revision"));
-        versionRowDataHeadLabels.add(JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.language",
-                jParams,jParams.getLocale(),"Language"));
-        data.setVersionRowDataHeadLabels((String[])versionRowDataHeadLabels.toArray(new String[]{}));
+        List<String> versionRowDataHeadLabels = new ArrayList<String>();
+        versionRowDataHeadLabels.add(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.version",
+                jParams.getLocale(),"Version"));
+        versionRowDataHeadLabels.add(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.workflowStatus",
+                jParams.getLocale(),"Workflow Status"));
+        versionRowDataHeadLabels.add(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.author",
+                jParams.getLocale(),"Author"));
+        versionRowDataHeadLabels.add(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.dateOfRevision",
+                jParams.getLocale(),"Date of revision"));
+        versionRowDataHeadLabels.add(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.language",
+                jParams.getLocale(),"Language"));
+        data.setVersionRowDataHeadLabels(versionRowDataHeadLabels.toArray(new String[versionRowDataHeadLabels.size()]));
 
         if (revisions == null){
             return data;

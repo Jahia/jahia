@@ -234,7 +234,6 @@ public class SkeletonParseAndStoreValve implements Valve {
                     final List esiVarsTags = source.findAllStartTags("esi:vars");
                     htmlEntry.setContentType(contentType);
                     htmlEntry.setContentBody(generatedOutput);
-                    htmlEntry.setSource(source);
                     htmlEntry.setIncludeTag(esiIncludeTags);
                     htmlEntry.setVarsTag(esiVarsTags);
                     CacheEntry newEntry = new CacheEntry(htmlEntry);

@@ -79,7 +79,7 @@ import org.jahia.content.ContentPageKey;
 import org.jahia.content.ObjectKey;
 import org.jahia.data.containers.JahiaContainerStructure;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.fields.ContentSmallTextField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageBaseService;

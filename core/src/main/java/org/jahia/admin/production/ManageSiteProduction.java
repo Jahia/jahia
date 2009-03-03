@@ -40,7 +40,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.sites.JahiaSite;
@@ -98,8 +98,8 @@ public class ManageSiteProduction extends AbstractAdministrationModule {
             // set request attributes...
             String dspMsg = "Invalid license.";
             if (jParams != null) {
-                dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                                                              jParams, jParams.getLocale());
+                dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
+                                                              jParams.getLocale());
             }
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
@@ -150,8 +150,8 @@ public class ManageSiteProduction extends AbstractAdministrationModule {
         } else {
             String dspMsg = "Error during request processing.";
             if (jParams != null) {
-                dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                                              jParams, jParams.getLocale());
+                dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                                                              jParams.getLocale());
             }
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "menu.jsp");
@@ -257,8 +257,8 @@ public class ManageSiteProduction extends AbstractAdministrationModule {
                         logger.error("Invalid profile " + profile);
                         String warningMsg = "Invalid profile " + profile;
                         if (jParams != null) {
-                            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.error.profile",
-                                                                                 jParams, jParams.getLocale());
+                            warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.error.profile",
+                                                                                 jParams.getLocale());
                         }
                         request.setAttribute("warningMsg", warningMsg);
                         errors = true;
@@ -273,8 +273,8 @@ public class ManageSiteProduction extends AbstractAdministrationModule {
                     } catch (MalformedURLException e) {
                         String warningMsg = "Target Site URL is Malformed.";
                         if (jParams != null) {
-                            warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.error.targetSite",
-                                                                                 jParams, jParams.getLocale());
+                            warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.error.targetSite",
+                                                                                 jParams.getLocale());
                         }
                         request.setAttribute("warningMsg", warningMsg);
                         errors = true;
@@ -295,8 +295,8 @@ public class ManageSiteProduction extends AbstractAdministrationModule {
                 } else {
                     String warningMsg = "Target site doesn't exist";
                     if (jParams != null) {
-                        warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.error.targetSite",
-                                                                             jParams, jParams.getLocale());
+                        warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.error.targetSite",
+                                                                             jParams.getLocale());
                     }
                     request.setAttribute("warningMsg", warningMsg);
                     errors = true;
@@ -305,8 +305,8 @@ public class ManageSiteProduction extends AbstractAdministrationModule {
         } else {
             String warningMsg = "Some Fields Are Empty";
             if (jParams != null) {
-                warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.error.SomeFieldsAreEmpty",
-                                                                     jParams, jParams.getLocale());
+                warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.error.SomeFieldsAreEmpty",
+                                                                     jParams.getLocale());
             }
             request.setAttribute("warningMsg", warningMsg);
             errors = true;
@@ -320,15 +320,15 @@ public class ManageSiteProduction extends AbstractAdministrationModule {
             } catch (JahiaException e) {
                 String warningMsg = "processingRequestError";
                 if (jParams != null) {
-                    warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                                                                         jParams, jParams.getLocale());
+                    warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
+                                                                         jParams.getLocale());
                 }
                 request.setAttribute("warningMsg", warningMsg);
             } catch (ParseException e) {
                 String warningMsg = "processingRequestError";
                 if (jParams != null) {
-                    warningMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.warningMsg.processingRequestError.label",
-                                                                         jParams, jParams.getLocale());
+                    warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.processingRequestError.label",
+                                                                         jParams.getLocale());
                 }
                 request.setAttribute("warningMsg", warningMsg);
             }

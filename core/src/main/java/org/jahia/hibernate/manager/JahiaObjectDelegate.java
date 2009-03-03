@@ -49,10 +49,10 @@ import java.io.Serializable;
 public class JahiaObjectDelegate implements TimeBasedPublishingState, Cloneable, Serializable {
 
     private ObjectKey objectKey;
-    private Integer timeBPState = new Integer(IS_VALID_STATE);
-    private Integer siteId = new Integer(0);
-    private Long validFromDate = new Long(0);
-    private Long validToDate = new Long(0);
+    private Integer timeBPState = IS_VALID_STATE;
+    private Integer siteId = 0;
+    private Long validFromDate = 0L;
+    private Long validToDate = 0L;
     private RetentionRule rule;
     
     JahiaObjectDelegate(){}
@@ -106,21 +106,21 @@ public class JahiaObjectDelegate implements TimeBasedPublishingState, Cloneable,
     }
 
     public boolean isValid(){
-        return (this.getTimeBPState().intValue() == IS_VALID_STATE);
+        return (this.getTimeBPState() == IS_VALID_STATE);
     }
 
     public boolean isExpired(){
-        return (this.getTimeBPState().intValue() == EXPIRED_STATE);
+        return (this.getTimeBPState() == EXPIRED_STATE);
     }
 
     public boolean isNotValid(){
-        return (this.getTimeBPState().intValue() == NOT_VALID_STATE);
+        return (this.getTimeBPState() == NOT_VALID_STATE);
     }
 
     public boolean willBecomeValid(long date){
         long validFrom = 0;
         if (this.getValidFromDate()!= null){
-            validFrom = this.getValidFromDate().longValue();
+            validFrom = this.getValidFromDate();
         }
         return ( validFrom > date );
     }
@@ -128,12 +128,14 @@ public class JahiaObjectDelegate implements TimeBasedPublishingState, Cloneable,
     public boolean willExpire(long date){
         long validTo = 0;
         if (this.getValidToDate()!= null){
-            validTo = this.getValidToDate().longValue();
+            validTo = this.getValidToDate();
         }
         return ( validTo > date );
     }
 
+    @Override
     public Object clone() throws CloneNotSupportedException {
+        super.clone();
         final JahiaObjectDelegate clone = new JahiaObjectDelegate();
         clone.setObjectKey(getObjectKey());
         final RetentionRule rule = getRule();

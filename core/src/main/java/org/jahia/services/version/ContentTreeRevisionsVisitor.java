@@ -50,7 +50,7 @@ import org.jahia.content.JahiaObject;
 import org.jahia.bin.Jahia;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.apache.commons.collections.map.LRUMap;
 
 /**
@@ -607,8 +607,8 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
                         value = metadata.getValue(Jahia.getThreadParamBean(),loadRequest);
                     }
                     if ( value == null ){
-                        value = JahiaResourceBundle.getEngineResource( "org.jahia.engines.version.author.unknown",
-                        Jahia.getThreadParamBean(),Jahia.getThreadParamBean().getLocale(),"Unknown");
+                        value = JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.author.unknown",
+                                                                              Jahia.getThreadParamBean().getLocale(),"Unknown");
                     }
                     revisionEntrySet.setProperty(CoreMetadataConstant.LAST_CONTRIBUTOR,value);
                 } catch ( Exception t ){

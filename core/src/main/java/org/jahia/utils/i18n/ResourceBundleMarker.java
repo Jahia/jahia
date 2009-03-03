@@ -33,7 +33,7 @@
 
 //
 
-package org.jahia.resourcebundle;
+package org.jahia.utils.i18n;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,8 +49,10 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.comparator.NumericStringComparator;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 
 
 /**
@@ -68,7 +70,7 @@ public class ResourceBundleMarker {
             .getLogger(ResourceBundleMarker.class);
     private static Pattern pattern = Pattern.compile("<jahia-resource id=\"(.*)\" key=\"(.*)\" default-value=\"(.*)\"/>");
     /**
-     * The unique id that identifies a resource bundle file @see ResourceBundleDefinition
+     * The unique id that identifies a resource bundle file @see JahiaResourceBundle
      */
     private String resourceBundleID;
 
@@ -142,21 +144,9 @@ public class ResourceBundleMarker {
                                   final Locale locale) {
         String result = value;
         try {
+            final ResourceBundle res = ResourceBundle.getBundle(resourceBundle, locale);
 
-            ResourceBundleDefinition rbDef = getResourceBundleDefinition(resourceBundle);
-            
-            if (rbDef == null) {
-                return value;
-            }
-
-            final ResourceBundle res = ResourceBundle.getBundle(rbDef.getResourceBundleFile(), locale);
-            /* NOT FINISHED YET
-            if ( res instanceof ReloadableResourceBundleInterface ){
-                ReloadableResourceBundleInterface rr = (ReloadableResourceBundleInterface) res;
-                rr.reload();
-            }*/
-
-            result = JahiaResourceBundle.getString(res, valueKey, locale);
+            result = res.getString(valueKey);
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }
@@ -175,23 +165,12 @@ public class ResourceBundleMarker {
 
         String result = this.getDefaultValue();
 
-        final ResourceBundleDefinition rbDef = getResourceBundleDefinition(this.getResourceBundleID());
-        if (rbDef == null) {
-            return result;
-        }
-
         try {
-            ResourceBundle res =
-                    ResourceBundle.getBundle(rbDef.getResourceBundleFile(),
-                            locale,new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), Jahia.getThreadParamBean().getSiteID()));
-            /* NOT FINISHED YET
-            if ( res instanceof ReloadableResourceBundleInterface ){
-                ReloadableResourceBundleInterface rr = (ReloadableResourceBundleInterface) res;
-                rr.reload();
-            }*/
-
-            //result = res.getString(this.getResourceKey());
-            result = JahiaResourceBundle.getString(res, this.getResourceKey(), locale);
+            final int id = Jahia.getThreadParamBean().getSiteID();
+            final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), id);
+            final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(id);
+            ResourceBundle res = new JahiaResourceBundle(this.getResourceBundleID(),locale, templatesRBLoader, aPackage);
+            result = res.getString(this.getResourceKey());
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }
@@ -218,24 +197,12 @@ public class ResourceBundleMarker {
 
         String result = this.getDefaultValue();
 
-        ResourceBundleDefinition rbDef =getResourceBundleDefinition(this.getResourceBundleID());
-        if (rbDef == null) {
-            return this.getDefaultValue();
-        }
-
         try {
-            ResourceBundle res =
-                    ResourceBundle.getBundle(rbDef.getResourceBundleFile(),
-                            locale,new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), Jahia.getThreadParamBean().getSiteID()));
-            //result = res.getString(this.getResourceKey());
-
-            /*
-            if ( res instanceof ReloadableResourceBundleInterface ){
-                ReloadableResourceBundleInterface rr = (ReloadableResourceBundleInterface) res;
-                rr.reload();
-            }*/
-
-            result = JahiaResourceBundle.getString(res, this.getResourceKey(), locale);
+            final int id = Jahia.getThreadParamBean().getSiteID();
+            final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), id);
+            final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(id);
+            ResourceBundle res = new JahiaResourceBundle(this.getResourceBundleID(),locale, templatesRBLoader, aPackage);
+            result = res.getString(this.getResourceKey());
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }
@@ -342,25 +309,12 @@ public class ResourceBundleMarker {
 
         String result = marker.getDefaultValue();
 
-        ResourceBundleDefinition rbDef = getResourceBundleDefinition(marker.getResourceBundleID());
-        if (rbDef == null) {
-            return result;
-        }
-
         try {
-            ResourceBundle res = ResourceBundle.getBundle(rbDef.getResourceBundleFile(), locale,
-                                                          new JahiaTemplatesRBLoader(Jahia.getStaticServletConfig().getClass().getClassLoader(),
-                                                                                     Jahia.getThreadParamBean().getSiteID()));
-
-            /*
-            if ( res instanceof ReloadableResourceBundleInterface ){
-                ReloadableResourceBundleInterface rr = (ReloadableResourceBundleInterface) res;
-                rr.reload();
-            }
-            */
-
-            //result = res.getString(marker.getResourceKey());
-            result = JahiaResourceBundle.getString(res, marker.getResourceKey(), locale);
+            final int id = Jahia.getThreadParamBean().getSiteID();
+            final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), id);
+            final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(id);
+            ResourceBundle res = new JahiaResourceBundle(marker.getResourceBundleID(),locale, templatesRBLoader, aPackage);
+            result = res.getString(marker.getResourceKey());
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }
@@ -601,29 +555,5 @@ public class ResourceBundleMarker {
         }
 
         return count;
-    }
-
-    private static ResourceBundleDefinition getResourceBundleDefinition(
-            String resourceBundle) {
-        ResourceBundleService bundleService = ServicesRegistry.getInstance()
-                .getResourceBundleService();
-        ResourceBundleDefinition rbDef = null;
-        try {
-            rbDef = bundleService.getResourceBundle(resourceBundle);
-        } catch (JahiaException e) {
-            // ignore
-            logger.debug(e.getMessage(), e);
-        }
-
-        if (rbDef == null) {
-            try {
-                rbDef = bundleService.getResourceBundleFromName(resourceBundle);
-            } catch (JahiaException e) {
-                // ignore
-                logger.debug(e.getMessage(), e);
-            }
-        }
-
-        return rbDef;
     }
 }

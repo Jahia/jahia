@@ -43,7 +43,7 @@ import javax.jcr.version.OnParentVersionAction;
 
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 
 /**
  * Created by IntelliJ IDEA.

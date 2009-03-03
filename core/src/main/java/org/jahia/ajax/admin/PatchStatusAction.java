@@ -38,7 +38,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.jahia.ajax.AjaxAction;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.version.Status;
 import org.jahia.version.VersionService;
 
@@ -89,7 +89,7 @@ public class PatchStatusAction extends AjaxAction {
                     buf.append("<substatus>");
                     Status lastStatus = VersionService.getInstance().getLastScriptStatus();
                     String subStatus = lastStatus.getSubStatus();
-                    String s = JahiaResourceBundle.getAdminResource(subStatus, jParams, currentLocale);
+                    String s = JahiaResourceBundle.getJahiaInternalResource(subStatus, currentLocale);
                     if (s == null) {
                         s = subStatus;
                     }

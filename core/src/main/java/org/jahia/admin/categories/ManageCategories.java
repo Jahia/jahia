@@ -42,7 +42,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.categories.Category;
 import org.jahia.services.sites.JahiaSite;
@@ -105,9 +105,9 @@ public class ManageCategories extends AbstractAdministrationModule {
         if (coreLicense == null) {
             // set request attributes...
             if (jParams == null) return;
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(),
@@ -185,9 +185,9 @@ public class ManageCategories extends AbstractAdministrationModule {
 
         } else {
             if (jParams == null) return;
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -248,9 +248,9 @@ public class ManageCategories extends AbstractAdministrationModule {
                     JSP_PATH + "manage_categories.jsp");
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -275,9 +275,9 @@ public class ManageCategories extends AbstractAdministrationModule {
 
         request.setAttribute("warningMsg", "");
 
-        String dspMsg = JahiaResourceBundle.getAdminResource(
+        String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                 "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                jParams, jParams.getLocale());
+                jParams.getLocale());
         request.setAttribute("jahiaDisplayMessage", dspMsg);
         displayCategories(request, response, session);
 
@@ -346,9 +346,9 @@ public class ManageCategories extends AbstractAdministrationModule {
                             "manage_categories_editcategory.jsp");
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -387,9 +387,9 @@ public class ManageCategories extends AbstractAdministrationModule {
             } else {
                 // we are adding a new category.
                 if (Category.getCategory(categoryKey, jParams.getUser()) != null) {
-                    String dspMsg = JahiaResourceBundle.getAdminResource(
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                             "org.jahia.admin.categories.ManageCategories.editCategory.categoryAlreadyExists.label",
-                            jParams, jParams.getLocale());
+                            jParams.getLocale());
                     session.setAttribute(JahiaAdministration.CLASS_NAME +
                             "jahiaDisplayMessage", dspMsg);
                     displayEditCategory(request, response, session, null);
@@ -397,9 +397,9 @@ public class ManageCategories extends AbstractAdministrationModule {
                 }
                 if (categoryKey.indexOf('/') > -1 || categoryKey.indexOf(',') > -1 ||
                         categoryKey.indexOf('*') > -1 || categoryKey.indexOf(':') > -1) {
-                    String dspMsg = JahiaResourceBundle.getAdminResource(
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                             "org.jahia.admin.categories.ManageCategories.editCategory.invalidCategoryKey.label",
-                            jParams, jParams.getLocale());
+                            jParams.getLocale());
                     session.setAttribute(JahiaAdministration.CLASS_NAME +
                             "jahiaDisplayMessage", dspMsg);
                     displayEditCategory(request, response, session, null);
@@ -424,16 +424,16 @@ public class ManageCategories extends AbstractAdministrationModule {
                 }
             }
 
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             displayEditCategory(request, response, session, categoryKey);
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -469,9 +469,9 @@ public class ManageCategories extends AbstractAdministrationModule {
                             "manage_categories_deletecategory.jsp");
 
         } catch (Exception je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -499,9 +499,9 @@ public class ManageCategories extends AbstractAdministrationModule {
 
             recursiveDeleteCategory(currentCategory);
 
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.categories.ManageCategories.deleteCategory.categoryDeletedSuccessfully.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
 
             session.removeAttribute(CURRENTCATEGORY_SESSIONKEY);
@@ -511,9 +511,9 @@ public class ManageCategories extends AbstractAdministrationModule {
             displayCategories(request, response, session);
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -574,16 +574,16 @@ public class ManageCategories extends AbstractAdministrationModule {
                 }
             }
 
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             displayEditCategory(request, response, session, categoryKey);
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -617,16 +617,16 @@ public class ManageCategories extends AbstractAdministrationModule {
                 currentCategory.removeProperty(targetPropertyName);
             }
 
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             displayEditCategory(request, response, session, categoryKey);
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -710,9 +710,9 @@ public class ManageCategories extends AbstractAdministrationModule {
                     JSP_PATH + "manage_categories_movecategory.jsp");
 
         } catch (Exception je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -754,17 +754,17 @@ public class ManageCategories extends AbstractAdministrationModule {
                 // finally let's setup the dispatching environment.
 
                 request.setAttribute("warningMsg", "");
-                String dspMsg = JahiaResourceBundle.getAdminResource(
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                         "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                        jParams, jParams.getLocale());
+                        jParams.getLocale());
                 request.setAttribute("jahiaDisplayMessage", dspMsg);
             }
             displayCategories(request, response, session);
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource(
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -806,8 +806,8 @@ public class ManageCategories extends AbstractAdministrationModule {
                     ServicesRegistry.getInstance().getImportExportService().importCategories(jParams, new FileInputStream(file));
                 } else {
                     logger.error("Cannot import: File[ContentType="+contentType+"] is not a valid XML document. ");
-                    String errors = JahiaResourceBundle.getAdminResource("org.jahia.admin.site.ManageSites.import.error.xml",
-                    jParams, jParams.getLocale());
+                    String errors = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.site.ManageSites.import.error.xml",
+                    jParams.getLocale());
                     request.setAttribute("errors",errors);
                 }
             }

@@ -46,7 +46,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.hibernate.model.JahiaAclName;
 import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.hibernate.model.JahiaAclEntry;
@@ -131,8 +131,8 @@ public class ManageServerPermissions extends AbstractAdministrationModule {
             request.setAttribute("sitesList", JahiaAdministration.getAdminGrantedSites(jParams.getUser()));
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "permissions/server_permissions.jsp");
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,

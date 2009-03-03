@@ -40,7 +40,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.taglibs.internal.uicomponents.AbstractButtonTag;
 import org.jahia.taglibs.template.containerlist.ContainerListTag;
 

@@ -34,7 +34,6 @@
 package org.jahia.taglibs.uicomponents.loginform;
 
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.resourcebundle.ResourceBundleMarker;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
@@ -76,8 +75,7 @@ public class LogRememberMeTag extends AbstractJahiaTag {
         final ProcessingContext jParams = jData.getProcessingContext();
         if (!jData.gui().isLogged()) {
             try {
-                final String label = ResourceBundleMarker.getValue("Remember me", getBundleKey(),
-                        labelKey, jParams.getLocale());
+                final String label = getMessage(labelKey, "Remember me");
 
                 String css = "";
                 if (cssClassName != null && !cssClassName.equals("")) {

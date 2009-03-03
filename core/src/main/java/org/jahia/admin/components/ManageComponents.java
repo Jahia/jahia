@@ -51,7 +51,7 @@ import org.jahia.data.webapps.JahiaWebAppsPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.applications.ApplicationsManagerService;
@@ -112,8 +112,8 @@ public class ManageComponents extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense ();
         if (coreLicense == null) {
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.invalidLicense.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.invalidLicense.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect (request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -176,8 +176,8 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
         } else {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,
@@ -237,8 +237,8 @@ public class ManageComponents extends AbstractAdministrationModule {
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "manage_components.jsp");
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                                                 jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                                                                 jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "menu.jsp");
         }
@@ -299,8 +299,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                     session,
                     JSP_PATH + "new_components.jsp");
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,
@@ -366,8 +366,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                         displayNewComponentList (request, response, session);
 
                     } else {
-                        String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
-                                jParams, jParams.getLocale ());
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
+                                jParams.getLocale());
                         session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                         request.setAttribute ("aPackage", aPackage);
                         JahiaAdministration.doRedirect (request,
@@ -377,8 +377,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                     }
                 } catch (JahiaException je) {
                     request.setAttribute ("aPackage", aPackage);
-                    String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
-                            jParams, jParams.getLocale ());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
+                            jParams.getLocale());
                     session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     JahiaAdministration.doRedirect (request,
                             response,
@@ -392,8 +392,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                         displayNewComponentList (request, response, session);
                     } else {
                         request.setAttribute ("aPackage", aPackage);
-                        String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
-                                jParams, jParams.getLocale ());
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
+                                jParams.getLocale());
                         session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                         JahiaAdministration.doRedirect (request,
                                 response,
@@ -401,8 +401,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                                 JSP_PATH + "new_component_detail.jsp");
                     }
                 } catch (IOException ioe) {
-                    String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
-                            jParams, jParams.getLocale ());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
+                            jParams.getLocale());
                     session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     JahiaAdministration.doRedirect (request,
                             response,
@@ -412,8 +412,8 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,
@@ -499,8 +499,8 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,
@@ -577,8 +577,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                     JSP_PATH + "manage_components.jsp");
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,
@@ -630,8 +630,8 @@ public class ManageComponents extends AbstractAdministrationModule {
 // get paramater
             String strVal = request.getParameter ("appid");
             if (strVal == null) {
-                String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.errMsg.applicaionNotFound.label",
-                        jParams, jParams.getLocale ());
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.errMsg.applicaionNotFound.label",
+                        jParams.getLocale());
                 request.setAttribute ("errMsg", dspMsg);
                 displayComponentList (request, response, session);
                 return;
@@ -640,8 +640,8 @@ public class ManageComponents extends AbstractAdministrationModule {
             ApplicationBean app = appManServ.getApplication (id);
 
             if (app == null) {
-                String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.errMsg.applicaionNotFound.label",
-                        jParams, jParams.getLocale ());
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.errMsg.applicaionNotFound.label",
+                        jParams.getLocale());
                 request.setAttribute ("errMsg", dspMsg);
                 displayComponentList (request, response, session);
                 return;
@@ -716,12 +716,12 @@ public class ManageComponents extends AbstractAdministrationModule {
                 app.setdesc (appDescr);
 
                 if (appManServ.saveDefinition (app)) {
-                    String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.applicationUpdated.label",
-                            jParams, jParams.getLocale ());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.applicationUpdated.label",
+                            jParams.getLocale());
                     session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                 } else {
-                    String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.applicationNotUpdated.label",
-                            jParams, jParams.getLocale ());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.applicationNotUpdated.label",
+                            jParams.getLocale());
                     session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                 }
 
@@ -734,8 +734,8 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,
@@ -800,13 +800,13 @@ public class ManageComponents extends AbstractAdministrationModule {
                         site.setWebAppsAutoDeployMode (intVal == 1);
                         sitesServ.updateSite (site);
                         session.setAttribute (ProcessingContext.SESSION_SITE, site);
-                        String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.changeUpdated.label",
-                                jParams, jParams.getLocale ());
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.changeUpdated.label",
+                                jParams.getLocale());
                         session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
 
                     } catch (JahiaException je) {
-                        String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.changeNotUpdated.label",
-                                jParams, jParams.getLocale ());
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.changeNotUpdated.label",
+                                jParams.getLocale());
                         session.setAttribute (CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     }
 
@@ -819,8 +819,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                     session,
                     JSP_PATH + "component_option.jsp");
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,
@@ -882,8 +882,8 @@ public class ManageComponents extends AbstractAdministrationModule {
 // check if this application has been already registered in Jahia
                     ApplicationBean app = appManServ.getApplication ("/" + pack.getContextRoot ());
                     if (app != null) {
-                        String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.componentAlreadyRegistered.label",
-                                jParams, jParams.getLocale ());
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.componentAlreadyRegistered.label",
+                                jParams.getLocale());
                         request.setAttribute ("warningMsg", dspMsg);
                         request.setAttribute ("appName", "");
                         request.setAttribute ("appDescr", "");
@@ -900,8 +900,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                     }
                 } else {
                     request.setAttribute ("appPath", appPath);
-                    String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.noComponentInfoFound.label",
-                            jParams, jParams.getLocale ());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.noComponentInfoFound.label",
+                            jParams.getLocale());
                     request.setAttribute ("warningMsg", dspMsg);
                 }
 
@@ -924,12 +924,12 @@ public class ManageComponents extends AbstractAdministrationModule {
                                 app.setdesc (appDescr);
                                 appManServ.saveDefinition (app);
                             }
-                            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.componentRegistered.label",
-                                    jParams, jParams.getLocale ());
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.componentRegistered.label",
+                                    jParams.getLocale());
                             request.setAttribute ("warningMsg", dspMsg);
                         } else {
-                            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.componentNotRegistered.label",
-                                    jParams, jParams.getLocale ());
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.componentNotRegistered.label",
+                                    jParams.getLocale());
                             request.setAttribute ("warningMsg", dspMsg);
                             request.setAttribute ("aPackage", pack);
                         }
@@ -951,20 +951,20 @@ public class ManageComponents extends AbstractAdministrationModule {
                             appManServ.saveDefinition (app);
                         }
 
-                        String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.componentRegistered.label",
-                                jParams, jParams.getLocale ());
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.componentRegistered.label",
+                                jParams.getLocale());
                         request.setAttribute ("warningMsg", dspMsg);
                     }
 
                 } else {
-                    String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.noComponentInfoFound.label",
-                            jParams, jParams.getLocale ());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.noComponentInfoFound.label",
+                            jParams.getLocale());
                     request.setAttribute ("warningMsg", dspMsg);
                 }
             }
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ())+"<br>"+je.getJahiaErrorMsg();
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale())+"<br>"+je.getJahiaErrorMsg();
             request.setAttribute ("warningMsg", dspMsg);
         }
         JahiaAdministration.doRedirect (request, response, session, JSP_PATH + "component_add.jsp");
@@ -1097,8 +1097,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                     JSP_PATH + "component_share.jsp");
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute ("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect (request,
                     response,

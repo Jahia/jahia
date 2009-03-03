@@ -51,7 +51,7 @@
 //import org.jahia.exceptions.JahiaException;
 //import org.jahia.params.ProcessingContext;
 //import org.jahia.registries.ServicesRegistry;
-//import org.jahia.resourcebundle.JahiaResourceBundle;
+//import org.jahia.utils.i18n.JahiaResourceBundle;
 //import org.jahia.services.containers.ContentContainer;
 //import org.jahia.services.fields.ContentField;
 //import org.jahia.services.fields.URLIntegrityValidForActivationResults;

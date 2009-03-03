@@ -45,7 +45,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.beans.SiteBean;
 import org.jahia.data.beans.PageBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.exceptions.JahiaException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,8 +96,8 @@ public class ManageThemes extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense();
         if (coreLicense == null) {
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                    jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
+                    jParams!=null?jParams.getLocale():request.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -131,8 +131,8 @@ public class ManageThemes extends AbstractAdministrationModule {
             request.setAttribute("site", site);
             displayThemesParams(request, response, session);
         } else {
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,

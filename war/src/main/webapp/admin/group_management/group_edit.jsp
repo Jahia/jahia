@@ -44,7 +44,7 @@
 <%@page import="org.jahia.params.ParamBean" %>
 <%@page import="org.jahia.registries.ServicesRegistry" %>
 <%@page import="org.jahia.services.acl.JahiaBaseACL" %>
-<%@page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
@@ -95,8 +95,8 @@
             for (i = 0; i < index; i++) {
                 badName += "- " + usrgrpname[i].substr(1, usrgrpname[i].lastIndexOf(':') - 1) + "\n";
             }
-            alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.users.ManageGroups.alertUsersGroupAlreadyMember.label",
-          jParams, jParams.getLocale()))%>" + badName);
+            alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.users.ManageGroups.alertUsersGroupAlreadyMember.label",
+          jParams.getLocale()))%>" + badName);
             index = 0;
         }
     }

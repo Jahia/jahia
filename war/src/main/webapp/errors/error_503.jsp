@@ -38,7 +38,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.bin.Jahia" %>
 <%@ page import="org.jahia.exceptions.JahiaServerOverloadedException"%>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle"%>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle"%>
 <%@ page import="java.text.MessageFormat"%>
 <%@ page import="org.jahia.params.ParamBean"%>
 <%@ page import="org.jahia.exceptions.JahiaException"%>
@@ -96,8 +96,8 @@
             int timeInSeconds = (Integer) pageContext.getAttribute("timeInSeconds");
             String retryInMessage = "";
             if (timeInSeconds == 0) {
-                retryInMessage = JahiaResourceBundle.getEngineResource(
-                        "org.jahia.bin.JahiaErrorDisplay.retryLater.label", jParams,
+                retryInMessage = JahiaResourceBundle.getJahiaInternalResource(
+                        "org.jahia.bin.JahiaErrorDisplay.retryLater.label",
                         jParams.getLocale());
             } else {
                 int hours, minutes, seconds;
@@ -106,9 +106,9 @@
                 minutes = timeInSeconds / 60;
                 timeInSeconds = timeInSeconds - (minutes * 60);
                 seconds = timeInSeconds;
-                Object[] arguments = {new Integer(hours), new Integer(minutes), new Integer(seconds)};
-                retryInMessage = MessageFormat.format(JahiaResourceBundle.getEngineResource(
-                        "org.jahia.bin.JahiaErrorDisplay.retryInTime.label", jParams,
+                Object[] arguments = {hours, minutes, seconds};
+                retryInMessage = MessageFormat.format(JahiaResourceBundle.getJahiaInternalResource(
+                        "org.jahia.bin.JahiaErrorDisplay.retryInTime.label",
                         jParams.getLocale()), arguments);                
             }
             %>

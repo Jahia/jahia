@@ -35,9 +35,7 @@ package org.jahia.registries;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.mbeans.JahiaMBeanServer;
 import org.jahia.query.QueryService;
-import org.jahia.resourcebundle.ResourceBundleService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.opensearch.JahiaOpenSearchService;
@@ -484,11 +482,6 @@ public class ServicesRegistry {
 
     public HtmlEditorsService getHtmlEditorsService() {
         return (HtmlEditorsService) getService(JAHIA_HTMLEDITORS_SERVICE);
-    }
-
-    public ResourceBundleService getResourceBundleService() {
-        return (ResourceBundleService) getService(
-                JAHIA_RESOURCEBUNDLE_SERVICE);
     }
 
     public MailService getMailService() {

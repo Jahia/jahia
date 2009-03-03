@@ -118,7 +118,7 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
             if (isRedirectToHomePageActivated) {
                 titleKey += "." + onLanguageSwitch;
             }
-            buff.append(resolveTitle(title, getBundleKey(), titleKey, jParams.getLocale()));
+            buff.append(getMessage(titleKey, title));
             buff.append("'>");
         }
         buff.append("<span class='flag flag_");

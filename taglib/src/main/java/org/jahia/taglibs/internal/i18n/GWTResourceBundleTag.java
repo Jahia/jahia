@@ -34,7 +34,7 @@
 package org.jahia.taglibs.internal.i18n;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.data.JahiaData;
 import org.jahia.taglibs.utility.i18n.GWTMessageTag;
 import org.apache.log4j.Logger;
@@ -53,20 +53,16 @@ import java.util.MissingResourceException;
 public class GWTResourceBundleTag extends GWTMessageTag {
     private static final transient Logger logger = Logger.getLogger(GWTResourceBundleTag.class);
 
-
     @Override
-    protected String getResourceValue(String key, ProcessingContext jParams) { 
-        HttpServletRequest request = (HttpServletRequest) pageContext.
-                getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute(
-                "org.jahia.data.JahiaData");
+    protected String getMessage(String titleKey) {
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
         Locale currentLocale = request.getLocale();
         HttpSession session = pageContext.getSession();
         if (session != null) {
             if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
-                currentLocale = (Locale) session.getAttribute(ProcessingContext.
-                        SESSION_LOCALE);
+                currentLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
             }
         }
 
@@ -75,17 +71,16 @@ public class GWTResourceBundleTag extends GWTMessageTag {
         try {
 
             if (jData != null) {
-                resValue = JahiaResourceBundle.getEngineResource(key, jData.getProcessingContext(), jData.getProcessingContext().getLocale());
+                resValue = JahiaResourceBundle.getJahiaInternalResource(titleKey, jData.getProcessingContext().getLocale());
             } else {
                 // for any reason the jData wasn't loaded correctly
-                ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(null, currentLocale);
-                resValue = JahiaResourceBundle.getString(resBundle, key, currentLocale);
+                resValue = JahiaResourceBundle.getJahiaInternalResource(titleKey, currentLocale);
             }
         } catch (MissingResourceException mre) {
             logger.error(mre.toString(), mre);
         }
         if (resValue == null) {
-            resValue = key ;
+            resValue = titleKey ;
         }
         return resValue;
     }

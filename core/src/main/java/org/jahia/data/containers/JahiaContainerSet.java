@@ -62,7 +62,7 @@ import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.fields.ContentApplicationField;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.utils.JahiaTools;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.content.ContentObject;
 import org.jahia.content.PageDefinitionKey;
 import org.jahia.portlets.JahiaContentPortlet;

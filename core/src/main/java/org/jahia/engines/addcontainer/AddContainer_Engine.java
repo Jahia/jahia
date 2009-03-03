@@ -80,7 +80,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.EnginesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
@@ -1121,9 +1121,9 @@ public class AddContainer_Engine implements JahiaEngine {
 
         // sets engineMap for JSPs
         jParams.setAttribute("engineTitle", JahiaResourceBundle
-                .getEngineResource(
+                .getJahiaInternalResource(
                         "org.jahia.engines.addcontainer.AddContainer.label",
-                        jParams, elh.getCurrentLocale()));
+                        elh.getCurrentLocale()));
         jParams.setAttribute("org.jahia.engines.EngineHashMap",
                 engineMap);
 

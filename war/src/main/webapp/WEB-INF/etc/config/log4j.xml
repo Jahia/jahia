@@ -151,6 +151,10 @@ think twice before changing it! -->
         <priority value="info"/>
     </category>
 
+    <category name="org.jahia.utils.i18n">
+        <priority value="error"/>
+    </category>
+
     <category name="org.quartz">
         <priority value="info"/>
     </category>

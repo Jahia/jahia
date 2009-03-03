@@ -93,8 +93,8 @@ SESSION_LOCALE);
             }
             if ( <%=languageSet.size()%>== count
                 || count == homePageLanguage.length ){
-                alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.languages.ManageSiteLanguages.homePageLangWarning",
-                    jParams, jParams.getLocale()))%>");
+                alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.languages.ManageSiteLanguages.homePageLangWarning",
+                    jParams.getLocale()))%>");
                 return false;
             }
         }

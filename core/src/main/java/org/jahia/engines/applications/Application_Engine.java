@@ -50,7 +50,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.EnginesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.usermanager.JahiaUser;
@@ -375,7 +375,7 @@ public class Application_Engine implements JahiaEngine {
             engineMap.put("showAdminGroups", Boolean.TRUE);
         }
         // sets engineMap for JSPs
-        String engineTitle = JahiaResourceBundle.getEngineResource("org.jahia.engines.application.applicationSettings.label",jParams, jParams.getLocale());
+        String engineTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.application.applicationSettings.label", jParams.getLocale());
         jParams.setAttribute(ENGINE_NAME_PARAM, "Manage Templates");
         jParams.setAttribute("engineTitle", engineTitle);
         jParams.setAttribute("org.jahia.engines.EngineHashMap", engineMap);

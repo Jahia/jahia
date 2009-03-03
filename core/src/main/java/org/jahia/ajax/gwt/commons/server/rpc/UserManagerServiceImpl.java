@@ -44,7 +44,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import java.security.Principal;
 import java.util.*;
@@ -134,10 +134,10 @@ public class UserManagerServiceImpl extends SessionManagerServiceImpl implements
                     if (displayMembers.length()>0) displayMembers = displayMembers.substring(2);
                     data.setMembers(memberStrings);
                     if (group instanceof UsersGroup) {
-                        displayMembers = JahiaResourceBundle.getEngineResource("org.jahia.engines.groups.users.label", retrieveParamBean(), retrieveParamBean().getLocale());
+                        displayMembers = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.users.label", retrieveParamBean().getLocale());
                     }
                     if (group instanceof GuestGroup) {
-                        displayMembers = JahiaResourceBundle.getEngineResource("org.jahia.engines.groups.guest.label", retrieveParamBean(), retrieveParamBean().getLocale());
+                        displayMembers = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.guest.label", retrieveParamBean().getLocale());
                     }
                     data.setDisplayMembers(displayMembers);
                     result.add(data);

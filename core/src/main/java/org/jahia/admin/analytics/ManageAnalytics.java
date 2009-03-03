@@ -39,7 +39,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -104,8 +104,8 @@ public class ManageAnalytics extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense();
         if (coreLicense == null) {
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                    jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect(request, response, request.getSession(), JSP_PATH + "menu.jsp");
@@ -165,8 +165,8 @@ public class ManageAnalytics extends AbstractAdministrationModule {
             }
 
         } else {
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,
@@ -463,8 +463,8 @@ public class ManageAnalytics extends AbstractAdministrationModule {
     }
 
     private void diplayErrorMessage(HttpServletRequest request, HttpServletResponse response, HttpSession session, String msg, ProcessingContext jParams, String mode) throws IOException, ServletException {
-        String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.request" + msg + "Error.label",
-                jParams, jParams.getLocale());
+        String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.request" + msg + "Error.label",
+                jParams.getLocale());
         request.setAttribute("gaError", dspMsg);
         JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "manage_analytics_form.jsp");
     }

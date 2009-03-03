@@ -61,7 +61,7 @@ import org.jahia.services.version.JahiaVersionService;
 import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.workflow.*;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.quartz.JobDetail;
 import org.quartz.JobDataMap;
 
@@ -243,8 +243,7 @@ public class WorkflowServiceHelper {
                     ObjectKey key = obj.getObjectKey();
                     String title = obj.getDisplayName(jParams);
                     if (title == null || title.trim().length() == 0) {
-                        ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(jParams,jParams.getLocale());
-                        title = JahiaResourceBundle.getString(resBundle, "org.jahia.engines.workflow.display.notitle", jParams.getLocale());
+                        title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
                     }
 
                     GWTJahiaWorkflowElement wfEl = new GWTJahiaWorkflowElement(
@@ -367,8 +366,7 @@ public class WorkflowServiceHelper {
             ObjectKey key = obj.getObjectKey();
             String title = obj.getDisplayName(jParams);
             if (title == null || title.trim().length() == 0) {
-                ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(jParams,jParams.getLocale());
-                title = JahiaResourceBundle.getString(resBundle, "org.jahia.engines.workflow.display.notitle", jParams.getLocale());
+                title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
             }
 
             GWTJahiaWorkflowElement wfEl = new GWTJahiaWorkflowElement(

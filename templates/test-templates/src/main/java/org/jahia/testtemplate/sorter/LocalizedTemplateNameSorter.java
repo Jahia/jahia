@@ -38,24 +38,22 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.jahia.data.templates.JahiaTemplateDef;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 public class LocalizedTemplateNameSorter implements Comparator<JahiaTemplateDef> {
     private ResourceBundle res;
-    private Locale locale;
 
-    public LocalizedTemplateNameSorter(ResourceBundle res, Locale locale) {
+    public LocalizedTemplateNameSorter(ResourceBundle res) {
         super();
         this.res = res;
-        this.locale = locale;
     }
 
     public int compare(JahiaTemplateDef o1, JahiaTemplateDef o2) {
-        String resValue1 = JahiaResourceBundle.getString(res, o1.getDisplayName(), locale);
+        String resValue1 = res.getString(o1.getDisplayName());
         if (resValue1 == null) {
             resValue1 = o1.getDisplayName();
         }
-        String resValue2 = JahiaResourceBundle.getString(res, o2.getDisplayName(), locale);
+        String resValue2 = res.getString(o2.getDisplayName());
         if (resValue2 == null) {
             resValue2 = o2.getDisplayName();
         }        

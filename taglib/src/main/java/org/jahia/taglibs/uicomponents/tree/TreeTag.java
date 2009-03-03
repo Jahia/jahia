@@ -35,7 +35,7 @@ package org.jahia.taglibs.uicomponents.tree;
 
 import org.jahia.data.beans.RequestBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.urls.QueryMapURL;
 import org.jahia.utils.GUITreeTools;
@@ -649,26 +649,22 @@ public class TreeTag extends AbstractJahiaTag {
         if (!node.isLeaf() && tree.isExpanded(new TreePath(node.getPath()))) {
             treeActionURL.setQueryParameter("guitree", "collapse");
             out.print("<a href=\"" + treeActionURL.toString() + "\">");
-            displayIcon(collapseIcon, JahiaResourceBundle.getCommonResource(
-                    "org.jahia.taglibs.html.controls.TreeTag.collapse.label",
-                    getProcessingContext()), null, null, null, null, "absmiddle", out);
+            displayIcon(collapseIcon, retrieveResourceBundle().getString(
+                    "org.jahia.taglibs.html.controls.TreeTag.collapse.label"), null, null, null, null, "absmiddle", out);
             out.print("</a>");
         } else if (!node.isLeaf()) {
             treeActionURL.setQueryParameter("guitree", "expandall");
             out.print("<a href=\"" + treeActionURL.toString() + "\">");
             displayIcon(expandAllIcon,
-                    JahiaResourceBundle.
-                            getCommonResource(
-                            "org.jahia.taglibs.html.controls.TreeTag.expandAll.label",
-                            getProcessingContext()), null, null, null, null,
+                    retrieveResourceBundle().getString(
+                            "org.jahia.taglibs.html.controls.TreeTag.expandAll.label"), null, null, null, null,
                     "absmiddle", out);
             out.print("</a>");
             treeActionURL.setQueryParameter("guitree", "expand");
             out.print("<a href=\"" + treeActionURL.toString() + "\">");
             displayIcon(expandIcon,
-                    JahiaResourceBundle.getCommonResource(
-                            "org.jahia.taglibs.html.controls.TreeTag.expand.label",
-                            getProcessingContext()), null, null, null, null, "absmiddle",
+                    retrieveResourceBundle().getString(
+                            "org.jahia.taglibs.html.controls.TreeTag.expand.label"), null, null, null, null, "absmiddle",
                     out);
             out.print("</a>");
         } else {
@@ -702,15 +698,14 @@ public class TreeTag extends AbstractJahiaTag {
 
         // now let's resolve the alt text if resource bundle keys are being used.
         if (altKey != null) {
-            alt = JahiaResourceBundle.getResource(bundleName, altKey,
+            alt = JahiaResourceBundle.getString(bundleName, altKey,
                     getProcessingContext().getLocale(),
-                    getProcessingContext());
+                    getProcessingContext().getSiteID());
         }
 
         StringBuffer str = new StringBuffer();
         // Resolve file name
-        String imagePath = JahiaResourceBundle.getUrlPathCommonResource(
-                src, getProcessingContext());
+        String imagePath = retrieveResourceBundle().getString(src);
         if (imagePath == null) {
             str.append("<!-- couldn't find resource with key " + src + " -->");
         } else {

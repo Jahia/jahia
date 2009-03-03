@@ -38,7 +38,6 @@
 org.jahia.params.*,
 org.jahia.services.importexport.ImportExportService,
 org.jahia.utils.*,
-org.jahia.resourcebundle.*,
 java.util.Locale,
 java.util.Properties" %>
 <%
@@ -159,38 +158,38 @@ function viewCronHelp() {
       var regexp = /[\w:\/\*\?\-,#]/ig;
       var form = document.mainForm;
       if(!form.targetSite.value.match(regexp)) {
-          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.form.error.required.targetSite",
-                  jParams, jParams.getLocale()))%>");
+          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.targetSite",
+                  jParams.getLocale()))%>");
           return false;
       }
       if(!form.sitename.value.match(regexp)) {
-          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.form.error.required.sitename",
-                  jParams, jParams.getLocale()))%>");
+          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.sitename",
+                  jParams.getLocale()))%>");
           return false;
       }
       if(!form.username.value.match(regexp)) {
-          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.form.error.required.username",
-                  jParams, jParams.getLocale()))%>");
+          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.username",
+                  jParams.getLocale()))%>");
           return false;
       }
       if(!form.password.value.match(regexp)) {
-          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.form.error.required.password",
-                  jParams, jParams.getLocale()))%>");
+          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.password",
+                  jParams.getLocale()))%>");
           return false;
       }
       if(!form.cron.value.match(regexp)) {
-          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.form.error.required.cron",
-                  jParams, jParams.getLocale()))%>");
+          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.cron",
+                  jParams.getLocale()))%>");
           return false;
       }
       if(!form.profile.value.match(regexp)) {
-          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.form.error.required.profile",
-                  jParams, jParams.getLocale()))%>");
+          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.profile",
+                  jParams.getLocale()))%>");
           return false;
       }
       if(!form.alias.value.match(regexp)) {
-          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.productionManager.form.error.required.alias",
-                  jParams, jParams.getLocale()))%>");
+          alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.productionManager.form.error.required.alias",
+                  jParams.getLocale()))%>");
           return false;
       }
       return true;

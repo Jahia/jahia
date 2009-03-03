@@ -34,7 +34,6 @@
 package org.jahia.taglibs.uicomponents.loginform;
 
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.resourcebundle.ResourceBundleMarker;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
@@ -76,8 +75,7 @@ public class LogErrorMessageTag extends AbstractJahiaTag {
             try {
                 final StringBuffer buff = new StringBuffer();
                 if (!LoginEngineAuthValveImpl.OK.equals(valveResult)) {
-                    final String wrongLogin = ResourceBundleMarker.getValue("Invalid username or password",
-                            getBundleKey(), invalidUsernamePasswordKey, jParams.getLocale());
+                    final String wrongLogin = getMessage(invalidUsernamePasswordKey, "Invalid username or password");
                     if (cssClassName != null && cssClassName.length() > 0) {
                         buff.append("<span class=\"").append(cssClassName).append("\">");
                         buff.append(wrongLogin);

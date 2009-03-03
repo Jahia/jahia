@@ -57,7 +57,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.search.JahiaSearchService;
 import org.jahia.services.search.JahiaSiteIndexingJob;
@@ -115,8 +115,8 @@ public class ManageSearch extends AbstractAdministrationModule {
         sReg = ServicesRegistry.getInstance ();
 
         if (sReg == null) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.serviceRegistyNotAvailable.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.serviceRegistyNotAvailable.label",
+                    jParams.getLocale());
             displayError (request, response, dspMsg);
             return;
         }
@@ -125,8 +125,8 @@ public class ManageSearch extends AbstractAdministrationModule {
         searchServ = sReg.getJahiaSearchService ();
 
         if (siteServ == null || searchServ == null) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.requestServiceNotAvailable.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.requestServiceNotAvailable.label",
+                    jParams.getLocale());
             displayError (request, response, dspMsg);
             return;
         }
@@ -157,8 +157,8 @@ public class ManageSearch extends AbstractAdministrationModule {
         }
 
         if (site == null || user == null || sReg == null) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.requestInfoNotAvailable.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.requestInfoNotAvailable.label",
+                    jParams.getLocale());
             displayError (request, response, dspMsg);
             return;
         }
@@ -188,8 +188,8 @@ public class ManageSearch extends AbstractAdministrationModule {
 
         } catch (Exception t) {
             logger.error(t.getMessage(), t);
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.processingRequestError.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.processingRequestError.label",
+                    jParams.getLocale());
             displayError (request, response, dspMsg);
         }
     }
@@ -414,8 +414,8 @@ public class ManageSearch extends AbstractAdministrationModule {
             jParams = jData.getProcessingContext ();
         }
         if (!user.isAdminMember(site.getID ())) {
-            String dspMsg = JahiaResourceBundle.getAdminResource ("org.jahia.admin.warningMsg.mustLogRootAdmin.label",
-                    jParams, jParams.getLocale ());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource ("org.jahia.admin.warningMsg.mustLogRootAdmin.label",
+                    jParams.getLocale());
             displayError (request, response, dspMsg);
             return;
         }

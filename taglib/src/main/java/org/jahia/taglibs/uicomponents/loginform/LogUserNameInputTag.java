@@ -36,7 +36,6 @@ package org.jahia.taglibs.uicomponents.loginform;
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.ResourceBundleMarker;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,8 +104,7 @@ public class LogUserNameInputTag extends AbstractJahiaTag {
         final ProcessingContext jParams = jData.getProcessingContext();
         if (!jData.gui().isLogged()) {
             try {
-                final String label = ResourceBundleMarker.getValue("Username", getBundleKey(),
-                        labelKey, jParams.getLocale());
+                final String label = getMessage(labelKey, "Username");
 
                 String css = "";
                 if (cssClassName != null && !cssClassName.equals("")) {

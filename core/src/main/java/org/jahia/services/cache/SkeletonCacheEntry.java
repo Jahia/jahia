@@ -60,7 +60,6 @@ public class SkeletonCacheEntry implements Serializable {
      * the HTML content type.
      */
     private String contentBody;
-    private transient Source source;
     private transient List includeTag;
     private transient List varsTag;
     public SkeletonCacheEntry() {
@@ -96,13 +95,5 @@ public class SkeletonCacheEntry implements Serializable {
 
     public void setVarsTag(List varsTag) {
         this.varsTag = varsTag;
-    }
-
-    public Source getSource() {
-        return source;
-    }
-
-    public void setSource(Source source) {
-        this.source = source;
     }
 }

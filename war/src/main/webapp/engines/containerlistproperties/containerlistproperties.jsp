@@ -38,7 +38,7 @@
 <%@ page import="org.jahia.data.fields.JahiaFieldDefinition" %>
 <%@ page import="org.jahia.engines.EngineLanguageHelper" %>
 <%@ page import="org.jahia.engines.JahiaEngine" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
@@ -230,7 +230,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
         element.options[index] = null;
       }
     } else {
-      alert("<%=JahiaTools.html2text(JahiaResourceBundle.getEngineResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alertSelectValue.label", jParams, jParams.getLocale()))%>");
+      alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.alertSelectValue.label", jParams.getLocale()))%>");
     }
   }
 //-->
@@ -329,7 +329,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                                         DateFormat sdf = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.SHORT, locale);
                                         value = sdf.format(calendar.getTime());
                                       } else {
-                                          value = JahiaResourceBundle.getEngineResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.notPublished.label", jParams, elh.getCurrentLocale());
+                                          value = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.notPublished.label", elh.getCurrentLocale());
                                       }
                                     }
                                   } catch (NumberFormatException e) {
@@ -434,7 +434,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                                               DateFormat sdf = SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.LONG, SimpleDateFormat.SHORT, locale);
                                               value = sdf.format(calendar.getTime());
                                             } else {
-                                              value = JahiaResourceBundle.getEngineResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.notPublished.label", jParams, elh.getCurrentLocale());
+                                              value = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.containerlistproperties.ContainerListProperties_Engine.notPublished.label", elh.getCurrentLocale());
                                             }
                                           }
                                         } catch (NumberFormatException e) {

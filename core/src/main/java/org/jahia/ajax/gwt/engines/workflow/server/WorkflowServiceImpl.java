@@ -58,7 +58,7 @@ import org.jahia.content.ObjectKeyInterface;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.beans.PageBean;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.apache.log4j.Logger;
 import org.quartz.JobDetail;
 import org.quartz.JobDataMap;
@@ -109,8 +109,7 @@ public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements 
                     ObjectKey key = homePage.getObjectKey() ;
                     String title = homePage.getTitle(jParams) ;
                     if (title == null || title.trim().length() == 0) {
-                        ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(jParams,jParams.getLocale());
-                        title = JahiaResourceBundle.getString(resBundle, "org.jahia.engines.workflow.display.notitle", jParams.getLocale());
+                        title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
                     }
                     boolean hasChildren = WorkflowServiceHelper.hasSeparateWorkflowChildren(homePage, jParams.getUser(), true) ;
                     GWTJahiaWorkflowElement workflowElement = new GWTJahiaWorkflowElement(homePage.getID(), key.getKey(), key.getType(), title, title, hasChildren, WorkflowServiceHelper.getWorkflowStates(homePage));
@@ -160,8 +159,7 @@ public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements 
                             }
                             String title = rootPage.getTitle(jParams) ;
                             if (title == null || title.trim().length() == 0) {
-                                ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(jParams,jParams.getLocale());
-                                title = JahiaResourceBundle.getString(resBundle, "org.jahia.engines.workflow.display.notitle", jParams.getLocale());
+                                title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
                             }
                             boolean hasChildren = WorkflowServiceHelper.hasSeparateWorkflowChildren(rootPage, jParams.getUser(), true) ;
                             GWTJahiaWorkflowElement workflowElement = new GWTJahiaWorkflowElement(pid, objectKey, PageBean.TYPE, title, title, hasChildren, WorkflowServiceHelper.getWorkflowStates(rootPage));
@@ -348,8 +346,7 @@ public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements 
                         title = objectKey ;
                     }
                     if (title == null || title.trim().length() == 0) {
-                        ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(jParams,jParams.getLocale());
-                        title = JahiaResourceBundle.getString(resBundle, "org.jahia.engines.workflow.display.notitle", jParams.getLocale());
+                        title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale());
                     }
                     titleForObjectKey.put(objectKey, title) ;
                 } catch (ClassNotFoundException e) {

@@ -38,7 +38,7 @@
 <%@ page import="org.jahia.params.ParamBean" %>
 <%@ page import="org.jahia.data.applications.EntryPointDefinition" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.jahia.resourcebundle.*" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
@@ -57,18 +57,18 @@
 <%
     // display tag declaration
     request.setAttribute("resultRows", selectedPortletsList);
-    String titleNameColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
-    String titleDescriptionColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
-    String defaultDescription = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
-    String titleCategorieColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.portletCategories.displayTag.categoryColumnTitle", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
+    String titleNameColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label", jData.getProcessingContext().getLocale());
+    String titleDescriptionColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label", jData.getProcessingContext().getLocale());
+    String defaultDescription = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label", jData.getProcessingContext().getLocale());
+    String titleCategorieColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.portletCategories.displayTag.categoryColumnTitle", jData.getProcessingContext().getLocale());
     String tableId = "porltet_webapps";
 
     // current application
     boolean isPortlet = false;
 
     // catgeroy tree
-    String titleCategoriesTree = JahiaResourceBundle.getEngineResource("org.jahia.engines.portletCategories.categoriesTreeName", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
-    String noCatgeories = JahiaResourceBundle.getEngineResource("org.jahia.engines.portletCategories.noCatgeories", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
+    String titleCategoriesTree = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.portletCategories.categoriesTreeName", jData.getProcessingContext().getLocale());
+    String noCatgeories = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.portletCategories.noCatgeories", jData.getProcessingContext().getLocale());
 
 %>
 <h3 class="template">

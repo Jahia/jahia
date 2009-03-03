@@ -44,7 +44,7 @@ import org.jahia.hibernate.manager.JahiaPagesManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -489,8 +489,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
         if ( isMoved() ){
             String title = getTitle();
             title =  HunkTextDiffVisitor.getDeletedText(title);
-            title += " (" + JahiaResourceBundle.getEngineResource("org.jahia.moved.label",
-                    Jahia.getThreadParamBean(),
+            title += " (" + JahiaResourceBundle.getJahiaInternalResource("org.jahia.moved.label",
                     Jahia.getThreadParamBean().getLocale()) + ")";
             return title;
         }
@@ -567,7 +566,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      * @return the title as a 2-items list, the first member being the localized title, the second the other titles
      */
     public final List<String> getDisplayableLocalizedTitle(ProcessingContext jParams) {
-        String pageLabel = JahiaResourceBundle.getEngineResource("org.jahia.page.label", jParams, jParams.getLocale());
+        String pageLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.page.label", jParams.getLocale());
         String curTitle = getContentPage().getTitles(true).get(jParams.getCurrentLocale().getLanguage()) ;
         String otherLangTitles = null ;
         if (curTitle == null || curTitle.equals("")) {

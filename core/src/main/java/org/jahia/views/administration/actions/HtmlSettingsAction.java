@@ -59,7 +59,7 @@ import org.jahia.hibernate.model.JahiaAclEntryPK;
 import org.jahia.hibernate.model.JahiaAclName;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.ACLInfo;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -89,10 +89,9 @@ public class HtmlSettingsAction extends AdminAction {
                         .add(
                                 "markupFilteringTags",
                                 new ActionMessage(
-                                        JahiaResourceBundle
-                                                .getAdminResource(
+                                        JahiaResourceBundle.getJahiaInternalResource(
                                                         "org.jahia.admin.htmlsettings.markupFiltering.notValidMarkupName.warning",
-                                                        ctx, ctx.getLocale()),
+                                                        ctx.getLocale()),
                                         false));
                 break;
             }
@@ -245,9 +244,9 @@ public class HtmlSettingsAction extends AdminAction {
                 updateToolbarPermissions("Basic", site.getID(), request);
                 updateToolbarPermissions("Light", site.getID(), request);
                 messages.add("default", new ActionMessage(JahiaResourceBundle
-                        .getAdminResource(
+                        .getJahiaInternalResource(
                                 "org.jahia.admin.warningMsg.changSaved.label",
-                                ctx, ctx.getLocale()), false));
+                                ctx.getLocale()), false));
             }
 
             if (!messages.isEmpty()) {

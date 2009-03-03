@@ -69,7 +69,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.EnginesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.categories.Category;
 import org.jahia.services.containers.ContentContainer;
@@ -1800,8 +1800,8 @@ public class HTMLToolBox {
                     jParams.getPageID() + "&key=" + tbpObjectKey;
 
             String serverURL = actionURL + "&displayDialog=true";
-            String dialogTitle = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dialogTitle",
-                    jParams, jParams.getLocale(), "Informational");
+            String dialogTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dialogTitle",
+                    jParams.getLocale(), "Informational");
             StringBuffer cmdBuffer = new StringBuffer("handleTimeBasedPublishing(event,'");
             cmdBuffer.append(serverURL).append("','");
             cmdBuffer.append(tbpObjectKey).append("',").append("'/op/edit/pid/")
@@ -2001,8 +2001,7 @@ public class HTMLToolBox {
         final Locale locale = jParams.getLocale();
         try {
             res = ResourceBundle.getBundle(resourceBundle, locale);
-            resValue = JahiaResourceBundle.getString(res, resourceName,
-                    locale);
+            resValue = res.getString(resourceName);
         } catch (MissingResourceException mre) {
             logger.warn("Error accessing resource " + resourceName +
                     " in bundle " + resourceBundle + " for locale " +

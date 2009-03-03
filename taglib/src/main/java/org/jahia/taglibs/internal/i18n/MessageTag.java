@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -49,7 +50,7 @@ import org.jahia.engines.EngineMessage;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.core.Core_Engine;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
  * Support for Jahia Message ResourceBundle within Jahia
@@ -185,7 +186,7 @@ public class MessageTag extends TagSupport {
             } else if (name != null) {
                 final EngineMessage message = (EngineMessage) pageContext.findAttribute(name);
                 if (message != null) {
-                    resValue = JahiaResourceBundle.getMessageResource(message.getKey(), currentLocale, message.getValues());
+                    resValue = MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(), currentLocale), message.getValues());
                 } else {
                     logger.error("Couldn't find any EngineMessage bean with name " + name + "!");
                 }

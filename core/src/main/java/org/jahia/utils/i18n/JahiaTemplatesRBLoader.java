@@ -32,11 +32,11 @@
  */
 package org.jahia.utils.i18n;
 
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaException;
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,20 +51,26 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
 
     public JahiaTemplatesRBLoader(ClassLoader loader, String templateName) {
         aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templateName);
-        if (loader != null) this.loader = loader;
+        if (loader != null) {
+            this.loader = loader;
+        }
     }
 
     public JahiaTemplatesRBLoader(ClassLoader loader, int siteId) {
-        if(siteId>0)
-        aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(siteId);
-        if (loader != null) this.loader = loader;
+        if (siteId > 0) {
+            aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(siteId);
+        }
+        if (loader != null) {
+            this.loader = loader;
+        }
     }
 
     public Class<?> loadClass(String name) throws ClassNotFoundException {
         if (loader != null) {
             final Class<?> aClass = loader.loadClass(name);
-            if (aClass != null)
+            if (aClass != null) {
                 return aClass;
+            }
         }
         return Class.forName(name);
     }
@@ -79,35 +85,25 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     public InputStream getResourceAsStream(String name) {
         if (loader != null) {
             final InputStream stream = loader.getResourceAsStream(name);
-            if (stream != null)
+            if (stream != null) {
                 return stream;
-            else {
+            } else {
                 String s;
-                if(aPackage!=null) {
+                if (aPackage != null) {
                     s = aPackage.getFilePath() + File.separator + name.replaceAll("\\\\.", File.separator);
                 } else {
                     s = Jahia.getSettings().getClassDiskPath() + File.separator + name.replaceAll("\\\\.", File.separator);
                 }
                 try {
-                    FileInputStream stream1 = new FileInputStream(s);
-                    String bundlename = name.substring(0,name.indexOf(".properties")).replaceAll("/",".");
-                    ServicesRegistry.getInstance().getResourceBundleService().declareResourceBundleDefinition(bundlename,bundlename);
-                    return stream1;
+                    return new FileInputStream(s);
                 } catch (FileNotFoundException e) {
                     // Try to find it inside WEB-INF/classes
                     s = Jahia.getSettings().getClassDiskPath() + File.separator + name.replaceAll("\\\\.", File.separator);
                     try {
-                        FileInputStream stream1 = new FileInputStream(s);
-                        String bundlename = name.substring(0,name.indexOf(".properties"));
-                        ServicesRegistry.getInstance().getResourceBundleService().declareResourceBundleDefinition(bundlename,bundlename);
-                        return stream1;
+                        return new FileInputStream(s);
                     } catch (FileNotFoundException e1) {
-                        logger.error(e1);
-                    } catch (JahiaException e1) {
-                        logger.error(e1);
+                        logger.warn(e1);
                     }
-                } catch (JahiaException e) {
-                    logger.error(e);
                 }
             }
         }

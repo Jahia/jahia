@@ -54,10 +54,11 @@ import org.jahia.services.fields.URLIntegrityValidForActivationResults;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.text.MessageFormat;
 
 /**
  * Validation class
@@ -219,8 +220,8 @@ public class ValidationHelper {
             ProcessingContext ctx, int level, int type) throws JahiaException {
         
         GWTJahiaNodeOperationResultItem gwtOperationResultItem = new GWTJahiaNodeOperationResultItem();
-        gwtOperationResultItem.setMessage(JahiaResourceBundle.getMessageResource(operationResult.getMsg().getKey(),
-                ctx.getLocale(), operationResult.getMsg().getValues()));
+        gwtOperationResultItem.setMessage(MessageFormat.format(JahiaResourceBundle.getMessageResource(operationResult.getMsg().getKey(),
+                ctx.getLocale()), operationResult.getMsg().getValues()));
         gwtOperationResultItem.setComment(operationResult.getComment());
 
         try {

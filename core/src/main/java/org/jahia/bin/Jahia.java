@@ -89,7 +89,6 @@ import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.locks.JahiaLocksRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
 import org.jahia.resourcebundle.ResourceMessage;
 import org.jahia.security.license.License;
 import org.jahia.security.license.LicenseConstants;
@@ -110,6 +109,7 @@ import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Version;
 import org.jahia.utils.WebAppPathResolver;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.modifier.TomcatUsersModifier;
 import org.xml.sax.SAXException;
 

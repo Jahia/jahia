@@ -55,7 +55,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.GuestGroup;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -333,14 +333,14 @@ public class PrincipalViewHelper implements Serializable {
             final JahiaUser user = (JahiaUser)p;
             // Find a displayable user property
             if (user.getUsername().equals(JahiaUserManagerDBProvider.GUEST_USERNAME)) {
-                properties.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.users.guest.label", Jahia.getThreadParamBean(), null));
-                return JahiaString.adjustStringSize(properties.toString(), size.intValue());
+                properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.users.guest.label", Jahia.getThreadParamBean().getLocale()));
+                return JahiaString.adjustStringSize(properties.toString(), size);
             } else {
                 final String firstname = user.getProperty("firstname");
                 final String lastname = user.getProperty("lastname");
                 if (firstname != null) {
                     properties.append(firstname);
-                    if (firstname.length() < size.intValue()) {
+                    if (firstname.length() < size) {
                         properties.append(" ");
                     }
                 }
@@ -351,14 +351,14 @@ public class PrincipalViewHelper implements Serializable {
                     if (email != null)
                         properties.append(email);
                 }
-                return JahiaString.adjustStringSize(properties.toString(), size.intValue());
+                return JahiaString.adjustStringSize(properties.toString(), size);
             }
         } else if (p instanceof UsersGroup) {
-            properties.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.groups.users.label", Jahia.getThreadParamBean(), null));
-            return JahiaString.adjustStringSize(properties.toString(), size.intValue());
+            properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.users.label", Jahia.getThreadParamBean().getLocale()));
+            return JahiaString.adjustStringSize(properties.toString(), size);
         } else if (p instanceof GuestGroup) {
-            properties.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.groups.guest.label", Jahia.getThreadParamBean(), null));
-            return JahiaString.adjustStringSize(properties.toString(), size.intValue());
+            properties.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.guest.label", Jahia.getThreadParamBean().getLocale()));
+            return JahiaString.adjustStringSize(properties.toString(), size);
         } else {
             final JahiaGroup group = (JahiaGroup)p;
             // Find some group members for properties

@@ -50,7 +50,7 @@ import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.pages.ContentPage;
@@ -136,8 +136,8 @@ public class ManageUsers extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense();
         if ( coreLicense == null ){
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                                               jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
+                                               jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             doRedirect( request, response, request.getSession(), JSP_PATH + "menu.jsp" );
@@ -324,11 +324,11 @@ public class ManageUsers extends AbstractAdministrationModule {
         int nbUserLic = Jahia.getUserLimit();
         /** @todo  >= because default user 'root' is not considerated as a real user. */
         if (!(nbUserLic == -1 || nbUserLic >= nbUserSite)) {
-          userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.licenseLimited.label",
-              jParams, jParams.getLocale());
+          userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.licenseLimited.label",
+              jParams.getLocale());
           userMessage += " " + nbUserLic + " ";
-          userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.users.label",
-             jParams, jParams.getLocale());
+          userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.users.label",
+             jParams.getLocale());
             displayUsers(request, response, session);
             return;
         }
@@ -427,35 +427,35 @@ public class ManageUsers extends AbstractAdministrationModule {
         }
         String username = request.getParameter("username").trim();
         if (username.length() == 0) {
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.specifyUserName.label",
-                    jParams, jParams.getLocale());
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.specifyUserName.label",
+                    jParams.getLocale());
             return false;
         }
         // The following test is really disputable because we should can enter
         // as well accentueted char and any internationalized char.
         else if (!ServicesRegistry.getInstance().getJahiaUserManagerService()
                 .isUsernameSyntaxCorrect(username)) {
-            userMessage = StringUtils.capitalize(JahiaResourceBundle.getAdminResource("org.jahia.admin.users.ManageUsers.onlyCharacters.label",
-                    jParams, jParams.getLocale()));
+            userMessage = StringUtils.capitalize(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.users.ManageUsers.onlyCharacters.label",
+                    jParams.getLocale()));
             return false;
         } else if (siteUser.getMember(jahiaSite.getID(), username) != null) {
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.user.label",
-                    jParams, jParams.getLocale());
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+                    jParams.getLocale());
             userMessage += " [" + username + "] ";
-            userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.alreadyExist.label",
-                    jParams, jParams.getLocale());
+            userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.alreadyExist.label",
+                    jParams.getLocale());
             return false;
         } else if (uMgr.userExists(username)) {
             JahiaUser user = uMgr.lookupUser(username);
             String url = JahiaAdministration.composeActionURL(request,response,"users","&sub=processRegister&userSelected=" + user.getUserKey());
 
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.user.label",
-                    jParams, jParams.getLocale());
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+                    jParams.getLocale());
             userMessage += " [" + username + "] ";
-            userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.alreadyExist.label",
-                    jParams, jParams.getLocale()) + " ";
-            userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.onAnotherSite.label", jParams, jParams.getLocale()) + ".";
-            userMessage += "&nbsp;<a href=\""+url+"\">" + JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.clickHereToRegister.label", jParams, jParams.getLocale()) + "</a>";
+            userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.alreadyExist.label",
+                    jParams.getLocale()) + " ";
+            userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.onAnotherSite.label", jParams.getLocale()) + ".";
+            userMessage += "&nbsp;<a href=\""+url+"\">" + JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.clickHereToRegister.label", jParams.getLocale()) + "</a>";
             return false;
         }
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry
@@ -464,14 +464,14 @@ public class ManageUsers extends AbstractAdministrationModule {
                 .getID());
         String passwd = request.getParameter("passwd").trim();
         if ("".equals(passwd)) {
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.specifyPassword.label",
-                    jParams, jParams.getLocale());
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.specifyPassword.label",
+                    jParams.getLocale());
             return false;
         } else {
             String passwdConfirm = request.getParameter("passwdconfirm").trim();
             if (!passwdConfirm.equals(passwd)) {
-                userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.passwdNotMatch.label",
-                        jParams, jParams.getLocale());
+                userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.passwdNotMatch.label",
+                        jParams.getLocale());
                 return false;
             }
             if (pwdPolicyEnabled) {
@@ -512,8 +512,8 @@ public class ManageUsers extends AbstractAdministrationModule {
         JahiaUser usr = null;
         usr = uMgr.createUser(username, passwd, userProps);
         if (usr == null) {
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.unableCreateUser.label",
-                    jParams, jParams.getLocale());
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.unableCreateUser.label",
+                    jParams.getLocale());
             userMessage += " " + username;
             return false;
         } else {
@@ -521,11 +521,11 @@ public class ManageUsers extends AbstractAdministrationModule {
             JahiaSiteUserManagerService siteUserManager =
                     ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
             siteUserManager.addMember(jahiaSite.getID(), usr);
-            userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.user.label",
-                    jParams, jParams.getLocale());
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+                    jParams.getLocale());
             userMessage += " [" + username + "] ";
-            userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.created.label",
-                    jParams, jParams.getLocale());
+            userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.created.label",
+                    jParams.getLocale());
             isError = false;
         }
         // Lookup for home page settings and set it.
@@ -566,8 +566,8 @@ public class ManageUsers extends AbstractAdministrationModule {
                 userToEdit = (String)session.getAttribute("selectedUsers");
             }
             if (userToEdit == null || "null".equals(userToEdit)) {
-              userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.selectUser.label",
-                  jParams, jParams.getLocale());
+              userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.selectUser.label",
+                  jParams.getLocale());
                 displayUsers(request, response, session);
                 return;
             }
@@ -695,9 +695,9 @@ public class ManageUsers extends AbstractAdministrationModule {
             String passwdConfirm = request.getParameter("passwdconfirm").
                                        trim();
             if (!passwdConfirm.equals(passwd)) {
-                userMessage = JahiaResourceBundle.getAdminResource(
+                userMessage = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.userMessage.passwdNotMatch.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
                 return false;
             }
             if (pwdPolicyService.isPolicyEnabled(usr)) {
@@ -709,9 +709,9 @@ public class ManageUsers extends AbstractAdministrationModule {
                 }
             }
             if (!usr.setPassword(passwd)) {
-                userMessage = JahiaResourceBundle.getAdminResource(
+                userMessage = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.userMessage.cannotChangePasswd.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
                 userMessage += " [" + username + "] ";
                 return false;
             }
@@ -749,11 +749,11 @@ public class ManageUsers extends AbstractAdministrationModule {
                         && homePageParam.length() > 0 ? Integer
                         .parseInt(homePageParam) : -1);
 
-        userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.user.label",
-            jParams, jParams.getLocale());
+        userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+            jParams.getLocale());
         userMessage += " [" + username + "] ";
-        userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.updated.label",
-            jParams, jParams.getLocale());
+        userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.updated.label",
+            jParams.getLocale());
         isError = false;
 
         // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
@@ -799,8 +799,8 @@ public class ManageUsers extends AbstractAdministrationModule {
         String selectedUsers = request.getParameter("selectedUsers");
         selectedUsers = JahiaTools.replacePattern(selectedUsers, "&nbsp;", " ");
         if (selectedUsers == null || "null".equals(selectedUsers)) {
-          userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.selectUser.label",
-              jParams, jParams.getLocale());
+          userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.selectUser.label",
+              jParams.getLocale());
             displayUsers(request, response, session);
         } else {
             // set request attributes...
@@ -947,11 +947,11 @@ public class ManageUsers extends AbstractAdministrationModule {
                         ServicesRegistry.getInstance().getJahiaSiteUserManagerService();
                     siteUserManager.removeMember(jParams.getSiteID(),user);
 //                    uMgr.deleteUser(user);
-                    userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.user.label",
-                        jParams, jParams.getLocale());
+                    userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+                        jParams.getLocale());
                     userMessage += " [" + userName + "] ";
-                    userMessage += JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.removed.label",
-                        jParams, jParams.getLocale());
+                    userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.removed.label",
+                        jParams.getLocale());
                     isError = false;
 
                     // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
@@ -960,18 +960,18 @@ public class ManageUsers extends AbstractAdministrationModule {
                     // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
 
                   } else {
-                  userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.cannotRemoveYourUser.label",
-                      jParams, jParams.getLocale());
+                  userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.cannotRemoveYourUser.label",
+                      jParams.getLocale());
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-              userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.cannotRemoveUser.label",
-                  jParams, jParams.getLocale());
+              userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.cannotRemoveUser.label",
+                  jParams.getLocale());
               userMessage += " " + userName + ".";
             }
         } else {
-          userMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.userMessage.cannotRemoveGuest.label",
-              jParams, jParams.getLocale());
+          userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.cannotRemoveGuest.label",
+              jParams.getLocale());
         }
         displayUsers( request, response, session);
     }

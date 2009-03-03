@@ -36,7 +36,7 @@ package org.jahia.services.lock;
 import org.jahia.content.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.bin.Jahia;
 
@@ -253,96 +253,96 @@ public class LockKey implements Serializable {
         final StringBuffer buff = new StringBuffer();
         final List<Map<String, Serializable>> infos = ServicesRegistry.getInstance().getLockService().getInfo(blockingLockKey);
         if (LockKey.WAITING_FOR_APPROVAL_TYPE.equals(blockingLockKey.getType())) {
-            return JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.waitingForApproval.label",
-                    jParams, jParams.getLocale());
+            return JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.waitingForApproval.label",
+                    jParams.getLocale());
         } else if (LockKey.MARK_FOR_DELETE_TYPE.equals(blockingLockKey.getType())) {
-            return JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.markForDelete.label",
-                    jParams, jParams.getLocale());
+            return JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.markForDelete.label",
+                    jParams.getLocale());
         }
         if (infos == null || infos.size() == 0) return "N/A";
         final Map<String, Serializable> lockInfo = infos.get(0);
         if (blockingLockKey.getType().startsWith(LockKey.WORKFLOW_ACTION)) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.lockedByWorkflow.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.lockedByWorkflow.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
 
         } else if (LockKey.ADD_CONTAINER_TYPE.equals(blockingLockKey.getType())) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.containerTocontentContainer.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.containerTocontentContainer.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
 
         } else if (LockKey.UPDATE_CONTAINERLIST_TYPE.equals(blockingLockKey.getType())) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.updateList.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.updateList.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
 
         } else if (LockKey.UPDATE_PAGE_TYPE.equals(blockingLockKey.getType())) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.objectParentPageProperties.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.objectParentPageProperties.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
 
         } else if (LockKey.UPDATE_CONTAINER_TYPE.equals(blockingLockKey.getType())) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.isEditionMode.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.isEditionMode.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
 
         } else if (LockKey.DELETE_CONTAINER_TYPE.equals(blockingLockKey.getType())) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.willBeDeleted.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.willBeDeleted.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
 
         } else if (LockKey.UPDATE_FIELD_TYPE.equals(blockingLockKey.getType())) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.isEditionMode.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.isEditionMode.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
 
         } else if (blockingLockKey.getType().startsWith(LockKey.IMPORT_ACTION)) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.copy.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.copy.label",
+                    jParams.getLocale()));
 
         } else if (blockingLockKey.getType().startsWith(LockKey.EXPORT_ACTION)) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.copy.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.copy.label",
+                    jParams.getLocale()));
 
         } else if (blockingLockKey.getType().startsWith(LockKey.LIVEEXPORT_ACTION)) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.copy.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.copy.label",
+                    jParams.getLocale()));
 
         } else if (LockKey.RESTORE_LIVE_CONTAINER_TYPE.equals(blockingLockKey.getType())) {
-            buff.append(JahiaResourceBundle.getEngineResource("org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restoreReadOnly.label",
-                    jParams, jParams.getLocale()));
+            buff.append(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine.restoreReadOnly.label",
+                    jParams.getLocale()));
             buff.append(" ");
             buff.append(((JahiaUser) lockInfo.get(LockRegistry.OWNER)).getUsername());
             buff.append(". ");
-            final long timeRemaining = ((Long) lockInfo.get(LockRegistry.TIME_REMAINING)).longValue();
+            final long timeRemaining = (Long) lockInfo.get(LockRegistry.TIME_REMAINING);
             buff.append(getTimeString(timeRemaining, jParams));
         }
         return buff.toString();
@@ -354,8 +354,8 @@ public class LockKey implements Serializable {
         buff.append(Jahia.getContextPath());
         buff.append("/engines/images/stopwatch.gif");
         buff.append("' title=' ");
-        final String remaining = JahiaResourceBundle.getEngineResource("org.jahia.engines.lock.remainingTime.label",
-                    jParams, jParams.getLocale());
+        final String remaining = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.lock.remainingTime.label",
+                    jParams.getLocale());
         buff.append(remaining);
         buff.append(": ");
         final long h1 = timeRemaining / 3600000;

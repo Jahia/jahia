@@ -33,7 +33,7 @@
 
 --%>
 
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ page import="org.jahia.services.categories.Category" %>
 <%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ page import="org.jahia.bin.JahiaAdministration" %>

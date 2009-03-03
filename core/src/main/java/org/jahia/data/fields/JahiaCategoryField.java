@@ -38,7 +38,7 @@ import org.jahia.data.FormDataManager;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.categories.Category;
 import org.jahia.services.fields.ContentCategoryField;
 import org.jahia.services.fields.ContentField;

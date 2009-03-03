@@ -43,7 +43,7 @@ import org.jahia.hibernate.manager.JahiaSiteLanguageMappingManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -110,8 +110,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         coreLicense = Jahia.getCoreLicense();
         if ( coreLicense == null ){
             // set request attributes...
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
-                                               jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.invalidLicenseKey.label",
+                                                                         getLocale(request, jParams));
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             // redirect...
             JahiaAdministration.doRedirect( request, response, request.getSession(), JSP_PATH + "menu.jsp" );
@@ -122,6 +122,9 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
         userRequestDispatcher( request, response, request.getSession() );
     } // end constructor
 
+    private Locale getLocale(HttpServletRequest request, ProcessingContext jParams) {
+        return jParams!=null?jParams.getLocale():request.getLocale();
+    }
 
 
     //-------------------------------------------------------------------------
@@ -172,8 +175,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             }
 
         } else {
-          String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams, jParams.getLocale());
+          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                                             getLocale(request, jParams));
           request.setAttribute("jahiaDisplayMessage", dspMsg);
                JahiaAdministration.doRedirect( request,
                                                response,
@@ -225,8 +228,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                                             JSP_PATH + "manage_languages.jsp" );
 
         } catch ( JahiaException je ){
-          String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams, jParams.getLocale());
+          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                                              getLocale(request, jParams));
           request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect( request,
                                             response,
@@ -329,8 +332,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                     listManager.updateSiteLanguageSettings(curSetting);
                 }
             } else {
-                String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.homePageLanguage.label",
-                        jParams, jParams.getLocale());
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.homePageLanguage.label",
+                        getLocale(request, jParams));
                 request.setAttribute("jahiaErrorMessage", dspMsg);
             }
 
@@ -382,16 +385,16 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             // languages. This is a two step process that requires a
             // confirmation by the user.
             if (request.getParameter("jahiaDisplayMessage") != null) {
-                String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                        jParams, jParams.getLocale());
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
+                        getLocale(request, jParams));
                 request.setAttribute("jahiaDisplayMessage", dspMsg);
             }
             displayLanguageList(request, response, session);
 
             ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance().flushSkeletonsForSite(site.getID());
         } catch ( JahiaException je ){
-          String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams, jParams.getLocale());
+          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                                             getLocale(request, jParams));
           request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect( request,
                                             response,
@@ -542,8 +545,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             displayLanguageList(request, response, session);
         } catch ( JahiaException je ){
             logger.debug("Exception deleting site language",je);
-          String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams, jParams.getLocale());
+          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                                             getLocale(request, jParams));
           request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect( request,
                                             response,
@@ -638,8 +641,8 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                                             JSP_PATH + "manage_languages_edit_mappings.jsp" );
 
         } catch ( JahiaException je ){
-          String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams, jParams.getLocale());
+          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                                             getLocale(request, jParams));
           request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect( request,
                                             response,
@@ -674,9 +677,9 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
             }
         }
 
-        String dspMsg = JahiaResourceBundle.getAdminResource(
+        String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                 "org.jahia.admin.JahiaDisplayMessage.mappingUpdated.label",
-                jParams, jParams.getLocale());
+                getLocale(request, jParams));
         request.setAttribute("jahiaDisplayMessage", dspMsg);
         site.setSiteLanguageMappings(null);
         displayMappings(request, response, session);

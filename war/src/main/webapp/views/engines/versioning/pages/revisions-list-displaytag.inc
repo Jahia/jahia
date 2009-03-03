@@ -41,6 +41,7 @@
 <%@ page import="org.displaytag.tags.*" %>
 <%@ page import="org.displaytag.util.*" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="d"%>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%
@@ -50,7 +51,7 @@
   String tableId = "versions_id";
   // Date
   String titleDateHref = "javascript:sortRevisions('"+RevisionEntrySetComparator.SORT_BY_DATE+"','"+pagesVersViewHelper.getInvertSortOrder()+"');";
-  String titleDate = JahiaResourceBundle.getEngineResource("org.jahia.engines.version.date",jData.getProcessingContext(),jData.getProcessingContext().getLocale())+"(Preview)";
+  String titleDate = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.date",jData.getProcessingContext().getLocale())+"(Preview)";
   //String titleDate = "<a href=\""+titleDateHref+"\">"+titleDateLabel+"</a>";
 
   //state
@@ -58,17 +59,17 @@
 
   //Object title
   String titleObjectHref = "javascript:sortRevisions('"+RevisionEntrySetComparator.SORT_BY_TITLE+"','"+pagesVersViewHelper.getInvertSortOrder()+"');";
-  String titleObject = JahiaResourceBundle.getEngineResource("org.jahia.engines.version.objectTitle",jData.getProcessingContext(),jData.getProcessingContext().getLocale());
+  String titleObject = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.objectTitle",jData.getProcessingContext().getLocale());
   //String titleObject = "<a href=\""+titleObjectHref+"\">"+titleObjectLabel+"</a>";
 
   //Object Type
   String titleObjectTypeHref = "javascript:sortRevisions('"+RevisionEntrySetComparator.SORT_BY_OBJECT+"','"+pagesVersViewHelper.getInvertSortOrder()+"');";
-  String titleObjectType = JahiaResourceBundle.getEngineResource("org.jahia.engines.version.objectType",jData.getProcessingContext(),jData.getProcessingContext().getLocale());
+  String titleObjectType = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.objectType",jData.getProcessingContext().getLocale());
   //String titleObjectType = "<a href=\""+titleObjectTypeHref+"\">"+titleObjectTypeLabel+"</a>";
 
   //Description
   String titleDescriptionHref = "javascript:sortRevisions('"+RevisionEntrySetComparator.SORT_BY_DESCR+"','"+pagesVersViewHelper.getInvertSortOrder()+"');";
-  String titleDescription = JahiaResourceBundle.getEngineResource("org.jahia.engines.version.objectDescription",jData.getProcessingContext(),jData.getProcessingContext().getLocale());
+  String titleDescription = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.version.objectDescription",jData.getProcessingContext().getLocale());
   //String titleDescription = "<a href=\""+titleDescriptionHref+"\">"+titleDescriptionLabel+"</a>";
 
   // display tag parameter

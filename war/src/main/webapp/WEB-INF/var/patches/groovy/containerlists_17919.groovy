@@ -1,7 +1,7 @@
 import org.jahia.bin.Jahia
 import org.jahia.params.ProcessingContext
 import org.jahia.registries.ServicesRegistry
-import org.jahia.resourcebundle.JahiaResourceBundle
+import org.jahia.utils.i18n.JahiaResourceBundle
 import org.jahia.services.sites.JahiaSite
 import org.jahia.services.sites.JahiaSitesService
 import org.jahia.utils.JahiaTools
@@ -15,8 +15,8 @@ sites = siteService.getSites();
 sites.each {
     site -> int siteID = ((JahiaSite) site).getHomePageID();
     VersionService.getInstance().setSubStatus(
-            JahiaResourceBundle.getAdminResource("org.jahia.admin.patchmanagement.containerlists_17919.sitename",
-                    Jahia.getThreadParamBean(), Jahia.getThreadParamBean().getLocale()) + " " + ((JahiaSite) site).getTitle());
+            JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.patchmanagement.containerlists_17919.sitename",
+                    Jahia.getThreadParamBean().getLocale()) + " " + ((JahiaSite) site).getTitle());
     MyStatus.pageCount = 0;
     MyStatus.pageCount++;
     println(((JahiaSite) site).getTitle() + ' Site Homepage = ' + siteID);

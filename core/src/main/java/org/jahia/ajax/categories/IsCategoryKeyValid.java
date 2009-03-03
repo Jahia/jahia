@@ -37,7 +37,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.categories.Category;
 import org.jahia.services.usermanager.JahiaUser;
 import org.w3c.dom.Document;
@@ -79,8 +79,8 @@ public class IsCategoryKeyValid extends AbstractCategoryAction {
             final Element item = resp.createElement(CATEGORY);
             if (category == null) {
                 item.appendChild(resp.createTextNode("false"));
-                final String msg = JahiaResourceBundle.getEngineResource("org.jahia.bin.JahiaErrorDisplay.httpNotFound.label",
-                        jParams, jParams.getLocale());
+                final String msg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.bin.JahiaErrorDisplay.httpNotFound.label",
+                        jParams.getLocale());
                 item.setAttribute("msg", msg);
             } else {
                 item.appendChild(resp.createTextNode("true"));

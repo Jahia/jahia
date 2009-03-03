@@ -44,6 +44,7 @@
 <%@page import="org.jahia.params.ParamBean"%>
 <%@page import="org.jahia.registries.ServicesRegistry"%>
 <%@page import="org.jahia.testtemplate.sorter.LocalizedTemplateNameSorter"%>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 
 <%@ include file="../common/declarations.jspf"%>
 
@@ -56,7 +57,7 @@ ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean
 int siteID = jParams.getSiteID();
 JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(siteID);
 List<JahiaTemplateDef> templateList = new ArrayList(templatePackage.getTemplates());
-Collections.sort(templateList, new LocalizedTemplateNameSorter(ResourceBundle.getBundle("jahiatemplates.Test_templates", jParams.getLocale()), jParams.getLocale()));
+Collections.sort(templateList, new LocalizedTemplateNameSorter(new JahiaResourceBundle("jahiatemplates.Test_templates", jParams.getLocale())));
 %>
 <c:set var="templatePackage" value="<%=templatePackage%>"/>
 <c:set var="templateList" value="<%=templateList%>"/>    

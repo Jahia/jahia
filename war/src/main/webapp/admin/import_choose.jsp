@@ -42,7 +42,7 @@
 <%@ page import="java.io.File" %>
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.data.templates.JahiaTemplatesPackage" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ page import="org.jahia.data.JahiaData" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%

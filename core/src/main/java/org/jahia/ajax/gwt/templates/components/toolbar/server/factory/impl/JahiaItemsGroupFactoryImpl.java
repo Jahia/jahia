@@ -50,7 +50,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.operations.valves.HistoryValve;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.preferences.JahiaPreference;
@@ -344,8 +344,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) > 0) {
                 Set<String> m = ServicesRegistry.getInstance().getWorkflowService().getAllStagingAndWaitingObject(jahiaData.getProcessingContext().getSiteID()).keySet();
                 if (!m.isEmpty()) {
-                    String publishAllLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.workflow.publishAll",
-                            processingContext,
+                    String publishAllLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.publishAll",                            
                             processingContext.getLocale() );
                     GWTJahiaToolbarItem gwtToolbarItem = createPublishAllItem(publishAllLabel);
                     // add to itemsgroup

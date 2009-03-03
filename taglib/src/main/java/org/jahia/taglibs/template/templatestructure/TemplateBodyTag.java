@@ -38,7 +38,7 @@ import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.params.AdvPreviewSettings;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -216,10 +216,10 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
 
     private void addToolbarMessageResources() {
         // add messages required by the subscriptions toolbar
-        addGwtDictionaryMessage("subscriptions.toolbar.page.windowTitle", getI18nMessage("subscriptions.toolbar.page.windowTitle"));
-        addGwtDictionaryMessage("subscriptions.toolbar.page.event.contentPublished", getI18nMessage("subscriptions.toolbar.page.event.contentPublished"));
-        addGwtDictionaryMessage("subscriptions.toolbar.page.event.commentAdded", getI18nMessage("subscriptions.toolbar.page.event.commentAdded"));
-        addGwtDictionaryMessage("subscriptions.toolbar.page.includeChildren", getI18nMessage("subscriptions.toolbar.page.includeChildren"));
+        addGwtDictionaryMessage("subscriptions.toolbar.page.windowTitle", getMessage("subscriptions.toolbar.page.windowTitle"));
+        addGwtDictionaryMessage("subscriptions.toolbar.page.event.contentPublished", getMessage("subscriptions.toolbar.page.event.contentPublished"));
+        addGwtDictionaryMessage("subscriptions.toolbar.page.event.commentAdded", getMessage("subscriptions.toolbar.page.event.commentAdded"));
+        addGwtDictionaryMessage("subscriptions.toolbar.page.includeChildren", getMessage("subscriptions.toolbar.page.includeChildren"));
     }
 
     /**
@@ -227,11 +227,11 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
      * @param jData
      */
     private void addMandatoryGwtMessages(JahiaData jData) {
-        addGwtDictionaryMessage("display", JahiaResourceBundle.getAdminResource("toolbar.message.display", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("reset", JahiaResourceBundle.getAdminResource("toolbar.message.reset", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("hide_alert", JahiaResourceBundle.getAdminResource("toolbar.message.hide.alert", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("hide_warning", JahiaResourceBundle.getAdminResource("toolbar.message.hide.warning", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
-        addGwtDictionaryMessage("hide_all", JahiaResourceBundle.getAdminResource("toolbar.message.hide.all", jData.getProcessingContext(), jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("display", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.display", jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("reset", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.reset", jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("hide_alert", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.alert", jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("hide_warning", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.warning", jData.getProcessingContext().getLocale()));
+        addGwtDictionaryMessage("hide_all", JahiaResourceBundle.getJahiaInternalResource("toolbar.message.hide.all", jData.getProcessingContext().getLocale()));
     }
 
     public int doEndTag() {

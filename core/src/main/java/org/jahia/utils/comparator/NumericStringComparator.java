@@ -33,7 +33,7 @@
 
 package org.jahia.utils.comparator;
 
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.bin.Jahia;
 import org.jahia.services.categories.Category;
 import org.jahia.hibernate.model.JahiaCategory;

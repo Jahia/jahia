@@ -52,8 +52,8 @@ import org.jahia.gui.GuiBean;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
@@ -550,10 +550,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         }
 
                         if (dispLink == null) {
-                            dispLink = JahiaResourceBundle.getEngineResource("org.jahia.engines.workflow.display.notitle", jParams, jParams.getLocale(), "n/d");
+                            dispLink = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale(), "n/d");
                         }
                         if (title == null) {
-                            title = JahiaResourceBundle.getEngineResource("org.jahia.engines.workflow.display.notitle", jParams, jParams.getLocale(), "n/d");
+                            title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale(), "n/d");
                         }
 
                         out.append("<a href=\"").append(link.getURL(jParams)).append("\"").append(" class=\"");
@@ -645,16 +645,13 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }*/
     }
 
-    protected String resolveTitle(final String title,
-                                  final String bundleKey,
-                                  final String titleKey,
-                                  final Locale locale) {
-        if ((titleKey != null) && (bundleKey != null)) {
-            String tmp = ResourceBundleMarker.getValue(title, bundleKey, titleKey, locale);
+    protected String getMessage(final String titleKey, final String title) {
+        if ((titleKey != null)) {
+            String tmp = retrieveResourceBundle().getString(titleKey);
             if (tmp == null || tmp.equals(title)) {
                 return ResourceBundleMarker.drawMarker(AbstractJahiaTag.COMMON_TAG_BUNDLE, titleKey, title);
             }
-            return ResourceBundleMarker.drawMarker(bundleKey, titleKey, title);
+            return ResourceBundleMarker.drawMarker(getResourceBundle(), titleKey, title);
         } else {
             return title;
         }

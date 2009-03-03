@@ -47,7 +47,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.audit.JahiaAuditLogManagerService;
 import org.jahia.services.audit.LoggingEventListener;
 import org.jahia.services.usermanager.JahiaUser;
@@ -180,8 +180,8 @@ public class ManageLogs extends AbstractAdministrationModule {
           if (jData != null) {
               jParams = jData.getProcessingContext();
           }
-            jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.noListenersRegistryInstance.label",
-                                               jParams, jParams.getLocale());
+            jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.noListenersRegistryInstance.label",
+                                               jParams.getLocale());
             sess.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             JahiaAdministration.displayMenu( req, res, sess );
         }
@@ -249,8 +249,8 @@ public class ManageLogs extends AbstractAdministrationModule {
         } else {
 
             // back to menu in case of problems with the Managers...
-            jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.noAuditLogManagerInstance.label",
-                                               jParams, jParams.getLocale());
+            jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.noAuditLogManagerInstance.label",
+                                               jParams.getLocale());
             sess.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
             JahiaAdministration.displayMenu( req, res, sess );
         }
@@ -288,11 +288,11 @@ public class ManageLogs extends AbstractAdministrationModule {
                 }
                 try {
                     if( lReg.addListener(new LoggingEventListener()) ) {
-                      jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingEnabled.label",
-                                                                                 jParams, jParams.getLocale());
+                      jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingEnabled.label",
+                                                                                 jParams.getLocale());
                     } else {
-                      jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingNotEnabled.label",
-                                                                                 jParams, jParams.getLocale());
+                      jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingNotEnabled.label",
+                                                                                 jParams.getLocale());
                     }
                 } catch (JahiaException e) {
                     throw new ServletException("Error starting logging event listener", e);
@@ -334,11 +334,11 @@ public class ManageLogs extends AbstractAdministrationModule {
                     jParams = jData.getProcessingContext();
                 }
                 if( lReg.removeListenerByClassName(LOGGING_EVENT_LISTENER) ) {
-                  jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingDisabled.label",
-                                                     jParams, jParams.getLocale());
+                  jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingDisabled.label",
+                                                     jParams.getLocale());
                 } else {
-                  jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingNotDisabled.label",
-                                                     jParams, jParams.getLocale());
+                  jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.auditLoggingNotDisabled.label",
+                                                     jParams.getLocale());
                 }
             }
 
@@ -391,14 +391,14 @@ public class ManageLogs extends AbstractAdministrationModule {
                     // for performance reason, it's better to delete all rows
                     logger.debug("Delete all logs entries");
                     int result = lMgr.deleteAllLogs();
-                    jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.logEntriesDeleted.label",
-                                                       jParams, jParams.getLocale());
+                    jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.logEntriesDeleted.label",
+                                                       jParams.getLocale());
                     jahiaDisplayMessage =  result + " " + jahiaDisplayMessage;
 
                 } else {
 
-                  jahiaDisplayMessage = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.noAuditLogManagerInstance.label",
-                                                     jParams, jParams.getLocale());
+                  jahiaDisplayMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.noAuditLogManagerInstance.label",
+                                                     jParams.getLocale());
                   sess.setAttribute(CLASS_NAME + "jahiaDisplayMessage", jahiaDisplayMessage);
                     JahiaAdministration.displayMenu( req, res, sess );   // back to menu in case of problems with the Managers...
                 }
@@ -451,19 +451,19 @@ public class ManageLogs extends AbstractAdministrationModule {
                     Integer maxlogsdays = new Integer(maxLogsDaysStr.trim());
 
                     if(maxlogsdays.intValue() < 1) {
-                      String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.numberDaysInvalid.label",
-                                                         jParams, jParams.getLocale());
+                      String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.numberDaysInvalid.label",
+                                                         jParams.getLocale());
                       req.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                         sess.setAttribute("maxlogsdays", null);
                         displayView( req, res, sess );
                     } else {
                         sess.setAttribute("maxlogsdays", maxlogsdays);
-                        String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.engineMessage.olderThan.label",
-                                                           jParams, jParams.getLocale());
+                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.engineMessage.olderThan.label",
+                                                           jParams.getLocale());
                         buf.append(" ").append(dspMsg).append(" ");
                         buf.append(maxlogsdays.toString());
-                        dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.engineMessage.days.label",
-                                                           jParams, jParams.getLocale());
+                        dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.engineMessage.days.label",
+                                                           jParams.getLocale());
                         buf.append(" ").append(dspMsg);
                         sess.setAttribute(CLASS_NAME + "jahiaDisplayMessage",  jahiaDisplayMessage);
                         req.setAttribute("engineMessage", buf.toString());
@@ -471,14 +471,14 @@ public class ManageLogs extends AbstractAdministrationModule {
                     }
                 }
                 catch (ClassCastException cce) {
-                  String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestNotFulfilled.label",
-                                                     jParams, jParams.getLocale());
+                  String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestNotFulfilled.label",
+                                                     jParams.getLocale());
                   req.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     displayView( req, res, sess );
                 }
                 catch (NumberFormatException nfe) {
-                  String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.numberDaysInvalid.label",
-                                                     jParams, jParams.getLocale());
+                  String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.numberDaysInvalid.label",
+                                                     jParams.getLocale());
                   req.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     displayView( req, res, sess );
                 }

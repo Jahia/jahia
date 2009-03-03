@@ -36,7 +36,7 @@ package org.jahia.taglibs.internal.i18n;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.data.JahiaData;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
@@ -92,11 +92,10 @@ public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
      */
     private String getAdminMessage(String resourceName, JahiaData jData, Locale currentLocale) {
         if (jData != null) {
-            return JahiaResourceBundle.getAdminResource(resourceName, jData.getProcessingContext(), jData.getProcessingContext().getLocale());
+            return JahiaResourceBundle.getJahiaInternalResource(resourceName, jData.getProcessingContext().getLocale());
         } else {
             // for any reason the jData wasn't loaded correctly
-            ResourceBundle resBundle = JahiaResourceBundle.getAdminDefaultResourceBundle(null, currentLocale);
-            return JahiaResourceBundle.getString(resBundle, resourceName, currentLocale);
+            return JahiaResourceBundle.getJahiaInternalResource(resourceName, currentLocale);
         }
     }
 

@@ -36,7 +36,7 @@ package org.jahia.services.fields;
 import org.jahia.data.ConnectionTypes;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.version.ActivationTestResults;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntrySaveRequest;

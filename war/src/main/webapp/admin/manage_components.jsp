@@ -38,7 +38,7 @@
 <%@page import   = "java.util.*,org.jahia.data.applications.*" %>
 <%@page import   = "java.util.*,org.jahia.services.sites.*" %>
 <%@page import   = "java.util.*,org.jahia.registries.*" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@page import="org.jahia.utils.JahiaTools" %>
 <%
@@ -186,7 +186,7 @@ stretcherToOpen   = 0; %>
                         String url = jData.gui().html().drawUpdateApplicationLauncher(app);
                         if ( url.equals("") ){
                             url = "alert('" +
-                                JahiaTools.html2text(JahiaResourceBundle.getAdminResource("org.jahia.admin.components.ManageComponents.noRightToEdit.label", jParams, jParams.getLocale())) +
+                                JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.components.ManageComponents.noRightToEdit.label", jParams.getLocale())) +
                                   "')";
                         }
                         %>

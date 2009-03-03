@@ -739,8 +739,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                 buf.append("<a class=\"previousLink\" href=\"");
                 buf.append(url);
                 buf.append("\">");
-                final String title = resolveTitle("Previous", getBundleKey(), "pagination.previousButton",
-                        getProcessingContext().getLocale());
+                final String title = getMessage("pagination.previousButton", "Previous"
+                );
                 buf.append(title);
                 buf.append("</a>");
             }
@@ -760,8 +760,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                 buf.append("<a class=\"nextLink\" href=\"");
                 buf.append(url);
                 buf.append("\">");
-                final String title = resolveTitle("Next", getBundleKey(), "pagination.nextButton",
-                        getProcessingContext().getLocale());
+                final String title = getMessage("pagination.nextButton", "Next"
+                );
                 buf.append(title);
                 buf.append("</a>");
             }

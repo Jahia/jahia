@@ -35,7 +35,7 @@ package org.jahia.services.content.nodetypes;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.api.Constants;
 import org.apache.commons.collections.map.ListOrderedMap;

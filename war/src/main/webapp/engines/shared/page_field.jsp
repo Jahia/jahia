@@ -48,7 +48,7 @@
 <%@ page import="org.jahia.params.ParamBean" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ page import="org.jahia.services.acl.JahiaACLManagerService" %>
 <%@ page import="org.jahia.services.acl.JahiaBaseACL" %>
 <%@ page import="org.jahia.services.content.nodetypes.ExtendedNodeDefinition" %>
@@ -82,8 +82,8 @@
                 jParams.getPageID() + "&key=" + contentObject.getObjectKey();
 
         String serverURL = actionURL + "&displayDialog=true";
-        String dialogTitle = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dialogTitle",
-                jParams, jParams.getLocale(), "Informational");
+        String dialogTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dialogTitle",
+                jParams.getLocale(), "Informational");
         StringBuffer cmdBuffer = new StringBuffer("handleTimeBasedPublishing(event,'");
         cmdBuffer.append(serverURL).append("','");
         cmdBuffer.append(contentObject.getObjectKey()).append("',").append("'/op/edit/pid/")

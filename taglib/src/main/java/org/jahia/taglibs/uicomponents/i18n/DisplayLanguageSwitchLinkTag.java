@@ -152,7 +152,7 @@ public class DisplayLanguageSwitchLinkTag extends AbstractJahiaTag {
                 if (isRedirectToHomePageActivated) {
                     titleKey += "." + onLanguageSwitch;
                 }
-                buff.append(resolveTitle(title, getBundleKey(), titleKey, jParams.getLocale()));
+                buff.append(getMessage(titleKey, title));
                 buff.append("'>");
             } else {
                 buff.append("<span>");

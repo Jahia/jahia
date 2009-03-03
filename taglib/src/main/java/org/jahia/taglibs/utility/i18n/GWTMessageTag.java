@@ -64,7 +64,7 @@ public class GWTMessageTag extends AbstractJahiaTag {
 
     public int doStartTag() {
         // add message to the jahia_gwt_dictionary
-        addGwtDictionaryMessage(aliasResourceName != null ? aliasResourceName : resourceName, getResourceValue(resourceName, getProcessingContext()));       
+        addGwtDictionaryMessage(aliasResourceName != null ? aliasResourceName : resourceName, getMessage(resourceName));       
         return SKIP_BODY;
     }
 

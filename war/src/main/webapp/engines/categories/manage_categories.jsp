@@ -42,7 +42,7 @@
 <%@ page import="javax.swing.tree.TreePath" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.HashMap" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle"%>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 
 <%

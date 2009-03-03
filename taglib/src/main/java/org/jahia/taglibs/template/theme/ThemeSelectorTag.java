@@ -152,7 +152,7 @@ public class ThemeSelectorTag extends AbstractJahiaTag {
                         buff.append(" selected=\"selected\"");
                     }
                     buff.append(">");
-                    buff.append(getI18n().get("theme." + theme, theme));
+                    buff.append(getMessage(theme, "theme." + theme));
                     buff.append("</option>");
                 }
                 buff.append("</select>");

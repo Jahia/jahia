@@ -50,7 +50,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.ACLResource;
 import org.jahia.services.categories.Category;
 import org.jahia.services.usermanager.JahiaUser;
@@ -539,9 +539,9 @@ public class CategoriesEdit_Engine implements JahiaEngine {
                     categoryTemporaryBean.getProperties().remove(propertyToDelete);
                 }
 
-                String dspMsg = JahiaResourceBundle.getAdminResource(
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.JahiaDisplayMessage.changeCommitted.label",
-                    jParams, jParams.getLocale());
+                    jParams.getLocale());
                 processingContext.setAttribute("jahiaDisplayMessage", dspMsg);
             }
             return true;
@@ -590,9 +590,9 @@ public class CategoriesEdit_Engine implements JahiaEngine {
                 return false;
             }
             if (Category.getCategory(categoryKey, processingContext.getUser()) != null) {
-                String dspMsg = JahiaResourceBundle.getAdminResource(
+                String dspMsg = JahiaResourceBundle.getJahiaInternalResource(
                     "org.jahia.admin.categories.ManageCategories.editCategory.categoryAlreadyExists.label",
-                    processingContext, processingContext.getLocale());
+                    processingContext.getLocale());
                 processingContext.getSessionState().setAttribute(JahiaAdministration.CLASS_NAME +
                                      "jahiaDisplayMessage", dspMsg);
                 return false;

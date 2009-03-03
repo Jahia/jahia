@@ -70,7 +70,7 @@ import org.jahia.gui.GuiBean;
 import org.jahia.gui.HTMLToolBox;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
@@ -347,7 +347,7 @@ public class GetMenuItemsAction extends AjaxAction {
                 //check for the key and postfix without warnings
                 String name = "";
                 try {
-                    name = JahiaResourceBundle.getString(ResourceBundle.getBundle(resourceBundle, locale), curActionURIBean.getName() + namePostFix, locale);
+                    name = ResourceBundle.getBundle(resourceBundle, locale).getString(curActionURIBean.getName() + namePostFix);
                 } catch (MissingResourceException mre) {
                     name = null;
                 }

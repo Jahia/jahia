@@ -47,7 +47,7 @@ import org.jahia.services.containers.ContentContainerList;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.params.ProcessingContext;
 import org.jahia.content.ContentObject;
 import org.jahia.bin.Jahia;
@@ -76,7 +76,7 @@ public class ACLHelper {
         Map<String, String> labels = new HashMap<String, String>();
         for (List<String> list : gwtacl.getAvailablePermissions().values()) {
             for (String s : list) {
-                labels.put(s, JahiaResourceBundle.getEngineResource("org.jahia.engines.rights.ManageRights." + s + ".label", jParams, jParams.getLocale(), s));
+                labels.put(s, JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.rights.ManageRights."+s+".label", jParams.getLocale(), s));
             }
         }
         gwtacl.setPermissionLabels(labels);

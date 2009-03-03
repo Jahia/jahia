@@ -66,7 +66,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
@@ -1212,7 +1212,7 @@ public class NStepWorkflow implements ExternalWorkflow {
 
     public String localize(String messageKey, Locale locale) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("nstep-workflowResources", locale);
-        return resourceBundle != null ? JahiaResourceBundle.getString(resourceBundle, messageKey, messageKey) : null;
+        return resourceBundle != null ? resourceBundle.getString(messageKey) : null;
     }
 
     public static boolean isValidationNeededForAction(String action) {

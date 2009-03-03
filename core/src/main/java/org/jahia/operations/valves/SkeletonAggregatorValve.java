@@ -210,12 +210,7 @@ public class SkeletonAggregatorValve implements Valve {
                     //                            logger.debug ("Found HTML page in cache!!!!!!!!!!!!!!!!!!");
                     watch.start("cacheEntry.getContentBody()");
                     SkeletonCacheEntry htmlEntry = (SkeletonCacheEntry) cacheEntry.getObject();
-                    Source htmlContent = htmlEntry.getSource();
-                    if(htmlContent == null) {
-                        logger.debug("Getting HTML content from skeleton entry instead of source") ;
-                        htmlContent = new Source(htmlEntry.getContentBody());
-                        htmlEntry.setSource(htmlContent);
-                    }
+                    Source htmlContent = new Source(htmlEntry.getContentBody());
                     watch.stop();
 
                     if (!cacheEntry.getOperationMode().equals(processingContext.getOperationMode())) {

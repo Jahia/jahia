@@ -29,21 +29,14 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 --%><%@ page language="java" %>
+<%@ page import="org.displaytag.tags.TableTagParameters" %>
+<%@ page import="org.displaytag.util.ParamEncoder" %>
+<%@ page import="org.jahia.data.JahiaData" %>
 <%@ page import="org.jahia.data.applications.ApplicationBean" %>
 <%@ page import="org.jahia.data.applications.EntryPointDefinition" %>
 <%@ page import="org.jahia.data.applications.PortletEntryPointDefinition" %>
-<%@ page import="org.jahia.data.fields.JahiaField" %>
-<%@ page import="org.jahia.data.JahiaData" %>
-<%@ page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
-<%@ page import="org.jahia.engines.shared.Application_Field" %>
-<%@ page import="org.jahia.params.ParamBean" %>
-<%@ page import="org.jahia.registries.ServicesRegistry" %>
-<%@ page import="org.jahia.services.sites.JahiaSite" %>
-<%@ page import="org.jahia.resourcebundle.*" %>
-<%@ page import="java.security.Principal" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.displaytag.tags.*" %>
-<%@ page import="org.displaytag.util.*" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@taglib uri="http://displaytag.sf.net" prefix="display"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
@@ -52,9 +45,9 @@
 <%
 		//get resource bundle
 		JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
- 		String titleNameColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label",jData.getProcessingContext(),jData.getProcessingContext().getLocale());
- 		String titleContextColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletContextColumnTitle.label",jData.getProcessingContext(),jData.getProcessingContext().getLocale());
- 		String titleDescriptionColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label",jData.getProcessingContext(),jData.getProcessingContext().getLocale());
+ 		String titleNameColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label",jData.getProcessingContext().getLocale());
+ 		String titleContextColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletContextColumnTitle.label",jData.getProcessingContext().getLocale());
+ 		String titleDescriptionColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label",jData.getProcessingContext().getLocale());
 
  		// data for display tag
  		String tableId = "porltet_webapps";
@@ -247,7 +240,7 @@
 				}
 
 				if(description == null || description.equals("")){
-						description = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label",jData.getProcessingContext(),jData.getProcessingContext().getLocale());;
+						description = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label",jData.getProcessingContext().getLocale());;
 				}
 				String contextName = currentAppBean.getName();
 				boolean isSelected = (appID == currentAppBean.getID() && name.equals(selectedEntryPointDefName)) || (appID == -1 && counter == 0);

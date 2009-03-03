@@ -42,7 +42,7 @@
 <%@ page import="org.jahia.engines.calendar.*" %>
 <%@ page import="org.jahia.views.engines.versioning.pages.PagesVersioningViewHelper" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle"%>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle"%>
 
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 
@@ -204,7 +204,7 @@
       <%
       // Restore specific
       final int restoreVersionID = (int) (pagesVersViewHelper.getRestoreDateCalendar().getDateLong().longValue() / 1000);
-      final String title = JahiaResourceBundle.getEngineResource("org.jahia.engines.pages.PageProperties_Engine.pageTitle.label", jParams, jParams.getLocale());
+      final String title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.pages.PageProperties_Engine.pageTitle.label", jParams.getLocale());
       final String entryPoint = jParams.getContentPage().getObjectKey().toString();
       %>
     </div>

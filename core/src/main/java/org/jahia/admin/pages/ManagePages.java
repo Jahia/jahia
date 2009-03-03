@@ -57,7 +57,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
@@ -256,8 +256,8 @@ public class ManagePages extends AbstractAdministrationModule {
 
                 // check form validity...
                 if (idPageString.equals("0")) {
-                    String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.choicePage.label",
-                            jParams, jParams.getLocale());
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.choicePage.label",
+                            jParams.getLocale());
                     session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                     logger.debug("processPagesSettings: " + dspMsg);
                     idTemplate = 0;
@@ -284,12 +284,12 @@ public class ManagePages extends AbstractAdministrationModule {
                                     .indexPage(page.getID(), jParams.getUser());
                             */
 
-                            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.changeUpdated.label",
-                                    jParams, jParams.getLocale());
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.changeUpdated.label",
+                                    jParams.getLocale());
                             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                         } else {
-                            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.choiceTemplate.label",
-                                    jParams, jParams.getLocale());
+                            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.choiceTemplate.label",
+                                    jParams.getLocale());
                             session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
                         }
                     } catch (NumberFormatException nfe) {
@@ -314,8 +314,8 @@ public class ManagePages extends AbstractAdministrationModule {
             displayPagesSettings(request, response, session);
 
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+                    jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,

@@ -11,9 +11,9 @@
 <ui:rssButton targetURL=""/>
 <ui:subscribeButton source=""/>
 <ui:mediaGallery name="" inputName=""/>
+<s:date/>
 <s:created/>
 <s:createdBy/>
-<s:date/>
 <s:documentProperty documentType="" name=""/>
 <s:documentType/>
 <s:fileLocation/>

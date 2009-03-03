@@ -51,7 +51,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaContainerManager;
 import org.jahia.hibernate.manager.JahiaFieldsDataManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.sites.JahiaSite;

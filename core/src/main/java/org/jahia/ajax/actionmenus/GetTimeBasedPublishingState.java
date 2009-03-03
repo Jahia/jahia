@@ -43,7 +43,7 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 import org.jahia.content.ObjectKey;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -185,7 +185,7 @@ public class GetTimeBasedPublishingState extends AjaxAction {
             //statusLabel = "unknown";
             statusLabel = "org.jahia.pix.image";
         }
-        final String imagePath = JahiaResourceBundle.getUrlPathCommonResource(statusLabel, jParams);
+        final String imagePath = JahiaResourceBundle.getJahiaInternalResource(statusLabel, jParams.getLocale());
 
         if (logger.isDebugEnabled()) {
             logger.debug("imagePath: " + imagePath);
@@ -230,16 +230,16 @@ public class GetTimeBasedPublishingState extends AjaxAction {
         }
         if (jahiaObjectDelegate != null) {
 
-            String statusLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.timebBasedPublishingStatus.label",
-                    jParams, jParams.getLocale(), "Time Based Publishing Status");
-            String currentStatusLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.currentstatus.label",
-                    jParams, jParams.getLocale(), "Current status");
-            String schedulingTypeLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.schedulingType.label",
-                    jParams, jParams.getLocale(), "Scheduling type");
-            String publicationDateLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.rangerule.validFrom.label",
-                    jParams, jParams.getLocale(), "Publication date");
-            String expirationDateLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.rangerule.validTo.label",
-                    jParams, jParams.getLocale(), "Publication date");
+            String statusLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.timebBasedPublishingStatus.label",
+                    jParams.getLocale(), "Time Based Publishing Status");
+            String currentStatusLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.currentstatus.label",
+                    jParams.getLocale(), "Current status");
+            String schedulingTypeLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.schedulingType.label",
+                    jParams.getLocale(), "Scheduling type");
+            String publicationDateLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.rangerule.validFrom.label",
+                    jParams.getLocale(), "Publication date");
+            String expirationDateLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.rangerule.validTo.label",
+                    jParams.getLocale(), "Publication date");
             String publicationDateValue = "";
             String expirationDateValue = "";
             String statusValueLabel = "";
@@ -267,7 +267,7 @@ public class GetTimeBasedPublishingState extends AjaxAction {
                 } else {
                     statusCode = 1;
                 }
-                statusValueLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.timebpstatus." + statusCode + ".label", jParams, jParams.getLocale(), "");
+                statusValueLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.timebpstatus." + statusCode + ".label", jParams.getLocale(), "");
                 if (statusValueLabel == null || "".equals(statusValueLabel)) {
                     if (statusCode == 0) {
                         statusValueLabel = "expired";
@@ -285,8 +285,8 @@ public class GetTimeBasedPublishingState extends AjaxAction {
                 } catch (Exception t) {
                     //
                 }
-                schedulingType = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.schedulingType."
-                                + schedulingType, jParams, jParams.getLocale(), schedulingType);
+                schedulingType = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.schedulingType."
+                                + schedulingType, jParams.getLocale(), schedulingType);
 
                 Format formater = JahiaDateFieldUtil.getDateFormat(
                         CalendarHandler.DEFAULT_DATE_FORMAT, jParams.getLocale());
@@ -296,8 +296,8 @@ public class GetTimeBasedPublishingState extends AjaxAction {
                     cal.setTimeInMillis(dateLong - clientTimeZoneDiff);
                     publicationDateValue = formater.format(cal.getTime());
                 } else {
-                    publicationDateValue = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dateNotAssigned",
-                            jParams, jParams.getLocale(), "not assigned");
+                    publicationDateValue = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dateNotAssigned",
+                            jParams.getLocale(), "not assigned");
                 }
 
                 dateLong = jahiaObjectDelegate.getValidToDate();
@@ -306,8 +306,8 @@ public class GetTimeBasedPublishingState extends AjaxAction {
                     cal.setTimeInMillis(dateLong - clientTimeZoneDiff);
                     expirationDateValue = formater.format(cal.getTime());
                 } else {
-                    expirationDateValue = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dateNotAssigned",
-                            jParams, jParams.getLocale(), "not assigned");
+                    expirationDateValue = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dateNotAssigned",
+                            jParams.getLocale(), "not assigned");
                 }
 
             }

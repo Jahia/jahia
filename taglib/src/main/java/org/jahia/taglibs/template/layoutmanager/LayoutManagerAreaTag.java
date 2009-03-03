@@ -37,7 +37,7 @@ import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.params.ProcessingContext;
 import org.jahia.data.JahiaData;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.http.HttpServletRequest;
@@ -135,11 +135,10 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
         try {
 
             if (jData != null) {
-                resValue = JahiaResourceBundle.getEngineResource(key, jData.getProcessingContext(), jData.getProcessingContext().getLocale());
+                resValue = JahiaResourceBundle.getJahiaInternalResource(key, jData.getProcessingContext().getLocale());
             } else {
                 // for any reason the jData wasn't loaded correctly
-                ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(null, currentLocale);
-                resValue = JahiaResourceBundle.getString(resBundle, key, currentLocale);
+                resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);
             }
         } catch (MissingResourceException mre) {
             logger.error(mre.toString(), mre);

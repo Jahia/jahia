@@ -40,7 +40,7 @@
 <%@page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
 <%@page import="org.jahia.services.mail.MailHelper" %>
 <%@page import="org.jahia.params.ProcessingContext" %>
-<%@page import="org.jahia.resourcebundle.JahiaResourceBundle" %>
+<%@page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@page import="org.jahia.services.usermanager.JahiaUser,org.jahia.services.usermanager.UserProperties,org.jahia.services.usermanager.UserProperty" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.security.Principal" %>

@@ -64,7 +64,7 @@ import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.PortletEntryPointDefinition;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
@@ -1121,7 +1121,7 @@ public class FileManagerWorker {
                 if (k.contains(":")) {
                     k = k.substring(k.indexOf(':') + 1);
                 }
-                labels.put(s, JahiaResourceBundle.getEngineResource("org.jahia.engines.rights.ManageRights." + k + ".label", jParams, jParams.getLocale(), k));
+                labels.put(s, JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.rights.ManageRights." + k + ".label", jParams.getLocale(), k));
             }
         }
         acl.setPermissionLabels(labels);

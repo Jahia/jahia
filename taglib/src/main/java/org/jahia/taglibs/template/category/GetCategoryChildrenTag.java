@@ -161,7 +161,7 @@ public class GetCategoryChildrenTag extends AbstractJahiaTag {
 
             } else {
                 if (messageKey != null && messageKey.length() > 0) {
-                    out.println(getI18nMessage(messageKey));
+                    out.println(getMessage(messageKey));
                 } else {
                     out.println("N/A");
                 }

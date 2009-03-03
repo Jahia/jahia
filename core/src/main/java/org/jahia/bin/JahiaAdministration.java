@@ -77,7 +77,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.CommonDaysLeftValidator;
 import org.jahia.security.license.License;
 import org.jahia.security.license.LicenseConstants;

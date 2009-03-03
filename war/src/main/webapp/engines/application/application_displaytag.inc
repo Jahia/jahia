@@ -33,9 +33,9 @@
 <%@ page import="org.jahia.engines.applications.*" %>
 <%@ page import="org.jahia.data.applications.EntryPointDefinition" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.jahia.resourcebundle.*" %>
 <%@ page import="org.displaytag.tags.*" %>
 <%@ page import="org.displaytag.util.*" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <%@ taglib uri="http://displaytag.sf.net" prefix="display" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <utility:setBundle basename="JahiaInternalResources"/>
@@ -75,9 +75,9 @@
 <%
 //get resource bundle
 //JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-String titleNameColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
-String titleDescriptionColumn = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
-String defaultDescription = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label", jData.getProcessingContext(), jData.getProcessingContext().getLocale());
+String titleNameColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNameColumnTitle.label", jData.getProcessingContext().getLocale());
+String titleDescriptionColumn = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletDescriptionColumnTitle.label", jData.getProcessingContext().getLocale());
+String defaultDescription = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field_displyTag.portletNoDescription.label", jData.getProcessingContext().getLocale());
 
 // portlet data
 List definitions = theTempoApplicationBean.getEntryPointDefinitions();

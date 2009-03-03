@@ -48,7 +48,9 @@ import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
-import org.jahia.resourcebundle.ResourceBundleService;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.bin.Jahia;
 
 /**
  * Template packages registry service.
@@ -137,12 +139,6 @@ class TemplatePackageRegistry {
     private List<JahiaTemplatesPackage> templatePackages;
 
     private Timer watcherScheduler;
-
-    private ResourceBundleService resourceBundleService;
-
-    public void setResourceBundleService(ResourceBundleService resourceBundleService) {
-        this.resourceBundleService = resourceBundleService;
-    }
 
     /**
      * Builds a template package hierarchy, resolving inheritance.
@@ -264,14 +260,6 @@ class TemplatePackageRegistry {
             }
         }
         String bundleName = templatePackage.getResourceBundleName();
-        if (bundleName != null) {
-            try {
-            String key = bundleName.substring(bundleName.lastIndexOf('.')+1).toUpperCase();
-            resourceBundleService.declareResourceBundleDefinition(key, bundleName);
-            } catch (Exception e) {
-                logger.warn("Cannot declare resource bundle for "+templatePackage.getName(),e);
-            }
-        }
     }
 
     public void unregister(JahiaTemplatesPackage templatePackage) {

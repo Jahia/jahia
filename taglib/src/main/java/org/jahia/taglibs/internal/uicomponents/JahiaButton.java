@@ -35,7 +35,7 @@
 
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.JahiaTools;
@@ -177,14 +177,12 @@ public class JahiaButton extends AbstractJahiaTag {
         String bImageOn = "";
         try {
             bImageOff = parseResourceValue(
-                JahiaResourceBundle.getEngineResource("org.jahia." + img +
+                JahiaResourceBundle.getJahiaInternalResource("org.jahia." + img +
                 "Off.button",
-                jData.getProcessingContext(),
                 jData.getProcessingContext().getLocale()), jData.getProcessingContext());
             bImageOn = parseResourceValue(
-                JahiaResourceBundle.getEngineResource("org.jahia." + img +
+                JahiaResourceBundle.getJahiaInternalResource("org.jahia." + img +
                 "On.button",
-                jData.getProcessingContext(),
                 jData.getProcessingContext().getLocale()), jData.getProcessingContext());
 
         } catch (MissingResourceException mre) {
@@ -192,8 +190,6 @@ public class JahiaButton extends AbstractJahiaTag {
                          img, mre);
         }
 
-        // FIXME : Why does the "JahiaResourceBundle.getEngineResource" method
-        // return a null String when resource is not found ????
         if (bImageOff == null) {
             bImageOff = "";
         }
@@ -207,9 +203,9 @@ public class JahiaButton extends AbstractJahiaTag {
 
         // now let's resolve the alt text if resource bundle keys are being used.
         if (altKey != null) {
-            alt = JahiaResourceBundle.getResource(altBundle, altKey,
+            alt = JahiaResourceBundle.getString(altBundle, altKey,
                                                   jData.getProcessingContext().getLocale(),
-                                                  jData.getProcessingContext());
+                                                  jData.getProcessingContext().getSiteID());
         }
 
         // Produce the HTML code

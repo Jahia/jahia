@@ -47,7 +47,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.hibernate.model.JahiaAclName;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.hibernate.model.JahiaAclEntryPK;
@@ -140,8 +140,7 @@ public class ManageSitePermissions extends AbstractAdministrationModule {
             request.setAttribute("siteID", Integer.valueOf(jParams.getSiteID()));
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "permissions/site_permissions.jsp");
         } catch (JahiaException je) {
-            String dspMsg = JahiaResourceBundle.getAdminResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                    jParams, jParams.getLocale());
+            String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",jParams.getLocale());
             request.setAttribute("jahiaDisplayMessage", dspMsg);
             JahiaAdministration.doRedirect(request,
                     response,

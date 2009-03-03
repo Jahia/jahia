@@ -67,7 +67,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.registries.EnginesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.audit.LoggingEventListener;
 import org.jahia.services.containers.ContentContainer;
@@ -1167,9 +1167,9 @@ public class UpdateContainer_Engine implements JahiaEngine {
         // sets engineMap for JSPs
         engineMap.put(AddContainer_Engine.ENGINE_NAME + "." + "fieldForms", new HashMap());
         jParams.setAttribute("engineTitle", JahiaResourceBundle
-                .getEngineResource(
+                .getJahiaInternalResource(
                         "org.jahia.engines.updatecontainer.UpdateContainer_Engine.updateContainer.label",
-                        jParams, elh.getCurrentLocale()));
+                        elh.getCurrentLocale()));
         jParams.setAttribute("org.jahia.engines.EngineHashMap",
                 engineMap);
 

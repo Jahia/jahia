@@ -53,7 +53,7 @@ import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.mail.MailSettings;
 import org.jahia.services.notification.Subscription;
@@ -338,19 +338,10 @@ public class SubscribeAction extends AjaxDispatchAction {
                     ProcessingContext.SESSION_LOCALE);
             locale = locale != null ? locale : request.getLocale();
 
-            ResourceBundle resourceBundle = JahiaResourceBundle
-                    .getAdminDefaultResourceBundle(null, locale);
+            ResourceBundle resourceBundle = new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES,locale);
 
-            String subject = JahiaResourceBundle
-                    .getString(
-                            resourceBundle,
-                            "org.jahia.admin.server.ManageServer.testSettings.mailSubject",
-                            "Test message");
-            String text = JahiaResourceBundle
-                    .getString(
-                            resourceBundle,
-                            "org.jahia.admin.server.ManageServer.testSettings.mailText",
-                            "Test message");
+            String subject = resourceBundle.getString("org.jahia.admin.server.ManageServer.testSettings.mailSubject");
+            String text = resourceBundle.getString("org.jahia.admin.server.ManageServer.testSettings.mailText");
 
             sendEmail(host, from, to, subject, text);
 

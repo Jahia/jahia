@@ -54,7 +54,7 @@ import org.jahia.params.BasicURLGeneratorImpl;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.URLGenerator;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.pages.*;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
@@ -505,8 +505,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
         GWTJahiaPageWrapper wPage = new GWTJahiaPageWrapper();
         wPage.setTitle(jPage.getTitle());
         if (wPage.getTitle() == null || wPage.getTitle().length() == 0) {
-            ResourceBundle resBundle = JahiaResourceBundle.getEngineDefaultResourceBundle(jParams, jParams.getLocale());
-            wPage.setTitle(JahiaResourceBundle.getString(resBundle, "org.jahia.engines.workflow.display.notitle", jParams.getLocale()));
+            wPage.setTitle(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale()));
         }
         wPage.setLocked(jPage.getLanguagesStates(false).containsValue(EntryLoadRequest.WAITING_WORKFLOW_STATE));
         wPage.setPid(jPage.getID());
@@ -719,7 +718,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
 
     public static List<Locale> getAvailableBundleLocales() {
         return LanguageCodeConverters.getAvailableBundleLocales(
-                JahiaResourceBundle.MESSAGE_DEFAULT_RESOURCE_BUNDLE, null);
+                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null);
     }
 
     public static List<GWTJahiaBasicDataBean> getAvailableBundleLanguageBeans() {

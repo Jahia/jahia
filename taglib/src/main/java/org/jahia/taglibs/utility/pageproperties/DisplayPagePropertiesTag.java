@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 /**
  * @author Xavier Lawrence
@@ -73,7 +74,7 @@ public class DisplayPagePropertiesTag extends AbstractJahiaTag {
             final ProcessingContext jParams = jData.getProcessingContext();
             final ContentPage thePage = jParams.getContentPage();
             final StringBuilder buff = new StringBuilder(256);
-            I18nBean i18n = getI18n();
+            ResourceBundle i18n = retrieveResourceBundle();
 
             final SimpleDateFormat sdf;
             if (dateFormat == null || dateFormat.length() == 0) {
@@ -84,19 +85,19 @@ public class DisplayPagePropertiesTag extends AbstractJahiaTag {
 
             buff.append("<ul>\n");
             buff.append("<li class=\"pageID\">");
-            buff.append(i18n.get("pageproperty.pageID"));
+            buff.append(i18n.getString("pageproperty.pageID"));
             buff.append(": ");
             buff.append(thePage.getID());
             buff.append("</li>\n");
 
             buff.append("<li class=\"author\">");
-            buff.append(i18n.get("pageproperty.author"));
+            buff.append(i18n.getString("pageproperty.author"));
             buff.append(": ");
             buff.append(thePage.getMetadataValue(CoreMetadataConstant.CREATOR, jParams, ""));
             buff.append("</li>\n");
 
             buff.append("<li class=\"creationDate\">");
-            buff.append(i18n.get("pageproperty.creationDate"));
+            buff.append(i18n.getString("pageproperty.creationDate"));
             buff.append(": ");
             final Date creationDate = thePage.getMetadataAsDate(CoreMetadataConstant.CREATION_DATE, jParams);
             if (creationDate != null) {
@@ -107,13 +108,13 @@ public class DisplayPagePropertiesTag extends AbstractJahiaTag {
             buff.append("</li>\n");
 
             buff.append("<li class=\"lastModifier\">");
-            buff.append(i18n.get("pageproperty.lastModifier"));
+            buff.append(i18n.getString("pageproperty.lastModifier"));
             buff.append(": ");
             buff.append(thePage.getMetadataValue(CoreMetadataConstant.LAST_CONTRIBUTOR, jParams, ""));
             buff.append("</li>\n");
 
             buff.append("<li class=\"lastModificationDate\">");
-            buff.append(i18n.get("pageproperty.lastModificationDate"));
+            buff.append(i18n.getString("pageproperty.lastModificationDate"));
             buff.append(": ");
             final Date lastModifDate = thePage.getMetadataAsDate(CoreMetadataConstant.LAST_MODIFICATION_DATE, jParams);
             if (lastModifDate != null) {
@@ -124,13 +125,13 @@ public class DisplayPagePropertiesTag extends AbstractJahiaTag {
             buff.append("</li>\n");
 
             buff.append("<li class=\"lastPublisher\">");
-            buff.append(i18n.get("pageproperty.lastPublisher"));
+            buff.append(i18n.getString("pageproperty.lastPublisher"));
             buff.append(": ");
             buff.append(thePage.getMetadataValue(CoreMetadataConstant.LAST_PUBLISHER, jParams, ""));
             buff.append("</li>\n");
 
             buff.append("<li class=\"lastPublicationDate\">");
-            buff.append(i18n.get("pageproperty.lastPublicationDate"));
+            buff.append(i18n.getString("pageproperty.lastPublicationDate"));
             buff.append(": ");
             final Date lastPublishDate = thePage.getMetadataAsDate(CoreMetadataConstant.LAST_PUBLISHING_DATE, jParams);
             if (lastPublishDate != null) {
@@ -141,7 +142,7 @@ public class DisplayPagePropertiesTag extends AbstractJahiaTag {
             buff.append("</li>\n");
 
             buff.append("<li class=\"urlKey\">");
-            buff.append(i18n.get("pageproperty.urlKey"));
+            buff.append(i18n.getString("pageproperty.urlKey"));
             buff.append(": ");
             buff.append(getURLKey(thePage));
             buff.append("</li>\n");

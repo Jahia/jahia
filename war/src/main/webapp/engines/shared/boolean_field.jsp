@@ -38,7 +38,7 @@
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.util.*" %>
 <%@page import="org.jahia.data.fields.ExpressionMarker"%>
-<%@page import="org.jahia.resourcebundle.ResourceBundleMarker"%>
+<%@page import="org.jahia.utils.i18n.ResourceBundleMarker"%>
 <%@page import="org.jahia.params.ProcessingContext"%>
 <%@page import="org.jahia.data.JahiaData"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>

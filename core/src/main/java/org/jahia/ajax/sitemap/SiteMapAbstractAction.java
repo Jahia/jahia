@@ -47,7 +47,7 @@ import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.fields.ContentSmallTextField;
 import org.jahia.services.lock.LockKey;
@@ -250,16 +250,15 @@ public abstract class SiteMapAbstractAction extends AjaxAction {
         if (!page.isAvailable()) {
             final String labelResourceName = "org.jahia.engines.timebasedpublishing.timebpstatus." +
                     page.getTimeBasedPublishingState() + ".label";
-            pageTitle1 += " (" + JahiaResourceBundle.getEngineResource(labelResourceName, jParams, currentLocale) + ")";
+            pageTitle1 += " (" + JahiaResourceBundle.getJahiaInternalResource(labelResourceName, currentLocale) + ")";
         }
 
         if (isLiveMode && "N.A.".equals(pageTitle1)) return;
         final Element item = resp.createElement("page");
 
         if (moveOp && (String.valueOf(pid).equals(entryPoint))) {
-            pageTitle1 += " (" + JahiaResourceBundle.
-                    getEngineResource("org.jahia.engines.selectpage.SelectPage_Engine.insertionPoint.label",
-                            jParams, currentLocale) + ")";
+            pageTitle1 += " (" + JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.selectpage.SelectPage_Engine.insertionPoint.label",
+                             currentLocale) + ")";
             item.setAttribute("Disable", "Disable");
         }
 
@@ -554,8 +553,8 @@ public abstract class SiteMapAbstractAction extends AjaxAction {
                         jParams.getPageID() + "&key=" + contentObject.getObjectKey();
                 String serverURL = actionURL + "&displayDialog=true";
 
-                String dialogTitle = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dialogTitle",
-                        jParams, jParams.getLocale(), "Informational");
+                String dialogTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dialogTitle",
+                        jParams.getLocale(), "Informational");
                 item.setAttribute("timeBasedPublishingActionURL", serverURL);
                 item.setAttribute("timeBasedPublishingDialogTitle", dialogTitle);
                 item.setAttribute("timeBasedPublishingPageId", String.valueOf(jParams.getPageID()));
@@ -589,7 +588,7 @@ public abstract class SiteMapAbstractAction extends AjaxAction {
             }
             // Moved page
             if ((contentPage.hasSameParentID() != ContentPage.SAME_PARENT) && (contentPage.getParentID(jParams) != parentID)) {
-                pageTitle1 += " (" + JahiaResourceBundle.getEngineResource("org.jahia.moved.label", jParams,
+                pageTitle1 += " (" + JahiaResourceBundle.getJahiaInternalResource("org.jahia.moved.label",
                         LanguageCodeConverters.languageCodeToLocale(languageCode)) + ")";
             }
 

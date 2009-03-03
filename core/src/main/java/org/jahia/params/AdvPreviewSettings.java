@@ -193,8 +193,8 @@ public class AdvPreviewSettings implements Cloneable {
                 .toString();
     }
 
-    public Object clone(){
-        AdvPreviewSettings copy = new AdvPreviewSettings();
+    public Object clone() throws CloneNotSupportedException {        
+        AdvPreviewSettings copy = (AdvPreviewSettings) super.clone();
         copy.setEnabled(this.isEnabled());
         copy.setMainUser(this.getMainUser());
         copy.setAliasedUser(this.getAliasedUser());

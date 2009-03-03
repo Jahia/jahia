@@ -39,7 +39,7 @@ import javax.jcr.PropertyType;
 import javax.jcr.Value;
 
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;

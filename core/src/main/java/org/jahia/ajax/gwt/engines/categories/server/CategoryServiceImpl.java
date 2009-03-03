@@ -53,7 +53,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.gui.GuiBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.data.events.JahiaEvent;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 
 import java.util.*;

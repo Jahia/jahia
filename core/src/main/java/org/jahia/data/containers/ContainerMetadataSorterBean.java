@@ -48,7 +48,7 @@ import org.jahia.hibernate.manager.JahiaContainerManager;
 import org.jahia.hibernate.manager.JahiaFieldsDataManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
-import org.jahia.resourcebundle.ResourceBundleMarker;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTypes;
 import org.jahia.services.pages.ContentPage;

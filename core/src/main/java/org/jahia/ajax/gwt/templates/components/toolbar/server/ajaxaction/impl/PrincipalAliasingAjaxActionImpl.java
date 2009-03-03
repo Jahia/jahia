@@ -71,7 +71,11 @@ public class PrincipalAliasingAjaxActionImpl extends AjaxAction {
             advPreviewSettings = new AdvPreviewSettings();
             advPreviewSettings.setMainUser(jahiaData.getProcessingContext().getUser());
         } else {
-            advPreviewSettings = (AdvPreviewSettings)advPreviewSettings.clone();
+            try {
+                advPreviewSettings = (AdvPreviewSettings)advPreviewSettings.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
         previousEnabledState = advPreviewSettings.isEnabled();
         previousAliasedUser = advPreviewSettings.getAliasedUser();

@@ -35,7 +35,7 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ page import="org.jahia.data.applications.ApplicationBean" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle"%>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle"%>
 <%@ page import="org.jahia.params.ProcessingContext"%>
 <%@ page import="org.jahia.data.fields.JahiaField" %>
 <%@ page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
@@ -61,8 +61,7 @@
     final Iterator appList = (Iterator) engineMap.get("appList");
     final Integer userNameWidth = new Integer(15);
 
-    String appName = JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Application_Field.applicationNotSet.label",
-            jParams, jParams.getLocale());
+    String appName = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Application_Field.applicationNotSet.label", jParams.getLocale());
 
     if (appID != -1) {
         while (appList.hasNext()) {

@@ -36,12 +36,12 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ page import="org.jahia.data.fields.JahiaField" %>
 <%@ page import="org.jahia.params.ParamBean" %>
-<%@ page import="org.jahia.resourcebundle.JahiaResourceBundle"%>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle"%>
 <%@ page import="org.jahia.services.pages.ContentPage" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.util.*" %>
 <%@page import="org.jahia.data.fields.ExpressionMarker"%>
-<%@page import="org.jahia.resourcebundle.ResourceBundleMarker"%>
+<%@page import="org.jahia.utils.i18n.ResourceBundleMarker"%>
 
 <%
     final Boolean isIE = (Boolean) request.getAttribute("isIE");
@@ -183,8 +183,7 @@
     {  
         document.mainForm.elements["_<%=theField.getID()%>"].value = 0;
         document.mainForm.elements["_<%=theField.getID()%>"].focus();
-        alert("<%=JahiaTools.html2text(JahiaResourceBundle.getEngineResource("org.jahia.engines.shared.Float_Field.valueMustBeNumber.label",
-            jParams, jParams.getLocale()))%>");
+        alert("<%=JahiaTools.html2text(JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.shared.Float_Field.valueMustBeNumber.label",jParams.getLocale()))%>");
         return false;
     }
 }

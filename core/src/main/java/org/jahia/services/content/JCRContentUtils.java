@@ -51,7 +51,7 @@ import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -81,9 +81,9 @@ public final class JCRContentUtils {
     }
 
     public static String getDisplayLabel(String nodeName, ProcessingContext ctx) {
-        return JahiaResourceBundle.getEngineResource(
+        return JahiaResourceBundle.getJahiaInternalResource(
                 "org.jahia.services.jcr.types." + cleanUpNodeName(nodeName),
-                ctx, ctx.getLocale(), nodeName);
+                ctx.getLocale(), nodeName);
     }
 
     public static JCRContentUtils getInstance() {

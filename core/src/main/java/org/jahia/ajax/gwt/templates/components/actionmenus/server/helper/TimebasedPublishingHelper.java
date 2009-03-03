@@ -64,19 +64,20 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.resourcebundle.JahiaResourceBundle;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.engines.calendar.CalendarHandler;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
+import java.util.Locale;
 import java.text.Format;
 
 /**
  * Time-based publishing state service.
  *
  * @author rfelden
- * @version 27 févr. 2008 - 14:54:15
+ * @version 27 fï¿½vr. 2008 - 14:54:15
  */
 public class TimebasedPublishingHelper {
 
@@ -302,11 +303,12 @@ public class TimebasedPublishingHelper {
             } else {
                 RetentionRule retRule = tbpService.getRetentionRule(key);
 
-                String statusLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.timebBasedPublishingStatus.label", jParams,jParams.getLocale(),"Time Based Publishing Status");
-                String currentStatusLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.currentstatus.label", jParams,jParams.getLocale(),"Current status");
-                String schedulingTypeLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.schedulingType.label", jParams,jParams.getLocale(),"Scheduling type");
-                String publicationDateLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.rangerule.validFrom.label", jParams,jParams.getLocale(),"Publication date");
-                String expirationDateLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.rangerule.validTo.label", jParams,jParams.getLocale(),"Publication date");
+                final Locale locale = jParams.getLocale();
+                String statusLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.timebBasedPublishingStatus.label", locale,"Time Based Publishing Status");
+                String currentStatusLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.currentstatus.label", locale,"Current status");
+                String schedulingTypeLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.schedulingType.label", locale,"Scheduling type");
+                String publicationDateLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.rangerule.validFrom.label", locale,"Publication date");
+                String expirationDateLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.rangerule.validTo.label", locale,"Publication date");
                 String publicationDateValue = "";
                 String expirationDateValue = "";
                 String statusValueLabel = "";
@@ -333,7 +335,7 @@ public class TimebasedPublishingHelper {
                     } else {
                         statusCode = 1;
                     }
-                    statusValueLabel = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.timebpstatus."+statusCode+".label",jParams,jParams.getLocale(),"");
+                    statusValueLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.timebpstatus."+statusCode+".label", locale,"");
                     if (statusValueLabel == null || "".equals(statusValueLabel)) {
                         if (statusCode == 0) {
                             statusValueLabel = "expired";
@@ -344,21 +346,21 @@ public class TimebasedPublishingHelper {
                         }
                     }
 
-                    schedulingType = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.schedulingType."+schedulingType,jParams,jParams.getLocale(),schedulingType);
+                    schedulingType = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.schedulingType."+schedulingType, locale,schedulingType);
 
                     Long dateLong ;
-                    Format formater = JahiaDateFieldUtil.getDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT, jParams.getLocale());
+                    Format formater = JahiaDateFieldUtil.getDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT, locale);
                     dateLong = jahiaObjectDelegate.getValidFromDate();
                     if ( dateLong != null && dateLong != 0 ){
                         publicationDateValue = formater.format(dateLong);
                     } else {
-                       publicationDateValue = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dateNotAssigned", jParams,jParams.getLocale(),"not assigned");
+                       publicationDateValue = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dateNotAssigned", locale,"not assigned");
                     }
                     dateLong = jahiaObjectDelegate.getValidToDate();
                     if ( dateLong != null && dateLong != 0 ){
                         expirationDateValue = formater.format(dateLong);
                     } else {
-                       expirationDateValue = JahiaResourceBundle.getEngineResource("org.jahia.engines.timebasedpublishing.dateNotAssigned", jParams,jParams.getLocale(),"not assigned");
+                       expirationDateValue = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.timebasedpublishing.dateNotAssigned", locale,"not assigned");
                     }
                 }
                 String objectKey = state.getObjectKey() ;

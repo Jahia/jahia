@@ -187,7 +187,7 @@ public class LuceneResourceForHighLighting extends LuceneResource {
                 jcrName = jahiaField.getValue();
             }
             JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
-                    jcrName.substring(jcrName.lastIndexOf(':') + 1), null);
+                    jcrName.substring(jcrName.lastIndexOf(':') + 1), jParams.getUser());
 
             if (file.isValid()) {
                 JCRFileContent fileContent = file.getFileContent();

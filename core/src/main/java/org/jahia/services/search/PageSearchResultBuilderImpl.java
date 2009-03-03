@@ -265,7 +265,7 @@ public class PageSearchResultBuilderImpl extends
                                         .getInstance().getNodeByUUID(
                                                 jcrName.substring(jcrName
                                                         .lastIndexOf(':') + 1),
-                                                null);
+                                                currentUser);
                                 info.setObject(file);
 
                                 url = file

@@ -7,8 +7,8 @@
         <h3><template:field name='mainContentTitle'/></h3>
 
             <template:field name='mainContentAlign' valueBeanID="mainContentAlign" display="false"/>
-            <template:image file="mainContentImage" cssClassName="${mainContentAlign.defaultValue}"
-                            align="${mainContentAlign.defaultValue}"/>
+            <template:image file="mainContentImage" cssClassName="${mainContentAlign.resource.defaultValue}"
+                            align="${mainContentAlign.resource.defaultValue}"/>
             <template:field name="mainContentBody"/>
     </div>
     <br class="clear"/>

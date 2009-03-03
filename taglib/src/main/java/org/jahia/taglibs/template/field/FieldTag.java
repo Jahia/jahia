@@ -37,12 +37,14 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.TextExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.exoplatform.services.jcr.impl.storage.value.fs.FileValueStorage;
 import org.jahia.ajax.gwt.client.util.EngineOpener;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.data.beans.FieldBean;
+import org.jahia.data.beans.FieldValueBean;
 import org.jahia.data.beans.PageBean;
 import org.jahia.data.beans.ResourceBean;
 import org.jahia.data.fields.FieldTypes;
@@ -69,6 +71,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -95,8 +98,6 @@ public class FieldTag extends AbstractFieldTag {
     private String namePostFix;
     private boolean displayUpdateFieldUrl = false;
     private boolean removeHtmlTags = false;
-
-    //private static long uniqueValue = 0; // used by GWT jahiaType tag.    TODO: see next todo
 
     public void setContainerName(String containerName) {
         this.containerName = containerName;
@@ -221,6 +222,13 @@ public class FieldTag extends AbstractFieldTag {
     }
 
     public int doEndTag() throws JspException {
+        resetState();
+        popTag();
+        return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
         maxChar = -1;
         maxWord = -1;
         continueString = "...";
@@ -235,8 +243,7 @@ public class FieldTag extends AbstractFieldTag {
         namePostFix = null;
         displayUpdateFieldUrl = false;
         removeHtmlTags = false;
-        popTag();
-        return EVAL_PAGE;
+        super.resetState();
     }
 
     /**
@@ -248,7 +255,7 @@ public class FieldTag extends AbstractFieldTag {
      * @return A String containing the HTML value of the field
      */
     protected String readValue(JahiaData jData, JahiaField theField) {
-        final StringBuffer htmlValue = new StringBuffer();
+        final StringBuilder htmlValue = new StringBuilder();
         if (theField == null && (defaultValue == null || defaultValue.length() == 0)) {
             return htmlValue.toString();
         } else if (theField == null) {
@@ -294,83 +301,88 @@ public class FieldTag extends AbstractFieldTag {
         }
 
         if (valueBeanID != null && valueBeanID.length() > 0) {
+            String fieldValue = null;
+            Object rawValue = null;
+            
             switch (theField.getType()) {
                 case FieldTypes.FILE:
-                    final Object jahiaFileField = theField.getObject();
+                    final JahiaFileField jahiaFileField = (JahiaFileField) theField.getObject();
                     if (jahiaFileField != null) {
-                        pageContext.setAttribute(valueBeanID, jahiaFileField);
+                        fieldValue = jahiaFileField.getDownloadUrl();
+                        rawValue = jahiaFileField;
                     }
                     break;
 
                 case FieldTypes.PAGE:
                     final Object page = theField.getObject();
                     if (page != null) {
-                        pageContext.setAttribute(valueBeanID, new PageBean((JahiaPage) page,
-                                jData.getProcessingContext()));
+                        PageBean pageBean = new PageBean((JahiaPage) page,
+                                jData.getProcessingContext());
+                        rawValue =pageBean;
+                        fieldValue = pageBean.getTitle();
                     }
                     break;
 
                 case FieldTypes.DATE:
-                    final SimpleDateFormat fmt = JahiaDateFieldUtil.getDateFormatForParsing(theField.getDefinition().
-                            getDefaultValue(), jData.getProcessingContext().getLocale());
-                    if (theField.getValue() != null
-                            && theField.getValue().length() > 0) {
-                        try {
-                            final Date date = fmt.parse(theField.getValue());
-                            pageContext.setAttribute(valueBeanID, date);
-
-                        } catch (final ParseException pe) {
-                            logger.error("Error parsing date", pe);
-                        }
-                    }
+                    fieldValue = theField.getValue();
+                    rawValue = theField.getObject() != null
+                        && StringUtils.isNotEmpty(theField.getObject()
+                                .toString()) ? new Date(Long.parseLong(theField
+                        .getObject().toString())) : null;
                     break;
 
                 case FieldTypes.BOOLEAN:
-                    final String booleanValue = theField.getValue();
-                    if (booleanValue != null) {
-                        pageContext.setAttribute(valueBeanID, Boolean.parseBoolean(booleanValue));
-                    }
+                    fieldValue = theField.getValue();
+                    rawValue = theField.getObject();
                     break;
 
                 case FieldTypes.INTEGER:
-                    final String integerValue = theField.getValue();
-                    if (integerValue != null && integerValue.trim().length() > 0) {
-                        pageContext.setAttribute(valueBeanID, Integer.parseInt(integerValue));
-                    }
+                    fieldValue = theField.getValue();
+                    rawValue = theField.getObject() != null ? Integer
+                        .valueOf(((Number) theField.getObject()).intValue())
+                        : null;
                     break;
 
                 case FieldTypes.FLOAT:
-                    final String floatValue = theField.getValue();
-                    if (floatValue != null && floatValue.trim().length() > 0) {
-                        pageContext.setAttribute(valueBeanID, Float.parseFloat(floatValue));
-                    }
+                    fieldValue = theField.getValue();
+                    rawValue = theField.getObject() != null ? Float
+                        .valueOf(((Number) theField.getObject()).floatValue())
+                        : null;
                     break;
 
                 case FieldTypes.CATEGORY:
                     final String[] categoryValues = theField.getValues();
+                    fieldValue = theField.getValue();
                     if (categoryValues != null && categoryValues.length > 0) {
                         final List<CategoryBean> result = new ArrayList<CategoryBean>();
                         for (String categoryKey : categoryValues) {
-                            final Category curCategory = Category.getCategory(categoryKey,
-                                    jData.getProcessingContext().getUser());
+                            final Category curCategory = Category.getCategory(
+                                    categoryKey, jData.getProcessingContext()
+                                            .getUser());
                             if (curCategory != null) {
-                                result.add(new CategoryBean(curCategory, jData.getProcessingContext()));
+                                result.add(new CategoryBean(curCategory, jData
+                                        .getProcessingContext()));
                             }
                         }
-                        pageContext.setAttribute(valueBeanID, result);
+                        rawValue = result;
+                    } else {
+                        rawValue = Collections.EMPTY_LIST;
                     }
                     break;
 
                 default:
                     final String value = theField.getValue();
-                    if (value != null) {
+                    fieldValue = value;
+                    rawValue = value;
+                    if (value != null && value.length() > 0) {
                         final ResourceBundleMarker marker = ResourceBundleMarker.parseMarkerValue(theField.getValue());
                         if (marker != null) {
                             final String key = marker.getResourceKey();
                             final String defaultValue = marker.getDefaultValue();
                             final String localizedValue = marker.getValue(jData.getProcessingContext().getLocale());
                             final ResourceBean bean = new ResourceBean(key, localizedValue, defaultValue);
-                            pageContext.setAttribute(valueBeanID, bean);
+                            fieldValue = localizedValue;
+                            rawValue = bean;
 
                         } else {
                             final String textValue;
@@ -379,12 +391,14 @@ public class FieldTag extends AbstractFieldTag {
                             } else {
                                 textValue = value;
                             }
-                            final ResourceBean bean = new ResourceBean(null, textValue, textValue);
-                            pageContext.setAttribute(valueBeanID, bean);
+                            fieldValue = textValue;
+                            rawValue = textValue;
                         }
                     }
                     break;
             }
+            
+            pageContext.setAttribute(valueBeanID, new FieldValueBean(theField.getType(), fieldValue, rawValue));            
         }
     }
 
@@ -395,7 +409,7 @@ public class FieldTag extends AbstractFieldTag {
      * @return the field value
      */
     protected String readFileFieldValue(final JahiaField theField) {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
         if (theField == null) return buff.toString();
         final JahiaFileField theFile = (JahiaFileField) theField.getObject();
         if (theFile != null && theFile.isDownloadable()) {
@@ -445,7 +459,7 @@ public class FieldTag extends AbstractFieldTag {
      */
     protected String readPageFieldValue(final JahiaField theField,
                                         final ProcessingContext processingContext) {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
         if (theField == null) return buff.toString();
         final JahiaPage thePage = (JahiaPage) theField.getObject();
 
@@ -509,7 +523,7 @@ public class FieldTag extends AbstractFieldTag {
      * @return the field value
      */
     final String readTextFieldValue(final JahiaField theField, final ProcessingContext processingContext) {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
         final boolean defaultValueSet = defaultValue != null && defaultValue.length() > 0;
 
         final String textValue;
@@ -556,7 +570,7 @@ public class FieldTag extends AbstractFieldTag {
      * @return the field value
      */
     final String readApplcationFiedValue(final JahiaField theField, final ProcessingContext processingContext) {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
 
         final boolean defaultValueSet = defaultValue != null && defaultValue.length() > 0;
         final String appId;
@@ -684,7 +698,7 @@ public class FieldTag extends AbstractFieldTag {
                 //remove HTML Tags
                 String dispText = (new TextExtractor(new Source(endvalue))).toString();
                 StringTokenizer tokenizer = new StringTokenizer(dispText);
-                StringBuffer enddisp = new StringBuffer();
+                StringBuilder enddisp = new StringBuilder();
                 int i = 0;
                 while (tokenizer.hasMoreElements() && i < maxWord) {
                     enddisp.append((String) tokenizer.nextElement()).append(" ");

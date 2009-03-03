@@ -44,7 +44,7 @@
             <embed
                     name='<template:field name="videoName"/>'
                     pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"
-                    src="${pageContext.request.scheme}://${pageContext.request.localAddr}:${pageContext.request.localPort}${mySourceField.downloadUrl}"
+                    src="${pageContext.request.scheme}://${pageContext.request.localAddr}:${pageContext.request.localPort}${mySourceField.file.downloadUrl}"
                     width='<template:field name="videoWidth"/>'
                     height='<template:field name="videoHeight"/>'
                     type="application/x-mplayer2"

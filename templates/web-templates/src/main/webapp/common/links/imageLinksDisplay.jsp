@@ -44,7 +44,7 @@
                 <c:set var="styleLi" value=""/>
             </c:if>
             <c:if test="${not empty linkImage}">
-                <c:set var="styleLi" value="style=\"background-image:url(${linkImage.downloadUrl})\""/>
+                <c:set var="styleLi" value="style=\"background-image:url(${linkImage.file.downloadUrl})\""/>
             </c:if>
             <li class="codebase" ${styleLi}>
                 <ui:actionMenu contentObjectName="linkContainer" namePostFix="link" labelKey="link.update">

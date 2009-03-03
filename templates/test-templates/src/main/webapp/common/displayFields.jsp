@@ -38,6 +38,8 @@
 <c:forEach items="${processedContainer.fields}" var="processedEntry">
   <c:set var="processedField" value="${processedEntry.value}"/>
   <div class="fieldTitle">${processedField.title}:</div>
+  <template:field name='${processedField.name}' containerName="processedContainer" valueBeanID="fldValue" display="false"/>
+  <div class="fieldValue">Value bean: isEmpty: ${empty fldValue}</div>
   <div class="fieldValue">
     <c:choose>
       <c:when test="${processedField.fieldType == fieldTypeConstants.BIGTEXT}">
@@ -53,15 +55,11 @@
         <template:field name='${processedField.name}' containerName="processedContainer"/>
         <template:field name='${processedField.name}' beanID="theFieldBean"
         	             valueBeanID="theDateBean" display="false" containerName="processedContainer"/>
-
-        <fmt:formatDate value="${theDateBean}" />
+        &nbsp;(<fmt:formatDate value="${theDateBean.date}" pattern="yyyy-MM-dd HH:mm"/>)
       </c:when>
       <c:when test="${processedField.fieldType == fieldTypeConstants.PAGE}">
         <template:field name='${processedField.name}' containerName="processedContainer" />
-        <template:field name='${processedField.name}' beanID="theFieldBean"
-        	             valueBeanID="${processedField.name}value" display="false" containerName="processedContainer"/>
-
-        <template:link page="${processedField.name}value" containerName="processedContainer"/>
+        <template:link page="fldValue" containerName="processedContainer"/>
       </c:when>
       <c:when test="${processedField.fieldType == fieldTypeConstants.FILE}">
         <template:field name='${processedField.name}' containerName="processedContainer"/>
@@ -69,6 +67,11 @@
         	             valueBeanID="${processedField.name}value" display="false" containerName="processedContainer"/>
 
         <template:file file="${processedField.name}value" containerName="processedContainer"/>
+      </c:when>
+      <c:when test="${processedField.fieldType == fieldTypeConstants.CATEGORY}">
+        <c:forEach items="${fldValue.category}" var="cat">
+            ${cat.title},&nbsp;
+        </c:forEach>
       </c:when>
       <c:otherwise>
         <template:field name='${processedField.name}' containerName="processedContainer"/>

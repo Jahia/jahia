@@ -33,6 +33,7 @@
 
 package org.jahia.taglibs.template.field;
 
+import org.jahia.data.beans.FieldValueBean;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.exceptions.JahiaException;
@@ -76,7 +77,9 @@ public class DisplayImageTag extends AbstractFieldTag {
         try {
             final Object bean = pageContext.getAttribute(file);
             JahiaFileField theFile = null;
-            if (bean instanceof JahiaFileField) {
+            if (bean instanceof FieldValueBean) {
+                theFile = ((FieldValueBean) bean).getFile();
+            } else if (bean instanceof JahiaFileField) {
                 theFile = (JahiaFileField) bean;     
             }
 

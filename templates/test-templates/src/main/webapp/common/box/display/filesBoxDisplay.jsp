@@ -43,10 +43,10 @@
             <c:if test="${!empty myFileField}">
                 <tr>
                     <td>
-                        <c:if test="${myFileField.downloadable}">
-                            <a href="${myFileField.downloadUrl}"
-                               title="${myFileField.fileFieldTitle}">
-                                <c:out value="${myFileField.fileFieldTitle}"/>
+                        <c:if test="${myFileField.file.downloadable}">
+                            <a href="${myFileField.file.downloadUrl}"
+                               title="${myFileField.file.fileFieldTitle}">
+                                <c:out value="${myFileField.file.fileFieldTitle}"/>
                             </a>
                         </c:if>
                     </td>
@@ -58,8 +58,8 @@
                     </td>
                     <c:choose>
                         <c:when test="${displayDetails == 'true'}">
-                            <td class="nowrap">${myFileField.formatedSize}</td>
-                            <td class="nowrap">${myFileField.formatedLastModifDate}</td>
+                            <td class="nowrap">${myFileField.file.formatedSize}</td>
+                            <td class="nowrap">${myFileField.file.formatedLastModifDate}</td>
                         </c:when>
                         <c:otherwise>
                             <td>&nbsp;</td>

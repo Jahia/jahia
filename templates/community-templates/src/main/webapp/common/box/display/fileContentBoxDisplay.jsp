@@ -41,7 +41,7 @@
         <template:container id="fileContentContainer" displayActionMenu="false">
             <ui:actionMenu contentObjectName="fileContentContainer" namePostFix="fileContent" labelKey="fileContent.update">
             <template:field name="fileContentSource" valueBeanID="mySourceField" display="false"/>
-                <c:import url="${pageContext.request.scheme}://${pageContext.request.localAddr}:${pageContext.request.localPort}${mySourceField.downloadUrl}"/>
+                <c:import url="${pageContext.request.scheme}://${pageContext.request.localAddr}:${pageContext.request.localPort}${mySourceField.file.downloadUrl}"/>
             </ui:actionMenu>
         </template:container>
 </template:containerList>

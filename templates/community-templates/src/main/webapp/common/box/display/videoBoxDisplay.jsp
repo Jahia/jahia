@@ -42,19 +42,19 @@
         <ui:actionMenu contentObjectName="videoContainer" namePostFix="video" labelKey="video.update">
         <template:field name="videoSource" valueBeanID="mySourceField" display="false"/>
             <embed
-                    name="<template:field name="videoName"/>"
+                    name="<template:field name='videoName'/>"
                     pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"
-                    src="${pageContext.request.scheme}://${pageContext.request.localAddr}:${pageContext.request.localPort}${mySourceField.downloadUrl}"
-                    width="<template:field name="videoWidth"/>"
-                    height="<template:field name="videoHeight"/>"
+                    src="${pageContext.request.scheme}://${pageContext.request.localAddr}:${pageContext.request.localPort}${mySourceField.file.downloadUrl}"
+                    width="<template:field name='videoWidth'/>"
+                    height="<template:field name='videoHeight'/>"
                     type="application/x-mplayer2"
-                    autostart="<template:field name="videoAutostart"/>"
-                    invokeURLs="<template:field name="videoInvokeURLs"/>"
-                    enablecontextmenu="<template:field name="videoEnablecontextmenu"/>"
-                    showstatusbar="<template:field name="videoShowstatusbar"/>"
-                    showcontrols="<template:field name="videoShowcontrols"/>"
-                    AutoSize="<template:field name="videoAutosize"/>"
-                    displaysize="<template:field name="videoDisplaysize"/>">
+                    autostart="<template:field name='videoAutostart'/>"
+                    invokeURLs="<template:field name='videoInvokeURLs'/>"
+                    enablecontextmenu="<template:field name='videoEnablecontextmenu'/>"
+                    showstatusbar="<template:field name='videoShowstatusbar'/>"
+                    showcontrols="<template:field name='videoShowcontrols'/>"
+                    AutoSize="<template:field name='videoAutosize'/>"
+                    displaysize="<template:field name='videoDisplaysize'/>">
             </embed>
         </ui:actionMenu>
     </template:container>

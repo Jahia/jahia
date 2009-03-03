@@ -5,7 +5,7 @@
             <!--start newsListItem -->
             <template:field name="newsImage" valueBeanID="newsImage" display="false"/>
 
-            <div class="summaryImg"><img src="${newsImage.downloadUrl}" alt='<template:field
+            <div class="summaryImg"><img src="${newsImage.file.downloadUrl}" alt='<template:field
                     name="newsTitle" inlineEditingActivated="false"/>'/></div>
             <h4><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}"><template:field
                     name='newsTitle' inlineEditingActivated="false"/></a></h4>

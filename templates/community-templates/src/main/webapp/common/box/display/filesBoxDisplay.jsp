@@ -55,9 +55,9 @@ limitations under the License.
 <template:containerList name="fileContainer" id="files" actionMenuNamePostFix="files" actionMenuNameLabelKey="files.update">
         <ul class="document"><!--start document -->
         <template:container id="fileContainer" actionMenuNamePostFix="file">
-            <template:field name="file" valueBeanID="file" display="false"/>
-            <li class="document ${file.picto}">
-                <template:file file="file" useFilePictoAsCssClassName="false" maxChar="25"/>
+            <template:field name="file" valueBeanID="fileValue" display="false"/>
+            <li class="document ${fileValue.file.picto}">
+                <template:file file="fileValue" useFilePictoAsCssClassName="false" maxChar="25"/>
             </li>
         </template:container>
      </ul><!--stop document -->

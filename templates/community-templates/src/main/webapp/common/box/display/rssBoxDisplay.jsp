@@ -37,8 +37,10 @@
 <%@ include file="../../declarations.jspf" %>
 <template:containerList name="rssContainer" id="rss">
         <template:container id="rssContainer">
-            <div id="<%=new StringBuilder(String.valueOf(System.currentTimeMillis() % 3600000)).append("_").append(Math.random()).toString()%>" jahiatype="rss" url="<template:field name='url'/>"
-                    entriesCount="<template:field name='entriesCount'/>" >
+            <template:field name="url" display="false" valueBeanID="url"/>
+            <template:field name="entriesCount" display="false" valueBeanID="entriesCount"/>
+            <div id="<%=new StringBuilder(String.valueOf(System.currentTimeMillis() % 3600000)).append("_").append(Math.random()).toString()%>" jahiatype="rss" url="${url}"
+                    entriesCount="${entriesCount}" >
             </div>
         </template:container>
 </template:containerList>

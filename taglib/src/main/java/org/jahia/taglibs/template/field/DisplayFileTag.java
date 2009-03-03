@@ -33,6 +33,7 @@
 
 package org.jahia.taglibs.template.field;
 
+import org.jahia.data.beans.FieldValueBean;
 import org.jahia.data.files.JahiaFileField;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.utils.FileUtils;
@@ -86,7 +87,9 @@ public class DisplayFileTag extends AbstractFieldTag {
         try {
             final Object bean = pageContext.getAttribute(file);
             JahiaFileField theFile = null;
-            if (bean instanceof JahiaFileField) {
+            if (bean instanceof FieldValueBean) {
+                theFile = ((FieldValueBean) bean).getFile();
+            } else if (bean instanceof JahiaFileField) {
                 theFile = (JahiaFileField) bean;
             }
 
@@ -102,7 +105,7 @@ public class DisplayFileTag extends AbstractFieldTag {
             }
 
             if (theFile != null && theFile.isDownloadable()) {
-                final StringBuffer buff = new StringBuffer();
+                final StringBuilder buff = new StringBuilder();
                 buff.append("<a");
 
                 if (useFilePictoAsCssClassName) {

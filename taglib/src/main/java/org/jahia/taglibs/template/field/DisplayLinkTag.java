@@ -33,6 +33,7 @@
 
 package org.jahia.taglibs.template.field;
 
+import org.jahia.data.beans.FieldValueBean;
 import org.jahia.data.beans.PageBean;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.files.JahiaFileField;
@@ -96,7 +97,9 @@ public class DisplayLinkTag extends AbstractFieldTag {
         try {
             final Object bean = pageContext.getAttribute(page);
             PageBean thePageBean = null;
-            if (bean instanceof PageBean) {
+            if (bean instanceof FieldValueBean) {
+                thePageBean = ((FieldValueBean) bean).getPage();
+            } else if (bean instanceof PageBean) {
                 thePageBean = (PageBean) bean;
 
             } else if (bean instanceof JahiaPage) {

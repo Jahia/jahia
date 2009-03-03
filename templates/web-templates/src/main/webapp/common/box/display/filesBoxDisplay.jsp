@@ -44,19 +44,19 @@
             <template:field name="file" valueBeanID="file" display="false"/>
             <template:field name="fileDisplayDetails" display="false" valueBeanID="fileDisplayDetails"/>
             
-            <li class="document ${file.picto}">
+            <li class="document ${file.file.picto}">
                 <c:if test="${!empty title.value}">
-                    <a href="${file.downloadUrl}">${title}</a>
+                    <a href="${file.file.downloadUrl}">${title}</a>
                 </c:if>
                 <c:if test="${empty title.value}">
                 <template:file file="file" useFilePictoAsCssClassName="false"/>
                 </c:if>
-                <c:if test="${fileDisplayDetails}">
-                   <span class="docsize"><fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.size/1024)}"/>
+                <c:if test="${fileDisplayDetails.boolean}">
+                   <span class="docsize"><fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.file.size/1024)}"/>
                     (${num} Ko) &nbsp; <template:metadata contentBean="${fileContainer}" metadataName="created" asDate="true" valueID="creationDate"/><fmt:formatDate pattern="dd/MM/yyyy" value="${creationDate}"/></span>
                 </c:if>
 
-                <c:if test="${fileDisplayDetails}">
+                <c:if test="${fileDisplayDetails.boolean}">
                     <span class="resume"><template:field name="fileDesc"/>
                     </span>
                 </c:if>

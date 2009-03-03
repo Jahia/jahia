@@ -9,7 +9,7 @@ Styles for jQuery
         <template:field name="peoplePicture" valueBeanID="peoplePicture" display="false"/>
 		<div class="peoplePhoto">
         <template:field name="peopleLastname" display="false" valueBeanID="peopleLastname"/>
-        <img src="${peoplePicture.thumbnailUrl}" alt="${peopleLastname} picture"></div>
+        <img src="${peoplePicture.file.thumbnailUrl}" alt="${peopleLastname} picture"></div>
         <div class="peopleBody"><!--start eventsBody -->
             <h5><template:field name="peopleFirstname"/>&nbsp;<template:field name="peopleLastname"/></h5>
             <p class="peopleFonction"><template:field name="peopleFunction"/></p>
@@ -19,7 +19,7 @@ Styles for jQuery
 				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail"/></a></p>
 
 				<div class="peopleAction">
-<a class="peopleDownload" href="${peoplePicture.downloadUrl}" rel="facebox">View full size</a>
+<a class="peopleDownload" href="${peoplePicture.file.downloadUrl}" rel="facebox">View full size</a>
 <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><fmt:message
                             key='web_templates_peopleContainer.peopleBiography'/></a>
 				</div>

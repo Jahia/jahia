@@ -8,7 +8,7 @@
                 <template:field name="image" valueBeanID="imageBean" display="false"/>
                 <div class="box2-topright"></div><div class="box2-topleft"></div>
                 <h3 class="box2-header"><span><template:field name='title'/></span></h3>
-                <div class="box2-illustration" style="background-image:url(${imageBean.downloadUrl})"></div>
+                <div class="box2-illustration" style="background-image:url(${imageBean.file.downloadUrl})"></div>
 
                 <div class="box2-text">
                 <template:field name='abstract'/>

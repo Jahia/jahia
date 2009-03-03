@@ -43,7 +43,7 @@
         <template:field name="filter"display="false" valueBeanID="newsCategoriesFilter" />
         <c:set var="categoriesFilter" value=""/>
         <c:set var="categoriesDisplay" value=""/>
-        <c:forEach items="${newsCategoriesFilter}" var="newsCategoryFilter" varStatus="status">
+        <c:forEach items="${newsCategoriesFilter.category}" var="newsCategoryFilter" varStatus="status">
             <c:if test="${status.last}">
                 <c:set var="categoriesFilter" value="${categoriesFilter}${newsCategoryFilter.category.key}"/>
                 <c:set var="categoriesDisplay" value="${categoriesDisplay}${newsCategoryFilter.title}"/>
@@ -59,7 +59,7 @@
         <div class="preferences">    
         <h2><fmt:message key="web_templates_newsList.preferences"/></h2>
         <p class="preference-item"><span class="preference-label"><fmt:message key="web_templates_newsList.categoryFilter"/>: </span><span class="preference-value">${categoriesDisplay} </span></p>
-        <p class="preference-item"><span class="preference-label"><fmt:message key="web_templates_newsList.rowsDisplay"/>: </span><span class="preference-value">${maxNews}</span></p>
+        <p class="preference-item"><span class="preference-label"><fmt:message key="web_templates_newsList.rowsDisplay"/>: </span><span class="preference-value">${maxNews.integer}</span></p>
         <p class="preference-item"><span class="preference-label"><fmt:message key="web_templates_newsList.display"/>: </span><span class="preference-value">${display}</span></p>
         </div>    
         </c:if>
@@ -69,7 +69,7 @@
     </template:container>
 </template:containerList>
 
-<template:containerList maxSize="${maxNews}" id="newsList" displayActionMenu="false">
+<template:containerList maxSize="${maxNews.integer}" id="newsList" displayActionMenu="false">
 
     <query:containerQuery>
         <query:selector nodeTypeName="web_templates:newsContainer" selectorName="newsList"/>
@@ -78,7 +78,7 @@
                            multiValue="true" metadata="true"/>
         </c:if>
         <query:descendantNode selectorName="newsList" path="${currentSite.JCRPath}"/>
-        <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxNews}" />
+        <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxNews.integer}" />
         <query:sortBy propertyName="newsDate" order="${queryConstants.ORDER_DESCENDING}"/>
     </query:containerQuery>
 

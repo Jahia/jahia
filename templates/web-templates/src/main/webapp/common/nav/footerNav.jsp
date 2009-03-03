@@ -46,7 +46,7 @@
                                                        labelKey="bottomLink.update">
                         <template:field name="link" valueBeanID="links" display="false"/>
                         <h4><template:field name="link"/></h4>
-                        <ui:sitemap enableDescription="true" startPid="${links.linkID}" maxDepth="1"/>
+                        <ui:sitemap enableDescription="true" startPid="${links.page.linkID}" maxDepth="1"/>
                         </ui:actionMenu>
                     </div>
                 </div>

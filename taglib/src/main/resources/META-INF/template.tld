@@ -854,6 +854,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>The name of the page scope bean (of type org.jahia.data.beans.FieldValueBean) to expose the field's value</description>
             <name>valueBeanID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

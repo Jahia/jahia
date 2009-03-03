@@ -47,7 +47,7 @@
         <template:container id="article" displayActionMenu="false" cacheKey="contents">
 
             <template:field name='articleLevel' display="false" valueBeanID="artLevel"/>
-            <c:forEach var="i" begin="2" end="${artLevel}">
+            <c:forEach var="i" begin="2" end="${artLevel.integer}">
                 &nbsp;&nbsp;&nbsp;&nbsp;
             </c:forEach>
             <a href="#<template:field name='articleTitle'/>"><template:field name='articleTitle'/></a>

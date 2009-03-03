@@ -63,7 +63,7 @@
                 <a href="www.adobe.com/go/getflashplayer"><img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/160x41_Get_Flash_Player.jpg'/>" alt="get flash player" /></a>
                 </div></div>
         <script type="text/javascript">
-            var so = new SWFObject("${flashSource.downloadUrl}", "${nameFlash}", "${widthFlash}", "${heightFlash}", "${flashPlayer}", "${bgcolorFlash}");
+            var so = new SWFObject("${flashSource.file.downloadUrl}", "${nameFlash}", "${widthFlash}", "${heightFlash}", "${flashPlayer}", "${bgcolorFlash}");
                     <c:if test="${not empty wmodeFlash}">
                           so.addParam("wmode", "${wmodeFlash}");
                     </c:if>

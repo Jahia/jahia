@@ -70,16 +70,16 @@
             <template:field name='Text' containerName="testContainer"/>
 
             <template:field name='file' valueBeanID='fileMultSearch' display="false" containerName="testContainer"/>
-            <c:if test="${!empty fileMultSearch && fileMultSearch.downloadable}">
+            <c:if test="${!empty fileMultSearch && fileMultSearch.file.downloadable}">
                 <c:choose>
-                    <c:when test="${fileMultSearch.image}">
+                    <c:when test="${fileMultSearch.file.image}">
                         <img border="0" width="112" height="83"
-                             src="${fileMultSearch.downloadUrl}"
-                             alt="${fileMultSearch.fileFieldTitle}"/>
+                             src="${fileMultSearch.file.downloadUrl}"
+                             alt="${fileMultSearch.file.fileFieldTitle}"/>
                     </c:when>
                     <c:otherwise>
-                        <a href="${fileMultSearch.downloadUrl}">
-                            <c:out value="${fileMultSearch.fileFieldTitle}"/>
+                        <a href="${fileMultSearch.file.downloadUrl}">
+                            <c:out value="${fileMultSearch.file.fileFieldTitle}"/>
                         </a>
                     </c:otherwise>
                 </c:choose>

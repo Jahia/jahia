@@ -58,6 +58,8 @@ public class ManagerConfiguration {
     private String filters;
     private String mimeTypes;
 
+    private short defaultView;
+
     public ManagerConfiguration() {
         items = new ArrayList<FileActionItemItf>();
         groupedItems = new ArrayList<FileActionItemGroup>();
@@ -156,5 +158,13 @@ public class ManagerConfiguration {
 
     public void setMimeTypes(String mimeTypes) {
         this.mimeTypes = mimeTypes;
+    }
+
+    public short getDefaultView() {
+        return defaultView;
+    }
+
+    public void setDefaultView(short defaultView) {
+        this.defaultView = defaultView;
     }
 }

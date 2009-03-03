@@ -71,20 +71,20 @@ public class PortletFormCard extends MashupWizardCard {
         Log.debug("update properties");
 
         if (pe != null) {
-            getGwtPortletInstanceWizard().setProperties(pe.getProperties());
+            getGwtJahiaNewPortletInstance().setProperties(pe.getProperties());
         }
     }
 
     // laod form asyn
     private void createUIAsync() {
         ContentDefinitionServiceAsync service = ContentDefinitionService.App.getInstance();
-        service.getNodeType(getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition().getPortletType(), new AsyncCallback<GWTJahiaNodeType>() {
+        service.getNodeType(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType(), new AsyncCallback<GWTJahiaNodeType>() {
             public void onSuccess(GWTJahiaNodeType result) {
                 List<GWTJahiaNodeType> list = new ArrayList<GWTJahiaNodeType>();
                 list.add(result);
                 Map<String, GWTJahiaNodeProperty> defaultValues = new HashMap<String, GWTJahiaNodeProperty>();
 
-                GWTJahiaPortletDefinition definition = getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition();
+                GWTJahiaPortletDefinition definition = getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition();
                 GWTJahiaNodePropertyValue value = new GWTJahiaNodePropertyValue(definition.getContextName()+"!"+definition.getDefinitionName(), GWTJahiaNodePropertyType.STRING);
                 defaultValues.put("j:definition", new GWTJahiaNodeProperty("j:definition", value));
                 if (definition.getExpirationTime() != null) {

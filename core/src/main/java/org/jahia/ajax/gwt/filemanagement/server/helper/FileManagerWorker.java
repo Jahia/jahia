@@ -43,6 +43,7 @@ import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.*;
+import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -192,7 +193,7 @@ public class FileManagerWorker {
             try {
                 if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (f.isNodeType(Constants.JAHIANT_FOLDER) || f.isNodeType(Constants.JAHIANT_VFSMOUNTPOINT)))) {
                     if ((f.isNodeType(Constants.JAHIANT_FOLDER) || f.isNodeType(Constants.JAHIANT_VFSMOUNTPOINT)) && noFolders) {
-                        continue ;
+                        continue;
                     }
                     try {
                         if (f.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
@@ -275,7 +276,7 @@ public class FileManagerWorker {
             if (root != null) userNodes.add(root);
         } else if (key.equals(JCRClientUtils.MY_REPOSITORY)) {
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                GWTJahiaNode root = getNode(node.getPath()+"/files", jParams.getUser());
+                GWTJahiaNode root = getNode(node.getPath() + "/files", jParams.getUser());
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -301,7 +302,7 @@ public class FileManagerWorker {
             }
         } else if (key.equals(JCRClientUtils.MY_MASHUP_REPOSITORY)) {
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                GWTJahiaNode root = getNode(node.getPath()+"/mashups", jParams.getUser());
+                GWTJahiaNode root = getNode(node.getPath() + "/mashups", jParams.getUser());
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -334,7 +335,7 @@ public class FileManagerWorker {
             }
 
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                root = getNode(node.getPath()+"/files", jParams.getUser());
+                root = getNode(node.getPath() + "/files", jParams.getUser());
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -356,7 +357,7 @@ public class FileManagerWorker {
                 userNodes.add(root);
             }
             for (JCRNodeWrapper node : jcr.getUserFolders(null, jParams.getUser())) {
-                root = getNode(node.getPath()+"/mashups", jParams.getUser());
+                root = getNode(node.getPath() + "/mashups", jParams.getUser());
                 if (root != null) {
                     root.setDisplayName(jParams.getUser().getName());
                     userNodes.add(root);
@@ -858,18 +859,18 @@ public class FileManagerWorker {
                     values = prop.getValues();
                 }
                 List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>(values.length);
-                
+
                 boolean stringValueIsNotEmpty = false;
                 for (Value val : values) {
                     gwtValues.add(Utils.convertValue(val));
                     stringValueIsNotEmpty |= PropertyType.STRING == val
                             .getType()
                             && val.getString() != null
-                            && val.getString().length() > 0; 
+                            && val.getString().length() > 0;
                 }
                 if (stringValueIsNotEmpty
                         && SelectorType.CATEGORY == JCRContentUtils
-                                .getPropertyDefSelector(def)) {
+                        .getPropertyDefSelector(def)) {
                     List<GWTJahiaNodePropertyValue> adjustedGwtValues = new ArrayList<GWTJahiaNodePropertyValue>(
                             values.length);
                     for (GWTJahiaNodePropertyValue jahiaNodePropertyValue : gwtValues) {
@@ -879,7 +880,7 @@ public class FileManagerWorker {
                                     .add(new GWTJahiaNodePropertyValue(
                                             Category
                                                     .getCategoryKey(jahiaNodePropertyValue
-                                                            .getString()),
+                                                    .getString()),
                                             jahiaNodePropertyValue.getType()));
                         } else {
                             adjustedGwtValues.add(jahiaNodePropertyValue);
@@ -920,13 +921,19 @@ public class FileManagerWorker {
 
     private static void setProperties(Node objectNode, List<GWTJahiaNodeProperty> newProps) {
         for (GWTJahiaNodeProperty prop : newProps) {
+            if (prop != null) {
+                for (GWTJahiaNodePropertyValue value : prop.getValues()) {
+                    logger.error("******************* property: " + prop.getName() + "," + value.getString() + "," + value.getType());
+
+                }
+            }
             try {
                 if (prop != null && !prop.getName().equals("*")) {
                     boolean isCategory = SelectorType.CATEGORY == JCRContentUtils
                             .getPropertyDefSelector(((ExtendedNodeType) objectNode
                                     .getDefinition().getDeclaringNodeType())
                                     .getPropertyDefinitionsAsMap().get(
-                                            prop.getName()));
+                                    prop.getName()));
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
@@ -989,7 +996,7 @@ public class FileManagerWorker {
         if (value == null || value.length() == 0) {
             return Collections.EMPTY_LIST;
         }
-        
+
         List<Value> values = new LinkedList<Value>();
         String[] categories = StringUtils.split(value, ",");
         for (String categoryKey : categories) {
@@ -1004,7 +1011,7 @@ public class FileManagerWorker {
         }
         return values;
     }
-    
+
     public static GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
         if (jcr.getFileNode(parentPath + "/" + name, context.getUser()).isValid()) {
             throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
@@ -1226,7 +1233,7 @@ public class FileManagerWorker {
                             missedPaths.add(nodeToUnzip.getName());
                         } else if (removeArchive) {
                             if (nodeToUnzip.deleteFile() != JCRNodeWrapper.OK) {
-                                logger.error("Issue when trying to delete original archive " + nodeToUnzip.getPath()) ;
+                                logger.error("Issue when trying to delete original archive " + nodeToUnzip.getPath());
                             }
                         }
                     } catch (RepositoryException e) {
@@ -1302,28 +1309,13 @@ public class FileManagerWorker {
             List appList = ServicesRegistry.getInstance().getApplicationsManagerService().getApplications();
             for (Iterator iterator = appList.iterator(); iterator.hasNext();) {
                 ApplicationBean appBean = (ApplicationBean) iterator.next();
+
+
                 if (appBean.getACL().getPermission(null, null, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, true, jParams.getSiteID())) {
                     List l = appBean.getEntryPointDefinitions();
                     for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
                         EntryPointDefinition entryPointDefinition = (EntryPointDefinition) iterator1.next();
-                        String portletType = null;
-                        int expTime = 0;
-                        String cacheScope = null;
-                        if (entryPointDefinition instanceof PortletEntryPointDefinition) {
-                            portletType = ((PortletEntryPointDefinition) entryPointDefinition).getInitParameter("portletType");
-                            ExpirationCacheDD dd = ((PortletEntryPointDefinition) entryPointDefinition).getPortletDefinition().getExpirationCacheDD();
-                            if (dd != null) {
-                                expTime = dd.getExpirationTime();
-                                cacheScope = dd.getScope();
-                            }
-                        }
-                        if (portletType == null) {
-                            portletType = "jnt:portlet";
-                        }
-                        GWTJahiaNodeACL acl = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
-                        acl.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
-
-                        results.add(new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(), portletType, acl, entryPointDefinition.getDescription(), expTime, cacheScope));
+                        results.add(createGWTJahiaPortletDefinition(appBean, entryPointDefinition));
                     }
                 }
             }
@@ -1333,28 +1325,65 @@ public class FileManagerWorker {
         return results;
     }
 
-    public static GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance wiz, ProcessingContext context) throws GWTJahiaServiceException {
+    /**
+     * Create a GWTJahiaPortletDefinition object from an applicationBean and an entryPointDefinition objects
+     *
+     * @param appBean
+     * @param entryPointDefinition
+     * @return
+     * @throws JahiaException
+     */
+    private static GWTJahiaPortletDefinition createGWTJahiaPortletDefinition(ApplicationBean appBean, EntryPointDefinition entryPointDefinition) throws JahiaException {
+        String portletType = null;
+        int expTime = 0;
+        String cacheScope = null;
+        if (entryPointDefinition instanceof PortletEntryPointDefinition) {
+            portletType = ((PortletEntryPointDefinition) entryPointDefinition).getInitParameter("portletType");
+            ExpirationCacheDD dd = ((PortletEntryPointDefinition) entryPointDefinition).getPortletDefinition().getExpirationCacheDD();
+            if (dd != null) {
+                expTime = dd.getExpirationTime();
+                cacheScope = dd.getScope();
+            }
+        }
+        if (portletType == null) {
+            portletType = "jnt:portlet";
+        }
+        GWTJahiaNodeACL gwtJahiaNodeACL = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
+        gwtJahiaNodeACL.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
+        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(), expTime, cacheScope);
+    }
+
+    /**
+     * Create a  GWTJahiaNode object that represents a portlet instance.
+     *
+     * @param parentPath
+     * @param gwtJahiaNewPortletInstance
+     * @param context
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public static GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance, ProcessingContext context) throws GWTJahiaServiceException {
         try {
-            String name = wiz.getInstanceName();
+            String name = gwtJahiaNewPortletInstance.getInstanceName();
 
             if (name == null) {
-                name = wiz.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
+                name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
             }
 
             if (jcr.getFileNode(parentPath + "/" + name, context.getUser()).isValid()) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
             JCRNodeWrapper parentNode = jcr.getFileNode(parentPath, context.getUser());
-            JCRPortletNode node = (JCRPortletNode) addNode(parentNode, name, wiz.getGwtJahiaPortletDefinition().getPortletType(), wiz.getProperties());
-            node.setApplication(wiz.getGwtJahiaPortletDefinition().getContextName(), wiz.getGwtJahiaPortletDefinition().getDefinitionName());
+            JCRPortletNode node = (JCRPortletNode) addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
+            node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getContextName(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllPermissions();
-            for (GWTJahiaNodeACE ace : wiz.getModes().getAce()) {
+            for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getModes().getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                 if (!ace.isInherited()) {
                     node.changePermissions(user, ace.getPermissions());
                 }
             }
-            for (GWTJahiaNodeACE ace : wiz.getRoles().getAce()) {
+            for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getRoles().getAce()) {
                 String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
                 if (!ace.isInherited()) {
                     node.changePermissions(user, ace.getPermissions());
@@ -1371,7 +1400,166 @@ public class FileManagerWorker {
         } catch (RepositoryException e) {
             e.printStackTrace();
             throw new GWTJahiaServiceException("error");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new GWTJahiaServiceException(e.getMessage());
         }
+    }
+
+    /**
+     * Create a portlet instance
+     *
+     * @param parentPath
+     * @param instanceName
+     * @param appName
+     * @param entryPointName
+     * @param gwtJahiaNodeProperties
+     * @param context
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public static GWTJahiaNode createPortletInstance(String parentPath, String instanceName, String appName, String entryPointName, List<GWTJahiaNodeProperty> gwtJahiaNodeProperties, ProcessingContext context) throws GWTJahiaServiceException {
+        try {
+            // get RSS GWTJahiaPortletDefinition
+            GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, entryPointName, context);
+            if (gwtJahiaPortletDefinition == null) {
+                logger.error("[" + appName + "," + entryPointName + "]" + " portlet defintion not found --> Aboard creating  portlet instance");
+            }
+
+            GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
+            gwtJahiaNewPortletInstance.setGwtJahiaPortletDefinition(gwtJahiaPortletDefinition);
+
+            // add url property
+            gwtJahiaNewPortletInstance.getProperties().addAll(gwtJahiaNodeProperties);
+            gwtJahiaNewPortletInstance.getProperties().add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
+
+            GWTJahiaNodeACL acl = gwtJahiaPortletDefinition.getBaseAcl();
+
+            // all modes for users of the current site
+            GWTJahiaNodeACL modes = gwtJahiaNewPortletInstance.getModes();
+            if (modes == null) {
+                modes = new GWTJahiaNodeACL();
+            }
+            List<GWTJahiaNodeACE> modeAces = modes.getAce();
+            if (modeAces == null) {
+                modeAces = new ArrayList<GWTJahiaNodeACE>();
+            }
+            if (acl != null && acl.getAvailablePermissions() != null) {
+                List<String> modesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.MODES_ACL);
+                modeAces.add(ACLHelper.createUsersGroupACE(modesPermissions, true, context));
+            }
+            modes.setAce(modeAces);
+            gwtJahiaNewPortletInstance.setModes(modes);
+
+            // all rodes for users of the current site
+            GWTJahiaNodeACL roles = gwtJahiaNewPortletInstance.getRoles();
+            if (roles == null) {
+                roles = new GWTJahiaNodeACL();
+            }
+            List<GWTJahiaNodeACE> roleAces = roles.getAce();
+            if (roleAces == null) {
+                roleAces = new ArrayList<GWTJahiaNodeACE>();
+            }
+            if (acl != null && acl.getAvailablePermissions() != null) {
+                List<String> rolesPermissions = acl.getAvailablePermissions().get(JCRClientUtils.ROLES_ACL);
+                roleAces.add(ACLHelper.createUsersGroupACE(rolesPermissions, true, context));
+            }
+            roles.setAce(roleAces);
+            gwtJahiaNewPortletInstance.setRoles(roles);
+
+            // set name
+            gwtJahiaNewPortletInstance.setInstanceName(instanceName);
+            return createPortletInstance(parentPath, gwtJahiaNewPortletInstance, context);
+        } catch (GWTJahiaServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unable to create an RSS portlet due to: ", e);
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    /**
+     * Create an instance of an RSS portlet
+     *
+     * @param parentPath
+     * @param name
+     * @param url
+     * @param context
+     * @return
+     * @throws GWTJahiaServiceException
+     */
+    public static GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, ProcessingContext context) throws GWTJahiaServiceException {
+        GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
+
+        // get RSS GWTJahiaPortletDefinition
+        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName("rss", "JahiaRSSPortlet", context);
+        if (gwtJahiaPortletDefinition == null) {
+            logger.error("RSS portlet defintion not found --> Aboard creating RSS portlet instance");
+        }
+        gwtJahiaNewPortletInstance.setGwtJahiaPortletDefinition(gwtJahiaPortletDefinition);
+
+        // create portlet properties
+        List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = new ArrayList();
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(name, GWTJahiaNodePropertyType.STRING)));
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("jcr:description", new GWTJahiaNodePropertyValue(url, GWTJahiaNodePropertyType.STRING)));
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("url", new GWTJahiaNodePropertyValue(url, GWTJahiaNodePropertyType.STRING)));
+
+        return createPortletInstance(parentPath, name, "rss", "JahiaRSSPortlet", gwtJahiaNodeProperties, context);
+    }
+
+     public static GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name,String script, ProcessingContext context) throws GWTJahiaServiceException {
+        GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
+
+        // get RSS GWTJahiaPortletDefinition
+        GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName("googlegadget", "JahiaGoogleGadget", context);
+        if (gwtJahiaPortletDefinition == null) {
+            logger.error("RSS portlet defintion not found --> Aboard creating Google Gadget portlet instance");
+        }
+        gwtJahiaNewPortletInstance.setGwtJahiaPortletDefinition(gwtJahiaPortletDefinition);
+
+        // create portlet properties
+        List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = new ArrayList();
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("jcr:title", new GWTJahiaNodePropertyValue(name, GWTJahiaNodePropertyType.STRING)));
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("jcr:description", new GWTJahiaNodePropertyValue("", GWTJahiaNodePropertyType.STRING)));
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
+        gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("code", new GWTJahiaNodePropertyValue(script, GWTJahiaNodePropertyType.STRING)));
+
+        return createPortletInstance(parentPath, name,"googlegadget", "JahiaGoogleGadget", gwtJahiaNodeProperties, context);
+    }
+
+
+    /**
+     * 
+     * @param appName
+     * @param entryPointName
+     * @param context
+     * @return
+     */
+    private static GWTJahiaPortletDefinition createJahiaGWTPortletDefinitionByName(String appName, String entryPointName, ProcessingContext context) {
+        if (appName != null && entryPointName != null) {
+            try {
+                // TO DO: replace this part of the method by a more perfoming one
+                List appList = ServicesRegistry.getInstance().getApplicationsManagerService().getApplications();
+                for (Iterator iterator = appList.iterator(); iterator.hasNext();) {
+                    ApplicationBean appBean = (ApplicationBean) iterator.next();
+                    if (appBean.getACL().getPermission(null, null, context.getUser(), JahiaBaseACL.READ_RIGHTS, true, context.getSiteID())) {
+                        List l = appBean.getEntryPointDefinitions();
+                        for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                            EntryPointDefinition entryPointDefinition = (EntryPointDefinition) iterator1.next();
+                            boolean foundEntryPointDefinition = appName.equalsIgnoreCase(appBean.getName()) && entryPointDefinition.getName().equalsIgnoreCase(entryPointName);
+                            if (foundEntryPointDefinition) {
+                                return createGWTJahiaPortletDefinition(appBean, entryPointDefinition);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        logger.error("Portlet definition not found: " + appName + "[Jahia context path:" + context.getContextPath() + "]");
+        return null;
     }
 
     public static boolean checkCaptcha(ParamBean context, String captcha) {
@@ -1387,5 +1575,6 @@ public class FileManagerWorker {
         }
         return isResponseCorrect;
     }
+
 
 }

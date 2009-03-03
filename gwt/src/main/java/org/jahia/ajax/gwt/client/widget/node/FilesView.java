@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -46,38 +46,36 @@ import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.widget.node.ThumbView;
-import org.jahia.ajax.gwt.client.widget.node.FileListContextMenu;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.SearchField;
 
 import java.util.List;
 
 /**
- * 
- *
  * User: rfelden
  * Date: 16 sept. 2008 - 09:46:42
  */
 public class FilesView extends TopRightComponent {
 
-    private FileTable fileTable ;
-    private ThumbView thumbView ;
-    private ThumbView detailedThumbView ;
-    private ContentPanel m_component ;
-    private TopRightComponent current ;
+    private FileTable fileTable;
+    private ThumbView thumbView;
+
+    private ThumbView detailedThumbView;
+
+    private ContentPanel m_component;
+    private TopRightComponent current;
     private SearchField searchField;
 
-    private FileListContextMenu contextMenu ;
+    private FileListContextMenu contextMenu;
 
-    private ManagerConfiguration configuration ;
+    private ManagerConfiguration configuration;
 
-    private List<GWTJahiaNode> searchResults = null ;
+    private List<GWTJahiaNode> searchResults = null;
 
     public FilesView(ManagerConfiguration config) {
-        configuration = config ;
-        fileTable = new FileTable(config) ;
-        thumbView = new ThumbView(config) ;
+        configuration = config;
+        fileTable = new FileTable(config);
+        thumbView = new ThumbView(config);
         detailedThumbView = new ThumbView(config) {
             @Override
             public native String getTemplate() /*-{
@@ -87,8 +85,9 @@ public class FilesView extends TopRightComponent {
                 '<div style="margin-left: 150px; margin-right: 110px;"><p style="font:bold;">{name}</p><br/><p> {description}</p></div></div>',
                 '</tpl>',
                 '<div class="x-clear"></div>'].join("");
-    }-*/;};
-        m_component = new ContentPanel(new FitLayout()) ;
+    }-*/;
+        };
+        m_component = new ContentPanel(new FitLayout());
         m_component.setHeaderVisible(false);
         m_component.setBorders(false);
         m_component.setBodyBorder(false);
@@ -98,14 +97,14 @@ public class FilesView extends TopRightComponent {
             }
 
             public void onSaveButtonClicked(String value) {
-                if (value != null && value.length()>0) {
-                    String name = Window.prompt("Please enter a name for this search", JCRClientUtils.cleanUpFilename(value)) ;
+                if (value != null && value.length() > 0) {
+                    String name = Window.prompt("Please enter a name for this search", JCRClientUtils.cleanUpFilename(value));
                     if (name != null && name.length() > 0) {
-                        name = JCRClientUtils.cleanUpFilename(name) ;
-                        final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance() ;
+                        name = JCRClientUtils.cleanUpFilename(name);
+                        final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
                         service.saveSearch(value, name, new AsyncCallback<GWTJahiaNode>() {
                             public void onFailure(Throwable throwable) {
-                                Log.error("error",throwable);
+                                Log.error("error", throwable);
                             }
 
                             public void onSuccess(GWTJahiaNode o) {
@@ -114,30 +113,40 @@ public class FilesView extends TopRightComponent {
                             }
                         });
                     } else {
-                        Window.alert("The entered name is invalid") ;
+                        Window.alert("The entered name is invalid");
                     }
                 }
             }
-        } ;
+        };
         m_component.setTopComponent(searchField);
 
-        current = fileTable ;
-        m_component.add(current.getComponent()) ;
+        // set default view
+        if (config.getDefaultView() == JCRClientUtils.FILE_TABLE) {
+            current = fileTable;
+        } else if (config.getDefaultView() == JCRClientUtils.THUMB_VIEW) {
+            current = thumbView;
+        }else if (config.getDefaultView() == JCRClientUtils.DETAILED_THUMB_VIEW) {
+            current = detailedThumbView;
+        } else {
+            current = fileTable;          
+        }
+        m_component.add(current.getComponent());
+
     }
 
     public void switchToListView() {
         if (current != fileTable) {
             clearTable();
-            m_component.removeAll() ;
+            m_component.removeAll();
             //fileTable = new FileTable(configuration) ;
-            current = fileTable ;
+            current = fileTable;
             current.setContextMenu(contextMenu);
             //current.initWithLinker(getLinker());
-            m_component.add(current.getComponent()) ;
-            m_component.layout() ;
+            m_component.add(current.getComponent());
+            m_component.layout();
 
             if (searchResults == null) {
-                refresh() ;
+                refresh();
             } else {
                 current.setProcessedContent(searchResults);
             }
@@ -148,14 +157,14 @@ public class FilesView extends TopRightComponent {
     public void switchToThumbView() {
         if (current != thumbView) {
             clearTable();
-            m_component.removeAll() ;
+            m_component.removeAll();
             current = thumbView;
             current.setContextMenu(contextMenu);
-            m_component.add(current.getComponent()) ;
-            m_component.layout() ;
+            m_component.add(current.getComponent());
+            m_component.layout();
 
             if (searchResults == null) {
-                refresh() ;
+                refresh();
             } else {
                 current.setProcessedContent(searchResults);
             }
@@ -163,17 +172,17 @@ public class FilesView extends TopRightComponent {
         }
     }
 
-     public void switchToDetailedThumbView() {
+    public void switchToDetailedThumbView() {
         if (current != detailedThumbView) {
             clearTable();
-            m_component.removeAll() ;
+            m_component.removeAll();
             current = detailedThumbView;
             current.setContextMenu(contextMenu);
-            m_component.add(current.getComponent()) ;
-            m_component.layout() ;
+            m_component.add(current.getComponent());
+            m_component.layout();
 
             if (searchResults == null) {
-                refresh() ;
+                refresh();
             } else {
                 current.setProcessedContent(searchResults);
             }
@@ -183,14 +192,14 @@ public class FilesView extends TopRightComponent {
 
     public void setSearchContent(String text) {
         clearTable();
-        if (text != null && text.length()>0) {
-            final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance() ;
+        if (text != null && text.length() > 0) {
+            final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
             if (getLinker() != null) {
                 getLinker().loading("searching content...");
             }
             service.search(text, 0, new AsyncCallback<List<GWTJahiaNode>>() {
                 public void onFailure(Throwable throwable) {
-                    Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage()) ;
+                    Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
                     if (getLinker() != null) {
                         getLinker().loaded();
                     }
@@ -198,10 +207,10 @@ public class FilesView extends TopRightComponent {
 
                 public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                     if (gwtJahiaNodes != null) {
-                        searchResults = gwtJahiaNodes ;
+                        searchResults = gwtJahiaNodes;
                         current.setProcessedContent(gwtJahiaNodes);
                     } else {
-                        searchResults = null ;
+                        searchResults = null;
                     }
                     if (getLinker() != null) {
                         getLinker().loaded();
@@ -216,7 +225,7 @@ public class FilesView extends TopRightComponent {
     public void saveSearch(GWTJahiaNode query) {
         ((FolderTree) getLinker().getLeftObject()).addSavedSearch(query, true);
         searchField.clear();
-        searchResults = null ;
+        searchResults = null;
     }
 
     public void initWithLinker(BrowserLinker linker) {
@@ -227,7 +236,7 @@ public class FilesView extends TopRightComponent {
     }
 
     public void initContextMenu() {
-        contextMenu = new FileListContextMenu(getLinker(), configuration) ;
+        contextMenu = new FileListContextMenu(getLinker(), configuration);
         current.setContextMenu(contextMenu);
     }
 
@@ -252,9 +261,9 @@ public class FilesView extends TopRightComponent {
 
     public Object getSelection() {
         if (current != null) {
-            return current.getSelection() ;
+            return current.getSelection();
         } else {
-            return null ;
+            return null;
         }
     }
 
@@ -265,6 +274,6 @@ public class FilesView extends TopRightComponent {
     }
 
     public Component getComponent() {
-        return m_component ;
+        return m_component;
     }
 }

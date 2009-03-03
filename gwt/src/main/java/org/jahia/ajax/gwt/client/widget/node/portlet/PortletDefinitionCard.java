@@ -35,9 +35,11 @@ package org.jahia.ajax.gwt.client.widget.node.portlet;
 
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -96,19 +98,24 @@ public class PortletDefinitionCard extends MashupWizardCard {
         add(panel);
     }
 
+    protected void onButtonPressed(Button button) {
+
+    }
+
     public void next() {
-        GWTJahiaPortletDefinition selectedJahiaPortletDefinition = getSelectedPortletDefinition();
+        final GWTJahiaPortletDefinition selectedJahiaPortletDefinition = getSelectedPortletDefinition();
         // selection has change --> reset all
         if (selectedJahiaPortletDefinition != null) {
-            if (!selectedJahiaPortletDefinition.equals(getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition())) {
+            if (!selectedJahiaPortletDefinition.equals(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition())) {
                 getPortletWizardWindow().resetCards(0);
             }
         } else {
-            if (getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition() != null) {
+            if (getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition() != null) {
                 getPortletWizardWindow().resetCards(0);
             }
         }
-        getGwtPortletInstanceWizard().setGwtJahiaPortletDefinition(selectedJahiaPortletDefinition);
+        
+        getGwtJahiaNewPortletInstance().setGwtJahiaPortletDefinition(selectedJahiaPortletDefinition);
     }
 
     public GWTJahiaPortletDefinition getSelectedPortletDefinition() {

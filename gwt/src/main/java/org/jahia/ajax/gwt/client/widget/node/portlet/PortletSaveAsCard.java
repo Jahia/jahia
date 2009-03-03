@@ -76,10 +76,10 @@ public class PortletSaveAsCard extends MashupWizardCard {
         if (getParentNode() != null) {
             path = getParentNode().getPath();
         }
-        getGwtPortletInstanceWizard().setInstanceName(saveAs.getValue());
+        getGwtJahiaNewPortletInstance().setInstanceName(saveAs.getValue());
 
         // save
-        JahiaNodeService.App.getInstance().createPortletInstance(path, getGwtPortletInstanceWizard(), new AsyncCallback<GWTJahiaNode>() {
+        JahiaNodeService.App.getInstance().createPortletInstance(path, getGwtJahiaNewPortletInstance(), new AsyncCallback<GWTJahiaNode>() {
             public void onSuccess(GWTJahiaNode result) {
                 if (getLinker() != null) {
                     getLinker().setSelectPathAfterDataUpdate(result.getPath());

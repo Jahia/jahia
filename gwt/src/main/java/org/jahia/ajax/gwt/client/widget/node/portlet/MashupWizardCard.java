@@ -57,8 +57,8 @@ public abstract class MashupWizardCard extends WizardCard {
         return (PortletWizardWindow) getWizardWindow();
     }
 
-    public GWTJahiaNewPortletInstance getGwtPortletInstanceWizard() {
-        return getPortletWizardWindow().getGwtPortletInstanceWizard();
+    public GWTJahiaNewPortletInstance getGwtJahiaNewPortletInstance() {
+        return getPortletWizardWindow().getGwtJahiaNewPortletInstance();
     }
 
     public void setGwtPortletInstanceWizard(GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance) {
@@ -66,7 +66,7 @@ public abstract class MashupWizardCard extends WizardCard {
     }
 
     public String getJahiNodeType() {
-        return getGwtPortletInstanceWizard().getGwtJahiaPortletDefinition().getPortletType();
+        return getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType();
     }
 
     public BrowserLinker getLinker() {

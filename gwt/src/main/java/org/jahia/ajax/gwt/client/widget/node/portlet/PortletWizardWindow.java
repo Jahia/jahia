@@ -98,7 +98,7 @@ public class PortletWizardWindow extends WizardWindow {
         return cards;
     }
 
-    public GWTJahiaNewPortletInstance getGwtPortletInstanceWizard() {
+    public GWTJahiaNewPortletInstance getGwtJahiaNewPortletInstance() {
         return gwtJahiaNewPortletInstance;
     }
 

@@ -38,9 +38,7 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.client.core.JahiaType;
-import org.jahia.ajax.gwt.utils.RSSHelper;
 import org.apache.log4j.Logger;
 
 import javax.portlet.*;
@@ -51,14 +49,7 @@ import java.util.HashMap;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.net.URLConnection;
 
-import com.sun.syndication.io.SyndFeedInput;
-import com.sun.syndication.io.XmlReader;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.feed.synd.SyndFeed;
 
 /**
  * User: ktlili
@@ -87,9 +78,9 @@ public class JahiaRSSPortlet extends GenericPortlet {
         try {
             NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), getPortletName(), true);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error(e, e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e, e);
         }
 
         porletType = portletConfig.getInitParameter("portletType");
@@ -101,6 +92,14 @@ public class JahiaRSSPortlet extends GenericPortlet {
         return defs.get(portletName);
     }
 
+    /**
+     * doView(...) method of the portlet
+     *
+     * @param renderRequest
+     * @param renderResponse
+     * @throws PortletException
+     * @throws IOException
+     */
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
         EntryPointInstance epi = (EntryPointInstance) renderRequest.getAttribute("EntryPointInstance");
         if (epi != null) {
@@ -113,7 +112,7 @@ public class JahiaRSSPortlet extends GenericPortlet {
                     nbFeed = node.getProperty("entriesCount").getString();
                 }
                 String id = renderRequest.getWindowID();
-                String html = "<div id='" + id + "' jahiaType='"+ JahiaType.RSS+"' url='"+url+"' entriesCount='"+nbFeed+"' > &nbsp </div>";
+                String html = "<div id='" + id + "' jahiaType='" + JahiaType.RSS + "' url='" + url + "' entriesCount='" + nbFeed + "' > &nbsp </div>";
                 PrintWriter pw = renderResponse.getWriter();
                 pw.print(html);
             } catch (RepositoryException e) {
@@ -121,37 +120,5 @@ public class JahiaRSSPortlet extends GenericPortlet {
             }
         }
     }
-
-
-    private void loadRSS(String url, int maxEntryDisplay) {
-        //load corresponding url
-        try {
-            URL urlObj = new URL(url);
-            GWTJahiaRSSFeed gwtrssFeed = loadRssFeed(urlObj);
-            if (gwtrssFeed != null) {
-                gwtrssFeed.setUrl(url);
-                gwtrssFeed.setNbDisplayedEntries(maxEntryDisplay);
-            }
-        } catch (MalformedURLException e) {
-            logger.error(e, e);
-        }
-    }
-
-    protected GWTJahiaRSSFeed loadRssFeed(URL feedUrl) {
-        try {
-            SyndFeedInput input = new SyndFeedInput();
-            URLConnection urlConnection = feedUrl.openConnection();
-            SyndFeed feed = input.build(new XmlReader(urlConnection));
-            return RSSHelper.createGWTRSSFeed(feed);
-        } catch (FeedException e) {
-            logger.error(e.getMessage() + ", feedException --> Can't load rss.");
-        } catch (IOException e) {
-            logger.error(e.getMessage() + ", ioexception --> Can't load rss.");
-        } catch (Exception e) {
-            logger.error(e.getMessage() + ", exception --> Can't load rss.");
-        }
-        return null;
-    }
-
 }
 

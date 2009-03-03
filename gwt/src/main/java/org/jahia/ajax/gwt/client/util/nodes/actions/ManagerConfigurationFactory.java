@@ -34,8 +34,8 @@
 package org.jahia.ajax.gwt.client.util.nodes.actions;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.GXT;
 
 /**
@@ -76,12 +76,16 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration completeManagerConfig = new ManagerConfiguration() ;
         completeManagerConfig.setEnableTextMenu(true);
 
-        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         completeManagerConfig.addItem(newFolder);
         FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
+        FileActionItem newRSS = ItemCreator.createNewRSSItem(linker);
+        file.addItem(newRSS);
+        FileActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
+        file.addItem(newGadget);
         completeManagerConfig.addItem(newMashup);
         FileActionItem upload = ItemCreator.createUploadItem(linker);
         file.addItem(upload) ;
@@ -106,7 +110,7 @@ public class ManagerConfigurationFactory {
         FileActionItem unzip = ItemCreator.createUnzipItem(linker);
         file.addItem(unzip) ;
 
-        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
         FileActionItem refresh = ItemCreator.createRefreshItem(linker) ;
         edit.addItem(refresh);
         completeManagerConfig.addItem(refresh);
@@ -130,13 +134,13 @@ public class ManagerConfigurationFactory {
         edit.addItem(paste);
         completeManagerConfig.addItem(paste);
 
-        FileActionItemGroup remote = new FileActionItemGroup(Resources.getResource("fm_remoteMenu")) ;
+        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu")) ;
         FileActionItem mount = ItemCreator.createMountItem(linker);
         remote.addItem(mount);
         FileActionItem unmount = ItemCreator.createUnmountItem(linker);
         remote.addItem(unmount);
 
-        FileActionItemGroup image = new FileActionItemGroup(Resources.getResource("fm_imageMenu")) ;
+        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu")) ;
         FileActionItem crop = ItemCreator.createCropItem(linker);
         image.addItem(crop);
         FileActionItem resize = ItemCreator.createResizeItem(linker);
@@ -174,7 +178,7 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration fileManagerConfig = new ManagerConfiguration() ;
         fileManagerConfig.setEnableTextMenu(true);
 
-        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         fileManagerConfig.addItem(newFolder);
@@ -201,7 +205,7 @@ public class ManagerConfigurationFactory {
         FileActionItem unzip = ItemCreator.createUnzipItem(linker);
         file.addItem(unzip) ;
 
-        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
         FileActionItem refresh = ItemCreator.createRefreshItem(linker) ;
         edit.addItem(refresh);
         fileManagerConfig.addItem(refresh);
@@ -225,13 +229,13 @@ public class ManagerConfigurationFactory {
         edit.addItem(paste);
         fileManagerConfig.addItem(paste);
 
-        FileActionItemGroup remote = new FileActionItemGroup(Resources.getResource("fm_remoteMenu")) ;
+        FileActionItemGroup remote = new FileActionItemGroup(Messages.getResource("fm_remoteMenu")) ;
         FileActionItem mount = ItemCreator.createMountItem(linker);
         remote.addItem(mount);
         FileActionItem unmount = ItemCreator.createUnmountItem(linker);
         remote.addItem(unmount);
 
-        FileActionItemGroup image = new FileActionItemGroup(Resources.getResource("fm_imageMenu")) ;
+        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu")) ;
         FileActionItem crop = ItemCreator.createCropItem(linker);
         image.addItem(crop);
         FileActionItem resize = ItemCreator.createResizeItem(linker);
@@ -265,7 +269,7 @@ public class ManagerConfigurationFactory {
         ManagerConfiguration filePickerConfig = new ManagerConfiguration() ;
         filePickerConfig.setEnableTextMenu(false);
 
-        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         filePickerConfig.addItem(newFolder);
         file.addItem(newFolder);
@@ -274,7 +278,7 @@ public class ManagerConfigurationFactory {
         file.addItem(upload);
         filePickerConfig.addItem(new FileActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
         FileActionItem rename = ItemCreator.createRenameItem(linker);
         filePickerConfig.addItem(rename);
         edit.addItem(rename);
@@ -313,17 +317,23 @@ public class ManagerConfigurationFactory {
     public static ManagerConfiguration getMashupManagerConfiguration(final BrowserLinker linker) {
         ManagerConfiguration mashupManagerConfig = new ManagerConfiguration() ;
         mashupManagerConfig.setEnableTextMenu(true);
-
-        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        mashupManagerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         mashupManagerConfig.addItem(newFolder);
         FileActionItem newMashup = ItemCreator.createNewMashupItem(linker);
         file.addItem(newMashup);
         mashupManagerConfig.addItem(newMashup);
+        FileActionItem newRSS = ItemCreator.createNewRSSItem(linker);
+        file.addItem(newRSS);
+        mashupManagerConfig.addItem(newRSS);
+        FileActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
+        file.addItem(newGadget);
+        mashupManagerConfig.addItem(newGadget);        
         mashupManagerConfig.addItem(new FileActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
         FileActionItem refresh = ItemCreator.createRefreshItem(linker) ;
         edit.addItem(refresh);
         mashupManagerConfig.addItem(refresh);
@@ -375,8 +385,9 @@ public class ManagerConfigurationFactory {
     public static ManagerConfiguration getMashupPickerConfiguration(final BrowserLinker linker) {
         ManagerConfiguration mashupPickerConfig = new ManagerConfiguration() ;
         mashupPickerConfig.setEnableTextMenu(false);
+        mashupPickerConfig.setDefaultView(JCRClientUtils.DETAILED_THUMB_VIEW);
 
-        FileActionItemGroup file = new FileActionItemGroup(Resources.getResource("fm_fileMenu")) ;
+        FileActionItemGroup file = new FileActionItemGroup(Messages.getResource("fm_fileMenu")) ;
         FileActionItem newFolder = ItemCreator.createNewFolderItem(linker);
         file.addItem(newFolder);
         mashupPickerConfig.addItem(newFolder);
@@ -385,7 +396,7 @@ public class ManagerConfigurationFactory {
         mashupPickerConfig.addItem(newMashup);
         mashupPickerConfig.addItem(new FileActionItemSeparator());
 
-        FileActionItemGroup edit = new FileActionItemGroup(Resources.getResource("fm_editMenu")) ;
+        FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu")) ;
         FileActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         mashupPickerConfig.addItem(rename);
@@ -428,7 +439,7 @@ public class ManagerConfigurationFactory {
     private static class ItemCreator {
         
         private static FileActionItem createRefreshItem(final BrowserLinker linker) {
-            FileActionItem refresh = new FileActionItem(Resources.getResource("fm_refresh"), "fm-refresh") {
+            FileActionItem refresh = new FileActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
                 public void onSelection() {
                     linker.refreshTable();
                 }
@@ -440,7 +451,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createRotateItem(final BrowserLinker linker) {
-            FileActionItem rotate = new FileActionItem(Resources.getResource("fm_rotate"), "fm-rotate") {
+            FileActionItem rotate = new FileActionItem(Messages.getResource("fm_rotate"), "fm-rotate") {
                 public void onSelection() {
                     FileActions.rotateImage(linker);
                 }
@@ -452,7 +463,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createCropItem(final BrowserLinker linker) {
-            FileActionItem crop = new FileActionItem(Resources.getResource("fm_crop"), "fm-crop") {
+            FileActionItem crop = new FileActionItem(Messages.getResource("fm_crop"), "fm-crop") {
                 public void onSelection() {
                     FileActions.cropImage(linker);
                 }
@@ -464,7 +475,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createUnzipItem(final BrowserLinker linker) {
-            FileActionItem unzip = new FileActionItem(Resources.getResource("fm_unzip"), "fm-unzip") {
+            FileActionItem unzip = new FileActionItem(Messages.getResource("fm_unzip"), "fm-unzip") {
                 public void onSelection() {
                     FileActions.unzip(linker);
                 }
@@ -476,7 +487,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createUnlockItem(final BrowserLinker linker) {
-            FileActionItem unlock = new FileActionItem(Resources.getResource("fm_unlock"), "fm-unlock") {
+            FileActionItem unlock = new FileActionItem(Messages.getResource("fm_unlock"), "fm-unlock") {
                 public void onSelection() {
                     FileActions.lock(false, linker);
                 }
@@ -488,7 +499,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createWebfolderItem(final BrowserLinker linker) {
-            FileActionItem webFolder = new FileActionItem(Resources.getResource("fm_webfolder"), "fm-webfolder") {
+            FileActionItem webFolder = new FileActionItem(Messages.getResource("fm_webfolder"), "fm-webfolder") {
                 public void onSelection() {
                     FileActions.openWebFolder(linker);
                 }
@@ -500,7 +511,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createNewFolderItem(final BrowserLinker linker) {
-            FileActionItem newFolder = new FileActionItem(Resources.getResource("fm_newdir"), "fm-newfolder") {
+            FileActionItem newFolder = new FileActionItem(Messages.getResource("fm_newdir"), "fm-newfolder") {
                 public void onSelection() {
                     FileActions.createFolder(linker);
                 }
@@ -512,7 +523,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createCutItem(final BrowserLinker linker) {
-            FileActionItem cut = new FileActionItem(Resources.getResource("fm_cut"), "fm-cut") {
+            FileActionItem cut = new FileActionItem(Messages.getResource("fm_cut"), "fm-cut") {
                 public void onSelection() {
                     FileActions.cut(linker);
                 }
@@ -524,7 +535,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createRemoveItem(final BrowserLinker linker) {
-            FileActionItem remove = new FileActionItem(Resources.getResource("fm_remove"), "fm-remove") {
+            FileActionItem remove = new FileActionItem(Messages.getResource("fm_remove"), "fm-remove") {
                 public void onSelection() {
                     FileActions.remove(linker);
                 }
@@ -536,7 +547,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createPasteItem(final BrowserLinker linker) {
-            FileActionItem paste = new FileActionItem(Resources.getResource("fm_paste"), "fm-paste") {
+            FileActionItem paste = new FileActionItem(Messages.getResource("fm_paste"), "fm-paste") {
                 public void onSelection() {
                     FileActions.paste(linker);
                 }
@@ -548,7 +559,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createCopyItem(final BrowserLinker linker) {
-            FileActionItem copy = new FileActionItem(Resources.getResource("fm_copy"), "fm-copy") {
+            FileActionItem copy = new FileActionItem(Messages.getResource("fm_copy"), "fm-copy") {
                 public void onSelection() {
                     FileActions.copy(linker);
                 }
@@ -560,7 +571,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createRenameItem(final BrowserLinker linker) {
-            FileActionItem rename = new FileActionItem(Resources.getResource("fm_rename"), "fm-rename") {
+            FileActionItem rename = new FileActionItem(Messages.getResource("fm_rename"), "fm-rename") {
                 public void onSelection() {
                     FileActions.rename(linker);
                 }
@@ -572,7 +583,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createResizeItem(final BrowserLinker linker) {
-            FileActionItem resize = new FileActionItem(Resources.getResource("fm_resize"), "fm-resize") {
+            FileActionItem resize = new FileActionItem(Messages.getResource("fm_resize"), "fm-resize") {
                 public void onSelection() {
                     FileActions.resizeImage(linker);
                 }
@@ -584,7 +595,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createMountItem(final BrowserLinker linker) {
-            FileActionItem mount = new FileActionItem(Resources.getResource("fm_mount"), "fm-mount") {
+            FileActionItem mount = new FileActionItem(Messages.getResource("fm_mount"), "fm-mount") {
                 public void onSelection() {
                     FileActions.mountFolder(linker);
                 }
@@ -596,7 +607,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createUnmountItem(final BrowserLinker linker) {
-            FileActionItem mount = new FileActionItem(Resources.getResource("fm_unmount"), "fm-unmount") {
+            FileActionItem mount = new FileActionItem(Messages.getResource("fm_unmount"), "fm-unmount") {
                 public void onSelection() {
                     FileActions.unmountFolder(linker);
                 }
@@ -608,7 +619,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createZipItem(final BrowserLinker linker) {
-            FileActionItem zip = new FileActionItem(Resources.getResource("fm_zip"), "fm-zip") {
+            FileActionItem zip = new FileActionItem(Messages.getResource("fm_zip"), "fm-zip") {
                 public void onSelection() {
                     FileActions.zip(linker);
                 }
@@ -620,7 +631,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createLockItem(final BrowserLinker linker) {
-            FileActionItem lock = new FileActionItem(Resources.getResource("fm_lock"), "fm-lock") {
+            FileActionItem lock = new FileActionItem(Messages.getResource("fm_lock"), "fm-lock") {
                 public void onSelection() {
                     FileActions.lock(true, linker);
                 }
@@ -632,7 +643,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createDownloadItem(final BrowserLinker linker) {
-            FileActionItem download = new FileActionItem(Resources.getResource("fm_download"), "fm-download") {
+            FileActionItem download = new FileActionItem(Messages.getResource("fm_download"), "fm-download") {
                 public void onSelection() {
                     FileActions.download(linker);
                 }
@@ -644,7 +655,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createUploadItem(final BrowserLinker linker) {
-            FileActionItem upload = new FileActionItem(Resources.getResource("fm_upload"), "fm-upload") {
+            FileActionItem upload = new FileActionItem(Messages.getResource("fm_upload"), "fm-upload") {
                 public void onSelection() {
                     FileActions.upload(linker);
                 }
@@ -656,9 +667,33 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createNewMashupItem(final BrowserLinker linker) {
-            FileActionItem newMashup = new FileActionItem(Resources.getResource("fm_newmashup"), "fm-newmashup") {
+            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newmashup"), "fm-newmashup") {
                 public void onSelection() {
                     FileActions.showMashupWizard(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            } ;
+            return newMashup;
+        }
+
+        private static FileActionItem createNewRSSItem(final BrowserLinker linker) {
+            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newrss"), "fm-newrssmashup") {
+                public void onSelection() {
+                    FileActions.showRSSForm(linker);
+                }
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);
+                }
+            } ;
+            return newMashup;
+        }
+
+        private static FileActionItem createNewGadgetItem(final BrowserLinker linker) {
+            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newgadget"), "fm-newgooglegadgetmashup") {
+                public void onSelection() {
+                    FileActions.showGoogleGadgetForm(linker);
                 }
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(treeSelection && parentWritable || tableSelection && singleFolder && writable);

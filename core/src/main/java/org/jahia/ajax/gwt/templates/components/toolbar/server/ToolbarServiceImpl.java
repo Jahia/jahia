@@ -72,6 +72,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.content.ContentPageKey;
+import org.jahia.content.ContentObject;
 import org.jahia.analytics.data.GAdataCollector;
 import org.jahia.exceptions.JahiaException;
 import org.quartz.JobDataMap;
@@ -591,7 +592,8 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                                     }
                                 } else {
                                     try {
-                                        if (JahiaObjectCreator.getContentObjectFromKey(processAction.getKey()).getPageID() == currentPageId) {
+                                        ContentObject contentObject = JahiaObjectCreator.getContentObjectFromKey(processAction.getKey());
+                                        if (contentObject != null && contentObject.getPageID() == currentPageId) {
                                             isCurrentPageValided = true;
                                             break;
                                         }

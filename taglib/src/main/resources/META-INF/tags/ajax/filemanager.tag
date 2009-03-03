@@ -53,6 +53,10 @@
                             aliasResourceName="fm_newdir"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newMashup.label"
                             aliasResourceName="fm_newmashup"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newRssMashup.label"
+                            aliasResourceName="fm_newrssmashup"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.newGoogleGadgetMashup.label"
+                            aliasResourceName="fm_newgadgetmashup"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.copyFile.label"
                             aliasResourceName="fm_copy"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.cutFile.label"

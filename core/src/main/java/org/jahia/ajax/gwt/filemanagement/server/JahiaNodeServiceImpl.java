@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.*;
@@ -51,6 +52,7 @@ import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
+import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
@@ -76,35 +78,35 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {
         if (openPaths == null || openPaths.length() == 0) {
-            openPaths = getOpenPathsForRepository(repositoryType) ;
+            openPaths = getOpenPathsForRepository(repositoryType);
         }
         if (logger.isDebugEnabled()) {
-            logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString()) ;
+            logger.debug(new StringBuilder("retrieving open paths for ").append(repositoryType).append(" :\n").append(openPaths).toString());
         }
         return FileManagerWorker.retrieveRoot(repositoryType, retrieveParamBean(), nodeTypes, mimeTypes, filters, openPaths);
     }
 
     public void saveOpenPaths(Map<String, List<String>> pathsForRepositoryType) throws GWTJahiaServiceException {
-        for (String repositoryType: pathsForRepositoryType.keySet()) {
-            List<String> paths = pathsForRepositoryType.get(repositoryType) ;
+        for (String repositoryType : pathsForRepositoryType.keySet()) {
+            List<String> paths = pathsForRepositoryType.get(repositoryType);
             if (paths != null && paths.size() > 0) {
                 if (logger.isDebugEnabled()) {
-                    StringBuilder s = new StringBuilder("saving open paths for ").append(repositoryType).append(" :") ;
-                    for (String p: paths) {
-                        s.append("\n\t").append(p) ;
+                    StringBuilder s = new StringBuilder("saving open paths for ").append(repositoryType).append(" :");
+                    for (String p : paths) {
+                        s.append("\n\t").append(p);
                     }
-                    logger.debug(s.toString()) ;
+                    logger.debug(s.toString());
                 }
                 setGenericPreferenceValue(FileManagerWorker.SAVED_OPEN_PATHS + repositoryType, FileManagerWorker.concatOpenPathsList(paths));
             } else if (logger.isDebugEnabled()) {
-                logger.debug(new StringBuilder("no paths to save for ").append(repositoryType).toString()) ;
+                logger.debug(new StringBuilder("no paths to save for ").append(repositoryType).toString());
                 //deleteGenericPreferenceValue(FileManagerWorker.SAVED_OPEN_PATHS + repositoryType);
             }
         }
     }
 
     private String getOpenPathsForRepository(String repositoryType) {
-        return getGenericPreferenceValue(FileManagerWorker.SAVED_OPEN_PATHS + repositoryType) ;
+        return getGenericPreferenceValue(FileManagerWorker.SAVED_OPEN_PATHS + repositoryType);
     }
 
     public List<GWTJahiaNode> search(String searchString, int limit) throws GWTJahiaServiceException {
@@ -174,7 +176,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
     public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, String captcha) throws GWTJahiaServiceException {
         ParamBean context = retrieveParamBean();
         if (captcha != null && !FileManagerWorker.checkCaptcha(context, captcha)) {
-            throw new GWTJahiaServiceException("Invalid captcha") ;
+            throw new GWTJahiaServiceException("Invalid captcha");
         }
 
         if (captcha != null) {
@@ -320,8 +322,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
-            List<GWTJahiaPortletDefinition> results = FileManagerWorker.searchPortlets(retrieveParamBean());
-            return results;
+            return FileManagerWorker.searchPortlets(retrieveParamBean());
         } catch (Exception e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -330,5 +331,18 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException {
         return FileManagerWorker.createPortletInstance(path, wiz, retrieveParamBean());
     }
+
+    public GWTJahiaNode createRSSPortletInstance(String path, String url, String name) throws GWTJahiaServiceException {
+        return FileManagerWorker.createRSSPortletInstance(path, name, url, retrieveParamBean());
+    }
+
+    public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException{
+      return FileManagerWorker.createGoogleGadgetPortletInstance(path, name, script, retrieveParamBean());
+    }
+
+    public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand) throws GWTJahiaServiceException {
+        return ACLHelper.createUsersGroupACE(permissions, grand, retrieveParamBean());
+    }
+
 
 }

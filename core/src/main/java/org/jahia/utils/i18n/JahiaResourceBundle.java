@@ -69,19 +69,21 @@ public class JahiaResourceBundle extends ResourceBundle {
         try {
             o = resourceBundle.getString(s);
         } catch (MissingResourceException e) {
-            final List<String> stringList = templatesPackage.getResourceBundleHierarchy();
-            for (String s1 : stringList) {
-                ResourceBundle parentResourceBundle = ResourceBundle.getBundle(s1, locale, templatesRBLoader);
-                try {
-                    o = parentResourceBundle.getString(s);
-                    if (o != null) {
-                        return o;
+            if (templatesPackage != null) {
+                final List<String> stringList = templatesPackage.getResourceBundleHierarchy();
+                for (String s1 : stringList) {
+                    ResourceBundle parentResourceBundle = ResourceBundle.getBundle(s1, locale, templatesRBLoader);
+                    try {
+                        o = parentResourceBundle.getString(s);
+                        if (o != null) {
+                            return o;
+                        }
+                    } catch (MissingResourceException e1) {
+                        logger.debug("Try to find " + s + " in resource bundle hierarchy");
                     }
-                } catch (MissingResourceException e1) {
-                    logger.debug("Try to find "+s+" in resource bundle hierarchy");
                 }
             }
-            throw new MissingResourceException("Cannot find resource",basename,s);
+            throw new MissingResourceException("Cannot find resource", basename, s);
         }
         return o;
     }

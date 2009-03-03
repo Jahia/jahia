@@ -53,7 +53,7 @@
                 <div class="content">
                     <a name="pagetop"></a>
               <span class="breadcrumbs">
-                <utility:resourceBundle resourceName='youAreHere' defaultValue="You are here"/>:
+                <fmt:message key='youAreHere'/>:
               </span>
                     <ui:currentPagePath cssClassName="breadcrumbs"/>
                     <ui:languageSwitchingLinks display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
@@ -77,8 +77,7 @@
                     </c:if>
 
                     <div>
-                        <a class="bottomanchor" href="#pagetop"><utility:resourceBundle
-                                resourceName='pageTop' defaultValue="Page Top"/></a>
+                        <a class="bottomanchor" href="#pagetop"><fmt:message key='pageTop'/></a>
                     </div>
                 </div>
 

@@ -37,20 +37,17 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 
-<b><utility:resourceBundle resourceName='inherit.include'
-                           defaultValue="Inlcude simple other workarea from other template (commentable news from coretemplate)"/></b>
+<b><fmt:message key='inherit.include'/></b>
 <template:include page="common/news/newsDisplay.jsp"/>
 <br/><br/>
-<b><utility:resourceBundle resourceName='inherit.withparam'
-                           defaultValue="Inlcude Box jsp from coretemplate, with param: name"/></b>
+<b><fmt:message key='inherit.withparam'/></b>
 
 <template:include page="common/box/box.jsp">
     <template:param name="name" value="columnC_box"/>
 </template:include>
 <br/>
 <b>Execute an super JSP if one available:</b>
-<b><utility:resourceBundle resourceName='inherit.execute'
-                           defaultValue="Execute an super JSP if one available:"/></b><br/>
+<b><fmt:message key='inherit.execute'/></b><br/>
 <template:executeSuper/>
 <br/><br/>
 

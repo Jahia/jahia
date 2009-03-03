@@ -35,14 +35,13 @@
 
 <%@ include file="../common/declarations.jspf" %>
 
-<utility:resourceBundle resourceName='loginpopup' defaultValue="Login with Popup:"/>&nbsp;
+<fmt:message key='loginpopup'/>&nbsp;
 
 
 <ui:loginArea>
     <div class="loginform">
         <fieldset>
-            <legend>&nbsp;<utility:resourceBundle resourceName='login'
-                                                  defaultValue="Login"/>&nbsp;</legend>
+            <legend>&nbsp;<fmt:message key='login'/>&nbsp;</legend>
             <p>
                 <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username" tabIndex="1"/>
             </p>
@@ -68,8 +67,7 @@
 <ui:loginArea>
     <div class="loginform">
         <fieldset>
-            <legend>&nbsp;<utility:resourceBundle resourceName='loginstandard'
-                                                  defaultValue="Login Standard"/>&nbsp;</legend>
+            <legend>&nbsp;<fmt:message key='loginstandard'/>&nbsp;</legend>
             <p>
                 <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username" tabIndex="5"/>
             </p>

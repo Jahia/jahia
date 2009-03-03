@@ -37,17 +37,17 @@
 
 <template:jahiaPageForm name="formHandler" method="post">
 
-    <utility:resourceBundle resourceName='display.name' defaultValue="Name"/>: <input type="text"
+    <fmt:message key='display.name'/>: <input type="text"
                                                                                       name="formHandlerCL_Name"/><br/>
-    <utility:resourceBundle resourceName='display.adress' defaultValue="Adress"/>: <input type="text"
+    <fmt:message key='display.adress'/>: <input type="text"
                                                                                           name="formHandlerCL_Adress"/><br/>
-    <utility:resourceBundle resourceName='display.zip' defaultValue="Zip"/>: <input type="text"
+    <fmt:message key='display.zip'/>: <input type="text"
                                                                                     name="formHandlerCL_Zip">
-    <utility:resourceBundle resourceName='display.city' defaultValue="City"/>: <input type="text"
+    <fmt:message key='display.city'/>: <input type="text"
                                                                                       name="formHandlerCL_City"/>
     <br/>
     <input type="hidden" name="storeContact" value="1"/>
-    <input type="submit" value="<utility:resourceBundle resourceName='display.store' defaultValue="Save Contact"/>"
+    <input type="submit" value="<fmt:message key='display.store'/>"
            name="save"/>
     <br/>
 
@@ -57,12 +57,12 @@
         <template:formContentMapperHandler listName="formHandlerCL" submitMarker="storeContact"/>
         <template:container id="formC">
             Contact:<br/>
-            <utility:resourceBundle resourceName='display.name' defaultValue="Name"/>: <template:field
+            <fmt:message key='display.name'/>: <template:field
                 name="Name"/><br/>
-            <utility:resourceBundle resourceName='display.adress' defaultValue="Adress"/>: <template:field
+            <fmt:message key='display.adress'/>: <template:field
                 name="Adress"/><br/>
-            <utility:resourceBundle resourceName='display.zip' defaultValue="Zip"/>: <template:field
-                name="Zip"/> &nbsp;&nbsp;<utility:resourceBundle resourceName='display.city' defaultValue="City"/>:
+            <fmt:message key='display.zip'/>: <template:field
+                name="Zip"/> &nbsp;&nbsp;<fmt:message key='display.city'/>:
             <template:field name="City"/><br/><br/>
 
 

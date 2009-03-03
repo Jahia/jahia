@@ -45,8 +45,7 @@
             <div id="utilities">
                 <div class="content">
                     <a name="pagetop"></a>
-                    <span class="breadcrumbs"><utility:resourceBundle resourceName='youAreHere'
-                                                                      defaultValue="You are here"/>:</span>
+                    <span class="breadcrumbs"><fmt:message key='youAreHere'/>:</span>
                     <ui:currentPagePath cssClassName="breadcrumbs"/>
                     <ui:languageSwitchingLinks display="horizontal" linkDisplay="flag" displayLanguageState="true"/>
                 </div>
@@ -56,7 +55,7 @@
             <div class="content1cols">
                 <div class="padding">
                     <div id="columnB">
-                        <h2><utility:resourceBundle resourceName="mySettings.title"/></h2>
+                        <h2><fmt:message key="mySettings.title"/></h2>
                         <template:gwtJahiaModule id="mysettings" jahiaType="mySettings">
                             <utility:gwtResourceBundle resourceName="mySettings.password" aliasResourceName="pwd"/>
                             <utility:gwtResourceBundle resourceName="mySettings.confirm.password"
@@ -81,9 +80,7 @@
                                                        aliasResourceName="label_fieldvalue_new_property"/>
                         </template:gwtJahiaModule>
                         <div>
-                            <a href="${requestScope.currentPage.url}" title="<utility:resourceBundle
-                                                resourceName='backToPreviousPage' defaultValue="Back to previous page"/>"><utility:resourceBundle
-                                    resourceName='backToPreviousPage' defaultValue="Back to previous page"/></a>
+                            <a href="${requestScope.currentPage.url}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
                         </div>
                     </div>
 

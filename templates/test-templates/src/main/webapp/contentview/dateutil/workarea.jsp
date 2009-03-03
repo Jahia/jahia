@@ -36,45 +36,44 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 
-<h3><utility:resourceBundle resourceName='dateutil.calculateDates' defaultValue="Calculate different Dates"/></h3>
+<h3><fmt:message key='dateutil.calculateDates'/></h3>
 <% java.text.SimpleDateFormat sf = new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm");%>
 <c:set var="now1" value="<%=sf.format(new java.util.Date())%>"/>
 
 <p>
     <utility:dateUtil currentDate="${now1}" valueID="dateU" datePattern="dd.MM.yyyy HH:mm"/> <br/>
-    <b><utility:resourceBundle resourceName='dateutil.now' defaultValue="Now"/>:</b> <c:out value="${dateU}"/> -
+    <b><fmt:message key='dateutil.now'/>:</b> <c:out value="${dateU}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU}"/></p>
 
 <p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" days="7"/> <br/>
-    <b><utility:resourceBundle resourceName='dateutil.week' defaultValue="In one week"/>:</b> <c:out value="${dateU1}"/>
+    <b><fmt:message key='dateutil.week'/>:</b> <c:out value="${dateU1}"/>
     -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
 <p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" months="1"/> <br/>
-    <b><utility:resourceBundle resourceName='dateutil.month' defaultValue="In one month"/>:</b> <c:out
+    <b><fmt:message key='dateutil.month'/>:</b> <c:out
             value="${dateU1}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
 <p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="1"/> <br/>
-    <b><utility:resourceBundle resourceName='dateutil.year' defaultValue="In one year"/>:</b> <c:out value="${dateU1}"/>
+    <b><fmt:message key='dateutil.year'/>:</b> <c:out value="${dateU1}"/>
     -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
 <p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="-1"/> <br/>
-    <b><utility:resourceBundle resourceName='dateutil.lastyear' defaultValue="Last year"/>:</b><c:out
+    <b><fmt:message key='dateutil.lastyear'/>:</b><c:out
             value="${dateU1}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
 <p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="1" hours="12"/>
     <br/>
-    <b><utility:resourceBundle resourceName='dateutil.yearhours' defaultValue="One year and twelve hours"/>:</b> <c:out
+    <b><fmt:message key='dateutil.yearhours'/>:</b> <c:out
             value="${dateU1}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
 <p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="2" days="1"
                          months="1" hours="12" minutes="30" seconds="30"/> <br/>
-    <b><utility:resourceBundle resourceName='dateutil.complex'
-                               defaultValue="two years, one day, one month, twelve hours, thirty minutes, thirty seconds"/>:</b>
+    <b><fmt:message key='dateutil.complex'/>:</b>
     <br/> <c:out value="${dateU1}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 

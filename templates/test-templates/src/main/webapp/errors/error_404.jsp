@@ -32,6 +32,8 @@
 
 --%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -48,15 +50,11 @@
     <div id="columnB" style="text-align: left; padding-top: 50px">
         <h3>Custom 404 error page</h3>
 
-        <p><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                   resourceName="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
+        <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
 
-        <p><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                   resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a
-                href="javascript:history.back()"><utility:resourceBundle resourceBundle="JahiaInternalResources"
-                                                                         resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;<utility:resourceBundle
-                resourceBundle="JahiaInternalResources"
-                resourceName="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
+        <p><fmt:message key=="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a
+                href="javascript:history.back()"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;
+            <fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
     </div>
 </center>
 </body>

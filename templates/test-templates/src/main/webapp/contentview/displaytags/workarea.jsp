@@ -38,25 +38,25 @@
 <template:containerList name="displayCL" id="displayContainerList" actionMenuNamePostFix="testContainers"
     actionMenuNameLabelKey="testContainers.add">
 	<template:container id="display">
-		<b><utility:resourceBundle resourceName='display.image' defaultValue="DisplayImageTag"/>:</b><br/>
+		<b><fmt:message key='display.image'/>:</b><br/>
 		<template:image file="Image"/>
     <br/>
-    <b><utility:resourceBundle resourceName='display.imagelink' defaultValue="DisplayImageLink"/>:</b>
+    <b><fmt:message key='display.imagelink'/>:</b>
     <template:link page="" image="Image" />
     
     <br/>
     
-    <b><utility:resourceBundle resourceName='display.file' defaultValue="DisplayFile"/>:</b>
+    <b><fmt:message key='display.file'/>:</b>
     <template:file file="File" />
     <br/>
-    <b><utility:resourceBundle resourceName='display.filedetails' defaultValue="DisplayFileDetails"/>:</b>
+    <b><fmt:message key='display.filedetails'/>:</b>
     
     <br/>
-    <b><utility:resourceBundle resourceName='display.link' defaultValue="DisplayLink"/>:</b>
+    <b><fmt:message key='display.link'/>:</b>
     <template:link page="page" openExternalLinkInNewWindow="true"/>
     
     <br/>
-    <b><utility:resourceBundle resourceName='display.randomimage' defaultValue="Display Random Image"/> (<template:field name="RandomPath" valueBeanID="RandomPath" />):</b>
+    <b><fmt:message key='display.randomimage'/> (<template:field name="RandomPath" valueBeanID="RandomPath" />):</b>
     <ui:displayRandomImage path="RandomPath" fileTypes="jpg,gif,png"/>
     
 	</template:container>

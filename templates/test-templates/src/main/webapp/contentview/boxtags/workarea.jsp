@@ -49,7 +49,7 @@
             paId = ((Integer) pageIds.get(0)).intValue();
     %>
 
-    <b><utility:resourceBundle resourceName='boxtags.display' defaultValue="Display columnB_box Boxes"/>
+    <b><fmt:message key='boxtags.display'/>
         (pageID="<%=paId%>"):</b>
     <template:boxList name="columnB_box" id="columnB_box" pageID="<%=paId%>" displayActionMenu="false">
         <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update"
@@ -60,7 +60,7 @@
 </p>
 
 <p>
-    <b><utility:resourceBundle resourceName='boxtags.pagelevel' defaultValue="Display columnB_box Boxes (pageLevel=2)"/>:</b>
+    <b><fmt:message key='boxtags.pagelevel'/>:</b>
     <template:boxList name="columnB_box" id="columnB_box" pageLevel="2" displayActionMenu="false">
         <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update"
                             cache="no">
@@ -71,7 +71,7 @@
 
 <p>
 
-    <b><utility:resourceBundle resourceName='boxtags.errorfull' defaultValue="Display Boxes Error FULL"/>:</b>
+    <b><fmt:message key='boxtags.errorfull'/>:</b>
     <template:boxList name="columnB_box" id="columnB_box" >
         <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update"
                             cache="no">
@@ -82,8 +82,7 @@
 
 <p>
 
-    <b><utility:resourceBundle resourceName='boxtags.errorhide'
-                               defaultValue="Display Boxes Error Hide (same list as above)"/>:</b>
+    <b><fmt:message key='boxtags.errorhide'/>:</b>
     <template:boxList name="columnB_box" id="columnB_box" >
         <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update"
                             cache="no">
@@ -94,8 +93,7 @@
 
 <p>
 
-    <b><utility:resourceBundle resourceName='boxtags.errrorcompact'
-                               defaultValue="Display Boxes Error COMPACT (same list as above)"/>:</b>
+    <b><fmt:message key='boxtags.errorcompact'/>:</b>
     <template:boxList name="columnB_box" id="columnB_box" >
         <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update"
                             cache="no">

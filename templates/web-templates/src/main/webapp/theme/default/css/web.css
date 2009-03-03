@@ -185,20 +185,20 @@ body {
     #bodywrapper a:link {
     color: #900;
     text-decoration: underline;
-    background: none;
+
 }
 
 #bodywrapper a:hover,
     #bodywrapper a:active {
     color: #900;
     text-decoration: none;
-    background: none;
+
 }
 
 #bodywrapper a:visited {
     color: #900;
     text-decoration: underline;
-    background: none;
+
 }
 
 #bodywrapper li {
@@ -634,6 +634,8 @@ body {
     float: left;
     display: inline;
     margin: 0;
+    padding-top:0px;
+    padding-bottom:10px;
 }
 
 #bodywrapper #languages li {
@@ -842,7 +844,6 @@ body {
     display: block;
 }
 
-
 #bodywrapper .spacer {
     padding: 10px 0;
 }
@@ -941,14 +942,16 @@ body {
 
 #bodywrapper .columns5 .column-item {
     float: left;
-    width: 20%;
+    width: 19%;
     overflow: hidden;
     display: block;
+    padding-left:8px;
 }
 
 #bodywrapper .columns5 .column-item .spacer {
     padding: 10px;
 }
+
 
 /*columns without bottom space*/
 #bodywrapper .nobottomspace .column-item .spacer {
@@ -1161,18 +1164,20 @@ body {
     font-weight: bold;
     text-decoration: none;
     color: #000;
-    padding-left: 12px;
+    padding-left: 16px;
     background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50%;
 }
 
 #bodywrapper #navigationN2 a.inpath {
     color: #600;
     background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
+    padding-left: 16px;
 }
 
 #bodywrapper #navigationN2 a.selected {
     color: #c03;
     background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
+    padding-left: 16px;
 }
 
 #bodywrapper #navigationN2 a:hover {
@@ -2904,10 +2909,11 @@ body {
     padding-left: 16px;
 }
 
-#bodywrapper a.returnJobsList {
+#bodywrapper a.returnLink {
     float: left;
-    background: transparent url( ../img/returnjobslist.png ) no-repeat 0% 50%;
-    padding-left: 16px;
+    background: transparent url( ../img/returnjobslist.png ) no-repeat 0% 70%;
+    padding-left: 13px;
+    padding-top: 8px;
 }
 
 /*****************************************************************************	*

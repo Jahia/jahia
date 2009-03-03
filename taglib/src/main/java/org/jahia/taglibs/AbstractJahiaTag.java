@@ -204,15 +204,23 @@ public class AbstractJahiaTag extends BodyTagSupport {
         context = bean.getProcessingContext();
         else
         context = Jahia.getThreadParamBean();
-        final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), context.getSiteID());
-        final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(context.getSiteID());
+        JahiaTemplatesRBLoader templatesRBLoader = null;
+        JahiaTemplatesPackage aPackage = null;
+        if(context!=null) {
+            templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), context.getSiteID());
+            aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(context.getSiteID());
+        }
         ResourceBundle bundle;
         try {
-            if (resourceBundle == null) {
-                resourceBundle = aPackage.getResourceBundleName();
+            if (aPackage != null && templatesRBLoader != null) {
+                if (resourceBundle == null) {
+                    resourceBundle = aPackage.getResourceBundleName();
+                }
+                bundle = new JahiaResourceBundle(resourceBundle, context.getLocale(),
+                                                 templatesRBLoader, aPackage);
+            } else {
+                bundle = BundleSupport.getLocalizationContext(pageContext).getResourceBundle();
             }
-            bundle = new JahiaResourceBundle(resourceBundle, context.getLocale(),
-                                                            templatesRBLoader, aPackage);
         } catch (MissingResourceException e) {
             try {
                 bundle = BundleSupport.getLocalizationContext(pageContext).getResourceBundle();

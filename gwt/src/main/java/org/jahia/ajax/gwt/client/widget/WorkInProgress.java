@@ -88,13 +88,17 @@ public class WorkInProgress {
         $wnd.workInProgressOverlay = new Object();
         $wnd.workInProgressOverlay.start = $wnd.workInProgressOverlay.launch = @org.jahia.ajax.gwt.client.widget.WorkInProgress::show();
         $wnd.workInProgressOverlay.stop = @org.jahia.ajax.gwt.client.widget.WorkInProgress::hide();
-        if ($wnd.jahia && $wnd.jahia.config && $wnd.jahia.config.startWorkInProgressOnLoad) {
-            $wnd.workInProgressOverlay.start();
-        }
+    }-*/;
+
+    private static native boolean needToStartImmediatelly() /*-{
+        return ($wnd.jahia && $wnd.jahia.config && $wnd.jahia.config.startWorkInProgressOnLoad);
     }-*/;
 
     public static void init() {
         getInstance();
+        if (needToStartImmediatelly()) {
+            show();
+        }
     }
 
     public static void show() {

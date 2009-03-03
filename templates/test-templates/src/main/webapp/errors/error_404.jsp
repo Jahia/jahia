@@ -52,7 +52,7 @@
 
         <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.fileNotFound.label"/></p>
 
-        <p><fmt:message key=="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a
+        <p><fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere1stPart.label"/>&nbsp;<a
                 href="javascript:history.back()"><fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere2ndPartLink.label"/></a>&nbsp;
             <fmt:message key="org.jahia.bin.JahiaErrorDisplay.clickHere3rdPart.label"/></p>
     </div>

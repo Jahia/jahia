@@ -226,6 +226,8 @@
                             aliasResourceName="fm_cancel"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.ok.label"
                             aliasResourceName="fm_ok"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.checkUploads.label"
+                            aliasResourceName="fm_checkUploads"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label"
                             aliasResourceName="fm_thumbFilter"/>

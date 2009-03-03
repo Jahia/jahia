@@ -55,6 +55,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * Created by IntelliJ IDEA.
@@ -130,7 +131,13 @@ public class FileUploader extends Window {
         });
         Button submit = new Button(Resources.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
-                form.submit();
+                try {
+                    form.submit();
+                } catch (Exception e) {
+                    bar.reset() ;
+                    bar.setVisible(false);
+                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_checkUploads")) ;
+                }
             }
         }) ;
 

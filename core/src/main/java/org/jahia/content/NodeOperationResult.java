@@ -72,28 +72,16 @@ public class NodeOperationResult implements Serializable {
      *                     recognized by Jahia
      * @see ObjectKey
      */
-    public NodeOperationResult(final ObjectKey nodeKey,
-                               final String languageCode,
-                               final String comment) {
+    public NodeOperationResult(final ObjectKey nodeKey, final String languageCode, final String comment) {
         this(nodeKey, languageCode, comment, null);
     }
 
-    public NodeOperationResult(final ObjectKey nodeKey,
-                               final String languageCode,
-                               final String comment,
-                               final EngineMessage msg) {
-        this(nodeKey != null ? nodeKey.getType() : null,
-                nodeKey != null ? nodeKey.getIdInType() : 0, languageCode,
-                comment, msg);
+    public NodeOperationResult(final ObjectKey nodeKey, final String languageCode, final String comment, final EngineMessage msg) {
+        this(nodeKey != null ? nodeKey.getType() : null, nodeKey != null ? nodeKey.getIdInType() : 0, languageCode, comment, msg);
         this.nodeKey = nodeKey;
     }
 
-    public NodeOperationResult(final String objectType,
-                               final int objectId,
-                               final String languageCode,
-                               final String comment,
-                               final EngineMessage msg) {
-
+    public NodeOperationResult(final String objectType, final int objectId, final String languageCode, final String comment, final EngineMessage msg) {
         super();
         this.objectType = objectType;
         this.objectId = objectId;
@@ -102,8 +90,7 @@ public class NodeOperationResult implements Serializable {
         this.msg = msg;
         if (objectType != null) {
             try {
-                this.nodeKey = ObjectKey.getInstance(objectType
-                        + ObjectKey.KEY_SEPARATOR + objectId);
+                this.nodeKey = ObjectKey.getInstance(objectType + ObjectKey.KEY_SEPARATOR + objectId);
             } catch (ClassNotFoundException ex) {
                 throw new IllegalArgumentException(ex.getMessage());
             }

@@ -3043,10 +3043,15 @@ public class JahiaSearchBaseService extends JahiaSearchService
                         }
                     }
 
-                    if (indexMode != ExtendedPropertyDefinition.INDEXED_NO && def.getItemDefinition() != null
-                            && def.getType() != FieldTypes.DATE && def.getType() != FieldTypes.BOOLEAN
-                            && def.getType() != FieldTypes.FLOAT && def.getType() != FieldTypes.INTEGER
-                            && def.getType() != FieldTypes.COLOR && def.getType() != FieldTypes.APPLICATION) {
+                    if (indexMode != ExtendedPropertyDefinition.INDEXED_NO
+                            && def.getItemDefinition() != null
+                            && def.getType() != FieldTypes.DATE
+                            && def.getType() != FieldTypes.BOOLEAN
+                            && def.getType() != FieldTypes.FILE
+                            && def.getType() != FieldTypes.FLOAT
+                            && def.getType() != FieldTypes.INTEGER
+                            && def.getType() != FieldTypes.COLOR
+                            && def.getType() != FieldTypes.APPLICATION) {
                         String key = isMetadata ? JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD
                                 : JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD;
 

@@ -71,7 +71,7 @@ return false;
                             <s:resultIterator>
                                 <pg:item>
                                     <li>
-                                        <h4><a <c:if test="${hit.typeFile}">class="${hit.iconType}"</c:if> href="${hit.link}">${fn:escapeXml(hit.title)}</a></h4>
+                                        <h4><a class=<c:choose><c:when test="${hit.typeFile}">"${hit.iconType}"</c:when><c:otherwise>"jahiapage"</c:otherwise></c:choose> href="${hit.link}">${fn:escapeXml(hit.title)}</a></h4>
 
                                         <div class="resultslistDesc">${hit.summary}</div>
                                         <div class="resultsListFileType">${hit.contentType}</div>

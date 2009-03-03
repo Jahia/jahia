@@ -78,10 +78,10 @@ public class JackrabbitConfigurator
                 String fileContent = fileContentBuf.toString();
 
                 String storeFilesInDB = getValue(values,"storeFilesInDB");
-                if("".equals(storeFilesInDB)) {
-                    fileContent = fileContent.replaceAll("\\@EXTERNAL_BLOBS\\@", "true");
-                } else {
+                if("true".equals(storeFilesInDB)) {
                     fileContent = fileContent.replaceAll("\\@EXTERNAL_BLOBS\\@", "false");
+                } else {
+                    fileContent = fileContent.replaceAll("\\@EXTERNAL_BLOBS\\@", "true");
                 }
 
                 fileContent = fileContent.replaceAll("\\@FILESYSTEM_CLASS\\@", getValue(values,"jahia.jackrabbit.filesystem"));

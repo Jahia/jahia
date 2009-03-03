@@ -165,7 +165,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
     /** Jahia server patch number */
     private static int PATCH_NUMBER = 0;
     /**
-     * Default init method, inherited from HttpServlet. This method get two
+     * Default init method, inherited fPlease point you borowser torom HttpServlet. This method get two
      * servlet container environment properties: its *home* filesystem path and
      * its type (tomcat, etc), and get the local context.
      *
@@ -174,7 +174,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
      */
     public void init(final ServletConfig config) throws ServletException {
 
-        logger.info("Please point you borowser to /config");
+        
         super.init(config);
         this.config = config;
         // get local context and config...
@@ -192,13 +192,12 @@ public class JahiaConfigurationWizard extends HttpServlet {
         hsqldir.mkdirs();
         hsql.startup(new File(hsqldir, "hsqldbjahia").getPath());
 
-        //unzip the jahia.war contained in the WEB-INF folder
         jahiafilename = this.config.getInitParameter("jahia-filename");
 
+
         if(!jahiaExists()){
-//            unzipJahia(jahiafilename);
+
             // get xml init parameters...
-            final String methods = context.getRealPath(config.getInitParameter("methods"));
             dbScriptsPath = context.getRealPath(config.getInitParameter("dbScriptsPath"));
             old_database = config.getInitParameter("old_database");
             createTables = config.getInitParameter("create_tables");
@@ -208,7 +207,6 @@ public class JahiaConfigurationWizard extends HttpServlet {
             }
             defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
             setPaths();
-            // fill in default values in *values* hashmap...
             fillDefaultValues();
         }
     }
@@ -220,10 +218,10 @@ public class JahiaConfigurationWizard extends HttpServlet {
         boolean exists = (new File((String)values.get("server_home")+"webapps/jahia/WEB-INF/etc/config/jahia.properties")).exists();
         if (exists) {
 
-            logger.info("Jahia folder exists");
+            logger.info("Jahia is already installed");
             return true;
         } else {
-            logger.info("Jahia folder does not exist");
+            logger.info("Jahia is not installed");
             return false;
         }
     }
@@ -691,7 +689,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
                 displayChooseEdition(request, response);
 
             } else  if(request.getParameter("go").equals("next")&&(this.config.getInitParameter("jahia-edition")).equals("community")){
-                logger.info("We have a :"+this.config.getInitParameter("jahia-edition")+" license so displaying the licence");
+                logger.debug("We have a :"+this.config.getInitParameter("jahia-edition")+" license so displaying the licence");
                 chooseFreeEdition();
                 displayLicenseAgreement(request, response);
             }
@@ -1146,7 +1144,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
         values.put("hibernate_dialect",  request.getParameter("hibernate_dialect").trim());
         values.put("storeFilesInDB",  request.getParameter("storeFilesInDB"));
         values.put("storeBigTextInDB",request.getParameter("storeBigTextInDB"));
-         values.put("useExistingDb",request.getParameter("useExistingDb"));
+        values.put("useExistingDb",request.getParameter("useExistingDb"));
         if(request.getParameter("storeFilesInDB")==null){
             values.put("storeFilesInDB","");
         }
@@ -1158,8 +1156,8 @@ public class JahiaConfigurationWizard extends HttpServlet {
             values.put("useExistingDb","false")  ;
 
         }
-        logger.info("we are in the useExistingDb value is  "+values.get("useExistingDb"));
-        logger.info(" storeFilesInDB value is "+values.get("storeFilesInDB")+ " and storeBigTextInDB is "+values.get("storeBigTextInDB"));
+        logger.debug("we are in the useExistingDb value is  "+values.get("useExistingDb"));
+        logger.debug(" storeFilesInDB value is "+values.get("storeFilesInDB")+ " and storeBigTextInDB is "+values.get("storeBigTextInDB"));
 
         String utf8Encoding = request.getParameter("utf8Encoding");
         if (utf8Encoding == null) {
@@ -2033,7 +2031,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
 // default templates set
             values.put("templates", properties.getProperty("default_templates_set").trim());
         }
-        logger.info("finished filling all the values");
+        
     }
 
     private void copyStringSetting(final Map sourceMap, final String sourceName, final Map destMap,

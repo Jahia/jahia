@@ -2,4 +2,7 @@
     <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
     
     <entry-point class='org.jahia.ajax.gwt.configwizard.client.ConfigWizardEntryPoint'/>
+
+    <stylesheet src='css/jahia-ext-all.css'/>
+    <stylesheet src='css/xtheme-jahia.css'/>
 </module>

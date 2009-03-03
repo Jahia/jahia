@@ -67,14 +67,14 @@ final boolean openReadmeFile = jsp.equals("site_values.jsp"); %>
     <title><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.jahiaConfigurationWizard.label"/></title>
     <link rel="stylesheet" href="<%=url%>/configuration_wizard/css/styles.css" type="text/css"/>
     <script type="text/javascript">
-        var jahia_rb_commons={
+        var jahia_gwt_messages={
     	    <fmt:bundle basename="JahiaAdministrationResources">
                 "workInProgressTitle":"<fmt:message key='org.jahia.admin.workInProgressTitle'/>",
                 "workInProgressProgressText":"<fmt:message key='org.jahia.admin.workInProgressProgressText'/>"
             </fmt:bundle>
         };
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/configuration_wizard/gwt/org.jahia.configwizard.gwt.commons.ConfigWizard/org.jahia.configwizard.gwt.commons.ConfigWizard.nocache.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/configuration_wizard/gwt/org.jahia.ajax.gwt.configwizard.ConfigWizard/org.jahia.ajax.gwt.configwizard.ConfigWizard.nocache.js"></script>
     <script type="text/javascript">
               function focus() {
                   document.body.style.cursor = "default";

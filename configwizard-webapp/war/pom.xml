@@ -247,7 +247,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.0</version>
                 <configuration>
-                    <dependentWarIncludes>css/gwt/**,gwt/org.jahia.ajax.gwt.templates.entrypoint.general.live.Live/**,gwt/org.jahia.ajax.gwt.engines.commons.Engines/**</dependentWarIncludes>
+                    <dependentWarExcludes>**</dependentWarExcludes>
                     <archive>
                         <manifestEntries>
                             <Implementation-Build>${buildNumber}</Implementation-Build>

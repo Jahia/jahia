@@ -38,10 +38,16 @@ import org.apache.jackrabbit.core.query.lucene.JackrabbitTextExtractor;
 import org.apache.jackrabbit.extractor.TextExtractor;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
+import org.jahia.hibernate.manager.JahiaFieldXRefManager;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.fields.ContentField;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.search.JahiaSearchService;
+import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.quartz.JobExecutionContext;
 
 import javax.jcr.Node;
@@ -52,6 +58,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -130,6 +137,7 @@ public class TextExtractorJob extends BackgroundJob {
                         } finally {
                             reader.close();
                         }
+                        triggerJahiaFileReferenceReindexation(n.getParent(), provider, processingContext);
                     } catch (Exception e) {
                         logger.debug("Cannot extract content",e);
                     } finally {
@@ -149,5 +157,33 @@ public class TextExtractorJob extends BackgroundJob {
         }
 
 
+    }
+    
+    private void triggerJahiaFileReferenceReindexation(Node n,
+            JCRStoreProvider provider, ProcessingContext processingContext)
+            throws Exception {
+        JahiaSearchService searchService = ServicesRegistry.getInstance()
+                .getJahiaSearchService();
+        JahiaFieldXRefManager fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton
+                .getInstance().getContext().getBean(
+                        JahiaFieldXRefManager.class.getName());
+        Collection<JahiaFieldXRef> c = fieldXRefManager
+                .getReferencesForTargetWithWildcard(JahiaFieldXRefManager.FILE
+                        + provider.getKey() + ":" + n.getUUID());
+        for (JahiaFieldXRef xref : c) {
+            try {
+                ContentField contentObject = ContentField.getField(xref
+                        .getComp_id().getFieldId());
+                RuleEvaluationContext ctx = new RuleEvaluationContext(
+                        contentObject.getObjectKey(), contentObject,
+                        processingContext, processingContext.getUser());
+                searchService.indexContentObject(contentObject,
+                        processingContext.getUser(), ctx);
+            } catch (Exception e) {
+                logger.warn("Error when starting re-indexation. Field "
+                        + xref.getComp_id().getFieldId()
+                        + " was not re-indexed.", e);
+            }
+        }
     }
 }

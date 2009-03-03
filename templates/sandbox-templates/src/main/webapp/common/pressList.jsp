@@ -39,27 +39,25 @@
 <c:set var="dateFilter" value="${param.dateFilter}" scope="request"/>
 <template:jahiaPageForm name="pressPageForm" method="get">
     <p>
-        <span><utility:resourceBundle resourceName="search" defaultValue="Search"/></span>
+        <span><fmt:message key="search"/></span>
         <input type="text" name="searchString" class="field" value="${param.searchString}"/>
     </p>
 
     <p>
-        - <utility:resourceBundle resourceName="display" defaultValue="Display"/>
+        - <fmt:message key="display"/>
         <ui:displayWindowSizeComboBox form="pressPageForm" listName="press${param.id}"/>
-        <utility:resourceBundle resourceName="itemsPerPage"
-                                defaultValue="(Items / Page)"/>
+        <fmt:message key="itemsPerPage"/>
     </p>
 
     <p>
 
         <input type="submit" name="submitbutton" class="button"
-               value="<utility:resourceBundle resourceName='submit' defaultValue='Submit'/>"/>
+               value="<fmt:message key='submit'/>"/>
 
     </p>
 
     <p>
-        <utility:resourceBundle resourceName="categoryFilter"
-                                defaultValue="Filter by categories"/>:
+        <fmt:message key="categoryFilter"/>:
         <!-- displayCategorySelection (start) -->
         <query:categoryFilter startingCategoryKey="root"
                               display="selectBoxSingle"
@@ -73,7 +71,7 @@
     </p>
 
     <p>
-        <utility:resourceBundle resourceName="dateFilter" defaultValue="Date filter"/>:
+        <fmt:message key="dateFilter"/>:
         <ui:dateSelector cssClassName="field" fieldName="dateFilter" value="${dateFilter}"/>
         <c:if test="$(empty listCategories)">
             <c:set var="listCategories" value="${requestScope.listCategories}" scope="request"/>
@@ -81,11 +79,10 @@
     </p>
 
     <p>
-                <span><utility:resourceBundle resourceName="currentFilters"
-                                              defaultValue="Category filters currently applied"/>:
+                <span><fmt:message key="currentFilters"/>:
                     <c:choose>
                         <c:when test="${empty listCategories}">
-                            <utility:resourceBundle resourceName="none" defaultValue="None"/>
+                            <fmt:message key="none"/>
                         </c:when>
                         <c:otherwise>
                             <ui:displayCategoryTitle categoryKeys="${listCategories}"/>
@@ -127,15 +124,11 @@
             </colgroup>
             <thead>
             <tr>
-                <th id="datePress" scope="col"><utility:resourceBundle resourceName="date"
-                                                                       defaultValue="Date"/></th>
-                <th id="titlePress" scope="col"><utility:resourceBundle resourceName="title"
-                                                                        defaultValue="Title"/></th>
-                <th id="introPress" scope="col"><utility:resourceBundle resourceName="intro"
-                                                                        defaultValue="Intro"/></th>
+                <th id="datePress" scope="col"><fmt:message key="date"/></th>
+                <th id="titlePress" scope="col"><fmt:message key="title"/></th>
+                <th id="introPress" scope="col"><fmt:message key="intro"/></th>
                 <c:if test="${requestScope.currentRequest.editMode}">
-                    <th id="actionPress" scope="col"><utility:resourceBundle resourceName="action"
-                                                                             defaultValue="Action"/></th>
+                    <th id="actionPress" scope="col"><fmt:message key="action"/></th>
                 </c:if>
             </tr>
             </thead>

@@ -78,12 +78,12 @@
 
 /* ------- Special treatment for serach results when result hit is a file ------- */
 
-#bodywrapper .resultsList a.file {
+#bodywrapper a.file {
     background: url( ../img/files/file.png ) no-repeat scroll 0.2em 0em;;
         padding-left:24px;
 }
 
-#bodywrapper .resultsList a.ppt, #bodywrapper .resultsList a.pptx {
+#bodywrapper a.ppt, #bodywrapper a.pptx {
     background: url( ../img/files/ppt.png ) no-repeat scroll 0.2em 0em;;
         padding-left:24px;
 }
@@ -92,7 +92,7 @@
     background: url( ../img/files/doc.png ) no-repeat scroll 0.2em 0em;;
     padding-left:24px;
 }
-#bodywrapper .resultsList a.html, #bodywrapper .resultsList a.htm {
+#bodywrapper a.html, #bodywrapper a.htm {
     background: url( ../img/files/html.png ) no-repeat scroll 0.2em 0em;;
         padding-left:24px;
 }
@@ -116,5 +116,10 @@
     background: url( ../img/files/rar.png ) no-repeat scroll 0.2em 0em;;
         padding-left:24px;
 }
+#bodywrapper a.jahiapage    {
+    background: url( ../img/files/html.png ) no-repeat scroll 0.2em 0em;;
+        padding-left:24px;;
+}
+
 
 /* ------- File types (end) ------- */

@@ -362,7 +362,7 @@ public class ConfigureMojo extends AbstractManagementMojo
     /**
      * properties storeFilesInDB
      *
-     * @parameter default-value="true"
+     * @parameter expression="${jahia.configure.storeFilesInDB}" default-value="true"
      */
     protected String storeFilesInDB;
 

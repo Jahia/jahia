@@ -57,7 +57,7 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib"%>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:set var="propName" value="src_properties(${documentType}).${name}.value"/>
 <c:set var="value" value="${h:default(param[propName], value)}"/>

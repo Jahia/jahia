@@ -52,7 +52,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <c:set var="fieldIdHash"><%= Math.abs(jspContext.getAttribute("fieldId").hashCode()) %>
 </c:set>
 <c:set var="useUrl" value="${not empty useUrl ? useUrl : 'false'}"/>

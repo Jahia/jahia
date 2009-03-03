@@ -37,7 +37,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <%@ tag body-content="empty" description="Renders document type selection control with all node types available." %>
 <%@ attribute name="value" required="false" type="java.lang.String" %>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"

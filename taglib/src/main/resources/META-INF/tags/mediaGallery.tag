@@ -42,7 +42,7 @@
 <%@ attribute name="readOnlyInput" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
 <%@ attribute name="displayInput" required="false" rtexprvalue="true" type="java.lang.Boolean" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <c:set var="thePath" value="<%=request.getParameter(inputName)%>" scope="request"/>
 <c:set var="readOnlyInput" value="${not empty readOnlyInput ? readOnlyInput : true}"/>
 <c:set var="displayInput" value="${not empty displayInput ? displayInput : true}"/>

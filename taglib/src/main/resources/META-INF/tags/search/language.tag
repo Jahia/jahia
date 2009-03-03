@@ -49,7 +49,7 @@
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:if test="${display}">
     <c:set var="value" value="${not empty value ? value : ''}"/>

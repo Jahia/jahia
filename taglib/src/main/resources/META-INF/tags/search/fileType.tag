@@ -40,7 +40,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <%@ attribute name="value" required="false" type="java.lang.String" %>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."

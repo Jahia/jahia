@@ -48,7 +48,7 @@
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <c:set var="searchFor" value="${h:default(fn:toLowerCase(searchFor), 'pages')}"/>
 <c:set var="format" value="${h:default(fn:toLowerCase(format), 'html')}"/>
 <%

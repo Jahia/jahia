@@ -51,7 +51,7 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="jahiatemplates.common"/>
+
 <%
     ResultsTag resultTag = (ResultsTag) findAncestorWithClass(this, ResultsTag.class);
     if (resultTag == null) {

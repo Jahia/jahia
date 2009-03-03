@@ -288,7 +288,9 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
         mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress
                 .parse(vars.get("to") != null ? (String) vars.get("to")
-                        : subscriberEmail));
+                        : MailHelper
+                        .getPersonalizedEmailAddress(subscriberEmail,
+                                subscriber)));
 
         if (vars.get("cc") != null) {
             mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress

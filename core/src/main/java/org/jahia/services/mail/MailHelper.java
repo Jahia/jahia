@@ -165,6 +165,17 @@ public class MailHelper {
     /**
      * Returns the e-mail address with the personal name of the specified user.
      * 
+     * @param user
+     *            the user to retrieve the personal name
+     * @return the e-mail address with the personal name of the specified user
+     */
+    public static String getPersonalizedEmailAddress(JahiaUser user) {
+        return getPersonalizedEmailAddress(getEmailAddress(user), user);
+    }
+    
+    /**
+     * Returns the e-mail address with the personal name of the specified user.
+     * 
      * @param email
      *            the e-mail address itself
      * @param user

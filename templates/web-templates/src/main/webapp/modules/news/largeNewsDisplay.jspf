@@ -19,15 +19,14 @@
             <template:field name="newsDesc" maxChar="300" inlineEditingActivated="false"/>
         </p>
 
-        <div class="more"><span><a href="${currentPage.url}/tpl.template/newsDetail?queryPath=${newsContainer.JCRPath}">
+        <div class="more"><span><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}">
             <fmt:message key="news.readmore"/>
         </a></span></div>
         <template:getContentObjectCategories valueID="newsContainerCatKeys"
                                              objectKey="contentContainer_${pageScope.newsContainer.ID}"/>
         <%--<c:if test="${!empty newsContainerCatKeys }">
             <div class="newsMeta">
-                    <span class="categoryLabel"><fmt:message
-                            key='category'/>  :</span>
+                    <span class="categoryLabel"><fmt:message key='category'/>  :</span>
                 <ui:displayCategoryTitle categoryKeys="${newsContainerCatKeys}"/>
             </div>
         </c:if>--%>

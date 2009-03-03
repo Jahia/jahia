@@ -57,7 +57,7 @@ HH: <select class="input" name="<%=inputNamePrefix%>Hours" ${inherited ? 'disabl
   <% 
     for ( int i=0; i<hoursMax.intValue(); i++ ){
     %>
-     <option class="input" style="width: 20px;" value="<%=String.valueOf(i)%>" <%if (String.valueOf(i).equals(hours)){%>selected<%}%>/><fmt:message key='<%="org.jahia.engines.timebasedpublishing.hours."+String.valueOf(i)%>'"/>
+     <option class="input" style="width: 20px;" value="<%=String.valueOf(i)%>" <%if (String.valueOf(i).equals(hours)){%>selected<%}%>/><fmt:message key='<%="org.jahia.engines.timebasedpublishing.hours."+String.valueOf(i)%>'/>
     <%
     }
   %>  

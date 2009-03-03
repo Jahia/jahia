@@ -65,10 +65,7 @@ if (request.getAttribute("expirationDate") != null) {
 expirationDate = (Date) request.getAttribute("expirationDate");
 maxDays = ((Integer) request.getAttribute("allowedDays")).intValue();
 }
-String jahiaEditionTitle = JahiaResourceBundle
-.getAdminResource("org.jahia.admin.info.LicenceInfo.jahiaEdition." + jahiaEdition + ".label",
-jData.getProcessingContext(),
-jData.getProcessingContext().getLocale());
+String jahiaEditionTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.info.LicenceInfo.jahiaEdition." + jahiaEdition + ".label", jData.getProcessingContext().getLocale());
 stretcherToOpen   = 0; %>
 <div id="topTitle">
   <h1>Jahia</h1>
@@ -176,10 +173,8 @@ stretcherToOpen   = 0; %>
                     while (licenseIter.hasNext()) {
                     License curLicense = (License) licenseIter.next();
                     boolean activated = curLicense.checkLimits();
-                    String componentTitle = JahiaResourceBundle
-                    .getAdminResource(curLicense.getComponentName() + ".label",
-                    jData.getProcessingContext(),
-                    jData.getProcessingContext().getLocale());
+                    String componentTitle = JahiaResourceBundle.getJahiaInternalResource(curLicense.getComponentName() + ".label",
+                                                                                         jData.getProcessingContext().getLocale());
                     if (componentTitle == null) {
                     componentTitle = curLicense.getComponentName();
                     } %>

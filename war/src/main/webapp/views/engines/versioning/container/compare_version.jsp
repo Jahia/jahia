@@ -57,6 +57,7 @@
 <%@ page import="org.jahia.utils.textdiff.*" %>
 <%@ page import="org.jahia.engines.EngineLanguageHelper" %>
 <%@ page import="org.jahia.engines.JahiaEngine" %>
+<%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 
 <%@include file="/views/engines/common/taglibs.jsp" %>
@@ -119,12 +120,9 @@
 
   String datas = containerCompareBean.toJSON(jParams);
 
-  String addedLegend = HunkTextDiffVisitor.getAddedText(JahiaResourceBundle
-            .getEngineResource( "org.jahia.engines.version.added", jParams, jParams.getLocale(),"added"));
-  String deletedLegend = HunkTextDiffVisitor.getDeletedText(JahiaResourceBundle
-            .getEngineResource( "org.jahia.engines.version.deleted", jParams, jParams.getLocale(),"deleted"));
-  String updatedLegend = HunkTextDiffVisitor.getChangedText(JahiaResourceBundle
-            .getEngineResource( "org.jahia.engines.version.changed", jParams, jParams.getLocale(),"changed"));
+  String addedLegend = HunkTextDiffVisitor.getAddedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.added", jParams.getLocale(),"added"));
+  String deletedLegend = HunkTextDiffVisitor.getDeletedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.deleted", jParams.getLocale(),"deleted"));
+  String updatedLegend = HunkTextDiffVisitor.getChangedText(JahiaResourceBundle.getJahiaInternalResource( "org.jahia.engines.version.changed", jParams.getLocale(),"changed"));
 
 %>
 <script language="JavaScript">

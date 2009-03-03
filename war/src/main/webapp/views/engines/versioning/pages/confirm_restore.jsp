@@ -105,7 +105,7 @@ function sendFormSave()
         <tr>
           <td>&nbsp;&nbsp;</td>
           <td class="text" align="left">
-            <li><fmt:message key="org.jahia.engines.version.exactRestore"/><%}%>
+            <li><fmt:message key="org.jahia.engines.version.exactRestore"/>
           </td>
         </tr>
         <!--

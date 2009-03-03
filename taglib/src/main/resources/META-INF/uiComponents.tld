@@ -401,11 +401,6 @@
         <tag-class>org.jahia.taglibs.uicomponents.navigation.NavigationMenuTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>resourceBundle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <name>titleLength</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -540,11 +535,6 @@
         <tag-class>org.jahia.taglibs.uicomponents.loginform.LogUserNameInputTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>bundleKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <name>labelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -583,11 +573,6 @@
         <name>loginPassword</name>
         <tag-class>org.jahia.taglibs.uicomponents.loginform.LogPasswordInputTag</tag-class>
         <body-content>empty</body-content>
-        <attribute>
-            <name>bundleKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
         <attribute>
             <name>labelKey</name>
             <required>false</required>
@@ -628,11 +613,6 @@
         <tag-class>org.jahia.taglibs.uicomponents.loginform.LogRememberMeTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>bundleKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <name>labelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -660,11 +640,6 @@
         <tag-class>org.jahia.taglibs.uicomponents.loginform.LogButtonTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>bundleKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <name>labelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -686,11 +661,6 @@
         <name>loginErrorMessage</name>
         <tag-class>org.jahia.taglibs.uicomponents.loginform.LogErrorMessageTag</tag-class>
         <body-content>empty</body-content>
-        <attribute>
-            <name>bundleKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
         <attribute>
             <name>cssClassName</name>
             <required>false</required>
@@ -806,11 +776,6 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <name>bundleKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
     </tag>
     <tag>
         <description>Declares a new (custom) link display configuration for language links</description>
@@ -856,11 +821,6 @@
         </attribute>
         <attribute>
             <name>titleKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>bundleKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

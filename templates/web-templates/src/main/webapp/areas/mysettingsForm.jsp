@@ -71,8 +71,7 @@
         </template:gwtJahiaModule>
 
         <div style="margin-top:15px;" id="addproperty">
-            <a href="${requestScope.currentPage.url}" title="<fmt:message
-            key='backToPreviousPage'><fmt:message key='backToPreviousPage'/></a>
+            <a href="${requestScope.currentPage.url}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
         </div>
     </div>
 </div>

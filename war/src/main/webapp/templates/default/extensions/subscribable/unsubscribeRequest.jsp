@@ -60,7 +60,7 @@
         </c:choose>
         </p>
         
-        <p><fmt:message key="notifications.common.farewell"/><br/><u:resourceBundle resourceName="notifications.common.farewell.signature"/></p>
+        <p><fmt:message key="notifications.common.farewell"/><br/><fmt:message key="notifications.common.farewell.signature"/></p>
     </div>
 </div>
 </body>

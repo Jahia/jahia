@@ -216,12 +216,14 @@ public class AbstractJahiaTag extends BodyTagSupport {
         if (context1!=null) {
             bundle = context1.getResourceBundle();
         }
-        if (bundle == null && aPackage != null) {
+        if (aPackage != null) {
             if (resourceBundle == null) {
                 resourceBundle = aPackage.getResourceBundleName();
             }
-            bundle = new JahiaResourceBundle(resourceBundle, context.getLocale(),
-                                             templatesRBLoader, aPackage);
+            if (bundle==null) {
+                bundle = new JahiaResourceBundle(resourceBundle, context.getLocale(),
+                                                 templatesRBLoader, aPackage);
+            }
         }
         return bundle;
     }

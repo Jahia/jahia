@@ -57,7 +57,6 @@ public class JahiaRSSPortlet extends GenericPortlet {
 
     private static Map<String, String> defs = new HashMap<String, String>();
 
-    private String rootPath;
     private String porletType;
 
     public JahiaRSSPortlet() {
@@ -66,16 +65,6 @@ public class JahiaRSSPortlet extends GenericPortlet {
 
     public void init(PortletConfig portletConfig) throws PortletException {
         super.init(portletConfig);
-
-        rootPath = portletConfig.getInitParameter("rootPath");
-        String realPath = portletConfig.getPortletContext().getRealPath(rootPath + "/" + DEFINITIONS);
-        try {
-            NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), getPortletName(), true);
-        } catch (ParseException e) {
-            logger.error(e, e);
-        } catch (IOException e) {
-            logger.error(e, e);
-        }
 
         porletType = portletConfig.getInitParameter("portletType");
 

@@ -81,14 +81,6 @@ public class JahiaContentPortlet extends GenericPortlet {
         super.init(portletConfig);
 
         rootPath = portletConfig.getInitParameter("rootPath");
-        String realPath = portletConfig.getPortletContext().getRealPath(rootPath + "/" + DEFINITIONS);
-        try {
-            NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), getPortletName(), false);
-        } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
 
         porletType = portletConfig.getInitParameter("contentType");
 

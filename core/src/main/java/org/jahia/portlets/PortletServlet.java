@@ -45,10 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.portlet.EventPortlet;
-import javax.portlet.Portlet;
-import javax.portlet.PortletException;
-import javax.portlet.ResourceServingPortlet;
+import javax.portlet.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -85,6 +82,8 @@ import org.apache.pluto.spi.optional.PortletInvocationEvent;
 import org.apache.pluto.spi.optional.PortletInvocationListener;
 import org.jahia.bin.Jahia;
 import org.jahia.services.applications.pluto.JahiaPortalServletRequest;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ParseException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -161,14 +160,28 @@ public class PortletServlet extends HttpServlet {
         }
 
         for (Map.Entry<String, InternalPortletConfig> entry : portletConfigs.entrySet()) {
-            PortletDD portletDD = entry.getValue().getPortletDefinition();
+            InternalPortletConfig portletConfig = entry.getValue();
+            PortletDD portletDD = portletConfig.getPortletDefinition();
 
             // Create and initialize the portlet wrapped in the servlet.
             try {
                 ClassLoader loader = Thread.currentThread().getContextClassLoader();
                 Class clazz = loader.loadClass((portletDD.getPortletClass()));
                 Portlet portlet = (Portlet) clazz.newInstance();
-                portlet.init(entry.getValue());
+
+                String rootPath = portletConfig.getInitParameter("rootPath");
+                String realPath = portletConfig.getPortletContext().getRealPath(rootPath + "/definitions.cnd" );
+                if (new File(realPath).exists()) {
+                    try {
+                        NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), true);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                portlet.init(portletConfig);
+
                 portlets.put(entry.getKey(), portlet);
             } catch (ClassNotFoundException ex) {
                 ex.printStackTrace();

@@ -60,7 +60,6 @@ public class HTMLMashupPortlet extends GenericPortlet {
 
     private static Map<String, String> defs = new HashMap<String, String>();
 
-    private String rootPath;
     private String porletType;
 
     public HTMLMashupPortlet() {
@@ -69,16 +68,6 @@ public class HTMLMashupPortlet extends GenericPortlet {
 
     public void init(PortletConfig portletConfig) throws PortletException {
         super.init(portletConfig);
-
-        rootPath = portletConfig.getInitParameter("rootPath");
-        String realPath = portletConfig.getPortletContext().getRealPath(rootPath + "/" + DEFINITIONS);
-        try {
-            NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), getPortletName(), true);
-        } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
 
         porletType = portletConfig.getInitParameter("portletType");
 

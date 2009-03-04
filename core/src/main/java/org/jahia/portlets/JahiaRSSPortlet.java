@@ -35,15 +35,9 @@ package org.jahia.portlets;
 
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.apache.log4j.Logger;
-
 import javax.portlet.*;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.Map;
 import java.util.HashMap;
 import java.io.File;
@@ -101,24 +95,15 @@ public class JahiaRSSPortlet extends GenericPortlet {
      * @throws IOException
      */
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-        EntryPointInstance epi = (EntryPointInstance) renderRequest.getAttribute("EntryPointInstance");
-        if (epi != null) {
-            try {
-                JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(renderRequest.getRemoteUser());
-                Node node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(epi.getID(), user);
-                String url = node.getProperty("url").getString();
-                String nbFeed = "5";
-                if (node.hasProperty("entriesCount")) {
-                    nbFeed = node.getProperty("entriesCount").getString();
-                }
-                String id = renderRequest.getWindowID();
-                String html = "<div id='" + id + "' jahiaType='" + JahiaType.RSS + "' url='" + url + "' entriesCount='" + nbFeed + "' > &nbsp </div>";
-                PrintWriter pw = renderResponse.getWriter();
-                pw.print(html);
-            } catch (RepositoryException e) {
-                logger.error(e, e);
-            }
+        String url = (String) renderRequest.getAttribute("url");
+        String nbFeed = (String) renderRequest.getAttribute("entriesCount");
+        if (nbFeed == null || nbFeed.length() == 0) {
+            nbFeed = "5";
         }
+        String id = renderRequest.getWindowID();
+        String html = "<div id='" + id + "' jahiaType='" + JahiaType.RSS + "' url='" + url + "' entriesCount='" + nbFeed + "' > &nbsp </div>";
+        PrintWriter pw = renderResponse.getWriter();
+        pw.print(html);
     }
 }
 

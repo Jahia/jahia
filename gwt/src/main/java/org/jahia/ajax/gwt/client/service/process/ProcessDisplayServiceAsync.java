@@ -57,6 +57,4 @@ public interface ProcessDisplayServiceAsync {
     void findGWTProcessJobs(int offset, String parameter, boolean isAscending, AsyncCallback<PagingLoadResult<GWTJahiaProcessJob>> async);
 
     void deleteJob(GWTJahiaProcessJob gwtProcessJob, AsyncCallback async);
-
-    void getJobListMaxSize(AsyncCallback async);
 }

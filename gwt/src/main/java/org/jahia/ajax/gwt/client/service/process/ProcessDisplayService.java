@@ -79,8 +79,4 @@ public interface ProcessDisplayService extends RemoteService {
 
     public PagingLoadResult<GWTJahiaProcessJob> findGWTProcessJobs(int offset, String parameter, boolean isAscending) throws GWTJahiaServiceException ;
 
-    public void deleteJob(GWTJahiaProcessJob gwtProcessJob);
-
-    public int getJobListMaxSize();
-
 }

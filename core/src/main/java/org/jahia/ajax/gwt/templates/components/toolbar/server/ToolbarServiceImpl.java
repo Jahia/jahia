@@ -619,7 +619,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                 gwtProcessJobInfo.setJobExecuting(false);
             }
             // get all job list
-            List jobList = ProcessDisplayServiceImpl.getAllJobsDetails();
+            List jobList = ProcessDisplayServiceImpl.getAllActiveJobsDetails();
             int waitingJobNumber = 0;
             int nextJobCurrentUserIndex = -1;
             String nextJobCurrentUserType = "-";

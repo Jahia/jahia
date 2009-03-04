@@ -335,18 +335,6 @@ public class ProcessDisplayServiceImpl extends AbstractJahiaGWTServiceImpl imple
         }
     }
 
-    public int getJobListMaxSize() {
-        try {
-            List jobsList = SCHEDULER_SERVICE.getAllJobsDetails();
-            if (jobsList != null) {
-                return jobsList.size();
-            }
-        } catch (JahiaException e) {
-            logger.error("Enable to retrieve numbers of job.", e);
-        }
-        return 0;
-    }
-
     public void deleteJob(GWTJahiaProcessJob gwtProcessJob) {
         String jobName = gwtProcessJob.getJobName();
         String groupName = gwtProcessJob.getJobGroupName();
@@ -363,13 +351,14 @@ public class ProcessDisplayServiceImpl extends AbstractJahiaGWTServiceImpl imple
 
 
     public static List<JobDetail> getAllJobsDetails() throws JahiaException {
-        List<JobDetail> jobs = SCHEDULER_SERVICE.getAllJobsDetails();
-//        if (jobs != null) {
-//            jobs.addAll(getSiteIndexingJobs(true));
-//        }
+        List<JobDetail> jobs = SCHEDULER_SERVICE.getAllActiveJobsDetails();
         return jobs;
     }
 
+    public static List<JobDetail> getAllActiveJobsDetails() throws JahiaException {
+        List<JobDetail> jobs = SCHEDULER_SERVICE.getAllActiveJobsDetails();
+        return jobs;
+    }
 
     private List<GWTJahiaProcessJob> computeProcessJobList(GWTJahiaProcessJobPreference gwtJahiaProcessJobPreferences) throws JahiaException {
         ParamBean jParams = retrieveParamBean();

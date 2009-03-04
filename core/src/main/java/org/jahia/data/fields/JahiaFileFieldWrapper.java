@@ -57,6 +57,7 @@ import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.services.webdav.JahiaWebdavBaseService;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.sharing.FieldSharingManager;
 
 public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApplyChangeToAllLangField {
@@ -206,15 +207,20 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
             isNew = true;
         }
 
-        if (getValue() != null &&
-                getValue().equals(contentFileField.getValue(jParams))) {
+        JahiaFileField fField = (JahiaFileField) this.getObject();
+        // ugly hack to recreate a fField object if the field has been cloned without object value
+        if ("".equals(fField.getStorageName()) && getValue() != null && !"<empty>".equals(getValue()) && !"".equals(getValue())) {
+            fField = JCRStoreService.getInstance().getFileNode(getValue(), jParams.getUser()).getJahiaFileField(); 
+        }
+        String value = contentFileField.getValue(jParams);
+        if (value == null || "<empty>".equals(value)) { value =""; }
+        if (fField != null && fField.getStorageName() != null &&
+                (fField.getStorageName()).equals(value)) {
             return true;
         }
 
         jParams.getSessionState().setAttribute("FireContainerUpdated", "true");
         logger.debug("InvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsi");
-
-        JahiaFileField fField = (JahiaFileField) this.getObject();
 
         if (this.getWorkflowState() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
             // if the current field is active, a staging entry is going to be created.

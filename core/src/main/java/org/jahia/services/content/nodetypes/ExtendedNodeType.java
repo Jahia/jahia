@@ -365,8 +365,7 @@ public class ExtendedNodeType implements NodeType {
         if (pkg == null) {
             return "JahiaTypesResources";
         } else {
-            String bundleName = pkg.getResourceBundleName();
-            return bundleName.substring(bundleName.lastIndexOf('.')+1).toUpperCase();
+            return pkg.getResourceBundleName();
         }
     }
 

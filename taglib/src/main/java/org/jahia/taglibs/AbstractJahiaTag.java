@@ -51,6 +51,7 @@ import org.jahia.bin.Jahia;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -210,23 +211,17 @@ public class AbstractJahiaTag extends BodyTagSupport {
             templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), context.getSiteID());
             aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(context.getSiteID());
         }
-        ResourceBundle bundle;
-        try {
-            if (aPackage != null && templatesRBLoader != null) {
-                if (resourceBundle == null) {
-                    resourceBundle = aPackage.getResourceBundleName();
-                }
-                bundle = new JahiaResourceBundle(resourceBundle, context.getLocale(),
-                                                 templatesRBLoader, aPackage);
-            } else {
-                bundle = BundleSupport.getLocalizationContext(pageContext).getResourceBundle();
+        ResourceBundle bundle = null;
+        final LocalizationContext context1 = BundleSupport.getLocalizationContext(pageContext);
+        if (context1!=null) {
+            bundle = context1.getResourceBundle();
+        }
+        if (bundle == null && aPackage != null) {
+            if (resourceBundle == null) {
+                resourceBundle = aPackage.getResourceBundleName();
             }
-        } catch (MissingResourceException e) {
-            try {
-                bundle = BundleSupport.getLocalizationContext(pageContext).getResourceBundle();
-            } catch (MissingResourceException e1) {
-                bundle = ResourceBundle.getBundle(COMMON_TAG_BUNDLE);
-            }
+            bundle = new JahiaResourceBundle(resourceBundle, context.getLocale(),
+                                             templatesRBLoader, aPackage);
         }
         return bundle;
     }

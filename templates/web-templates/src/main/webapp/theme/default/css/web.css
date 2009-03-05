@@ -2447,7 +2447,7 @@ body {
     border: none;
     color: #666;
     height: 15px;
-    width: 227px;
+    width: 232px;
 }
 
 #bodywrapper #formSearchTop .gobutton {
@@ -2456,7 +2456,7 @@ body {
 }
 
 #bodywrapper #formSearchTop p.loginFormTopSection {
-    margin: 0 1.5em;
+    margin: 0.2em 1.5em;
     padding: 0;
     clear: both;
     font-size: 90%;

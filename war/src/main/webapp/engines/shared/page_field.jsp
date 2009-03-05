@@ -67,7 +67,6 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("jsp.jahia.engines.shared.Page_Field");
 
@@ -245,6 +244,7 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
     }
 
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <script type="text/javascript">
     var operation = "link";
 
@@ -593,8 +593,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
             %>
             <option value="<%=theTemplate.getID()%>"<% if (theTemplate.getID() == pageBean.getPageTemplateID()) { %>
                     selected="selected"<% } %>
-                    title="<c:out value='${jahia.i18n[pageTemplate.description]}'/>"><c:out
-                    value="${jahia.i18n[pageTemplate.displayName]}"/></option>
+                    title="<fmt:message key='${pageTemplate.description}'/>"><fmt:message key="${pageTemplate.displayName}"/></option>
             <% }
             }
                 if (templateNotFound) { %>

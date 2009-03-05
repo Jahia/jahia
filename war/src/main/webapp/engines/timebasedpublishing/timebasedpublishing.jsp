@@ -48,7 +48,6 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%
 final String ruleViewInclude = "/engines/timebasedpublishing/rangerule.jsp";
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -72,6 +71,7 @@ if (currentRuleDef != null) {
 
 final String labelResourceName = "org.jahia.engines.timebasedpublishing.timebpstatus." + jahiaObjectDelegate.getTimeBPState() + ".label";
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <!-- Begin timebasepublishing.jsp -->
 <div class="dex-TabPanelBottom">
   <div class="tabContent">

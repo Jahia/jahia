@@ -40,7 +40,6 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%
 final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
 final List logData = (List) engineMap.get("logData");
@@ -62,6 +61,7 @@ if (userAgent != null) {
 }
 
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <div class="dex-TabPanelBottom">
   <div class="tabContent">
     <%@ include file="../tools.inc" %>

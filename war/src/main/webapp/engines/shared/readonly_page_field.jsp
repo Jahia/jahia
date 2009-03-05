@@ -50,7 +50,6 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     /**
      * utility method
@@ -191,7 +190,7 @@
     }
 
 %>
-
+<utility:setBundle basename="JahiaInternalResources"/>
 
 <h4 class="page_type_big">
     <% if (isNewPage) { %>

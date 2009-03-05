@@ -44,7 +44,6 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%!
     final static private org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger("jsp.jahia.engines.shared.readonly_smalltext_field");  %>
@@ -73,6 +72,7 @@
     }
 
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 
 <% if (theField.getValue().indexOf("#") != -1 && theField.getValue().length() > 6 && theField.getValue().length() < 10) { %>
 <fmt:message key="org.jahia.engines.shared.SmallText_Field.colorValue.label"/>

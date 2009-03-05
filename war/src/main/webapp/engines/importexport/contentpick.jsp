@@ -68,7 +68,6 @@
 <%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%!
 
 
@@ -626,6 +625,7 @@ for (int z = 2; z < 5; z++) {
 
 }
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <!-- Begin contenpick.jsp -->
 <!-- css specific for contentpicker -->
 <style type="text/css">

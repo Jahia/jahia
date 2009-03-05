@@ -40,7 +40,6 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String theScreen = (String) engineMap.get("screen");
@@ -53,6 +52,7 @@
         jParams.setCurrentLocale(elh.getCurrentLocale());
     }
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <script type="text/javascript">
     document.mainForm.enctype = "multipart/form-data";
     document.mainForm.encoding = "multipart/form-data";

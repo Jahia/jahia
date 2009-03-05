@@ -59,7 +59,6 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String theScreen = (String) engineMap.get("screen");
@@ -88,7 +87,7 @@
     }
 
 %>
-
+<utility:setBundle basename="JahiaInternalResources"/>
 <div class="dex-TabPanelBottom">
   <div class="tabContent">
     <%@ include file="../menu.inc" %>

@@ -46,7 +46,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core"  prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -89,6 +88,7 @@
     final Integer inheritedMode = (Integer) engineMap.get("inheritedMode");
 
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <!-- Begin readonly_changeworkflow.jsp -->
 
 <div class="dex-TabPanelBottom">

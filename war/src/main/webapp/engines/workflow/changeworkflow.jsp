@@ -45,7 +45,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.usergroup.UserGroupSelect" />
 
 
@@ -89,6 +88,7 @@
     final Integer inheritedMode = (Integer) engineMap.get("inheritedMode");
 
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <!-- Begin changeworkflow.jsp -->
 <script type="text/javascript" src="<%= theURL%>../javascript/selectbox.js"></script>
 <script type="text/javascript">

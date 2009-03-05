@@ -49,7 +49,6 @@
 <internal:gwtImport module="org.jahia.ajax.gwt.module.filepicker.FilePicker" />
 <c:set var="jahia.engines.gwtModuleIncluded" value="true" scope="request"/>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     String path = jParams.getParameter("select-file");
@@ -71,7 +70,7 @@
         jParams.setCurrentLocale(elh.getCurrentLocale());
     }
 %>
-
+<utility:setBundle basename="JahiaInternalResources"/>
 <div class="head">
   <table cellpadding="0" cellspacing="0" border="0" width="100%" class="object-title">
     <tr>

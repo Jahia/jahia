@@ -57,7 +57,6 @@
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
 <jsp:useBean id="javaScriptPath" class="java.lang.String" scope="request"/>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%!
 private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger("jsp.jahia.engines.engine");
 // include pages
@@ -177,6 +176,7 @@ if (elh != null) {
     jParams.setCurrentLocale(elh.getCurrentLocale());
 }
 %>
+<utility:setBundle basename="JahiaInternalResources"/>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=jParams.getLocale()%>" lang="<%=jParams.getLocale()%>">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>

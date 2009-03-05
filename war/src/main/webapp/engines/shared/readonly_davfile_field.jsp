@@ -44,7 +44,6 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<utility:setBundle basename="JahiaInternalResources"/>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
@@ -67,7 +66,7 @@
         }
     }
 %>
-
+<utility:setBundle basename="JahiaInternalResources"/>
 <fmt:message key="org.jahia.engines.shared.File_Field.file.label"/>&nbsp;:&nbsp;
 <% if (fField == null || url == null) { %>
 <fmt:message key="org.jahia.engines.shared.File_Field.none.label"/>

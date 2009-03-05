@@ -53,12 +53,8 @@ html, body,
 }
 
 #bodywrapper ul, #bodywrapper ol, #bodywrapper dd {
-    margin: 1em 0 1em 0em;
-    padding: 1em 1em 1em 0em;
-}
-
-#bodywrapper li ul, #bodywrapper li ol {
-    padding: 0px 0px 5px 15px;
+	margin:0.5em 0 0.5em 2em;
+	padding:0;
 }
 
 #bodywrapper li {

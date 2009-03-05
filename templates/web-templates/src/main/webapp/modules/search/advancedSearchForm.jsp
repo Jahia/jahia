@@ -91,17 +91,3 @@
     <div class="clear"> </div>
     </div>
 </div>
-<%-- 
-<div class="clasp"><a href="#toggle" onclick="return toggleSearch('files');">${fn:escapeXml(jahia.i18n['search.advancedSearch.fileRepository'])}</a></div>
-    <div id="searchTypeFiles" class="lunchbox advancedSearchForm" style="display: ${param['src_mode'] == 'files' ? 'block' : 'none'}">
-        <s:form searchFor="pages">
-            <fieldset>
-                <legend>Text search</legend>
-                <span class="label">Raw:</span><s:rawQuery size="100"/><br/>
-            </fieldset>
-                <input type="submit" name="search" class="button" value="${jahia.i18n['submit']}"/>
-        </s:form>
-    <div class="clear"> </div>
-    </div>
-</div>
---%>

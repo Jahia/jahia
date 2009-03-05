@@ -47,36 +47,7 @@
         <template:field name="boxSavedSearchQuery" valueBeanID="boxSavedSearchQuery" display="false"/>
         <c:if test="${not empty boxSavedSearchQuery}">
             <div>
-                Not implemented yet!
-<%-- 
-                <q:results storedQuery="${fn:substringAfter(boxSavedSearchQuery, ' ')}">
-                    <c:if test="${count == 0}">
-                        ${fn:escapeXml(jahia.i18n['noMatch'])}
-                    </c:if>
-                    <c:if test="${count > 0}">
-                        <template:textField name="boxSavedSearchView" valueId="boxSavedSearchView" defaultValue="list"
-                                           display="false"/>
-                        <template:integerField name="boxSavedSearchMaxItems" valueId="boxSavedSearchMaxItems"
-                                              defaultValue="10" display="false"/>
-                        <c:choose>
-                            <c:when test="${boxSavedSearchView eq 'table'}">
-                                <q:resultTableSettings>
-                                    <q:resultTable/>
-                                </q:resultTableSettings>
-                            </c:when>
-                            <c:otherwise>
-                                <ul>
-                                    <q:resultIterator end="${boxSavedSearchMaxItems}">
-                                        <li class="none"><a href="<c:url value='${hit.url}' context='/' />"
-                                                            class="${hit.iconType}"><c:out value="${hit.name}"/></a>
-                                        </li>
-                                    </q:resultIterator>
-                                </ul>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:if>
-                </q:results>
---%>                
+                Not implemented yet
             </div>
         </c:if>
     </template:container>

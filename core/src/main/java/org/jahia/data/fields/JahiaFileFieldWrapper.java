@@ -214,7 +214,7 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
         }
         String value = contentFileField.getValue(jParams);
         if (value == null || "<empty>".equals(value)) { value =""; }
-        if (fField != null && fField.getStorageName() != null &&
+        if (!isNew && fField != null && fField.getStorageName() != null &&
                 (fField.getStorageName()).equals(value)) {
             return true;
         }

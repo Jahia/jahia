@@ -52,17 +52,67 @@
 #bodywrapper .markedForDelete {
     text-decoration: line-through !important;
 }
-#bodywrapper #navigationN2 .action-menu-icons {
-    display: inline;
-    vertical-align: middle;
+/******************************************************************************
+* navigationN2
+******************************************************************************/
+
+#bodywrapper div #navigationN2 {
+    border-top: 5px solid #ddd3ca;
+    margin-bottom: 10px;
 }
+
+#bodywrapper #navigationN2 ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    position: relative;
+}
+
+#bodywrapper #navigationN2 li ul {
+    padding: 0 0 0 10px;
+}
+
 #bodywrapper #navigationN2 li {
-	border-top:1px solid #ccc;
-	clear:left;
-	width:100%;
-	height:1%;
-	overflow: hidden
+    margin: 0;
+    padding: 0;
+    position: relative;
 }
+
+#bodywrapper #navigationN2 a {
+    display: inline;
+    font-weight: bold;
+    text-decoration: none;
+    color: #000;
+    padding-left: 16px;
+    background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50%;
+}
+
+#bodywrapper #navigationN2 a.inpath {
+    color: #600;
+    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
+    padding-left: 16px;
+}
+
+#bodywrapper #navigationN2 a.selected {
+    color: #c03;
+    background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
+    padding-left: 16px;
+}
+
+#bodywrapper #navigationN2 a:hover {
+    color: #555;
+}
+
+#bodywrapper #navigationN2 li .action-menu-icons {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#bodywrapper #navigationN2 li .ContentContainerList {
+    position: relative;
+}
+
 #bodywrapper #bottomshortcuts div.action-menu-icons {
     display: inline;
 	float:left;

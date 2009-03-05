@@ -2,7 +2,7 @@
 <template:container id="promoContainer"  emptyContainerDivCssClassName="mockup-teasers">
 
     <div class="column-item"><!--start column-item -->
-        <div class="columnspace"><!--start columnspace -->
+        <div class="spacer"><!--start spacer -->
             <div class="box box-fixed-height"><!--start box -->
                 <template:image file="image" cssClassName="floatleft"/>
                 <div class="box-content">
@@ -17,7 +17,7 @@
                 </c:if>
             </div><!--stop box -->
         <div class="clear"> </div>
-        </div><!--stop columnspace -->
+        </div><!--stop spacer -->
     </div><!--stop column-item -->
 
     <!-- here we test if the edit mode is active to change a bit the display avoiding layout problems due to action menus -->

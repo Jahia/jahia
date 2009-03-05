@@ -708,7 +708,7 @@ body {
     white-space: nowrap
 }
 
-#bodywrapper #navigationN1 li a.last {
+#bodywrapper #navigationN1 li.last a {
     background: none;
 }
 

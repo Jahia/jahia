@@ -36,5 +36,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
 <c:if test="${jahia.user.username != 'guest'}">
-<div class="subscribable"><ui:subscribeButton source="${contentObjectKey}" confirmationRequired="true"/></div>
+<div class="subscribable"><ui:subscribeButton source="${contentObjectKey}"/></div>
 </c:if>

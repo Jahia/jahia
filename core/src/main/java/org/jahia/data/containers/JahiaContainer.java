@@ -592,9 +592,11 @@ public class JahiaContainer implements Serializable, Cloneable, ACLResourceInter
      */
     public  void addField (JahiaField theField) {
         if (theField != null) {
-            fields.add(theField);
             try {
-                children.put(theField.getDefinition().getName(), theField);
+                if ( theField.getDefinition().getItemDefinition() != null ) {
+                    fields.add(theField);
+                    children.put(theField.getDefinition().getName(), theField);
+                }
             } catch (JahiaException je) {
                 logger.error("Error while inserting field " + theField.getID() +
                              " into container children map", je);
@@ -613,10 +615,12 @@ public class JahiaContainer implements Serializable, Cloneable, ACLResourceInter
      */
     public void addFields(List<JahiaField> theFields) {
         if (theFields != null) {
-            fields.addAll(theFields);
             for (JahiaField theField : theFields) {
                 try {
-                    children.put(theField.getDefinition().getName(), theField);
+                    if ( theField.getDefinition().getItemDefinition() != null ) {
+                        fields.add(theField);                        
+                        children.put(theField.getDefinition().getName(), theField);
+                    }
                 } catch (JahiaException je) {
                     logger.error(
                             "Error while inserting field " + theField.getID()

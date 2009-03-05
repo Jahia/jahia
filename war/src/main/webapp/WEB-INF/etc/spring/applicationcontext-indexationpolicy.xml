@@ -230,7 +230,7 @@
         <property name="conditions"><!-- a rule returns true only if all its conditions evaluate to true -->
             <list>
                 <bean class="org.jahia.services.search.indexingscheduler.impl.condition.ContentTypeRuleCondition">
-                    <property name="allowAll" value="false"/>
+                    <property name="allowAll" value="true"/>
                     <!-- In case allowAll is set to false, more precise content type regular expression pattern can be defined
                          "ContentPage" : match all pages
                          "ContentContainer" : match all containers
@@ -238,6 +238,7 @@
                          "ContentContainer[|]name_.*news" : match all containers using a definition name, which ends with news
                          "ContentContainer[|]id_43" : match all containers using the definition with the given ID=43
                     -->
+                    <!--
                     <property name="allowedContentTypes">
                         <list>
                             <value>ContentPage[|]name_news</value>
@@ -247,14 +248,15 @@
                             <value>ContentContainer[|]name_.*events</value>
                         </list>
                     </property>
+                    -->
                 </bean>
                 <bean class="org.jahia.services.search.indexingscheduler.impl.condition.ActionRuleCondition">
                     <property name="allowAll" value="false"/>
                     <!-- In case allowAll is set to false, more precise content type pattern can be defined
                          "ContentPage" : match all pages
                          "ContentContainer" : match all containers
-                         "ContentContainer|name_BlogContainer" : match all containers with the definition name "BlogContainer"
-                         "ContentContainer|id_43" : match all containers using the definition with the given ID=43
+                         "ContentContainer[|]name_blogContainer" : match all containers with the definition name "blogContainer"
+                         "ContentContainer[|]id_43" : match all containers using the definition with the given ID=43
                     -->
                     <property name="allowedActions">
                         <list>

@@ -54,7 +54,6 @@ public class FormQuickGoogleGadget extends FormPanel {
         scriptField.setName("gscript");
         scriptField.setFieldLabel(Messages.getNotEmptyResource("gadget_script", "Gadget script"));
         scriptField.setAllowBlank(false);
-        scriptField.setMaxLength(200);
         add(scriptField);
 
 

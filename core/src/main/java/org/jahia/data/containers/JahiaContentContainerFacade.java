@@ -191,7 +191,7 @@ public class JahiaContentContainerFacade implements Serializable, ContainerFacad
                         new JahiaContentFieldFacade(I.intValue(), loadFlag,
                                                     jParams,localeList, createMissingLanguages);
                 final JahiaField jahiaField = contentFieldFacade.getField(jParams.getEntryLoadRequest(), true);
-                if ( jahiaField != null ){
+                if ( jahiaField != null && jahiaField.getDefinition().getItemDefinition() != null){
                     // testing for not null field is required in case of versioning context
                 final Integer fieldDefId = new Integer(jahiaField.getDefinition().getID());
                 existingFields.put(fieldDefId,contentFieldFacade);

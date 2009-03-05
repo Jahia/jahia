@@ -261,6 +261,9 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
 
     public int getType() {
         ExtendedItemDefinition itemDef = getItemDefinition();
+        if (itemDef == null) {
+            return -1;
+        }
         if (!itemDef.isNode()) {
             ExtendedPropertyDefinition propDef = (ExtendedPropertyDefinition) itemDef;
             switch (propDef.getRequiredType()) {

@@ -63,7 +63,7 @@ public final class JahiaConstants {
     public static final String TEMPLATES_DESCRIPTOR_20_PATH = 
         "xml_dtd/templates_2_0.xsd";
 
-    public static final String TEMPLATES_DESCRIPTOR_20_URI = "http://www.jahia.net/shemas/templates_2_0.xsd";
+    public static final String TEMPLATES_DESCRIPTOR_20_URI = "http://www.jahia.org/shemas/templates_2_0.xsd";
 
     /**
      * DTD URI

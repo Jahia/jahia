@@ -33,7 +33,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:jahia="http://www.jahia.net/jahia/templates" targetNamespace="http://www.jahia.net/jahia/templates" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:jahia="http://www.jahia.org/jahia/templates" targetNamespace="http://www.jahia.org/jahia/templates" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0">
   <element name="template-set">
     <complexType>
       <sequence>

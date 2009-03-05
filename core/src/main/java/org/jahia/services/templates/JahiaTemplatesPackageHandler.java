@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -46,6 +46,7 @@ import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TE
 import java.io.File;
 import java.io.IOException;
 
+import org.jahia.data.constants.JahiaConstants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
@@ -63,9 +64,10 @@ public class JahiaTemplatesPackageHandler {
 
     static final String NS_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 
-    static final String NS_URI_JAHIA = "http://www.jahia.net/jahia/templates";
+    static final String NS_URI_JAHIA = "http://www.jahia.org/jahia/templates";
     
-    static final String SCHEMA_LOCATION = "http://www.jahia.net/jahia/templates http://www.jahia.net/shemas/templates_2_0.xsd";
+    static final String SCHEMA_LOCATION = NS_URI_JAHIA + " "
+            + JahiaConstants.TEMPLATES_DESCRIPTOR_20_URI;
 
     /**
      * The full path to the Template Jar File *

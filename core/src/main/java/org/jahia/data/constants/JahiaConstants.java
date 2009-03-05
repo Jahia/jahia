@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -70,7 +70,7 @@ public final class JahiaConstants {
     public static final String TEMPLATES_DESCRIPTOR_20_PATH = 
         "xml_dtd/templates_2_0.xsd";
 
-    public static final String TEMPLATES_DESCRIPTOR_20_URI = "http://www.jahia.net/shemas/templates_2_0.xsd";
+    public static final String TEMPLATES_DESCRIPTOR_20_URI = "http://www.jahia.org/shemas/templates_2_0.xsd";
 
     /**
      * DTD URI

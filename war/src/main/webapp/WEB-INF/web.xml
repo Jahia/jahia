@@ -1726,6 +1726,36 @@
         </auth-constraint>
     </security-constraint>
 
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>/servlet/AxisServlet</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>jahiaManager</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>/services/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>jahiaManager</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>admin</web-resource-name>
+            <url-pattern>*.jws</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>jahiaManager</role-name>
+        </auth-constraint>
+    </security-constraint>
+
     <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>Secured Jahia tools</realm-name>

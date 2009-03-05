@@ -6,8 +6,10 @@
 <script type="text/javascript" src='<utility:resolvePath value='javascript/swfobject.js'/>'></script>
 <script type="text/javascript" src='<utility:resolvePath value='javascript/textsizer.js'/>'></script>
 <script type="text/javascript" src='<utility:resolvePath value='javascript/collapse.js'/>'></script>
-<script type="text/javascript" src='<utility:resolvePath value='javascript/jQuery.js'/>'></script>
-<!-- Set Jquery as a variable instead of document to avoid possible conflicts -->
+
+<%--display external headers (scripts/css) define in template file--%>
+${templateHeader}
+
 <script type="text/javascript">
     jQuery.noConflict();
 </script>

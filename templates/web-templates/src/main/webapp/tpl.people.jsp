@@ -37,6 +37,11 @@
 <%@ include file="common/declarations.jspf" %>
 <%-- This file only describe the template --%>
 
+<%--Define special variable for header (particular script/css)--%>
+<c:set var="templateHeader" scope="request">
+    <script type="text/javascript" src='<utility:resolvePath value='javascript/jQuery.js'/>'></script>
+</c:set>
+
 <%-- Define layout file --%>
 <jsp:include page="positioning.jsp">
     <jsp:param name="mainArea" value="areas/introduction_portraits.jsp"/>

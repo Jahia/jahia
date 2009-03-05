@@ -42,7 +42,7 @@
             <div class="box2-text">
                 <p><fmt:message key='static.calendar.viewfromdate'/></p>
                 <form action="" name="calendarStartDate" method="get">
-                    <input type="hidden" name="startDate"/>
+                    <input type="hidden" name="startDate" id="startDate"/>
                 </form>
             <!--start calendar-->
                 <script type="text/javascript">
@@ -51,7 +51,17 @@
                         document.calendarStartDate.submit();
                     }
                 </script>
+                <%--
+                this is GWT calendar
                 <ui:calendar callback="setDate"/>
+                --%>
+                <script type="text/javascript">
+                    jQuery(document).ready(function(jQuery) {
+                        jQuery("#datepicker").datepicker({onSelect: function(dateText){setDate(dateText)},showButtonPanel: true, altField: '#startDate', altFormat: 'd/M/yy'},jQuery.datepicker.regional['${requestScope.currentRequest.locale}']);
+                    });
+                </script>
+                <div id="datepicker"></div>
+                
     <!--stop calendar-->
             </div>
         <div class="box2-bottomright"> </div>

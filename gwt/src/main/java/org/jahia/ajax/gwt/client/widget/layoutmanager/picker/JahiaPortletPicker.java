@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.widget.node.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.*;
 
@@ -166,7 +167,7 @@ public class JahiaPortletPicker extends ContentPanel {
 
     private void initCreatePortletInstanceToolItem() {
         // add to my portal
-        createPortletInstance = new TextToolItem("Create module");
+        createPortletInstance = new TextToolItem(Messages.getNotEmptyResource("p_mashup_create","Create module"));
         createPortletInstance.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 PortletWizardWindow window = new PortletWizardWindow(null,selection) {
@@ -182,7 +183,7 @@ public class JahiaPortletPicker extends ContentPanel {
 
     private void initGoToMyPortalToolItem() {
         // add to my portal
-        goToMyPortal = new TextToolItem("My portal");
+        goToMyPortal = new TextToolItem(Messages.getNotEmptyResource("p_my_portal","My portal"));
         goToMyPortal.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 JahiaPortalManager.getInstance().refreshPortal();
@@ -192,7 +193,7 @@ public class JahiaPortletPicker extends ContentPanel {
 
 
     private void initConfigToolItem() {
-        config = new TextToolItem("My config");
+        config = new TextToolItem(Messages.getNotEmptyResource("p_my_config","My config"));
         config.addSelectionListener(new SelectionListener<ComponentEvent>() {
             @Override
             public void componentSelected(ComponentEvent ce) {

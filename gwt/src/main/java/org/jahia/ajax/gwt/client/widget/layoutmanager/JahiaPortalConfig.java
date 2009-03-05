@@ -36,6 +36,7 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -63,7 +64,7 @@ public class JahiaPortalConfig extends Window {
         setModal(true);
         setSize(500, 200);
         setPlain(true);
-        setHeading("Config");
+        setHeading(Messages.getNotEmptyResource("p_config_title","Config"));
         setLayout(new FitLayout());
         add(createFormConfig());
 
@@ -80,7 +81,7 @@ public class JahiaPortalConfig extends Window {
 
         // numbercolumns
         final NumberField numberColumnsField = new NumberField();
-        numberColumnsField.setFieldLabel("Number of columns");
+        numberColumnsField.setFieldLabel(Messages.getNotEmptyResource("p_number_columns","Number of columns"));
         numberColumnsField.setValue(gwtPortalConfig.getNbColumns());
         numberColumnsField.setAllowBlank(false);
         numberColumnsField.setAllowNegative(false);
@@ -89,7 +90,7 @@ public class JahiaPortalConfig extends Window {
 
         // draggable live mode
         final CheckBoxGroup refreshRadioGroup = new CheckBoxGroup();
-        refreshRadioGroup.setFieldLabel("My portal is editable in live mode");
+        refreshRadioGroup.setFieldLabel(Messages.getNotEmptyResource("p_portal_editable_live_mode","My portal is editable in live mode"));
         final CheckBox dndLiveMode = new CheckBox();
         dndLiveMode.setName("draggableLiveMode");
         dndLiveMode.setValue(gwtPortalConfig.isLiveDraggable());
@@ -99,13 +100,13 @@ public class JahiaPortalConfig extends Window {
 
         // quickbar
         final CheckBoxGroup quickbarVisibleGroup = new CheckBoxGroup();
-        quickbarVisibleGroup.setFieldLabel("User can add content in live mode");
+        quickbarVisibleGroup.setFieldLabel(Messages.getNotEmptyResource("p_add_mashup_live_mode","User can add mashup in live mode"));
         final CheckBox quickbarVisibleCheckBox = new CheckBox();
         quickbarVisibleCheckBox.setValue(gwtPortalConfig.isLiveQuickbarVisible());
         quickbarVisibleGroup.add(quickbarVisibleCheckBox);
        // formPanel.add(quickbarVisibleGroup);
 
-        final Button saveButton = new Button("Save");
+        final Button saveButton = new Button(Messages.getNotEmptyResource("p_save","Save"));
         saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig = new GWTJahiaLayoutManagerConfig();

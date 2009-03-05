@@ -57,6 +57,7 @@ import org.jahia.ajax.gwt.client.widget.layoutmanager.picker.JahiaPortletPickerD
 import org.jahia.ajax.gwt.client.widget.layoutmanager.portlet.JahiaPortal;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.portlet.JahiaPortletFactory;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.portlet.JahiaPortlet;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.*;
 
@@ -112,8 +113,6 @@ public class JahiaPortalManager extends ContentPanel {
         // portled selector (dialog)
         portletSelectorDialog = new JahiaPortletPickerDialog();
 
-        // portled selector
-
 
         // portal
         portal = new JahiaPortal(gwtPortalConfig.getNbColumns());
@@ -129,7 +128,7 @@ public class JahiaPortalManager extends ContentPanel {
         portal.addListener(Events.Drop, new OnPortletMovedListener(portal));
 
 
-        portletPickerButton = new TextToolItem("Add modules");
+        portletPickerButton = new TextToolItem(Messages.getNotEmptyResource("p_add_mashups", "Add mashups"));
         portletPickerButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             @Override
             public void componentSelected(ComponentEvent ce) {
@@ -137,7 +136,7 @@ public class JahiaPortalManager extends ContentPanel {
             }
         });
 
-        saveAsDefaultButton = new TextToolItem("Save as default");
+        saveAsDefaultButton = new TextToolItem(Messages.getNotEmptyResource("p_save_default", "Save as default"));
         saveAsDefaultButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             @Override
             public void componentSelected(ComponentEvent ce) {
@@ -147,13 +146,13 @@ public class JahiaPortalManager extends ContentPanel {
                     }
 
                     public void onFailure(Throwable throwable) {
-                        Log.error("Unable to save current config as default config.",throwable);
+                        Log.error("Unable to save current config as default config.", throwable);
                     }
                 });
             }
         });
 
-        configPortalButton = new TextToolItem("My config");
+        configPortalButton = new TextToolItem(Messages.getNotEmptyResource("p_my_config", "My config"));
         configPortalButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
 
 
@@ -203,7 +202,7 @@ public class JahiaPortalManager extends ContentPanel {
         com.google.gwt.user.client.Window.Location.reload();
     }
 
-     /**
+    /**
      * Switch to full screen view
      *
      * @param portlet
@@ -308,17 +307,21 @@ public class JahiaPortalManager extends ContentPanel {
         if (gwtLayoutItems != null) {
             for (GWTJahiaLayoutItem gwtLayoutItem : gwtLayoutItems) {
                 // create a html draggable ui
-                try {
-                    // set gwtJahiaDraggableWidgetIterator's preferences
-                    if (gwtLayoutItem.getWindowId() != null) {
-                        addJahiaPortlet(gwtLayoutItem);
-                    } else {
-                        Log.error("error when loading widget,  widetId is not defined.");
+                if (gwtLayoutItem != null) {
+                    try {
+                        // set gwtJahiaDraggableWidgetIterator's preferences
+                        if (gwtLayoutItem.getWindowId() != null) {
+                            addJahiaPortlet(gwtLayoutItem);
+                        } else {
+                            Log.error("error when loading widget,  widetId is not defined.");
+                        }
+
+                    } catch (Exception e) {
+                        Log.error("error when loading widget instance with id[" + gwtLayoutItem.getWindowId() + "]", e);
+
                     }
-
-                } catch (Exception e) {
-                    Log.error("error when loading widget instance with id[" + gwtLayoutItem.getWindowId() + "]", e);
-
+                }else{
+                    Log.error("Found a null layout item.");
                 }
             }
         }
@@ -328,7 +331,7 @@ public class JahiaPortalManager extends ContentPanel {
         TemplatesDOMUtil.setVisible("layout", true);
     }
 
-   public void addJahiaPortlet(GWTJahiaLayoutItem gwtLayoutItem) {
+    public void addJahiaPortlet(GWTJahiaLayoutItem gwtLayoutItem) {
         int column = gwtLayoutItem.getColumn();
         int row = gwtLayoutItem.getRow();
         Log.debug("add widget" + "[" + gwtLayoutItem.getWindowId() + " in column " + column + "]");

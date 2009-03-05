@@ -63,9 +63,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.jcr.*;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashSet;
+import javax.jcr.nodetype.PropertyDefinition;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -163,61 +162,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         copyAttribute("currentJahia", jParams, portalRequest, window);
         copyAttribute("jahia", jParams, portalRequest, window);
         copyAttribute("fieldId", jParams, portalRequest, window);
-
-        // porlet properties
-        try {
-            Node node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(entryPointInstance.getID(), jParams.getUser());
-            if (node != null) {
-                PropertyIterator propertyIterator = node.getProperties();
-                if (propertyIterator != null) {
-                    while (propertyIterator.hasNext()) {
-                        Property property = propertyIterator.nextProperty();
-                        String name = property.getName();
-                        Object theValue;
-                        Value val = property.getValue();
-                        switch (val.getType()) {
-                            case PropertyType.BINARY:
-                                theValue = val.getString();
-                                break;
-                            case PropertyType.BOOLEAN:
-                                theValue = Boolean.valueOf(val.getBoolean());
-                                break;
-                            case PropertyType.DATE:
-                                theValue = val.getDate();
-                                break;
-                            case PropertyType.DOUBLE:
-                                theValue = Double.valueOf(val.getDouble());
-                                break;
-                            case PropertyType.LONG:
-                                theValue = Long.valueOf(val.getLong());
-                                break;
-                            case PropertyType.NAME:
-                                theValue = val.getString();
-                                break;
-                            case PropertyType.PATH:
-                                theValue = val.getString();
-                                break;
-                            case PropertyType.REFERENCE:
-                                theValue = val.getString();
-                                break;
-                            case PropertyType.STRING:
-                                theValue = val.getString();
-                                break;
-                            case PropertyType.UNDEFINED:
-                                theValue = val.getString();
-                                break;
-                            default:
-                                theValue = val.getString();
-                        }
-                        portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + name, theValue);
-
-                    }
-                }
-            }
-
-        } catch (RepositoryException e) {
-            logger.error(e, e);
-        }
+        copyNodeProperties(entryPointInstance, jParams, window, portalRequest);
 
 
         portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_EntryPointInstance", entryPointInstance);
@@ -240,6 +185,104 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
             cacheInstance.writeToContainerCache(null, jParams, portletRendering, cacheKey, new HashSet(), entryPointInstance.getExpirationTime());
         }
         return portletRendering;
+    }
+
+    /**
+     * Copy node properties into request attribute
+     * @param entryPointInstance
+     * @param jParams
+     * @param window
+     * @param portalRequest
+     */
+    private void copyNodeProperties(EntryPointInstance entryPointInstance, ParamBean jParams, PortletWindow window, PortalServletRequest portalRequest) {
+        // porlet properties
+        try {
+            Node node = ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(entryPointInstance.getID(), jParams.getUser());
+            if (node != null) {
+                PropertyIterator propertyIterator = node.getProperties();
+                if (propertyIterator != null) {
+                    while (propertyIterator.hasNext()) {
+                        Property property = propertyIterator.nextProperty();
+                        PropertyDefinition def = property.getDefinition();
+                        String propName = def.getName();
+                        // create the corresponding GWT bean
+                        if (!def.isMultiple()) {
+                            portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + propName, convertValue(property.getValue()));
+                        } else {
+                            portalRequest.setAttribute("Pluto_" + window.getId().getStringId() + "_" + propName, convertValues(property.getValues()));
+                        }
+                    }
+                }
+            }
+
+        } catch (RepositoryException e) {
+            logger.error(e, e);
+        }
+    }
+
+    /**
+     * convert Values[] jcr object to Object[]
+     * @param val
+     * @return
+     * @throws RepositoryException
+     */
+    private Object convertValues(Value val[]) throws RepositoryException {
+        if(val == null){
+            return null;
+        }
+        Object[] o = new Object[val.length];
+        for (int i = 0; i < val.length; i++) {
+            o[i] = convertValue(val[i]);
+        }
+        return o;
+    }
+
+    /**
+     * Convert Value jcr object to Object
+     * @param val
+     * @return
+     * @throws RepositoryException
+     */
+    private Object convertValue(Value val) throws RepositoryException {
+        Object theValue;
+        if(val == null){
+            return null;
+        }
+        switch (val.getType()) {
+            case PropertyType.BINARY:
+                theValue = val.getString();
+                break;
+            case PropertyType.BOOLEAN:
+                theValue = Boolean.valueOf(val.getBoolean());
+                break;
+            case PropertyType.DATE:
+                theValue = val.getDate();
+                break;
+            case PropertyType.DOUBLE:
+                theValue = Double.valueOf(val.getDouble());
+                break;
+            case PropertyType.LONG:
+                theValue = Long.valueOf(val.getLong());
+                break;
+            case PropertyType.NAME:
+                theValue = val.getString();
+                break;
+            case PropertyType.PATH:
+                theValue = val.getString();
+                break;
+            case PropertyType.REFERENCE:
+                theValue = val.getString();
+                break;
+            case PropertyType.STRING:
+                theValue = val.getString();
+                break;
+            case PropertyType.UNDEFINED:
+                theValue = val.getString();
+                break;
+            default:
+                theValue = val.getString();
+        }
+        return theValue;
     }
 
     private void copyAttribute(String attributeName, ProcessingContext processingContext, PortalServletRequest portalRequest, PortletWindow window) {

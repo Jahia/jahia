@@ -79,11 +79,11 @@ public class OnPortletStatusChanged implements Listener<ComponentEvent> {
         }
         Log.debug("JahiaPortlet[" + jahiaPortlet.getWindowId() + "] "+status+".");
 
-        GWTJahiaLayoutItem preferences = jahiaPortlet.getPorletConfig();
-        preferences.setStatus(status);
+        GWTJahiaLayoutItem gwtJahiaLayoutItem = jahiaPortlet.getPorletConfig();
+        gwtJahiaLayoutItem.setStatus(status);
 
         // make a call ajax
-        LayoutmanagerService.App.getInstance().saveLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(), preferences, new AsyncCallback() {
+        LayoutmanagerService.App.getInstance().saveLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(), gwtJahiaLayoutItem, new AsyncCallback() {
             public void onSuccess(Object o) {
                 Log.debug("old status: "+oldStatus);
                 if (JahiaPropertyHelper.isStatusFullScreen(oldStatus)) {

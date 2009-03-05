@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
@@ -28,18 +29,10 @@ import java.util.List;
  * Time: 14:25:57
  */
 public class JahiaFolderPortletTree extends LayoutContainer {
-    private String rootPath;
-    private GWTJahiaNode directory;
 
     public JahiaFolderPortletTree() {
-        rootPath = "mashups";
-        directory = new GWTJahiaNode(null, null, null, rootPath, null, null, null, null, false, false, false, null);
     }
 
-    public JahiaFolderPortletTree(String rootPath) {
-        this.rootPath = rootPath;
-        directory = new GWTJahiaNode(null, null, null, rootPath, null, null, null, null, false, false, false, null);
-    }
 
     @Override
     protected void onRender(Element parent, int pos) {
@@ -122,7 +115,7 @@ public class JahiaFolderPortletTree extends LayoutContainer {
                 }
             }
         });
-        binder.setDisplayProperty("name");
+        binder.setDisplayProperty("displayName");
 
         loader.load(null);
         add(tree);

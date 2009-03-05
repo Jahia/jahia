@@ -14,9 +14,9 @@ import com.extjs.gxt.ui.client.Style;
  * To change this template use File | Settings | File Templates.
  */
 public class JahiaPortletLeftComponent extends LayoutContainer {
-    private JahiaFolderPortletTree sharedPortletFolderView = new JahiaFolderPortletTree( "/content/mashups");
-    private JahiaFolderPortletTree sitePortletFolderView = new JahiaFolderPortletTree( "/content/mashups");
-    private JahiaFolderPortletTree myPortletFolderView = new JahiaFolderPortletTree( "/content/mashups");
+    private JahiaFolderPortletTree sharedPortletFolderView = new JahiaFolderPortletTree();
+    private JahiaFolderPortletTree sitePortletFolderView = new JahiaFolderPortletTree();
+    private JahiaFolderPortletTree myPortletFolderView = new JahiaFolderPortletTree();
 
 
     public JahiaPortletLeftComponent() {

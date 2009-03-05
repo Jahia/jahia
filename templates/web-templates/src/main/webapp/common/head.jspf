@@ -10,7 +10,4 @@
 <%--display external headers (scripts/css) define in template file--%>
 ${templateHeader}
 
-<script type="text/javascript">
-    jQuery.noConflict();
-</script>
-<script type="text/javascript" src="<utility:resolvePath value='javascript/facebox.js'/>"></script>
+

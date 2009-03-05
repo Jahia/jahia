@@ -42,6 +42,9 @@
     <script type="text/javascript" src='<utility:resolvePath value='javascript/jQuery.js'/>'></script>
     <script type="text/javascript" src='<utility:resolvePath value='javascript/jquery-ui-1.6rc6.js'/>'></script>
     <script type="text/javascript" src='<utility:resolvePath value='javascript/i18n/ui.datepicker-${requestScope.currentRequest.locale}.js'/>'></script>
+    <script type="text/javascript">
+        jQuery.noConflict();
+    </script>
 </c:set>
 
 <%-- Define layout file --%>

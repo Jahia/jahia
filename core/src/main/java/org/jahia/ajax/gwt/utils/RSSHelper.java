@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -34,10 +34,19 @@
 package org.jahia.ajax.gwt.utils;
 
 import com.sun.syndication.feed.synd.*;
+import com.sun.syndication.io.SyndFeedInput;
+import com.sun.syndication.io.XmlReader;
+import com.sun.syndication.io.FeedException;
+import com.sun.syndication.fetcher.impl.FeedFetcherCache;
+import com.sun.syndication.fetcher.impl.HashMapFeedInfoCache;
+import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
+import com.sun.syndication.fetcher.FeedFetcher;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.net.URL;
+import java.io.IOException;
 
 import org.jahia.ajax.gwt.client.data.rss.*;
 import org.apache.log4j.Logger;
@@ -50,10 +59,36 @@ import org.apache.log4j.Logger;
 public class RSSHelper {
     private static final transient Logger logger = Logger.getLogger(RSSHelper.class);
 
-    public static GWTJahiaRSSFeed createGWTRSSFeed(SyndFeed feed) {
+    public static GWTJahiaRSSFeed createGWTRSSFeed(URL feedUrl) {
+        boolean reformatGoogleNewsEntry = false;
+        SyndFeed feed = null;
+        try {
+            final SyndFeedInput input = new SyndFeedInput();
+            final XmlReader reader = new XmlReader(feedUrl.openStream());
+            feed = input.build(reader);
+        } catch (FeedException e) {
+            logger.error(e.getMessage() + ", feedException --> Can't load rss.");
+        } catch (IOException e) {
+            // another way to load feed RSS
+            final FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.getInstance();
+            final FeedFetcher fetcher = new HttpURLFeedFetcher(feedInfoCache);
+            try {
+                feed = fetcher.retrieveFeed(feedUrl);
+            } catch (Exception e1) {
+                logger.error(e.getMessage() + ", exception --> Can't load rss.");
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage() + ", exception --> Can't load rss.");
+        }
         if (feed == null) {
             return null;
         }
+        
+        // handle goole news
+        if (feedUrl != null && "news.google.com".equals(feedUrl.getHost())) {
+            reformatGoogleNewsEntry = true;
+        }
+
         String url = feed.getUri();
         String title = feed.getTitle();
         String author = feed.getAuthor();
@@ -63,7 +98,7 @@ public class RSSHelper {
         String copyright = feed.getCopyright();
         String description = feed.getDescription();
         String encoding = feed.getEncoding();
-        List<GWTJahiaRSSEntry> entries = createGWTRSSEntries(feed.getEntries());
+        List<GWTJahiaRSSEntry> entries = createGWTRSSEntries(reformatGoogleNewsEntry, feed.getEntries());
         String feedType = feed.getFeedType();
         GWTJahiaRSSImage gwtrssImage = createGWTRSSImage(feed.getImage());
         String language = feed.getLanguage();
@@ -71,13 +106,16 @@ public class RSSHelper {
 
     }
 
-    private static List<GWTJahiaRSSEntry> createGWTRSSEntries(List<SyndEntry> syndEntryList) {
+    private static List<GWTJahiaRSSEntry> createGWTRSSEntries(boolean reformatGoogleNewsEntry, List<SyndEntry> syndEntryList) {
         if (syndEntryList == null) {
             return null;
         }
         List<GWTJahiaRSSEntry> gwtrssEntries = new ArrayList<GWTJahiaRSSEntry>();
 
         for (SyndEntry syndEntry : syndEntryList) {
+            if (reformatGoogleNewsEntry) {
+                reformatGoogleNewsEntry(syndEntry);
+            }
             String author = syndEntry.getAuthor();
 
             // authors
@@ -199,5 +237,23 @@ public class RSSHelper {
         String url = syndImage.getUrl();
 
         return new GWTJahiaRSSImage(description, link, title, url);
+    }
+
+    /**
+     * Reaformat codes coming from google news
+     * @param entry
+     */
+    private static void reformatGoogleNewsEntry(SyndEntry entry) {
+        final SyndContent entryDescription = entry.getDescription();
+        if (entryDescription != null) {
+            final String description = entryDescription.getValue();
+            final int descBegin = description.lastIndexOf("<font size=-1>") + 14;
+            final int descEnd = description.indexOf("</font>", descBegin);
+
+            if (descBegin != -1 && descEnd != -1) {
+                final String realDesc = description.substring(descBegin, descEnd);
+                entryDescription.setValue(realDesc);
+            }
+        }
     }
 }

@@ -33,14 +33,11 @@
 
 package org.jahia.portlets;
 
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.apache.log4j.Logger;
 import javax.portlet.*;
 import java.util.Map;
 import java.util.HashMap;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -85,9 +82,9 @@ public class JahiaRSSPortlet extends GenericPortlet {
      */
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
         String url = (String) renderRequest.getAttribute("url");
-        String nbFeed = (String) renderRequest.getAttribute("entriesCount");
-        if (nbFeed == null || nbFeed.length() == 0) {
-            nbFeed = "5";
+        Long nbFeed = (Long) renderRequest.getAttribute("entriesCount");
+        if (nbFeed == null || nbFeed < 0) {
+            nbFeed = 5l;
         }
         String id = renderRequest.getWindowID();
         String html = "<div id='" + id + "' jahiaType='" + JahiaType.RSS + "' url='" + url + "' entriesCount='" + nbFeed + "' > &nbsp </div>";

@@ -34,10 +34,6 @@
 package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.sun.syndication.io.SyndFeedInput;
-import com.sun.syndication.io.XmlReader;
-import com.sun.syndication.io.FeedException;
-import com.sun.syndication.feed.synd.SyndFeed;
 import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
@@ -71,7 +67,6 @@ import javax.servlet.http.HttpSession;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.net.URL;
-import java.net.URLConnection;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -487,7 +482,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         return message.getValues() == null ? JahiaResourceBundle
                 .getMessageResource(message.getKey(), getLocale())
                 : MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(),
-                        getLocale()),message.getValues());
+                getLocale()), message.getValues());
     }
 
     /**
@@ -583,23 +578,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
      * @return
      */
     protected GWTJahiaRSSFeed loadRssFeed(URL feedUrl) {
-        try {
-            final SyndFeedInput input = new SyndFeedInput();
-            final XmlReader reader = new XmlReader(feedUrl.openStream());
-            return RSSHelper.createGWTRSSFeed(input.build(reader));
-        } catch (FeedException e) {
-            logger.error(e.getMessage() + ", feedException --> Can't load rss.");
-        } catch (IOException e) {
-            /* final FeedFetcherCache feedInfoCache = HashMapFeedInfoCache.getInstance();
-          final FeedFetcher fetcher = new HttpURLFeedFetcher(feedInfoCache);
-
-          feed = fetcher.retrieveFeed(feedUrl);*/
-            return RSSHelper.createGWTRSSFeed(null);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage() + ", exception --> Can't load rss.");
-        }
-        return null;
+        return RSSHelper.createGWTRSSFeed(feedUrl);
     }
 
 }

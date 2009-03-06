@@ -346,7 +346,7 @@
         for (int i = 0; i < size; i++) {
             marker = (ResourceBundleMarker) markers.get(i);
             if ("".equals(marker.getResourceBundleID())) {
-                resourceMarker = marker.getValue(jParams.getLocale());
+                resourceMarker = marker.getValue(elh.getCurrentLocale());
             } else {
                 resourceMarker = marker.drawMarker();
             }
@@ -369,11 +369,11 @@
             if (isSelected ||
                 selectFirstByDefault) { %>
     <option id="<%=marker.getDefaultValue()%>" value="<%=value%>"
-            selected="selected"><%=GuiBean.glueTitle(marker.getValue(jParams.getLocale()), 70)%></option>
+            selected="selected"><%=GuiBean.glueTitle(marker.getValue(elh.getCurrentLocale()), 70)%></option>
     <%
     selected = marker.getDefaultValue();
     } else { %>
-    <option id="<%=marker.getDefaultValue()%>" value="<%=value%>"><%=GuiBean.glueTitle(marker.getValue(jParams.getLocale()), 70)%></option>
+    <option id="<%=marker.getDefaultValue()%>" value="<%=value%>"><%=GuiBean.glueTitle(marker.getValue(elh.getCurrentLocale()), 70)%></option>
     <% }
     }
     %>

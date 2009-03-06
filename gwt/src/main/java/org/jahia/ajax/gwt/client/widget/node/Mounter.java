@@ -46,7 +46,7 @@ import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
 /**
@@ -73,14 +73,14 @@ public class Mounter extends Window {
 
         final TextField<String> f = new TextField<String>();
         f.setName("mountpoint");
-        f.setFieldLabel(Resources.getResource("fm_mountpoint"));
+        f.setFieldLabel(Messages.getResource("fm_mountpoint"));
 
         form.add(f);
 
         final TextField<String> t = new TextField<String>();
         t.setName("root");
         t.setValue("smb://");
-        t.setFieldLabel(Resources.getResource("fm_serveraddress"));
+        t.setFieldLabel(Messages.getResource("fm_serveraddress"));
         form.add(t);
 
         final ProgressBar bar = new ProgressBar() ;

@@ -36,8 +36,8 @@ package org.jahia.ajax.gwt.client.widget.node;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
@@ -121,7 +121,7 @@ public class ImageCrop extends Window {
         } else {
             newname.setValue(n.getName() + "_crop");
         }
-        newname.setFieldLabel(Resources.getResource("fm_newname"));
+        newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
         ButtonBar buttons = new ButtonBar() ;

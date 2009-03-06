@@ -63,7 +63,7 @@ import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
@@ -93,7 +93,7 @@ public class ThumbView extends TopRightComponent {
         m_component.setBodyBorder(false);
 
         ToolBar bar = new ToolBar();
-        bar.add(new LabelToolItem(Resources.getResource("fm_thumbFilter")));
+        bar.add(new LabelToolItem(Messages.getResource("fm_thumbFilter")));
 
         store = new ListStore<GWTJahiaNode>();
 
@@ -115,13 +115,13 @@ public class ThumbView extends TopRightComponent {
 
         bar.add(new AdapterToolItem(field));
         bar.add(new SeparatorToolItem());
-        bar.add(new LabelToolItem(Resources.getResource("fm_thumbSort")));
+        bar.add(new LabelToolItem(Messages.getResource("fm_thumbSort")));
 
         // please keep same order as in sort() method
         List<String> sorts = new ArrayList<String>();
-        sorts.add(Resources.getResource("fm_thumbSortName"));
-        sorts.add(Resources.getResource("fm_thumbSortSize"));
-        sorts.add(Resources.getResource("fm_thumbSortLastModif"));
+        sorts.add(Messages.getResource("fm_thumbSortName"));
+        sorts.add(Messages.getResource("fm_thumbSortSize"));
+        sorts.add(Messages.getResource("fm_thumbSortLastModif"));
 
         sort = new SimpleComboBox<String>();
         sort.setTriggerAction(ComboBox.TriggerAction.ALL);

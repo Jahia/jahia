@@ -31,7 +31,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
- package org.jahia.utils;
+package org.jahia.utils;
 
 import java.text.Collator;
 import java.util.ArrayList;

@@ -36,7 +36,6 @@ package org.jahia.ajax.gwt.module.filemanager.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.DOM;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.widget.node.FileManager;
 
 /**
@@ -48,7 +47,7 @@ import org.jahia.ajax.gwt.client.widget.node.FileManager;
 public class FileManagerEntryPoint implements EntryPoint {
 
     public void onModuleLoad() {
-        RootPanel panel = RootPanel.get(Resources.FILEMANAGER_ID) ;
+        RootPanel panel = RootPanel.get("filemanager") ;
         if (panel != null) {
             String conf = DOM.getElementAttribute(panel.getElement(), "config") ;
             panel.add(new FileManager(

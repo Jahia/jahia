@@ -53,7 +53,6 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.DOM;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
@@ -69,7 +68,7 @@ public class FileUploader extends Window {
 
     public FileUploader(final BrowserLinker linker, final GWTJahiaNode location) {
         super() ;
-        setHeading(Resources.getResource("fm_uploadFiles"));
+        setHeading(Messages.getResource("fm_uploadFiles"));
         setSize(500, 200);
         setResizable(false);
         
@@ -96,7 +95,7 @@ public class FileUploader extends Window {
         dest.setName("uploadLocation") ;
 
         CheckBox unzip = new CheckBox() ;
-        unzip.setFieldLabel(Resources.getResource("fm_autoUnzip"));
+        unzip.setFieldLabel(Messages.getResource("fm_autoUnzip"));
         unzip.setName("unzip");
 
         String parentPath = location.getPath() ;
@@ -112,7 +111,7 @@ public class FileUploader extends Window {
         form.add(unzip);
 
         ToolBar toolBar = new ToolBar() ;
-        TextToolItem add = new TextToolItem(Resources.getResource("fm_addFile")) ;
+        TextToolItem add = new TextToolItem(Messages.getResource("fm_addFile")) ;
         add.setIconStyle("fm-addFile");
         add.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
@@ -124,12 +123,12 @@ public class FileUploader extends Window {
         toolBar.add(new FillToolItem()) ;
         toolBar.add(new AdapterToolItem(bar)) ;
 
-        Button cancel = new Button(Resources.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button(Resources.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
+        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 try {
                     form.submit();

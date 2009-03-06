@@ -43,7 +43,7 @@ import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
-import org.jahia.ajax.gwt.client.widget.node.ImagePopup;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
@@ -187,7 +187,7 @@ public class FileTable extends TopRightComponent {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         ColumnConfig col;
         if (configuration.isDisplayExt()) {
-            col = new ColumnConfig("ext", "Type", 50);
+            col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 50);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
@@ -200,7 +200,7 @@ public class FileTable extends TopRightComponent {
         }
 
         if (configuration.isDisplayLock()) {
-            col = new ColumnConfig("locked", "Lock", 32);
+            col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 32);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
@@ -219,20 +219,20 @@ public class FileTable extends TopRightComponent {
             headerList.add(col);
         }
 
-        col = new ColumnConfig("name", "Name", 140);
+        col = new ColumnConfig("name", Messages.getResource("fm_column_name"), 140);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
 
-        col = new ColumnConfig("path", "Path", 300);
+        col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 300);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
 
 
         if (configuration.isDisplaySize()) {
-            col = new ColumnConfig("size", "Size", 60);
+            col = new ColumnConfig("size", Messages.getResource("fm_column_size"), 60);
             col.setResizable(true);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
@@ -251,7 +251,7 @@ public class FileTable extends TopRightComponent {
         }
 
         if (configuration.isDisplayDate()) {
-            col = new ColumnConfig("date", "Date", 90);
+            col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 90);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {

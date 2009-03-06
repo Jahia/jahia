@@ -62,6 +62,7 @@ import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -334,12 +335,10 @@ public class FileTreeTable extends TopRightComponent {
         String[] s = config.split(",");
         for (String s1 : s) {
             if (s1.equals("name")) {
-                TreeTableColumn col = new TreeTableColumn("displayName", "Name", 500) ;
+                TreeTableColumn col = new TreeTableColumn("displayName", Messages.getResource("fm_column_name"), 500) ;
                 headerList.add(col) ;
-            }
-
-            if (s1.equals("size")) {
-                TreeTableColumn col = new TreeTableColumn("size", "Size", 70) ;
+            } else if (s1.equals("size")) {
+                TreeTableColumn col = new TreeTableColumn("size", Messages.getResource("fm_column_size"), 70) ;
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new CellRenderer() {
                     public String render(Component component, String s, Object o) {
@@ -352,9 +351,8 @@ public class FileTreeTable extends TopRightComponent {
                     }
                 });
                 headerList.add(col) ;
-            }
-            if (s1.equals("date")) {
-                TreeTableColumn col = new TreeTableColumn("date", "Date", 80) ;
+            } else if (s1.equals("date")) {
+                TreeTableColumn col = new TreeTableColumn("date", Messages.getResource("fm_column_date"), 80) ;
                 col.setAlignment(Style.HorizontalAlignment.CENTER);
                 col.setRenderer(new DateTimeCellRenderer("d/MM/y"));
                 headerList.add(col) ;

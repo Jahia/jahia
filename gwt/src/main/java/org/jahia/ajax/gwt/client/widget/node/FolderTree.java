@@ -37,7 +37,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -89,7 +89,7 @@ public class FolderTree extends LeftComponent {
     public FolderTree(ManagerConfiguration config) {
 
         for (String repoId: config.getAccordionPanels()) {
-            repositories.add(new RepositoryTab(this, service, repoId, JCRClientUtils.REPO_LABELS.get(repoId), config)) ;
+            repositories.add(new RepositoryTab(this, service, repoId, Messages.getResource("fm_repository_" + repoId), config)) ;
         }
 
         ////////////////////////////
@@ -116,7 +116,7 @@ public class FolderTree extends LeftComponent {
             }
         });
         Menu queryMenu = new Menu() ;
-        final MenuItem removeQuery = new MenuItem(Resources.getResource("fm_remove"), new SelectionListener<ComponentEvent>() {
+        final MenuItem removeQuery = new MenuItem(Messages.getResource("fm_remove"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 final DataListItem item = queryList.getSelectedItem() ;
                 if (item != null) {
@@ -136,7 +136,7 @@ public class FolderTree extends LeftComponent {
         }) ;
         removeQuery.setIconStyle("fm_remove");
 
-        final MenuItem renameQuery = new MenuItem(Resources.getResource("fm_rename"), new SelectionListener<ComponentEvent>() {
+        final MenuItem renameQuery = new MenuItem(Messages.getResource("fm_rename"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 final DataListItem item = queryList.getSelectedItem() ;
                 if (item != null) {

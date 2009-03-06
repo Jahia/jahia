@@ -370,7 +370,6 @@ public class ManagerConfigurationFactory {
         mashupManagerConfig.addAccordion(JCRClientUtils.WEBSITE_MASHUP_REPOSITORY);
         mashupManagerConfig.addAccordion(JCRClientUtils.SHARED_MASHUP_REPOSITORY);
         mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
-        mashupManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
 
         mashupManagerConfig.addTab(JCRClientUtils.ROLES_ACL);
         mashupManagerConfig.addTab(JCRClientUtils.MODES_ACL);
@@ -706,7 +705,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createNewRSSItem(final BrowserLinker linker) {
-            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newrss"), "fm-newrssmashup") {
+            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newrssmashup"), "fm-newrssmashup") {
                 public void onSelection() {
                     FileActions.showRSSForm(linker);
                 }
@@ -719,7 +718,7 @@ public class ManagerConfigurationFactory {
         }
 
         private static FileActionItem createNewGadgetItem(final BrowserLinker linker) {
-            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newgadget"), "fm-newgooglegadgetmashup") {
+            FileActionItem newMashup = new FileActionItem(Messages.getResource("fm_newgadgetmashup"), "fm-newgooglegadgetmashup") {
                 public void onSelection() {
                     FileActions.showGoogleGadgetForm(linker);
                 }

@@ -34,7 +34,6 @@
 package org.jahia.ajax.gwt.module.filepicker.client;
 
 import org.jahia.ajax.gwt.client.util.JahiaGWT;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.widget.node.FilePicker;
 import org.jahia.ajax.gwt.client.widget.node.FilePickerViewport;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -52,7 +51,7 @@ import com.google.gwt.core.client.EntryPoint;
 public class FilePickerEntryPoint implements EntryPoint {
     public void onModuleLoad() {
         JahiaGWT.init();
-        RootPanel panel = RootPanel.get(Resources.FILEMANAGER_ID);
+        RootPanel panel = RootPanel.get("filemanager");
         if (panel != null) {
             String callback = DOM.getElementAttribute(panel.getElement(), "callback") ;
             if (callback == null || callback.length() == 0) {

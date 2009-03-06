@@ -36,7 +36,7 @@ package org.jahia.ajax.gwt.client.widget.node;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -86,7 +86,7 @@ public class ImageRotate extends Window {
         } else {
             newname.setValue(n.getName() + "_rotate");
         }
-        newname.setFieldLabel(Resources.getResource("fm_newname"));
+        newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
         Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {

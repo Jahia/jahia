@@ -126,34 +126,6 @@
                             aliasResourceName="fm_imageMenu"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"
                             aliasResourceName="fm_viewMenu"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.my.label"
-                            aliasResourceName="myRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternal.label"
-        aliasResourceName="myExternalRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.shared.label"
-        aliasResourceName="sharedRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.currentSite.label"
-        aliasResourceName="websiteRepository"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.my.label"
-                            aliasResourceName="myMashupRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.shared.label"
-        aliasResourceName="sharedMashupRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.currentSite.label"
-        aliasResourceName="websiteMashupRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.mashup.label"
-        aliasResourceName="mashupRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.global.label"
-        aliasResourceName="globalRepository"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"
-        aliasResourceName="savedSearch"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"
                             aliasResourceName="fm_saveSearch"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.search.label"
@@ -197,9 +169,8 @@
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.save.label"
                             aliasResourceName="fm_save"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.restore.label"
-        aliasResourceName="fm_restore"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.properties.restore.label"
+                            aliasResourceName="fm_restore"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.page.label"
                             aliasResourceName="fm_page"/>
@@ -237,9 +208,40 @@
                             aliasResourceName="fm_thumbSortName"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.thumbSortSize.label"
                             aliasResourceName="fm_thumbSortSize"/>
-<internal:gwtResourceBundle
-        resourceName="org.jahia.engines.filemanager.Filemanager_Engine.thumbSortLastModif.label"
-        aliasResourceName="fm_thumbSortLastModif"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.thumbSortLastModif.label"
+                            aliasResourceName="fm_thumbSortLastModif"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.type.label"
+                            aliasResourceName="fm_column_type"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.locked.label"
+                            aliasResourceName="fm_column_locked"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.name.label"
+                            aliasResourceName="fm_column_name"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.path.label"
+                            aliasResourceName="fm_column_path"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.size.label"
+                            aliasResourceName="fm_column_size"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.date.label"
+                            aliasResourceName="fm_column_date"/>
+
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"
+                            aliasResourceName="fm_repository_myRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"
+                            aliasResourceName="fm_repository_myExternalRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"
+                            aliasResourceName="fm_repository_sharedRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteRepository.label"
+                            aliasResourceName="fm_repository_websiteRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myMashupRepository.label"
+                            aliasResourceName="fm_repository_myMashupRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedMashupRepository.label"
+                            aliasResourceName="fm_repository_sharedMashupRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.websiteMashupRepository.label"
+                            aliasResourceName="fm_repository_websiteMashupRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.globalRepository.label"
+                            aliasResourceName="fm_repository_globalRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.savedSearch.label"
+                            aliasResourceName="fm_repository_savedSearch"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
                             aliasResourceName="ae_principal"/>
@@ -264,49 +266,34 @@
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.mashups.label"
                             aliasResourceName="mw_mashups"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.portletdef.label"
                             aliasResourceName="mw_select_portlet_def"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.ok.label"
                             aliasResourceName="mw_ok"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.parameters.label"
                             aliasResourceName="mw_params"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.parameters.edit.label"
                             aliasResourceName="mw_edit_params"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.props.load.error.label"
                             aliasResourceName="mw_prop_load_error"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modesperm.label"
                             aliasResourceName="mw_modes_permissions"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modesperm.description.label"
                             aliasResourceName="mw_modes_permissions_description"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modes.adduser.label"
                             aliasResourceName="mw_modes_adduser"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.modes.addgroup.label"
                             aliasResourceName="mw_modes_addgroup"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.roles.adduser.label"
                             aliasResourceName="mw_roles_adduser"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.roles.addgroup.label"
                             aliasResourceName="mw_roles_addgroup"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.rolesperm.label"
                             aliasResourceName="mw_roles_perm"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"
                             aliasResourceName="mw_roles_description"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.finish.label"
                             aliasResourceName="mw_finish"/>
-
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
                             aliasResourceName="mw_save_as"/>
 

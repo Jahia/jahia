@@ -49,7 +49,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 
@@ -94,19 +94,19 @@ public class ImageResize extends Window {
         final NumberField wf = new NumberField();
         wf.setName("width");
         wf.setValue(new Integer(n.getWidth()));
-        wf.setFieldLabel(Resources.getResource("fm_width"));
+        wf.setFieldLabel(Messages.getResource("fm_width"));
         form.add(wf);
 
         final NumberField hf = new NumberField();
         hf.setName("height");
         hf.setValue(new Integer(n.getHeight()));
-        hf.setFieldLabel(Resources.getResource("fm_height"));
+        hf.setFieldLabel(Messages.getResource("fm_height"));
         form.add(hf);
 
         final CheckBox keepRatio = new CheckBox();
         keepRatio.setName("ratio");
         keepRatio.setValue(true);
-        keepRatio.setFieldLabel(Resources.getResource("fm_ratio"));
+        keepRatio.setFieldLabel(Messages.getResource("fm_ratio"));
         form.add(keepRatio);
 
         hf.addListener(Events.KeyUp, new Listener<ComponentEvent>() {
@@ -135,7 +135,7 @@ public class ImageResize extends Window {
         } else {
             newname.setValue(n.getName() + "_resize");
         }
-        newname.setFieldLabel(Resources.getResource("fm_newname"));
+        newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
         Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {

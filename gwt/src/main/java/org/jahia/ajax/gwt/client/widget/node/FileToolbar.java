@@ -36,8 +36,8 @@ package org.jahia.ajax.gwt.client.widget.node;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.util.nodes.actions.*;
 import org.jahia.ajax.gwt.client.util.nodes.CopyPasteEngine;
-import org.jahia.ajax.gwt.client.util.nodes.Resources;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
@@ -86,18 +86,18 @@ public class FileToolbar extends TopBar {
             }
 
             // add the views menu (not part of the config)
-            MenuItem list = new MenuItem(Resources.getResource("fm_list"), "fm-tableview", new SelectionListener<ComponentEvent>() {
+            MenuItem list = new MenuItem(Messages.getResource("fm_list"), "fm-tableview", new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     setListView();
                 }
             });
-            MenuItem thumbs = new MenuItem(Resources.getResource("fm_icons"), "fm-iconview", new SelectionListener<ComponentEvent>() {
+            MenuItem thumbs = new MenuItem(Messages.getResource("fm_icons"), "fm-iconview", new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     setThumbView();
                 }
             });
 
-            MenuItem detailedThumbs = new MenuItem(Resources.getResource("fm_icons_detailed"), "fm-iconview-detailed", new SelectionListener<ComponentEvent>() {
+            MenuItem detailedThumbs = new MenuItem(Messages.getResource("fm_icons_detailed"), "fm-iconview-detailed", new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     setDetailedThumbView();
                 }
@@ -106,7 +106,7 @@ public class FileToolbar extends TopBar {
             menu.add(list) ;
             menu.add(thumbs) ;
             menu.add(detailedThumbs) ;
-            TextToolItem mMenu = new TextToolItem(Resources.getResource("fm_viewMenu")) ;
+            TextToolItem mMenu = new TextToolItem(Messages.getResource("fm_viewMenu")) ;
             mMenu.setMenu(menu);
             menus.add(mMenu) ;
             m_component.add(menus) ;

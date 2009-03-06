@@ -33,9 +33,6 @@
 
 package org.jahia.ajax.gwt.client.util.nodes;
 
-import java.util.Map;
-import java.util.HashMap;
-
 /**
  * User: rfelden
  * Date: 12 déc. 2008 - 11:03:23
@@ -68,19 +65,6 @@ public final class JCRClientUtils {
     public static short FILE_TABLE = 1;
     public static short THUMB_VIEW = 2;
     public static short DETAILED_THUMB_VIEW = 3;
-
-    public final static Map<String, String> REPO_LABELS = new HashMap<String, String>();
-
-    static {
-        REPO_LABELS.put(WEBSITE_REPOSITORY, "Current site repository");
-        REPO_LABELS.put(SHARED_REPOSITORY, "Shared repository");
-        REPO_LABELS.put(MY_EXTERNAL_REPOSITORY, "My external repository");
-        REPO_LABELS.put(MY_REPOSITORY, "My repository");
-        REPO_LABELS.put(MY_MASHUP_REPOSITORY, "My mashups repository");
-        REPO_LABELS.put(SHARED_MASHUP_REPOSITORY, "Shared mashups repository");
-        REPO_LABELS.put(WEBSITE_MASHUP_REPOSITORY, "Current site mashups repository");
-        REPO_LABELS.put(GLOBAL_REPOSITORY, "Global repository");
-    }
 
     public static String cleanUpFilename(String name) {
         name = name.replaceAll("([\\*:/\\\\<>|?\"])", " ");

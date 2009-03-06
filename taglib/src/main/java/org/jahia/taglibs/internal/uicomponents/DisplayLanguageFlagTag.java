@@ -73,12 +73,14 @@ package org.jahia.taglibs.internal.uicomponents;
 
 import org.jahia.data.JahiaData;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * <p>The Jahia Shared Modification is: Jahia Tag Libs</p>
@@ -224,22 +226,23 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
                 str.append("<!----------------------------------------------------------------------------->\n");
             }
             // Resolve file name
-            String flagName = _code;
+            String flagName = LanguageCodeConverters.languageCodeToLocale(_code).getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ","_");
+            
             String flagOnPath;
             if ("".equals(_resourceOn)) {
-                flagOnPath = request.getContextPath() + "/css/images/flags/" + flagName + "_on.png";
+                flagOnPath = request.getContextPath() + "/css/images/flags/plain/flag_" + flagName + ".png";
             } else {
                 flagOnPath = _resourceOn;
             }
             // Define a unique ID that identify the rollover
             String flagImgID = "flagImg" + String.valueOf(imgID++);
             // Contruct image HTML tag
-            if (flagOnPath != null) {
+            if (flagOnPath != null && !"".equals(flagName)) {
                 String flagOffPath = flagOnPath;
                 // Should an anchor be written.
                 if (!"".equals(_href)) {
                     if ("".equals(_resourceOff)) {
-                        flagOffPath = request.getContextPath() + "/css/images/flags/" + flagName + "_off.png";
+                        flagOffPath = request.getContextPath() + "/css/images/flags/shadow/flag_" + flagName + ".png";
                     } else {
                         flagOffPath = _resourceOff;
                     }
@@ -270,6 +273,9 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
                     str.append(_href);
                     str.append("\">");
                 }
+                str.append("<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">");
+                str.append(_code);
+                str.append("</span>");
                 str.append(flagName);
             }
             if (!"".equals(_href)) {

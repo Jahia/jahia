@@ -59,6 +59,7 @@ public class DisplayLanguageSwitchLinkTag extends AbstractJahiaTag {
     public static final String LETTER = "letter";
     public static final String DOUBLE_LETTER = "doubleLetter";
     public static final String LANGUAGE_CODE = "languageCode";
+    public static final String ISOLOCALECOUNTRY_CODE = "isoLocaleCountryCode";
 
     private String languageCode;
     private String linkKind;
@@ -198,6 +199,17 @@ public class DisplayLanguageSwitchLinkTag extends AbstractJahiaTag {
                 }
                 buff.append(value);
 
+            } else if (ISOLOCALECOUNTRY_CODE.equals(linkKind)) {
+                final Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
+                StringBuffer value = new StringBuffer(locale.getLanguage().toUpperCase());
+                if(locale.getCountry()!=null && !"".equals(locale.getCountry())) {
+                    value.append("(").append(locale.getCountry()).append(")");
+                }
+                if (valueID != null && valueID.length() > 0) {
+                    pageContext.setAttribute(valueID, value);
+                }
+                buff.append(value);
+
             } else {
                 throw new JspTagException("Unknown linkKind value '" + linkKind + "'");
             }
@@ -215,6 +227,26 @@ public class DisplayLanguageSwitchLinkTag extends AbstractJahiaTag {
             logger.error("Error while getting language switch URL", e);
         }
         return SKIP_BODY;
+    }
+
+    public String getIsoLocaleCountryCode() {
+        return ISOLOCALECOUNTRY_CODE;
+    }
+
+    public String getNameCurrentLocale() {
+        return NAME_CURRENT_LOCALE;
+    }
+
+    public String getNameInLocale() {
+        return NAME_IN_LOCALE;
+    }
+
+    public String getLetter() {
+        return LETTER;
+    }
+
+    public String getDoubleLetter() {
+        return DOUBLE_LETTER;
     }
 
     public int doEndTag() {

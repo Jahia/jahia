@@ -38,6 +38,7 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.StartTag;
 import au.id.jericho.lib.html.SourceFormatter;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.engines.LockHelper;
 import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
@@ -90,12 +91,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Iterator;
+import java.util.*;
 
 
 /**
@@ -488,8 +484,21 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         if(inEngine) {
             locale = getEngineLocale();
         }
-        Map<String,String> availableLanguages = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite(),displayIsoCode,displayLanguage, locale);
+        Map<String,Locale> availableLocaleMap = WorkflowServiceHelper.retrieveOrderedLocaleDisplayForSite(jParams.getSite());
         Map<String, String> workflowStates = WorkflowServiceHelper.getWorkflowStates(jParams.getContentPage());
+        Map<String,GWTLanguageSwitcherLocaleBean> availableLanguages = new HashMap<String, GWTLanguageSwitcherLocaleBean>(availableLocaleMap.size());
+        Set<Map.Entry<String,Locale>> iterator = availableLocaleMap.entrySet();
+        for (Map.Entry<String, Locale> stringLocaleEntry : iterator) {
+            final Locale value = stringLocaleEntry.getValue();
+            GWTLanguageSwitcherLocaleBean localeBean = new GWTLanguageSwitcherLocaleBean();
+            String country = value.getDisplayCountry(Locale.ENGLISH).toLowerCase().replace(" ","_");
+            localeBean.setCountryIsoCode(country);
+            if(displayIsoCode) localeBean.setDisplayName(value.getISO3Language());
+            else if (displayLanguage) localeBean.setDisplayName(StringUtils.capitalize(value.getDisplayName(value)));
+            else localeBean.setDisplayName(value.getLanguage());
+            localeBean.setLanguage(value.getLanguage());
+            availableLanguages.put(stringLocaleEntry.getKey(),localeBean);
+        }
         return new GWTJahiaLanguageSwitcherBean(availableLanguages, workflowStates);
     }
 

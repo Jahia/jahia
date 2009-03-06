@@ -62,6 +62,7 @@ import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.workflow.*;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.LanguageCodeConverters;
 import org.quartz.JobDetail;
 import org.quartz.JobDataMap;
 
@@ -122,23 +123,14 @@ public class WorkflowServiceHelper {
      * Retrieve all active languages for a given site.
      *
      * @param site the site
-     * @param displayLanguage
-     *@param locale @return an ordered list of language codes
      */
-    public static Map<String,String> retrieveOrderedLocaleDisplayForSite (JahiaSite site, Boolean displayIsoCode, boolean displayLanguage, Locale locale) {
-        Map<String,String> languageCodes = new HashMap<String, String>(3);
+    public static Map<String,Locale> retrieveOrderedLocaleDisplayForSite(JahiaSite site) {
+        Map<String,Locale> languageCodes = new HashMap<String, Locale>(3);
         try {
             List<SiteLanguageSettings> languageSettings = site.getLanguageSettings(true);
             for (SiteLanguageSettings setting : languageSettings) {
-                if(displayIsoCode) {
-                    Locale localeL = new Locale(setting.getCode());
-                    languageCodes.put(setting.getCode(),localeL.getISO3Language());
-                } else if (displayLanguage) {
-                    Locale localeL = new Locale(setting.getCode());
-                    languageCodes.put(setting.getCode(),org.apache.commons.lang.StringUtils.capitalize(localeL.getDisplayLanguage(locale)));
-                } else {
-                languageCodes.put(setting.getCode(),setting.getCode());
-                }
+                final String code = setting.getCode();
+                languageCodes.put(code, LanguageCodeConverters.languageCodeToLocale(code));
             }
         } catch (JahiaException e) {
             logger.error("Unable to retrieve languages for site " + site.getSiteKey(), e);

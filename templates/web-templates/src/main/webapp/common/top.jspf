@@ -1,7 +1,8 @@
 <%@ include file="../common/declarations.jspf" %>
+<jsp:useBean id="linkDisplay" class="org.jahia.taglibs.uicomponents.i18n.DisplayLanguageSwitchLinkTag"/>
 <div id="headerPart1">
 	<div id="languages"><!--start languages-->
-        <ui:languageSwitchingLinks display="horizontal" linkDisplay="doubleLetter" displayLanguageState="true"/>
+        <ui:languageSwitchingLinks display="horizontal" linkDisplay="${linkDisplay.isoLocaleCountryCode}" displayLanguageState="true"/>
 	</div><!--stop languages-->
 	
 	<div id="topshortcuts"><!--start topshortcuts-->

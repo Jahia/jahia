@@ -83,9 +83,9 @@ final Iterator langsEnum = langLinksFactory.getLinks();
         final LangLink link = (LangLink) langsEnum.next();
         final String href = "javascript:handleLanguageChange('" + link.getLanguageCode() + "');";
         if (link.getLocale().toString().equals(elh.getCurrentLocale().toString())) { %>
-          <internal:displayLanguageFlag code="<%=link.getLocale().getLanguage()%>" alt="<%=link.getLocale().getDisplayName(elh.getCurrentLocale())%>"/>&nbsp;<%=link.getLocale().getDisplayName(elh.getCurrentLocale())%>
+          <internal:displayLanguageFlag code="<%=link.getLocale().toString()%>" alt="<%=link.getLocale().getDisplayName(link.getLocale())%>"/>&nbsp;<%=link.getLocale().getDisplayName(link.getLocale())%>
         <% } else { %>
-          <internal:displayLanguageFlag href="<%=href%>" code="<%=link.getLocale().getLanguage()%>" alt="<%=link.getLocale().getDisplayName(elh.getCurrentLocale())%>"/>&nbsp;<a href="<%=href%>" title="<%=link.getLocale().getDisplayName(elh.getCurrentLocale())%>"><%=link.getLocale().getDisplayName(elh.getCurrentLocale())%></a>
+          <internal:displayLanguageFlag href="<%=href%>" code="<%=link.getLocale().toString()%>" alt="<%=link.getLocale().getDisplayName(link.getLocale())%>"/>&nbsp;<a href="<%=href%>" title="<%=link.getLocale().getDisplayName(link.getLocale())%>"><%=link.getLocale().getDisplayName(link.getLocale())%></a>
         <% } %>
       </li>
     <% } %>

@@ -155,7 +155,7 @@ public class GWTInitializer {
             }
         }
 
-        params.put(JahiaGWTParameters.LANGUAGE, locale.getLanguage());
+        params.put(JahiaGWTParameters.LANGUAGE, locale.toString());
 
         Locale enginelocale = (Locale) session.getAttribute(ParamBean.SESSION_LOCALE_ENGINE);
         if (enginelocale != null) {

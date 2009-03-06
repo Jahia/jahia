@@ -46,6 +46,7 @@ import com.extjs.gxt.ui.client.widget.menu.AdapterMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguageSwitcherBean;
+import org.jahia.ajax.gwt.client.data.GWTLanguageSwitcherLocaleBean;
 import org.jahia.ajax.gwt.client.service.JahiaService;
 import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 
@@ -119,29 +120,34 @@ public class LanguageSwitcher extends HorizontalPanel {
             }
 
             public void onSuccess (GWTJahiaLanguageSwitcherBean bean) {
-                Map<String, String> locales = bean.getAvailableLanguages();
+                Map<String, GWTLanguageSwitcherLocaleBean> locales = bean.getAvailableLanguages();
                 generateMenu(locales, languageListener, workflowListener, bean.getWorkflowStates());
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
     }
 
-    private void generateMenu (Map<String, String> locales, SelectionListener listener, SelectionListener workflowListener, Map<String, String> workflowStates) {
+    private void generateMenu (Map<String, GWTLanguageSwitcherLocaleBean> locales, SelectionListener listener, SelectionListener workflowListener, Map<String, String> workflowStates) {
+        final GWTLanguageSwitcherLocaleBean localeBean = locales.get(currentLanguage);
         if (locales.size() > 1) {
             Menu menu = new Menu();
-            TextToolItem textToolItem = new TextToolItem(locales.get(currentLanguage));
-            if (displayFlag) {
-                textToolItem.setIconStyle("flag_" + currentLanguage);
+            TextToolItem textToolItem = new TextToolItem(localeBean.getDisplayName());
+            if (displayFlag && !"".equals(localeBean.getCountryIsoCode())) {
+                textToolItem.setIconStyle("flag_" + localeBean.getCountryIsoCode());
+            } else {
+                textToolItem.setText("<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">"+localeBean.getLanguage()+"</span> "+localeBean.getDisplayName());
             }
 
             for (String locale : locales.keySet()) {
                 if (!locale.equals(currentLanguage)) {
-                    final String s1 = locales.get(locale);
+                    final GWTLanguageSwitcherLocaleBean s1 = locales.get(locale);
                     HorizontalPanel horizontalPanel = new HorizontalPanel();
-                    Button menuItem = new Button(s1);
-                    menuItem.setData(s1, locale);
-                    if (displayFlag) {
-                        menuItem.setIconStyle("flag_" + locale);
+                    Button menuItem = new Button(s1.getDisplayName());
+                    menuItem.setData(s1.getDisplayName(), locale);
+                    if (displayFlag && !"".equals(s1.getCountryIsoCode())) {
+                        menuItem.setIconStyle("flag_" + s1.getCountryIsoCode());
+                    } else {
+                        menuItem.setText("<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">"+s1.getLanguage()+"</span> "+s1.getDisplayName());
                     }
                     menuItem.addSelectionListener(listener);
                     horizontalPanel.add(menuItem);
@@ -177,9 +183,12 @@ public class LanguageSwitcher extends HorizontalPanel {
                 add(iconButton);
             }
         } else {
-            TextToolItem textToolItem = new TextToolItem(locales.get(currentLanguage));
-            if(displayFlag)
-            textToolItem.setIconStyle("flag_" + currentLanguage);
+            TextToolItem textToolItem = new TextToolItem(localeBean.getDisplayName());
+            if (displayFlag&& !"".equals(localeBean.getCountryIsoCode())) {
+                textToolItem.setIconStyle("flag_" + localeBean.getCountryIsoCode());
+            } else {
+                textToolItem.setText("<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">"+localeBean.getLanguage()+"</span> "+localeBean.getDisplayName());
+            }
             this.setEnabled(false);
             add(textToolItem);
             if (displayWorkflowStates) {

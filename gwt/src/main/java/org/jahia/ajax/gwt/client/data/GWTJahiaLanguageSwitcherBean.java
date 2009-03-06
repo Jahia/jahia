@@ -44,22 +44,22 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class GWTJahiaLanguageSwitcherBean implements Serializable{
-    private Map<String,String> availableLanguages;
+    private Map<String,GWTLanguageSwitcherLocaleBean> availableLanguages;
     private Map<String,String> workflowStates;
 
     public GWTJahiaLanguageSwitcherBean() {
     }
 
-    public GWTJahiaLanguageSwitcherBean(Map<String,String> availableLanguages, Map<String, String> workflowStates) {
+    public GWTJahiaLanguageSwitcherBean(Map<String,GWTLanguageSwitcherLocaleBean> availableLanguages, Map<String, String> workflowStates) {
         this.availableLanguages = availableLanguages;
         this.workflowStates = workflowStates;
     }
 
-    public Map<String,String> getAvailableLanguages () {
+    public Map<String,GWTLanguageSwitcherLocaleBean> getAvailableLanguages () {
         return availableLanguages;
     }
 
-    public void setAvailableLanguages (Map<String,String> availableLanguages) {
+    public void setAvailableLanguages (Map<String,GWTLanguageSwitcherLocaleBean> availableLanguages) {
         this.availableLanguages = availableLanguages;
     }
 
@@ -69,5 +69,5 @@ public class GWTJahiaLanguageSwitcherBean implements Serializable{
 
     public void setWorkflowStates (Map<String, String> workflowStates) {
         this.workflowStates = workflowStates;
-    }
+    }    
 }

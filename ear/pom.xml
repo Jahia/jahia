@@ -12,6 +12,22 @@
 
     <profiles>
         <profile>
+            <id>code-coverage</id>
+            <activation>
+                <property>
+                    <name>jahia.deploy.targetServerType</name>
+                    <value>tomcat</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.cenqua.clover</groupId>
+                    <artifactId>clover</artifactId>
+                    <version>2.4.2</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>jboss-deployment</id>
             <activation>
                 <property>

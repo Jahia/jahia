@@ -36,23 +36,50 @@
     <profiles>
 
       <profile>
+          <id>qa-build</id>
+          <modules>
+              <module>package</module>
+          </modules>
+      </profile>
+
+      <profile>
           <id>code-coverage</id>
           <build>
               <plugins>
                   <plugin>
                       <groupId>com.atlassian.maven.plugins</groupId>
                       <artifactId>maven-clover2-plugin</artifactId>
-                      <!--
                       <configuration>
-                        <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
-                        <singleCloverDatabase>true</singleCloverDatabase>
+                          <generateHistorical>true</generateHistorical>
+                          <targetPercentage>7%</targetPercentage>
+                          <!--
+                          <historyDir>${user.home}/history/${project.artifact}</historyDir>
+                          <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
+                          <singleCloverDatabase>true</singleCloverDatabase>
+                          -->
+                          <!--
+                          <cloverDatabase>/foo/bar</cloverDatabase>
+                          <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>
+                          -->
                       </configuration>
-                      -->
                       <executions>
+                          <!--
                           <execution>
                               <id>clover</id>
                               <goals>
                                   <goal>setup</goal>
+                              </goals>
+                          </execution>
+                          -->
+                          <execution>
+                              <id>clover</id>
+                              <phase>verify</phase>
+                              <goals>
+                                  <goal>setup</goal>
+                                  <!--goal>instrument</goal-->
+                                  <!--goal>check</goal-->
+                                  <goal>aggregate</goal>
+                                  <goal>clover</goal>
                               </goals>
                           </execution>
                       </executions>

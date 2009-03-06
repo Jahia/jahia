@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -38,7 +38,6 @@
 <%@ page import="org.jahia.engines.JahiaEngine" %>
 <%@ page import="org.jahia.engines.rights.ManageRights" %>
 <%@ page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
-<%@ page import="org.jahia.services.categories.Category" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="org.jahia.data.fields.JahiaField" %>
@@ -89,22 +88,8 @@
     boolean displaySelectEngine = (Boolean) engineMap.get(definitionName+"_displaySelectInstance");
     int roleNb = 0; // Store the number of application roles
     int counter = 0;
-
-    // categories
-    String catIdValue = request.getParameter("catId");
-    int selectedCategoryId = 1;
-    boolean browseByCategory = false;
-    if (catIdValue == null || catIdValue.equals("")) {
-        catIdValue = "";
-        browseByCategory = false;
-    } else {
-        browseByCategory = true;
-        selectedCategoryId = Integer.parseInt(catIdValue);
-    }
-    Category selectedCategory = Category.getCategory(selectedCategoryId);
 %>
 <utility:setBundle basename="JahiaInternalResources"/>
-<input name="catId" type="hidden" value="<%=catIdValue%>"/>
 <script type="text/javascript" src="<%= theURL%>../javascript/selectbox.js"></script>
 <script type="text/javascript">
     <!--//

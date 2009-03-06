@@ -79,6 +79,14 @@
             <version>2.0</version>
         </dependency>
 
+        <!-- should be removed from here ! shared lib deployement from profile does not work -->
+        <dependency>
+            <groupId>com.cenqua.clover</groupId>
+            <artifactId>clover</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+
+
         <!-- Pluto dependencies -->
         <dependency>
             <groupId>org.apache.pluto</groupId>

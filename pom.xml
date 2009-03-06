@@ -63,21 +63,17 @@
                           -->
                       </configuration>
                       <executions>
-                          <!--
                           <execution>
-                              <id>clover</id>
+                              <id>clover-prepare</id>
+                              <phase>generate-sources</phase>
                               <goals>
                                   <goal>setup</goal>
                               </goals>
                           </execution>
-                          -->
                           <execution>
-                              <id>clover</id>
+                              <id>clover-report</id>
                               <phase>verify</phase>
                               <goals>
-                                  <goal>setup</goal>
-                                  <!--goal>instrument</goal-->
-                                  <!--goal>check</goal-->
                                   <goal>aggregate</goal>
                                   <goal>clover</goal>
                               </goals>

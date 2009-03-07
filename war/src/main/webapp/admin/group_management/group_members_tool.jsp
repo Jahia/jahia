@@ -111,11 +111,11 @@ function pasteSelectionClose()
             <br><br><br>
             <internal:jahiaButton img="select_all"
                 href="javascript:selectAllOptionsSelectBox(document.mainForm.selectedUsers);"
-                altBundle="administration" altKey="org.jahia.admin.users.GroupMembersTool.altSelectAllCandidates.label" />
+                altBundle="JahiaInternalResources" altKey="org.jahia.admin.users.GroupMembersTool.altSelectAllCandidates.label" />
             <br>
             <internal:jahiaButton img="invert_selection"
                 href="javascript:invertSelectionSelectBox(document.mainForm.selectedUsers);"
-                altBundle="administration" altKey="org.jahia.admin.users.GroupMembersTool.altInvertCandidatesSelection.label" />
+                altBundle="JahiaInternalResources" altKey="org.jahia.admin.users.GroupMembersTool.altInvertCandidatesSelection.label" />
         </td>
     </tr>
 </table>

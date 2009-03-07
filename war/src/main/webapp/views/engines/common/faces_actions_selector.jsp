@@ -65,27 +65,27 @@ window.onresize = function() {
 	        <logic:equal name="button" value="OK_BUTTON">
 		        <internal:jahiaButton img="ok"
 		            href="javascript:sendFormSave();"
-		            altBundle="engine" altKey="org.jahia.altApplyAndClose.label" />
+		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyAndClose.label" />
 			</logic:equal>
 			<logic:equal name="button" value="SAVE_ADD_NEW_BUTTON">
 		        <internal:jahiaButton img="saveAddNew"
 		            href="javascript:sendFormSaveAndAddNew();"
-		            altBundle="engine" altKey="org.jahia.altApplyAndAddContainer.label" />
+		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyAndAddContainer.label" />
 			</logic:equal>
 			<logic:equal name="button" value="APPLY_BUTTON">
 		        <internal:jahiaButton img="apply"
 		            href="javascript:sendFormApply();"
-		            altBundle="engine" altKey="org.jahia.altApplyWithoutClose.label" />
+		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyWithoutClose.label" />
 	        </logic:equal>
 	        <logic:equal name="button" value="CANCEL_BUTTON">
 		        <internal:jahiaButton img="cancel"
 		            href="javascript:sendFormCancel();"
-		            altBundle="engine" altKey="org.jahia.altCloseWithoutSave.label" />
+		            altBundle="JahiaInternalResources" altKey="org.jahia.altCloseWithoutSave.label" />
 	        </logic:equal>
 	        <logic:equal name="button" value="CLOSE_BUTTON">
 		        <internal:jahiaButton img="close"
 		            href="javascript:sendFormClose();"
-		            altBundle="engine" altKey="org.jahia.altClose.label" />
+		            altBundle="JahiaInternalResources" altKey="org.jahia.altClose.label" />
 	        </logic:equal>
 	    </logic:iterate>
     </td>

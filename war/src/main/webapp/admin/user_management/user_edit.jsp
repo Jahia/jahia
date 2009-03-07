@@ -400,11 +400,11 @@
         <% if (isSuperAdminProp == null) {%>
         <internal:jahiaButton img="undoall"
                         href="javascript:document.mainForm.reset();"
-                        altBundle="administration" altKey="org.jahia.admin.users.ManageUsers.resetChangeNotHome.label"/>
+                        altBundle="JahiaInternalResources" altKey="org.jahia.admin.users.ManageUsers.resetChangeNotHome.label"/>
         <% } else { %>
         <internal:jahiaButton img="undoall"
                         href="javascript:document.mainForm.reset();"
-                        altBundle="administration" altKey="org.jahia.admin.resetChanges.label"/>
+                        altBundle="JahiaInternalResources" altKey="org.jahia.admin.resetChanges.label"/>
         <% } %>
         <% } %>
     </td>

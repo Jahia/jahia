@@ -306,12 +306,12 @@
                                                 <div style="background-color:white;">
                                                     <internal:jahiaButton img="select_all"
                                                                           href="javascript:selectAllOptionsSelectBox(document.mainForm.selectMember);"
-                                                                          altBundle="administration"
+                                                                          altBundle="JahiaInternalResources"
                                                                           altKey="org.jahia.admin.users.ManageGroups.altSelectAllGroupMembers.label"/>
                                                     <br/>
                                                     <internal:jahiaButton img="invert_selection"
                                                                           href="javascript:invertSelectionSelectBox(document.mainForm.selectMember);"
-                                                                          altBundle="administration"
+                                                                          altBundle="JahiaInternalResources"
                                                                           altKey="org.jahia.admin.users.ManageGroups.altInvertGroupMembersSelection.label"/>
                                                 </div>
                                             </td>

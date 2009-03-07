@@ -62,7 +62,7 @@ public class DropDownFromBundleFileTag extends AbstractJahiaTag {
      */
     @Override
     public int doStartTag() throws JspException {
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(bundleName, getProcessingContext().getCurrentLocale(), new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), getProcessingContext().getSiteID()));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(bundleName, getProcessingContext().getCurrentLocale(), new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), getProcessingContext().getSite().getTemplatePackageName()));
         if (bundle != null) {
             SortedSet<String> values = new TreeSet<String>();
             Enumeration<String> keys = bundle.getKeys();

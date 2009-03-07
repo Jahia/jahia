@@ -46,13 +46,10 @@ import java.util.regex.Matcher;
 
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.comparator.NumericStringComparator;
 import org.jahia.bin.Jahia;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 
 
 /**
@@ -166,11 +163,9 @@ public class ResourceBundleMarker {
         String result = this.getDefaultValue();
 
         try {
-            final int id = Jahia.getThreadParamBean().getSiteID();
-            final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), id);
-            final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(id);
-            ResourceBundle res = new JahiaResourceBundle(this.getResourceBundleID(),locale, templatesRBLoader, aPackage);
-            result = res.getString(this.getResourceKey());
+            result = JahiaResourceBundle.getString(this.getResourceBundleID(),
+                    this.getResourceKey(), locale, Jahia.getThreadParamBean()
+                            .getSite().getTemplatePackageName(), this.getClass().getClassLoader());
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }
@@ -198,11 +193,8 @@ public class ResourceBundleMarker {
         String result = this.getDefaultValue();
 
         try {
-            final int id = Jahia.getThreadParamBean().getSiteID();
-            final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(this.getClass().getClassLoader(), id);
-            final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(id);
-            ResourceBundle res = new JahiaResourceBundle(this.getResourceBundleID(),locale, templatesRBLoader, aPackage);
-            result = res.getString(this.getResourceKey());
+            result = JahiaResourceBundle.getString(this.getResourceBundleID(), this.getResourceKey(), locale, Jahia.getThreadParamBean()
+                    .getSite().getTemplatePackageName());
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }
@@ -310,11 +302,8 @@ public class ResourceBundleMarker {
         String result = marker.getDefaultValue();
 
         try {
-            final int id = Jahia.getThreadParamBean().getSiteID();
-            final JahiaTemplatesRBLoader templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), id);
-            final JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(id);
-            ResourceBundle res = new JahiaResourceBundle(marker.getResourceBundleID(),locale, templatesRBLoader, aPackage);
-            result = res.getString(marker.getResourceKey());
+            result = JahiaResourceBundle.getString(marker.getResourceBundleID(), marker.getResourceKey(), locale, Jahia.getThreadParamBean()
+                    .getSite().getTemplatePackageName());
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }

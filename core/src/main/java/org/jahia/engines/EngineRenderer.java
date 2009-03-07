@@ -44,7 +44,10 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
+import org.apache.log4j.Logger;
 import org.jahia.ajax.usersession.userSettings;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
@@ -59,14 +62,14 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.expressions.DateBean;
 import org.jahia.spring.aop.interceptor.SilentJamonPerformanceMonitorInterceptor;
 import org.jahia.utils.FileUtils;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 public class EngineRenderer {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (EngineRenderer.class);
+    private static Logger logger = Logger.getLogger (EngineRenderer.class);
 
     private static final org.apache.log4j.Logger monitorLogger = org.apache.log4j.Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
 
@@ -179,6 +182,12 @@ public class EngineRenderer {
             JahiaBean jahiaBean = new JahiaBean(jParams, siteBean, pageBean, requestBean, dateBean, jParams.getUser());
             request.setAttribute ("currentJahia", jahiaBean);
             request.setAttribute("jahia", jahiaBean);
+            
+            // init localization context
+            Config.set(jParams.getRequest(), Config.FMT_LOCALIZATION_CONTEXT,
+                    new LocalizationContext(new JahiaResourceBundle(jParams
+                            .getLocale(), jParams.getSite()
+                            .getTemplatePackageName()), jParams.getLocale()));
 
             boolean isIE = false;
             final String userAgent = jParams.getRequest ().getHeader ("user-agent");

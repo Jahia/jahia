@@ -32,11 +32,10 @@
  */
 package org.jahia.taglibs.utility.i18n;
 
+import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.params.ProcessingContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.taglibs.utility.Utils;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.jsp.JspException;
@@ -55,6 +54,9 @@ import java.util.ResourceBundle;
  * To change this template use File | Settings | File Templates.
  */
 public class SetBundleTag extends TagSupport {
+    
+    private static final transient Logger logger = Logger.getLogger(SetBundleTag.class);
+    
     private String basename;
     private String var;
     private int scope;
@@ -75,17 +77,15 @@ public class SetBundleTag extends TagSupport {
         if (basename != null && !"".equals(basename)) {
             final ProcessingContext context = Utils.getProcessingContext(pageContext);
             final Locale locale = context.getLocale();
-            ResourceBundle resourceBundle = new JahiaResourceBundle(basename, locale,
-                                                                    new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(),
-                                                                                               context.getSiteID()), ServicesRegistry
-                            .getInstance().getJahiaTemplateManagerService()
-                            .getTemplatePackage(context.getSite().getTemplatePackageName()));
+            ResourceBundle resourceBundle = new JahiaResourceBundle(basename, locale, context.getSite().getTemplatePackageName());
             LocalizationContext locCtxt = new LocalizationContext(resourceBundle, locale);
             if (var != null) {
                 pageContext.setAttribute(var, locCtxt, scope);
             } else {
                 Config.set(pageContext, Config.FMT_LOCALIZATION_CONTEXT, locCtxt, scope);
             }
+        } else {
+            logger.warn("Provided 'basename' for the tag is either null or empty");
         }
         return EVAL_BODY_INCLUDE;
     }

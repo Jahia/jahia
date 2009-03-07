@@ -34,7 +34,6 @@
 package org.jahia.taglibs.utility.pageproperties;
 
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.I18nBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.metadata.CoreMetadataConstant;

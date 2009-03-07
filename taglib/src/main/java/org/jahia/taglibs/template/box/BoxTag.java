@@ -269,11 +269,11 @@ public class BoxTag extends AbstractJahiaTag {
     private Object resolveErrorMessage() {
         String msg = null;
         if (errorMessageKey != null) {
-            msg = getJahiaBean().getI18n().get(errorMessageKey);
+            msg = getMessage(errorMessageKey);
         } else if (errorMessage != null) {
             msg = errorMessage;
         } else {
-            msg = getJahiaBean().getI18n().get(DEFAULT_ERROR_MESSAGE_KEY);
+            msg = getMessage(DEFAULT_ERROR_MESSAGE_KEY);
         }
         return msg;
     }

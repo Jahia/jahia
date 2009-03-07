@@ -16,4 +16,3 @@
                       scope="application"/>
 <utility:useConstants var="fieldTypeConstants" className="org.jahia.data.fields.FieldTypes"
                       scope="application"/>
-<utility:setBundle basename="jahiatemplates.Core_templates"/>

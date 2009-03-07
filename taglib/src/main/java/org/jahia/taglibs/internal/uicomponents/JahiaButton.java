@@ -205,7 +205,7 @@ public class JahiaButton extends AbstractJahiaTag {
         if (altKey != null) {
             alt = JahiaResourceBundle.getString(altBundle, altKey,
                                                   jData.getProcessingContext().getLocale(),
-                                                  jData.getProcessingContext().getSiteID());
+                                                  jData.getProcessingContext().getSite().getTemplatePackageName());
         }
 
         // Produce the HTML code

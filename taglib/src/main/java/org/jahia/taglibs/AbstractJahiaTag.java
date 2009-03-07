@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.data.JahiaData;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.data.beans.TemplatePathResolverBean;
 import org.jahia.exceptions.JahiaException;
@@ -45,9 +44,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.bin.Jahia;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -101,7 +98,17 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     public String getResourceBundle() {
         if (resourceBundle == null || "".equals(resourceBundle)) {
-            retrieveResourceBundle();
+            try {
+                resourceBundle = ServicesRegistry.getInstance()
+                        .getJahiaTemplateManagerService().getTemplatePackage(
+                                getProcessingContext().getSite()
+                                        .getTemplatePackageName())
+                        .getResourceBundleName();
+            } catch (Exception e) {
+                logger.warn(
+                        "Unable to retrieve resource bundle name for current template set. Cause: "
+                                + e.getMessage(), e);
+            }
         }
         return resourceBundle;
     }
@@ -199,31 +206,15 @@ public class AbstractJahiaTag extends BodyTagSupport {
      * This has to be called in subtags of TemplateTag (any tag within a template should do actually).
      */
     protected ResourceBundle retrieveResourceBundle() {
-        final JahiaBean bean = Utils.getJahiaBean(pageContext);
-        final ProcessingContext context;
-        if(bean !=null)
-        context = bean.getProcessingContext();
-        else
-        context = Jahia.getThreadParamBean();
-        JahiaTemplatesRBLoader templatesRBLoader = null;
-        JahiaTemplatesPackage aPackage = null;
-        if(context!=null) {
-            templatesRBLoader = new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), context.getSiteID());
-            aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(context.getSiteID());
-        }
         ResourceBundle bundle = null;
-        final LocalizationContext context1 = BundleSupport.getLocalizationContext(pageContext);
-        if (context1!=null) {
-            bundle = context1.getResourceBundle();
+        final LocalizationContext localizationCtx = BundleSupport.getLocalizationContext(pageContext);
+        if (localizationCtx!=null) {
+            bundle = localizationCtx.getResourceBundle();
         }
-        if (aPackage != null) {
-            if (resourceBundle == null) {
-                resourceBundle = aPackage.getResourceBundleName();
-            }
-            if (bundle==null) {
-                bundle = new JahiaResourceBundle(resourceBundle, context.getLocale(),
-                                                 templatesRBLoader, aPackage);
-            }
+        if (bundle == null) {
+            bundle = new JahiaResourceBundle(resourceBundle,
+                    getProcessingContext().getLocale(), getProcessingContext()
+                            .getSite().getTemplatePackageName()); 
         }
         return bundle;
     }

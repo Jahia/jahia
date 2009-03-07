@@ -33,8 +33,6 @@
 
 package org.jahia.taglibs.uicomponents.tree;
 
-import org.jahia.data.beans.RequestBean;
-import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.urls.QueryMapURL;
@@ -700,7 +698,7 @@ public class TreeTag extends AbstractJahiaTag {
         if (altKey != null) {
             alt = JahiaResourceBundle.getString(bundleName, altKey,
                     getProcessingContext().getLocale(),
-                    getProcessingContext().getSiteID());
+                    getProcessingContext().getSite().getTemplatePackageName());
         }
 
         StringBuffer str = new StringBuffer();

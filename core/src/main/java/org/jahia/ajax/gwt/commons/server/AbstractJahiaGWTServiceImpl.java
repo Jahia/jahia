@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 import org.jahia.ajax.gwt.utils.RSSHelper;
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.I18nBean;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
@@ -387,7 +386,8 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
      * @return
      */
     protected String getTemplateRessource(String label, Locale l) {
-        return I18nBean.getInstance(getLocale(), retrieveParamBean()).get(label);
+        return new JahiaResourceBundle(getLocale(), retrieveParamBean()
+                .getSite().getTemplatePackageName()).getString(label, label);
     }
 
     /**
@@ -446,14 +446,10 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         if (key == null || key.length() == 0) {
             return key;
         }
-        String value = I18nBean.getInstance(paramBean.getLocale(), paramBean).get(key, null);
-        if (value == null || value.equalsIgnoreCase("")) {
+        String value = new JahiaResourceBundle(paramBean.getLocale(), paramBean.getSite().getTemplatePackageName()).get(key, null);
+        if (value == null || value.length() == 0) {
             value = JahiaResourceBundle.getJahiaInternalResource(key, paramBean.getLocale());
         }
-        if (value == null || value.equalsIgnoreCase("")) {
-            value = JahiaResourceBundle.getJahiaInternalResource(key, paramBean.getLocale());
-        }
-
         if (logger.isDebugEnabled()) {
             logger.debug("Resources value: " + value);
         }
@@ -482,7 +478,7 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         return message.getValues() == null ? JahiaResourceBundle
                 .getMessageResource(message.getKey(), getLocale())
                 : MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(),
-                getLocale()), message.getValues());
+                        getLocale()),message.getValues());
     }
 
     /**

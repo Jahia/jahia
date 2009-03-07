@@ -56,8 +56,6 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
-import org.jahia.data.beans.I18nBundlesBean;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.mysettings.MySettingsEngine;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
@@ -68,6 +66,7 @@ import org.jahia.services.notification.Subscription;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 /**
@@ -311,28 +310,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
                         .getPersonalizedEmailAddress(subscriberEmail,
                                 subscriber), subscriber));
         binding.setVariable("locale", getPreferredLocale());
-        JahiaTemplatesPackage templatePackage = null;
-        if (templatePackageName != null) {
-            templatePackage = ServicesRegistry.getInstance()
-                    .getJahiaTemplateManagerService().getTemplatePackage(
-                            templatePackageName);
-        }
-        I18nBundlesBean i18nBundles = new I18nBundlesBean(getPreferredLocale(),
-                templatePackage);
-        binding.setVariable("i18nBundles", i18nBundles);
-        binding.setVariable("i18nBundles", i18nBundles);
-        if (templatePackageName != null) {
-            String resourceBundleName = templatePackage != null ? templatePackage
-                    .getResourceBundleName()
-                    : null;
-            binding
-                    .setVariable(
-                            "i18n",
-                            i18nBundles
-                                    .get(resourceBundleName != null
-                                            && resourceBundleName.length() > 0 ? resourceBundleName
-                                            : "JahiaMessageResources"));
-        }
+        binding.setVariable("i18n", new JahiaResourceBundle(getPreferredLocale(), templatePackageName));
         binding.setVariable("subscriptionManagementLink",
                 getSubscriptionManagementLink());
     }

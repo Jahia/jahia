@@ -34,7 +34,6 @@
  package org.jahia.data.beans;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.gui.GuiBean;
 import org.jahia.params.ProcessingContext;
@@ -56,10 +55,6 @@ public class JahiaBean {
 
     private DateBean dateBean;
 
-    private I18nBean i18n;
-    
-    private I18nBundlesBean i18nBundles;
-    
     private IncludesBean includesBean;
     
     private PageBean pageBean;
@@ -84,27 +79,12 @@ public class JahiaBean {
         this.dateBean=dateBean;
         this.user = user;
         includesBean = new IncludesBean(processingContext);
-        JahiaTemplatesPackage templatesPackage = siteBean.getTemplatePackage(); 
-        i18nBundles = new I18nBundlesBean(processingContext.getLocale(), templatesPackage);
-        
-        String resourceBundleName = templatesPackage != null ? templatesPackage.getResourceBundleName() : null;
-        i18n = (I18nBean) i18nBundles.get(resourceBundleName != null
-                && resourceBundleName.length() > 0 ? resourceBundleName
-                : "JahiaMessageResources");
     }
     
     public DateBean getDate() {
         return dateBean;
     }
     
-    public I18nBean getI18n() {
-        return i18n;
-    }
-
-    public I18nBundlesBean getI18nBundles() {
-        return i18nBundles;
-    }
-
     public IncludesBean getIncludes() {
         return includesBean;
     }

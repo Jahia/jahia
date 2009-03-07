@@ -34,8 +34,8 @@
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.beans.I18nBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import java.util.ResourceBundle;
 import java.util.MissingResourceException;
@@ -79,7 +79,7 @@ public class ActionMenuLabelProvider {
      * @return the formatted label
      */
     private static String getActionLabel(ProcessingContext ctx, String action) {
-        return I18nBean.getInstance(COMMON_TAG_BUNDLE, ctx).get(new StringBuilder("actionmenus.actions.").append(action).toString(), action);
+        return new JahiaResourceBundle(COMMON_TAG_BUNDLE, ctx.getLocale(), ctx.getSite().getTemplatePackageName()).getString(new StringBuilder("actionmenus.actions.").append(action).toString(), action);
 
     }
 

@@ -36,7 +36,6 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
-<utility:setBundle basename="jahiatemplates.Community_templates"/>
 <div id="openclose">
 <div class="clasp"><a href="#toggle" onclick="return toggleSearch('pages');"><fmt:message key="search.advancedSearch.portalContent"/></a></div>
     <div id="searchTypePages" class="lunchbox" style="display: ${param['src_mode'] == 'pages' ? 'block' : 'none'}">

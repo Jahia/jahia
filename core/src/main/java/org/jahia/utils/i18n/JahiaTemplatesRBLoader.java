@@ -35,7 +35,6 @@ package org.jahia.utils.i18n;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 
 import java.io.File;
@@ -49,17 +48,8 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
     private ClassLoader loader = ClassLoader.getSystemClassLoader();
     private JahiaTemplatesPackage aPackage;
 
-    public JahiaTemplatesRBLoader(ClassLoader loader, String templateName) {
-        aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templateName);
-        if (loader != null) {
-            this.loader = loader;
-        }
-    }
-
-    public JahiaTemplatesRBLoader(ClassLoader loader, int siteId) {
-        if (siteId > 0) {
-            aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(siteId);
-        }
+    public JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {
+        aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName);
         if (loader != null) {
             this.loader = loader;
         }

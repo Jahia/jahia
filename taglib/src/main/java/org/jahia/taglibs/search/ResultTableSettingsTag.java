@@ -55,7 +55,6 @@ import org.jahia.services.search.savedsearch.JahiaSavedSearchView;
 import org.jahia.services.search.savedsearch.JahiaSavedSearchViewSettings;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.container.ContainerTag;
-import org.jahia.taglibs.utility.Utils;
 
 /**
  * Uses view settings for the saved search results display, i.e. displayed table
@@ -120,7 +119,7 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
                             getContextId(),
                             query != null ? query.getSearchViewHandlerClass()
                                     : FileSearchViewHandler.class.getName(),
-                            Utils.getProcessingContext(pageContext));
+                            getProcessingContext());
         } catch (JahiaException e) {
             logger.error("Unable to retrieve the saved search view object", e);
             throw new JspTagException(e);
@@ -154,8 +153,7 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
     }
 
     private String getIconUrl() {
-        String path = icon.startsWith("/") ? icon : Utils.getJahiaBean(
-                pageContext).getIncludes().getWebPath().lookup(icon);
+        String path = icon.startsWith("/") ? icon : getJahiaBean().getIncludes().getWebPath().lookup(icon);
 
         return ((HttpServletRequest) pageContext.getRequest()).getContextPath()
                 + (path.startsWith("/") ? path : "/" + path);
@@ -172,8 +170,7 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
     }
 
     private String getTitle() {
-        return title.equals(DEF_TITLE) ? Utils.getJahiaBean(pageContext)
-                .getI18n().get(DEF_TITLE) : title;
+        return title.equals(DEF_TITLE) ? getMessage(DEF_TITLE) : title;
     }
 
     public String getVar() {
@@ -193,7 +190,7 @@ public class ResultTableSettingsTag extends AbstractJahiaTag {
         String customizeViewURL = null;
         try {
             customizeViewURL = EnginesRegistry.getInstance().getEngineByBeanName("customizeSaveSearchViewEngine")
-                    .renderLink(Utils.getProcessingContext(pageContext),
+                    .renderLink(getProcessingContext(),
                             params);
         } catch (JahiaException e) {
             throw new IllegalArgumentException(e);

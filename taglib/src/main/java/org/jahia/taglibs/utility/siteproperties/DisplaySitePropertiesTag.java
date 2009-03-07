@@ -34,7 +34,6 @@
 package org.jahia.taglibs.utility.siteproperties;
 
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.I18nBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.sites.JahiaSite;

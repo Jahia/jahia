@@ -231,7 +231,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
         // now let's resolve the alt text if resource bundle keys are being
 		// used.
         if (altKey != null) {
-            _alt = JahiaResourceBundle.getString(altBundle, altKey, jParams.getLocale(), jParams.getSiteID());
+            _alt = JahiaResourceBundle.getString(altBundle, altKey, jParams.getLocale(), jParams.getSite().getTemplatePackageName());
         }
 
         // Produce the HTML code
@@ -260,7 +260,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
     					jParams.getContentPage().getObjectKey()).append(
     					(_lang != null ? "&flaglang=" + _lang : "")).toString();
     		} else {
-    			imagePath = JahiaResourceBundle.getString(getResourceBundle(),_src,jParams.getLocale(),jParams.getSiteID());
+    			imagePath = JahiaResourceBundle.getString(getResourceBundle(),_src,jParams.getLocale(),jParams.getSite().getTemplatePackageName());
     		}
             if ( ("".equals(_resource)) && (imagePath == null)) {
                 str.append("<!-- couldn't find resource with key " + _src +

@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -42,6 +42,7 @@
 <%@ page import="org.jahia.services.pages.*" %>
 <%@ page import="org.jahia.engines.selectpage.SelectPage_Engine" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
     final Iterator allTemplatesIterator = (Iterator) request.getAttribute("allTemplatesIterator");
     final int basePageID = ((Integer) request.getAttribute("basePageID")).intValue();
@@ -140,8 +141,8 @@
                                                         %>
                                                         <option value="<%=pageDefinition.getID()%>"<%if (pageDefinition.getID() == baseTemplateID.intValue()) { %>
                                                                 selected<%} %>
-                                                                title="<c:out value='${jahia.i18n[pageTemplate.description]}'/>">
-                                                            <c:out value="${jahia.i18n[pageTemplate.displayName]}"/></option>
+                                                                title="<fmt:message key='${pageTemplate.description}'/>">
+                                                            <fmt:message key="${pageTemplate.displayName}"/></option>
                                                         <% } %>
                                                     </select>
                                                 </td>

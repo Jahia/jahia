@@ -35,5 +35,5 @@
  - j:applyAcl (string)
 
 [jmix:lockable] > mix:lockable mixin
- - j:locktoken (string) protected
+ - j:locktoken (string) protected indexed=no
 

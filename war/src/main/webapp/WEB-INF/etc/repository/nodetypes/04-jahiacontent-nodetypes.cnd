@@ -24,7 +24,7 @@
  - j:workflowState (string) < 'staging','active'
 
 [jnt:page] > jnt:jahiacontent
- - j:pageTitle (string) primary mandatory i15d
+ - j:pageTitle (string) primary mandatory i15d sortable
  - j:template (string)
  - j:pid (long)
  + * (jnt:page) *

@@ -8,12 +8,12 @@
 [jmix:layout] mixin
 
 [jmix:skinnable] > jmix:layout mixin
- sharedSmallText skin (choicelist[image]) < skins()
+ sharedSmallText skin (choicelist[image]) indexed=no < skins()
 
 [jmix:positionnable] > jmix:layout mixin
- integer rowIndex hidden
- integer columnIndex  hidden
- sharedSmallText status hidden
+ integer rowIndex hidden indexed=no
+ integer columnIndex  hidden indexed=no
+ sharedSmallText status hidden indexed=no
 
 [jmix:containerExtension] mixin
 
@@ -46,7 +46,7 @@
  containerList fileContainer (jnt:fileContainer)
 
 [jnt:lastNewsContainer] > jnt:container
- integer maxNews = 10
+ integer maxNews = 10 indexed=no
 
 [jnt:lastNewsBox] > jnt:box
  containerList lastNewsContainer (jnt:lastNewsContainer)
@@ -62,7 +62,7 @@
  smallText mainContentTitle primary
  bigText mainContentBody
  file mainContentImage
- sharedSmallText mainContentAlign (choicelist) = resourceKey(left) indexed='no' < resourceKey(left), resourceKey(right), resourceKey(default)
+ sharedSmallText mainContentAlign (choicelist) = resourceKey(left) indexed=no < resourceKey(left), resourceKey(right), resourceKey(default)
 
 [jnt:mainContentsBox] > jnt:box
  containerList mainContentContainer (jnt:mainContentContainer)
@@ -85,9 +85,9 @@
 
 [jnt:savedSearchContainer] > jnt:container
  smallText boxSavedSearchTitle
- sharedSmallText boxSavedSearchQuery
- sharedSmallText boxSavedSearchView (choicelist) = resourceKey(list) < resourceKey(list),resourceKey(table)
- integer boxSavedSearchMaxs (choicelist) = 10 < 1,5,10,20,50,100,200,500
+ sharedSmallText boxSavedSearchQuery indexed=no
+ sharedSmallText boxSavedSearchView (choicelist) = resourceKey(list) indexed=no < resourceKey(list),resourceKey(table)
+ integer boxSavedSearchMaxs (choicelist) = 10 indexed=no < 1,5,10,20,50,100,200,500
 
 [jnt:savedSearchBox] > jnt:box
  containerList savedSearchContainer (jnt:savedSearchContainer)
@@ -99,15 +99,15 @@
  containerList textContainer (jnt:textContainer)
 
 [jnt:groupsContainer] > jnt:container
- sharedSmallText groupDisplayLimit = 5
- sharedSmallText groupQuery = '*'
+ sharedSmallText groupDisplayLimit = 5 indexed=no
+ sharedSmallText groupQuery = '*' indexed=no
 
 [jnt:groupsBox] > jnt:box
  containerList groupsContainer (jnt:groupsContainer)
 
 [jnt:usersContainer] > jnt:container
- integer userDisplayLimit = 5
- sharedSmallText userQuery = '*'
+ integer userDisplayLimit = 5 indexed=no
+ sharedSmallText userQuery = '*' indexed=no
 
 [jnt:usersBox] > jnt:box
  containerList usersContainer (jnt:usersContainer)
@@ -118,14 +118,14 @@
 [jnt:portletsBox] > jnt:box
  containerList portletContainer (jnt:portletContainer)
 
-[jnt:peopleContainer] > jnt:container
+[jnt:peopleContainer] > jnt:container 
  sharedSmallText peopleFirstname
- sharedSmallText peopleLastname
+ sharedSmallText peopleLastname sortable
  date peopleBirthdate
- sharedSmallText peopleCivility (choicelist) < 'M.','Mme.','Mlle.'
- sharedSmallText peopleGender (choicelist) < 'male','female'
+ sharedSmallText peopleCivility (choicelist) analyzer='keyword' < 'M.','Mme.','Mlle.'
+ sharedSmallText peopleGender (choicelist) analyzer='keyword' < 'male','female'
  smallText peopleTitle
- smallText peopleNationality
+ smallText peopleNationality facetable
  file peoplePicture (file[mime='image/*'])
 
 [jnt:peopleBox] > jnt:box
@@ -133,16 +133,16 @@
 
 [jnt:locationContainer] > jnt:container
  sharedSmallText locationStreet
- sharedSmallText locationZipCode
- smallText locationTown
- smallText locationCountry
+ sharedSmallText locationZipCode analyzer='keyword'
+ smallText locationTown facetable
+ smallText locationCountry facetable
 
 [jnt:locationBox] > jnt:box
  containerList locationContainer (jnt:locationContainer)
 
 [jnt:organizationContainer] > jnt:container
- sharedSmallText organizationName
- sharedSmallText organizationAcronym
+ sharedSmallText organizationName facetable
+ sharedSmallText organizationAcronym analyzer='keyword' facetable
  file organizationLogo (file[mime='image/*'])
  sharedSmallText organizationReference
 
@@ -151,7 +151,7 @@
 
 [jnt:mediaContainer] > jnt:container
  file mediaFile
- sharedSmallText mediaAuthor
+ sharedSmallText mediaAuthor analyzer='simple'
  date mediaDate
  smallText mediaNote
  sharedSmallText mediaCredit
@@ -170,15 +170,15 @@
  containerList eventContainer (jnt:eventContainer)
 
 [jnt:IframeContainer] > jnt:container
- sharedSmallText IframeSource
- sharedSmallText IframeName
- integer IframeWidth
- integer IframeHeight
- integer IframeFrameborder = '0'
- integer IframeMarginwidth = '0'
- integer IframeMarginheight = '0'
- sharedSmallText IframeScrolling (choicelist) < 'yes','no','auto'
- smallText IframeAlt
+ sharedSmallText IframeSource indexed=no
+ sharedSmallText IframeName indexed=no
+ integer IframeWidth indexed=no
+ integer IframeHeight indexed=no
+ integer IframeFrameborder = '0' indexed=no
+ integer IframeMarginwidth = '0' indexed=no
+ integer IframeMarginheight = '0' indexed=no
+ sharedSmallText IframeScrolling (choicelist) indexed=no < 'yes','no','auto'
+ smallText IframeAlt indexed=no
 
 [jnt:IframeBox] > jnt:box
  containerList IframeContainer (jnt:IframeContainer)
@@ -190,14 +190,14 @@
  integer videoHeight = '0'
  integer videoHspace = '0'
  integer videoVspace = '0'
- sharedSmallText videoAutostart (choicelist) < 'true','false'
- sharedSmallText videoInvokeURLs (choicelist) < 'true','false'
- sharedSmallText videoEnablecontextmenu (choicelist) < '0','1'
- sharedSmallText videoShowstatusbar (choicelist) < '0','1'
- sharedSmallText videoShowcontrols (choicelist) < '0','1'
- sharedSmallText videoAutosize (choicelist) < 'true','false'
- integer videoDisplaysize = '0'
- sharedSmallText videoLoop (choicelist) < 'true','false'
+ sharedSmallText videoAutostart (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+ sharedSmallText videoInvokeURLs (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+ sharedSmallText videoEnablecontextmenu (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
+ sharedSmallText videoShowstatusbar (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
+ sharedSmallText videoShowcontrols (choicelist) analyzer='keyword' fulltextsearchable=no < '0','1'
+ sharedSmallText videoAutosize (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
+ integer videoDisplaysize = '0' analyzer='keyword' fulltextsearchable=no
+ sharedSmallText videoLoop (choicelist) analyzer='keyword' fulltextsearchable=no < 'true','false'
 
 [jnt:videoBox] > jnt:box
  containerList videoContainer (jnt:videoContainer)
@@ -210,23 +210,23 @@
 
 [jnt:flashContainer] > jnt:container
  file flashSourceFlashContainer
- sharedSmallText widthFlashContainer
- sharedSmallText heightFlashContainer
- sharedSmallText flashPlayerFlashContainer = '9'
- sharedSmallText idFlashContainer
+ sharedSmallText widthFlashContainer analyzer='keyword' fulltextsearchable=no
+ sharedSmallText heightFlashContainer analyzer='keyword' fulltextsearchable=no
+ sharedSmallText flashPlayerFlashContainer = '9' analyzer='keyword' fulltextsearchable=no
+ sharedSmallText idFlashContainer analyzer='keyword' fulltextsearchable=no
  sharedSmallText nameFlashContainer
- sharedSmallText swliveconnectFlashContainer (choicelist) < 'true', 'false'
- sharedSmallText playFlashContainer (choicelist) < 'true','false'
- sharedSmallText loopFlashContainer (choicelist) < 'true','false'
- sharedSmallText menuFlashContainer (choicelist) < 'true','false'
- sharedSmallText qualityFlashContainer (choicelist) < 'low','high','autolow','autohigh','best'
- sharedSmallText scaleFlashContainer (choicelist) < 'default','noborder','exactfit'
- sharedSmallText alignFlashContainer (choicelist) < 'l','r','t','b'
- sharedSmallText salignFlashContainer (choicelist) < 'l','r','t','b','tl','tr','bl','br'
- sharedSmallText wmodeFlashContainer (choicelist) < 'window','opaque','transparent'
+ sharedSmallText swliveconnectFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'true', 'false'
+ sharedSmallText playFlashContainer (choicelist) indexed=no < 'true','false'
+ sharedSmallText loopFlashContainer (choicelist) indexed=no < 'true','false'
+ sharedSmallText menuFlashContainer (choicelist) indexed=no < 'true','false'
+ sharedSmallText qualityFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'low','high','autolow','autohigh','best'
+ sharedSmallText scaleFlashContainer (choicelist) analyzer='keyword' fulltextsearchable=no < 'default','noborder','exactfit'
+ sharedSmallText alignFlashContainer (choicelist) indexed=no < 'l','r','t','b'
+ sharedSmallText salignFlashContainer (choicelist) indexed=no < 'l','r','t','b','tl','tr','bl','br'
+ sharedSmallText wmodeFlashContainer (choicelist) indexed=no < 'window','opaque','transparent'
  color bgcolorFlashContainer
- sharedSmallText baseFlashContainer
- sharedSmallText flashvarsFlashContainer
+ sharedSmallText baseFlashContainer indexed=no
+ sharedSmallText flashvarsFlashContainer indexed=no
 
 [jnt:flashBox] > jnt:box
  containerList flashContainer (jnt:flashContainer)

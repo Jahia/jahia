@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -34,17 +34,17 @@
 --%>
 
 <%@ include file="../../common/declarations.jspf" %>
+<%@ page import="java.util.*" %>
+<%@ page import="org.jahia.engines.selectpage.SelectPage_Engine"%>
+<%@ page import="org.jahia.params.ParamBean" %>
+<%@ page import="org.jahia.registries.EnginesRegistry"%>
 
 <template:jahiaPageForm name="formHandler" method="post">
 
-    <fmt:message key='display.name'/>: <input type="text"
-                                                                                      name="formHandlerCL_Name"/><br/>
-    <fmt:message key='display.adress'/>: <input type="text"
-                                                                                          name="formHandlerCL_Adress"/><br/>
-    <fmt:message key='display.zip'/>: <input type="text"
-                                                                                    name="formHandlerCL_Zip">
-    <fmt:message key='display.city'/>: <input type="text"
-                                                                                      name="formHandlerCL_City"/>
+    <fmt:message key='display.name'/>: <input type="text" name="Name"/><br/>
+    <fmt:message key='display.adress'/>: <input type="text" name="Adress"/><br/>
+    <fmt:message key='display.zip'/>: <input type="text" name="Zip"/><br/>
+    <fmt:message key='display.city'/>: <input type="text" name="City"/><br/>
     <br/>
     <input type="hidden" name="storeContact" value="1"/>
     <input type="submit" value="<fmt:message key='display.store'/>"
@@ -53,19 +53,71 @@
 
     <template:containerList name="formHandlerCL" id="formHandlerCL" actionMenuNamePostFix="textContainers"
                             actionMenuNameLabelKey="textContainers.add">
-
         <template:formContentMapperHandler listName="formHandlerCL" submitMarker="storeContact"/>
+
         <template:container id="formC">
             Contact:<br/>
-            <fmt:message key='display.name'/>: <template:field
-                name="Name"/><br/>
-            <fmt:message key='display.adress'/>: <template:field
-                name="Adress"/><br/>
-            <fmt:message key='display.zip'/>: <template:field
-                name="Zip"/> &nbsp;&nbsp;<fmt:message key='display.city'/>:
-            <template:field name="City"/><br/><br/>
+            <fmt:message key='display.name'/>: <template:field name="Name" inlineEditingActivated="false"/><br/>
+            <fmt:message key='display.adress'/>: <template:field name="Adress" inlineEditingActivated="false"/><br/>
+            <fmt:message key='display.zip'/>: <template:field name="Zip" inlineEditingActivated="false"/><br/>
+            <fmt:message key='display.city'/>: <template:field name="City" inlineEditingActivated="false"/><br/><br/>
 
 
+        </template:container>
+    </template:containerList>
+
+</template:jahiaPageForm>
+
+<h3>Using FCKeditor</h3>
+<%
+    final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
+    final Map params = new HashMap(4);
+    params.put(SelectPage_Engine.OPERATION, "selectAnyPage");
+    params.put(SelectPage_Engine.PARENT_PAGE_ID, new Integer(-1));
+    params.put(SelectPage_Engine.PAGE_ID, new Integer(-1));
+    params.put("callback","SetUrl");
+    String selectPageURL = EnginesRegistry.getInstance().getEngineByBeanName("selectPageEngine").renderLink(jParams, params);
+%>
+<c:set var="fckUrl" value="${pageContext.request.contextPath}/htmleditors/fckeditor"/>
+<script type="text/javascript" src="${fckUrl}/fckeditor.js"></script>
+<script type="text/javascript">
+    var oFCKeditor = null;
+
+    window.onload = function() {
+        oFCKeditor = new FCKeditor('mainContentBody', '100%', '150');
+        oFCKeditor.BasePath = "${fckUrl}/";
+        oFCKeditor.Config.basePath = "${fckUrl}/";
+        
+        oFCKeditor.Config.EditorAreaCSS = "${fckUrl}/editor/css/fck_editorarea.css";
+        oFCKeditor.Config.StylesXmlPath = "${fckUrl}/fckstyles.xml";
+
+        oFCKeditor.Config.ImageBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'><c:param name='filters' value='*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff'/></c:url>";
+        oFCKeditor.Config.FileBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'/>";
+        oFCKeditor.Config.FlashBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url&filters=*.swf'/>";
+        oFCKeditor.Config.LinkBrowserURL = "<%=selectPageURL%>";
+        
+        oFCKeditor.Config["AutoDetectLanguage"] = false;
+        oFCKeditor.Config["DefaultLanguage"] = "${currentRequest.paramBean.locale}";
+        oFCKeditor.Config["CustomConfigurationsPath"] = "${fckUrl}/fckconfig_jahia.js"
+        oFCKeditor.ToolbarSet = "Basic";
+        oFCKeditor.ReplaceTextarea();
+    }
+</script>
+<template:jahiaPageForm name="formHandler2" method="post">
+
+    Title: <input type="text" name="mainContentTitle"/><br/>
+    Title: <textarea name="mainContentBody" id="mainContentBody"></textarea><br/>
+    <input type="hidden" name="storeParagraph" value="1"/>
+    <input type="submit" value="Submit" name="save"/>
+    <br/>
+
+    <template:containerList name="paragraph" id="paragraph">
+        <template:formContentMapperHandler listName="paragraph" submitMarker="storeParagraph"/>
+
+        <template:container id="ctn">
+            Paragraph:<br/>
+            Title: <template:field name="mainContentTitle" inlineEditingActivated="false"/><br/>
+            Content: <template:field name="mainContentBody" inlineEditingActivated="false"/><br/><br/>
         </template:container>
     </template:containerList>
 

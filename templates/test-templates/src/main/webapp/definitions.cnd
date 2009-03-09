@@ -217,6 +217,7 @@
   
 [test_templates:ContentFormHandler] > test_templates:generic
  containerList formHandlerCL (test_templates:formHandlerCL)
+ containerList paragraph (jnt:mainContentContainer)
 
 [test_templates:home] > test_templates:generic
   

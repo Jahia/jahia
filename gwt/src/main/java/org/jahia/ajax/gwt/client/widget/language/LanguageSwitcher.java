@@ -142,13 +142,15 @@ public class LanguageSwitcher extends HorizontalPanel {
                 if (!locale.equals(currentLanguage)) {
                     final GWTLanguageSwitcherLocaleBean s1 = locales.get(locale);
                     HorizontalPanel horizontalPanel = new HorizontalPanel();
-                    Button menuItem = new Button(s1.getDisplayName());
-                    menuItem.setData(s1.getDisplayName(), locale);
+                    String text = s1.getDisplayName();
+                    Button menuItem = new Button(text);
                     if (displayFlag && !"".equals(s1.getCountryIsoCode())) {
                         menuItem.setIconStyle("flag_" + s1.getCountryIsoCode());
                     } else {
-                        menuItem.setText("<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">"+s1.getLanguage()+"</span> "+s1.getDisplayName());
+                        text = "<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">" + s1.getLanguage() + "</span> " + text;
+                        menuItem.setText(text);
                     }
+                    menuItem.setData(text, locale);
                     menuItem.addSelectionListener(listener);
                     horizontalPanel.add(menuItem);
                     if (displayWorkflowStates) {

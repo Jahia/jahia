@@ -402,7 +402,7 @@ public class JahiaContainerDefinition extends ContentDefinition implements Seria
      *
      * @return
      */
-    public String[] getAliasName() {
+    public String[] getAliasNames() {
         if (ctnDefProperties == null) {
             return new String[]{};
         }

@@ -1259,7 +1259,7 @@ public class AddContainer_Engine implements JahiaEngine {
                             Iterator<String> iterator = results.getPropertyNames().iterator();
                             while (iterator.hasNext() && vr == null) {
                                 String o = iterator.next();
-                                String[] aliasNames = field.getDefinition().getAliasName();
+                                String[] aliasNames = field.getDefinition().getAliasNames();
                                 if (aliasNames == null || aliasNames.length == 0) {
                                     aliasNames = new String[]{name};
                                 }

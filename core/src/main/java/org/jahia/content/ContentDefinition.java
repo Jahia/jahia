@@ -255,7 +255,7 @@ public abstract class ContentDefinition extends JahiaObject implements Serializa
         return null;
     }
 
-    public String[] getAliasName(){
+    public String[] getAliasNames(){
         return new String[0];
     }
 

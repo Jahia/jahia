@@ -133,7 +133,7 @@ public class JahiaContainerIndexableDocument extends IndexableDocumentImpl {
         }
         try {
             this.addFieldValues(JahiaSearchConstant.CONTAINER_ALIAS,
-                    this.container.getDefinition().getAliasName());
+                    this.container.getDefinition().getAliasNames());
         } catch ( Exception t ){
             logger.debug("Exception occured retrieving Container Alias Names",t);
         }

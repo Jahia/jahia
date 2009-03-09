@@ -143,7 +143,7 @@ public class EngineValidationHelper {
             if (form == null) return false;
             Field f = form.getField(fieldName);
             if (f == null) {
-                String[] aliasNames = theField.getDefinition().getAliasName();
+                String[] aliasNames = theField.getDefinition().getAliasNames();
                 for (int i = 0; f == null && i < aliasNames.length; i++) {
                     String aliasName = aliasNames[i];
                     f = form.getField(aliasName);

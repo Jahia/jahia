@@ -395,7 +395,7 @@ public class ContainerValidatorBase implements InvocationHandler {
             for (Iterator<JahiaField> fieldsPerLanguage = cff.getFields(); fieldsPerLanguage.hasNext() && matchingFieldName == null;) {
                 JahiaField newJf = fieldsPerLanguage.next();
                 JahiaFieldDefinition fieldDef = newJf.getDefinition(); 
-                String[] aliasNames = fieldDef.getAliasName();
+                String[] aliasNames = fieldDef.getAliasNames();
                     if (aliasNames == null || aliasNames.length == 0) {
                     aliasNames = new String[]{fieldDef.getName()};
                     }

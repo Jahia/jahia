@@ -13,8 +13,4 @@
         <key>JahiaTypesResources</key>
         <file>JahiaTypesResources</file>
     </resource-bundle>
-    <resource-bundle>
-        <key>CommonTag</key>
-        <file>CommonTag</file>
-    </resource-bundle>
 </registry>

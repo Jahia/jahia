@@ -101,15 +101,19 @@ public class JahiaResourceBundle extends ResourceBundle {
         }
         if (o == null && templatesPackage != null) {
             final List<String> stringList = templatesPackage.getResourceBundleHierarchy();
-            for (String s1 : stringList) {
+            for (String bundleToLookup : stringList) {
+                if (basename != null && basename.equals(bundleToLookup)) {
+                    // we did the lookup in this bundle already
+                    continue;
+                }
                 try {
-                    o = ResourceBundle.getBundle(s1, locale, templatesRBLoader).getString(s);
+                    o = ResourceBundle.getBundle(bundleToLookup, locale, templatesRBLoader).getString(s);
                     if (o != null) {
                         break;
                     }
                 } catch (MissingResourceException e1) {
                     logger.debug("Try to find '" + s
-                            + "' in resource bundle '" + s1 + "'");
+                            + "' in resource bundle '" + bundleToLookup + "'");
                 }
             }
         }
@@ -193,6 +197,29 @@ public class JahiaResourceBundle extends ResourceBundle {
             message = defaultValue;
         }
         return message;
+    }
+     
+    /**
+     * Returns names of bundles where the key is looked up.
+     * 
+     * @return list of bundles where the key is looked up
+     */
+    public List<String> getLookupBundles() {
+        List<String> bundles = new LinkedList<String>();
+        if (basename != null) {
+            bundles.add(basename);
+        }
+        if (templatesPackage != null) {
+            List<String> bundleHierarchy = templatesPackage
+                    .getResourceBundleHierarchy();
+            for (String name : bundleHierarchy) {
+                if (basename == null || !basename.equals(name)) {
+                    bundles.add(name);
+                }
+            }
+        }
+
+        return bundles;
     }
 
 }

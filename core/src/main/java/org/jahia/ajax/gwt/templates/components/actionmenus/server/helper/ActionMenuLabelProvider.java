@@ -37,7 +37,6 @@ import org.apache.log4j.Logger;
 import org.jahia.params.ProcessingContext;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
 /**
@@ -52,8 +51,6 @@ public class ActionMenuLabelProvider {
     public static final String CONTAINER = "container" ;
     public static final String FIELD = "field" ;
     public static final String PAGE = "page" ;
-
-    public static final String COMMON_TAG_BUNDLE = "CommonTag" ;
 
     private final static Logger logger = Logger.getLogger(ActionMenuLabelProvider.class) ;
 
@@ -79,65 +76,31 @@ public class ActionMenuLabelProvider {
      * @return the formatted label
      */
     private static String getActionLabel(ProcessingContext ctx, String action) {
-        return new JahiaResourceBundle(COMMON_TAG_BUNDLE, ctx.getLocale(), ctx.getSite().getTemplatePackageName()).getString(new StringBuilder("actionmenus.actions.").append(action).toString(), action);
+        return new JahiaResourceBundle(ctx.getLocale(), ctx.getSite().getTemplatePackageName()).getString(new StringBuilder("actionmenus.actions.").append(action).toString(), action);
 
     }
 
     private static String getSuffixLabel(String bundleName, ProcessingContext ctx, String action, String postfix, String type) {
-        if (bundleName == null || bundleName.length() == 0) {
-            bundleName = COMMON_TAG_BUNDLE ;
-        }
-        ResourceBundle bundle = ResourceBundle.getBundle(bundleName, ctx.getLocale()) ;
 
-        String suffix ;
-        if (postfix == null || postfix.length() == 0) {
-            suffix = type ;
-        } else {
-            suffix = postfix ;
-        }
+        String suffix = postfix != null && postfix.length() > 0 ? postfix
+                : type;
 
-        String actionSuffixKey = new StringBuilder("actionmenus.postfixes.").append(suffix).append(".").append(action).toString();
-        String defaultSuffixKey = new StringBuilder("actionmenus.postfixes.").append(suffix).append(".default").toString();
-
+        JahiaResourceBundle bundle = new JahiaResourceBundle(bundleName != null
+                && bundleName.length() > 0 ? bundleName : null,
+                ctx.getLocale(), ctx.getSite().getTemplatePackageName());
+        
         String suffixLabel = null ;
-        try {
-            suffixLabel = bundle.getString(actionSuffixKey) ;
-        } catch (MissingResourceException ex) {
-            try {
-                suffixLabel = bundle.getString(defaultSuffixKey) ;
-            } catch (MissingResourceException e) {
-                logger.debug("No resource for entry '" + actionSuffixKey + "/" + defaultSuffixKey + "' in bundle " + bundleName);
-                if (!bundleName.equals(COMMON_TAG_BUNDLE)) {
-                    bundle = ResourceBundle.getBundle(COMMON_TAG_BUNDLE, ctx.getLocale()) ;
-                    try {
-                        suffixLabel = bundle.getString(actionSuffixKey) ;
-                    } catch (MissingResourceException e1) {
-                        try {
-                            suffixLabel = bundle.getString(defaultSuffixKey) ;
-                        } catch (MissingResourceException e2) {
-                            logger.debug("No resource for entry '" + actionSuffixKey + "/" + defaultSuffixKey + "' in bundle " + COMMON_TAG_BUNDLE);
-                        }
-                    }
-                    if (suffixLabel == null) {
-                        actionSuffixKey = new StringBuilder("actionmenus.postfixes.").append(type).append(".").append(action).toString();
-                        defaultSuffixKey = new StringBuilder("actionmenus.postfixes.").append(type).append(".default").toString();
-                        try {
-                            suffixLabel = bundle.getString(actionSuffixKey) ;
-                        } catch (MissingResourceException e1) {
-                            try {
-                                suffixLabel = bundle.getString(defaultSuffixKey) ;
-                            } catch (MissingResourceException e2) {
-                                logger.info("No resource for entry '" + actionSuffixKey + "/" + defaultSuffixKey + "' in bundle " + COMMON_TAG_BUNDLE);
-                                return "" ;
-                            }
-                        }
-                    }
-                } else {
-                    return "" ;
-                }
-            }
+        suffixLabel = getMessage(bundle, 
+                new StringBuilder("actionmenus.postfixes.").append(suffix).append(".").append(action).toString(), 
+                new StringBuilder("actionmenus.postfixes.").append(suffix).append(".default").toString());
+        
+        if (suffixLabel == null && !suffix.equals(type)) {
+            suffixLabel = getMessage(bundle, 
+                    new StringBuilder("actionmenus.postfixes.").append(type).append(".").append(action).toString(), 
+                    new StringBuilder("actionmenus.postfixes.").append(type).append(".default").toString());
         }
-        return new StringBuilder(" ").append(suffixLabel).toString() ;
+        
+        return suffixLabel != null && suffixLabel.length() > 0 ? new StringBuilder(" ").append(suffixLabel).toString() : "";
     }
 
     /**
@@ -150,34 +113,31 @@ public class ActionMenuLabelProvider {
      * @return the formatted label
      */
     public static String getIconLabel(String bundleName, String key, String type, ProcessingContext ctx) {
-        if (bundleName == null || bundleName.length() == 0) {
-            bundleName = COMMON_TAG_BUNDLE ;
-        }
-        ResourceBundle bundle = ResourceBundle.getBundle(bundleName, ctx.getLocale()) ;
-        String iconKey = new StringBuilder("actionmenus.iconlabels.").append(key).toString();
-        String iconDefaultKey = new StringBuilder("actionmenus.iconlabels.").append(type).toString();
-        String iconLabel ;
-        try {
-            iconLabel = bundle.getString(iconKey);
-        } catch (MissingResourceException e) {
-            try {
-                iconLabel = bundle.getString(iconDefaultKey) ;
-            } catch (Exception e1) {
-                logger.debug("No resource for entry '" + iconKey + "/" + iconDefaultKey + "' in bundle " + bundleName);
-                if (!bundleName.equals(COMMON_TAG_BUNDLE)) {
-                    try {
-                        bundle = ResourceBundle.getBundle(COMMON_TAG_BUNDLE, ctx.getLocale()) ;
-                        iconLabel = bundle.getString(iconDefaultKey) ;
-                    } catch (MissingResourceException e3) {
-                        logger.debug("No resource for entry '" + iconDefaultKey + "' in bundle " + COMMON_TAG_BUNDLE);
-                        return "" ;
-                    }
-                } else {
-                    return "" ;
-                }
-            }
-        }
-        return iconLabel;
+        String iconLabel = getMessage(new JahiaResourceBundle(
+                bundleName != null && bundleName.length() > 0 ? bundleName
+                        : null, ctx.getLocale(), ctx.getSite()
+                        .getTemplatePackageName()), new StringBuilder(
+                "actionmenus.iconlabels.").append(key).toString(),
+                new StringBuilder("actionmenus.iconlabels.").append(type)
+                        .toString());
+        
+
+        return iconLabel != null ? iconLabel : "";
     }
 
+    private static String getMessage(JahiaResourceBundle bundle, String... labels) {
+        String message = null;
+        for (String label : labels) {
+            try {
+                message = bundle.getString(label);
+                if (message != null) {
+                    break;
+                }
+            } catch (MissingResourceException ex) {
+                logger.info("No resource for entry '" + label + "' in bundles " + bundle.getLookupBundles());
+            }
+        }
+
+        return message;
+    }
 }

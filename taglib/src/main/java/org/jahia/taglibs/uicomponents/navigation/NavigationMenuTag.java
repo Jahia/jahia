@@ -1,29 +1,29 @@
 /**
- *
+ * 
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- *
+ * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
+ * 
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- *
+ * 
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -52,8 +52,6 @@ import org.jahia.gui.GuiBean;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
@@ -104,7 +102,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     private String actionMenuIconStyle;
     private int titleLength = 0;
     private int titleIndent = 0;
-    private boolean editMenuAtEnd = true;
+    private boolean editMenuAtEnd = true ;
 
     public void setTitleLength(int length) {
         this.titleLength = length;
@@ -445,7 +443,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }*/
 
         if (!editMenuAtEnd) {
-            if (editMode && !hideActionMenus && ((level == reqLevel - 1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
                 String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
                 if (actionMenuDisplay != null) {
                     if (begin) {
@@ -559,10 +557,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         }
 
                         if (dispLink == null) {
-                            dispLink = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale(), "n/d");
+                            dispLink = getMessage("noPageTitle", "n/d");
                         }
                         if (title == null) {
-                            title = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.display.notitle", jParams.getLocale(), "n/d");
+                            title = getMessage("noPageTitle", "n/d");
                         }
 
                         out.append("<a href=\"").append(link.getURL(jParams)).append("\"").append(" class=\"");
@@ -617,7 +615,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }
 
         if (editMenuAtEnd) {
-            if (editMode && !hideActionMenus && ((level == reqLevel - 1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
                 String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
                 if (actionMenuDisplay != null) {
                     if (begin) {
@@ -654,18 +652,6 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }*/
     }
 
-    protected String getMessage(final String titleKey, final String title) {
-        if ((titleKey != null)) {
-            String tmp = retrieveResourceBundle().getString(titleKey);
-            if (tmp == null || tmp.equals(title)) {
-                return ResourceBundleMarker.drawMarker(AbstractJahiaTag.COMMON_TAG_BUNDLE, titleKey, title);
-            }
-            return ResourceBundleMarker.drawMarker(getResourceBundle(), titleKey, title);
-        } else {
-            return title;
-        }
-    }
-
     /**
      * Draw a navigation menu displaying the current sibling pages (if any) and the subpages of the current page.
      */
@@ -698,7 +684,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         hideActionMenus = false;
         requiredTitle = false;
         displayActionMenuBeforeLink = false;
-        editMenuAtEnd = true;
+        editMenuAtEnd = true ;
         super.resetState();
         return EVAL_PAGE;
     }

@@ -68,7 +68,7 @@
 
 </template:jahiaPageForm>
 
-<h3>Using FCKeditor</h3>
+<h2>Using FCKeditor</h2>
 <%
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     final Map params = new HashMap(4);

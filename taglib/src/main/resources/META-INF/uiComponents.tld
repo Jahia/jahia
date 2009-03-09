@@ -444,6 +444,12 @@
             <type>int</type>
         </attribute>
         <attribute>
+            <name>startPid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
             <name>maxDepth</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1015,7 +1021,7 @@
         <name>folderSelector</name>
         <path>/META-INF/tags/folderSelector.tag</path>
     </tag-file>
-    
+
     <tag-file>
         <description>Renders a media gallery displaying image thumbnails</description>
         <name>mediaGallery</name>

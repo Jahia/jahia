@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -82,6 +82,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     private String containerListName = null;
     private String pageFieldName = null;
     private int startLevel = -1;
+    private int startPid = -1;
     private int maxDepth = -1;
     private int dispNumber = -1;
     private boolean expandOnlyPageInPath = true;
@@ -103,7 +104,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     private String actionMenuIconStyle;
     private int titleLength = 0;
     private int titleIndent = 0;
-    private boolean editMenuAtEnd = true ;
+    private boolean editMenuAtEnd = true;
 
     public void setTitleLength(int length) {
         this.titleLength = length;
@@ -131,6 +132,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
 
     public void setStartLevel(int startLevel) {
         this.startLevel = startLevel;
+    }
+
+    public void setStartPid(int startPid) {
+        this.startPid = startPid;
     }
 
     public void setMaxDepth(int maxDepth) {
@@ -247,7 +252,11 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 } else if (themeMenu) {
                     drawThemeMenu();
                 } else {
-                    getPageSubTree(jData, jData.gui().getLevelID(startLevel), startLevel, out, dependencies, 0);
+                    if (startPid > 0) {
+                        getPageSubTree(startPid, startLevel, out, dependencies, 0);
+                    } else {
+                        getPageSubTree(jData.gui().getLevelID(startLevel), startLevel, out, dependencies, 0);
+                    }
                 }
                 out.append("</div>\n");
                 htmlOutput = out.toString();
@@ -397,7 +406,6 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     /**
      * Recursive method to go through pages hierarchy using a specific container list (attribute containerListName).
      *
-     * @param jData        JahiaData
      * @param pageId       the page id where to get the container list
      * @param level        the current depth level
      * @param out          the stringbuffer to write output into
@@ -407,7 +415,8 @@ public class NavigationMenuTag extends AbstractJahiaTag {
      * @throws IOException            JSP writer exception
      * @throws ClassNotFoundException exception building clist bean
      */
-    private void getPageSubTree(JahiaData jData, int pageId, int level, StringBuffer out, Set<ContentObjectKey> dependencies, int loopIt) throws JahiaException, IOException, ClassNotFoundException {
+    private void getPageSubTree(int pageId, int level, StringBuffer out, Set<ContentObjectKey> dependencies, int loopIt)
+            throws JahiaException, IOException, ClassNotFoundException {
         if (pageId < 1) {
             logger.error("Incorrect page ID: " + pageId);
             // throw new IllegalArgumentException("attribute pageID cannot be < 1 (is " + pageId + ")");
@@ -436,7 +445,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }*/
 
         if (!editMenuAtEnd) {
-            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+            if (editMode && !hideActionMenus && ((level == reqLevel - 1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
                 String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
                 if (actionMenuDisplay != null) {
                     if (begin) {
@@ -574,7 +583,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
 
                     // displays sub links
                     if (!onlyTop && (!expandOnlyPageInPath || isInPath)) {
-                        getPageSubTree(jData, linkID, level + 1, out, dependencies, loopIt + 1);
+                        getPageSubTree(linkID, level + 1, out, dependencies, loopIt + 1);
                     }
                     if (!hide) out.append("</li>\n");
 
@@ -608,7 +617,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         }
 
         if (editMenuAtEnd) {
-            if (editMode && !hideActionMenus && ((level == reqLevel -1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
+            if (editMode && !hideActionMenus && ((level == reqLevel - 1 || level == reqLevel) || onlyTop)) { // new page can only be created as a sibling or a child to the current or the top page (visual coherence limitation)
                 String actionMenuDisplay = new ActionMenuOutputter(jParams, pageContext, new ContainerListBean(linkContainerList, jParams), containerListName, linkContainerList.getContentContainerList().getObjectKey().toString(), getResourceBundle(), containerListNamePostFix, labelKey, actionMenuIconStyle).getOutput(false);
                 if (actionMenuDisplay != null) {
                     if (begin) {
@@ -675,6 +684,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         startLevel = -1;
         dispNumber = -1;
         maxDepth = -1;
+        startPid = -1;
         jData = null;
         containerListName = null;
         pageFieldName = null;
@@ -688,7 +698,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         hideActionMenus = false;
         requiredTitle = false;
         displayActionMenuBeforeLink = false;
-        editMenuAtEnd = true ;
+        editMenuAtEnd = true;
         super.resetState();
         return EVAL_PAGE;
     }

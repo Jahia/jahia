@@ -72,6 +72,23 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
     public ToolItem createToolItem(final GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, final GWTJahiaToolbarItem gwtToolbarItem) {
         ToolItem toolbarItem = createNewToolItem(gwtToolbarItem);
         int layout = gwtToolbarItemsGroup.getLayout();
+
+        // set properties that are specific to a ToggleToolItem
+        if (toolbarItem instanceof ToggleToolItem) {
+            Log.debug("Toogle item");
+            ((ToggleToolItem) toolbarItem).toggle(gwtToolbarItem.isSelected());
+            //((ToggleToolItem) toolbarItem).pressed = gwtToolbarItem.isSelected();
+            // hack: toogle doesn't work
+            if (gwtToolbarItem.isSelected()) {
+                toolbarItem.addStyleName("x-btn-pressed");
+            }
+        } else if (toolbarItem instanceof SplitToolItem) {
+            // hack: toogle split button
+            if (gwtToolbarItem.isSelected()) {
+                toolbarItem.addStyleName("x-btn-pressed");
+            }
+        }
+
         // set properties that are specific to a TextToolItem
         if (toolbarItem instanceof TextToolItem) {
             if (layout == ToolbarConstants.ITEMSGROUP_BUTTON_LABEL || layout == ToolbarConstants.ITEMSGROUP_LABEL) {
@@ -99,23 +116,6 @@ public abstract class AbstractJahiaToolItemProvider extends JahiaToolItemProvide
         if (gwtToolbarItem.getDescription() != null && description.length() > 0 && toolbarItem.getToolTip() != null) {
             toolbarItem.setToolTip(description);
         }
-
-        // set properties that are specific to a ToggleToolItem
-        if (toolbarItem instanceof ToggleToolItem) {
-            Log.debug("Toogle item");
-            ((ToggleToolItem) toolbarItem).toggle(gwtToolbarItem.isSelected());
-            ((ToggleToolItem) toolbarItem).pressed = gwtToolbarItem.isSelected();
-            // hack: toogle doesn't work
-            if (gwtToolbarItem.isSelected()) {
-                toolbarItem.addStyleName("x-btn-pressed");
-            }
-        } else if (toolbarItem instanceof SplitToolItem) {
-            // hack: toogle split button
-            if (gwtToolbarItem.isSelected()) {
-                toolbarItem.addStyleName("x-btn-pressed");
-            }
-        }
-
 
         return toolbarItem;
     }

@@ -57,6 +57,8 @@ import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 import java.util.ArrayList;
@@ -147,6 +149,12 @@ public class FileTable extends TopRightComponent {
                     List<GWTJahiaNode> treeSelection = new ArrayList<GWTJahiaNode>(1);
                     treeSelection.add((GWTJahiaNode) root);
                     getLinker().getBottomRightObject().fillData(treeSelection);
+                    // hack to avoid scrolling to the bottom of a huge list
+                    DeferredCommand.addCommand(new Command() {
+                        public void execute() {
+                            m_table.getView().scrollToTop();
+                        }
+                    });
                 }
             });
         }

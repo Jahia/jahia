@@ -79,7 +79,7 @@ public class AclEditor {
     private Table aclTable;
     private boolean saved = false;
     private boolean canBreakInheritance = false;
-    private ToggleToolItem breakinheritanceItem;
+    private TextToolItem breakinheritanceItem;
     private String aclGroup;
     private boolean readOnly = false;
     private List<String> available;
@@ -282,7 +282,6 @@ public class AclEditor {
                     addTableItem(aclTable, ace, available);
                     aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
                 }
-                breakinheritanceItem.toggle(acl.isBreakAllInheritance());
                 setBreakInheritanceLabel();
 
             }
@@ -374,22 +373,21 @@ public class AclEditor {
             }
         });
         toolBar.add(addUsersToolItem);
-        breakinheritanceItem = new ToggleToolItem();
+        breakinheritanceItem = new TextToolItem();
         if (canBreakInheritance) {
             setBreakInheritanceLabel();
 
-            breakinheritanceItem.pressed = acl.isBreakAllInheritance();
             breakinheritanceItem.setEnabled(!readOnly);
             breakinheritanceItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
-                    acl.setBreakAllInheritance(breakinheritanceItem.isPressed());
+                    acl.setBreakAllInheritance(!acl.isBreakAllInheritance());
                     setDirty();
                     setBreakInheritanceLabel();
                     aclTable.removeAll();
                     items.clear();
                     List<GWTJahiaNodeACE> list = new ArrayList<GWTJahiaNodeACE>(acl.getAce());
                     for (GWTJahiaNodeACE ace : list) {
-                        if (!breakinheritanceItem.isPressed()) {
+                        if (!acl.isBreakAllInheritance()) {
                             if (ace.getPermissions().equals(ace.getInheritedPermissions())) {
                                 ace.setInherited(true);
                             }
@@ -506,7 +504,9 @@ public class AclEditor {
 
         acl = originalAcl.cloneObject();
         for (GWTJahiaNodeACE ace : acl.getAce()) {
-            if (ace.isInherited()) ace.getPermissions().putAll(ace.getInheritedPermissions());
+            if (ace.isInherited()) {
+                ace.getPermissions().putAll(ace.getInheritedPermissions());
+            }
         }
     }
 

@@ -197,7 +197,6 @@ public class ContainerFactory {
                         LoadFlags.ALL,cachedContainersFromContainerLists,null,null);
                 listLoaderContext.setListViewId(listViewId);
                 List<Integer> ctnids = listLoader.doContainerFilterSearchSort(listLoaderContext);
-                listLoader.removeFromSessionIfEmpty(jParams);
 
                 if (ctnids == null) {
                     ctnids = jahiaContainersService.
@@ -249,7 +248,6 @@ public class ContainerFactory {
         ContainerListLoaderContext listLoaderContext = new ContainerListLoaderContext(jParams,loadRequest,cList,
                 LoadFlags.ALL,cachedContainersFromContainerLists,null,null);
         List<Integer> ctnids = listLoader.doContainerFilterSearchSort(listLoaderContext);
-        listLoader.removeFromSessionIfEmpty(jParams);
 
         if (ctnids == null) {
             ctnids = jahiaContainersService.

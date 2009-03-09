@@ -45,7 +45,6 @@ import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.params.SessionState;
 import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -77,21 +76,11 @@ public class ContainerListLoader implements Serializable {
     private transient Map<String, ContainerFilters> containerFiltersMap;
     private transient Map<String, ContainerSorterInterface> containerSortersMap;
 
-    private String sessionKey;
-
     protected ContainerListLoader(){
         containerSearchersMap = new HashMap<String, ContainerSearcher>();
         containerFiltersMap = new HashMap<String, ContainerFilters>();
         containerSortersMap = new HashMap<String, ContainerSorterInterface>();
         isValid = Boolean.TRUE;
-    }
-
-    String getSessionKey() {
-        return sessionKey;
-    }
-
-    void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
     }
 
     /**
@@ -128,28 +117,6 @@ public class ContainerListLoader implements Serializable {
         }
         if (this.containerSortersMap == null){
             this.containerSortersMap = new HashMap<String, ContainerSorterInterface>();
-        }
-    }
-    /**
-     * Remove from session if not valid or if no Filter, Searcher or searcher are present.
-     * @param context
-     */
-    public void removeFromSessionIfEmpty(final ProcessingContext context){
-        if (this.containerFiltersMap != null && this.containerFiltersMap.isEmpty()){
-            this.containerFiltersMap = null;
-        }
-        if (this.containerSearchersMap != null && this.containerSearchersMap.isEmpty()){
-            this.containerSearchersMap = null;
-        }
-        if (this.containerSortersMap != null && this.containerSortersMap.isEmpty()){
-            this.containerSortersMap = null;
-        }
-        if (!this.isValid() || (this.containerFiltersMap==null && this.containerSearchersMap==null
-                && this.containerSortersMap==null)){
-            final SessionState session = context.getSessionState();
-            if (session!=null && this.getSessionKey() != null){
-                session.removeAttribute(this.getSessionKey());
-            }
         }
     }
 

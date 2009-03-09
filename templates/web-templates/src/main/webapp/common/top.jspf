@@ -1,6 +1,6 @@
 <%@ include file="../common/declarations.jspf" %>
 <jsp:useBean id="linkDisplay" class="org.jahia.taglibs.uicomponents.i18n.DisplayLanguageSwitchLinkTag"/>
-<div id="headerPart1">
+
 	<div id="languages">
         <ui:languageSwitchingLinks display="horizontal" linkDisplay="${linkDisplay.isoLocaleCountryCode}" displayLanguageState="true"/>
 	</div>
@@ -36,4 +36,3 @@
                     </ul>
 	</div>
 	<div class="clear"> </div>
-</div>

@@ -9,7 +9,7 @@
                     <ul>
                     <c:if test="${requestScope.currentRequest.logged}">
                     <li class="topshortcuts-login">
-                        <a class="loginFormTopLogoutShortcuts"href="<template:composePageURL page="logout"/>"><fmt:message key="web_templates.logout"/></a>
+                        <a class="loginFormTopLogoutShortcuts"href="<template:composePageURL page="logout"/>"><span><fmt:message key="web_templates.logout"/></span></a>
                     </li>
                     <li>
                         <span class="currentUser" ><utility:userProperty/></span>

@@ -81,6 +81,8 @@ public class JahiaResourceBundle extends ResourceBundle {
         if (basename != null) {
             if (classLoader != null) {
                 ResourceBundle.getBundle(basename, locale, classLoader);
+            } else if (templatesPackageName!=null) {
+                ResourceBundle.getBundle(basename, locale, getClassLoader());
             } else {
                 ResourceBundle.getBundle(basename, locale);            
             }

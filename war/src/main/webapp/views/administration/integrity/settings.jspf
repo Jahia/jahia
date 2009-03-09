@@ -17,7 +17,7 @@
           </td>
       </tr>
       <tr class="evenLine">
-          <td colspan="2"><fmt:message key="org.jahia.admin.integrity.permissions.link.label"/></a></td>
+          <td colspan="2"><fmt:message key="org.jahia.admin.integrity.permissions.link.label"/>&nbsp;<a href="<%=JahiaAdministration.composeActionURL(request,response,"sitePermissions","&sub=display&currentGroup=integrity")%>"><fmt:message key="org.jahia.admin.sitepermissions.mainMenu.label"/></a></td>
       </tr>
   </tbody>
 </table>

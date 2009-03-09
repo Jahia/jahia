@@ -48,9 +48,10 @@ public class DocumentField implements Serializable {
 
     private static final long serialVersionUID = 5080427507953799172L;
     public static final int TEXT = 0;
-    public static final int UNSTORED_TEXT = 1;
-    public static final int KEYWORD = 2;
-    public static final int UNINDEXED = 3;
+    public static final int KEYWORD = 1;
+    public static final int UNINDEXED = 2;
+    
+    private boolean unstored = false;
 
     private String name;
     private List<String> values = new ArrayList<String>();
@@ -61,8 +62,8 @@ public class DocumentField implements Serializable {
 
     public DocumentField(String name){
         this.name = name;
-        if ( unstoredText(name) ){
-            this.type = UNSTORED_TEXT;
+        if ( isUnstoredText(name) ){
+            setUnstored(true);
         }
     }
 
@@ -73,14 +74,16 @@ public class DocumentField implements Serializable {
         }
     }
 
-    private boolean unstoredText(String fieldName){
+    private boolean isUnstoredText(String fieldName){
         if ( JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD.equals(fieldName)
                 || JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE.equals(fieldName)
                 || JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD.equals(fieldName)
                 || JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD.equals(fieldName)
                 || JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE.equals(fieldName)
                 || JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE.equals(fieldName)
-                || JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD.equals(fieldName) ){
+                || JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD.equals(fieldName) 
+                || fieldName.startsWith(JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX)
+                || fieldName.startsWith(JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX)){
             return true;
         }
         return false;
@@ -109,6 +112,10 @@ public class DocumentField implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public void setUnstored(boolean unstored) {
+        this.unstored = unstored;
+    }    
 
     public List<String> getValues() {
         synchronized(values){
@@ -145,8 +152,8 @@ public class DocumentField implements Serializable {
         return ( type == KEYWORD);
     }
 
-    public boolean isUnstoredText() {
-        return ( type == UNSTORED_TEXT);
+    public boolean isUnstored() {
+        return unstored;
     }
 
     public boolean isUnindexed() {

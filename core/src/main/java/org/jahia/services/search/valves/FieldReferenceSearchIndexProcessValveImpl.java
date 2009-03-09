@@ -219,16 +219,15 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
             String name = JahiaSearchConstant.CONTAINER_FIELD_PREFIX
                     + field.getDefinition().getCtnType().replaceAll("[ :]", "_").toLowerCase();
             doc.setFieldValues(name, values);
-            doc.getField(name).setType(DocumentField.UNSTORED_TEXT);
-            String[] aliasNames = field.getDefinition().getAliasName();
-            for (int i = 0; i < aliasNames.length; i++) {
-                doc.setFieldValues(
-                        JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
-                                + aliasNames[i], values);
-                doc.getField(
-                        JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
-                                + aliasNames[i]).setType(
-                        DocumentField.UNSTORED_TEXT);
+            doc.getField(name).setType(DocumentField.TEXT);
+            doc.getField(name).setUnstored(true);
+            String[] aliasNames = field.getDefinition().getAliasNames();
+            for (String aliasName : aliasNames) {
+                name = JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
+                        + aliasName.toLowerCase();
+                doc.setFieldValues(name, values);
+                doc.getField(name).setType(DocumentField.TEXT);
+                doc.getField(name).setUnstored(true);
             }
 
             valuesList.addAll(Arrays.asList(values));

@@ -35,10 +35,7 @@
 
 import org.compass.core.*;
 import org.jahia.services.search.*;
-import org.springframework.jms.connection.ConnectionFactoryUtils;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -91,17 +88,10 @@ public class CompassResourceConverterImpl implements CompassResourceConverter {
             Property.Store.YES,Property.Index.UN_TOKENIZED);
         res.addProperty(prop);
 
-        Map fields = doc.getFields ();
+        Map<String, DocumentField> fields = doc.getFields ();
         if (fields != null) {
-            Iterator iterator = fields.keySet().iterator();
-            DocumentField docField = null;
-            List vals;
-            while (iterator.hasNext()) {
-                docField = (DocumentField) fields.get(iterator.next());
-                vals = docField.getValues();
-                Iterator valsIterator = vals.iterator();
-                while ( valsIterator.hasNext() ){
-                    String strVal = (String) valsIterator.next();
+            for (DocumentField docField : fields.values()) {
+                for ( String strVal : docField.getValues() ){
                     String name = docField.getName();
                     strVal = NumberPadding.pad(strVal);
 
@@ -110,21 +100,13 @@ public class CompassResourceConverterImpl implements CompassResourceConverter {
                     }
                     if (docField.isKeyword() ) {
                         prop = factory.createProperty(name.toLowerCase(),
-                                strVal,Property.Store.YES,Property.Index.UN_TOKENIZED);
+                                strVal,docField.isUnstored() ? Property.Store.NO : Property.Store.YES,Property.Index.UN_TOKENIZED);
                     } else if ( docField.isText() ) {
                         prop = factory.createProperty(name.toLowerCase(),
-                                strVal,Property.Store.YES,Property.Index.TOKENIZED);
+                                strVal,docField.isUnstored() ? Property.Store.NO : Property.Store.YES,Property.Index.TOKENIZED);
                     } else if ( docField.isUnindexed() ){
                         prop = factory.createProperty(name.toLowerCase(),
                                 strVal,Property.Store.YES,Property.Index.NO);
-                    } else if ( docField.isUnstoredText() ){
-                        // to simplify highlighting, we actually store field content in index
-                        /*
-                        prop = template.createProperty(name.toLowerCase(),
-                                strVal,Property.Store.NO,Property.Index.TOKENIZED);
-                        */
-                        prop = factory.createProperty(name.toLowerCase(),
-                                strVal,Property.Store.YES,Property.Index.TOKENIZED);
                     }
                     res.addProperty(prop);
                 }

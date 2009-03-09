@@ -39,6 +39,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.store.Directory;
 import org.compass.core.Compass;
+import org.compass.core.Property;
 import org.compass.core.Property.Index;
 import org.compass.core.engine.SearchEngineFactory;
 import org.compass.core.lucene.engine.LuceneSearchEngineFactory;
@@ -569,80 +570,84 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
         logger.info("...indexer shutdown done");
     }
 
-    public Document getLuceneDocument(IndexableDocument indObj){
+    public Document getLuceneDocument(IndexableDocument indObj) {
         if (indObj == null)
             return null;
 
-        Document doc = new Document ();
-        Map<String, DocumentField> fields = indObj.getFields ();
+        Document doc = new Document();
+        Map<String, DocumentField> fields = indObj.getFields();
         if (fields != null) {
             for (DocumentField docField : fields.values()) {
-                for (String originalValue : docField.getValues() ){
+                for (String originalValue : docField.getValues()) {
                     String name = docField.getName().toLowerCase();
                     // FIXME : should we call val.getValueAsString(Locale)
                     // @todo : number padding, we should be done somewhere else and customizable
                     String paddedValue = NumberPadding.pad(originalValue);
                     /*
-                    if ( paddedValue != null ){
-                        paddedValue = paddedValue.toLowerCase();
-                    }*/
+                     * if ( paddedValue != null ){ paddedValue = paddedValue.toLowerCase(); }
+                     */
                     Index index = null;
                     float boost = 1;
+                    Property.Store store = null;
                     if (resourceMapping != null) {
                         ResourcePropertyMapping propertyMapping = resourceMapping
                                 .getResourcePropertyMapping(name);
                         if (propertyMapping != null) {
                             index = propertyMapping.getIndex();
                             boost = propertyMapping.getBoost();
+                            store = propertyMapping.getStore();
                         }
                     }
-                    if (docField.isKeyword() ) {
-                        Field field = new Field(name, paddedValue, Field.Store.YES, index == null ? Field.Index.UN_TOKENIZED : LuceneUtils.getFieldIndex(index));
+                    if (docField.isKeyword() || docField.isText()) {
+                        Field field = new Field(name, paddedValue, docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
+                                store == null ? Field.Store.YES : LuceneUtils
+                                        .getFieldStore(store),
+                                index == null ? docField.isText() ? Field.Index.TOKENIZED : Field.Index.UN_TOKENIZED
+                                        : LuceneUtils.getFieldIndex(index));
                         field.setBoost(boost);
-                        doc.add (field);
-                    } else if ( docField.isText() ) {
-                        Field field = new Field(name, paddedValue, Field.Store.YES, index == null ? Field.Index.TOKENIZED : LuceneUtils.getFieldIndex(index));
-                        field.setBoost(boost);
-                        doc.add (field);
-                        if ( paddedValue != originalValue && (index == null || !index.equals(Index.NO))){
-                            field = new Field(name+JahiaSearchConstant.NO_PADDED_FIELD_POSTFIX, originalValue, Field.Store.NO, index == null ? Field.Index.TOKENIZED : LuceneUtils.getFieldIndex(index));
+                        doc.add(field);
+
+                        if (docField.isText() && paddedValue != originalValue
+                                && (index == null || !index.equals(Index.NO))) {
+                            field = new Field(
+                                    name
+                                            + JahiaSearchConstant.NO_PADDED_FIELD_POSTFIX,
+                                    originalValue, Field.Store.NO,
+                                    index == null ? Field.Index.TOKENIZED
+                                            : LuceneUtils.getFieldIndex(index));
                             field.setBoost(boost);
-                            doc.add (field);
+                            doc.add(field);
                         }
-                    } else if ( docField.isUnindexed() ){
-                        Field field = new Field(name, paddedValue, Field.Store.YES, Field.Index.NO); 
+                    } else if (docField.isUnindexed()) {
+                        Field field = new Field(name, paddedValue, docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
+                                store == null ? Field.Store.YES : LuceneUtils
+                                        .getFieldStore(store), Field.Index.NO);
                         field.setBoost(boost);
-                        doc.add (field);
-                    } else if ( docField.isUnstoredText() && (index == null || !index.equals(Index.NO))){
-                        //doc.add (Field.UnStored(name.toLowerCase(), paddedValue));
-                        // to simplify highlighting, we actually store field content in index
-                        Field field = new Field(name, paddedValue, Field.Store.NO, index == null ? Field.Index.TOKENIZED : LuceneUtils.getFieldIndex(index));
-                        field.setBoost(boost);
-                        doc.add (field);
-                        if ( paddedValue != originalValue ){
-                            field = new Field(name+JahiaSearchConstant.NO_PADDED_FIELD_POSTFIX, originalValue, Field.Store.NO, index == null ? Field.Index.TOKENIZED : LuceneUtils.getFieldIndex(index));
-                            field.setBoost(boost);
-                            doc.add (field);
-                        }
+                        doc.add(field);
                     }
                 }
             }
         }
-        String name = indObj.getKeyFieldName ().toLowerCase(); 
+        String name = indObj.getKeyFieldName().toLowerCase();
         Index index = null;
         float boost = 1;
+        Property.Store store = null;
         if (resourceMapping != null) {
             ResourcePropertyMapping propertyMapping = resourceMapping
                     .getResourcePropertyMapping(name);
             if (propertyMapping != null) {
                 index = propertyMapping.getIndex();
                 boost = propertyMapping.getBoost();
+                store = propertyMapping.getStore();
             }
         }
-        Field field = new Field(name, NumberPadding.pad(indObj.getKey ()),
-                Field.Store.YES, index == null ? Field.Index.UN_TOKENIZED : LuceneUtils.getFieldIndex(index));
+        Field field = new Field(name, NumberPadding.pad(indObj.getKey()),
+                store == null ? Field.Store.YES : LuceneUtils
+                        .getFieldStore(store),
+                index == null ? Field.Index.UN_TOKENIZED : LuceneUtils
+                        .getFieldIndex(index));
         field.setBoost(boost);
-        doc.add (field);
+        doc.add(field);
         return doc;
     }
 

@@ -64,7 +64,7 @@
                         <div id="logotop">
                             <template:include page="modules/logo.jsp"/>
                         </div>
-                        <h1 class="hide">Nom du site</h1>
+                        <h1 class="hide">${currentSite.title} : ${currentPage.title}</h1>
                         <%@ include file="common/nav/mainNav.jspf" %>
                     </div>
 

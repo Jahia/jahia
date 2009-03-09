@@ -22,7 +22,7 @@
             <version>jahia-version</version>
             <type>war</type>
         </dependency>
-				<dependency>
+        <dependency>
             <groupId>testsuite-jahia</groupId>
             <artifactId>testsuite-jahia</artifactId>
             <version>1.0</version>

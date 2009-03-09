@@ -1,16 +1,12 @@
 <%@ include file="../../common/declarations.jspf" %>
-<!--
-Styles for jQuery
--->
-
 <template:container id="peopleContainer" displayActionMenu="false"  emptyContainerDivCssClassName="mockup-people">
     <ui:actionMenu contentObjectName="peopleContainer" namePostFix="people" labelKey="people.update">
-	<div class="peopleListItem"><!--start peopleListItem -->
+	<div class="peopleListItem">
         <template:field name="peoplePicture" valueBeanID="peoplePicture" display="false"/>
 		<div class="peoplePhoto">
         <template:field name="peopleLastname" display="false" valueBeanID="peopleLastname"/>
         <img src="${peoplePicture.file.thumbnailUrl}" alt="${peopleLastname} picture"></div>
-        <div class="peopleBody"><!--start eventsBody -->
+        <div class="peopleBody">
             <h5><template:field name="peopleFirstname"/>&nbsp;<template:field name="peopleLastname"/></h5>
             <p class="peopleFonction"><template:field name="peopleFunction"/></p>
             <p class="peopleBusinessUnit"><template:field name="peopleBusinessUnit"/></p>
@@ -23,7 +19,7 @@ Styles for jQuery
 <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><fmt:message
                             key='web_templates_peopleContainer.peopleBiography'/></a>
 				</div>
-				<div id="collapseBox${peopleContainer.ID}" class="collapsible"><!--start collapsible -->
+				<div id="collapseBox${peopleContainer.ID}" class="collapsible">
 							 <template:field name="peopleBiography"/>
 				</div><!--stop collapsible -->
 					<div class="clear"> </div></div><!--stop peopleBody -->

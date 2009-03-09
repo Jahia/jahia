@@ -35,7 +35,10 @@ Styles for jQuery
 <!-- unused fields <template:field name="peopleTelephone"/> <template:field name="peopleCellular"/> <template:field name="peopleFax"/> -->
 <script type='text/javascript'>
 jQuery(document).ready(function($) {
-  $('a[rel*=facebox]').facebox()
+  $('a[rel*=facebox]').facebox({
+                loadingImage:"<utility:resolvePath value='images/facebox/loading.gif'/>",
+                closeImage :"<utility:resolvePath value='images/facebox/closelabel.gif'/>",
+                overlay:true });
 })
 </script>
 

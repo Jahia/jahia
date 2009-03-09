@@ -38,7 +38,7 @@
 
 <%@ include file="../../declarations.jspf" %>
 <template:containerList name="fileContainer" id="files" actionMenuNamePostFix="files" actionMenuNameLabelKey="files">
-        <ul class="document"><!--start document -->
+        <ul class="document">
         <template:container id="fileContainer" actionMenuNamePostFix="file">
             <template:field name="title" valueBeanID="title" display="false"/>
             <template:field name="file" valueBeanID="file" display="false"/>
@@ -62,5 +62,5 @@
                 </c:if>
             </li>
         </template:container>
-     </ul><!--stop document -->
+     </ul>
 </template:containerList>

@@ -1,11 +1,11 @@
 <%@ include file="../common/declarations.jspf" %>
 <jsp:useBean id="linkDisplay" class="org.jahia.taglibs.uicomponents.i18n.DisplayLanguageSwitchLinkTag"/>
 <div id="headerPart1">
-	<div id="languages"><!--start languages-->
+	<div id="languages">
         <ui:languageSwitchingLinks display="horizontal" linkDisplay="${linkDisplay.isoLocaleCountryCode}" displayLanguageState="true"/>
-	</div><!--stop languages-->
-	
-	<div id="topshortcuts"><!--start topshortcuts-->
+	</div>
+
+	<div id="topshortcuts">
                     <ul>
                     <c:if test="${requestScope.currentRequest.logged}">
                     <li class="topshortcuts-login">
@@ -34,6 +34,6 @@
                         <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>/engineName/sitemap'><fmt:message key="web_templates.sitemap"/></a>
                     </li>
                     </ul>
-	</div><!--stop topshortcuts-->
+	</div>
 	<div class="clear"> </div>
 </div>

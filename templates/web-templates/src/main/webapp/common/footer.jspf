@@ -1,5 +1,5 @@
 <%@ include file="../common/declarations.jspf" %>
-<div id="footer"><!--start footer-->
+
     <c:if test="${ !empty param.footerNav}">
         <div id="footerPart1"><!--start footerPart1-->
             <template:include page="common/nav/footerNav.jsp"/>
@@ -53,4 +53,3 @@
 
     <div class="clear"> </div>
     <div class="clear"> </div>
-</div><!--stop footer-->

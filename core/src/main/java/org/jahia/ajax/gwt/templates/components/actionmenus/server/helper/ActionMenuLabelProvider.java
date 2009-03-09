@@ -134,7 +134,7 @@ public class ActionMenuLabelProvider {
                     break;
                 }
             } catch (MissingResourceException ex) {
-                logger.info("No resource for entry '" + label + "' in bundles " + bundle.getLookupBundles());
+                logger.debug("No resource for entry '" + label + "' in bundles " + bundle.getLookupBundles());
             }
         }
 

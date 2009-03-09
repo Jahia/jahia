@@ -82,25 +82,25 @@
     display: inline;
     font-weight: bold;
     text-decoration: none;
-    color: #000;
+    color: #000000;
     padding-left: 16px;
     background: url( ../img/bg-navigationN2-L1.png ) no-repeat 0 50%;
 }
 
 #bodywrapper #navigationN2 a.inpath {
-    color: #600;
+    color: #660000;
     background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
     padding-left: 16px;
 }
 
 #bodywrapper #navigationN2 a.selected {
-    color: #c03;
+    color: #cc0033;
     background: url( ../img/bg-navigationN2-L1-on.png ) no-repeat 0 60%;
     padding-left: 16px;
 }
 
 #bodywrapper #navigationN2 a:hover {
-    color: #555;
+    color: #555555;
 }
 
 #bodywrapper #navigationN2 li .action-menu-icons {

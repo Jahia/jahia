@@ -179,20 +179,20 @@ body {
 
 #bodywrapper a,
     #bodywrapper a:link {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
 
 }
 
 #bodywrapper a:hover,
     #bodywrapper a:active {
-    color: #900;
+    color: #990000;
     text-decoration: none;
 
 }
 
 #bodywrapper a:visited {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
 
 }
@@ -215,7 +215,7 @@ body {
 
 #bodywrapper dt {
     font-weight: bold;
-    color: #900
+    color: #990000;
 }
 
 #bodywrapper dd {
@@ -223,7 +223,7 @@ body {
 }
 
 #bodywrapper h1 {
-    color: #333;
+    color: #333333;
     font-weight: normal;
     font-size: 2.2em;
     text-transform: uppercase;
@@ -232,7 +232,7 @@ body {
 }
 
 #bodywrapper h2 {
-    color: #900;
+    color: #990000;
     font-weight: normal;
     font-size: 2em;
     margin: 0 0 0.5em 0;
@@ -240,7 +240,7 @@ body {
 }
 
 #bodywrapper h3 {
-    color: #333;
+    color: #333333;
     font-size: 1.4em;
     font-weight: bold;
     margin: 0 0 0.5em 0;
@@ -249,37 +249,37 @@ body {
 
 #bodywrapper h4 {
     font-size: 1.2em;
-    color: #333;
+    color: #333333;
     font-weight: bold;
     margin: 0 0 0.5em 0;
     padding: 0 0 5px 0;
-    border-bottom: 1px dotted #ccc
+    border-bottom: 1px dotted #cccccc;
 }
 
 #bodywrapper h5 {
     font-size: 1em;
     font-weight: bold;
-    color: #333;
+    color: #333333;
     margin: 0;
     padding: 0;
 }
 
 #bodywrapper fieldset {
     padding: 0.5em;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
 }
 
 #bodywrapper legend {
     text-transform: uppercase;
-    color: #ccc;
+    color: #cccccc;
     padding: 0 0.5em;
     font-weight: bold
 }
 
 #bodywrapper hr {
     height: 2px;
-    background-color: #ccc;
-    color: #ccc;
+    background-color: #cccccc;
+    color: #cccccc;
     border: none;
     margin: 1em 0;
 }
@@ -294,12 +294,12 @@ body {
 }
 
 #bodywrapper .intro {
-    color: #333;
+    color: #333333;
     line-height: 1.6em;
     font-size: 1.4em;
     text-align: justify;
-    border-bottom: 1px dotted #ccc;
-    border-top: 1px dotted #ccc;
+    border-bottom: 1px dotted #cccccc;
+    border-top: 1px dotted #cccccc;
     padding: 0.5em 0.5em;
     margin: 1em 0;
 }
@@ -340,23 +340,19 @@ body {
     margin: 5px;
 }
 
-#bodywrapper .layouted {
-    zoom: 1;
-}
-
 /******************************************************************************
 * Generic
 ******************************************************************************/
 #bodywrapper #areaA,
     #bodywrapper #areaB {
     font-size: 0.9em;
-    line-height: 140%
+    line-height: 140%;
 }
 
 #bodywrapper .button {
     background: #fff url( ../img/bg-button.png ) repeat-x bottom left;
-    border: 1px solid #333;
-    color: #333;
+    border: 1px solid #333333;
+    color: #333333;
     text-transform: uppercase;
     font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
     text-align: center;
@@ -367,11 +363,11 @@ body {
 #bodywrapper .button:hover {
     cursor: pointer;
     background: #fff url( ../img/bg-button-on.png ) repeat-x top left;
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper div.bottomanchor {
-    border-top: 1px dotted #ccc;
+    border-top: 1px dotted #cccccc;
     line-height: 1.2em;
     padding: 0.2em;
     margin: 1em 0;
@@ -400,18 +396,18 @@ body {
     width: 960px;
     margin: 0 auto;
     overflow: hidden;
-    text-align: left
+    text-align: left;
 }
 
 #bodywrapper #page {
     padding: 10px;
     width: 940px;
-    background-color: #fff;
-    margin-bottom: 10px
+    background-color: #ffffff;
+    margin-bottom: 10px;
 }
 
 #bodywrapper #pagepopup {
-    background-color: #fff;
+    background-color: #ffffff;
 }
 
 /******************************************************************************
@@ -428,14 +424,14 @@ body {
 #bodywrapper #toplinks a,
     #bodywrapper #toplinks a:link,
     #bodywrapper #toplinks a:visited {
-    color: #333;
+    color: #333333;
     text-decoration: none;
     background: none;
 }
 
 #bodywrapper #toplinks a:hover,
     #bodywrapper #toplinks a:active {
-    color: #333;
+    color: #333333;
     text-decoration: underline;
     background: none;
 }
@@ -497,7 +493,7 @@ body {
 #bodywrapper #topshortcuts .topshortcuts-login a {
     background: transparent url( ../img/topshortcuts-login.png ) no-repeat left top;
     padding-left: 20px;
-    text-transform: uppercase
+    text-transform: uppercase;
 }
 
 #bodywrapper #topshortcuts .topshortcuts-login a:hover {
@@ -533,16 +529,16 @@ body {
 
 #bodywrapper #loginFormTop .text {
     margin-top: 2px;
-    background: #fff url( ../img/bg-input.png ) repeat-x top left;
-    border: 1px solid #ccc;
-    color: #666;
+    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
+    border: 1px solid #cccccc;
+    color: #666666;
     height: 15px;
-    width: 150px
+    width: 150px;
 }
 
 #bodywrapper #loginFormTop .text:focus {
     background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left;
-    color: #333
+    color: #333333;
 }
 
 #bodywrapper #loginFormTop .gobutton {
@@ -555,18 +551,18 @@ body {
 ******************************************************************************/
 #bodywrapper .boxloginFormTop {
     position: relative;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     margin: 0.5em 0 0 0;
     clear: both;
-    background: #ccc url( ../img/box4-header.png ) repeat-x left top;
+    background: #cccccc url( ../img/box4-header.png ) repeat-x left top;
     width: 360px;
-    float: right
+    float: right;
 }
 
 #bodywrapper .boxloginFormTop-text {
     margin: 10px 10px 15px 10px;
     overflow: hidden;
-    height: 1%
+    height: 1%;
 }
 
 #bodywrapper .boxloginFormTop-header {
@@ -642,7 +638,7 @@ body {
 }
 
 #bodywrapper #languages li.selected {
-    color: #900;
+    color: #990000;
     font-weight: bold;
     text-decoration: none;
 }
@@ -655,12 +651,12 @@ body {
 * pageHeader
 ******************************************************************************/
 #bodywrapper #pageHeader {
-    clear: both
+    clear: both;
 }
 
 /*logo*/
 #bodywrapper #pageHeader #logotop {
-    width: 940px
+    width: 940px;
 }
 
 /*Navigation N1*/
@@ -669,7 +665,7 @@ body {
     background: #dad9d8 url( ../img/navigationN1-top.png ) no-repeat top left;
     margin: 0;
     padding: 0;
-    width: 940px
+    width: 940px;
 }
 
 #bodywrapper #navigationN1 ul {
@@ -679,7 +675,7 @@ body {
     background: transparent url( ../img/navigationN1-bottom.png ) no-repeat bottom left;
     margin: 0;
     padding: 0;
-    width: 940px
+    width: 940px;
 }
 
 #bodywrapper #navigationN1 li {
@@ -691,7 +687,7 @@ body {
 
 #bodywrapper #navigationN1 li a {
     background: transparent url( ../img/navigationN1-separator.png ) no-repeat 100% 50%;
-    color: #333;
+    color: #333333;
     display: inline;
     float: left;
     padding: 6px 15px;
@@ -699,7 +695,7 @@ body {
     font-size: 1.1em;
     font-weight: bold;
     text-transform: uppercase;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 #bodywrapper #navigationN1 li.last a {
@@ -708,7 +704,7 @@ body {
 
 #bodywrapper #navigationN1 li a:hover,
     #bodywrapper #navigationN1 li a.selected, #bodywrapper #navigationN1 li a.inpath {
-    color: #900;
+    color: #990000;
 }
 
 /*illustration */
@@ -728,7 +724,7 @@ body {
 
 #bodywrapper .illustration2-text {
     padding-right: 20px;
-    line-height: normal
+    line-height: normal;
 }
 
 #bodywrapper .illustration2-text,
@@ -736,21 +732,21 @@ body {
     #bodywrapper .illustration2-text h3,
     #bodywrapper .illustration2-text h4,
     #bodywrapper .illustration2-text h5 {
-    color: #fff;
+    color: #ffffff;
     margin: 0;
 }
 
 #bodywrapper .illustration2-text a,
     #bodywrapper .illustration2-text a:link,
     #bodywrapper .illustration2-text a:visited {
-    color: #fff;
+    color: #ffffff;
     text-decoration: underline;
     background: none;
 }
 
 #bodywrapper .illustration2-text a:hover,
     #bodywrapper .illustration2-texta:active {
-    color: #fff;
+    color: #ffffff;
     text-decoration: none;
     background: none;
 }
@@ -761,10 +757,10 @@ body {
 
 #bodywrapper #pagedata {
     clear: both;
-    background-color: #fff;
+    background-color: #ffffff;
     height: 1%;
     float: left;
-    width: 940px
+    width: 940px;
 }
 
 /******************************************************************************
@@ -870,7 +866,7 @@ body {
     float: left;
     width: 100%;
     overflow: hidden;
-    clear: both
+    clear: both;
 }
 
 #bodywrapper .columns2 .column-item {
@@ -889,7 +885,7 @@ body {
     float: left;
     width: 100%;
     overflow: hidden;
-    clear: both
+    clear: both;
 }
 
 #bodywrapper .columns3 .column-item {
@@ -908,7 +904,7 @@ body {
     float: left;
     width: 100%;
     overflow: hidden;
-    clear: both
+    clear: both;
 }
 
 #bodywrapper .columns4 .column-item {
@@ -927,7 +923,7 @@ body {
     float: left;
     width: 100%;
     overflow: hidden;
-    clear: both
+    clear: both;
 }
 
 #bodywrapper .columns5 .column-item {
@@ -958,14 +954,14 @@ body {
 #bodywrapper #footer a,
     #bodywrapper #footer a:link,
     #bodywrapper #footer a:visited {
-    color: #333;
+    color: #333333;
     text-decoration: none;
     background: none;
 }
 
 #bodywrapper #footer a:hover,
     #bodywrapper #footer a:active {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
     background: none;
 }
@@ -975,7 +971,7 @@ body {
     text-align: left;
     font-size: 85%;
     line-height: 100%;
-    color: #333;
+    color: #333333;
     overflow: hidden;
     background-color: #eaeaea;
 }
@@ -985,7 +981,7 @@ body {
     text-align: left;
     font-size: 85%;
     line-height: 120%;
-    color: #666;
+    color: #666666;
     overflow: hidden;
     padding: 10px;
 }
@@ -1022,7 +1018,7 @@ body {
     text-align: left;
     font-size: 85%;
     line-height: 100%;
-    color: #333;
+    color: #333333;
     overflow: hidden;
     background-color: #eaeaea;
     padding: 10px;
@@ -1034,7 +1030,7 @@ body {
     float: left;
     overflow: hidden;
     display: block;
-    margin-right: 15px
+    margin-right: 15px;
 }
 
 #bodywrapper #footerPart3 .columns2 .column-item2 {
@@ -1049,7 +1045,7 @@ body {
 
 #bodywrapper #footerPart3 .logo-footer {
     margin: 0.5em 1em;
-    display: block
+    display: block;
 }
 
 #bodywrapper #footerPart3 #copyright {
@@ -1089,7 +1085,7 @@ body {
 * breadcrumb
 ******************************************************************************/
 #bodywrapper div#breadcrumb {
-    color: #999;
+    color: #999999;
 }
 
 #bodywrapper #breadcrumb ul {
@@ -1113,13 +1109,13 @@ body {
     padding: 0 1em 0 0;
     margin: 0;
     background: url( ../img/breadcrumb-separator.png ) no-repeat 100% 50%;
-    color: #999;
+    color: #999999;
     text-decoration: underline;
 }
 
 #bodywrapper #breadcrumb a:hover,
     #bodywrapper #breadcrumb a:active {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
 }
 
@@ -1135,7 +1131,7 @@ body {
 	margin:0;
 	padding:0;
 	list-style: none;
-	background-color:#fff;
+	background-color:#ffffff;
 
 }
 #bodywrapper #navigationN2 li{
@@ -1156,12 +1152,12 @@ body {
 	text-decoration: none;
 	height:1%;
 	background: none;
-	color:#333;
+	color:#333333;
 }
 #bodywrapper #navigationN2 a:hover,
 #bodywrapper #navigationN2 a:active{
 	background:none;
-	color:#900;
+	color:#990000;
 }
 
 #bodywrapper #navigationN2 .level_2 a,
@@ -1169,7 +1165,7 @@ body {
 #bodywrapper #navigationN2 .level_2 a:visited {
 	padding:0 2px 0 20px;
 	background: url(../img/bg-navigationN2-L1.png) no-repeat 10px 50%;
-	border-bottom:1px solid #ccc;
+	border-bottom:1px solid #cccccc;
 	margin:1px 0;
 }
 #bodywrapper #navigationN2 .level_2 a.inpath,	
@@ -1183,7 +1179,7 @@ body {
 
 #bodywrapper #navigationN2 .level_2 a:hover,
 #bodywrapper #navigationN2 .level_2 a:active{
-	color:#900;
+	color:#990000;
 	background: url(../img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
 	background-color:#ddd3ca;
 }
@@ -1193,7 +1189,7 @@ body {
 #bodywrapper #navigationN2 .level_2 a.selected:hover,
 #bodywrapper #navigationN2 .level_2 a.selected:active {
 	background: url(../img/bg-navigationN2-L1-selected.png) no-repeat 10px 50%;
-	color:#c03;
+	color:#cc0033;
 }
 
 #bodywrapper #navigationN2 .level_3 a,
@@ -1212,7 +1208,7 @@ body {
 }
 #bodywrapper #navigationN2 .level_3 a:hover,
 #bodywrapper #navigationN2 .level_3 a:active{
-	color:#900;
+	color:#990000;
 	background: url(../img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
 	background-color:#ddd3ca;
 }
@@ -1223,7 +1219,7 @@ body {
 #bodywrapper #navigationN2 .level_3 a.selected:hover,
 #bodywrapper #navigationN2 .level_3 a.selected:active {
 	background: url(../img/bg-navigationN2-L2-selected.png) no-repeat 30px 50% ;
-	color:#c03;
+	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_4 a,
 #bodywrapper #navigationN2 .level_4 a:link,
@@ -1242,7 +1238,7 @@ body {
 }
 #bodywrapper #navigationN2 .level_4 a:hover,
 #bodywrapper #navigationN2 .level_4 a:active{
-	color:#900;
+	color:#990000;
 	background: url(../img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
 	background-color:#ddd3ca;
 }
@@ -1252,7 +1248,7 @@ body {
 #bodywrapper #navigationN2 .level_4 a.selected:hover,
 #bodywrapper #navigationN2 .level_4 a.selected:active {
 	background: url(../img/bg-navigationN2-L3-selected.png) no-repeat 50px 50% ;
-	color:#c03;
+	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_5 a,
 #bodywrapper #navigationN2 .level_5 a:link,
@@ -1271,7 +1267,7 @@ body {
 }
 #bodywrapper #navigationN2 .level_5 a:hover,
 #bodywrapper #navigationN2 .level_5 a:active{
-	color:#900;
+	color:#990000;
 	background: url(../img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
 	background-color:#ddd3ca;
 }
@@ -1281,7 +1277,7 @@ body {
 #bodywrapper #navigationN2 .level_5 a.selected:hover,
 #bodywrapper #navigationN2 .level_5 a.selected:active {
 	background: url(../img/bg-navigationN2-L4-selected.png) no-repeat 70px 50% ;
-	color:#c03;
+	color:#cc0033;
 }
 #bodywrapper #navigationN2 .level_6 a,
 #bodywrapper #navigationN2 .level_6 a:link,
@@ -1300,7 +1296,7 @@ body {
 
 #bodywrapper #navigationN2 .level_6 a:hover,
 #bodywrapper #navigationN2 .level_6 a:active{
-	color:#900;
+	color:#990000;
 	background: url(../img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
 	background-color:#ddd3ca;
 }
@@ -1310,7 +1306,7 @@ body {
 #bodywrapper #navigationN2 .level_6 a.selected:hover,
 #bodywrapper #navigationN2 .level_6 a.selected:active {
 	background: url(../img/bg-navigationN2-L5-selected.png) no-repeat 90px 50% ;
-	color:#c03;
+	color:#cc0033;
 }
 
 /******************************************************************************
@@ -1321,7 +1317,7 @@ body {
     clear: both;
     position: relative;
     height: 1%;
-    background-color: #fff;
+    background-color: #ffffff;
     padding: 10px;
     background: url( ../img/box-bg.png ) no-repeat top right;
     font-size: 90%;
@@ -1379,7 +1375,7 @@ body {
 ******************************************************************************/
 #bodywrapper .box2 {
     position: relative;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     margin-bottom: 10px;
     clear: both;
 }
@@ -1387,7 +1383,7 @@ body {
 #bodywrapper .box2-text {
     margin: 10px 10px 1em 10px;
     overflow: hidden;
-    height: 1%
+    height: 1%;
 }
 
 #bodywrapper h3.box2-header {
@@ -1399,7 +1395,7 @@ body {
 
 #bodywrapper h3.box2-header span {
     padding: 6px;
-    display: block
+    display: block;
 }
 
 #bodywrapper .box2-topleft,
@@ -1465,7 +1461,7 @@ body {
 
 #bodywrapper .box2-style1 h3.box2-header {
     background: #404d6c url( ../img/box2-style1-header.png ) repeat-x left top;
-    color: #fff;
+    color: #ffffff;
 }
 
 /******************************************************************************
@@ -1473,7 +1469,7 @@ body {
 ******************************************************************************/
 #bodywrapper .box3-container {
     position: relative;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     margin-bottom: 10px;
     clear: both;
     background-color: #ddd3ca;
@@ -1520,23 +1516,23 @@ body {
 #bodywrapper .box3-text {
     margin: 10px;
     overflow: hidden;
-    height: 1%
+    height: 1%;
 }
 
 #bodywrapper .box3-text h3 {
-    color: #900;
-    margin-bottom: 0
+    color: #990000;
+    margin-bottom: 0;
 }
 
 /******************************************************************************
 * Box 3 style1
 ******************************************************************************/
 #bodywrapper .box3-style1 .box3-container {
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
 }
 
 #bodywrapper .box3-style1 {
-    background-color: #fff;
+    background-color: #ffffff;
 }
 
 /******************************************************************************
@@ -1544,7 +1540,7 @@ body {
 ******************************************************************************/
 #bodywrapper .box4 {
     position: relative;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     margin-bottom: 10px;
     clear: both;
     background: #ccc url( ../img/box4-header.png ) repeat-x left top;
@@ -1553,7 +1549,7 @@ body {
 #bodywrapper .box4-text {
     margin: 10px 10px 15px 10px;
     overflow: hidden;
-    height: 1%
+    height: 1%;
 }
 
 #bodywrapper h3.box4-header {
@@ -1564,7 +1560,7 @@ body {
 
 #bodywrapper h3.box4-header span {
     padding: 4px;
-    display: block
+    display: block;
 }
 
 #bodywrapper .box4-topleft,
@@ -1611,11 +1607,11 @@ body {
 ******************************************************************************/
 #bodywrapper .box4-style1 {
     background: #404d6c url( ../img/box4-style1-header.png ) repeat-x left top;
-    color: #fff;
+    color: #ffffff;
 }
 
 #bodywrapper .box4-style1 h3.box4-header {
-    color: #fff;
+    color: #ffffff;
 }
 
 /******************************************************************************
@@ -1674,14 +1670,14 @@ body {
 #bodywrapper .newsMeta {
     clear: both;
     font-size: 80%;
-    color: #999;
+    color: #999999;
     margin: 0.5em 0;
 }
 
 #bodywrapper .newsMeta a,
     #bodywrapper .newsMeta a:link,
     #bodywrapper .newsMeta a:visited {
-    color: #999;
+    color: #999999;
     text-decoration: none;
 }
 
@@ -1693,13 +1689,13 @@ body {
 #bodywrapper span.newsLabelName,
     #bodywrapper span.newsLabelDate,
     #bodywrapper span.newsLabelLocation {
-    color: #333;
+    color: #333333;
 }
 
 #bodywrapper span.newsName,
     #bodywrapper span.newsDate,
     #bodywrapper span.newsLocation {
-    color: #333;
+    color: #333333;
 }
 
 /******************************************************************************
@@ -1715,7 +1711,7 @@ body {
 
 #bodywrapper div.newsRss {
     float: right;
-    color: #333;
+    color: #333333;
     font-size: 1em;
     font-weight: bold;
     margin: 0.4em 0.5em 0.4em 0.5em;
@@ -1725,7 +1721,7 @@ body {
 #bodywrapper .newsRss a,
     #bodywrapper .newsRss a:link,
     #bodywrapper .newsRss a:visited {
-    color: #900;
+    color: #990000;
     text-decoration: none;
     background: none;
     background: url( ../img/newsrss.png ) no-repeat top right;
@@ -1734,7 +1730,7 @@ body {
 
 #bodywrapper .newsRss a:hover,
     #bodywrapper .newsRss a:active {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
 }
 
@@ -1747,7 +1743,7 @@ body {
     margin-bottom: 1em;
     clear: both;
     width: 100%;
-    position: relative
+    position: relative;
 }
 
 #bodywrapper .newsListItem p {
@@ -1759,20 +1755,20 @@ body {
     padding: 0;
     border: none;
     font-size: 2em;
-    font-weight: normal
+    font-weight: normal;
 }
 
 #bodywrapper .newsListItem h4 a,
     #bodywrapper .newsListItem h4 a:link,
     #bodywrapper .newsListItem h4 a:visited {
-    color: #333;
+    color: #333333;
     text-decoration: none;
     background: none;
 }
 
 #bodywrapper .newsListItem h4 a:hover,
     #bodywrapper .newsListItem h4 a:active {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
     background: none;
 }
@@ -1787,7 +1783,7 @@ body {
     font-size: 11px;
     font-weight: bold;
     float: right;
-    line-height: 14px
+    line-height: 14px;
 }
 
 /******************************************************************************
@@ -1810,7 +1806,7 @@ body {
 
 #bodywrapper .relatedNews h3 {
     line-height: 2em;
-    color: #333
+    color: #333333;
 }
 
 #bodywrapper .quote-top {
@@ -1831,7 +1827,7 @@ body {
     background-color: #eaeaea;
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 1.1em;
-    border-top: 4px solid #333;
+    border-top: 4px solid #333333;
     font-weight: bold;
 }
 
@@ -1839,7 +1835,7 @@ body {
     #bodywrapper .exergue-top-full {
     width: 100%;
     margin: 5px 0px;
-    display: block
+    display: block;
 }
 
 #bodywrapper .exergue-bottom {
@@ -1850,15 +1846,15 @@ body {
 *  Events generic
 ******************************************************************************/
 #bodywrapper .eventsBody {
-    margin: 0 0 0 60px
+    margin: 0 0 0 60px;
 }
 
 #bodywrapper .eventsintro {
-    color: #333;
+    color: #333333;
     line-height: 1.6em;
 
-    border-bottom: 1px dotted #ccc;
-    border-top: 1px dotted #ccc;
+    border-bottom: 1px dotted #cccccc;
+    border-top: 1px dotted #cccccc;
     padding: 0.5em 0.5em;
     margin: 1em 0;
 }
@@ -1887,14 +1883,14 @@ body {
 #bodywrapper .eventsMeta {
     clear: both;
     font-size: 80%;
-    color: #999;
+    color: #999999;
     margin: 0.5em 0;
 }
 
 #bodywrapper .eventsMeta a,
     #bodywrapper .eventsMeta a:link,
     #bodywrapper .eventsMeta a:visited {
-    color: #999;
+    color: #999999;
     text-decoration: none;
 }
 
@@ -1927,14 +1923,14 @@ body {
     display: block;
     line-height: 130%;
     font-weight: bold;
-    color: #900
+    color: #990000;
 }
 
 #bodywrapper .eventsListItem .month {
     font-size: 70%;
     display: block;
     line-height: 90%;
-    color: #666
+    color: #666666;
 }
 
 #bodywrapper .eventsListItem .year {
@@ -1943,12 +1939,12 @@ body {
     line-height: 90%;
     background: url( ../img/eventsdatebottom.png ) no-repeat bottom right;
     padding-bottom: 5px;
-    color: #666
+    color: #666666;
 }
 
 #bodywrapper p.eventsLocation {
     font-weight: bold;
-    color: #900;
+    color: #990000;
     font-size: 90%;
     text-transform: uppercase;
 }
@@ -1998,34 +1994,34 @@ body {
     width: 100px;
     height: 100px;
     display: block;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     overflow: hidden;
 }
 
 #bodywrapper p.peopleFonction {
     font-size: 85%;
-    margin: 0
+    margin: 0;
 }
 
 #bodywrapper p.peopleBusinessUnit {
     font-size: 85%;
-    margin: 0
+    margin: 0;
 }
 
 #bodywrapper .peopleBody {
-    margin: 0 0 0 120px
+    margin: 0 0 0 120px;
 }
 
 #bodywrapper .peopleAction {
     font-size: 85%;
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper .peopleAction a,
     #bodywrapper .peopleAction a:link,
     #bodywrapper .peopleAction a:visited {
-    color: #900;
-    margin-right: 0.5em
+    color: #990000;
+    margin-right: 0.5em;
 }
 
 #bodywrapper .peopleAction a:hover,
@@ -2078,13 +2074,13 @@ body {
 #bodywrapper .newsList3 a,
     #bodywrapper .newsList3 a:link,
     #bodywrapper .newsList3 a:visited {
-    color: #333;
+    color: #333333;
     text-decoration: none;
 }
 
 #bodywrapper .newsList3 a:hover,
     #bodywrapper .newsList3 a:active {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
 }
 
@@ -2122,14 +2118,14 @@ body {
 #bodywrapper .eventsListItem h4 a,
     #bodywrapper .eventsListItem h4 a:link,
     #bodywrapper .eventsListItem h4 a:visited {
-    color: #333;
+    color: #333333;
     text-decoration: none;
     background: none;
 }
 
 #bodywrapper .eventsListItem h4 a:hover,
     #bodywrapper .eventsListItem h4 a:active {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
     background: none;
 }
@@ -2166,7 +2162,7 @@ body {
     clear: both;
     margin: 1em 0;
     background: url( ../img/pressform.png ) repeat-x bottom left;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
 }
 
 #bodywrapper .pressRealeseForm legend {
@@ -2193,8 +2189,8 @@ body {
 #bodywrapper .pressRealeseForm input[type="text"],
     #bodywrapper .pressRealeseForm textarea {
     width: 200px;
-    border: 1px solid #ccc;
-    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    border: 1px solid #cccccc;
+    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .pressRealeseForm input[type="text"]:focus,
@@ -2216,7 +2212,7 @@ body {
     margin-bottom: 1em;
     clear: both;
     width: 100%;
-    position: relative
+    position: relative;
 }
 
 /******************************************************************************
@@ -2228,7 +2224,7 @@ body {
     background-image: none;
     height: 1%;
     list-style: none;
-    clear: both
+    clear: both;
 
 }
 
@@ -2244,7 +2240,7 @@ body {
 #bodywrapper .pressRealeseList a,
     #bodywrapper .pressRealeseList a:link,
     #bodywrapper .pressRealeseList a:visited {
-    color: #333;
+    color: #333333;
     text-decoration: none;
     background: none;
 }
@@ -2252,7 +2248,7 @@ body {
 #bodywrapper .pressRealeseList a:hover,
     #bodywrapper .pressRealeseList a:active {
     text-decoration: underline;
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper .pressRealeseList {
@@ -2270,7 +2266,7 @@ body {
     margin: 0;
     padding: 0;
     text-transform: none;
-    color: #333;
+    color: #333333;
     border: none;
 }
 
@@ -2284,11 +2280,11 @@ body {
     font-size: 90%;
     font-weight: bold;
     text-transform: uppercase;
-    color: #900
+    color: #990000;
 }
 
 #bodywrapper .pressRealeseList .pressRealeseCategory {
-    color: #666
+    color: #666666;
 }
 
 #bodywrapper .pressRealeseList .pressRealeseDate {
@@ -2301,7 +2297,7 @@ body {
     height: 1%;
     overflow: hidden;
     text-transform: uppercase;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #cccccc;
     background-color: #eaeaea;
     padding: 0.5em 0.5em;
     margin: 0.5em 0;
@@ -2311,7 +2307,7 @@ body {
     float: left;
     font-size: 0.9em;
     font-weight: bold;
-    color: #333;
+    color: #333333;
 }
 
 #bodywrapper .paginationNavigation {
@@ -2329,19 +2325,19 @@ body {
 }
 
 #bodywrapper .paginationNavigation a:hover {
-    background: #900;
-    color: #fff;
+    background: #990000;
+    color: #ffffff;
 }
 
 #bodywrapper .paginationNavigation .currentPage {
-    background: #900;
-    color: #fff;
+    background: #990000;
+    color: #ffffff;
     padding: 0.2em 0.5em;
 }
 
 #bodywrapper .paginationNavigation span {
     text-decoration: none;
-    color: #666;
+    color: #666666;
     padding: 0;
 }
 
@@ -2352,7 +2348,7 @@ body {
     height: 1%;
     overflow: hidden;
     text-transform: uppercase;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #cccccc;
     background-color: #eaeaea;
     padding: 0.5em 0.5em;
     margin: 0.5em 0;
@@ -2362,7 +2358,7 @@ body {
     float: left;
     font-size: 0.9em;
     font-weight: bold;
-    color: #333;
+    color: #333333;
 }
 
 #bodywrapper .alphabeticalNavigation {
@@ -2380,19 +2376,19 @@ body {
 }
 
 #bodywrapper .alphabeticalNavigation a:hover {
-    background: #900;
-    color: #fff;
+    background: #990000;
+    color: #ffffff;
 }
 
 #bodywrapper .alphabeticalNavigation .currentPage {
-    background: #900;
-    color: #fff;
+    background: #990000;
+    color: #ffffff;
     padding: 0.2em 0.5em;
 }
 
 #bodywrapper .alphabeticalNavigation span {
     text-decoration: none;
-    color: #666;
+    color: #666666;
     padding: 0;
 }
 
@@ -2410,7 +2406,7 @@ body {
 }
 
 #bodywrapper #formSearchTopA label {
-    display: none
+    display: none;
 }
 
 #bodywrapper #formSearchTopA {
@@ -2435,7 +2431,7 @@ body {
     margin: 10px 0 0 20px;
     background-color: transparent;
     border: none;
-    color: #666;
+    color: #666666;
     height: 15px;
     width: 230px;
 }
@@ -2470,11 +2466,11 @@ body {
     margin: 0;
     padding: 0;
     font-weight: bold;
-    border-bottom: 1px solid #eaeaea
+    border-bottom: 1px solid #eaeaea;
 }
 
 #bodywrapper .links li:hover {
-    background-color: #eaeaea
+    background-color: #eaeaea;
 }
 
 #bodywrapper .links .link {
@@ -2492,7 +2488,7 @@ body {
 }
 
 #bodywrapper .links .lastlink {
-    border-bottom: none
+    border-bottom: none;
 }
 
 #bodywrapper .links a,
@@ -2512,7 +2508,7 @@ body {
 #bodywrapper span.docSize {
     font-size: 0.9em;
     margin-left: 0.2em;
-    font-weight: normal
+    font-weight: normal;
 }
 
 #bodywrapper ul.document {
@@ -2536,11 +2532,11 @@ body {
 }
 
 #bodywrapper li.document:hover {
-    background-color: #eaeaea
+    background-color: #eaeaea;
 }
 
 #bodywrapper li.lastdocument {
-    border-bottom: none
+    border-bottom: none;
 }
 
 #bodywrapper li.document .resume {
@@ -2549,7 +2545,7 @@ body {
     list-style: none;
     line-height: 1em;
     font-size: 0.9em;
-    font-weight: normal
+    font-weight: normal;
 }
 #bodywrapper li.document .docsize {
     margin: 0;
@@ -2557,7 +2553,7 @@ body {
     list-style: none;
     line-height: 1em;
     font-size: 0.9em;
-    font-weight: normal
+    font-weight: normal;
 }
 #bodywrapper li.document .date {
     margin: 0;
@@ -2565,13 +2561,13 @@ body {
     list-style: none;
     line-height: 1em;
     font-size: 0.9em;
-    font-weight: normal
+    font-weight: normal;
 }
 #bodywrapper li.document a,
     #bodywrapper li.document a:link,
     #bodywrapper li.document a:visited {
     text-decoration: none;
-    font-weight: bold
+    font-weight: bold;
 }
 
 #bodywrapper li.document a:hover,
@@ -2597,14 +2593,14 @@ body {
     padding: 0.5em 0;
     background-image: none;
     width: 100%;
-    border-bottom: 1px solid #eaeaea
+    border-bottom: 1px solid #eaeaea;
 }
 
 #bodywrapper .summary h4 a,
     #bodywrapper .summary h4 a:link,
     #bodywrapper .summary h4 a:visited {
     text-decoration: none;
-    color: #333
+    color: #333333;
 }
 
 #bodywrapper .summary h4 a:hover,
@@ -2624,7 +2620,7 @@ body {
     float: left;
     margin-right: 0.5em;
     padding: 0;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     width: 50px;
     height: 50px;
 }
@@ -2665,16 +2661,16 @@ body {
 
 #bodywrapper .contactForm fieldset {
     padding: 0.5em;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     margin: 0.5em 0;
 }
 
 #bodywrapper .contactForm legend {
     font-size: 1em;
-    color: #333;
+    color: #333333;
     padding: 0 0.5em;
     background: #fff url( ../img/contactformlegend.png ) repeat-x bottom left;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     display: inline;
 }
 
@@ -2689,7 +2685,7 @@ body {
 #bodywrapper .contactForm input[type="text"],
     #bodywrapper .contactForm textarea {
     width: 50%;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     background: #fff url( ../img/bg-input.png ) repeat-x top left;
 }
 
@@ -2716,7 +2712,7 @@ body {
 
 #bodywrapper .resultsList li {
     margin-bottom: 1em;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #cccccc;
 }
 
 #bodywrapper .resultsList h4 {
@@ -2733,15 +2729,15 @@ body {
 #bodywrapper .resultsList .resultsListFileType {
     font-size: 80%;
     padding: 0.2em;
-    color: #900;
-    background-color: #ccc;
+    color: #990000;
+    background-color: #cccccc;
     display: inline;
     margin: 0 0.2em;
 }
 
 #bodywrapper .resultsList .resultsListDate {
     font-size: 80%;
-    color: #333;
+    color: #333333;
     display: inline;
     margin: 0 0.2em;
 }
@@ -2749,7 +2745,7 @@ body {
 #bodywrapper .resultsList .searchHighlightedText {
     font-weight:bold;
     font-size:larger;
-    background:#FF00FF;
+    background:#ff00ff;
 }
 
 /*****************************************************************************	*
@@ -2759,7 +2755,7 @@ body {
     clear: both;
     margin: 1em auto;
     background: url( ../img/pressform.png ) repeat-x bottom left;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     padding: 0.5em 0;
 }
 
@@ -2786,8 +2782,8 @@ body {
 #bodywrapper .publicationSearchForm input[type="text"],
     #bodywrapper .publicationSearchForm textarea {
     width: 315px;
-    border: 1px solid #ccc;
-    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    border: 1px solid #cccccc;
+    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .publicationSearchForm input[type="text"]:focus,
@@ -2808,7 +2804,7 @@ body {
     margin-bottom: 1em;
     clear: both;
     width: 100%;
-    position: relative
+    position: relative;
 }
 
 /******************************************************************************
@@ -2821,7 +2817,7 @@ body {
 
 #bodywrapper div.publicationRss {
     float: right;
-    color: #333;
+    color: #333333;
     font-size: 1em;
     font-weight: bold;
     margin: 0.4em 0.5em 0.4em 0.5em;
@@ -2831,7 +2827,7 @@ body {
 #bodywrapper .publicationRss a,
     #bodywrapper .publicationRss a:link,
     #bodywrapper .publicationRss a:visited {
-    color: #900;
+    color: #990000;
     text-decoration: none;
     background: none;
     background: url( ../img/newsrss.png ) no-repeat top right;
@@ -2840,7 +2836,7 @@ body {
 
 #bodywrapper .publicationRss a:hover,
     #bodywrapper .publicationRss a:active {
-    color: #900;
+    color: #990000;
     text-decoration: underline;
 }
 
@@ -2863,49 +2859,49 @@ body {
     width: 48px;
     height: 48px;
     display: block;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     overflow: hidden;
 }
 
 #bodywrapper .publicationAuthor {
     font-size: 85%;
-    margin: 0
+    margin: 0;
 }
 
 #bodywrapper .publicationSource {
     font-size: 85%;
-    margin: 0
+    margin: 0;
 }
 
 #bodywrapper .publicationDate {
     font-size: 85%;
-    margin: 0
+    margin: 0;
 }
 
 #bodywrapper .publicationDescription {
     font-size: 85%;
-    margin: 0
+    margin: 0;
 }
 
 #bodywrapper .publicationDescription {
     font-size: 85%;
-    margin: 0
+    margin: 0;
 }
 
 #bodywrapper .publicationBody {
-    margin: 0 0 0 60px
+    margin: 0 0 0 60px;
 }
 
 #bodywrapper .publicationAction {
     font-size: 85%;
-    color: #333;
+    color: #333333;
 }
 
 #bodywrapper .publicationAction a,
     #bodywrapper .publicationAction a:link,
     #bodywrapper .publicationAction a:visited {
-    color: #900;
-    margin-right: 0.5em
+    color: #990000;
+    margin-right: 0.5em;
 }
 
 #bodywrapper .publicationAction a:hover,
@@ -2931,7 +2927,7 @@ body {
     clear: both;
     margin: 1em auto;
     background: url( ../img/pressform.png ) repeat-x bottom left;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     padding: 0.5em 0;
 }
 
@@ -2958,8 +2954,8 @@ body {
 #bodywrapper .jobsSearchForm input[type="text"],
     #bodywrapper .jobsSearchForm textarea {
     width: 315px;
-    border: 1px solid #ccc;
-    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    border: 1px solid #cccccc;
+    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsSearchForm input[type="text"]:focus,
@@ -2980,7 +2976,7 @@ body {
     margin-bottom: 1em;
     clear: both;
     width: 100%;
-    position: relative
+    position: relative;
 }
 
 /******************************************************************************
@@ -2995,7 +2991,7 @@ body {
 }
 
 #bodywrapper .jobInfo {
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     float: right;
     padding: 10px;
     margin: 0 0 0.5em 0.5em;
@@ -3006,15 +3002,15 @@ body {
 #bodywrapper .jobAction {
     font-size: 85%;
     font-weight: bold;
-    color: #900;
+    color: #990000;
     margin-top: 15px;
 }
 
 #bodywrapper .jobAction a,
     #bodywrapper .jobAction a:link,
     #bodywrapper .jobAction a:visited {
-    color: #900;
-    margin-right: 0.5em
+    color: #990000;
+    margin-right: 0.5em;
 }
 
 #bodywrapper .jobAction a:hover,
@@ -3042,7 +3038,7 @@ body {
     clear: both;
     margin: 1em auto;
     background: url( ../img/pressform.png ) repeat-x bottom left;
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     padding: 0.5em 0;
 }
 
@@ -3069,8 +3065,8 @@ body {
 #bodywrapper .jobsApplyForm input[type="text"],
     #bodywrapper .jobsApplyForm textarea {
     width: 315px;
-    border: 1px solid #ccc;
-    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    border: 1px solid #cccccc;
+    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
 }
 
 #bodywrapper .jobsApplyForm input[type="text"]:focus,
@@ -3091,7 +3087,7 @@ body {
     margin-bottom: 1em;
     clear: both;
     width: 100%;
-    position: relative
+    position: relative;
 }
 
 /******************************************************************************
@@ -3100,7 +3096,7 @@ body {
 #bodywrapper .tab,
     #bodywrapper .tab caption {
     margin: auto;
-    line-height: 1.9em
+    line-height: 1.9em;
 }
 
 #bodywrapper .tab {
@@ -3108,11 +3104,11 @@ body {
     border-spacing: 1px;
     empty-cells: hide;
     margin-bottom: 1em;
-    background-color: #fff
+    background-color: #ffffff;
 }
 
 #bodywrapper .tab caption {
-    color: #900;
+    color: #990000;
     font-weight: normal;
     font-size: 2em;
     margin: 0;
@@ -3120,7 +3116,7 @@ body {
 }
 
 #bodywrapper .tab th {
-    color: #333;
+    color: #333333;
     text-transform: uppercase;
     font-size: 1em;
     letter-spacing: 1px;
@@ -3132,18 +3128,18 @@ body {
 }
 
 #bodywrapper .tab .odd td {
-    color: #333;
-    background-color: #eaeaea
+    color: #333333;
+    background-color: #eaeaea;
 }
 
 #bodywrapper .tab .even td {
-    color: #333;
-    background-color: #fff
+    color: #333333;
+    background-color: #ffffff;
 }
 
 #bodywrapper .tab tfoot td {
     font-size: 0.8em;
-    color: #666;
+    color: #666666;
     letter-spacing: 1px;
 }
 
@@ -3151,7 +3147,7 @@ body {
 * Get Flash
 ******************************************************************************/
 #bodywrapper .flashcontent {
-    border: 1px solid #900;
+    border: 1px solid #990000;
     padding: 10px;
     margin-bottom: 10px;
     clear: both;
@@ -3185,7 +3181,7 @@ body {
     text-decoration: none;
     height: 1%;
     background: none;
-    color: #333;
+    color: #333333;
     margin: 0;
     padding: 0;
 }
@@ -3193,7 +3189,7 @@ body {
 #bodywrapper #sitemap a:hover,
     #bodywrapper #sitemap a:active {
     background: none;
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper #sitemap .level_1 a,
@@ -3206,13 +3202,13 @@ body {
     display: block;
     text-decoration: none;
     height: 1%;
-    color: #333;
+    color: #333333;
     margin: 0;
 }
 
 #bodywrapper #sitemap .level_1 a:hover,
     #bodywrapper #sitemap .level_1 a:active {
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper #sitemap .level_2 a,
@@ -3228,7 +3224,7 @@ body {
 
 #bodywrapper #sitemap .level_2 a:hover,
     #bodywrapper #sitemap .level_2 a:active {
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper #sitemap .level_3 a,
@@ -3243,7 +3239,7 @@ body {
 
 #bodywrapper #sitemap .level_3 a:hover,
     #bodywrapper #sitemap .level_3 a:active {
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper #sitemap .level_4 a,
@@ -3258,7 +3254,7 @@ body {
 
 #bodywrapper #sitemap .level_4 a:hover,
     #bodywrapper #sitemap .level_4 a:active {
-    color: #900;
+    color: #990000;
 }
 
 #bodywrapper #sitemap .level_5 a,
@@ -3273,7 +3269,7 @@ body {
 
 #bodywrapper #sitemap .level_5 a:hover,
     #bodywrapper #sitemap .level_5 a:active {
-    color: #900;
+    color: #990000;
 }
 
 /******************************************************************************
@@ -3290,7 +3286,7 @@ body {
     #bodywrapper .code {
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
-    color: #333;
+    color: #333333;
     background-color: #eaeaea;
     padding: 0 0.5em;
 }
@@ -3307,13 +3303,13 @@ body {
 #bodywrapper .homeShortcuts li {
     margin: 0;
     padding: 0.5em 0;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #cccccc;
     font-weight: bold
 }
 
 #bodywrapper .homeShortcuts li:hover {
     background-color: #eaeaea;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #cccccc;
 }
 
 /******************************************************************************
@@ -3326,7 +3322,7 @@ body {
 }
 
 #bodywrapper .loginForm legend {
-    display: none
+    display: none;
 }
 
 #bodywrapper .loginForm h3 {
@@ -3338,19 +3334,19 @@ body {
 
 #bodywrapper .loginForm .username,
     #bodywrapper .loginForm .password {
-    background: #fff url( ../img/bg-input.png ) repeat-x top left;
+    background: #ffffff url( ../img/bg-input.png ) repeat-x top left;
     margin-top: 2px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    color: #333;
-    width: 95%
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    color: #333333;
+    width: 95%;
 
 }
 
 #bodywrapper .loginForm .username:focus,
     #bodywrapper .loginForm .password:focus {
     background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left;
-    color: #333
+    color: #333333;
 }
 
 #bodywrapper .loginForm .remember {
@@ -3363,7 +3359,7 @@ body {
 }
 
 #bodywrapper .loginForm .remember {
-    float: left
+    float: left;
 }
 
 #bodywrapper .loginForm .button {
@@ -3380,22 +3376,22 @@ body {
 }
 
 #bodywrapper .x-btn-left {
-    display: none
+    display: none;
 }
 
 #bodywrapper .x-btn-text {
-    color: #333 !important;
+    color: #333333 !important;
 }
 
 #bodywrapper .x-btn-center {
-    background: #fff url( ../img/bg-button.png ) repeat-x bottom left;
-    border: 1px solid #999;
-    color: #333;
+    background: #ffffff url( ../img/bg-button.png ) repeat-x bottom left;
+    border: 1px solid #999999;
+    color: #333333;
     text-transform: uppercase;
     font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
     text-align: center;
     font-size: 80%;
-    padding: 2px 15px 3px 15px;;
+    padding: 2px 15px 3px 15px;
 }
 
 #bodywrapper .x-btn-right {
@@ -3404,12 +3400,12 @@ body {
 
 #bodywrapper .x-btn-over .x-btn-center {
     cursor: pointer;
-    background: #fff url( ../img/bg-button-on.png ) repeat-x top left;
-    color: #900;
+    background: #ffffff url( ../img/bg-button-on.png ) repeat-x top left;
+    color: #990000;
 }
 
 #bodywrapper .x-item-disabled .x-btn-text {
-    color: #666 !important;
+    color: #666666 !important;
 }
 
 #bodywrapper .mySettings-gxt .x-panel-footer {
@@ -3426,8 +3422,8 @@ body {
 
 #bodywrapper input.x-form-field {
     margin-top: 2px !important;
-    background-color: #fff !important;
-    border: 1px solid #666 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #666666 !important;
     background: #fff url( ../img/bg-input.png ) repeat-x top left !important;
 }
 
@@ -3448,7 +3444,7 @@ body {
 *  Preferences
 ******************************************************************************/
 #bodywrapper div.preferences {
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     background-color: #eaeaea;
     padding: 5px;
     font-size: 90%;

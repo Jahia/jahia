@@ -417,7 +417,7 @@ body {
 /******************************************************************************
 * header-part1
 ******************************************************************************/
-#bodywrapper div#headerPart1 {
+#bodywrapper div#toplinks {
     text-align: right;
     font-size: 80%;
     line-height: 2em;
@@ -425,16 +425,16 @@ body {
     padding: 10px;
 }
 
-#bodywrapper #headerPart1 a,
-    #bodywrapper #headerPart1 a:link,
-    #bodywrapper #headerPart1 a:visited {
+#bodywrapper #toplinks a,
+    #bodywrapper #toplinks a:link,
+    #bodywrapper #toplinks a:visited {
     color: #333;
     text-decoration: none;
     background: none;
 }
 
-#bodywrapper #headerPart1 a:hover,
-    #bodywrapper #headerPart1 a:active {
+#bodywrapper #toplinks a:hover,
+    #bodywrapper #toplinks a:active {
     color: #333;
     text-decoration: underline;
     background: none;
@@ -652,20 +652,14 @@ body {
 }
 
 /******************************************************************************
-* headerPart2
+* pageHeader
 ******************************************************************************/
-#bodywrapper #headerPart2 {
+#bodywrapper #pageHeader {
     clear: both
 }
 
-#bodywrapper #headerPart2popup {
-    clear: both;
-    border-bottom: 5px solid #eaeaea;
-    margin-bottom: 1em;
-}
-
 /*logo*/
-#bodywrapper #headerPart2 #logotop {
+#bodywrapper #pageHeader #logotop {
     width: 940px
 }
 
@@ -765,7 +759,7 @@ body {
 * LAYOUT CONTENEUR
 ******************************************************************************/
 
-#bodywrapper #containerdata {
+#bodywrapper #pagedata {
     clear: both;
     background-color: #fff;
     height: 1%;

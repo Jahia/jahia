@@ -48,7 +48,7 @@ p {
 }
 
 /*  no print  */
-#bodywrapper #headerPart1{
+#bodywrapper #toplinks{
   display:none;
 }
 #bodywrapper #breadcrumb{
@@ -94,7 +94,7 @@ p {
 #bodywrapper .logotop{
 	margin-bottom:10px
  }
-#bodywrapper #headerPart2{
+#bodywrapper #pageHeader{
 	border-bottom:5px solid #ccc
  }
 #bodywrapper #wrapper {
@@ -102,7 +102,7 @@ p {
 	width:940px;
 	overflow:visible;
 }
-#bodywrapper #containerdata {
+#bodywrapper #pagedata {
 	float:none;
 	height:auto;
 	width:940px;

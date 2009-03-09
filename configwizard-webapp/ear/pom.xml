@@ -214,19 +214,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>

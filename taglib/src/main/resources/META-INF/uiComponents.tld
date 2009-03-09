@@ -843,11 +843,6 @@
         <tag-class>org.jahia.taglibs.uicomponents.i18n.DisplayLanguageStateTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>languageCode</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
             <name>objectKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

@@ -34,7 +34,7 @@
 
 -->
 
-<template-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.jahia.net/jahia/templates" xsi:schemaLocation="http://www.jahia.net/jahia/templates http://www.jahia.net/shemas/templates_2_0.xsd">
+<template-set xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.jahia.org/jahia/templates" xsi:schemaLocation="http://www.jahia.org/jahia/templates http://www.jahia.org/shemas/templates_2_0.xsd">
     <package-name>${packageDisplayName}</package-name>
     <root-folder>${artifactId}</root-folder>
     <provider>${providerUrl}</provider>

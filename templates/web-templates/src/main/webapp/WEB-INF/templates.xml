@@ -39,7 +39,7 @@
     <root-folder>web_templates</root-folder>
     <provider>www.jahia.org</provider>
     <thumbnail>images/preview.gif</thumbnail>
-    <resource-bundle>jahiatemplates.Web_templates</resource-bundle>
+    <resource-bundle>resources.Web_templates</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
     <definitions-file>definitions.grp</definitions-file>
     <rules-file>rules.drl</rules-file>

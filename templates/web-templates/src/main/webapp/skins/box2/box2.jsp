@@ -34,7 +34,7 @@
 --%>
 
 <%@ include file="../../common/declarations.jspf" %>
-<div class="box2 "><!--start box 2 defaut -->
+<div class="box2 ">
     <div class="box2-topright"></div><div class="box2-topleft"></div>
 <c:if test="${not empty boxTitle}">
     <h3 class="box2-header"><span>${boxTitle}</span></h3>

@@ -35,8 +35,7 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 
-<%-- Let us now display the main box list with all the different boxes it has --%>
-<div class="box2 box2-style1"><!--start box 2 style1 -->
+<div class="box2 box2-style1">
 <c:if test="${not empty boxTitle}">
     <div class="box2-topright"></div><div class="box2-topleft"></div>
     <h3 class="box2-header"><span>${boxTitle}</span></h3>

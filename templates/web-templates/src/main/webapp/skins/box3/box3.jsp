@@ -35,8 +35,7 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 
-<%-- Let us now display the main box list with all the different boxes it has --%>
-<div class="box3-container"><!--start box 3 default -->
+<div class="box3-container">
     <div class="box3-topright"></div>
     <div class="box3-topleft"></div>
     <div class="box3-text">

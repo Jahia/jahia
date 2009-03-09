@@ -289,7 +289,7 @@ public class FormContentMapperHandlerTag extends AbstractJahiaTag {
             final String curFieldName = curFieldDef.getName();
 
             String[] curFieldValues = jData.getProcessingContext().getParameterValues(curFieldName);
-            if (curFieldValues == null && curFieldDef.getAliasName() != null) {
+            if (curFieldValues == null && curFieldDef.getAliasNames() != null) {
                 // try field aliases
                 String[] aliases = curFieldDef.getAliasName();
                 for (String alias : aliases) {

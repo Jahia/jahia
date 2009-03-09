@@ -38,7 +38,6 @@
 <template:absoluteContainerList name="logo${param.id}" id="logoContainerList" pageLevel="1"
                                 actionMenuNameLabelKey="logo.update">
     <template:container id="logoContainer">
-        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>'><template:image file="logo"
-                                                                                                             cssClassName="logotop png"/></a>
+        <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>' class="${param.position}"><template:image file="logo"/></a>
     </template:container>
 </template:absoluteContainerList>

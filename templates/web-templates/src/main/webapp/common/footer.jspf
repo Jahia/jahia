@@ -22,6 +22,7 @@
                 <div class="spacer">
                     <template:include page="modules/logo.jsp">
                         <template:param name="id" value="Footer"/>
+                        <template:param name="position" value="logo-footer"/>
                     </template:include>
                 </div>
                 <div class="clear"> </div>

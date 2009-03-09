@@ -345,8 +345,8 @@ public class JahiaCndReader {
                 doChildNodeDefinition(listNodeDef, ntd);
                 ExtendedNodeType[] ctnTypes = listNodeDef.getRequiredPrimaryTypes();
                 String ctnListTypeName = ctnTypes[0].getNameObject().getPrefix()+":";
-                for (int i = 0; i < ctnTypes.length; i++) {
-                    ctnListTypeName += ctnTypes[i].getNameObject().getLocalName();                    
+                for (ExtendedNodeType ctnType : ctnTypes) {
+                    ctnListTypeName += ctnType.getNameObject().getLocalName();                    
                 }
                 if (listNodeDef.isMandatory()) {
                     ctnListTypeName += "Mandatory";
@@ -400,8 +400,8 @@ public class JahiaCndReader {
                 doChildNodeDefinition(listNodeDef, ntd);
                 ExtendedNodeType[] ctnTypes = listNodeDef.getRequiredPrimaryTypes();
                 String ctnListTypeName = ctnTypes[0].getNameObject().getPrefix()+":";
-                for (int i = 0; i < ctnTypes.length; i++) {
-                    ctnListTypeName += ctnTypes[i].getNameObject().getLocalName();
+                for (ExtendedNodeType ctnType : ctnTypes) {
+                    ctnListTypeName += ctnType.getNameObject().getLocalName();
                 }
                 if (listNodeDef.isMandatory()) {
                     ctnListTypeName += "Mandatory";
@@ -692,6 +692,20 @@ public class JahiaCndReader {
                     lexer.fail("Invalid value for tokenizer " + currentToken);
                 }
                 
+            } else if (currentTokenEquals(Lexer.SORTABLE)) {
+                pdi.setSortable(true);
+            } else if (currentTokenEquals(Lexer.FACETABLE)) {
+                pdi.setFacetable(true);
+            } else if (currentTokenEquals(Lexer.FULLTEXTSEARCHABLE)) {
+                nextToken();
+                if (currentTokenEquals(Lexer.DEFAULT)) {
+                    nextToken();
+                    if (currentTokenEquals(Lexer.NO)) {
+                        pdi.setFulltextSearchable(Boolean.FALSE);
+                    } else if (currentTokenEquals(Lexer.YES)) {
+                        pdi.setFulltextSearchable(Boolean.TRUE);
+                    }
+                }
             } else if (currentTokenEquals(Lexer.COPY)) {
                 pdi.setOnParentVersion(OnParentVersionAction.COPY);
             } else if (currentTokenEquals(Lexer.VERSION)) {
@@ -941,8 +955,8 @@ public class JahiaCndReader {
      * @return <code>true</code> if equals; <code>false</code> otherwise.
      */
     protected boolean currentTokenEquals(String[] s) {
-        for (int i = 0; i < s.length; i++) {
-            if (currentToken.equals(s[i])) {
+        for (String e : s) {
+            if (currentToken.equals(e)) {
                 return true;
             }
         }

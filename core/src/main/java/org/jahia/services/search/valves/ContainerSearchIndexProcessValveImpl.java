@@ -58,7 +58,9 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.fields.ContentField;
+import org.jahia.services.search.DocumentField;
 import org.jahia.services.search.IndexableDocument;
 import org.jahia.services.search.JahiaContainerIndexableDocument;
 import org.jahia.services.search.JahiaSearchConstant;
@@ -193,18 +195,34 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     continue;
                 }
 
-                String[] values = field.getValuesForSearch(container.getLanguageCode(),context);
-                String name = field.getDefinition().getName();
+                String[] values = field.getValuesForSearch(container.getLanguageCode(), context);
+                String name = jahiaFieldDefinition.getName();
                 name = type + name.substring(prefix.length());
-                doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_PREFIX + name,values);
+                doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_PREFIX + name, values);
 
-                String[] aliasNames = field.getDefinition().getAliasName();
-                for (int i=0; i<aliasNames.length; i++){
+                for (String aliasName : jahiaFieldDefinition.getAliasNames()){
                     doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
-                        + aliasNames[i],values);
+                        + aliasName.toLowerCase(), values);
+                }
+                
+                ExtendedPropertyDefinition propDef = jahiaFieldDefinition.getPropertyDefinition();
+                if (propDef != null && propDef.isSortable()) {
+                    doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX + name, values);
+                    doc.getField(
+                            JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX
+                                    + name).setType(DocumentField.KEYWORD);
+                }                
+                if (propDef != null && propDef.isFacetable()) {
+                    doc.setFieldValues(
+                            JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
+                                    + name, field.getValuesForSearch(container
+                                    .getLanguageCode(), context, true));
+                    doc.getField(
+                            JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
+                                    + name).setType(DocumentField.KEYWORD);
                 }
                 if ( field instanceof JahiaFileFieldWrapper ){
-                    doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE,values);
+                    doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE, values);
                     JahiaFileField fField = (JahiaFileField)field.getObject();
                     if ( fField == null ){
                         return new String[]{};
@@ -225,13 +243,20 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                             break;
                         }
                     }
-                    valuesList.addAll(Arrays.asList(values));
-                } else if (field.getType() != FieldTypes.DATE
+                    if (propDef == null
+                            || !Boolean.FALSE.equals(propDef
+                                    .getFulltextSearchable())) {
+                        valuesList.addAll(Arrays.asList(values));
+                    }
+                } else if ((field.getType() != FieldTypes.DATE
                         && field.getType() != FieldTypes.BOOLEAN
                         && field.getType() != FieldTypes.FLOAT
                         && field.getType() != FieldTypes.INTEGER
-                        && field.getType() != FieldTypes.COLOR
-                        && field.getType() != FieldTypes.APPLICATION) {
+                        && field.getType() != FieldTypes.COLOR && field
+                        .getType() != FieldTypes.APPLICATION && 
+                            (propDef == null || !Boolean.FALSE.equals(propDef.getFulltextSearchable())))
+                        || (propDef != null && Boolean.TRUE.equals(propDef
+                                .getFulltextSearchable()))) {
                     valuesList.addAll(Arrays.asList(values));
                 }
             } catch ( Exception t){

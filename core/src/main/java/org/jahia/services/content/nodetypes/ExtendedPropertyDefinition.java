@@ -66,9 +66,12 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public static final int STORE_COMPRESS = 0;
 
     private int index = INDEXED_TOKENIZED;
-    private int store = STORE_NO;
     private double scoreboost = 1.;
     private String analyzer;
+    
+    private boolean sortable = false;
+    private boolean facetable = false;
+    private Boolean fulltextSearchable = null;
 
     public ExtendedPropertyDefinition(NodeTypeRegistry registry) {
         this.registry = registry;
@@ -112,9 +115,9 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
     public String[] getValueConstraints() {
         Value[] value = getValueConstraintsAsValue();
         String[] res = new String[value.length];
-        for (int i = 0; i < valueConstraints.length; i++) {
+        for (int i = 0; i < value.length; i++) {
             try {
-                res[i] = valueConstraints[i].getString();
+                res[i] = value[i].getString();
             } catch (RepositoryException e) {
             }
         }
@@ -184,5 +187,29 @@ public class ExtendedPropertyDefinition extends ExtendedItemDefinition implement
 
     public void setAnalyzer(String analyzer) {
         this.analyzer = analyzer;
+    }
+
+    public boolean isSortable() {
+        return sortable;
+    }
+
+    public void setSortable(boolean sortable) {
+        this.sortable = sortable;
+    }
+
+    public boolean isFacetable() {
+        return facetable;
+    }
+
+    public void setFacetable(boolean facetable) {
+        this.facetable = facetable;
+    }
+
+    public Boolean getFulltextSearchable() {
+        return fulltextSearchable;
+    }
+
+    public void setFulltextSearchable(Boolean fulltextSearchable) {
+        this.fulltextSearchable = fulltextSearchable;
     }
 }

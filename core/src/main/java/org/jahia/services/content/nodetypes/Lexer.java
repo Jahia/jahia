@@ -37,6 +37,8 @@ import java.io.StreamTokenizer;
 import java.io.Reader;
 import java.io.IOException;
 
+import org.jahia.utils.ArrayUtils;
+
 /**
  * Lexer
  */
@@ -67,9 +69,13 @@ public class Lexer {
     public static final String[] INDEXED = new String[]{"indexed", "ind", "x"};
     public static final String[] SCOREBOOST = new String[]{"scoreboost", "boost", "b"};
     public static final String[] NO = new String[]{"no","n"};
+    public static final String[] YES = new String[]{"yes","y"};
     public static final String[] TOKENIZED = new String[]{"tokenized","tok","t"};
     public static final String[] UNTOKENIZED = new String[]{"untokenized","untok","u"};
     public static final String[] ANALYZER = new String[]{"analyzer"};
+    public static final String[] SORTABLE = new String[]{"sortable"};    
+    public static final String[] FACETABLE = new String[]{"facetable"};    
+    public static final String[] FULLTEXTSEARCHABLE = new String[]{"fulltextsearchable", "fts"};
     public static final String[] MULTIPLE = new String[]{"multiple", "mul", "*"};
     public static final String[] HIDDEN = new String[]{"hidden", "Hidden", "HIDDEN"};
 
@@ -82,24 +88,12 @@ public class Lexer {
 
     public static final String[] WORKFLOW = new String[]{"workflow", "Workflow", "WORKFLOW"};
 
-    public static final String[] ATTRIBUTE = new String[]{"primary", "pri", "!",
-                                                          "autocreated", "aut", "a",
-                                                          "mandatory", "man", "m",
-                                                          "protected", "pro", "p",
-                                                          "internationalized", "i15d", "i",
-                                                          "indexed", "ind", "x",
-                                                          "scoreboost", "boost", "b",
-                                                          "analyzer",
-                                                          "multiple", "mul", "*",
-                                                          "copy", "Copy", "COPY",
-                                                          "version", "Version", "VERSION",
-                                                          "initialize", "Initialize", "INITIALIZE",
-                                                          "compute", "Compute", "COMPUTE",
-                                                          "ignore", "Ignore", "IGNORE",
-                                                          "abort", "Abort", "ABORT",
-                                                          "workflow", "Workflow", "WORKFLOW",
-                                                          "hidden", "Hidden", "HIDDEN"};
-
+    public static final String[] ATTRIBUTE = ArrayUtils.join(PRIMARY,
+            AUTOCREATED, MANDATORY, PROTECTED, INTERNATIONALIZED, INDEXED,
+            SCOREBOOST, ANALYZER, SORTABLE, FACETABLE, FULLTEXTSEARCHABLE,
+            MULTIPLE, COPY, VERSION, INITIALIZE, COMPUTE, IGNORE, ABORT,
+            WORKFLOW, HIDDEN);
+    
     public static final String[] STRING = {"string", "String", "STRING"};
     public static final String[] BINARY = {"binary", "Binary", "BINARY"};
     public static final String[] LONG = {"long", "Long", "LONG"};

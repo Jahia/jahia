@@ -37,10 +37,12 @@ import org.apache.lucene.search.SortField;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.query.filtercreator.FilterCreator;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.services.search.JahiaSearchConstant;
 import org.jahia.services.search.lucene.JahiaLuceneSort;
 import org.jahia.services.containers.ContainerQueryContext;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.JahiaTools;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,6 +58,9 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class QueryModelTools {
+    public static final int NO_TYPE = 0;
+    public static final int SORTING_TYPE = 1;
+    public static final int FACETING_TYPE = 2;
 
     public static void appendPropertyValue(Properties properties, String propertyName,
                                             String value){
@@ -90,26 +95,16 @@ public class QueryModelTools {
                 //@todo complete
                 return null;
             }
-            if (operand.getNumberValue() || operand.getValueProviderClass() != null){
-                // lucene only support String sort
+            if (operand.getValueProviderClass() != null){
                 return null;
             }
-            JahiaFieldDefinition fieldDef = QueryModelTools
-                    .getFieldDefinitionForPropertyName(propertyName,
-                            queryContext, context);
-            if (fieldDef == null) {
+            propertyName = QueryModelTools
+                    .getFieldNameForSearchEngine(propertyName, operand.isMetadata(),
+                            queryContext, context, QueryModelTools.SORTING_TYPE);
+            if (propertyName == null) {
                 return null;
             }
-            propertyName = fieldDef.getName();
-            if (fieldDef.getCtnType() != null) {
-                propertyName = fieldDef.getCtnType().replaceAll("[ :]", "_")
-                        .toLowerCase();
-            }
-            if ( !operand.isMetadata() && !fieldDef.getIsMetadata() ){
-                propertyName = JahiaSearchConstant.CONTAINER_FIELD_PREFIX + propertyName;
-            } else {
-                propertyName = JahiaSearchConstant.METADATA_PREFIX + propertyName;
-            }
+
             if (ordering.isLocaleSensitive() && locale == null) {
                 locale = context.getEntryLoadRequest().getFirstLocale(true);
             }
@@ -187,5 +182,43 @@ public class QueryModelTools {
         }
 
         return fieldDef;
+    }
+    
+    public static String getFieldNameForSearchEngine(String propertyName,
+            boolean isMetadata, ContainerQueryContext queryContext,
+            ProcessingContext jParams, int type) throws JahiaException {
+        String fieldName = null;
+        if (propertyName != null && propertyName.length() > 0) {
+            if (FilterCreator.CONTENT_DEFINITION_NAME.equals(propertyName)) {
+                fieldName = JahiaSearchConstant.DEFINITION_NAME;
+            } else if (FilterCreator.PAGE_PATH.equals(propertyName)) {
+                fieldName = JahiaSearchConstant.PAGE_PATH;
+            } else if (JahiaQueryObjectModelConstants.CATEGORY_LINKS
+                    .equals(propertyName)) {
+                fieldName = JahiaSearchConstant.CATEGORY_ID;
+            } else {
+                JahiaFieldDefinition fieldDef = getFieldDefinitionForPropertyName(
+                        propertyName, queryContext, jParams);
+                fieldName = propertyName.toLowerCase();
+                if (fieldDef != null && fieldDef.getCtnType() != null) {
+                    fieldName = fieldDef.getCtnType().replaceAll("[ :]", "_")
+                            .toLowerCase();
+                    String prefix = JahiaSearchConstant.CONTAINER_FIELD_PREFIX;
+                    if (isMetadata || fieldDef.getIsMetadata()) {
+                        prefix = JahiaSearchConstant.METADATA_PREFIX;
+                    } else if (type > 0 && fieldDef.getPropertyDefinition() != null) {
+                        ExtendedPropertyDefinition propDef = fieldDef.getPropertyDefinition();
+                        if (type == SORTING_TYPE && propDef.isSortable()) {
+                            prefix = JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX;
+                        } else if (type == FACETING_TYPE && propDef.isFacetable()) {
+                            prefix = JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX;                            
+                        }
+                    }
+                    fieldName = prefix + fieldName;
+                }
+            }
+
+        }
+        return fieldName;
     }
 }

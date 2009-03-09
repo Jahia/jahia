@@ -437,39 +437,14 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         }
         boolean prefixedQuery = false;
         String propertyName = c.getPropertyName();
-        if ( propertyName != null && propertyName.length() > 0){
-            if (FilterCreator.CONTENT_DEFINITION_NAME.equals(propertyName)){
-                searchExpression = JahiaSearchConstant.DEFINITION_NAME
-                        + ":" + openParenthesis + searchExpression
-                        + closeParenthesis;
-                prefixedQuery = true;
-            } else if (FilterCreator.PAGE_PATH.equals(propertyName)){
-                searchExpression = JahiaSearchConstant.PAGE_PATH
-                        + ":" + openParenthesis + searchExpression
-                        + closeParenthesis;
-                prefixedQuery = true;
-            } else if (JahiaQueryObjectModelConstants.CATEGORY_LINKS.equals(propertyName)){
-                searchExpression = JahiaSearchConstant.CATEGORY_ID
-                        + ":" + openParenthesis + searchExpression
-                        + closeParenthesis;
-                prefixedQuery = true;
-            } else {
-                JahiaFieldDefinition fieldDef = QueryModelTools
-                        .getFieldDefinitionForPropertyName(propertyName,
-                                queryContext, context);
-                String name = propertyName.toLowerCase();
-                if (fieldDef != null && fieldDef.getCtnType() != null) {
-                    name = fieldDef.getCtnType().replaceAll("[ :]", "_").toLowerCase();
-                    if (!((FullTextSearchImpl) c).isMetadata() && !fieldDef.getIsMetadata()) {
-                        name = JahiaSearchConstant.CONTAINER_FIELD_PREFIX + name;
-                    } else {
-                        name = JahiaSearchConstant.METADATA_PREFIX + name;
-                    }
-                }
-                 searchExpression = name + ":" + openParenthesis + searchExpression + closeParenthesis;
-                prefixedQuery = true;
-            }
-         
+        
+        String fieldName = QueryModelTools.getFieldNameForSearchEngine(propertyName,
+                ((FullTextSearchImpl) c).isMetadata(), queryContext, context, QueryModelTools.NO_TYPE);
+
+        if (fieldName != null) {
+            searchExpression = fieldName + ":" + openParenthesis
+                    + searchExpression + closeParenthesis;
+            prefixedQuery = true;
         }
         
         StringBuffer buff = new StringBuffer();

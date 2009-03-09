@@ -70,7 +70,9 @@ public final class JahiaSearchConstant {
     public static final String OBJECT_PROPERTY_PREFIX       = JAHIA_PREFIX + "object_property_";
     public static final String DEFINITION_PROPERTY_PREFIX   = JAHIA_PREFIX + "definition_property_";
     public static final String CONTAINER_FIELD_PREFIX       = JAHIA_PREFIX + "containerfield_";
-    public static final String CONTAINER_FIELD_ALIAS_PREFIX       = JAHIA_PREFIX + "containerfieldalias_";
+    public static final String CONTAINER_FIELD_SORT_PREFIX  = CONTAINER_FIELD_PREFIX + "sort_";
+    public static final String CONTAINER_FIELD_FACET_PREFIX = CONTAINER_FIELD_PREFIX + "facet_";
+    public static final String CONTAINER_FIELD_ALIAS_PREFIX = JAHIA_PREFIX + "containerfieldalias_";
     
     public static final String CONTAINER_DEFINITION_PRIMARYTYPE  = DEFINITION_PROPERTY_PREFIX + "jcr:primarytype";;    
 

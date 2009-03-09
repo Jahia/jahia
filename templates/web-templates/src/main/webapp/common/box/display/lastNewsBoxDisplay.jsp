@@ -49,7 +49,7 @@
                 <c:set var="categoriesDisplay" value="${categoriesDisplay}${newsCategoryFilter.title}"/>
             </c:if>
             <c:if test="${!status.last}">
-                <c:set var="categoriesFilter" value="${categoriesFilter}${newsCategoryFilter.category.key}&&&"/>
+                <c:set var="categoriesFilter" value="${categoriesFilter}${newsCategoryFilter.category.key}$$$"/>
                 <c:set var="categoriesDisplay" value="${categoriesDisplay}${newsCategoryFilter.title}, "/>
             </c:if>
         </c:forEach>

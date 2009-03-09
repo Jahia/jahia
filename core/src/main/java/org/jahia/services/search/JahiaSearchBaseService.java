@@ -1671,6 +1671,10 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     contentPage.getObjectKey().getKey()));
 
             ProcessingContext jParams = Jahia.getThreadParamBean();
+            if ( jParams == null ){
+                jParams = new ProcessingContext(SettingsBean.getInstance(),
+                    System.currentTimeMillis(), contentPage.getSite(), user, contentPage.getSite().getHomeContentPage(), ProcessingContext.EDIT);
+            }
             Set<ContentObjectEntryState> entryStates = contentPage.getActiveAndStagingEntryStates();
             Map<String, ContentObjectEntryState> stagedEntries = new HashMap<String, ContentObjectEntryState>();
             for (ContentObjectEntryState entryState : entryStates) {
@@ -2986,13 +2990,18 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                 || indexMode != 1) {
                             isDefault = false;
                         }
-                        if (analyzer == null
-                                && (propertyDef.getRequiredType() == PropertyType.DATE
+                        if (analyzer == null) {
+                                if (propertyDef.getRequiredType() == PropertyType.DATE
                                         || propertyDef.getRequiredType() == PropertyType.BOOLEAN
                                         || propertyDef.getRequiredType() == PropertyType.DOUBLE || propertyDef
-                                        .getRequiredType() == PropertyType.LONG)) {
+                                        .getRequiredType() == PropertyType.LONG) {
                             analyzer = numericAnalyzer;
                             indexMode = ExtendedPropertyDefinition.INDEXED_UNTOKENIZED;
+                            } else if (def.getItemDefinition() != null
+                                    && def.getType() == FieldTypes.FILE) {
+                                analyzer = numericAnalyzer;
+                                indexMode = ExtendedPropertyDefinition.INDEXED_UNTOKENIZED;
+                            }
                         }
                     } else {
                         String scoreBoostStr = def
@@ -3041,17 +3050,30 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                 compassConfigChanged = true;
                             }
                         }
+                        for (String aliasName : def.getAliasNames()){
+                            if (updateCompassMappings(compassMappings, JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
+                                    + aliasName.toLowerCase(),
+                                    isDefault, scoreBoost, analyzer, indexMode)) {
+                                if (!compassConfigChanged) {
+                                    compassConfigChanged = true;
+                                }
+                            }                            
+                        }
                     }
 
-                    if (indexMode != ExtendedPropertyDefinition.INDEXED_NO
-                            && def.getItemDefinition() != null
+                    if (indexMode != ExtendedPropertyDefinition.INDEXED_NO 
+                            && (def.getItemDefinition() != null
                             && def.getType() != FieldTypes.DATE
                             && def.getType() != FieldTypes.BOOLEAN
                             && def.getType() != FieldTypes.FILE
                             && def.getType() != FieldTypes.FLOAT
                             && def.getType() != FieldTypes.INTEGER
                             && def.getType() != FieldTypes.COLOR
-                            && def.getType() != FieldTypes.APPLICATION) {
+                            && def.getType() != FieldTypes.APPLICATION && 
+                               (propertyDef == null || !Boolean.FALSE
+                                    .equals(propertyDef.getFulltextSearchable())))
+                            || (propertyDef != null && Boolean.TRUE
+                                    .equals(propertyDef.getFulltextSearchable()))) {
                         String key = isMetadata ? JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD
                                 : JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD;
 

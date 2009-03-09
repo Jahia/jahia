@@ -557,6 +557,18 @@ public abstract class JahiaField implements Cloneable, Serializable,
      * @throws JahiaException
      */
     public String[] getValuesForSearch(String languageCode, ProcessingContext context) throws JahiaException {
+        return getValuesForSearch(languageCode, context, true);
+    }
+    
+    /**
+     * Returns an array of values for the given language Code.
+     * By Default, return the field values in the field current language code.
+     *
+     * @param languageCode
+     * @return
+     * @throws JahiaException
+     */
+    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
 
         String[] values = this.getValues();
         if (values == null || values.length == 0) {
@@ -566,8 +578,8 @@ public abstract class JahiaField implements Cloneable, Serializable,
             values[i] = TextHtml.html2text(values[i]);
         }
         return values;
-    }
-
+    }    
+    
     public void setVersionID(int versionID) {
         this.versionID = versionID;
     }

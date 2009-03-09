@@ -53,11 +53,14 @@ import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.fields.ContentApplicationField;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTools;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 
 public class JahiaApplicationField extends JahiaField implements JahiaAllowApplyChangeToAllLangField {
 
+    private static final long serialVersionUID = -1503368255523653387L;
+    
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaApplicationField.class);
 
     /**
@@ -154,7 +157,7 @@ public class JahiaApplicationField extends JahiaField implements JahiaAllowApply
         ContentApplicationField contentField = (ContentApplicationField) ContentField.getField(this.getID());
         boolean isNew = false;
         if (contentField == null) {
-            contentField = (ContentApplicationField) ContentFieldTools.getInstance().createContentFieldInstance(0, getJahiaID(), getPageID(), getctnid(), getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList(), new HashMap());
+            contentField = (ContentApplicationField) ContentFieldTools.getInstance().createContentFieldInstance(0, getJahiaID(), getPageID(), getctnid(), getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList<ContentObjectEntryState>(), new HashMap<ContentObjectEntryState, String>());
             contentField.setMetadataOwnerObjectKey(getMetadataOwnerObjectKey());
             isNew = true;
         }

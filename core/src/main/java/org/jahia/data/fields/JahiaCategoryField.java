@@ -45,6 +45,7 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTools;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
@@ -61,6 +62,8 @@ import java.util.*;
  */
 public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyChangeToAllLangField {
 
+    private static final long serialVersionUID = 3669579811889812977L;
+    
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JahiaCategoryField.class);
 
@@ -125,7 +128,7 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
         boolean isNew = false;
         if (contentField == null) {
             contentField = (ContentCategoryField) ContentFieldTools.getInstance().createContentFieldInstance(0,getJahiaID(), getPageID(), getctnid(),
-                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList(), new HashMap());
+                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList<ContentObjectEntryState>(), new HashMap<ContentObjectEntryState, String>());
             contentField.setMetadataOwnerObjectKey(getMetadataOwnerObjectKey());
             isNew = true;
         }
@@ -215,24 +218,20 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
      *
      * @return a Map of language_code/value pairs used by search index engine
      */
-    public Map getValuesForSearch() throws JahiaException {
+    public Map<String, String[]> getValuesForSearch() throws JahiaException {
 
-        Map values = new HashMap();
-        List fieldRawValues = new ArrayList();
+        Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
+        List<String> fieldRawValues = new ArrayList<String>();
         String[] strVals = this.getValues();
         if (strVals != null) {
             fieldRawValues.addAll(Arrays.asList(strVals));
         }
 
-        Iterator iterator = fieldRawValues.iterator();
-        while (iterator.hasNext()) {
-            String curFieldRawValue = (String) iterator.next();
-
+        for (String curFieldRawValue : fieldRawValues) {
             JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(this.getJahiaID());
-            List siteLanguageSettings = site.getLanguageSettings();
+            List<SiteLanguageSettings> siteLanguageSettings = site.getLanguageSettings();
             if (siteLanguageSettings != null) {
-                for (int i = 0; i < siteLanguageSettings.size(); i++) {
-                    SiteLanguageSettings curSetting = (SiteLanguageSettings) siteLanguageSettings.get(i);
+                for (SiteLanguageSettings curSetting : siteLanguageSettings) {
                     if (curSetting.isActivated()) {
                         Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
                         Category curCategory = Category.getCategory(curFieldRawValue, null);
@@ -245,16 +244,21 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
                         if (value == null) {
                             value = "";
                         }
-                        List vals = (List) values.get(tempLocale.toString());
+                        List<String> vals = tempValues.get(tempLocale.toString());
                         if (vals == null) {
-                            vals = new ArrayList();
+                            vals = new ArrayList<String>();
                         }
                         vals.add(value);
-                        values.put(tempLocale.toString(), vals);
+                        tempValues.put(tempLocale.toString(), vals);
                     }
                 }
             }
         }
+        Map<String, String[]> values = new HashMap<String, String[]>();
+        for (Map.Entry<String, List<String>> entry : tempValues.entrySet()) {
+            strVals = new String[entry.getValue().size()];
+            values.put(entry.getKey(), entry.getValue().toArray(strVals) );
+        }        
         return values;
     }
 
@@ -263,22 +267,18 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
      * @return
      * @throws JahiaException
      */
-    public String[] getValuesForSearche(String languageCode) throws JahiaException {
+    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
 
-        List fieldRawValues = new ArrayList();
+        List<String> fieldRawValues = new ArrayList<String>();
         String[] strVals = this.getValues();
         if (strVals != null) {
             fieldRawValues.addAll(Arrays.asList(strVals));
         }
 
         Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-        Iterator iterator = fieldRawValues.iterator();
-        String val = null;
-        Category curCategory = null;
-        List vals = new ArrayList();
-        while (iterator.hasNext()) {
-            val = (String) iterator.next();
-            curCategory = Category.getCategory(val, null);
+        List<String> vals = new ArrayList<String>();
+        for (String val : fieldRawValues) {
+            Category curCategory = Category.getCategory(val, null);
             if (curCategory == null) {
                 logger.warn("Couldn't find category " + val + " when indexing field, ignoring entry...");
                 continue;
@@ -289,13 +289,8 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
             }
             vals.add(val);
         }
-
-        int size = vals.size();
-        String[] strArray = new String[size];
-        for (int i = 0; i < size; i++) {
-            strArray[i] = (String) vals.get(i);
-        }
-        return strArray;
+      
+        return vals.toArray(new String[vals.size()]);
     }
 
 }

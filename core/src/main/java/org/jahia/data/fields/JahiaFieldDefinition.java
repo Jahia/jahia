@@ -387,7 +387,8 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
      * Returns the alias names ( container definition names )
      * @return
      */
-    public String[] getAliasName(){
+    public String[] getAliasNames
+    (){
         if ( props == null ){
             return new String[]{};
         }

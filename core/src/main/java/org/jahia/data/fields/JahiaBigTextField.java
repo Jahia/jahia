@@ -88,6 +88,8 @@ import java.util.regex.Pattern;
 public class JahiaBigTextField extends JahiaField implements
         JahiaAllowApplyChangeToAllLangField {
 
+    private static final long serialVersionUID = -3021494722875802228L;
+
     private static final Logger logger = Logger.getLogger(JahiaBigTextField.class);
 
     public static final String URL_MARKER = "###";
@@ -181,7 +183,7 @@ public class JahiaBigTextField extends JahiaField implements
         boolean isNew = false;
         if (contentBigTextField == null) {
             contentBigTextField = (ContentBigTextField) ContentFieldTools.getInstance().createContentFieldInstance(0, getJahiaID(), getPageID(), getctnid(),
-                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList(), new HashMap());
+                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList<ContentObjectEntryState>(), new HashMap<ContentObjectEntryState, String>());
             contentBigTextField.setMetadataOwnerObjectKey(getMetadataOwnerObjectKey());
             isNew = true;
         }
@@ -447,7 +449,7 @@ public class JahiaBigTextField extends JahiaField implements
         if (urlKey.length() == 0 || Character.isDigit(urlKey.charAt(0))) return -1;
 
         try {
-            List pageProperties = null;
+            List<PageProperty> pageProperties = null;
             final ServicesRegistry registry = ServicesRegistry.getInstance();
             JahiaSite siteByKey = jahiaSite;
             if (siteByKey == null && link.indexOf("/site") >= 0) {

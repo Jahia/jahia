@@ -45,6 +45,7 @@ import org.jahia.services.fields.ContentField;
  */
 public class JahiaColorField extends JahiaSmallTextField implements JahiaAllowApplyChangeToAllLangField {
 
+    private static final long serialVersionUID = 7134812236210286265L;
 
     public JahiaColorField(Integer ID,
                            Integer jahiaID,

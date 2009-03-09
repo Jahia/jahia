@@ -61,11 +61,15 @@ import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.services.search.indexingscheduler.IndexationRuleInterface;
 import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.TextHtml;
 
 public class JahiaPageField extends JahiaField {
+
+    private static final long serialVersionUID = -8931526637297593990L;
+    
     final private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.
             getLogger(JahiaPageField.class);
 
@@ -277,7 +281,7 @@ public class JahiaPageField extends JahiaField {
         boolean isNew = false;
         if (contentField == null) {
             contentField = (ContentPageField) ContentFieldTools.getInstance().createContentFieldInstance(0,getJahiaID(), getPageID(), getctnid(),
-                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList(), new HashMap());
+                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList<ContentObjectEntryState>(), new HashMap<ContentObjectEntryState, String>());
             contentField.setMetadataOwnerObjectKey(getMetadataOwnerObjectKey());
             isNew = true;
         }
@@ -434,10 +438,10 @@ public class JahiaPageField extends JahiaField {
             }
             String title = page.getTitle();
             if ( title != null && !"".equals(title.trim()) ){
-                List valuesList = new ArrayList();
+                List<String> valuesList = new ArrayList<String>();
                 valuesList.addAll(Arrays.asList(values));
                 valuesList.add(title);
-                values = (String[])valuesList.toArray(values);
+                values = valuesList.toArray(values);
             }
 
             String[] urlKeys = new String[1];
@@ -453,10 +457,10 @@ public class JahiaPageField extends JahiaField {
                 logger.debug(t);
             }
 
-            List valuesList = new ArrayList();
+            List<String> valuesList = new ArrayList<String>();
             valuesList.addAll(Arrays.asList(values));
             valuesList.addAll(Arrays.asList(urlKeys));
-            values = (String[])valuesList.toArray(values);
+            values = valuesList.toArray(values);
         }
         return values;
     }

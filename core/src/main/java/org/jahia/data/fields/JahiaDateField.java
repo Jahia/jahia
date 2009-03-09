@@ -43,8 +43,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.fields.ContentDateField;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTools;
-import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.JahiaPageService;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
@@ -58,6 +57,8 @@ import java.text.ParseException;
 
 public class JahiaDateField extends JahiaField implements JahiaAllowApplyChangeToAllLangField, JahiaSimpleField {
 
+    private static final long serialVersionUID = 4232615921522548444L;
+    
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JahiaDateField.class);
 
@@ -170,7 +171,7 @@ public class JahiaDateField extends JahiaField implements JahiaAllowApplyChangeT
         boolean isNew = false;
         if (contentField == null) {
             contentField = (ContentDateField) ContentFieldTools.getInstance().createContentFieldInstance(0, getJahiaID(), getPageID(), getctnid(),
-                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList(), new HashMap());
+                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList<ContentObjectEntryState>(), new HashMap<ContentObjectEntryState, String>());
             contentField.setMetadataOwnerObjectKey(getMetadataOwnerObjectKey());
             isNew = true;
         }
@@ -283,9 +284,9 @@ public class JahiaDateField extends JahiaField implements JahiaAllowApplyChangeT
      *
      * @return HashMap
      */
-    public Map getValuesForSearch() throws JahiaException {
+    public Map<String, String[]> getValuesForSearch() throws JahiaException {
 
-        Map values = new HashMap();
+        Map<String, String[]> values = new HashMap<String, String[]>();
 
         String val = (String) this.getObject();
         if (val == null) {

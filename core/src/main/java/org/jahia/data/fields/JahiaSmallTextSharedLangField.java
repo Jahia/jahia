@@ -46,6 +46,7 @@ import org.jahia.services.fields.ContentSmallTextSharedLangField;
 import org.jahia.services.fields.ContentFieldTools;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
@@ -56,6 +57,8 @@ import java.util.*;
 
 public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSimpleField, JahiaAllowApplyChangeToAllLangField {
 
+    private static final long serialVersionUID = 2178462896245203477L;
+    
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JahiaSmallTextSharedLangField.class);
 
@@ -135,7 +138,7 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
         boolean isNew = false;
         if (contentField == null) {
             contentField = (ContentSmallTextSharedLangField) ContentFieldTools.getInstance().createContentFieldInstance(0,getJahiaID(), getPageID(), getctnid(),
-                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList(), new HashMap());
+                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList<ContentObjectEntryState>(), new HashMap<ContentObjectEntryState, String>());
             contentField.setMetadataOwnerObjectKey(getMetadataOwnerObjectKey());
             isNew = true;
         }
@@ -220,79 +223,66 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
      * Returns an Hashmap of language_code/value used by search index engine
      * the value is an array of String
      */
-    public Map getValuesForSearch() throws JahiaException {
+    public Map<String, String[]> getValuesForSearch() throws JahiaException {
 
         String lang = this.getLanguageCode();
         if (this.isShared()) {
             lang = ContentField.SHARED_LANGUAGE;
         }
 
-
-        Map values = new HashMap();
-        List arrayList = new ArrayList();
+        Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
+        List<String> arrayList = new ArrayList<String>();
         String[] strVals = this.getValues();
         if (strVals != null) {
             arrayList.addAll(Arrays.asList(strVals));
         }
 
-        Iterator iterator = arrayList.iterator();
-        while (iterator.hasNext()) {
-            String val = (String) iterator.next();
-
+        for (String val : arrayList) {
             ResourceBundleMarker resMarker =
                     ResourceBundleMarker.parseMarkerValue(val);
             if (resMarker == null) {
-                List vals = (List) values.get(lang);
+                List<String> vals = tempValues.get(lang);
                 if (vals == null) {
-                    vals = new ArrayList();
+                    vals = new ArrayList<String>();
                 }
                 if (val == null) {
                     val = "";
                 }
                 vals.add(val);
-                values.put(lang, vals);
+                tempValues.put(lang, vals);
             } else {
                 JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(this.getJahiaID());
-                List siteLanguageSettings = site.getLanguageSettings();
+                List<SiteLanguageSettings> siteLanguageSettings = site.getLanguageSettings();
                 if (siteLanguageSettings != null) {
-                    for (int i = 0; i < siteLanguageSettings.size(); i++) {
-                        SiteLanguageSettings curSetting = (SiteLanguageSettings) siteLanguageSettings.get(i);
+                    for (SiteLanguageSettings curSetting : siteLanguageSettings) {
                         if (curSetting.isActivated()) {
                             Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
                             String value = resMarker.getValue(tempLocale);
                             if (value == null) {
                                 value = "";
                             }
-                            List vals = (List) values.get(tempLocale.toString());
+                            List<String> vals = tempValues.get(tempLocale.toString());
                             if (vals == null) {
-                                vals = new ArrayList();
+                                vals = new ArrayList<String>();
                             }
                             vals.add(value);
-                            values.put(tempLocale.toString(), vals);
+                            tempValues.put(tempLocale.toString(), vals);
                         }
                     }
                 }
             }
         }
-        iterator = values.keySet().iterator();
-        List v = null;
-        strVals = null;
-        String key = null;
-        while (iterator.hasNext()) {
-            key = (String) iterator.next();
-            v = (List) values.get(key);
-            strVals = new String[v.size()];
-            int size = v.size();
-            for (int i = 0; i < size; i++) {
-                strVals[i] = (String) v.get(i);
-            }
-            values.put(key, strVals);
+        Map<String, String[]> values = new HashMap<String, String[]>();
+        
+        for (Map.Entry<String, List<String>> entry : tempValues.entrySet()) {
+            strVals = new String[entry.getValue().size()];
+            values.put(entry.getKey(), entry.getValue().toArray(strVals) );
         }
         return values;
     }
 
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context) throws JahiaException {
-        List arrayList = new ArrayList();
+    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
+        List<String> arrayList = new ArrayList<String>();
         String[] strVals = this.getValues();
         if (strVals != null) {
             arrayList.addAll(Arrays.asList(strVals));
@@ -300,26 +290,23 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
         EntryLoadRequest loadRequest = (EntryLoadRequest) context.getEntryLoadRequest().clone();
         loadRequest.getLocales().clear();
         loadRequest.getLocales().add(LanguageCodeConverters.languageCodeToLocale(languageCode));
-        List values = new ArrayList();
+        List<String> values = new ArrayList<String>();
         EntryLoadRequest savedEntryLoadRequest =
             context.getSubstituteEntryLoadRequest();
         try {
             context.setSubstituteEntryLoadRequest(loadRequest);
-            Iterator iterator = arrayList.iterator();
             Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-            while (iterator.hasNext()) {
-                String val = (String) iterator.next();
-                ResourceBundleMarker resMarker =
-                        ResourceBundleMarker.parseMarkerValue(val);
+            for (String val : arrayList) {
+                ResourceBundleMarker resMarker = expand ? ResourceBundleMarker
+                        .parseMarkerValue(val) : null;
                 if (resMarker == null) {
-
                     // expression marker
-                    ExpressionMarker exprMarker = ExpressionMarker.parseMarkerValue(val, context);
+                    ExpressionMarker exprMarker = expand ? ExpressionMarker
+                            .parseMarkerValue(val, context) : null;
                     if (exprMarker != null) {
                         try {
                             val = exprMarker.getValue();
-                        }
-                        catch (Exception t) {
+                        } catch (Exception t) {
                         }
                     }
 
@@ -329,6 +316,7 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
                     values.add(val);
                 } else {
                     String value = resMarker.getValue(tempLocale);
+
                     if (value == null) {
                         value = "";
                     }
@@ -336,14 +324,16 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
                 }
             }
         } catch (Exception t) {
+            logger.debug(t);
         } finally {
             context.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
         }
 
-        int size = values.size();
-        String[] strArray = new String[size];
-        for (int i = 0; i < size; i++) {
-            strArray[i] = TextHtml.html2text((String) values.get(i));
+        String[] strArray = new String[values.size()];
+        int i = 0;
+        for (String value : values) {
+            strArray[i] = TextHtml.html2text(value);
+            i++;
         }
 
         return strArray;

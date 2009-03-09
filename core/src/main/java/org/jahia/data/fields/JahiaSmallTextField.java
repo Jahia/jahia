@@ -46,12 +46,15 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentFieldTools;
 import org.jahia.services.fields.ContentSmallTextField;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
 
 public class JahiaSmallTextField extends JahiaField implements JahiaSimpleField, JahiaAllowApplyChangeToAllLangField {
 
+    private static final long serialVersionUID = -696597708047166956L;
+    
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JahiaSmallTextField.class);
 
@@ -114,7 +117,7 @@ public class JahiaSmallTextField extends JahiaField implements JahiaSimpleField,
         ContentSmallTextField contentField = (ContentSmallTextField) ContentField.getField(getID());
         if (contentField == null) {
             contentField = (ContentSmallTextField) ContentFieldTools.getInstance().createContentFieldInstance(0,getJahiaID(), getPageID(), getctnid(),
-                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList(), new HashMap());
+                    getFieldDefID(), getType(), getConnectType(), getAclID(), new ArrayList<ContentObjectEntryState>(), new HashMap<ContentObjectEntryState, String>());
             contentField.setMetadataOwnerObjectKey(getMetadataOwnerObjectKey());
             isNew = true;
         }

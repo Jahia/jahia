@@ -288,9 +288,17 @@ public class FormContentMapperHandlerTag extends AbstractJahiaTag {
             final JahiaFieldDefinition curFieldDef = (JahiaFieldDefinition) curStructureElem.getObjectDef();
             final String curFieldName = curFieldDef.getName();
 
-            final String[] curFieldValues;
-
-            curFieldValues = jData.getProcessingContext().getParameterValues(curFieldName);
+            String[] curFieldValues = jData.getProcessingContext().getParameterValues(curFieldName);
+            if (curFieldValues == null && curFieldDef.getAliasName() != null) {
+                // try field aliases
+                String[] aliases = curFieldDef.getAliasName();
+                for (String alias : aliases) {
+                    curFieldValues = jData.getProcessingContext().getParameterValues(alias);
+                    if (curFieldValues != null) {
+                        break;
+                    }
+                }
+            }
 
             final JahiaField curField = container.getField(curFieldName);
             if (curField != null) {

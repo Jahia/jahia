@@ -76,7 +76,7 @@
                                     <fmt:message key="org.jahia.admin.themes.ManageThemes.label"/>&nbsp;
                                 </div>
                             </div>
-                            
+
                            <script type="text/javascript">
                                     function swapImage(imgId,imgToSwitch){
                                         var image = document.getElementById(imgId);
@@ -89,8 +89,25 @@
                                     </script>
                             <div class="content-body">
                                 <table class="topAlignedTable" cellpadding="5" cellspacing="0">
-                                <form name="jahiathemeSelectorFormsite" method="get" action="/jahia/administration/?do=themes&sub=display">
-                                    <tr><td><select id="switchTheme" name="jahiaThemeSelector" onchange="swapImage('imageTheme','switchTheme')">
+                                    <tr><td><table class="evenOddTable">
+                                        <tr><th><fmt:message key='org.jahia.admin.themes.list.label'/></th><th><fmt:message key='org.jahia.admin.themes.default.label'/></th></tr>
+                                        <c:forEach var="themeBean" items="${themesBean}">
+                                            <tr>
+                                                <td>${themeBean.themeName}</td>
+                                                <td><c:if test="${themeBean.selected}"><img src="<%=URL%>images/icons/workflow/accept.gif" width="10"  height="10" border="0"/></c:if></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </table></td></tr>
+                                </table>
+                                <div class="head">
+                                       <div class="object-title">
+                                           <fmt:message key="org.jahia.admin.themes.choose.label"/>&nbsp;
+                                       </div>
+                                   </div>
+
+                                <table class="topAlignedTable" cellpadding="5" cellspacing="0">
+                                    <form name="jahiathemeSelectorFormsite" action='<%=JahiaAdministration.composeActionURL(request,response,"themes","&sub=display")%>'>
+                                        <tr><td><select id="switchTheme" name="jahiaThemeSelector" onchange="swapImage('imageTheme','switchTheme')">
                                         <c:forEach var="themeBean" items="${themesBean}">
                                             <option value="${themeBean.themeName}" <c:if test="${themeBean.selected}">selected</c:if>>${themeBean.themeName}</option>
                                             <c:if test="${themeBean.selected}">
@@ -107,8 +124,7 @@
                                      <script type="text/javascript">
                                         swapImage('imageTheme','switchTheme')
                                     </script>
-                                    <tr><td><input type="submit" name="<fmt:message key="org.jahia.admin.saveChanges.label"/>" value="<fmt:message key="org.jahia.admin.saveChanges.label"/>"></td></tr>
-                                </form>
+                                    </form>
                                 </table>
                             </div>
                             <div class="content-body">
@@ -116,7 +132,7 @@
                 if (request.getParameter("jahiaThemeSelector") != null ) {
             %>
                               <span style="padding: 5px;display:block;border-bottom: 1px solid #B7CBD8;">
-            <fmt:message key='org.jahia.admin.changeTheme'/> :
+            <fmt:message key='org.jahia.admin.themes.change.label'/> :
                     </span>
 
                                     <table class="topAlignedTable" cellpadding="5" cellspacing="0">

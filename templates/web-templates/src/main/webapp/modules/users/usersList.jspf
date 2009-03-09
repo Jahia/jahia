@@ -1,0 +1,5 @@
+<%@ include file="../../common/declarations.jspf" %>
+
+<div class="usersList">
+    <ui:userList displayLimit="20" styleClass="usersList"/>
+</div>

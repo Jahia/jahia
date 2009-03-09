@@ -39,6 +39,7 @@
 
 <%-- Define layout file --%>
 <jsp:include page="positioning.jsp">
+    <jsp:param name="position" value="position2"/>
     <jsp:param name="mainArea" value="areas/searchResults.jsp"/>
     <jsp:param name="useGWT" value="true"/>
     <jsp:param name="areaB" value="areas/simpleSearch_nav.jsp"/>

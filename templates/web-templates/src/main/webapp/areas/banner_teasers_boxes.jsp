@@ -37,12 +37,6 @@
 
 <%@ include file="../common/declarations.jspf" %>
 
-<!--start content -->
-<!-- Change content id to modify positioning:  #content2=columnB/mainColumn #content3=mainColumn/columnA   content4=mainColumn only #content5=50%columnB/50% mainColumn -->
-
-<div id="position2">
-
-    <div class="spacer">
         <template:include page="modules/banner.jsp"/>
         <template:include page="modules/teasers/smallTeasers.jsp"/>
         <template:include page="modules/teasers/largeTeasers.jsp"/>
@@ -50,5 +44,3 @@
         <template:include page="common/box/box.jsp">
             <template:param name="name" value="columnA_box"/>
         </template:include>
-    </div>
-</div><!--stopContent-->

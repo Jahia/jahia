@@ -36,10 +36,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../common/declarations.jspf" %>
-<!--start content. -->
-<!-- Change id to modify positioning :  #position1=areaB/mainArea/areaA  #position2=areaB/mainArea #position3=mainArea/areaA   position4=mainArea only #position5=50%areaB/50% mainArea -->
-<div id="position4">
-    <div class="spacer">
+
         <template:include page="common/breadcrumb.jsp"/>
         <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></h2>
         <template:include page="modules/maincontent/maincontentDisplay.jsp"/>
@@ -47,6 +44,3 @@
         <template:include page="common/box/box.jsp">
             <template:param name="name" value="columnA_box"/>
         </template:include>
-    </div>
-</div>
-<!--stopContent-->

@@ -39,6 +39,7 @@
 
 <%-- Define layout file --%>
 <jsp:include page="positioning.jsp">
+    <jsp:param name="position" value="position2"/>
     <jsp:param name="mainArea" value="areas/banner_teasers_boxes.jsp"/>
     <jsp:param name="areaB" value="areas/search_login_boxes.jsp"/>
     <jsp:param name="footerNav" value="true"/>

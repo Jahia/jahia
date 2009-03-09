@@ -39,6 +39,7 @@
 
 <%-- Define layout file --%>
 <jsp:include page="positioning.jsp">
+    <jsp:param name="position" value="position4"/>
     <jsp:param name="mainArea" value="areas/pressDetail.jsp"/>
     <jsp:param name="footerNav" value="true"/>
 </jsp:include>

@@ -40,6 +40,7 @@
 <%-- Define layout file --%>
 
 <jsp:include page="positioning.jsp">
+    <jsp:param name="position" value="position4"/>
     <jsp:param name="mainArea" value="areas/introduction_layoutmanager.jsp"/>
     <jsp:param name="footerNav" value="true"/>
     <jsp:param name="gwtScript" value="layoutmanager"/>

@@ -54,64 +54,65 @@
         </c:if>
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">
-        <div id="bodywrapper"><!--start bodywrapper-->
+        <div id="bodywrapper">
             <div id="container">
-                <%@ include file="common/top.jspf" %>
-                <div id="page"><!--start page-->
-                    <div id="headerPart2"><!--start headerPart2-->
+                <div id="toplinks">
+                    <%@ include file="common/top.jspf" %>
+                </div>
+                <div id="page">
+                    <div id="pageHeader">
                         <div id="logotop">
                             <template:include page="modules/logo.jsp"/>
                         </div>
                         <h1 class="hide">Nom du site</h1>
                         <%@ include file="common/nav/mainNav.jspf" %>
                     </div>
-                    <c:if test="${ !empty param.illustration }">
-                        <div id="illustration"><!--start illustration-->
-                            <img src="${pageContext.request.contextPath}/templates/web-templates/theme/${requestScope.currentTheme}/img/illustration.png"
-                                 alt="illustration"/>
-                        </div>
-                    </c:if>
-                    <!--stop illustration-->
-                    <div id="containerdata"><!--start containerdata-->
-                        <!--start wrapper--><div id="wrapper">
+
+                    <div id="pageData">
+                        <div id="wrapper">
                                 <%--rssfeed may be need for some template which need it--%>
                             <c:if test="${ !empty param.mainArea }">
-                                <template:include page="${param.mainArea}">
-                                    <template:param name="rssFeed" value="${param.rssFeed}"/>
-                                </template:include>
+                                <div id="${param.position}">
+                                    <div class="spacer">
+                                        <template:include page="${param.mainArea}">
+                                            <template:param name="rssFeed" value="${param.rssFeed}"/>
+                                        </template:include>
+                                    </div>
+                                </div>
                             </c:if>
-                        </div><!--stop wrapper-->
+                        </div>
                         <c:if test="${ !empty param.areaA }">
-                            <!--start areaA--><div id="areaA">
+                            <div id="areaA">
                                 <div class="spacer">
                                     <template:include page="${param.areaA}"/>
                                 </div>
-                            </div><!-- stop AreaA -->
+                            </div>
                         </c:if>
                         <c:if test="${ !empty param.areaB }">
-                            <!--start areaB--><div id="areaB">
+                            <div id="areaB">
                                 <div class="spacer">
                                     <template:include page="${param.areaB}"/>
                                 </div>
-                            </div><!-- stop areaB-->
+                            </div>
                         </c:if>
                         <c:if test="${ !empty param.areaC }">
-                            <!--start areaC--><div id="areaC">
+                            <div id="areaC">
                                 <div class="spacer">
                                     <template:include page="${param.areaC}"/>
                                 </div>
-                                <!--stop areaC-->
                             </div>
                         </c:if>
-                        <div class="clear"> </div>
+                        <div class="clear"></div>
                     </div>
                     <div>&nbsp;</div>
-                    <%@ include file="common/footer.jspf" %>
-                    <div class="clear"> </div>
+                    <div id="footer">
+                        <%@ include file="common/footer.jspf" %>
+                    </div>
+                    <div class="clear"></div>
                 </div>
-                <div class="clear"> </div>
+                <div class="clear"></div>
             </div>
-            <div class="clear"> </div>
+            <div class="clear"></div>
         </div>
     </template:templateBody>
 </template:template>

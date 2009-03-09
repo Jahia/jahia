@@ -36,8 +36,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../common/declarations.jspf" %>
-<div id="position4"><!--start content-->
-    <div class="spacer">
+
         <a href="javascript:jahiaportal_returnToPortal();">
             <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}" escapeXml="false"/></h2>
         </a>
@@ -47,6 +46,3 @@
             <a class="bottomanchor" href="introduction_layoutmanager.jsp#pagetop"><fmt:message
                     key='pageTop'/></a>
         </div>
-    </div>
-</div>
-<!--stopContent-->

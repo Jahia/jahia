@@ -37,12 +37,6 @@
 
 <%@ include file="../common/declarations.jspf" %>
 
-<!-- start content -->
-<!-- Change id to modify positioning :  #position1=areaB/mainArea/areaA  #position2=areaB/mainArea #position3=mainArea/areaA   position4=mainArea only #position5=50%areaB/50% mainArea -->
-<div id="content4">
-    <div class="spacer">
         <template:include page="common/breadcrumb.jsp"/>
         <h2><fmt:message key="statictitle.pressreale"/></h2>
         <template:include page="modules/pressReleases/pressDetailDisplay.jsp"/>
-    </div>
-</div><!--stopContent-->

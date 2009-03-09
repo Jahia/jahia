@@ -36,5 +36,11 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../common/declarations.jspf" %>
+<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
+<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 
-        <template:include page="modules/job/jobDetailDisplay.jsp"/>
+        <h2><fmt:message key="mySettings.title"/></h2>
+        <%@ include file="../modules/users/mysettingsForm.jspf" %>
+        <div style="margin-top:15px;">
+            <a class="returnLink" href="${requestScope.currentPage.url}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>
+        </div>

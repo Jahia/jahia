@@ -39,5 +39,6 @@
 
 <%-- Define layout file --%>
 <jsp:include page="positioning.jsp">
+    <jsp:param name="position" value="position2"/>    
     <jsp:param name="mainArea" value="areas/sitemap.jsp"/>
 </jsp:include>

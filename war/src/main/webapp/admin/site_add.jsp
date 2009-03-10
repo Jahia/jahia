@@ -95,7 +95,7 @@
     </div>
     <%if(!isConfigWizard){%>
     <div  class="object-shared">
-        step 1 / 3
+        <fmt:message key="org.jahia.step.label"/> 1 / 3
     </div>
    <% } %>
 </div>

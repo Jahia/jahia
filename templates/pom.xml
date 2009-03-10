@@ -60,8 +60,8 @@
 
     <modules>
         <module>core-templates</module>
-        <module>community-templates</module>
-        <module>sandbox-templates</module>
+        <!--<module>community-templates</module>-->
+        <!--<module>sandbox-templates</module>-->
         <module>test-templates</module>
         <module>web-templates</module>
         <!--<module>sandbox-web-templates</module>-->

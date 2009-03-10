@@ -52,6 +52,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <c:set var="display" value="${h:default(display, true)}"/>
+<c:set var="givenId" value="${attributes.id}"/>
 <c:set target="${attributes}" property="type" value="hidden"/>
 <c:set target="${attributes}" property="name" value="src_pagePath.value"/>
 <c:set target="${attributes}" property="id" value="src_pagePath.value"/>
@@ -65,7 +66,7 @@
 <c:if test="${display}">
     <c:set target="${attributes}" property="type" value="text"/>
     <c:set target="${attributes}" property="name" value="src_pagePath.valueView"/>
-    <c:set target="${attributes}" property="id" value="src_pagePath.valueView"/>
+    <c:set target="${attributes}" property="id" value="${h:default(givenId, 'src_pagePath.valueView')}"/>
     <c:if test="${not empty value}">
         <% String pageTitle = ContentPage.getPage(Integer.parseInt((String)jspContext.getAttribute("value")), false, false).getTitle(((JahiaBean)jspContext.getAttribute("jahia", PageContext.REQUEST_SCOPE)).getProcessingContext().getEntryLoadRequest(), false);
            if (pageTitle != null && pageTitle.length() > 0) {
@@ -77,7 +78,7 @@
     </c:if>
     <input ${h:attributes(attributes)} value="${fn:escapeXml(pageTitle)}"/>
     <ui:pageSelector fieldId="src_pagePath.value" fieldIdIncludeChildren="src_pagePath.includeChildren"
-        onSelect="function (pid, url, title) { document.getElementById('src_pagePath.valueView').value=title; return true; }"/>
+        onSelect="function (pid, url, title) { document.getElementById('${attributes.id}').value=title; return true; }"/>
 </c:if>
 <c:if test="${!display && includeChildren}">
     <input type="hidden" name="src_pagePath.includeChildren" value="true"/>

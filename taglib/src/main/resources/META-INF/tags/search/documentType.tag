@@ -39,6 +39,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
 <%@ tag body-content="empty" description="Renders document type selection control with all node types available." %>
+<%@ tag dynamic-attributes="attributes"%>
 <%@ attribute name="value" required="false" type="java.lang.String" %>
 <%@ attribute name="display" required="false" type="java.lang.Boolean"
               description="Should we display an input control for this query element or create a hidden one? In case of the hidden input field, the value should be provided."
@@ -48,7 +49,7 @@
 <c:set var="value" value="${h:default(param.src_documentType, value)}"/>
 <c:set var="display" value="${h:default(display, true)}"/>
 <c:if test="${display}">
-    <select name="src_documentType">
+    <select ${h:attributes(attributes)} name="src_documentType">
         <option value=""><fmt:message key="searchForm.any"/></option>
         <jcr:nodeType ntname="${jcr.nt_file}">
             <option value="${type.name}" ${value == type.name ? 'selected="selected"' : ''}>

@@ -105,12 +105,12 @@
             <c:when test="${descriptor.type == 'CATEGORY'}">
                 <c:set var="propName" value="src_properties(${documentType}).${name}.categoryValue.value"/>
                 <c:set target="${attributes}" property="name" value="${propName}"/>
-                <c:set target="${attributes}" property="id" value="${propName}"/>
+                <c:set target="${attributes}" property="id" value="${h:default(attributes.id, propName)}"/>
                 <c:set var="value" value="${h:default(param[propName], value)}"/>
                 <c:set var="categoryRoot"
                        value="${not empty descriptor.selectorOptions && not empty descriptor.selectorOptions.root ? descriptor.selectorOptions.root : 'root'}"/>
                 <input ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
-                <ui:categorySelector fieldId="${propName}"
+                <ui:categorySelector fieldId="${attributes.id}"
                                      fieldIdIncludeChildren="src_properties(${documentType}).${name}.categoryValue.includeChildren"
                                      root="${categoryRoot}"/>
             </c:when>

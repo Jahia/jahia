@@ -50,7 +50,7 @@
 <c:set var="options" value="${h:default(options, '5,10,20,30,50,100')}"/>
 <c:set target="${attributes}" property="name" value="src_itemsPerPage"/>
 <c:if test="${display}">
-    <select name="src_itemsPerPage">
+    <select ${h:attributes(attributes)} name="src_itemsPerPage">
         <c:forTokens items="${options}" delims="," var="opt">
             <option value="${opt}" ${opt == value ? 'selected="selected"' : ''}>${opt}</option>
         </c:forTokens>

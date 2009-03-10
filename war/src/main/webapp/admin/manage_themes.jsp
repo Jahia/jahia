@@ -127,22 +127,9 @@
                                     </form>
                                 </table>
                             </div>
-                            <div class="content-body">
-            <%
-                if (request.getParameter("jahiaThemeSelector") != null ) {
-            %>
-                              <span style="padding: 5px;display:block;border-bottom: 1px solid #B7CBD8;">
-            <fmt:message key='org.jahia.admin.themes.change.label'/> :
-                    </span>
-
-                                    <table class="topAlignedTable" cellpadding="5" cellspacing="0">
-                                        <tr><td>
-                                    <%=request.getParameter("jahiaThemeSelector")%></td></tr>
-                                </table>
-                                    <%
-                }
-            %>
-
+                            </div>
+                        </div>
+                    </div>
             </td>
         </tr>
 

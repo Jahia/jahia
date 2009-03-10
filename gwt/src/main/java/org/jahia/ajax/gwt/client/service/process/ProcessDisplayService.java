@@ -35,7 +35,6 @@ package org.jahia.ajax.gwt.client.service.process;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJob;
@@ -80,5 +79,5 @@ public interface ProcessDisplayService extends RemoteService {
 
     public PagingLoadResult<GWTJahiaProcessJob> findGWTProcessJobs(int offset, String parameter, boolean isAscending) throws GWTJahiaServiceException ;
 
-    void deleteJob(GWTJahiaProcessJob gwtProcessJob, AsyncCallback async);
+    void deleteJob(GWTJahiaProcessJob gwtProcessJob);
 }

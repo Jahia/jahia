@@ -37,13 +37,14 @@ import com.extjs.gxt.ui.client.data.BaseModel;
 
 import java.util.Date;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  * User: jahia
  * Date: 13 ao�t 2008
  * Time: 14:55:18
  */
-public class GWTJahiaRSSEntry extends BaseModel {
+public class GWTJahiaRSSEntry extends BaseModel implements Serializable {
     public GWTJahiaRSSEntry() {
     }
 

@@ -33,13 +33,17 @@
 
 package org.jahia.ajax.gwt.client.data.rss;
 
+import com.extjs.gxt.ui.client.data.BaseModel;
+
+import java.io.Serializable;
+
 
 /**
  * User: ktlili
  * Date: 19 nov. 2008
  * Time: 10:11:13
  */
-public class GWTJahiaRSSPerson extends com.extjs.gxt.ui.client.data.BaseModel {
+public class GWTJahiaRSSPerson extends BaseModel  implements Serializable {
     public GWTJahiaRSSPerson() {
     }
 

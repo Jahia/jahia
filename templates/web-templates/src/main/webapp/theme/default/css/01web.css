@@ -1032,7 +1032,9 @@ body {
     display: block;
     margin-right: 15px;
 }
-
+#bodywrapper #footerPart3 .columns2 .column-item1 .spacer {
+	padding:0.5em;
+}
 #bodywrapper #footerPart3 .columns2 .column-item2 {
     float: left;
     overflow: hidden;
@@ -1052,8 +1054,7 @@ body {
     margin: 0;
     padding: 0;
     display: inline;
-    padding-left: 16px;
-    float: right;
+    float: left;
 }
 
 /*bottomshortcuts*/

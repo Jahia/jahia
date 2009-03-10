@@ -37,7 +37,7 @@
                             <template:param name="id" value="Footer"/>
                         </template:include>
                     </div><!--stop bottomshortcuts-->
-
+    <div class="clear"> </div>
                     <!--start copyright-->
                     <div id="copyright">
                         <p><template:include page="modules/footer.jsp"/></p>
@@ -52,5 +52,4 @@
         <div class="clear"> </div>
     </div><!--stop footerPart3-->
 
-    <div class="clear"> </div>
     <div class="clear"> </div>

@@ -404,7 +404,7 @@
         <description>display a navigation menu</description>
         <name>navigationMenu</name>
         <tag-class>org.jahia.taglibs.uicomponents.navigation.NavigationMenuTag</tag-class>
-        <body-content>empty</body-content>
+        <body-content>JSP</body-content>
         <attribute>
             <name>titleLength</name>
             <required>false</required>
@@ -419,6 +419,16 @@
         </attribute>
         <attribute>
             <name>kind</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+        <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

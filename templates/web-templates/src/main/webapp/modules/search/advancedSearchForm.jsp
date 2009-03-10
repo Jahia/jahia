@@ -33,60 +33,60 @@
 
 --%>
 
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
-<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%@ page language="java" contentType="text/html;charset=UTF-8" %>
+<%@ include file="../../common/declarations.jspf" %>
 <div id="openclose">
-<div class="clasp"><a href="advancedSearchForm.jsp#toggle" onclick="return toggleSearch('pages');"><fmt:message key="search.advancedSearch.portalContent" escape="true"/></a></div>
+<div class="clasp"><a href="advancedSearchForm.jsp#toggle" onclick="return toggleSearch('pages');"><fmt:message key="search.advancedSearch.portalContent"/></a></div>
     <div id="searchTypePages" class="lunchbox" style="display: ${param['src_mode'] == 'pages' ? 'block' : 'none'}">
         <s:form searchFor="pages" class="advancedSearchForm">
             <fieldset>
-                <legend><fmt:message key="search.advancedSearch.criteria.text.title" escape="true"/></legend>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.allWords" escape="true"/></span><s:term match="all_words"/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.exactPhrase" escape="true"/></span><s:term match="exact_phrase"/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.anyWord" escape="true"/></span><s:term match="any_word"/><br/>
+                <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
+                <label for="allWords"><fmt:message key="search.advancedSearch.criteria.text.allWords"/></label><s:term id="allWords" match="all_words"/><br/>
+                <label for="exactPhrase"><fmt:message key="search.advancedSearch.criteria.text.exactPhrase"/></label><s:term id="exactPhrase" match="exact_phrase"/><br/>
+                <label for="anyWord"><fmt:message key="search.advancedSearch.criteria.text.anyWord"/></label><s:term id="anyWord" match="any_word"/><br/>
             </fieldset>
             <fieldset>
-                <legend><fmt:message key="search.advancedSearch.criteria.authorAndDate.title" escape="true"/></legend>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.createdBy" escape="true"/></span><s:createdBy/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.created" escape="true"/></span><s:created/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modifiedBy" escape="true"/></span><s:lastModifiedBy/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modified" escape="true"/></span><s:lastModified/>
+                <legend><fmt:message key="search.advancedSearch.criteria.authorAndDate.title"/></legend>
+                <label for="createdBy"><fmt:message key="search.advancedSearch.criteria.authorAndDate.createdBy"/></label><s:createdBy id="createdBy"/><br/>
+                <label for="created"><fmt:message key="search.advancedSearch.criteria.authorAndDate.created"/></label><s:created id="created"/><br/>
+                <label for="lastModifiedBy"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modifiedBy"/></label><s:lastModifiedBy id="lastModifiedBy"/><br/>
+                <label for="lastModified"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modified"/></label><s:lastModified id="lastModified"/>
             </fieldset>
             <fieldset>
-                <legend><fmt:message key="search.advancedSearch.criteria.miscellanea.title" escape="true"/></legend>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.language" escape="true"/></span><s:language/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.pagePath" escape="true"/></span><s:pagePath/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.itemsPerPage" escape="true"/></span><s:itemsPerPage/>
+                <legend><fmt:message key="search.advancedSearch.criteria.miscellanea.title"/></legend>
+                <label for="language"><fmt:message key="search.advancedSearch.criteria.miscellanea.language"/></label><s:language id="language"/><br/>
+                <label for="pagePath"><fmt:message key="search.advancedSearch.criteria.miscellanea.pagePath"/></label><s:pagePath id="pagePath"/><br/>
+                <label for="itemsPerPage"><fmt:message key="search.advancedSearch.criteria.miscellanea.itemsPerPage"/></label><s:itemsPerPage id="itemsPerPage"/>
             </fieldset>
-            <input type="submit" name="search" class="button" value="<fmt:message key='search.advancedSearch.submit' escape='true'/>"/>
+            <input type="submit" name="search" class="button" value="<fmt:message key='search.advancedSearch.submit'/>"/>
         </s:form>
     <div class="clear"> </div>
 </div>
-<div class="clasp"><a href="advancedSearchForm.jsp#toggle" onclick="return toggleSearch('files');"><fmt:message key="search.advancedSearch.fileRepository" escape="true"/></a></div>
+<div class="clasp"><a href="advancedSearchForm.jsp#toggle" onclick="return toggleSearch('files');"><fmt:message key="search.advancedSearch.fileRepository"/></a></div>
     <div id="searchTypeFiles" class="lunchbox advancedSearchForm" style="display: ${param['src_mode'] == 'files' ? 'block' : 'none'}">
         <s:form searchFor="files">
             <fieldset>
-                <legend><fmt:message key="search.advancedSearch.criteria.text.title" escape="true"/></legend>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.allWords" escape="true"/></span><s:term match="all_words"/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.exactPhrase" escape="true"/></span><s:term match="exact_phrase"/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.text.anyWord" escape="true"/></span><s:term match="any_word"/><br/>
+                <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
+                <label for="fileAllWords"><fmt:message key="search.advancedSearch.criteria.text.allWords"/></label><s:term id="fileAllWords" match="all_words"/><br/>
+                <label for="fileExactPhrase"><fmt:message key="search.advancedSearch.criteria.text.exactPhrase"/></label><s:term id="fileExactPhrase" match="exact_phrase"/><br/>
+                <label for="fileAnyWord"><fmt:message key="search.advancedSearch.criteria.text.anyWord"/></label><s:term id="fileAnyWord" match="any_word"/><br/>
             </fieldset>
             <fieldset>
-                <legend><fmt:message key="search.advancedSearch.criteria.authorAndDate.title" escape="true"/></legend>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.createdBy" escape="true"/></span><s:createdBy/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.created" escape="true"/></span><s:created/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modifiedBy" escape="true"/></span><s:lastModifiedBy/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modified" escape="true"/></span><s:lastModified/>
+                <legend><fmt:message key="search.advancedSearch.criteria.authorAndDate.title"/></legend>
+                <label for="fileCreatedBy"><fmt:message key="search.advancedSearch.criteria.authorAndDate.createdBy"/></label><s:createdBy id="fileCreatedBy"/><br/>
+                <label for="fileCreated"><fmt:message key="search.advancedSearch.criteria.authorAndDate.created"/></label><s:created id="fileCreated"/><br/>
+                <label for="fileLastModifiedBy"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modifiedBy"/></label><s:lastModifiedBy id="fileLastModifiedBy"/><br/>
+                <label for="fileLastModified"><fmt:message key="search.advancedSearch.criteria.authorAndDate.modified"/></label><s:lastModified id="fileLastModified"/>
             </fieldset>
             <fieldset>
-                <legend><fmt:message key="search.advancedSearch.criteria.miscellanea.title" escape="true"/></legend>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.fileType" escape="true"/></span><s:fileType/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.documentType" escape="true"/></span><s:documentType value="nt:file"/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.categories" escape="true"/></span><s:documentProperty documentType="jmix:categorized" name="j:defaultCategory"/><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.location" escape="true"/></span><s:fileLocation /><br/>
-                <span class="label"><fmt:message key="search.advancedSearch.criteria.miscellanea.itemsPerPage" escape="true"/></span><s:itemsPerPage/>
+                <legend><fmt:message key="search.advancedSearch.criteria.miscellanea.title"/></legend>
+                <label for="fileType"><fmt:message key="search.advancedSearch.criteria.miscellanea.fileType"/></label><s:fileType id="fileType"/><br/>
+                <label for="documentType"><fmt:message key="search.advancedSearch.criteria.miscellanea.documentType"/></label><s:documentType id="documentType" value="nt:file"/><br/>
+                <label for="documentProperty"><fmt:message key="search.advancedSearch.criteria.miscellanea.categories"/></label><s:documentProperty id="documentProperty" documentType="jmix:categorized" name="j:defaultCategory"/><br/>
+                <label for="fileLocation"><fmt:message key="search.advancedSearch.criteria.miscellanea.location"/></label><s:fileLocation id="fileLocation"/><br/>
+                <label for="fileItemsPerPage"><fmt:message key="search.advancedSearch.criteria.miscellanea.itemsPerPage"/></label><s:itemsPerPage id="fileItemsPerPage"/>
             </fieldset>
-                <input type="submit" name="search" class="button" value="<fmt:message key='search.advancedSearch.submit' escape='true'/>"/>
+                <input type="submit" name="search" class="button" value="<fmt:message key='search.advancedSearch.submit'/>"/>
         </s:form>
     <div class="clear"> </div>
     </div>

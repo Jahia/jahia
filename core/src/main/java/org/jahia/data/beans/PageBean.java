@@ -372,7 +372,7 @@ public class PageBean extends ContentBean {
     }
 
     public int getLevel() {
-        return getPath().size() - 1;
+        return getPath().size();
     }
 
     public Map getActionURIBeans() {

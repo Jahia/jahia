@@ -206,13 +206,13 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                 }
                 
                 ExtendedPropertyDefinition propDef = jahiaFieldDefinition.getPropertyDefinition();
-                if (propDef != null && propDef.isSortable()) {
+                if (propDef != null && propDef.isSortable() && values.length > 0) {
                     doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX + name, values);
                     doc.getField(
                             JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX
                                     + name).setType(DocumentField.KEYWORD);
                 }                
-                if (propDef != null && propDef.isFacetable()) {
+                if (propDef != null && propDef.isFacetable() && values.length > 0) {
                     doc.setFieldValues(
                             JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
                                     + name, field.getValuesForSearch(container

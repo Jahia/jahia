@@ -2450,7 +2450,7 @@ body {
     line-height: normal;
 }
 
-#bodywrapper formSearchTopB {
+#bodywrapper #formSearchTopB {
     margin-top: 8px;
 }
 

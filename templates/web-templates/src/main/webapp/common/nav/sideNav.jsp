@@ -54,8 +54,11 @@
         private boolean actionMenuOnly = false;
 --%><ui:navigationMenu labelKey="pages.add" kind="sideMenu" mockupClass="mockup-vmenu" display="false" var="navMenuBeans" usePageIdForCacheKey="true"
                        requiredTitle="true">
-    <%--test if any items in menu (under 2 items because the first is the manage menu box)--%>    
+    <%--test if any items in menu (under 2 items because the first is the manage menu box)--%>
     <c:forEach var="navMenuBean" items="${navMenuBeans}">
+        <c:if test="${fn:length(navMenuBeans) == 1 && navMenuBean.actionMenuOnly}">
+          <div class="mockup-vmenu">
+      </c:if>
         <c:if test="${navMenuBean.firstInLevel}">
             <ul class="level_${navMenuBean.level}">
         </c:if>
@@ -80,10 +83,11 @@
             </c:if>
             </ul>
         </c:if>
+        <c:if test="${fn:length(navMenuBeans) == 1 && navMenuBean.actionMenuOnly}">
+            </div>
+        </c:if>
     </c:forEach>
     </ui:navigationMenu>
-    <c:if test="${fn:length(navMenuBeans) < 2 && requestScope.currentRequest.editMode}">
-        <div class="mockup-vmenu"></div>
-    </c:if>
+
 
 </div>

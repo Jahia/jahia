@@ -263,3 +263,10 @@ width:280px;
 height:290px;
 background: url( ../img/mockup/vmenu-mockup.png) left 16px no-repeat;
 }
+
+#bodywrapper .mockup-teasers2 {
+display:block;
+width:638px;
+height:285px;
+background: url( ../img/mockup/bk_teasers2.gif) top left no-repeat;
+}

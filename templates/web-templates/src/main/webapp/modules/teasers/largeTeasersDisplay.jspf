@@ -1,5 +1,5 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<template:container id="bannerContainer" emptyContainerDivCssClassName="mockup-teasers" cacheKey="promoLarge">
+<template:container id="bannerContainer" emptyContainerDivCssClassName="mockup-teasers2" cacheKey="promoLarge">
     <!--start column-item -->
     <div class="column-item">
         <div class="spacer">

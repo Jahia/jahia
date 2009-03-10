@@ -38,6 +38,7 @@
       <profile>
           <id>qa-build</id>
           <modules>
+              <module>configwizard-webapp</module>
               <module>package</module>
           </modules>
       </profile>

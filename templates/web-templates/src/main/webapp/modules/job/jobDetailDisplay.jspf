@@ -39,7 +39,7 @@
             <a class="jobApply" href="javascript:;" onclick="ShowHideLayer(1);"><fmt:message
                     key="web_templates_jobContainer.apply"/></a>
 
-            <a class="returnJobsList" href="${requestScope.currentPage.url}" title='<fmt:message
+            <a class="returnLink" href="${requestScope.currentPage.url}" title='<fmt:message
             key="backToPreviousPage"/>'><fmt:message key="backToPreviousPage"/></a>
             <div class="clear"> </div>
         </div>

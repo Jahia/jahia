@@ -3027,9 +3027,8 @@ body {
 
 #bodywrapper a.returnLink {
     float: left;
-    background: transparent url( ../img/returnjobslist.png ) no-repeat 0% 70%;
-    padding-left: 13px;
-    padding-top: 8px;
+    background: transparent url( ../img/returnjobslist.png ) no-repeat 0% 50%;
+    padding-left: 16px;
 }
 
 /*****************************************************************************	*
@@ -3424,8 +3423,8 @@ body {
 #bodywrapper input.x-form-field {
     margin-top: 2px !important;
     background-color: #ffffff !important;
-    border: 1px solid #666666 !important;
-    background: #fff url( ../img/bg-input.png ) repeat-x top left !important;
+    border: 1px solid #cccccc !important;
+    background: #ffffff url( ../img/bg-input.png ) repeat-x top left !important;
 }
 
 #bodywrapper  input.x-form-focus {

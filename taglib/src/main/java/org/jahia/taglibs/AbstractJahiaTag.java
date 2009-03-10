@@ -187,18 +187,19 @@ public class AbstractJahiaTag extends BodyTagSupport {
     }
 
     protected String getMessage(final String key, final String defaultValue) {
-        if ((key != null)) {
-            return retrieveResourceBundle().getString(key);
-        } else {
-            if (defaultValue != null)
-                return defaultValue;
-            else
-                return "";
+        String message = defaultValue;
+        if (key != null) {
+            try {
+                message = retrieveResourceBundle().getString(key);
+            } catch (MissingResourceException e) {
+                // use default value
+            }
         }
+        return message;
     }
 
     protected String getMessage(final String key) {
-        return getMessage(key, null);
+        return getMessage(key, "???" + key + "???");
     }
 
     /**

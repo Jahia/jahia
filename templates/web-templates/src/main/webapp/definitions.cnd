@@ -179,7 +179,7 @@ containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="w
 containerList people (web_templates:peopleContainer)
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:fileContentBox"])
 
-[web_templates:pressRelease] > jnt:page, web_templates:introduction
+[web_templates:pressRelease] > jnt:page, web_templates:introduction,web_templates:navigation
 containerList press (web_templates:pressContainer)
 containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:fileContentBox"])
 

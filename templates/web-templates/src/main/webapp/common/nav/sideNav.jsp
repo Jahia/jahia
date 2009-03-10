@@ -36,6 +36,54 @@
 <%@ include file="../declarations.jspf" %>
 
 <div id="navigationN2">
-    <ui:navigationMenu cssClassName="" mockupClass="mockup-vmenu" kind="sideMenu" labelKey="pages.add" usePageIdForCacheKey="true"
-                       requiredTitle="true"/>
+  <%--  navMenuBean properties :
+        private String title="";
+        private String url="";
+        private boolean isLower=false;
+        private boolean isUpper=false;
+        private String actionMenu="";
+        private int level=0;
+        private boolean isFirst=false;
+        private boolean isLast=false;
+        private String actionMenuList="";
+        private boolean isInPath=false;
+        private boolean isSelected=false;
+        private boolean isMarkedForDelete = false;
+        private String displayLink = "";
+        private int itemCount=0;
+        private boolean actionMenuOnly = false;
+--%><ui:navigationMenu labelKey="pages.add" kind="sideMenu" mockupClass="mockup-vmenu" display="false" var="navMenuBeans" usePageIdForCacheKey="true"
+                       requiredTitle="true">
+    <%--test if any items in menu (under 2 items because the first is the manage menu box)--%>    
+    <c:forEach var="navMenuBean" items="${navMenuBeans}">
+        <c:if test="${navMenuBean.firstInLevel}">
+            <ul class="level_${navMenuBean.level}">
+        </c:if>
+        <c:if test="${!navMenuBean.firstInLevel}">
+            </li>
+        </c:if>
+        <c:set var="liCssNavItem" value=""/>
+        <c:set var="aCssNavItem" value=""/>
+        <c:if test="${navMenuBean.firstInLevel}"><c:set var="liCssNavItem" value="${liCssNavItem} first"/></c:if>
+        <c:if test="${navMenuBean.lastInLevel}"><c:set var="liCssNavItem" value="${liCssNavItem} last"/></c:if>
+        <c:if test="${navMenuBean.inPath}"><c:set var="aCssNavItem" value="${aCssNavItem} inpath"/></c:if>
+        <c:if test="${navMenuBean.selected}"><c:set var="aCssNavItem" value="${aCssNavItem} selected"/></c:if>
+        <c:if test="${navMenuBean.markedForDelete}"><c:set var="aCssNavItem" value="${aCssNavItem} markedForDelete"/></c:if>
+        <li class="${liCssNavItem}">
+        <c:if test="${!navMenuBean.actionMenuOnly}">
+            <a class="${aCssNavItem}" href="${navMenuBean.url}" alt="${navMenuBean.title}"><span>${navMenuBean.displayLink}</span></a>${navMenuBean.actionMenu}
+        </c:if>
+        <c:if test="${navMenuBean.lastInLevel}">
+            </li>
+            <c:if test="${requestScope.currentRequest.editMode}">
+                <li>${navMenuBean.actionMenuList}</li>
+            </c:if>
+            </ul>
+        </c:if>
+    </c:forEach>
+    </ui:navigationMenu>
+    <c:if test="${fn:length(navMenuBeans) < 2 && requestScope.currentRequest.editMode}">
+        <div class="mockup-vmenu"></div>
+    </c:if>
+
 </div>

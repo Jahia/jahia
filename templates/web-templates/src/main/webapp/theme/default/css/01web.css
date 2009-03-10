@@ -160,7 +160,9 @@ html, body,
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 1em;
 }
-
+#bodywrapper input.field {
+height:17px;
+}
 /******************************************************************************
 * Basic
 ******************************************************************************/
@@ -2182,11 +2184,12 @@ body {
     text-align: right;
 }
 
-#bodywrapper .pressRealeseForm .pressdatefrom .field,
-    #bodywrapper .pressRealeseForm .pressdateto .field {
-    width: 120px;
+#bodywrapper div.pressdatefrom ,
+#bodywrapper div.pressdateto  {
+	clear:both;
+	width:100%;
+	margin-bottom:0.5em
 }
-
 #bodywrapper .pressRealeseForm input[type="text"],
     #bodywrapper .pressRealeseForm textarea {
     width: 200px;
@@ -2202,6 +2205,7 @@ body {
 #bodywrapper .pressRealeseForm .divButton {
     text-align: center;
     margin: 0.5em 0;
+	clear: both;
 }
 
 #bodywrapper .pressRealeseForm input.button {
@@ -2212,8 +2216,6 @@ body {
 
     margin-bottom: 1em;
     clear: both;
-    width: 100%;
-    position: relative;
 }
 
 /******************************************************************************
@@ -2698,6 +2700,7 @@ body {
 #bodywrapper .divButton {
     text-align: center;
     margin: 0.5em 0;
+	clear: both;
 }
 
 #bodywrapper .contactForm input.button {
@@ -2795,6 +2798,7 @@ body {
 #bodywrapper .publicationSearchForm .divButton {
     text-align: center;
     margin: 0.5em 0;
+	clear: both;
 }
 
 #bodywrapper .publicationSearchForm .contactForm input.button {
@@ -2804,8 +2808,6 @@ body {
 #bodywrapper .publicationSearchForm {
     margin-bottom: 1em;
     clear: both;
-    width: 100%;
-    position: relative;
 }
 
 /******************************************************************************
@@ -2967,6 +2969,7 @@ body {
 #bodywrapper .jobsSearchForm .divButton {
     text-align: center;
     margin: 0.5em 0;
+	clear: both;
 }
 
 #bodywrapper .jobsSearchForm .contactForm input.button {
@@ -2976,8 +2979,6 @@ body {
 #bodywrapper .jobsSearchForm {
     margin-bottom: 1em;
     clear: both;
-    width: 100%;
-    position: relative;
 }
 
 /******************************************************************************
@@ -3077,6 +3078,7 @@ body {
 #bodywrapper .jobsApplyForm .divButton {
     text-align: center;
     margin: 0.5em 0;
+    clear: both;
 }
 
 #bodywrapper .jobsApplyForm input.button {
@@ -3086,8 +3088,6 @@ body {
 #bodywrapper .jobsApplyForm {
     margin-bottom: 1em;
     clear: both;
-    width: 100%;
-    position: relative;
 }
 
 /******************************************************************************
@@ -3413,15 +3413,15 @@ body {
 }
 
 #bodywrapper .x-form-text {
-    height: 22px;
+    height: 17px;
 }
 
 #bodywrapper .x-form-field {
-    height: 22px;
+    height: 17px;
 }
 
 #bodywrapper input.x-form-field {
-    margin-top: 2px !important;
+    margin-top: 0px !important;
     background-color: #ffffff !important;
     border: 1px solid #cccccc !important;
     background: #ffffff url( ../img/bg-input.png ) repeat-x top left !important;

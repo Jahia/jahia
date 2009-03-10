@@ -3,9 +3,9 @@
 <c:set var="loop" value="0"/>
 <table width="100%" class="tab" summary="">
 	<colgroup>
-		<col span="1" width="60%" class="col1"/>
-		<col span="1" width="20%" class="col2" />
-		<col span="1" width="20%" class="col3" />
+		<col span="1" width="80%" class="col1"/>
+		<col span="1" width="25%" class="col2" />
+		<col span="1" width="25%" class="col3" />
 	</colgroup>
 	<thead>
 		<tr>

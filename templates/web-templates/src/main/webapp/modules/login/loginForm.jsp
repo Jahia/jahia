@@ -43,10 +43,10 @@
             <fieldset>
                 <legend><fmt:message key='login'/></legend>
                 <p>
-                    <ui:loginUsername labelCssClassName="" cssClassName="username" labelKey="username" tabIndex="6"/>
+                    <ui:loginUsername labelCssClassName="" cssClassName="field username" labelKey="username" tabIndex="6"/>
                 </p>
                 <p>
-                    <ui:loginPassword labelCssClassName="" cssClassName="password" labelKey="password" tabIndex="7"/>
+                    <ui:loginPassword labelCssClassName="" cssClassName="field password" labelKey="password" tabIndex="7"/>
                 </p>
                 <p>
                     <ui:loginRememberMe labelCssClassName="rememberLabel" cssClassName="rememberme" labelKey="rememberme" tabIndex="8"/>

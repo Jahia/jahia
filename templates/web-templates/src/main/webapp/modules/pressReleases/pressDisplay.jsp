@@ -41,19 +41,19 @@
         <template:jahiaPageForm name="pressPageForm" method="get">
             <fieldset>
                 <legend><fmt:message key="web_templates_pressContainer.legend"/></legend>
-                <p class="pressdatefrom">
+                <div class="pressdatefrom">
 
                 <div><label><fmt:message key="web_templates_pressContainer.from"/> :</label>
                     <ui:dateSelector cssClassName="dateSelection" fieldName="pressdatefrom"
                                      value="${param.pressdatefrom}"/>
                 </div>
-                </p>
-                <p class="pressdateto">
+                <div class="clear"> </div></div>
+                <div class="clear"> </div><div class="pressdateto">
 
                 <div><label><fmt:message key="web_templates_pressContainer.to"/> :</label>
                     <ui:dateSelector cssClassName="dateSelection" fieldName="pressdateto" value="${param.pressdateto}"/>
                 </div>
-                </p>
+                <div class="clear"> </div></div>
                 <div class="divButton"><input type="submit" name="submit" id="submit" class="button"
                                               value='<fmt:message key="search"/>'
                                               tabindex="7"/>

@@ -78,17 +78,19 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
             if (stream != null) {
                 return stream;
             } else {
-                String s;
+                File s;
                 if (aPackage != null) {
-                    s = aPackage.getFilePath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                    s = new File(new File(Jahia.getSettings()
+                            .getJahiaTemplatesDiskPath(), aPackage
+                            .getRootFolder()), name.replaceAll("\\\\.", File.separator));
                 } else {
-                    s = Jahia.getSettings().getClassDiskPath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                    s = new File(Jahia.getSettings().getClassDiskPath(), name.replaceAll("\\\\.", File.separator));
                 }
                 try {
                     return new FileInputStream(s);
                 } catch (FileNotFoundException e) {
                     // Try to find it inside WEB-INF/classes
-                    s = Jahia.getSettings().getClassDiskPath() + File.separator + name.replaceAll("\\\\.", File.separator);
+                    s = new File(Jahia.getSettings().getClassDiskPath(), name.replaceAll("\\\\.", File.separator));
                     try {
                         return new FileInputStream(s);
                     } catch (FileNotFoundException e1) {

@@ -321,8 +321,8 @@
                 <prop key="compass.engine.highlighter.default.fragmenter.simple.size">400</prop>
                 <prop key="compass.engine.highlighter.default.encoder.type">default</prop>
                 <prop key="compass.engine.highlighter.default.formatter.type">simple</prop>
-                <prop key="compass.engine.highlighter.default.formatter.simple.pre"><![CDATA[<strong class="searchHighlightedText">]]></prop>
-                <prop key="compass.engine.highlighter.default.formatter.simple.post"><![CDATA[</strong>]]></prop>
+                <prop key="compass.engine.highlighter.default.formatter.simple.pre"><![CDATA[<span class="searchHighlightedText">]]></prop>
+                <prop key="compass.engine.highlighter.default.formatter.simple.post"><![CDATA[</span>]]></prop>
                 <prop key="compass.engine.highlighter.default.formatter.htmlSpanGradient.maxScore">50</prop>
                 <prop key="compass.engine.highlighter.default.formatter.htmlSpanGradient.minForegroundColor">#FFFFFF</prop>
                 <prop key="compass.engine.highlighter.default.formatter.htmlSpanGradient.maxForegroundColor">#000000</prop>

@@ -55,7 +55,7 @@ public class HTMLExcerpt extends AbstractExcerpt {
             int maxFragments, int maxFragmentSize) throws IOException {
         // TODO Auto-generated method stub
         return DefaultHighlighter.highlight(tpv, getQueryTerms(), text,
-                "<div>", "</div>", "<span>", "</span>", "<strong class=\"searchHighlightedText\">", "</strong>",
+                "<div>", "</div>", "<span>", "</span>", "<span class=\"searchHighlightedText\">", "</span>",
                 maxFragments, maxFragmentSize / 2);
     }
 

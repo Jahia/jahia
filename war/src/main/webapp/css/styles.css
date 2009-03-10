@@ -57,3 +57,9 @@
 .inlineEditingDeactivated {
     border-style: none;
 }
+
+.searchHighlightedText {
+    font-weight:bold;
+    font-size:larger;
+    background:#ff0;
+}

@@ -14,8 +14,8 @@
                     <li>
                         <span class="currentUser" ><utility:userProperty/></span>
                     </li>
-                    <li>
-                        <a class="loginFormTopMySettingsShortcuts" href="<template:composePageURL page="mySettings"/>" ><fmt:message key="web_templates.mySettings.title"/></a>
+                    <li class="topshortcuts-mysettings">
+                        <a href="<template:composePageURL page="mySettings"/>" ><fmt:message key="web_templates.mySettings.title"/></a>
                     </li>
                     </c:if>
                     <li class="topshortcuts-print"><a href="#" onclick="javascript:window.print()">

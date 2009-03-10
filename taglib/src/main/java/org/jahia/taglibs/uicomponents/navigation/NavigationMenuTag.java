@@ -69,7 +69,10 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 
 public class NavigationMenuTag extends AbstractJahiaTag {
 
@@ -103,6 +106,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     private int titleLength = 0;
     private int titleIndent = 0;
     private boolean editMenuAtEnd = true ;
+    private String mockupClass = null ;
 
     public void setTitleLength(int length) {
         this.titleLength = length;
@@ -192,6 +196,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         this.editMenuAtEnd = editMenuAtEnd;
     }
 
+    public void setMockupClass(String mockupClass) {
+        this.mockupClass = mockupClass ;
+    }
+
     private static SimpleDateFormat dateFormat = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
 
     public int doStartTag() throws JspException {
@@ -216,7 +224,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             final ProcessingContext context = jData.getProcessingContext();
             String cacheKey = "siteId_" + context.getSiteID() + ((usePageIdForCacheKey) ? "_pageId_" + context.getPageID() : "") + "_ctnListName_"
                     + containerListName + "_cssName_" + cssClassName + "_ctnListPostfix_" + containerListNamePostFix + kind;
-            StringBuffer advPreviewMode = new StringBuffer();
+            StringBuilder advPreviewMode = new StringBuilder();
             if (AdvPreviewSettings.isInUserAliasingMode() || AdvPreviewSettings.isPreviewingAtDefinedDateMode()) {
                 advPreviewMode.append(AdvPreviewSettings.getThreadLocaleInstance());
             }
@@ -236,26 +244,35 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 htmlOutput = entry.getBodyContent();
                 currentCache = false;
             } else {
-                StringBuffer out = new StringBuffer(4096);
+                StringBuilder out = new StringBuilder(4096);
                 Set<ContentObjectKey> dependencies = new HashSet<ContentObjectKey>();
                 createContainerList();
                 settings(jData);
+                StringBuilder cssToUse = new StringBuilder() ;
                 if (cssClassName == null) {
-                    out.append("<div class=\"navMenu\">\n");
+                    cssToUse.append("navMenu") ;
                 } else {
-                    out.append("<div class=\"").append(cssClassName).append("\">\n");
+                    cssToUse.append(cssClassName) ;
                 }
+
+                StringBuilder generatedMenu = new StringBuilder() ;
+                boolean emptyMenu = false ;
                 if (useGwt) {
-                    useGwtMenu(out);
+                    useGwtMenu(generatedMenu);
                 } else if (themeMenu) {
                     drawThemeMenu();
                 } else {
                     if (startPid > 0) {
-                        getPageSubTree(startPid, startLevel, out, dependencies, 0);
+                        emptyMenu = !getPageSubTree(startPid, startLevel, generatedMenu, dependencies, 0);
                     } else {
-                        getPageSubTree(jData.gui().getLevelID(startLevel), startLevel, out, dependencies, 0);
+                        emptyMenu = !getPageSubTree(jData.gui().getLevelID(startLevel), startLevel, generatedMenu, dependencies, 0);
                     }
                 }
+                if (emptyMenu && mockupClass != null) {
+                    cssToUse.append(" ").append(mockupClass) ;
+                }
+                out.append("<div class=\"").append(cssToUse).append("\">\n");
+                out.append(generatedMenu) ;
                 out.append("</div>\n");
                 htmlOutput = out.toString();
                 if (htmlOutput != null && htmlOutput.length() > 0 && !cacheParam2 && outputContainerCacheActivated) {
@@ -395,7 +412,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
      *
      * @param out the JSP writer
      */
-    private void useGwtMenu(StringBuffer out) {
+    private void useGwtMenu(StringBuilder out) {
         // use the gwt module
         out.append("<div id=\"default_sitemap\" class=\"sitemap\"></div>");
         out.append(GWTIncluder.generateGWTImport(pageContext, "org.jahia.ajax.gwt.navmenu.NavmenuManager"));
@@ -406,26 +423,27 @@ public class NavigationMenuTag extends AbstractJahiaTag {
      *
      * @param pageId       the page id where to get the container list
      * @param level        the current depth level
-     * @param out          the stringbuffer to write output into
+     * @param out          the stringbuilder to write output into
      * @param dependencies dependencies for the cache entry
      * @param loopIt       index of current iteration
      * @throws JahiaException         exception retrieving cache or containers
      * @throws IOException            JSP writer exception
      * @throws ClassNotFoundException exception building clist bean
+     * @return true if the menu is not empty, false otherwise
      */
-    private void getPageSubTree(int pageId, int level, StringBuffer out, Set<ContentObjectKey> dependencies, int loopIt)
+    private boolean getPageSubTree(int pageId, int level, StringBuilder out, Set<ContentObjectKey> dependencies, int loopIt)
             throws JahiaException, IOException, ClassNotFoundException {
         if (pageId < 1) {
             logger.error("Incorrect page ID: " + pageId);
             // throw new IllegalArgumentException("attribute pageID cannot be < 1 (is " + pageId + ")");
-            return;
+            return false;
         }
 
         ProcessingContext jParams = jData.getProcessingContext();
         JahiaContainerList linkContainerList = jData.containers().getAbsoluteContainerList(containerListName, pageId);
         if (linkContainerList == null) {
             logger.warn("Linkcontainer list is null");
-            return;
+            return false;
         }
         dependencies.add(new ContentContainerListKey(linkContainerList.getID()));
         // store ContentBean in page context
@@ -471,6 +489,8 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             }
         }
 
+        boolean isEmpty = true ;
+
         if (maxDepth == -1 || level <= startLevel + maxDepth) {
             int itemCount = 0;
             while (linkContainerEnum.hasNext()) {
@@ -511,7 +531,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         }
 
                         // set class = "selected" on the link
-                        final StringBuffer selected = new StringBuffer();
+                        final StringBuilder selected = new StringBuilder();
                         out.append("<li class=\"item_").append(itemCount);
                         if (isInPath) {
                             if (level == reqLevel - 1) {
@@ -612,6 +632,9 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                     }
                 }
             }
+            if (itemCount > 0) {
+                isEmpty = false ;
+            }
         }
 
         if (editMenuAtEnd) {
@@ -650,6 +673,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         /*if (editMode && !hideActionMenus && (level >= reqLevel - 1 || onlyTop)) {
             out.append("</div>\n");
         }*/
+        return !isEmpty ;
     }
 
     /**
@@ -685,6 +709,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         requiredTitle = false;
         displayActionMenuBeforeLink = false;
         editMenuAtEnd = true ;
+        mockupClass = null ;
         super.resetState();
         return EVAL_PAGE;
     }

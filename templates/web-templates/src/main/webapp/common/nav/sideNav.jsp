@@ -36,6 +36,6 @@
 <%@ include file="../declarations.jspf" %>
 
 <div id="navigationN2">
-    <ui:navigationMenu cssClassName="" kind="sideMenu" labelKey="pages.add" usePageIdForCacheKey="true"
+    <ui:navigationMenu cssClassName="" mockupClass="mockup-vmenu" kind="sideMenu" labelKey="pages.add" usePageIdForCacheKey="true"
                        requiredTitle="true"/>
 </div>

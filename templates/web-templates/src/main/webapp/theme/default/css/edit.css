@@ -251,3 +251,15 @@ width:280px;
 height:157px;
 background: url( ../img/mockup/bk_menu.gif) top left no-repeat;
 }
+#bodywrapper .mockup-hmenu {
+display:block;
+width:940px;
+height:48px;
+background: url( ../img/mockup/hmenu-mockup.png) left 16px no-repeat;
+}
+#bodywrapper .mockup-vmenu {
+display:block;
+width:280px;
+height:290px;
+background: url( ../img/mockup/vmenu-mockup.png) left 16px no-repeat;
+}

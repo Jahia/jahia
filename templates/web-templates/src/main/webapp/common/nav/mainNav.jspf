@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ include file="../declarations.jspf" %>
 <div id="navigationN1"><!--start navigationN1-->
-    <ui:navigationMenu displayActionMenuBeforeLink="true" cssClassName="" kind="topTabs" requiredTitle="true" usePageIdForCacheKey="true"/>
+    <ui:navigationMenu displayActionMenuBeforeLink="true" cssClassName="" mockupClass="mockup-hmenu" kind="topTabs" requiredTitle="true" usePageIdForCacheKey="true"/>
 </div><!--stop navigationN1-->

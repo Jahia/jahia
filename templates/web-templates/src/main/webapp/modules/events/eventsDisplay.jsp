@@ -38,7 +38,14 @@
     <div class="box4 ">
         <div class="box4-topright"></div>
         <div class="box4-topleft"></div>
-        <h3 class="box4-header"><span class="publicationTitle"><fmt:message key='statictitle.lastevents'/></span></h3>
+        <h3 class="box4-header"><span class="publicationTitle">
+        <c:if test="${!empty param.startDate}">
+            <fmt:message key='statictitle.lastevents.from'/>&nbsp;${param.startDate}    
+        </c:if>
+        <c:if test="${empty param.startDate}">
+            <fmt:message key='statictitle.lastevents'/>
+        </c:if>
+        </span></h3>
         <template:jahiaPageForm name="eventPageForm" method="get">
             <c:set value="" var="startDateSelected"/>
             <c:set value="" var="locationSelected"/>
@@ -53,7 +60,8 @@
                 <option value="startDate" ${startDateSelected}><fmt:message key='sortDate'/></option>
                 <option value="location" ${locationSelected}><fmt:message key='sortLocation'/></option>
             </select>
-            <span class="eventsSort"><utility:dropDownFromBundle bundleName="resources.eventsType"/></span>
+
+            <span class="hidden"><utility:dropDownFromBundle bundleName="resources.eventsType"/></span>
         </template:jahiaPageForm>
 
             <div class="box4-bottomright"></div>

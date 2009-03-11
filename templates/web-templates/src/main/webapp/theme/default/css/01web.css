@@ -1986,10 +1986,11 @@ body {
 
 #bodywrapper div.peoplePhoto {
     float: left;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     display: block;
     border: 1px solid #cccccc;
+    margin-right:10px;
     overflow: hidden;
 }
 

@@ -105,7 +105,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     private int titleIndent = 0;
     private boolean editMenuAtEnd = true ;
     private boolean display = true;
-    private String var = null;
+    private String var = "navMenuBeanSet";
     private static final String INTERNAL_CACHE_DEPENDENCIES = "internalCacheDependencies";
     private String mockupClass = null ;
 
@@ -747,7 +747,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         if (var!=null) {
             pageContext.removeAttribute(var);
         }
-        var = null;
+        var = "navMenuBeanSet";
         pageContext.removeAttribute(INTERNAL_CACHE_DEPENDENCIES);
         bodyContent = null;
         super.resetState();

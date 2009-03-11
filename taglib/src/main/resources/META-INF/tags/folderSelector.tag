@@ -76,7 +76,7 @@
 </script>
 &nbsp;<a href="#select"
 onclick="{var pathSelector = openFolderSelector(); pathSelector.focus(); return false;}"
-title='<fmt:message key="selectors.folderSelector.selectFolder"/>'><<fmt:message key="selectors.select"/></a>
+title='<fmt:message key="selectors.folderSelector.selectFolder"/>'><fmt:message key="selectors.select"/></a>
 <c:if test="${displayIncludeChildren}">
     &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><fmt:message key="selectors.folderSelector.selectFolder.includeChildren"/></label>
 </c:if>

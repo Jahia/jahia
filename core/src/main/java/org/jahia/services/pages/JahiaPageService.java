@@ -915,13 +915,6 @@ public abstract class JahiaPageService extends JahiaService
         throws JahiaException;
 
     /**
-     * Update the ContentPage cache so that clusters are informed of the
-     * changes.
-     * @param contentPage ContentPage
-     */
-    public abstract void updateContentPageCache(ContentPage contentPage);
-
-    /**
      * sort pages child first
      *
      * @param pageIDs List list of pageIDs

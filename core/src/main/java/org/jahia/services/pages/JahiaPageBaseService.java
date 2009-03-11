@@ -2001,16 +2001,6 @@ public class JahiaPageBaseService extends JahiaPageService {
         throws JahiaException {
         return pageManager.getPagePropertiesByNameValueSiteIDAndParentID(propertyName, propertyValue, siteID, parentPageID);
     }
-
-    /**
-     * Update the ContentPage cache so that clusters are informed of the
-     * changes.
-     * @param contentPage ContentPage
-     */
-    public void updateContentPageCache(ContentPage contentPage) {
-        mContentPageCache.put(new Integer(contentPage.getID()), contentPage);
-    }
-
     /**
      * sort pages child first
      *

@@ -2358,7 +2358,7 @@ public class ContentPage extends ContentObject implements
         if (pageProperties != null) {
             pageProperties.put(name, targetProperty);
         }
-        getPageService().updateContentPageCache(this);
+        getPageService().invalidatePageCache(getID());
     }
 
     /**
@@ -2380,7 +2380,7 @@ public class ContentPage extends ContentObject implements
                 pageManager.removePageProperty(targetProperty);
             }
         }
-        getPageService().updateContentPageCache(this);
+        getPageService().invalidatePageCache(getID());
     }
 
     public boolean setPageKey(String pageKey) throws JahiaException {

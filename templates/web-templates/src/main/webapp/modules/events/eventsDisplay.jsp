@@ -35,7 +35,7 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 
-    <div class="box4 "><!--start box 4 default-->
+    <div class="box4 ">
         <div class="box4-topright"></div>
         <div class="box4-topleft"></div>
         <h3 class="box4-header"><span class="publicationTitle"><fmt:message key='statictitle.lastevents'/></span></h3>
@@ -60,7 +60,6 @@
             <div class="box4-bottomleft"></div>
             <div class="clear"> </div>
     </div>
-
     <div class="clear"> </div>
 
 <c:set var="sortBy" value="startDate"/>

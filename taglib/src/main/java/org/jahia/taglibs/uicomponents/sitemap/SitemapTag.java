@@ -117,7 +117,7 @@ public class SitemapTag extends AbstractJahiaTag {
             int depth = 1 ;
 
             try {
-                out.print("<div id=\"default_sitemap\" class=\"sitemap\">\n") ;
+                out.print("<div class=\"sitemap\">\n") ;
 
                 if (startPid < 1) {
                     startPage = jParams.getSite().getHomePage() ;

@@ -113,6 +113,21 @@
     position: relative;
 }
 
+#bodywrapper #navigationN2 .level_2 .action-menu-icons {
+	padding:0 2px 0 10px;
+}
+
+#bodywrapper #navigationN2 .level_3 .action-menu-icons {
+	padding:0 2px 0 30px;
+}
+#bodywrapper #navigationN2 .level_4 .action-menu-icons {
+	padding:0 2px 0 50px;
+}
+#bodywrapper #navigationN2 .level_5 .action-menu-icons {
+	padding:0 2px 0 70px;
+}
+
+
 #bodywrapper #bottomshortcuts div.action-menu-icons {
     display: inline;
 	float:left;

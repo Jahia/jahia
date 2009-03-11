@@ -75,7 +75,7 @@ public class SetBundleTag extends TagSupport {
     public int doStartTag() throws JspException {
         // Position localisationContext
         if (basename != null && !"".equals(basename)) {
-            final ProcessingContext context = Utils.getProcessingContext(pageContext);
+            final ProcessingContext context = Utils.getProcessingContext(pageContext, true);
             final Locale locale = context.getLocale();
             ResourceBundle resourceBundle = new JahiaResourceBundle(basename, locale, context.getSite().getTemplatePackageName());
             LocalizationContext locCtxt = new LocalizationContext(resourceBundle, locale);

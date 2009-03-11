@@ -37,13 +37,20 @@ import java.util.Iterator;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
+import org.jahia.exceptions.JahiaBadRequestException;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaPageNotFoundException;
+import org.jahia.exceptions.JahiaSiteNotFoundException;
 import org.jahia.gui.GuiBean;
+import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
+import org.jahia.params.ProcessingContextFactory;
 import org.jahia.utils.JahiaConsole;
 
 /**
@@ -115,7 +122,7 @@ public class Utils {
         if (bean == null) {
             bean = (JahiaBean) pageContext.getAttribute("currentJahia", PageContext.REQUEST_SCOPE);
             if(createIfNotFound) {
-                ProcessingContext ctx = getProcessingContext(pageContext);
+                ProcessingContext ctx = getProcessingContext(pageContext, true);
                 if (ctx != null) {
                     bean = new JahiaBean(ctx);
                     pageContext.setAttribute("jahia", bean, PageContext.REQUEST_SCOPE);
@@ -198,6 +205,36 @@ public class Utils {
                 .getAttribute("org.jahia.params.ParamBean",
                         PageContext.REQUEST_SCOPE);
         return ctx != null ? ctx : Jahia.getThreadParamBean();
+    }
+
+    /**
+     * Returns current {@link ProcessingContext} instance.
+     *
+     * @param pageContext current page context
+     * @param createIfNotFound will create the processing context if it is not found
+     * @return current {@link ProcessingContext} instance
+     */
+    public static ProcessingContext getProcessingContext(
+            PageContext pageContext, boolean createIfNotFound) {
+        ProcessingContext ctx = getProcessingContext(pageContext);
+        if (ctx == null && createIfNotFound) {
+            try {
+                ctx = ((ProcessingContextFactory) SpringContextSingleton
+                        .getInstance().getContext().getBean(
+                                ProcessingContextFactory.class.getName()))
+                        .getContext(
+                                (HttpServletRequest) pageContext.getRequest(),
+                                (HttpServletResponse) pageContext.getResponse(),
+                                pageContext.getServletContext());
+            } catch (JahiaSiteNotFoundException e) {
+                throw new JahiaBadRequestException(e);
+            } catch (JahiaPageNotFoundException e) {
+                throw new JahiaBadRequestException(e);
+            } catch (JahiaException e) {
+                throw new JahiaBadRequestException(e);
+            }
+        }
+        return ctx;
     }
 
     /**

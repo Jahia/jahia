@@ -127,7 +127,7 @@ public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttrib
 
         id = null;
         jahiaType = null;
-        attributes = null;
+        attributes = new HashMap<String, Object>();
         return EVAL_PAGE;
     }
 

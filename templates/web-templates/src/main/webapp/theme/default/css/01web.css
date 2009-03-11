@@ -33,10 +33,6 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-#bodywrapper .themeSelector {
-    margin: 0.5em 0;
-}
-
 /*GLOBAL WHITESPACE RESET*/
 html, body,
     #bodywrapper h1, #bodywrapper h2, #bodywrapper h3, #bodywrapper h4, #bodywrapper h5, #bodywrapper h6,
@@ -172,7 +168,6 @@ body {
 
 #bodywrapper {
     width: 100%;
-    background-color: #f0eee4;
     font-size: 80%;
     color: #36393d;
     font-family: Arial, Helvetica, sans-serif;
@@ -183,20 +178,17 @@ body {
     #bodywrapper a:link {
     color: #990000;
     text-decoration: underline;
-
 }
 
 #bodywrapper a:hover,
     #bodywrapper a:active {
     color: #990000;
     text-decoration: none;
-
 }
 
 #bodywrapper a:visited {
     color: #990000;
     text-decoration: underline;
-
 }
 
 #bodywrapper li {
@@ -394,7 +386,7 @@ body {
 /******************************************************************************
 * LAYOUT Header
 ******************************************************************************/
-#bodywrapper #container {
+#bodywrapper #contentArea {
     width: 960px;
     margin: 0 auto;
     overflow: hidden;
@@ -757,7 +749,7 @@ body {
 * LAYOUT CONTENEUR
 ******************************************************************************/
 
-#bodywrapper #pagedata {
+#bodywrapper #pageData {
     clear: both;
     background-color: #ffffff;
     height: 1%;
@@ -3467,4 +3459,10 @@ body {
 ******************************************************************************/
 #bodywrapper .box2 .x-date-picker {
     margin-left: 40px;
+}
+/******************************************************************************
+*  theme selector if provided to visitors
+******************************************************************************/
+#bodywrapper .themeSelector {
+    margin: 0.5em 0;
 }

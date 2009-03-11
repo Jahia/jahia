@@ -55,7 +55,7 @@
     </template:templateHead>
     <template:templateBody gwtScript="${param.gwtScript}">
         <div id="bodywrapper">
-            <div id="container">
+            <div id="contentArea">
                 <div id="toplinks">
                     <%@ include file="common/top.jspf" %>
                 </div>

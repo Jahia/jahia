@@ -81,7 +81,7 @@ p {
   display:none;
 }
 
-#bodywrapper #container,
+#bodywrapper #contentArea,
 #bodywrapper #position,
 #bodywrapper #position2,
 #bodywrapper #position3,
@@ -102,7 +102,7 @@ p {
 	width:940px;
 	overflow:visible;
 }
-#bodywrapper #pagedata {
+#bodywrapper #pageData {
 	float:none;
 	height:auto;
 	width:940px;

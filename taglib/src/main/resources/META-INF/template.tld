@@ -203,6 +203,12 @@
             <type>boolean</type>
         </attribute>
         <attribute>
+            <name>inlineEditingActivated</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
             <description>
                 Specifies the default error message to be displayed instead
                 of the box content if an error occurs.

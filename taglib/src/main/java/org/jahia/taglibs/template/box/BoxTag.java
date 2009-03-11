@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -36,10 +36,12 @@ package org.jahia.taglibs.template.box;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.containers.JahiaContainer;
+import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.container.ContainerTag;
+import org.jahia.taglibs.template.field.FieldTag;
 import org.jahia.utils.StringResponseWrapper;
 
 import javax.servlet.RequestDispatcher;
@@ -54,7 +56,7 @@ import java.io.StringWriter;
  * Tag used to dispatch the request to the JSP file responsible of displaying
  * the actual box. Also handles any exception occurred during box rendering
  * depending on the configured policy.
- * 
+ *
  * @author Xavier Lawrence
  */
 public class BoxTag extends AbstractJahiaTag {
@@ -82,6 +84,7 @@ public class BoxTag extends AbstractJahiaTag {
     private String id;
     private OnErrorType onError;
     private String surroundingDivCssClass;
+    private boolean inlineEditingActivated;
 
     public int doEndTag() throws JspException {
 
@@ -105,8 +108,6 @@ public class BoxTag extends AbstractJahiaTag {
         return super.doStartTag();
     }
 
-    
-
     private String getBoxContent() throws JspException {
 
         String content = null;
@@ -118,22 +119,20 @@ public class BoxTag extends AbstractJahiaTag {
             final JahiaContainer parentContainer = parentContainerTag.getContainer();
 //            pageContext.setAttribute(PARENT_TAG_REQUEST_ATTRIBUTE,
 //                    parentContainerTag, PageContext.REQUEST_SCOPE);
-            String boxType = extractKey(parentContainer.getFieldValue(
-                    BOX_TYPE_FIELD_NAME, ""));
-            boxType = boxType.replace(":","_");
+            String boxType = extractKey(parentContainer.getFieldValue(BOX_TYPE_FIELD_NAME, ""));
+            boxType = boxType.replace(":", "_");
             view = resolveIncludeFullPath("common/box/display/"
                     + boxType.substring(boxType.lastIndexOf('_') + 1)
                     + "Display.jsp");
             boxTitle = parentContainer.getFieldValue(BOX_TITLE_FIELD_NAME, "");
+            final JahiaField boxTitleField = parentContainer.getField(BOX_TITLE_FIELD_NAME);
 
             RequestDispatcher dispatcher = pageContext.getRequest()
                     .getRequestDispatcher(view);
             if (null == dispatcher) {
                 throw new JahiaException(
-                        "Unable to get a request dispatcher for the box view JSP '"
-                                + view + "'",
-                        "Unable to get a request dispatcher for the box view JSP '"
-                                + view + "'",
+                        "Unable to get a request dispatcher for the box view JSP '" + view + "'",
+                        "Unable to get a request dispatcher for the box view JSP '" + view + "'",
                         JahiaException.TEMPLATE_SERVICE_ERROR,
                         JahiaException.ERROR_SEVERITY);
             }
@@ -149,13 +148,14 @@ public class BoxTag extends AbstractJahiaTag {
                 out.append("<div class=\"").append(surroundingDivCssClass).append("\">");
             }
             if (displayTitle) {
-                out.append("<span class=\"boxTitle\">").append(boxTitle).append("</span>");
+                out.append("<span class=\"boxTitle\">").
+                        append(FieldTag.renderEditableContentMarkup(boxTitleField, boxTitle, getProcessingContext(), false, inlineEditingActivated)).
+                        append("</span>");
             }
 
             out.append(responseWrapper.getString());
 
-            if (surroundingDivCssClass != null
-                    && surroundingDivCssClass.length() != 0) {
+            if (surroundingDivCssClass != null && surroundingDivCssClass.length() != 0) {
                 out.append("</div>");
             }
 
@@ -192,9 +192,8 @@ public class BoxTag extends AbstractJahiaTag {
 
         String content = null;
 
-        ContainerTag parentContainerTag = (ContainerTag) findAncestorWithClass(
-                this, ContainerTag.class);
-        
+        ContainerTag parentContainerTag = (ContainerTag) findAncestorWithClass(this, ContainerTag.class);
+
         // disable cache for the parent container tag 
         if (parentContainerTag != null) {
             parentContainerTag.disableCache();
@@ -226,8 +225,7 @@ public class BoxTag extends AbstractJahiaTag {
             StringBuilder out = new StringBuilder(256);
             if (surroundingDivCssClass != null
                     && surroundingDivCssClass.length() != 0) {
-                out.append("<div class=\"").append(surroundingDivCssClass)
-                        .append("\">");
+                out.append("<div class=\"").append(surroundingDivCssClass).append("\">");
             }
             if (displayTitle && boxTitle != null) {
                 out.append("<span class=\"boxTitle\">").append(
@@ -263,6 +261,7 @@ public class BoxTag extends AbstractJahiaTag {
         errorMessageKey = null;
         id = null;
         onError = null;
+        inlineEditingActivated = true;
         surroundingDivCssClass = null;
     }
 
@@ -318,4 +317,7 @@ public class BoxTag extends AbstractJahiaTag {
         this.surroundingDivCssClass = surroundingDivCssClass;
     }
 
+    public void setInlineEditingActivated(boolean inlineEditingActivated) {
+        this.inlineEditingActivated = inlineEditingActivated;
+    }
 }

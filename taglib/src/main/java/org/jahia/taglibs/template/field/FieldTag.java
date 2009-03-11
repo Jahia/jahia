@@ -222,7 +222,7 @@ public class FieldTag extends AbstractFieldTag {
         popTag();
         return EVAL_PAGE;
     }
-    
+
     @Override
     protected void resetState() {
         maxChar = -1;
@@ -299,7 +299,7 @@ public class FieldTag extends AbstractFieldTag {
         if (valueBeanID != null && valueBeanID.length() > 0) {
             String fieldValue = null;
             Object rawValue = null;
-            
+
             switch (theField.getType()) {
                 case FieldTypes.FILE:
                     final JahiaFileField jahiaFileField = (JahiaFileField) theField.getObject();
@@ -314,7 +314,7 @@ public class FieldTag extends AbstractFieldTag {
                     if (page != null) {
                         PageBean pageBean = new PageBean((JahiaPage) page,
                                 jData.getProcessingContext());
-                        rawValue =pageBean;
+                        rawValue = pageBean;
                         fieldValue = pageBean.getTitle();
                     }
                     break;
@@ -322,9 +322,9 @@ public class FieldTag extends AbstractFieldTag {
                 case FieldTypes.DATE:
                     fieldValue = theField.getValue();
                     rawValue = theField.getObject() != null
-                        && StringUtils.isNotEmpty(theField.getObject()
-                                .toString()) ? new Date(Long.parseLong(theField
-                        .getObject().toString())) : null;
+                            && StringUtils.isNotEmpty(theField.getObject()
+                            .toString()) ? new Date(Long.parseLong(theField
+                            .getObject().toString())) : null;
                     break;
 
                 case FieldTypes.BOOLEAN:
@@ -335,15 +335,15 @@ public class FieldTag extends AbstractFieldTag {
                 case FieldTypes.INTEGER:
                     fieldValue = theField.getValue();
                     rawValue = theField.getObject() != null ? Integer
-                        .valueOf(((Number) theField.getObject()).intValue())
-                        : null;
+                            .valueOf(((Number) theField.getObject()).intValue())
+                            : null;
                     break;
 
                 case FieldTypes.FLOAT:
                     fieldValue = theField.getValue();
                     rawValue = theField.getObject() != null ? Float
-                        .valueOf(((Number) theField.getObject()).floatValue())
-                        : null;
+                            .valueOf(((Number) theField.getObject()).floatValue())
+                            : null;
                     break;
 
                 case FieldTypes.CATEGORY:
@@ -393,8 +393,8 @@ public class FieldTag extends AbstractFieldTag {
                     }
                     break;
             }
-            
-            pageContext.setAttribute(valueBeanID, new FieldValueBean(theField.getType(), fieldValue, rawValue));            
+
+            pageContext.setAttribute(valueBeanID, new FieldValueBean(theField.getType(), fieldValue, rawValue));
         }
     }
 
@@ -541,11 +541,11 @@ public class FieldTag extends AbstractFieldTag {
         }
 
         if (textValueExists) {
-            buff.append(renderEditableContentMarkup(theField, truncatedValue, processingContext));
+            buff.append(renderEditableContentMarkup(theField, truncatedValue, processingContext, removeHtmlTags, inlineEditingActivated));
 
         } else if (defaultValueSet) {
             final String defValue = getMessage(defaultValue, defaultValue);
-            buff.append(renderEditableContentMarkup(theField, defValue, processingContext));
+            buff.append(renderEditableContentMarkup(theField, defValue, processingContext, removeHtmlTags, inlineEditingActivated));
         }
 
         if (createDiv) {
@@ -613,9 +613,11 @@ public class FieldTag extends AbstractFieldTag {
      * @param processingContext The ProcessingContext instance
      * @return the HTML with the field value
      */
-    protected String renderEditableContentMarkup(final JahiaField theField,
-                                                 final String value,
-                                                 final ProcessingContext processingContext) {
+    public static String renderEditableContentMarkup(final JahiaField theField,
+                                              final String value,
+                                              final ProcessingContext processingContext,
+                                              final boolean removeHtmlTags,
+                                              final boolean inlineEditingActivated) {
         String resultingValue;
         if (theField == null) {
             logger.warn("Field is null, ignoring contentEditable feature rendering.");
@@ -688,7 +690,7 @@ public class FieldTag extends AbstractFieldTag {
                 if (endvalue.length() > maxChar) {
                     endvalue = endvalue.substring(0, maxChar) + continueString;
                 }
-                
+
             } else {
                 //maxWord
                 //remove HTML Tags

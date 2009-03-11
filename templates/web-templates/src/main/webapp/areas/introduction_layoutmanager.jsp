@@ -43,6 +43,6 @@
         <template:include page="modules/introduction/introductionDisplay.jsp"/>
         <template:layoutManagerArea/>
         <div>
-            <a class="bottomanchor" href="introduction_layoutmanager.jsp#pagetop"><fmt:message
+            <a class="bottomanchor" href="#"><fmt:message
                     key='pageTop'/></a>
         </div>

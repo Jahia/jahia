@@ -163,9 +163,10 @@ public class ResourceBundleMarker {
         String result = this.getDefaultValue();
 
         try {
+            final String packageName = Jahia.getThreadParamBean().getSite().getTemplatePackageName();
             result = JahiaResourceBundle.getString(this.getResourceBundleID(),
-                    this.getResourceKey(), locale, Jahia.getThreadParamBean()
-                            .getSite().getTemplatePackageName(), this.getClass().getClassLoader());
+                    this.getResourceKey(), locale, packageName,
+                    new JahiaTemplatesRBLoader(Thread.currentThread().getContextClassLoader(), packageName));
         } catch (MissingResourceException mre) {
             logger.debug(mre.getMessage(), mre);
         }

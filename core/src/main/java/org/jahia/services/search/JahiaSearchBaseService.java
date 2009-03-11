@@ -2997,10 +2997,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                         .getRequiredType() == PropertyType.LONG) {
                             analyzer = numericAnalyzer;
                             indexMode = ExtendedPropertyDefinition.INDEXED_UNTOKENIZED;
-                            } else if (def.getItemDefinition() != null
-                                    && def.getType() == FieldTypes.FILE) {
-                                analyzer = numericAnalyzer;
-                                indexMode = ExtendedPropertyDefinition.INDEXED_UNTOKENIZED;
                             }
                         }
                     } else {
@@ -3065,7 +3061,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             && (def.getItemDefinition() != null
                             && def.getType() != FieldTypes.DATE
                             && def.getType() != FieldTypes.BOOLEAN
-                            && def.getType() != FieldTypes.FILE
                             && def.getType() != FieldTypes.FLOAT
                             && def.getType() != FieldTypes.INTEGER
                             && def.getType() != FieldTypes.COLOR

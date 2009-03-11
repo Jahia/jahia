@@ -53,7 +53,7 @@
             <div class="box2-text">
                 <ul class="summary"><!--start summary -->
                     <template:container id="newsRelatedContainer" displayActionMenu="false"
-                                        cacheKey="newsRelatedList${param.containerid}" displayExtensions="false">
+                                        cacheKey="newsRelatedList${param.containerid}" displayExtensions="false" displayContainerAnchor="false">
                         <c:if test="${param.containerid != newsRelatedContainer.ID}">
                             <li class="summary">
                                 <h4>

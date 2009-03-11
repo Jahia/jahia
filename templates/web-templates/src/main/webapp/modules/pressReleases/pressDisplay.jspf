@@ -1,6 +1,6 @@
 <%@ include file="../../common/declarations.jspf" %>
 
-<template:container id="pressReleaseContainer" cacheKey="resume" displayActionMenu="true"  emptyContainerDivCssClassName="mockup-pressreleases">
+<template:container id="pressReleaseContainer" cacheKey="resume" displayActionMenu="true"  emptyContainerDivCssClassName="mockup-pressreleases" displayContainerAnchor="false">
     <li class="pressRealeseItem">
             <template:field name='date' display="false" valueBeanID="datePress"/>
             <span class="pressRealeseDate"><fmt:formatDate value="${datePress.date}" pattern="dd/MM/yyyy"/></span>

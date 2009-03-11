@@ -36,7 +36,7 @@
 <%@ include file="../../declarations.jspf" %>
 <template:containerList name="peopleContainer" id="people"
                        actionMenuNamePostFix="people" actionMenuNameLabelKey="people.add">
-        <template:container id="peopleContainer" displayActionMenu="false">
+        <template:container id="peopleContainer" displayActionMenu="false" displayContainerAnchor="false">
             <ui:actionMenu contentObjectName="peopleContainer" namePostFix="people" labelKey="people">
             <ul>
                 <li>name : <template:field name="peopleFirstname"/></li>

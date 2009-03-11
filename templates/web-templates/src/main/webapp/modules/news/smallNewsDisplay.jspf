@@ -1,7 +1,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 <ul class="newsList3">
-    <template:container id="newsContainer" cacheKey="listNews" displayActionMenu="false"  displayExtensions="false">
+    <template:container id="newsContainer" cacheKey="listNews" displayActionMenu="false"  displayExtensions="false" displayContainerAnchor="false">
         <li><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}">
             <template:field name='newsTitle'/></a></li>
         <!--stop newsListItem -->

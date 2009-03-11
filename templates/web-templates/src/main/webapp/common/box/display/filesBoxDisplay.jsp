@@ -39,7 +39,7 @@
 <%@ include file="../../declarations.jspf" %>
 <template:containerList name="fileContainer" id="files" actionMenuNamePostFix="files" actionMenuNameLabelKey="files">
         <ul class="document">
-        <template:container id="fileContainer" actionMenuNamePostFix="file">
+        <template:container id="fileContainer" actionMenuNamePostFix="file" displayContainerAnchor="false">
             <template:field name="title" valueBeanID="title" display="false"/>
             <template:field name="file" valueBeanID="file" display="false"/>
             <template:field name="fileDisplayDetails" display="false" valueBeanID="fileDisplayDetails"/>

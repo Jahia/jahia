@@ -1,6 +1,6 @@
 <%@ include file="../../common/declarations.jspf" %>
 <ul class="summary">
-    <template:container id="newsContainer" cacheKey="shortNews" displayActionMenu="false" displayExtensions="false">
+    <template:container id="newsContainer" cacheKey="shortNews" displayActionMenu="false" displayExtensions="false" displayContainerAnchor="false">
         <li class="summary">
             <!--start newsListItem -->
             <template:field name="newsImage" valueBeanID="newsImage" display="false"/>

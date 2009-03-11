@@ -38,7 +38,7 @@
 <%@ include file="../declarations.jspf" %>
 <template:absoluteContainerList name="imageLink${param.id}" id="links" displayActionMenu="false" pageLevel="1">
     <ul class="${param.cssClassName}">
-        <template:container id="linkContainer" displayActionMenu="false">
+        <template:container id="linkContainer" displayActionMenu="false" displayContainerAnchor="false">
             <template:field name='linkImage' valueBeanID="linkImage" display="false"/>
             <c:if test="${empty linkImage}">
                 <c:set var="styleLi" value=""/>

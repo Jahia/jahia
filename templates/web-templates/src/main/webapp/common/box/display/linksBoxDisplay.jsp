@@ -40,7 +40,7 @@
     <template:containerList name="linkContainer" id="links"
                            actionMenuNamePostFix="links" actionMenuNameLabelKey="links.add">
         <ul>
-            <template:container id="linkContainer" displayActionMenu="false">
+            <template:container id="linkContainer" displayActionMenu="false" displayContainerAnchor="false">
                 <li>
                     <ui:actionMenu contentObjectName="linkContainer" namePostFix="link" labelKey="link">
                         <template:field name="link"/>

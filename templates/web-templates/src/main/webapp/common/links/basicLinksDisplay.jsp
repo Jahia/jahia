@@ -45,7 +45,7 @@
         <ul>
     </c:if>
     <c:if test="${requestScope.currentRequest.editMode}">
-        <template:container id="linkContainer" displayActionMenu="false">
+        <template:container id="linkContainer" displayActionMenu="false" displayContainerAnchor="false">
             <td class="${param.cssClassName}"><template:link page="link" maxChar="30"/></td>
             <td>
                 <ui:actionMenu contentObjectName="linkContainer" namePostFix="link" labelKey="link.update"/>
@@ -53,7 +53,7 @@
         </template:container>
     </c:if>
     <c:if test="${!requestScope.currentRequest.editMode}">
-        <template:container id="linkContainer" displayActionMenu="false">
+        <template:container id="linkContainer" displayActionMenu="false" displayContainerAnchor="false">
 
             <li class="${param.cssClassName}"><template:link page="link" maxChar="30"/></li>
         </template:container>

@@ -70,7 +70,7 @@
                             <td>Texte</td>
                                 <td width="50"></td>
                               </tr></thead>
-                    <template:container id="jobAnswer" displayActionMenu="false">
+                    <template:container id="jobAnswer" displayActionMenu="false" displayContainerAnchor="false">
                         <tr>
                             <td><template:field name="firstname"/></td>
                             <td><template:field name="lastname"/></td>

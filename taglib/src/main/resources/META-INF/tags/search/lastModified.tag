@@ -76,7 +76,9 @@
     </script>
 </c:if>
 <c:if test="${display}">
-    <select ${h:attributes(attributes)} name="${valueParamName}" onchange="searchDateTypeToggle(this);">
+    <c:set target="${attributes}" property="name" value="src_lastModified.type"/>
+    <select ${h:attributes(attributes)} onchange="searchDateTypeToggle(this);">
+    <c:set target="${attributes}" property="name" value="src_lastModified"/>
         <option value="anytime" ${value == 'anytime' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.anytime"/></option>
         <option value="today" ${value == 'today' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.today"/></option>
         <option value="last_week" ${value == 'last_week' ? 'selected="selected"' : ''}><fmt:message key="searchForm.date.lastWeek"/></option>

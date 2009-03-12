@@ -92,7 +92,6 @@ public class FieldTag extends AbstractFieldTag {
     private int maxWord = -1;
     private String continueString = "...";
     private String namePostFix;
-    private boolean displayUpdateFieldUrl = false;
     private boolean removeHtmlTags = false;
 
     public void setContainerName(String containerName) {
@@ -167,16 +166,6 @@ public class FieldTag extends AbstractFieldTag {
             if (display) {
                 final JspWriter out = pageContext.getOut();
                 out.print(readValue(jData, theField));
-                if (displayUpdateFieldUrl) {
-                    final String updateFieldUrl = ActionMenuURIFormatter.drawFieldUpdateUrl(theField.getContentField(),
-                            jData.getProcessingContext());
-                    final StringBuilder updateFieldLink = new StringBuilder("<div class=\"directAction\"><a onClick=\"window.open('").
-                            append(updateFieldUrl).append("', '").append(EngineOpener.ENGINE_FRAME_NAME).append("', '").
-                            append(EngineOpener.ENGINE_WINDOW_PARAMS).append("');\"><span class=\"updateField\">").
-                            append(ActionMenuLabelProvider.getLocalizedActionLabel(
-                                    getResourceBundle(), jData.getProcessingContext(), "update", namePostFix, ActionMenuLabelProvider.FIELD)).append("</span></a></div>");
-                    out.print(updateFieldLink);
-                }
             }
 
             // in the case of the application field, we must expire the container cache entry immediately, even if this
@@ -237,7 +226,6 @@ public class FieldTag extends AbstractFieldTag {
         defaultValue = null;
         name = null;
         namePostFix = null;
-        displayUpdateFieldUrl = false;
         removeHtmlTags = false;
         super.resetState();
     }

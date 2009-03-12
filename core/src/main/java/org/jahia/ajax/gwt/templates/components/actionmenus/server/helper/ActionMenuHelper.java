@@ -327,31 +327,6 @@ public class ActionMenuHelper {
                     }
                 }
 
-            // GWTJahiaAction Menu for a Field
-            } else if (FieldBean.TYPE.equals(objectType)) {
-                ContentField field = (ContentField)contentObject ;
-                // Update
-                String url = ActionMenuURIFormatter.drawFieldUpdateUrl(field, jParams) ;
-                if (url != null) {
-                    GWTJahiaAction updateField = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "update", namePostFix, ActionMenuLabelProvider.FIELD), url) ;
-                    LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_FIELD_TYPE, contentObject.getID());
-                    if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
-                        updateField.setLocked(true);
-                    }
-                    actions.add(updateField) ;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Update action : " + url);
-                    }
-                }
-                // Source
-                url = ActionMenuURIFormatter.drawFieldSourcePageReferenceUrl(field, jParams) ;
-                if (url != null) {
-                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "source", namePostFix, ActionMenuLabelProvider.FIELD), url)) ;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Source action : " + url);
-                    }
-                }
-
             // unknown object type
             } else {
                 final String msg = "Unknown 'ObjectType' value ! 'ObjectType' value should be '" +

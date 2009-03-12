@@ -4,7 +4,6 @@
 <beans>
 
     <bean id="coreEngine" class="org.jahia.engines.core.Core_Engine" />
-    <bean id="updateFieldEngine" class="org.jahia.engines.updatefield.UpdateField_Engine" />
     <bean id="addContainerEngine" class="org.jahia.engines.addcontainer.AddContainer_Engine">
         <property name="lockRegistry" ref="LockService" />
     </bean>
@@ -49,7 +48,6 @@
         <property name="engineInstances">
             <list>
                 <ref bean="coreEngine" />
-                <ref bean="updateFieldEngine" />
                 <ref bean="addContainerEngine" />
                 <ref bean="updateContainerEngine" />
                 <ref bean="deleteContainerEngine" />

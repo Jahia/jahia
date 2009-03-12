@@ -47,7 +47,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.engines.containerlistproperties.ContainerListProperties_Engine;
 import org.jahia.engines.updatecontainer.UpdateContainer_Engine;
 import org.jahia.engines.pages.PageProperties_Engine;
-import org.jahia.engines.updatefield.UpdateField_Engine;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -264,47 +263,6 @@ public class ActionMenuServiceHelper {
         }
         if (oldPageID != pageID) jParams.changePage(oldPageID);
         return result;
-    }
-
-    /**
-     * Returns the URL of the field update window
-     *
-     * @param jParams the processing context
-     * @param contentField the field to update
-     * @param screen the screen to open (can be null)
-     * @return the engine url
-     * @throws JahiaException sthg bad happened
-     */
-    public static String drawUpdateFieldLauncher(final ProcessingContext jParams, final ContentField contentField, final String screen) throws JahiaException {
-        final StringBuffer buffer = new StringBuffer();
-        buffer.append(drawUpdateFieldUrl(jParams, contentField));
-        if (screen != null && screen.length() > 0) {
-            buffer.append("&gotoscreen=");
-            buffer.append(screen);
-        }
-        return buffer.toString() ;
-    }
-
-    /**
-     * @param jParams the processing context
-     * @param contentField the field to update
-     * @return the engine url
-     * @throws JahiaException sthg bad happened
-     */
-    public static String drawUpdateFieldUrl(ProcessingContext jParams, final ContentField contentField)
-            throws JahiaException {
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
-            return ActionMenuURIFormatter.drawUrlCheckWriteAccess(jParams, UpdateField_Engine.ENGINE_NAME, contentField, false, false);
-        } else {
-            return "";
-        }
     }
 
     /**

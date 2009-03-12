@@ -207,8 +207,6 @@ public class AclDiffHelper {
                     url = ActionMenuServiceHelper.drawUpdateContainerLauncher(jParams, (ContentContainer) obj, false, 0, "rightsMgmt");
                 } else if (obj instanceof ContentPage) {
                     url = ActionMenuServiceHelper.drawPagePropertiesLauncher(jParams, false, obj.getID(), "rightsMgmt");
-                } else if (obj instanceof ContentField) {
-                    url = ActionMenuServiceHelper.drawUpdateFieldLauncher(jParams, (ContentField) obj, "rightsMgmt");
                 }
                 if (url != null) {
                     return new GWTJahiaAclDiffDetails(url, rights, inheritedRights) ;

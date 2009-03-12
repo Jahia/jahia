@@ -51,7 +51,6 @@ import org.jahia.engines.deletecontainer.DeleteContainer_Engine;
 import org.jahia.engines.pages.PageProperties_Engine;
 import org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine;
 import org.jahia.engines.updatecontainer.UpdateContainer_Engine;
-import org.jahia.engines.updatefield.UpdateField_Engine;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.EnginesRegistry;
@@ -62,7 +61,6 @@ import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.pages.ContentPage;
@@ -379,50 +377,6 @@ public class ActionMenuURIFormatter {
         return result;
     }
 
-
-    // ================================================================
-    //    FIELD METHODS
-    // ================================================================
-
-    /**
-     * Get the url to open the field edition engine.
-     *
-     * @param jParams the processing context
-     * @param contentField the field to update
-     * @return the url to open the field updater engine
-     * @throws JahiaException sthg bad happened
-     */
-    public static String drawFieldUpdateUrl(final ContentField contentField, ProcessingContext jParams) throws JahiaException {
-        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
-        if (aclService.getSiteActionPermission("engines.actions.update",
-                jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                jParams.getSiteID()) > 0 &&
-                aclService.getSiteActionPermission("engines.languages." + jParams.getLocale().toString(),
-                        jParams.getUser(),
-                        JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) > 0) {
-            return drawUrlCheckWriteAccess(jParams, UpdateField_Engine.ENGINE_NAME, contentField, false, false);
-        } else {
-            return null ;
-        }
-    }
-
-    /**
-     * Get the url to the source page where the field has been declared in case it is not already available.
-     * (only when the field reference is absolute)
-     *
-     * @param processingContext the processing context
-     * @param theField the target field
-     * @return the link to the source page
-     * @throws JahiaException sthg bad happened
-     */
-    public static String drawFieldSourcePageReferenceUrl(final ContentField theField, ProcessingContext processingContext) throws JahiaException {
-        if (theField.getPageID() != processingContext.getPageID() && (!(ServicesRegistry.getInstance().getWorkflowService().getWorkflowMode(theField) != WorkflowService.LINKED) || !(org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode() || processingContext.getSessionState().getAttribute(userSettings.WF_VISU_ENABLED) != null || org.jahia.settings.SettingsBean.getInstance().isWflowDisp()))) {
-            return processingContext.composePageUrl(theField.getPageID(), processingContext.getLocale().toString());
-        } else {
-            return null ;
-        }
-    }
 
 
 

@@ -372,8 +372,6 @@ public class TimebasedPublishingHelper {
                     url = ActionMenuServiceHelper.drawUpdateContainerLauncher(jParams, (ContentContainer) obj, false, 0, "timeBasedPublishing") ;
                 } else if (objectKey.startsWith(ContentPageKey.PAGE_TYPE)) {
                     url = ActionMenuServiceHelper.drawPagePropertiesLauncher(jParams, false, key.getIdInType(), "timeBasedPublishing") ;
-                } else if (objectKey.startsWith((ContentFieldKey.FIELD_TYPE))) {
-                    url = ActionMenuServiceHelper.drawUpdateFieldLauncher(jParams, (ContentField) obj, "timeBasedPublishing") ;
                 } else {
                     url = null ;
                 }

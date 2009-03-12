@@ -460,37 +460,39 @@ public class JCRStoreProvider {
     public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
         Session session = getSystemSession(user.getUsername());
         try {
-            Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM jmix:virtualsitesFolder", Query.SQL);
-            QueryResult qr = q.execute();
-            NodeIterator ni = qr.getNodes();
-            try {
-                while (ni.hasNext()) {
-                    Node sitesFolder = ni.nextNode();
-                    String options = "";
-                    if (sitesFolder.hasProperty("j:virtualsitesFolderConfig")) {
-                        options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
-                    }
-
-                    Node f = getPathFolder(sitesFolder, site.getSiteKey(), options);
-                    try {
-                        f.getNode(site.getSiteKey());
-                    } catch (PathNotFoundException e) {
-                        if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
-                            session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                            session.move(f.getPath()+"/site", f.getPath()+"/"+site.getSiteKey());
-                        } else {
-                            f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
+            if (session.getWorkspace().getQueryManager() != null) {
+                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM jmix:virtualsitesFolder", Query.SQL);
+                QueryResult qr = q.execute();
+                NodeIterator ni = qr.getNodes();
+                try {
+                    while (ni.hasNext()) {
+                        Node sitesFolder = ni.nextNode();
+                        String options = "";
+                        if (sitesFolder.hasProperty("j:virtualsitesFolderConfig")) {
+                            options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
                         }
 
-                        Node siteNode = f.getNode(site.getSiteKey());
-                        siteNode.setProperty("j:name", site.getSiteKey());
-                        siteNode.setProperty("j:server", site.getServerName());
+                        Node f = getPathFolder(sitesFolder, site.getSiteKey(), options);
+                        try {
+                            f.getNode(site.getSiteKey());
+                        } catch (PathNotFoundException e) {
+                            if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
+                                session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/"+ sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                session.move(f.getPath()+"/site", f.getPath()+"/"+site.getSiteKey());
+                            } else {
+                                f.addNode(site.getSiteKey(), Constants.JAHIANT_VIRTUALSITE);
+                            }
 
-                        session.save();
+                            Node siteNode = f.getNode(site.getSiteKey());
+                            siteNode.setProperty("j:name", site.getSiteKey());
+                            siteNode.setProperty("j:server", site.getServerName());
+
+                            session.save();
+                        }
                     }
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
                 }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
             }
         } finally {
             session.logout();

@@ -37,102 +37,22 @@
     If no class is specified, no listener is created. There is no default.
     -->
     <cacheManagerEventListenerFactory class="" properties=""/>
-    <!--
-    (Enable for distributed operation)
-
-    Specifies a CacheManagerPeerProviderFactory which will be used to create a
-    CacheManagerPeerProvider, which discovers other CacheManagers in the cluster.
-
-    The attributes of cacheManagerPeerProviderFactory are:
-    * class - a fully qualified factory class name
-    * properties - comma separated properties having meaning only to the factory.
-
-    Ehcache comes with a built-in RMI-based distribution system with two means of discovery of
-    CacheManager peers participating in the cluster:
-    * automatic, using a multicast group. This one automatically discovers peers and detects
-      changes such as peers entering and leaving the group
-    * manual, using manual rmiURL configuration. A hardcoded list of peers is provided at
-      configuration time.
-
-    Configuring Automatic Discovery:
-    Automatic discovery is configured as per the following example:
+    <!-- Uncomment and configure this to activate clustering
     <cacheManagerPeerProviderFactory
-                        class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
-                        properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1,
-                                    multicastGroupPort=4446, timeToLive=32"/>
-
-    Valid properties are:
-    * peerDiscovery (mandatory) - specify "automatic"
-    * multicastGroupAddress (mandatory) - specify a valid multicast group address
-    * multicastGroupPort (mandatory) - specify a dedicated port for the multicast heartbeat
-      traffic
-    * timeToLive - specify a value between 0 and 255 which determines how far the packets will propagate.
-      By convention, the restrictions are:
-      0   - the same host
-      1   - the same subnet
-      32  - the same site
-      64  - the same region
-      128 - the same continent
-      255 - unrestricted
-
-    Configuring Manual Discovery:
-    Manual discovery is configured as per the following example:
-    <cacheManagerPeerProviderFactory class=
-                          "net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
-                          properties="peerDiscovery=manual,
-                          rmiUrls=//server1:40000/sampleCache1|//server2:40000/sampleCache1
-                          | //server1:40000/sampleCache2|//server2:40000/sampleCache2"/>
-
-    Valid properties are:
-    * peerDiscovery (mandatory) - specify "manual"
-    * rmiUrls (mandatory) - specify a pipe separated list of rmiUrls, in the form
-                            //hostname:port
-
-    The hostname is the hostname of the remote CacheManager peer. The port is the listening
-    port of the RMICacheManagerPeerListener of the remote CacheManager peer.
-
-    -->
-    <!-- Uncomment this to activate clustering
-    <cacheManagerPeerProviderFactory
-            class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
-            properties="peerDiscovery=automatic,
-                        multicastGroupAddress=230.0.0.1,
-                        multicastGroupPort=4446, timeToLive=1"/>
-    -->
-    <!--
-    (Enable for distributed operation)
-
-    Specifies a CacheManagerPeerListenerFactory which will be used to create a
-    CacheManagerPeerListener, which
-    listens for messages from cache replicators participating in the cluster.
-
-    The attributes of cacheManagerPeerListenerFactory are:
-    class - a fully qualified factory class name
-    properties - comma separated properties having meaning only to the factory.
-
-    Ehcache comes with a built-in RMI-based distribution system. The listener component is
-    RMICacheManagerPeerListener which is configured using
-    RMICacheManagerPeerListenerFactory. It is configured as per the following example:
-
-    <cacheManagerPeerListenerFactory
-        class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
-        properties="hostName=fully_qualified_hostname_or_ip,
-                    port=40001,
-                    socketTimeoutMillis=120000"/>
-
-    All properties are optional. They are:
-    * hostName - the hostName of the host the listener is running on. Specify
-      where the host is multihomed and you want to control the interface over which cluster
-      messages are received. Defaults to the host name of the default interface if not
-      specified.
-    * port - the port the listener listens on. This defaults to a free port if not specified.
-    * socketTimeoutMillis - the number of ms client sockets will stay open when sending
-      messages to the listener. This should be long enough for the slowest message.
-      If not specified it defaults 120000ms.
-
-    -->
-    <!-- Uncomment this to activate clustering
-    <cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"/>
+    class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+    properties="connect=TCP_NIO(start_port=7820;bind_addr=192.168.1.100;loopback=true;recv_buf_size=20000000;send_buf_size=640000;discard_incompatible_packets=true;max_bundle_size=64000;max_bundle_timeout=30;use_incoming_packet_handler=true;enable_bundling=true;use_send_queues=false;sock_conn_timeout=300;skip_suspected_members=true;use_concurrent_stack=true):
+        TCPPING(initial_hosts=192.168.1.100[7820],192.168.1.200[7820];port_range=10;timeout=3000;num_initial_members=2):
+        MERGE2(max_interval=100000;min_interval=20000):
+FD_SOCK:
+FD(timeout=10000;max_tries=5;shun=true):
+VERIFY_SUSPECT(timeout=1500):
+pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;discard_delivered_msgs=true):
+pbcast.STABLE:
+pbcast.GMS(join_timeout=5000;shun=true;print_local_addr=true):
+VIEW_SYNC(avg_send_interval=60000):
+FC(max_credits=2000000;min_threshold=0.10):
+FRAG2(frag_size=60000)"
+    propertySeparator="::" />
     -->
     <!-- Cache configuration.
 

@@ -641,17 +641,16 @@ cluster.hibernate.multicast.port                       = 45050
 #
 ## Here your local ip address
 cluster.tcp.start.ip_address                           =   192.168.1.100
-# Here the numbers of all members in the group
+# Here the minimum numbers of members in the group to be contacted for initial membership
+#(if your cluster is higher than two nodes then upgrade this to at least 3)
 cluster.tcp.num_initial_members                        =   2
-# Here the list of all members ip and port, and local port for each of the four channel
+# Here the list of all members ip and port, and local port for each channel
 cluster.tcp.service.nodes.ip_address                   =   192.168.1.100[7840],192.168.1.200[7840]
 cluster.tcp.service.port                               =   7840
 cluster.tcp.idgenerator.nodes.ip_address               =   192.168.1.100[7850],192.168.1.200[7850]
 cluster.tcp.idgenerator.port                           =   7850
-cluster.tcp.esicontentids.nodes.ip_address             =   192.168.1.100[7860],192.168.1.200[7860]
-cluster.tcp.esicontentids.port                         =   7860
-cluster.tcp.hibernate.nodes.ip_address                 =   192.168.1.100[7870],192.168.1.200[7870]
-cluster.tcp.hibernate.port                             =   7870
+#cluster.tcp.hibernate.nodes.ip_address                 =   192.168.1.100[7870],192.168.1.200[7870]
+#cluster.tcp.hibernate.port                             =   7870
 
 # For clustered caches, we use batching to avoid sending individual
 # messages for each invalidation. Normally the messages are batched

@@ -140,6 +140,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     public void stop() throws JahiaException {
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     public JCRStoreProvider getMainStoreProvider() {
         return mountPoints.get("/");
     }
@@ -216,11 +220,15 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     }
 
     public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
-        getMainStoreProvider().deployNewSite(site, user);
+        for (JCRStoreProvider provider : providers.values()) {
+            provider.deployNewSite(site, user);
+        }
     }
 
     public void deployNewUser(String username) throws RepositoryException {
-        getMainStoreProvider().deployNewUser(username);
+        for (JCRStoreProvider provider : providers.values()) {
+            provider.deployNewUser(username);
+        }
     }
 
     public void addProvider(String key, String mountPoint, JCRStoreProvider p) {
@@ -243,28 +251,6 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         }
     }
 
-    public JCRStoreProvider mount(Class<? extends JCRStoreProvider> providerClass, String mountPoint, String key, Map<String, Object> params) throws RepositoryException {
-        JCRStoreProvider provider = null;
-        try {
-            provider = providerClass.newInstance();
-            provider.setUserManagerService(getMainStoreProvider().getUserManagerService());
-            provider.setGroupManagerService(getMainStoreProvider().getGroupManagerService());
-            provider.setSitesService(getMainStoreProvider().getSitesService());
-            provider.setService(this);
-            provider.setKey(key);
-            provider.setMountPoint(mountPoint);
-            provider.setDynamicallyMounted(true);
-            for (String k : params.keySet()) {
-                PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(providerClass, k);
-                pd.getWriteMethod().invoke(provider, params.get(k));
-            }
-            provider.start();
-            return provider;
-        } catch (Exception e) {
-            throw new RepositoryException(e);
-        }
-    }
-
     public boolean unmount(JCRStoreProvider p) {
         if (p != null && p.isDynamicallyMounted()) {
             p.stop();
@@ -273,6 +259,9 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         return false;
     }
 
+    /**
+     * @deprecated Use getThreadSession().getNode()
+     */
     public JCRNodeWrapper getFileNode(String path, JahiaUser user) {
         if (path != null) {
             if (path.startsWith("/")) {

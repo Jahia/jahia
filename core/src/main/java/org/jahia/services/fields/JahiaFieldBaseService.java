@@ -40,7 +40,10 @@ import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.events.JahiaEvent;
-import org.jahia.data.fields.*;
+import org.jahia.data.fields.FieldTypes;
+import org.jahia.data.fields.JahiaField;
+import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.data.fields.LoadFlags;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaFieldsDataManager;
@@ -55,11 +58,8 @@ import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -1555,25 +1555,6 @@ public class JahiaFieldBaseService extends JahiaFieldService {
         logger.debug (
                 "Returning JahiaField facade for field " + contentField.getID () + " using language code=" + jahiaField.getLanguageCode ());
         return jahiaField;
-    }
-
-    public void serializeNonContainerFieldsToXML (XmlWriter xmlWriter,
-                                                  XMLSerializationOptions
-            xmlSerializationOptions,
-                                                  int pageID,
-                                                  ProcessingContext processingContext)
-            throws IOException {
-        try {
-            // for each field, we check if the user has write+admin access to it,
-            // if so we can validate it
-            for (int id : dataManager.getOnlyActiveNonContainerFieldIdsInPage(pageID)) {
-                ContentField theField = ContentField.getField (id);
-                theField.serializeToXML (xmlWriter, xmlSerializationOptions, processingContext);
-            }
-        } catch (JahiaException je) {
-
-        }
-
     }
 
     /**

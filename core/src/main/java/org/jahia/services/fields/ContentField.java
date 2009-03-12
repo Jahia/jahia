@@ -33,10 +33,6 @@
 
 package org.jahia.services.fields;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
-
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.content.*;
@@ -64,21 +60,13 @@ import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.ActivationTestResults;
-import org.jahia.services.version.ContentObjectEntryState;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.version.EntrySaveRequest;
-import org.jahia.services.version.EntryStateable;
-import org.jahia.services.version.IsValidForActivationResults;
-import org.jahia.services.version.JahiaSaveVersion;
-import org.jahia.services.version.JahiaVersionService;
-import org.jahia.services.version.RestoreVersionStateModificationContext;
-import org.jahia.services.version.RestoreVersionTestResults;
-import org.jahia.services.version.StateModificationContext;
+import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowEvent;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 import org.jahia.utils.LanguageCodeConverters;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * This class represents a Field in Jahia (it should replace JahiaFields in the
@@ -1054,33 +1042,6 @@ public abstract class ContentField extends ContentObject
 
 
     /**
-     * This is called on all content fields to have them serialized only their
-     * specific part. The actual field metadata seriliazing is handled by the
-     * ContentField class. This method is called multiple times per field
-     * according to the workflow state, languages and versioning entries we
-     * want to serialize.
-     *
-     * @param xmlWriter               the XML writer object in which to write the XML output
-     * @param xmlSerializationOptions options used to activate/bypass certain
-     *                                output of elements.
-     * @param entryState              the ContentFieldEntryState for which to generate the
-     *                                XML export.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException in case there was an error writing to the Writer
-     *                     output object.
-     */
-    protected abstract void serializeContentToXML (XmlWriter xmlWriter,
-                                                   XMLSerializationOptions xmlSerializationOptions,
-                                                   ContentObjectEntryState entryState,
-                                                   ProcessingContext processingContext)
-            throws IOException;
-
-    /**
      * Called at the beginning of a purge operation and must remove all the
      * field related data, recursively if necessary.
      * throws JahiaException if an exception is thrown during the purging of
@@ -1765,71 +1726,6 @@ public abstract class ContentField extends ContentObject
         if (entryStates != null) {
             this.versioningEntryStates = entryStates;
         }
-    }
-
-    /**
-     * Writes an XML serialization version of this content field, according to
-     * the seriliazation options specified. This is very useful for exporting
-     * Jahia content to external systems.
-     *
-     * @param xmlWriter               the XML writer object in which to output the XML
-     *                                exported data
-     * @param xmlSerializationOptions the options that activate/deactivate
-     *                                parts of the XML exported data.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException upon error writing to the XMLWriter
-     */
-    public synchronized void serializeToXML (XmlWriter xmlWriter,
-                                             XMLSerializationOptions xmlSerializationOptions,
-                                             ProcessingContext processingContext) throws IOException {
-
-        // quick & dirty implementation that serializes the active and staging
-        // entries.
-
-        int fieldDefID = getFieldDefID ();
-        String name = null;
-        try {
-            JahiaFieldDefinition definition = JahiaFieldDefinitionsRegistry.getInstance ()
-                    .getDefinition (fieldDefID);
-            name = definition.getName ();
-        } catch (JahiaException je) {
-            logger.debug (
-                    "Error while accessing field definition registry for field " + getID (),
-                    je);
-        }
-
-        xmlWriter.writeEntity ("contentField");
-        if (name != null) {
-            xmlWriter.writeAttribute ("name", name);
-        }
-        xmlWriter.writeAttribute ("type", this.getClass ().getName ());
-        xmlWriter.writeAttribute ("shared", Boolean.valueOf(isShared ()).toString ());
-
-        /**
-         * @todo here we should normally include code that will check for the
-         * various options that can concern all field types, such as export of
-         * ACL, different workflow states, etc...
-         */
-
-        for (ContentObjectEntryState entryState : activeAndStagingEntryStates) {
-            xmlWriter.writeEntity ("entry").
-                    writeAttribute ("language", entryState.getLanguageCode ()).
-                    writeAttribute ("workflowState",
-                            Integer.toString (entryState.getWorkflowState ())).
-                    writeAttribute ("versionID", Long.toString (entryState.getVersionID ()));
-
-            serializeContentToXML (xmlWriter, xmlSerializationOptions, entryState, processingContext);
-
-            xmlWriter.endEntity ();
-        }
-
-        xmlWriter.endEntity ();
-
     }
 
     /**

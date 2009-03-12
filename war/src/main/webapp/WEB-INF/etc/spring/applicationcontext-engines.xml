@@ -14,7 +14,6 @@
     </bean>
     <bean id="restoreContainerEngine" class="org.jahia.engines.restorelivecontainer.RestoreLiveContainer_Engine" />
     <bean id="selectDataSourceEngine" class="org.jahia.engines.selectdatasource.SelectDataSource_Engine" />
-    <bean id="xmlSourceEngine" class="org.jahia.engines.xmlsource.XmlSource" />
     <bean id="viewDataSourceIDEngine" class="org.jahia.engines.viewdatasourceid.ViewDataSourceID_Engine" />
     <bean id="searchEngine" class="org.jahia.engines.search.Search_Engine" />
     <bean id="loginEngine" class="org.jahia.engines.login.Login_Engine" />

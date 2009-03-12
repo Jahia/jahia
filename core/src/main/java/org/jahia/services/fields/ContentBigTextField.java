@@ -61,12 +61,9 @@ import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 
-import java.io.IOException;
 import java.util.*;
 
 
@@ -644,53 +641,6 @@ public class ContentBigTextField extends ContentField {
      */
     public boolean isShared() {
         return false;
-    }
-
-    /**
-     * This is called on all content fields to have them serialized only their
-     * specific part. The actual field metadata seriliazing is handled by the
-     * ContentField class. This method is called multiple times per field
-     * according to the workflow state, languages and versioning entries we
-     * want to serialize.
-     *
-     * @param xmlWriter               the XML writer object in which to write the XML output
-     * @param xmlSerializationOptions options used to activate/bypass certain
-     *                                output of elements.
-     * @param entryState              the ContentFieldEntryState for which to generate the
-     *                                XML export.
-     * @param processingContext       specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     * @throws IOException in case there was an error writing to the Writer
-     *                     output object.
-     */
-    protected void serializeContentToXML(final XmlWriter xmlWriter,
-                                         final XMLSerializationOptions xmlSerializationOptions,
-                                         final ContentObjectEntryState entryState,
-                                         final ProcessingContext processingContext) throws IOException {
-        try {
-            final JahiaFieldDefinition theDef = JahiaFieldDefinitionsRegistry.
-                    getInstance().getDefinition(this.getFieldDefID());
-
-            String result = ServicesRegistry.getInstance()
-                    .getJahiaTextFileService()
-                    .loadBigTextValue(this.getSiteID(),
-                            this.getPageID(),
-                            this.getID(),
-                            theDef.getDefaultValue(),
-                            entryState.getVersionID(),
-                            entryState.getWorkflowState(),
-                            entryState.getLanguageCode());
-
-            if (result == null || result.equals("<empty>")) {
-                result = "";
-            }
-            xmlWriter.writeCData(result);
-        } catch (JahiaException je) {
-            logger.debug("Error while serializing bigtext to XML : ", je);
-        }
     }
 
     protected void purgeContent()

@@ -64,8 +64,6 @@ import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 
 import javax.jcr.RepositoryException;
 import java.io.IOException;
@@ -1101,48 +1099,6 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
         }
         return context.getSite().isMixLanguagesActive();
     }
-
-    /**
-     * Writes an XML serialization version of this content page, according to
-     * the seriliazation options specified. This is very useful for exporting
-     * Jahia content to external systems.
-     *
-     * @param xmlWriter               the XML writer object in which to output the XML
-     *                                exported data
-     * @param xmlSerializationOptions the options that activate/deactivate
-     *                                parts of the XML exported data.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException upon error writing to the XMLWriter
-     * @todo FIXME : only container lists output for the moment. Still to be
-     * done are page fields.
-     */
-    public synchronized void serializeToXML (XmlWriter xmlWriter,
-                                             XMLSerializationOptions xmlSerializationOptions,
-                                             ProcessingContext processingContext) throws IOException {
-        try {
-            ContentPage contentPage = ServicesRegistry.getInstance ().getJahiaPageService ()
-                    .lookupContentPage (getHomePageID (), true);
-            xmlWriter.writeEntity ("contentSite").
-                    writeAttribute ("name", getSiteKey ()).
-                    writeAttribute ("title", getTitle ());
-            if (contentPage != null) {
-                contentPage.serializeToXML (xmlWriter, new XMLSerializationOptions (),
-                        processingContext);
-            } else {
-                xmlWriter.writeEntityWithText ("error",
-                        "Page " + getHomePageID () + " not found");
-            }
-            xmlWriter.endEntity ();
-        } catch (JahiaException je) {
-            logger.debug ("Error while serializing site " + getID () + " to XML", je);
-        }
-    }
-
 
     public void setSettings (Properties props) {
         this.mSettings = props != null ? props : new Properties();

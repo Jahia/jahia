@@ -71,8 +71,6 @@ import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.version.StateModificationContext;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 
 public abstract class JahiaContainersService extends JahiaService {
 
@@ -965,82 +963,6 @@ public abstract class JahiaContainersService extends JahiaService {
         int id, JahiaUser user, String languageCode,
         StateModificationContext stateModifContext)
         throws JahiaException;
-
-    /**
-     * Serializes all the container lists on a page and their content to an
-     * XML writer object.
-     * This method will go into every container list on the page, including
-     * the containers, sub container lists and fields, to serializes the whole
-     * thing to XML.
-     *
-     * @param xmlWriter               the XML writer object to output the serialization into
-     * @param xmlSerializationOptions various options to control the details
-     *                                outputed in the XML file
-     * @param pageID                  the page ID for which to output the container lists and
-     *                                their content.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException thrown if an error occurs while writing to the
-     *                     XML writer.
-     */
-    public abstract void serializePageContainerListsToXML (XmlWriter xmlWriter,
-        XMLSerializationOptions xmlSerializationOptions,
-        int pageID, ProcessingContext processingContext)
-        throws IOException;
-
-    /**
-     * Serialize a container list and all of it's sub data into XML. This
-     * serializes everything according to the options specified, but it DOES
-     * always include containers sub container lists.
-     *
-     * @param xmlWriter               the XML writer object to output the serialization into
-     * @param xmlSerializationOptions various options to control the details
-     *                                outputed in the XML file
-         * @param containerListID         the identifier to the container list to be
-     *                                serialized to XML.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException thrown if an error occurs while writing to the
-     *                     XML writer.
-     */
-    public abstract void serializeContainerListToXML (XmlWriter xmlWriter,
-        XMLSerializationOptions xmlSerializationOptions,
-        int containerListID, ProcessingContext processingContext)
-        throws IOException;
-
-    /**
-     * Serialize a container and all of it's sub data into XML. This
-     * serializes everything according to the options specified, but it DOES
-     * always include containers sub container lists.
-     *
-     * @param xmlWriter               the XML writer object to output the serialization into
-     * @param xmlSerializationOptions various options to control the details
-     *                                outputed in the XML file
-     * @param containerID             the identifier to the container to be
-     *                                serialized to XML.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException thrown if an error occurs while writing to the
-     *                     XML writer.
-     */
-    public abstract void serializeContainerToXML (XmlWriter xmlWriter,
-                                                  XMLSerializationOptions
-                                                  xmlSerializationOptions,
-                                                  int containerID,
-                                                  ProcessingContext processingContext)
-        throws IOException;
 
     /**
      * Retrieves all the top level container lists IDs for a given page and

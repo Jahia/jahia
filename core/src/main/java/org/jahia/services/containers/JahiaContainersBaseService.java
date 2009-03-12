@@ -117,7 +117,6 @@ import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.xml.XMLSerializationOptions;
 import org.jahia.utils.xml.XmlWriter;
 
 public class JahiaContainersBaseService extends JahiaContainersService {
@@ -1154,110 +1153,6 @@ public class JahiaContainersBaseService extends JahiaContainersService {
             activationTestResults.merge(curTestResults);
         }
         return activationTestResults;
-
-    }
-
-    public synchronized void serializePageContainerListsToXML(XmlWriter
-            xmlWriter,
-                                                              XMLSerializationOptions xmlSerializationOptions,
-                                                              int pageID, ProcessingContext processingContext)
-            throws IOException {
-        List<Integer> listIDs = containerListManager.getPageTopLevelContainerListIDs(pageID,
-                EntryLoadRequest.CURRENT);
-        // for each container, we check if the user has write+admin access to it,
-        // if so we can validate it
-        for (int curContainerListID : listIDs) {
-            serializeContainerListToXML(xmlWriter, xmlSerializationOptions,
-                    curContainerListID, processingContext);
-        }
-    }
-
-    public synchronized void serializeContainerListToXML(XmlWriter xmlWriter,
-                                                         XMLSerializationOptions xmlSerializationOptions,
-                                                         int containerListID,
-                                                         ProcessingContext processingContext)
-            throws IOException {
-
-        try {
-
-            JahiaContainerList containerList = loadContainerListInfo(containerListID, EntryLoadRequest.CURRENT);
-            if (containerList == null) {
-                logger.debug("Unable to load container list " + containerListID +
-                        ", ignoring...");
-                return;
-            }
-
-            xmlWriter.writeEntity("contentContainerList").
-                    writeAttribute("name", containerList.getDefinition().getName());
-
-            List<Integer> ctnIDs = new ArrayList<Integer>(containerManager.getContainerIdsInContainerList(containerListID,
-                    EntryLoadRequest.CURRENT,
-                    false));
-            // for each container, we check if the user has write+admin access to it,
-            // if so we can validate it
-            for (int curContainerID : ctnIDs) {
-                serializeContainerToXML(xmlWriter, xmlSerializationOptions,
-                        curContainerID, processingContext);
-
-            }
-
-            xmlWriter.endEntity();
-
-        } catch (JahiaException je) {
-            logger.debug("Error while exporting container list " +
-                    containerListID + " to XML : ", je);
-        }
-
-    }
-
-    public synchronized void serializeContainerToXML(XmlWriter xmlWriter,
-                                                     XMLSerializationOptions xmlSerializationOptions,
-                                                     int containerID, ProcessingContext processingContext)
-            throws IOException {
-
-        /**
-         * todo FIXME : only handles serialization of active container data
-         */
-
-        try {
-
-            // quick & dirty implementation that serializes the active and staging
-            // entries.
-            JahiaContainer theContainer = loadContainerInfo(containerID,
-                    EntryLoadRequest.CURRENT);
-            if (theContainer == null) {
-                logger.debug("Unable to load container " + containerID +
-                        ", ignoring...");
-                return;
-            }
-
-            xmlWriter.writeEntity("contentContainer");
-
-            // we must now check to see if this container has fields that
-            // don't exist in an active version.
-
-            // we might want to cache the next field id retrieval code ?
-            for (int fieldID : getFieldIDsInContainer(containerID,
-                    EntryLoadRequest.CURRENT)) {
-                ContentField currentField = ContentField.getField(fieldID);
-                currentField.serializeToXML(xmlWriter, xmlSerializationOptions, processingContext);
-            }
-
-            // now we must load and display all the sub container lists.
-            List<Integer> subCtnListIDs = containerListManager.getSubContainerListIDs(containerID, EntryLoadRequest.CURRENT);
-
-            for (int i = 0; i < subCtnListIDs.size(); i++) {
-                int curSubContainerListID = ((Integer) subCtnListIDs.get(i)).intValue();
-                serializeContainerListToXML(xmlWriter, xmlSerializationOptions,
-                        curSubContainerListID, processingContext);
-            }
-
-            xmlWriter.endEntity();
-
-        } catch (JahiaException je) {
-            logger.debug("Error while serializing container " + containerID +
-                    " to XML : ", je);
-        }
 
     }
 

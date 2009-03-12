@@ -48,19 +48,12 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.version.ActivationTestResults;
-import org.jahia.services.version.ContentObjectEntryState;
-import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.version.JahiaSaveVersion;
-import org.jahia.services.version.StateModificationContext;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
+import org.jahia.services.version.*;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.Map;
 
 public abstract class JahiaFieldService extends JahiaService {
 
@@ -546,29 +539,6 @@ public abstract class JahiaFieldService extends JahiaService {
      */
     public abstract List<Integer> getAclIDs (int siteID)
             throws JahiaException;
-
-    /**
-     * Serializes in XML format all the fields on a page that are not within
-     * containers.
-     *
-     * @param xmlWriter               the XML writer in which we ouput the XML
-     * @param xmlSerializationOptions the options that allow us to modify the
-     *                                behavior of the XML output.
-     * @param pageID                  the page ID for which to serialize the non container
-     *                                fields.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws IOException occurs if there was an error writing to the
-     *                     XML writer.
-     */
-    public abstract void serializeNonContainerFieldsToXML (XmlWriter xmlWriter,
-                                                           XMLSerializationOptions xmlSerializationOptions, int pageID,
-                                                           ProcessingContext processingContext)
-            throws IOException;
 
     /**
      * Compose the file absolute path to a flat file containing the default value for a field definition.

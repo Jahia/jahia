@@ -35,8 +35,8 @@ package org.jahia.services.fields;
 
 import org.jahia.content.ContentFieldKey;
 import org.jahia.content.ContentObject;
-import org.jahia.content.ContentPageKey;
 import org.jahia.content.ContentObjectKey;
+import org.jahia.content.ContentPageKey;
 import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
@@ -48,8 +48,6 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
 import org.jahia.services.workflow.WorkflowService;
-import org.jahia.utils.xml.XMLSerializationOptions;
-import org.jahia.utils.xml.XmlWriter;
 import org.jahia.utils.LanguageCodeConverters;
 
 import java.util.*;
@@ -494,54 +492,6 @@ public class ContentPageField extends ContentField {
             contentPage.deleteEntry (deleteEntryState);
         }
         super.deleteEntry (deleteEntryState);
-    }
-
-    /**
-     * This is called on all content fields to have them serialized only their
-     * specific part. The actual field metadata seriliazing is handled by the
-     * ContentField class. This method is called multiple times per field
-     * according to the workflow state, languages and versioning entries we
-     * want to serialize.
-     *
-     * @param xmlWriter               the XML writer object in which to write the XML output
-     * @param xmlSerializationOptions options used to activate/bypass certain
-     *                                output of elements.
-     * @param entryState              the ContentFieldEntryState for which to generate the
-     *                                XML export.
-     * @param processingContext               specifies context of serialization, such as current
-     *                                user, current request parameters, entry load request, URL generation
-     *                                information such as ServerName, ServerPort, ContextPath, etc... URL
-     *                                generation is an important part of XML serialization and this is why
-     *                                we pass this parameter down, as well as user rights checking.
-     *
-     * @throws java.io.IOException in case there was an error writing to the Writer
-     *                     output object.
-     */
-    protected void serializeContentToXML (XmlWriter xmlWriter,
-                                          XMLSerializationOptions xmlSerializationOptions,
-                                          ContentObjectEntryState entryState,
-                                          ProcessingContext processingContext) throws java.io.IOException {
-
-        try {
-            ContentPage contentPage = getContentPage (entryState);
-            if (contentPage == null) {
-                // this could happen if the database had a jahia_link_only value
-                logger.debug (
-                        "Cannot delete page from jahia_pages_data table because it is a uninitialized page value=" + getDBValue (
-                                entryState));
-                xmlWriter.writeText ("Error while serializing page " + getID () +
-                        " to XML : Cannot delete page from jahia_pages_data table because it is a uninitialized page value=" +
-                        getDBValue (entryState));
-                return;
-            }
-            contentPage.serializeToXML (xmlWriter, xmlSerializationOptions, processingContext);
-        } catch (JahiaException je) {
-            logger.debug ("Error while serializing page " + getID () + " to XML", je);
-            xmlWriter.writeText ("Error while serializing page " + getID () + " to XML");
-        } catch (NumberFormatException nfe) {
-            logger.debug ("Error while serializing page " + getID () + " to XML", nfe);
-            xmlWriter.writeText ("Error while serializing page " + getID () + " to XML");
-        }
     }
 
     protected Map<String, Integer> getContentLanguageStates (ContentObjectEntryState entryState) {

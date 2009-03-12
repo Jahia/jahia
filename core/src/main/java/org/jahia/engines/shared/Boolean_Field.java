@@ -223,16 +223,6 @@ public class Boolean_Field implements FieldSubEngine
             String localSwitchUrl = "ReloadEngine('localswitch" + EngineParams.VALUE_TOKEN + "yes')";
             engineMap.put( "localSwitchUrl", localSwitchUrl );
 
-            String dataSourceConnectUrl = "";
-            JahiaEngine dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine( "selectdatasource" );
-            dataSourceConnectUrl = dsEngine.renderLink( jParams, theField );
-            engineMap.put( "dataSourceConnectUrl", dataSourceConnectUrl );
-
-            String dataSourceIDUrl = "";
-            dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine( "viewdatasourceid" );
-            dataSourceIDUrl = dsEngine.renderLink( jParams, theField );
-            engineMap.put( "dataSourceIDUrl", dataSourceIDUrl );
-
             theField.setValue( FormDataManager.formEncode(theField.getValue()) );
             output = ServicesRegistry.getInstance().getJahiaFetcherService().fetchServlet( (ParamBean) jParams, JSP_FILE );
         } else {

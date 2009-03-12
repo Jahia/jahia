@@ -352,14 +352,6 @@ public class SmallText_Field implements FieldSubEngine {
             String localSwitchUrl = "ReloadEngine('localswitch" + EngineParams.VALUE_TOKEN + "yes')";
             engineMap.put("localSwitchUrl", localSwitchUrl);
 
-            JahiaEngine dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine("selectdatasource");
-            String dataSourceConnectUrl = dsEngine.renderLink(jParams, theField);
-            engineMap.put("dataSourceConnectUrl", dataSourceConnectUrl);
-
-            dsEngine = (JahiaEngine) EnginesRegistry.getInstance().getEngine("viewdatasourceid");
-            String dataSourceIDUrl = dsEngine.renderLink(jParams, theField);
-            engineMap.put("dataSourceIDUrl", dataSourceIDUrl);
-
             boolean isIE = false;
             String userAgent = jParams.getUserAgent();
             if (userAgent != null) {

@@ -163,9 +163,6 @@ public class ProcessingContext {
 
     public static final String SITE_KEY_PARAMETER = "site";
     public static final String PAGE_ID_PARAMETER = "pid"; // refers to the same as current page or new requested page
-    public static final String CONTAINERLIST_ID_PARAMETER = "clid";
-    public static final String CONTAINER_ID_PARAMETER = "cid";
-    public static final String FIELD_ID_PARAMETER = "fid";
     public static final String APPUNIQUE_ID_PARAMETER = "appid";
 
     public static final String OPERATION_MODE_PARAMETER = "op";
@@ -236,9 +233,6 @@ public class ProcessingContext {
     protected long startTime = 0;
     protected int httpMethod = 0;
     protected String engineName = "";
-    protected int fieldID = 0;
-    protected int containerID = 0;
-    protected int containerListID = 0;
     protected String opMode = "";
     protected JahiaPage thePage;
     protected ContentPage contentPage;
@@ -486,10 +480,6 @@ public class ProcessingContext {
             resolveUser();
 
             if (getSite() != null) {
-                setFieldIDIfAvailable();
-                setContainerIDIfAvailable();
-                setContainerListIDIfAvailable();
-
                 final int pageID = resolvePageID();
 
                 resolveOpMode(getSessionState());
@@ -556,45 +546,6 @@ public class ProcessingContext {
         if (getParameter(ENGINE_NAME_PARAMETER) == null)
             return;
         this.engineName = getParameter(ENGINE_NAME_PARAMETER);
-    }
-
-    protected void setContainerListIDIfAvailable() {
-        final String containerListIDStr = getParameter(CONTAINERLIST_ID_PARAMETER);
-        if (containerListIDStr != null) {
-            try {
-                this.setContainerListID(Integer.parseInt(containerListIDStr));
-            } catch (NumberFormatException nfe) {
-                logger.warn("Invalid container list ID [" + containerListIDStr
-                        + "] in request, ignoring...");
-                this.setContainerListID(0);
-            }
-        }
-    }
-
-    protected void setFieldIDIfAvailable() {
-        final String fieldIDStr = getParameter(FIELD_ID_PARAMETER);
-        if (fieldIDStr != null) {
-            try {
-                this.setFieldID(Integer.parseInt(fieldIDStr));
-            } catch (NumberFormatException nfe) {
-                logger.warn("Invalid field ID [" + fieldIDStr
-                        + "] in request, ignoring...");
-                this.setFieldID(0);
-            }
-        }
-    }
-
-    protected void setContainerIDIfAvailable() {
-        final String containerIDStr = getParameter(CONTAINER_ID_PARAMETER);
-        if (containerIDStr != null) {
-            try {
-                this.setContainerID(Integer.parseInt(containerIDStr));
-            } catch (NumberFormatException nfe) {
-                logger.warn("Invalid container ID [" + containerIDStr
-                        + "] in request, ignoring...");
-                this.setContainerID(0);
-            }
-        }
     }
 
     /**
@@ -677,18 +628,6 @@ public class ProcessingContext {
 
     public String getUserAgent() {
         return userAgent;
-    }
-
-    public int getFieldID() {
-        return fieldID;
-    }
-
-    public int getContainerID() {
-        return containerID;
-    }
-
-    public int getContainerListID() {
-        return containerListID;
     }
 
     public int getSiteID() {
@@ -1423,9 +1362,6 @@ public class ProcessingContext {
         if (ProcessingContext.ENGINE_NAME_PARAMETER.equals(str)
                 || ProcessingContext.SITE_KEY_PARAMETER.equals(str)
                 || ProcessingContext.PAGE_ID_PARAMETER.equals(str)
-                || ProcessingContext.CONTAINERLIST_ID_PARAMETER.equals(str)
-                || ProcessingContext.CONTAINER_ID_PARAMETER.equals(str)
-                || ProcessingContext.FIELD_ID_PARAMETER.equals(str)
                 || ProcessingContext.APPUNIQUE_ID_PARAMETER.equals(str)
                 || ProcessingContext.OPERATION_MODE_PARAMETER.equals(str)
                 || ProcessingContext.ENTRY_STATE_PARAMETER.equals(str)
@@ -1691,36 +1627,6 @@ public class ProcessingContext {
 
     // -------------------------------------------------------------------------
     // EV 20 Nov. 2000 : Original implementation
-    // FH 22 Jan. 2001 : - Changed += operation on a String to a StringBuffer.
-    // - added error check.
-    // MJ 29 May. 2001 : get http path from request instead of settings,
-
-    /**
-     * Compose an URL by adding default parameters (like the page id, the session id, ...) to the passed in parameter string.
-     *
-     * @param params String of parameters.
-     * @return Return a valid URL by adding default parameters. Return an non-null empty string on any error.
-     */
-    public String composeUrl(final String params) throws JahiaException {
-        return composeUrl(
-                getContentPage() != null ? getPageURLKeyPart(getContentPage().getID()) : "",
-                getContentPage() != null ? getPageURLPart(getContentPage().getID()) : "", 0, null, null, params);
-    }
-
-    /**
-     * Compose an URL by adding default parameters (like the page id, the session id, ...) to the passed in parameter string.
-     *
-     * @param pageUrlKey the url key of the page
-     * @param params     String of parameters.
-     * @return Return a valid URL by adding default parameters. Return an non-null empty string on any error.
-     */
-    public String composeUrl(final String pageUrlKey, final String params)
-            throws JahiaException {
-        return composeUrl(pageUrlKey, "", 0, null, null, params);
-    } // end composeUrl
-
-    // -------------------------------------------------------------------------
-    // EV 20 Nov. 2000 : Original implementation
     // FH 22 Jan. 2001 : Changed += operation on a String to a StringBuffer.
     // MJ 29 May. 2001 : get http path from request instead of settings,
     // MJ 24 Jul. 2001 : dirty hack to hide catalina bug in HttpServletResponse
@@ -1898,7 +1804,7 @@ public class ProcessingContext {
      */
     public String composeEngineUrl(final String theEngineName)
             throws JahiaException {
-        return composeEngineUrl(theEngineName, null, null, 0);
+        return composeEngineUrl(theEngineName, null, null);
     }
 
     // -------------------------------------------------------------------------
@@ -1911,7 +1817,7 @@ public class ProcessingContext {
      */
     public String composeEngineUrl(final String theEngineName,
                                    final String params) throws JahiaException {
-        return composeEngineUrl(theEngineName, params, null, 0);
+        return composeEngineUrl(theEngineName, null, params);
     }
 
     /**
@@ -1926,23 +1832,6 @@ public class ProcessingContext {
     public String composeEngineUrl(final String theEngineName,
                                    final Properties extraJahiaParams, final String params)
             throws JahiaException {
-        return composeEngineUrl(theEngineName, params, extraJahiaParams, 0);
-    }
-
-    /**
-     * composeEngineUrl NK compose an engine url with the field id information
-     */
-    public String composeEngineUrl(final String theEngineName,
-                                   final String params, final int aFieldID) throws JahiaException {
-        return composeEngineUrl(theEngineName, params, null, aFieldID);
-    }
-
-    /**
-     * composeEngineUrl
-     */
-    private String composeEngineUrl(final String theEngineName,
-                                    final String params, final Properties extraJahiaParams,
-                                    final int aFieldID) throws JahiaException {
         final StringBuffer theUrl = new StringBuffer();
         theUrl.append(getJahiaCoreHttpPath());
 
@@ -1960,10 +1849,6 @@ public class ProcessingContext {
                     || !extraJahiaParams.containsKey(PAGE_ID_PARAMETER)) {
                 theUrl.append(getPageURLPart(getContentPage().getID()));
             }
-        }
-
-        if (aFieldID > 0) {
-            theUrl.append(getFieldURLPart(aFieldID));
         }
 
         if (extraJahiaParams != null) {
@@ -2661,23 +2546,6 @@ public class ProcessingContext {
             }
         }
         return pageURLKeysPartBuf.toString();
-    }
-
-    // -------------------------------------------------------------------------
-    // NK
-    protected String getContainerListURLPart(final int id) {
-        return condAppendURL(CONTAINERLIST_ID_PARAMETER, Integer.toString(id));
-
-    }
-
-    protected String getContainerURLPart(final int id) {
-        return condAppendURL(CONTAINER_ID_PARAMETER, Integer.toString(id));
-
-    }
-
-    protected String getFieldURLPart(final int id) {
-        return condAppendURL(FIELD_ID_PARAMETER, Integer.toString(id));
-
     }
 
     // -------------------------------------------------------------------------
@@ -3522,18 +3390,6 @@ public class ProcessingContext {
 
     public void setEngineName(final String anEngineName) {
         this.engineName = anEngineName;
-    }
-
-    public void setFieldID(final int aFieldID) {
-        this.fieldID = aFieldID;
-    }
-
-    public void setContainerID(final int aContainerID) {
-        this.containerID = aContainerID;
-    }
-
-    public void setContainerListID(final int aContainerListID) {
-        this.containerListID = aContainerListID;
     }
 
     public String getOpMode() {

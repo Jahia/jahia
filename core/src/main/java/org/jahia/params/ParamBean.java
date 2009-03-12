@@ -406,10 +406,6 @@ public class ParamBean extends ProcessingContext {
             setUserAgent(resolveUserAgent());
 
             if (getSite() != null) {
-                setFieldIDIfAvailable();
-                setContainerIDIfAvailable();
-                setContainerListIDIfAvailable();
-
                 final int pageID = resolvePageID();
 
 //                if (getContentPage() == null) {

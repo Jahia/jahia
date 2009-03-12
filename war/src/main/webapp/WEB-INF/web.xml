@@ -507,14 +507,14 @@
         <load-on-startup>99</load-on-startup>
     </servlet>
 
-    <servlet id="abdera">
-        <servlet-name>Abdera</servlet-name>
-        <servlet-class>org.apache.abdera.spring.SpringAbderaServlet</servlet-class>
-        <init-param>
-            <param-name>providerBeanName</param-name>
-            <param-value>abdera</param-value>
-        </init-param>
-    </servlet>
+    <!--<servlet id="abdera">-->
+        <!--<servlet-name>Abdera</servlet-name>-->
+        <!--<servlet-class>org.apache.abdera.spring.SpringAbderaServlet</servlet-class>-->
+        <!--<init-param>-->
+            <!--<param-name>providerBeanName</param-name>-->
+            <!--<param-value>abdera</param-value>-->
+        <!--</init-param>-->
+    <!--</servlet>-->
 
     <servlet>
         <servlet-name>
@@ -869,10 +869,10 @@
         <servlet-name>Test</servlet-name>
         <url-pattern>/test/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping id="abdera-mapping">
-        <servlet-name>Abdera</servlet-name>
-        <url-pattern>/atom/*</url-pattern>
-    </servlet-mapping>
+    <!--<servlet-mapping id="abdera-mapping">-->
+        <!--<servlet-name>Abdera</servlet-name>-->
+        <!--<url-pattern>/atom/*</url-pattern>-->
+    <!--</servlet-mapping>-->
 
     <!-- XMLRPCServlet mapping for the blogs -->
     <servlet-mapping>

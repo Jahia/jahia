@@ -1035,35 +1035,35 @@
         </property>
     </bean>
 
-    <bean id="abdera" class="org.apache.abdera.protocol.server.impl.DefaultProvider">
-        <constructor-arg index="0"><value>/atom/</value></constructor-arg>
-        <property name="workspaceManager">
-            <bean class="org.apache.abdera.protocol.server.impl.DefaultWorkspaceManager">
-                <property name="workspaces">
-                    <set>
-                        <bean class="org.apache.abdera.protocol.server.impl.SimpleWorkspaceInfo">
-                            <property name="title" value="test"/>
-                            <property name="collections">
-                                <set>
-                                    <bean class="org.apache.abdera.protocol.server.adapters.jcr.JcrCollectionAdapter" init-method="initialize">
-                                        <property name="repository" ref="jackrabbit" />
-                                        <property name="credentials">
-                                            <bean class="javax.jcr.SimpleCredentials">
-                                                <constructor-arg index="0" value="root"/>
-                                                <constructor-arg index="1" value="root1234"/>
-                                            </bean>
-                                        </property>
-                                        <property name="collectionNodePath" value="content" />
-                                    </bean>
-                                </set>
-                            </property>
-                        </bean>
-                    </set>
-                </property>
-            </bean>
+    <!--<bean id="abdera" class="org.apache.abdera.protocol.server.impl.DefaultProvider">-->
+        <!--<constructor-arg index="0"><value>/atom/</value></constructor-arg>-->
+        <!--<property name="workspaceManager">-->
+            <!--<bean class="org.apache.abdera.protocol.server.impl.DefaultWorkspaceManager">-->
+                <!--<property name="workspaces">-->
+                    <!--<set>-->
+                        <!--<bean class="org.apache.abdera.protocol.server.impl.SimpleWorkspaceInfo">-->
+                            <!--<property name="title" value="test"/>-->
+                            <!--<property name="collections">-->
+                                <!--<set>-->
+                                    <!--<bean class="org.apache.abdera.protocol.server.adapters.jcr.JcrCollectionAdapter" init-method="initialize">-->
+                                        <!--<property name="repository" ref="jackrabbit" />-->
+                                        <!--<property name="credentials">-->
+                                            <!--<bean class="javax.jcr.SimpleCredentials">-->
+                                                <!--<constructor-arg index="0" value="root"/>-->
+                                                <!--<constructor-arg index="1" value="root1234"/>-->
+                                            <!--</bean>-->
+                                        <!--</property>-->
+                                        <!--<property name="collectionNodePath" value="content" />-->
+                                    <!--</bean>-->
+                                <!--</set>-->
+                            <!--</property>-->
+                        <!--</bean>-->
+                    <!--</set>-->
+                <!--</property>-->
+            <!--</bean>-->
 
-        </property>
+        <!--</property>-->
 
-    </bean>
+    <!--</bean>-->
 
 </beans>

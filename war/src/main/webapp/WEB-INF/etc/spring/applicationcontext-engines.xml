@@ -55,7 +55,6 @@
                 <ref bean="deleteContainerEngine" />
                 <ref bean="restoreContainerEngine" />
                 <ref bean="selectDataSourceEngine" />
-                <ref bean="xmlSourceEngine" />
                 <ref bean="viewDataSourceIDEngine" />
                 <ref bean="searchEngine" />
                 <ref bean="loginEngine" />

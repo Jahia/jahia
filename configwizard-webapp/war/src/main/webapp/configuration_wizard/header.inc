@@ -128,6 +128,9 @@ final boolean openReadmeFile = jsp.equals("site_values.jsp"); %>
                       workInProgressOverlay.launch();
                   }
               }
+              function showWorkInProgress() {
+            	  setWaitingCursor();
+              }
 
               function openReadmeFile() {
                       var params = "width=1100,height=500,left=0,top=0,resizable=yes,scrollbars=yes,status=no";

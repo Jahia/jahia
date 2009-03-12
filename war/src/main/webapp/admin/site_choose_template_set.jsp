@@ -255,21 +255,21 @@
           <span class="dex-PushButton">
             <span class="first-child">
               <a class="ico-back"
-                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displaycreateadmin")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+                 href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displaycreateadmin")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
             </span>
           </span>
     <% } else if ("1".equals(((String) session.getAttribute("siteAdminOption")).trim())) { %>
           <span class="dex-PushButton">
             <span class="first-child">
                 <a class="ico-back"
-                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displayselectexistantadmin")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=displayselectexistantadmin")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
            </span>
           </span>
     <% } else { %>
           <span class="dex-PushButton">
             <span class="first-child">
                 <a class="ico-back"
-                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+                   href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
            </span>
           </span>
     <% } %>
@@ -277,7 +277,7 @@
 
                   <span class="dex-PushButton">
                     <span class="first-child">
-                    <a class="ico-ok" href="javascript:submitForm('save');">
+                    <a class="ico-ok" href="javascript:submitForm('save');" onclick="showWorkInProgress(); return true;">
                         <fmt:message key="org.jahia.admin.save.label"/>
                     </a>
                   </span>
@@ -290,7 +290,7 @@
                <span class="dex-PushButton">
                     <span class="first-child">
                     <a class="ico-back"
-                       href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'>
+                       href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' onclick="showWorkInProgress(); return true;">
                         <internal:message key="org.jahia.back.button"/>
                     </a>
                    </span>
@@ -298,7 +298,7 @@
 
                    <span class="dex-PushButton">
                     <span class="first-child">
-                    <a class="ico-next" href="javascript:submitForm('save');">
+                    <a class="ico-next" href="javascript:submitForm('save');" onclick="showWorkInProgress(); return true;">
 
                         <internal:message key="org.jahia.nextStep.button"/>
 

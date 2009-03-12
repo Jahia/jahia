@@ -48,8 +48,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.Value;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -76,6 +75,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private Map<String,String> uuidMapping = new HashMap<String,String>();
     private Map<String,String> pathMapping = new HashMap<String,String>();
+    private Map<String,String> references = new HashMap<String,String>();
 
     private String currentFilePath = null;
 
@@ -186,6 +186,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
                         } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
 
+                        } else if (propDef.getRequiredType() == PropertyType.REFERENCE) {
+                            references.put(attrValue, child.getPath()+"/"+attrName);
                         } else {
                             if (propDef.isMultiple()) {
                                 String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
@@ -268,6 +270,30 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 throw new SAXException(re);
             }
             zis = null;
+        }
+
+        Session session = null;
+        try {
+            session = ServicesRegistry.getInstance().getJCRStoreService().getThreadSession(jParams.getUser());
+            for (String uuid : references.keySet()) {
+                if (uuidMapping.containsKey(uuid)) {
+                    String path = references.get(uuid);
+                    Node n = (Node) session.getItem(path.substring(0,path.lastIndexOf("/")));
+                    String pName = path.substring(path.lastIndexOf("/")+1);
+
+                    try {
+                        Node node = session.getNodeByUUID(uuidMapping.get(uuid));
+                        n.setProperty(pName,node);
+                    } catch (ItemNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            session.save();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        } finally {
+            if (session != null) { session.logout(); }
         }
     }
 

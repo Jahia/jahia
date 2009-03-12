@@ -34,11 +34,15 @@
 package org.jahia.engines.mysettings;
 
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.struts.Globals;
 import org.jahia.data.JahiaData;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.EngineMessage;
@@ -59,6 +63,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.UserProperties;
 import org.jahia.services.usermanager.UserProperty;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 
 /**
@@ -229,7 +234,24 @@ public class MySettingsEngine implements JahiaEngine {
         if (jParams.getSessionState().getAttribute(EngineMessages.CONTEXT_KEY) != null) {
             EngineMessages msgs = (EngineMessages) jParams.getSessionState()
                     .getAttribute(EngineMessages.CONTEXT_KEY);
+            // store our engine messages
             msgs.saveMessages(((ParamBean) jParams).getRequest());
+            // store Struts action messages
+            ((ParamBean) jParams).getRequest().setAttribute(Globals.ERROR_KEY, msgs.toActionMessages());
+            // store localized messages
+            List<String> localizedMessages = new LinkedList<String>();
+            {
+                for (EngineMessage engineMessage : (List<EngineMessage>) msgs
+                        .getMessages()) {
+                    localizedMessages.add(MessageFormat.format(
+                            JahiaResourceBundle
+                                    .getMessageResource(engineMessage.getKey(),
+                                            jParams.getLocale()), engineMessage
+                                    .getValues()));
+                }
+            }
+            ((ParamBean) jParams).getRequest().setAttribute("passwordPolicyMessages", localizedMessages);
+            
             jParams.getSessionState().removeAttribute(
                     EngineMessages.CONTEXT_KEY);
         }

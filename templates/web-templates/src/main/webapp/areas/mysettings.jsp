@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
 
@@ -36,10 +36,18 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
 <%@ include file="../common/declarations.jspf" %>
-<%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
-<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 
         <h2><fmt:message key="mySettings.title"/></h2>
+        <c:if test="${not empty passwordPolicyMessages}">
+            <div class="error">
+              <fmt:message key="mySettings.errors"/>:
+              <ul>
+                <c:forEach items="${passwordPolicyMessages}" var="msg">
+                    <li><c:out value="${msg}"/></li>
+                </c:forEach>
+              </ul>
+            </div>
+        </c:if>
         <%@ include file="../modules/users/mysettingsForm.jspf" %>
         <div style="margin-top:15px;">
             <a class="returnLink" href="${requestScope.currentPage.url}" title="<fmt:message key='backToPreviousPage'/>"><fmt:message key='backToPreviousPage'/></a>

@@ -35,6 +35,8 @@
 
 import java.io.Serializable;
 
+import org.apache.struts.action.ActionMessage;
+
 
 /**
  * <p>Title: EngineMessage bean object. </p> <p>Description: Inspired by Struts ActionMessage,
@@ -112,5 +114,9 @@ public class EngineMessage implements Serializable {
 
     public boolean equals (Object o) {
         return this.toString().equals(o.toString());
+    }
+
+    public ActionMessage toActionMessage() {
+        return new ActionMessage(getKey(), getValues());
     }
 }

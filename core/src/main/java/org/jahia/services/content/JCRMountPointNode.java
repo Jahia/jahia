@@ -76,6 +76,18 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         return new ArrayList<JCRNodeWrapper>();
     }
 
+    public Node getNode(String s) throws PathNotFoundException, RepositoryException {
+        return getRootNode().getNode(s);
+    }
+
+    public NodeIterator getNodes() throws RepositoryException {
+        return getRootNode().getNodes();
+    }
+
+    public NodeIterator getNodes(String s) throws RepositoryException {
+        return getRootNode().getNodes(s);
+    }
+
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
         return getRootNode().addNode(name);
     }
@@ -97,7 +109,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         }
 
         if (provider != null) {
-            return provider.getNodeWrapper("/", getUser());
+            return provider.getNodeWrapper("/", (JCRSessionWrapper) getSession());
         }
         return null;
     }

@@ -42,21 +42,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.NamespaceException;
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.Workspace;
+import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
@@ -74,7 +60,6 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -120,9 +105,6 @@ public class JCRStoreProvider {
     private boolean isMainStorage = false;
     private boolean isDynamicallyMounted = false;
 
-    //    private ThreadLocal systemSession = new ThreadLocal();
-    protected ThreadLocal<Session> userSession = new ThreadLocal<Session>();
-
     public String getKey() {
         return key;
     }
@@ -141,6 +123,10 @@ public class JCRStoreProvider {
 
     public String getWebdavPath() {
         return webdavPath;
+    }
+
+    public int getDepth() {
+        return mountPoint.split("/").length;
     }
 
     public void setWebdavPath(String webdavPath) {
@@ -405,71 +391,10 @@ public class JCRStoreProvider {
         return null;
     }
 
-    protected Session getThreadSession(JahiaUser user) throws RepositoryException {
-        // thread user session might be inited/closed in an http filter, instead of keeping it
-
-        Session s = userSession.get();
-        String username;
-
-        if (JahiaUserManagerService.isGuest(user)) {
-            username = JahiaLoginModule.GUEST;
-        } else {
-            username = user.getUsername();
-        }
-
-        try {
-            if (s != null && loginModuleActivated && !s.getUserID().equals(username)) {
-                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username);
-                s.logout();
-            }
-        } catch (IllegalStateException e) {
-            logger.error("Exception on session : "+e);
-            s = null;
-        }
-
-        if (s == null || !s.isLive()) {
-            if (loginModuleActivated) {
-                if (!JahiaLoginModule.GUEST.equals(username)) {
-                    s = repo.login(org.jahia.jaas.JahiaLoginModule.getCredentials(username));
-                    // should be done somewhere else, call can be quite expensive
-                    deployNewUser(username);
-                } else {
-                    s = repo.login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials());
-                }
-            } else {
-                s = repo.login(new SimpleCredentials(this.user, password.toCharArray()));
-            }
-            registerNamespaces(s.getWorkspace());
-            userSession.set(s);
-        } else {
-            s.refresh(true);
-        }
-        return s;
-    }
-
-    public void closeThreadSession() throws RepositoryException {
-        Session s = userSession.get();
-        if (s != null) {
-            s.logout();
-            userSession.set(null);
-        }
-    }
-
-    public Session getSystemSession() throws RepositoryException {
+    public Session getSession(Credentials credentials, String workspace) throws RepositoryException {
         Session s;
         if (loginModuleActivated) {
-            s = repo.login(JahiaLoginModule.getSystemCredentials());
-        } else {
-            s = repo.login(new SimpleCredentials(user, password.toCharArray()));
-        }
-        registerNamespaces(s.getWorkspace());
-        return s;
-    }
-
-    public Session getSystemSession(String username) throws RepositoryException {
-        Session s;
-        if (loginModuleActivated) {
-            s = repo.login(JahiaLoginModule.getSystemCredentials(username));
+            s = repo.login(credentials,  workspace);
         } else {
             s = repo.login(new SimpleCredentials(user, password.toCharArray()));
         }
@@ -490,8 +415,8 @@ public class JCRStoreProvider {
 
     public JCRNodeWrapper getNodeWrapper(String localPath, JahiaUser user) {
         try {
-            Session session = getThreadSession(user);
-            return getNodeWrapper(localPath, user, session);
+            JCRSessionWrapper session = service.getThreadSession(user);
+            return getNodeWrapper(localPath, session);
         } catch (RepositoryException e) {
             logger.error("Repository error",e);
             return null;
@@ -507,12 +432,16 @@ public class JCRStoreProvider {
         }
     }
 
-    public JCRNodeWrapper getNodeWrapper(String localPath, JahiaUser user, Session session) {
-        return service.decorate(new JCRNodeWrapperImpl(localPath, user, session, this));
+    public JCRNodeWrapper getNodeWrapper(String localPath, JCRSessionWrapper session) {
+        return service.decorate(new JCRNodeWrapperImpl(localPath, session, this));
     }
 
-    public JCRNodeWrapper getNodeWrapper(Node objectNode, JahiaUser user, Session session) {
-        return service.decorate(new JCRNodeWrapperImpl(objectNode, user, session, this));
+    public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) {
+        return service.decorate(new JCRNodeWrapperImpl(objectNode, session, this));
+    }
+
+    public JCRPropertyWrapperImpl getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
+        return new JCRPropertyWrapperImpl(getNodeWrapper(prop.getNode(), session), prop, session, this);
     }
 
     protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {
@@ -572,45 +501,45 @@ public class JCRStoreProvider {
         Session session = getSystemSession(username);
         try {
             if (session.getWorkspace().getQueryManager() != null) {
-            Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM jmix:usersFolder", Query.SQL);
-            QueryResult qr = q.execute();
-            NodeIterator ni = qr.getNodes();
-            try {
-                while (ni.hasNext()) {
-                    Node usersFolderNode = ni.nextNode();
-                    String options = "";
-                    if (usersFolderNode.hasProperty("j:usersFolderConfig")) {
-                        options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
-                    }
+                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM jmix:usersFolder", Query.SQL);
+                QueryResult qr = q.execute();
+                NodeIterator ni = qr.getNodes();
+                try {
+                    while (ni.hasNext()) {
+                        Node usersFolderNode = ni.nextNode();
+                        String options = "";
+                        if (usersFolderNode.hasProperty("j:usersFolderConfig")) {
+                            options = usersFolderNode.getProperty("j:usersFolderConfig").getString();
+                        }
 
-                    Node f = getPathFolder(usersFolderNode, username, options);
+                        Node f = getPathFolder(usersFolderNode, username, options);
 
-                    try {
-                        f.getNode(username);
-                    } catch (PathNotFoundException e) {
-                        synchronized (this) {
-                            try {
-                                f.getNode(username);
-                            } catch (PathNotFoundException ee) {
+                        try {
+                            f.getNode(username);
+                        } catch (PathNotFoundException e) {
+                            synchronized (this) {
                                 try {
-                                    if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
-                                        session.move(f.getPath()+"/user", f.getPath()+"/"+username);
-                                    } else {
-                                        Node userNode = f.addNode(username, Constants.JAHIANT_USER_FOLDER);
-                                        JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
+                                    f.getNode(username);
+                                } catch (PathNotFoundException ee) {
+                                    try {
+                                        if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
+                                            session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
+                                            session.move(f.getPath()+"/user", f.getPath()+"/"+username);
+                                        } else {
+                                            Node userNode = f.addNode(username, Constants.JAHIANT_USER_FOLDER);
+                                            JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
+                                        }
+                                        session.save();
+                                    } catch (RepositoryException e1) {
+                                        logger.error("Cannot save", e1);
                                     }
-                                    session.save();
-                                } catch (RepositoryException e1) {
-                                    logger.error("Cannot save", e1);
                                 }
                             }
                         }
                     }
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
                 }
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
             }
         } finally {
             session.logout();
@@ -631,8 +560,6 @@ public class JCRStoreProvider {
     }
 
     public List<JCRNodeWrapper> getUserFolders(String site, JahiaUser user) throws RepositoryException {
-        Session session = getThreadSession(user);
-
         String username = ISO9075.encode(encodeInternalName(user.getUsername()));
         String xp = "//element("+ username +", jnt:userFolder)";
 
@@ -640,7 +567,7 @@ public class JCRStoreProvider {
             site = ISO9075.encode(encodeInternalName(site));
             xp = "//element("+site+", jnt:virtualsite)" + xp;
         }
-        List<JCRNodeWrapper> results = queryFolders(user, session, xp);
+        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), xp);
         if (site != null) {
             results.addAll(getUserFolders(null, user));
         }
@@ -648,8 +575,6 @@ public class JCRStoreProvider {
     }
 
     public List<JCRNodeWrapper> getImportDropBoxes(String site, JahiaUser user) throws RepositoryException {
-        Session session = getThreadSession(user);
-
         String username = ISO9075.encode(encodeInternalName(user.getUsername()));
         String xp = "//element("+ username +", jnt:userFolder)//element(*, jnt:importDropBox)";
 
@@ -657,7 +582,7 @@ public class JCRStoreProvider {
             site = ISO9075.encode(encodeInternalName(site));
             xp = "//element("+site+", jnt:virtualsite)" + xp;
         }
-        List<JCRNodeWrapper> results = queryFolders(user, session, xp);
+        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), xp);
         if (site != null) {
             results.addAll(getImportDropBoxes(null, user));
         }
@@ -665,24 +590,23 @@ public class JCRStoreProvider {
     }
 
     public List<JCRNodeWrapper> getSiteFolders(String site, JahiaUser user) throws RepositoryException {
-        Session session = getThreadSession(user);
         site = ISO9075.encode(encodeInternalName(site));
         String xp = "//element("+site+", jnt:virtualsite)";
 
-        List<JCRNodeWrapper> results = queryFolders(user, session, xp);
+        List<JCRNodeWrapper> results = queryFolders(service.getThreadSession(user), xp);
         return results;
     }
 
-    private List<JCRNodeWrapper> queryFolders(JahiaUser user, Session session, String xp) throws RepositoryException {
+    private List<JCRNodeWrapper> queryFolders(JCRSessionWrapper session, String xp) throws RepositoryException {
         List<JCRNodeWrapper> results = new ArrayList<JCRNodeWrapper>();
-        QueryManager queryManager = session.getWorkspace().getQueryManager();
+        QueryManager queryManager = session.getProviderSession(this).getWorkspace().getQueryManager();
         if (queryManager != null) {
             Query q = queryManager.createQuery(xp, Query.XPATH);
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();
             while (ni.hasNext()) {
                 Node folder = ni.nextNode();
-                results.add(getNodeWrapper(folder, user, session));
+                results.add(getNodeWrapper(folder, session));
             }
         }
         return results;
@@ -795,6 +719,19 @@ public class JCRStoreProvider {
         name = name.replace("\\5C","]");
         name = name.replace("\\27","'");
         return name;
+    }
+
+
+    public Session getThreadSession(JahiaUser user) throws RepositoryException {
+        return service.getThreadSession(user).getProviderSession(this);
+    }
+
+    public Session getSystemSession() throws RepositoryException {
+        return service.getSystemSession().getProviderSession(this);
+    }
+
+    public Session getSystemSession(String user) throws RepositoryException {
+        return service.getSystemSession(user).getProviderSession(this);
     }
 
 }

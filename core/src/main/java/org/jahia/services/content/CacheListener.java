@@ -117,13 +117,13 @@ public class CacheListener extends DefaultEventListener {
             }
         }
         if (!nodes.isEmpty()) {
-            Session session = null;
+            JCRSessionWrapper session = null;
             try {
-                session = provider.getSystemSession();
+                session = JCRStoreService.getInstance().getSystemSession();
 
                 for (Iterator<String> iterator = nodes.iterator(); iterator.hasNext();) {
                     String s = iterator.next();
-                    JCRNodeWrapper n = provider.getNodeWrapper(provider.decodeInternalName(s), null, session);
+                    JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(provider.decodeInternalName(s));
                     flushNodeRefs(n);
                     cache.remove(n.getPath());
                 }

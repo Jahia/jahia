@@ -307,10 +307,6 @@ public class ProcessingContext {
 
     private Map<String, Object> attributeMap = new HashMap<String, Object>();
 
-    // normally the ProcessingContext should not add ESI-specific markers, such as "/jesi/user_dklfjsljf/",
-    // to the generated urls so we set this to true by default.
-    boolean ignoreEsiParams = true;
-
     private ThreadLocal<Map<String, Integer>> filtersStatus = new ThreadLocal<Map<String, Integer>>();
 
     private boolean forceAppendSiteKey = false;
@@ -738,25 +734,6 @@ public class ProcessingContext {
 
     public boolean showRevisionDiff() {
         return (this.getDiffVersionID() != 0);
-    }
-
-    /**
-     * false if the ProcessingContext adds ESI-specific markers, such as "/jesi/user_dklfjsljf/", to the generated urls. true by default.
-     *
-     * @return
-     */
-    public boolean isIgnoreEsiParams() {
-        return !(this instanceof ParamBean) && ignoreEsiParams;
-    }
-
-    /**
-     * set to false if the ProcessingContext should add ESI-specific markers, such as "/jesi/user_dklfjsljf/", to the generated urls. true
-     * by default.
-     *
-     * @param ignoreEsiParamsFlag
-     */
-    public void setIgnoreEsiParams(boolean ignoreEsiParamsFlag) {
-        this.ignoreEsiParams = ignoreEsiParamsFlag;
     }
 
     // @author Serge Huber shuber@jahia.org

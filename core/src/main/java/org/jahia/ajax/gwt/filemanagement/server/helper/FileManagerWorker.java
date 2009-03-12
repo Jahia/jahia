@@ -71,6 +71,7 @@ import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.StringValue;
+import org.apache.jackrabbit.util.ISO9075;
 import org.apache.log4j.Logger;
 import org.apache.pluto.descriptors.portlet.ExpirationCacheDD;
 
@@ -191,7 +192,7 @@ public class FileManagerWorker {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         for (JCRNodeWrapper f : list) {
             try {
-                if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (f.isNodeType(Constants.JAHIANT_FOLDER) || f.isNodeType(Constants.JAHIANT_VFSMOUNTPOINT)))) {
+                if ((matchesNodeType(f, nodeTypesToApply) || (f.isNodeType(Constants.JAHIANT_FOLDER) || f.isNodeType(Constants.JAHIANT_VFSMOUNTPOINT)))) {
                     if ((f.isNodeType(Constants.JAHIANT_FOLDER) || f.isNodeType(Constants.JAHIANT_VFSMOUNTPOINT)) && noFolders) {
                         continue;
                     }
@@ -439,7 +440,7 @@ public class FileManagerWorker {
             JCRNodeWrapper queryStore;
             if (!user.hasNode("savedSearch")) {
                 queryStore = user.createCollection("savedSearch");
-                user.save();
+                user.saveSession();
             } else {
                 queryStore = jcr.getFileNode(user.getPath() + "/savedSearch", context.getUser());
             }
@@ -456,6 +457,7 @@ public class FileManagerWorker {
     }
 
     private static Query createQuery(String searchString, ProcessingContext context) throws RepositoryException {
+//        searchString = ISO9075.encode(searchString);
         String s = "//element(*, jmix:hierarchyNode)[jcr:contains(@j:filename," + JCRContentUtils.stringToJCRSearchExp(searchString) + ")]";
         Query q = jcr.getQueryManager(context.getUser()).createQuery(s, Query.XPATH);
         return q;

@@ -61,13 +61,13 @@ public class JCRQueryNode extends JCRNodeDecorator {
         List<JCRNodeWrapper> list = new ArrayList<JCRNodeWrapper>();
 
         try {
-            Query q = getProvider().getQueryManager(getUser()).getQuery(getRealNode());
+            Query q = getSession().getWorkspace().getQueryManager().getQuery(getRealNode());
 //                Query q = provider.getService().getQueryManager(user).getQuery(this);
             QueryResult qr = q.execute();
             NodeIterator ni = qr.getNodes();
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                JCRNodeWrapper child = getProvider().getNodeWrapper(node, getUser(), node.getSession());
+                JCRNodeWrapper child = getProvider().getNodeWrapper(node, (JCRSessionWrapper) getSession());
                 if (child.getException () == null) {
                     list.add (child);
                 }

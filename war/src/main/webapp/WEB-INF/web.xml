@@ -367,7 +367,7 @@
         <init-param>
             <description>Repository Name that is used to retrieve it via a servlet context attribute</description>
             <param-name>repository.context.attribute.name</param-name>
-            <param-value>org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository</param-value>
+            <param-value>jcrStoreService</param-value>
         </init-param>
 
         <!--
@@ -507,6 +507,14 @@
         <load-on-startup>99</load-on-startup>
     </servlet>
 
+    <servlet id="abdera">
+        <servlet-name>Abdera</servlet-name>
+        <servlet-class>org.apache.abdera.spring.SpringAbderaServlet</servlet-class>
+        <init-param>
+            <param-name>providerBeanName</param-name>
+            <param-value>abdera</param-value>
+        </init-param>
+    </servlet>
 
     <servlet>
         <servlet-name>
@@ -860,6 +868,10 @@
     <servlet-mapping>
         <servlet-name>Test</servlet-name>
         <url-pattern>/test/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping id="abdera-mapping">
+        <servlet-name>Abdera</servlet-name>
+        <url-pattern>/atom/*</url-pattern>
     </servlet-mapping>
 
     <!-- XMLRPCServlet mapping for the blogs -->

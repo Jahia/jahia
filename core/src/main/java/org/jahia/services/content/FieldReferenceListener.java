@@ -37,6 +37,7 @@ import java.util.Collection;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Node;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
@@ -90,16 +91,16 @@ public class FieldReferenceListener extends DefaultEventListener {
                     continue;
                 }
 
-                String path = provider.decodeInternalName(event.getPath());
+                String path = event.getPath();
 
                 if (event.getType() == Event.NODE_ADDED) {
                     if (session == null) {
                         session = provider.getSystemSession();
                     }
-                    JCRNodeWrapper node = provider.getNodeWrapper(provider.decodeInternalName(path), null, session);
+                    Node node = (Node) session.getItem(path);
                     if (node.isNodeType(Constants.NT_HIERARCHYNODE)) {
-                        String oldPath = node.getPropertyAsString("j:fullpath");
-                        if (oldPath != null) {
+                        if (node.hasProperty("j:fullpath")) {
+                            String oldPath = node.getProperty("j:fullpath").getString();
                             move(node.getUUID(), oldPath, path);
                         }
                         node.setProperty("j:fullpath", path);

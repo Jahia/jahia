@@ -307,9 +307,8 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      */
     private List<GWTJahiaLayoutItem> getDefaultLayoutItems(GWTJahiaPageContext jahiaPageContext) throws RepositoryException {
         List<GWTJahiaLayoutItem> layoutItems = new ArrayList<GWTJahiaLayoutItem>();
-        JCRStoreProvider storeProvider = jcrStoreService.getMainStoreProvider();
         String layoutNodeName = getLayoutNodeName(jahiaPageContext);
-        JCRNodeWrapper layoutManagerNode = storeProvider.getNodeWrapper(LAYOUTMANAGER_NODE_PATH, getRemoteJahiaUser());
+        JCRNodeWrapper layoutManagerNode = jcrStoreService.getFileNode(LAYOUTMANAGER_NODE_PATH, getRemoteJahiaUser());
 
         // remove layout_{pid} and its children
         if (layoutManagerNode.hasNode(layoutNodeName)) {

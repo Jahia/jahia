@@ -77,6 +77,7 @@ public class SessionImpl implements Session {
     private Map<String, NodeImpl> nodesByPath = new HashMap();
     private Map<String, NodeImpl> nodesByUUID = new HashMap();
     private Set<ItemImpl> modifiedItems = new HashSet<ItemImpl>();
+    private boolean isLive = true;
 
     public SessionImpl(RepositoryImpl repository, JahiaUser jahiaUser, String userId) throws RepositoryException {
         this.repository = repository;
@@ -207,7 +208,7 @@ public class SessionImpl implements Session {
     }
 
     public boolean hasPendingChanges() throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return !modifiedItems.isEmpty();
     }
 
     public void checkPermission(String path, String actions) throws AccessControlException, RepositoryException {
@@ -282,6 +283,7 @@ public class SessionImpl implements Session {
 
     public void logout() {
         workspace.close();
+        isLive = false;
     }
 
     public void addLockToken(String s) {
@@ -331,7 +333,7 @@ public class SessionImpl implements Session {
     }
 
     public boolean isLive() {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+        return isLive;
     }
 
     void addModifiedItem(ItemImpl i) {

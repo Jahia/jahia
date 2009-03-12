@@ -47,6 +47,9 @@ import org.apache.log4j.Logger;
 import org.apache.pluto.core.PortletContextManager;
 import org.apache.pluto.spi.optional.PortletRegistryEvent;
 import org.apache.pluto.spi.optional.PortletRegistryListener;
+import org.apache.pluto.PortletContainerException;
+import org.apache.pluto.descriptors.portlet.PortletDD;
+import org.apache.pluto.internal.impl.PortletContextImpl;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.webapps.*;
 import org.jahia.exceptions.JahiaException;
@@ -54,6 +57,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.model.JahiaAclEntry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.acl.ACLNotFoundException;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.usermanager.JahiaUser;
@@ -62,13 +67,12 @@ import org.jahia.utils.JahiaTools;
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.xml.sax.EntityResolver;
 
+import javax.portlet.PortletContext;
+import javax.portlet.PortletConfig;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 
@@ -340,6 +344,40 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
         }
     }
 
+//    private void addDefinitionsFiles(String context) {
+//        try {
+//            PortletContextManager mgr = PortletContextManager.getManager();
+//            PortletContext ctx = mgr.getPortletContext(context);
+//            List l = ((PortletContextImpl)ctx).getPortletApplicationDefinition().getPortlets();
+//            Set<File> files = new HashSet<File>();
+//            for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+//                PortletDD portletDD = (PortletDD) iterator.next();
+//                PortletConfig config = PortletContextManager.getManager().getPortletConfig(context,  portletDD.getPortletName());
+//
+//                String rootPath = config.getInitParameter("rootPath");
+//                if (rootPath == null) {
+//                    rootPath = "/WEB-INF";
+//                }
+//                String realPath = ctx.getRealPath(rootPath + "/definitions.cnd" );
+//                File file = new File(realPath);
+//                if (file.exists()) {
+//                    files.add(file);
+//                }
+//            }
+//            for (File file : files) {
+//                try {
+//                    NodeTypeRegistry.getInstance().addDefinitionsFile(file, context, true);
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        } catch (Exception e) {
+//            logger.error("Cannot get context manager",e);
+//        }
+//    }
+//
 
     /**
      * Register Web Apps Definition in Jahia

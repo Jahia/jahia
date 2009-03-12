@@ -360,7 +360,7 @@ public class RulesListener extends DefaultEventListener {
                         logger.info("Rules executed for " + list);
                     }
 
-                    s.save();
+                    if (s.hasPendingChanges()) s.save();
 
                     if (!delayedUpdates.isEmpty()) {
                         TimerTask t = new DelayedUpdatesTimerTask(username, delayedUpdates);

@@ -50,12 +50,12 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class AlfrescoFileNodeWrapper extends JCRNodeWrapperImpl {
-    public AlfrescoFileNodeWrapper(String localPath, JahiaUser user, Session session, JCRStoreProvider provider) {
-        super(localPath, user, session, provider);
+    public AlfrescoFileNodeWrapper(String localPath, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(localPath, session, provider);
     }
 
-    public AlfrescoFileNodeWrapper(Node objectNode, JahiaUser user, Session session, JCRStoreProvider provider) {
-        super(objectNode, user, session, provider);
+    public AlfrescoFileNodeWrapper(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(objectNode, session, provider);
     }
 
     public boolean isFile() {
@@ -170,7 +170,7 @@ public class AlfrescoFileNodeWrapper extends JCRNodeWrapperImpl {
                 n = objectNode.addNode(name, "cm:folder");
             }
             n.setProperty("cm:name", name);
-            return provider.getNodeWrapper(n, user, session);
+            return provider.getNodeWrapper(n, session);
         } catch (RepositoryException e) {
             logger.error("Repository error", e);
         }

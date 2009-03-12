@@ -659,16 +659,18 @@
         <property name="service" ref="JCRStoreService"/>
     </bean>
 
+    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop">
+        <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
+        <property name="homeDir" value="WEB-INF/var/repository"/>
+        <property name="userService" ref="JahiaUserManagerService"/>
+        <property name="groupService" ref="JahiaGroupManagerService"/>
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="servletContextAttributeName" value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" />
+    </bean>
+
     <bean id="DefaulJCRStoreProvider" class="org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider" parent="AbstractJCRStoreProvider">
         <property name="key" value="default"/>
-        <property name="repository">
-            <bean class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop">
-                <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
-                <property name="homeDir" value="WEB-INF/var/repository"/>
-                <property name="userService" ref="JahiaUserManagerService"/>
-                <property name="servletContextAttributeName" value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" />
-            </bean>
-        </property>
+        <property name="repository" ref="jackrabbit"/>
         <property name="mountPoint" value="/"/>
         <property name="webdavPath" value="${jahia.deploy.war.contextPath}/repository/default"/>
         <property name="rmibind" value="jackrabbit"/>
@@ -741,7 +743,9 @@
     <bean id="JCRStoreService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="userService" ref="JahiaUserManagerService"/>
                 <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
+                <property name="servletContextAttributeName" value="jcrStoreService"/>
             </bean>
         </property>
     </bean>
@@ -1029,6 +1033,37 @@
                 </entry>
             </map>
         </property>
+    </bean>
+
+    <bean id="abdera" class="org.apache.abdera.protocol.server.impl.DefaultProvider">
+        <constructor-arg index="0"><value>/atom/</value></constructor-arg>
+        <property name="workspaceManager">
+            <bean class="org.apache.abdera.protocol.server.impl.DefaultWorkspaceManager">
+                <property name="workspaces">
+                    <set>
+                        <bean class="org.apache.abdera.protocol.server.impl.SimpleWorkspaceInfo">
+                            <property name="title" value="test"/>
+                            <property name="collections">
+                                <set>
+                                    <bean class="org.apache.abdera.protocol.server.adapters.jcr.JcrCollectionAdapter" init-method="initialize">
+                                        <property name="repository" ref="jackrabbit" />
+                                        <property name="credentials">
+                                            <bean class="javax.jcr.SimpleCredentials">
+                                                <constructor-arg index="0" value="root"/>
+                                                <constructor-arg index="1" value="root1234"/>
+                                            </bean>
+                                        </property>
+                                        <property name="collectionNodePath" value="content" />
+                                    </bean>
+                                </set>
+                            </property>
+                        </bean>
+                    </set>
+                </property>
+            </bean>
+
+        </property>
+
     </bean>
 
 </beans>

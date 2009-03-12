@@ -61,13 +61,11 @@ import org.jahia.services.usermanager.JahiaUser;
 public class JCRItemWrapperImpl implements Item {
     protected JCRStoreProvider provider;
     protected Item item;
-    protected JahiaUser user;
     protected String localPath;
-    protected Session session;
+    protected JCRSessionWrapper session;
     protected Workspace workspace;
 
-    protected JCRItemWrapperImpl(JahiaUser user, Session session, JCRStoreProvider provider) {
-        this.user = user;
+    protected JCRItemWrapperImpl(JCRSessionWrapper session, JCRStoreProvider provider) {
         this.session = session;
         if (session != null) this.workspace = session.getWorkspace();
         this.provider = provider;
@@ -102,12 +100,11 @@ public class JCRItemWrapperImpl implements Item {
     }
 
     public int getDepth() throws RepositoryException {
-        throw new UnsupportedOperationException();
-//        return item.getDepth();
+        return provider.getDepth() + item.getDepth();
     }
 
     public Session getSession() throws RepositoryException {
-        throw new UnsupportedOperationException();
+        return session;
     }
 
     public boolean isNode() {

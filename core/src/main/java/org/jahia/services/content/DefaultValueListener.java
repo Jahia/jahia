@@ -136,7 +136,9 @@ public class DefaultValueListener extends DefaultEventListener {
                         logger.error("Error when executing event",e);
                     }
                 }
-                s.save();
+                if (s.hasPendingChanges()) {
+                    s.save();
+                }
             } finally {
                 s.logout();
             }

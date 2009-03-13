@@ -44,6 +44,7 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.apache.maven.shared.dependency.tree.DependencyTree;
+import org.apache.maven.model.Dependency;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jahia.utils.maven.plugin.deployers.ServerDeploymentFactory;
@@ -192,6 +193,17 @@ public class DeployMojo extends AbstractManagementMojo {
     private void deployTemplateProject() throws Exception {
         File webappDir = getWebappDeploymentDir();
         File source = new File(output, project.getArtifactId()+"-"+project.getVersion());
+
+        List<Dependency> deps = project.getDependencies();
+        String prefix = "templates/";
+        for (Dependency dep : deps) {
+            if (dep.getGroupId().equals("org.jahia.server") && dep.getArtifactId().equals("jahia-impl")) {
+                if (dep.getVersion().startsWith("6.0") && !dep.getVersion().equals("6.0.0-EA")) {
+                    prefix = "jsp/jahia/templates/";
+                }
+            }
+        }
+
         File templateXml = new File(source, "WEB-INF/templates.xml");
         if (!templateXml.exists()) {
             getLog().info("No template.xml file, bypassing template deployement");
@@ -207,7 +219,7 @@ public class DeployMojo extends AbstractManagementMojo {
                 }
             }
 
-            File target = new File(getWebappDeploymentDir(),"templates/"+outputDir);
+            File target = new File(getWebappDeploymentDir(),prefix+outputDir);
             getLog().info("Updated template war resources for " + targetServerType + " v" + targetServerVersion + " in directory " + target);
             int cnt = updateFiles(source, target, Collections.singleton(new File(source,"WEB-INF")));
             cnt += updateFiles(new File(source, "WEB-INF/classes"), new File(webappDir,"WEB-INF/classes"));

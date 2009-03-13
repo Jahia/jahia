@@ -279,23 +279,6 @@ public class JahiaDateField extends JahiaField implements JahiaAllowApplyChangeT
         return new String[]{val};
     }
 
-    /**
-     * Returns an Hashmap of language_code/values used by search index engine
-     *
-     * @return HashMap
-     */
-    public Map<String, String[]> getValuesForSearch() throws JahiaException {
-
-        Map<String, String[]> values = new HashMap<String, String[]>();
-
-        String val = (String) this.getObject();
-        if (val == null) {
-            val = "";
-        }
-        values.put(ContentField.SHARED_LANGUAGE, new String[]{val});
-        return values;
-    }
-
     public ValidationError validate() throws JahiaException {
         final ValidationError result = super.validate();
         if (result != null) return result;

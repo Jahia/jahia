@@ -44,6 +44,7 @@ import au.id.jericho.lib.html.SourceFormatter;
 import au.id.jericho.lib.html.StartTag;
 import au.id.jericho.lib.html.Tag;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.extractor.HTMLTextExtractor;
 import org.apache.log4j.Logger;
 import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
@@ -70,8 +71,11 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.TextHtml;
 
 import javax.jcr.RepositoryException;
+
+import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -797,4 +801,29 @@ public class JahiaBigTextField extends JahiaField implements
             return newSiteURL.toString();
         }
     }
+    
+    /**
+     * Returns an array of values for the given language Code.
+     * By Default, return the field values in the field current language code.
+     *
+     * @param languageCode
+     * @return
+     * @throws JahiaException
+     */
+    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
+
+        String[] values = this.getValues();
+        if (values == null || values.length == 0) {
+            values = EMPTY_STRING_ARRAY;
+        }
+        for (int i = 0; i < values.length; i++) {
+            try {
+                values[i] = (new HTMLTextExtractor()).extractText(
+                        new ByteArrayInputStream(values[i].getBytes("UTF-8")), "text/html", "UTF-8").toString();
+            } catch (Exception e) {
+                values[i] = TextHtml.html2text(values[i]);
+            } 
+        }
+        return values;
+    } 
 }

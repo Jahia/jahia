@@ -64,6 +64,8 @@ public abstract class JahiaField implements Cloneable, Serializable,
     private static final long serialVersionUID = -4633138077897092761L;
 
     public static final String MULTIPLE_VALUES_SEP = "$$$";
+    
+    public static final String[] EMPTY_STRING_ARRAY = new String[]{""};
 
     protected int ID;
     protected int jahiaID;
@@ -540,11 +542,7 @@ public abstract class JahiaField implements Cloneable, Serializable,
         }
 
         Map<String, String[]> map = new HashMap<String, String[]>();
-        String[] values = this.getValues();
-        if (values == null || values.length == 0) {
-            values = new String[]{""};
-        }
-        map.put(lang, values);
+        map.put(lang, getValuesForSearch(lang, null, true));
         return map;
     }
 
@@ -572,7 +570,7 @@ public abstract class JahiaField implements Cloneable, Serializable,
 
         String[] values = this.getValues();
         if (values == null || values.length == 0) {
-            values = new String[]{""};
+            values = EMPTY_STRING_ARRAY;
         }
         for (int i = 0; i < values.length; i++) {
             values[i] = TextHtml.html2text(values[i]);

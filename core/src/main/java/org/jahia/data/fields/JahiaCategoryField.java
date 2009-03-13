@@ -256,8 +256,7 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
         }
         Map<String, String[]> values = new HashMap<String, String[]>();
         for (Map.Entry<String, List<String>> entry : tempValues.entrySet()) {
-            strVals = new String[entry.getValue().size()];
-            values.put(entry.getKey(), entry.getValue().toArray(strVals) );
+            values.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]) );
         }        
         return values;
     }

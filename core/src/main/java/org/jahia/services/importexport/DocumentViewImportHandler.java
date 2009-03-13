@@ -292,8 +292,6 @@ public class DocumentViewImportHandler extends DefaultHandler {
             session.save();
         } catch (RepositoryException e) {
             e.printStackTrace();
-        } finally {
-            if (session != null) { session.logout(); }
         }
     }
 

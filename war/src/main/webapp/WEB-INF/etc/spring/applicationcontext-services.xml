@@ -1034,6 +1034,20 @@
             </map>
         </property>
     </bean>
+    
+    <bean id="AnalyticsService" class="org.jahia.services.analytics.JAMonAnalyticsService">
+           <property name="prop">
+               <value>...</value>
+           </property>
+           <property name="jdbcTemplate" ref="jdbcTemplate"/>
+       </bean>
+       <bean id="jarepDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+           <property name="jndiName" value="java:comp/env/jdbc/perfmon"/>
+       </bean>
+
+       <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+           <property name="dataSource" ref="jarepDataSource"/>
+       </bean>
 
     <!--<bean id="abdera" class="org.apache.abdera.protocol.server.impl.DefaultProvider">-->
         <!--<constructor-arg index="0"><value>/atom/</value></constructor-arg>-->

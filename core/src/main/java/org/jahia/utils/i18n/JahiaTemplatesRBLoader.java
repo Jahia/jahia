@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  *
@@ -42,13 +42,46 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class JahiaTemplatesRBLoader extends ClassLoader {
     private static transient Logger logger = Logger.getLogger(JahiaTemplatesRBLoader.class);
     private ClassLoader loader = ClassLoader.getSystemClassLoader();
     private JahiaTemplatesPackage aPackage;
+    
+    private static WeakHashMap<ClassLoader, Map<String, JahiaTemplatesRBLoader>> loadersCache = new WeakHashMap<ClassLoader, Map<String, JahiaTemplatesRBLoader>>();
 
-    public JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {
+    public static JahiaTemplatesRBLoader getInstance(ClassLoader loader,
+            String templatePackageName) {
+        JahiaTemplatesRBLoader instance = null;
+        Map<String, JahiaTemplatesRBLoader> cacheByTemplatePackage = loader != null ? loadersCache
+                .get(loader)
+                : null;
+        if (cacheByTemplatePackage != null) {
+            instance = cacheByTemplatePackage.get(templatePackageName);
+        }
+        if (instance == null) {
+            instance = new JahiaTemplatesRBLoader(loader, templatePackageName);
+            if (loader != null && templatePackageName != null) {
+                synchronized (loadersCache) {
+                    Map<String, JahiaTemplatesRBLoader> cacheByPackage = loader != null ? loadersCache
+                            .get(loader)
+                            : null;
+                    if (cacheByPackage == null) {
+                        cacheByPackage = new HashMap<String, JahiaTemplatesRBLoader>();
+                        loadersCache.put(loader, cacheByPackage);
+                    }
+                    cacheByPackage.put(templatePackageName, instance);
+                }
+            }
+        }
+
+        return instance;
+    }
+    
+    private JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {
         aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(templatePackageName);
         if (loader != null) {
             this.loader = loader;

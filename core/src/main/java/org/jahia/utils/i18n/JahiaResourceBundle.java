@@ -139,7 +139,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     private JahiaTemplatesRBLoader getClassLoader() {
-        return new JahiaTemplatesRBLoader(Thread.currentThread()
+        return JahiaTemplatesRBLoader.getInstance(Thread.currentThread()
                 .getContextClassLoader(),
                 templatesPackage != null ? templatesPackage.getName() : Jahia
                         .getThreadParamBean().getSite()

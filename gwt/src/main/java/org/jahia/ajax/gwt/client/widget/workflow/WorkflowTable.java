@@ -59,7 +59,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.util.EngineOpener;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManager;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowServiceAsync;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;

@@ -39,7 +39,6 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.nodes.FileStoreSorter;
 import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
@@ -54,12 +53,11 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +73,7 @@ public class FileTable extends TopRightComponent {
     private LayoutContainer m_component;
     private Grid<GWTJahiaNode> m_table;
     private ListStore<GWTJahiaNode> store;
+    private ListLoader<GWTJahiaNode> loader ;
     private ManagerConfiguration configuration;
 
     public FileTable(final ManagerConfiguration config) {
@@ -83,7 +82,38 @@ public class FileTable extends TopRightComponent {
 
         configuration = config;
 
-        store = new ListStore<GWTJahiaNode>();
+        // data proxy
+        RpcProxy<GWTJahiaNode, ListLoadResult<GWTJahiaNode>> privateProxy = new RpcProxy<GWTJahiaNode, ListLoadResult<GWTJahiaNode>>() {
+            @Override
+            protected void load(GWTJahiaNode gwtJahiaFolder, AsyncCallback<ListLoadResult<GWTJahiaNode>> listAsyncCallback) {
+                Log.debug("retrieving children of " + gwtJahiaFolder.getName()) ;
+                JahiaNodeService.App.getInstance().lsLoad(gwtJahiaFolder, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, listAsyncCallback);
+            }
+        };
+
+        loader = new BaseListLoader<GWTJahiaNode, ListLoadResult<GWTJahiaNode>>(privateProxy) {
+            @Override
+            protected void onLoadSuccess(GWTJahiaNode gwtJahiaNode, ListLoadResult<GWTJahiaNode> gwtJahiaNodeListLoadResult) {
+                super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodeListLoadResult);
+                if (getLinker() != null) {
+                    getLinker().loaded() ;
+                }
+            }
+        };
+        store = new ListStore<GWTJahiaNode>(loader) {
+            protected void onBeforeLoad(LoadEvent e) {
+                if (getLinker() != null) {
+                    getLinker().loading("listing directory content...") ;
+                }
+                super.onBeforeLoad(e);
+            }
+
+            @Override
+            protected void onLoadException(LoadEvent loadEvent) {
+                super.onLoadException(loadEvent);
+                Log.error("Error listing directory content " + loadEvent.exception.toString()) ;
+            }
+        };
         store.setStoreSorter(new FileStoreSorter());
 
         m_table = new Grid<GWTJahiaNode>(store, getHeaders());
@@ -110,7 +140,6 @@ public class FileTable extends TopRightComponent {
                         }
                     } else {
                         getLinker().onTableItemDoubleClicked(sel.get(0));
-
                     }
                 }
             }
@@ -126,37 +155,7 @@ public class FileTable extends TopRightComponent {
     public void setContent(final Object root) {
         clearTable();
         if (root != null) {
-            final JahiaNodeServiceAsync service = JahiaNodeService.App.getInstance();
-            if (getLinker() != null) {
-                getLinker().loading("listing directory content...");
-            }
-            service.ls((GWTJahiaNode) root, configuration.getNodeTypes(), configuration.getMimeTypes(), configuration.getFilters(), null, false, new AsyncCallback<List<GWTJahiaNode>>() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage());
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                }
-
-                public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                    if (gwtJahiaNodes != null && gwtJahiaNodes.size() > 0) {
-                        store.add(gwtJahiaNodes);
-                        //store.sort("ext", Style.SortDir.ASC);
-                    }
-                    if (getLinker() != null) {
-                        getLinker().loaded();
-                    }
-                    List<GWTJahiaNode> treeSelection = new ArrayList<GWTJahiaNode>(1);
-                    treeSelection.add((GWTJahiaNode) root);
-                    getLinker().getBottomRightObject().fillData(treeSelection);
-                    // hack to avoid scrolling to the bottom of a huge list
-                    DeferredCommand.addCommand(new Command() {
-                        public void execute() {
-                            m_table.getView().scrollToTop();
-                        }
-                    });
-                }
-            });
+            loader.load((GWTJahiaNode) root) ;
         }
     }
 

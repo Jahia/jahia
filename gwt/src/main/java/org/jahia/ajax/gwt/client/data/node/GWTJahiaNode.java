@@ -40,6 +40,9 @@ import java.util.List;
 import java.util.HashMap;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.extjs.gxt.ui.client.data.ListLoadConfig;
+import com.extjs.gxt.ui.client.data.SortInfo;
+import com.extjs.gxt.ui.client.Style;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +50,7 @@ import com.extjs.gxt.ui.client.data.BaseTreeModel;
  * @author rfelden
  * @version 19 juin 2008 - 15:57:38
  */
-public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Serializable, Comparable<GWTJahiaNode> {
+public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Serializable, Comparable<GWTJahiaNode>, ListLoadConfig {
 
     private boolean displayable = false;
     private String url;
@@ -56,6 +59,7 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
     private String normalizedName = null;
     private int width = 0 ;
     private int height = 0 ;
+    private SortInfo sortInfo = new SortInfo("name", Style.SortDir.ASC);
 
     public GWTJahiaNode() {
         super();
@@ -322,4 +326,11 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         set("lockOwner", lockOwner);
     }
 
+    public SortInfo getSortInfo() {
+        return sortInfo;
+    }
+
+    public void setSortInfo(SortInfo sortInfo) {
+        this.sortInfo = sortInfo ;
+    }
 }

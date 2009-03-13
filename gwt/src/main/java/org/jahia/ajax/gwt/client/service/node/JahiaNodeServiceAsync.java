@@ -34,6 +34,7 @@
 package org.jahia.ajax.gwt.client.service.node;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,8 @@ import org.jahia.ajax.gwt.client.data.node.*;
 public interface JahiaNodeServiceAsync {
 
     void ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<List<GWTJahiaNode>> async);
+
+    void lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders, AsyncCallback<ListLoadResult<GWTJahiaNode>> async);
 
     void getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths, AsyncCallback<List<GWTJahiaNode>> async);
 

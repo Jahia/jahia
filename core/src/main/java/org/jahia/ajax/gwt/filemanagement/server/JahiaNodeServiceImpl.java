@@ -62,6 +62,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.apache.log4j.Logger;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -74,6 +76,10 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
         return FileManagerWorker.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean());
+    }
+
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException {
+        return new BaseListLoadResult<GWTJahiaNode>(FileManagerWorker.ls(folder, nodeTypes, mimeTypes, filters, openPaths, noFolders, retrieveParamBean())) ;
     }
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException {

@@ -47,6 +47,7 @@ import org.jahia.ajax.gwt.client.util.URL;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.extjs.gxt.ui.client.data.ListLoadResult;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,6 +72,8 @@ public interface JahiaNodeService extends RemoteService {
     }
 
     public List<GWTJahiaNode> ls(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException;
+
+    public ListLoadResult<GWTJahiaNode> lsLoad(GWTJahiaNode folder, String nodeTypes, String mimeTypes, String filters, String openPaths, boolean noFolders) throws GWTJahiaServiceException;
 
     public List<GWTJahiaNode> getRoot(String repositoryType, String nodeTypes, String mimeTypes, String filters, String openPaths) throws GWTJahiaServiceException;
 

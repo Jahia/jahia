@@ -221,6 +221,21 @@
         <filter-class>org.jahia.bin.errors.ErrorLoggingFilter</filter-class>
     </filter>
 
+    <filter>
+        <description>Fires Jahia errorOccurred event</description>
+        <filter-name>ErrorEventFilter</filter-name>
+        <filter-class>org.jahia.bin.errors.ErrorEventFilter</filter-class>
+        <init-param>
+            <description>
+                The minimal error response code to fire an event.
+                For example the value 500 will only fire errorOccurred event for critical events.
+                In case the value is set to 400, also the "bad request", "unauthorized", "forbidden", "resource not found" errors will be reported 
+            </description>
+            <param-name>minimalErrorCode</param-name>
+            <param-value>500</param-value>
+        </init-param>
+    </filter>
+
     <!--<filter-mapping>
         <filter-name>ResponseCacheControlFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -261,6 +276,12 @@
 
     <filter-mapping>
         <filter-name>ErrorLoggingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>ErrorEventFilter</filter-name>
         <url-pattern>/*</url-pattern>
         <dispatcher>ERROR</dispatcher>
     </filter-mapping>

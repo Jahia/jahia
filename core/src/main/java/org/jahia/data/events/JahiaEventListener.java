@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -35,7 +35,6 @@
 //  JahiaEventListener
 //  EV      12.01.2001
 //
-
 package org.jahia.data.events;
 
 import org.jahia.services.workflow.WorkflowEvent;
@@ -48,259 +47,309 @@ import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
+public class JahiaEventListener implements JahiaEventListenerInterface {
+    private static transient Category logger = Logger
+            .getLogger(JahiaEventListener.class);
 
-public class JahiaEventListener implements JahiaEventListenerInterface
-{
-    private static transient Category logger = Logger.getLogger(JahiaEventListener.class);
-    public void beforeServicesLoad( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : beforeServicesLoad"+je);
-        return;
+    private static void log(String eventType, JahiaEvent evt) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Received event '" + eventType + "'. Details: " + evt);
+        }
     }
-    public void afterServicesLoad( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : afterServicesLoad"+je);
-        return; }
 
-    public void siteAdded( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : siteAdded"+je);
-        return; }
-    public void siteDeleted( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : siteDeleted"+je);
-        return; }
+    public void addContainerEngineAfterInit(JahiaEvent je) {
+        log("addContainerEngineAfterInit", je);
+    }
+
+    public void addContainerEngineAfterSave(JahiaEvent je) {
+        log("addContainerEngineAfterSave", je);
+    }
+
+    public void addContainerEngineBeforeSave(JahiaEvent je) {
+        log("addContainerEngineBeforeSave", je);
+    }
+
+    public void afterGroupActivation(ContentActivationEvent je) {
+        log("afterGroupActivation", je);
+    }
+
+    public void afterServicesLoad(JahiaEvent je) {
+        log("afterServicesLoad", je);
+    }
+
+    public void aggregatedContentActivation(JahiaEvent je) {
+        log("aggregatedContentActivation", je);
+    }
+
+    public void aggregatedContentObjectCreated(JahiaEvent je) {
+        log("aggregatedContentObjectCreated", je);
+    }
 
     /**
-     * JahiaEvent(JahiaSaveVersion,ProcessingContext,ContentField)
+     * Event fired to notify all aggregated events will be processed. The
+     * event's object is the list of all aggregated events.
+     * 
      * @param je
      */
-    public void beforeFieldActivation( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : beforeFieldActivation"+je);
-        return; }
+    public void aggregatedEventsFlush(JahiaEvent je) {
+        log("aggregatedEventsFlush", je);
+    }
 
-    public void fieldAdded( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : fieldAdded"+je);
-        return; }
-    public void fieldUpdated( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : fieldUpdated"+je);
-        return; }
-    public void fieldDeleted( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : fieldDeleted"+je);
-        return; }
+    public void aggregatedMetadataEngineAfterInit(JahiaEvent je) {
+        log("aggregatedMetadataEngineAfterInit", je);
+    }
+
+    public void aggregatedMetadataEngineAfterSave(JahiaEvent je) {
+        log("aggregatedMetadataEngineAfterSave", je);
+    }
+
+    public void aggregatedMetadataEngineBeforeSave(JahiaEvent je) {
+        log("aggregatedMetadataEngineBeforeSave", je);
+    }
+
+    public void aggregatedObjectChanged(JahiaEvent je) {
+        log("aggregatedObjectChanged", je);
+    }
 
     /**
      * JahiaEvent(JahiaSaveVersion,ProcessingContext,JahiaContainer)
+     * 
      * @param je
      */
-    public void beforeContainerActivation( JahiaEvent je ){
-        if(logger.isDebugEnabled()) logger.debug("Receive event : beforeContainerActivation"+je);
-        return;}
+    public void beforeContainerActivation(JahiaEvent je) {
+        log("beforeContainerActivation", je);
+    }
+
+    /**
+     * JahiaEvent(JahiaSaveVersion,ProcessingContext,ContentField)
+     * 
+     * @param je
+     */
+    public void beforeFieldActivation(JahiaEvent je) {
+        log("beforeFieldActivation", je);
+    }
+
+    public void beforeServicesLoad(JahiaEvent je) {
+        log("beforeServicesLoad", je);
+
+    }
+
+    public void beforeStagingContentIsDeleted(JahiaEvent je) {
+        log("beforeStagingContentIsDeleted", je);
+    }
+
+    public void categoryUpdated(JahiaEvent je) {
+        log("categoryUpdated", je);
+    }
+
+    public void containerAdded(JahiaEvent je) {
+        log("containerAdded", je);
+    }
+
+    public void containerDeleted(JahiaEvent je) {
+        log("containerDeleted", je);
+    }
+
+    public void containerListPropertiesSet(JahiaEvent je) {
+        log("containerListPropertiesSet", je);
+    }
+
+    public void containerUpdated(JahiaEvent je) {
+        log("containerUpdated", je);
+    }
 
     public void containerValidation(JahiaEvent je) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : containerValidation"+je);
-        return; }
-    public void addContainerEngineAfterSave( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : addContainerEngineAfterSave"+je);
-        return; }
-    public void addContainerEngineBeforeSave( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : addContainerEngineBeforeSave"+je);
-        return; }
-    public void addContainerEngineAfterInit( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : addContainerEngineAfterInit"+je);
-        return; }
+        log("containerValidation", je);
+    }
 
-    public void updateContainerEngineBeforeSave( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : updateContainerEngineBeforeSave"+je);
-        return; }
-    public void updateContainerEngineAfterInit( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : updateContainerEngineAfterInit"+je);
-        return; }
+    public void contentActivation(ContentActivationEvent je) {
+        log("contentActivation", je);
+    }
 
-    public void containerAdded( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : containerAdded"+je);
-        return; }
-    public void containerUpdated( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : containerUpdated"+je);
-        return; }
-    public void containerDeleted( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : containerDeleted"+je);
-        return; }
-
-    public void pageAdded( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : pageAdded"+je);
-        return; }
-    public void pageLoaded( JahiaEvent je) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : pageLoaded"+je);
-        return; }
-
-    public void pagePropertiesSet( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : pagePropertiesSet"+je);
-        return; }
-    public void containerListPropertiesSet( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : containerListPropertiesSet"+je);
-        return; }
-    /**
-     * Event fired when a user property is set  
-     */
-    public void userPropertiesSet( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : userPropertiesSet"+je);
-        return; }
-
-    public void templateUpdated( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : templateUpdated"+je);
-        return; }
-    public void categoryUpdated( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : categoryUpdated"+je);
-        return; }
-
-    public void rightsSet( JahiaEvent je) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : rightsSet"+je);
-        return; }
-
-    public void userLoggedIn( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : userLoggedIn"+je);
-        return; }
-    public void userLoggedOut( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : userLoggedOut"+je);
-        return; }
-
-    public void objectChanged( WorkflowEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : objectChanged"+je);
-        return; }
-    public void aggregatedObjectChanged( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : aggregatedObjectChanged"+je);
-        return; }
-    public void beforeStagingContentIsDeleted(JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : beforeStagingContentIsDeleted"+je);
-        return; }
-
-    public void metadataEngineAfterInit (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : metadataEngineAfterInit"+theEvent);
-        return; }
-    public void aggregatedMetadataEngineAfterInit (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : aggregatedMetadataEngineAfterInit"+theEvent);
-        return; }
-
-    public void metadataEngineBeforeSave (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : metadataEngineBeforeSave"+theEvent);
-        return; }
-    public void aggregatedMetadataEngineBeforeSave (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : aggregatedMetadataEngineBeforeSave"+theEvent);
-        return; }
-
-    public void metadataEngineAfterSave (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : metadataEngineAfterSave"+theEvent);
-        return; }
-    public void aggregatedMetadataEngineAfterSave (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : aggregatedMetadataEngineAfterSave"+theEvent);
-        return; }
-
-    public void afterGroupActivation (ContentActivationEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : afterGroupActivation"+theEvent);
-        return; }
-
-    public void contentActivation (ContentActivationEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : contentActivation"+theEvent);
-        return; }
-    public void aggregatedContentActivation( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : aggregatedContentActivation"+je);
-        return; }
-
-    public void contentObjectCreated (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : contentObjectCreated"+theEvent);
-        return; }
-    public void aggregatedContentObjectCreated (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : aggregatedContentObjectCreated"+theEvent);
-        return; }
-
-    public void contentObjectUpdated (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : contentObjectUpdated"+theEvent);
-        return; }
+    public void contentObjectCreated(JahiaEvent je) {
+        log("contentObjectCreated", je);
+    }
 
     /**
-     * Event fired once a content object has been updated ( changes stored in persistence )
-     *
-     * @param theEvent JahiaEvent
+     * Event fired after a call to contentObjectonce a content object has been
+     * updated ( changes stored in persistence )
+     * 
+     * @param je
+     *            JahiaEvent
      */
-    public void contentObjectUndoStaging (ContentUndoStagingEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : contentObjectUndoStaging"+theEvent);
-        return; }
-
-    /**
-     * Event fired after a call to contentObjectonce a content object has been updated ( changes stored in persistence )
-     *
-     * @param theEvent JahiaEvent
-     */
-    public void contentObjectDelete (ContentObjectDeleteEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : contentObjectDelete"+theEvent);
-        return; }
+    public void contentObjectDelete(ContentObjectDeleteEvent je) {
+        log("contentObjectDelete", je);
+    }
 
     /**
      * Event fired on content object restore version
-     *
-     * @param theEvent JahiaEvent
+     * 
+     * @param je
+     *            JahiaEvent
      */
-    public void contentObjectRestoreVersion (ContentObjectRestoreVersionEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : contentObjectRestoreVersion"+theEvent);
-        return; }
-
-    public void fileManagerAclChanged (JahiaEvent theEvent) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : fileManagerAclChanged"+theEvent);
-        return; }
-
-    public void timeBasedPublishingEvent( RetentionRuleEvent theEvent ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : timeBasedPublishingEvent"+theEvent);
-        return; }
+    public void contentObjectRestoreVersion(ContentObjectRestoreVersionEvent je) {
+        log("contentObjectRestoreVersion", je);
+    }
 
     /**
-     * Event fired to notify all aggregated events will be processed.
-     * The event's object is the list of all aggregated events.
-     *
-     * @param theEvent
+     * Event fired once a content object has been updated ( changes stored in
+     * persistence )
+     * 
+     * @param je
+     *            JahiaEvent
      */
-    public void aggregatedEventsFlush(JahiaEvent theEvent){
-        if(logger.isDebugEnabled()) logger.debug("Receive event : aggregatedEventsFlush"+theEvent);
-        return; }
-
-    public void flushEsiCacheEvent(JahiaEvent theEvent){
-        if(logger.isDebugEnabled()) logger.debug("Receive event : flushEsiCacheEvent"+theEvent);
-        return; }
-
-    // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
-    public void pageDeleted( JahiaEvent je) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : pageDeleted"+je);
-        return; }
-    public void pageAccepted( JahiaEvent je) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : pageAccepted"+je);
-        return; }
-    public void pageRejected( JahiaEvent je) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : pageRejected"+je);
-        return; }
-    public void templateAdded( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : templateAdded"+je);
-        return; }
-    public void templateDeleted( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : templateDeleted"+je);
-        return; }
-    public void userAdded( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : userAdded"+je);
-        return; }
-    public void userDeleted( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : userDeleted"+je);
-        return; }
-    public void userUpdated( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : userUpdated"+je);
-        return; }
-    public void groupAdded( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : groupAdded"+je);
-        return; }
-    public void groupDeleted( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : groupDeleted"+je);
-        return; }
-    public void groupUpdated( JahiaEvent je ) {
-        if(logger.isDebugEnabled()) logger.debug("Receive event : groupUpdated"+je);
-
-        ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-        servicesRegistry.getJahiaACLManagerService().flushCache();
-        
+    public void contentObjectUndoStaging(ContentUndoStagingEvent je) {
+        log("contentObjectUndoStaging", je);
     }
-    // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
 
-} // end JahiaEventListener
+    public void contentObjectUpdated(JahiaEvent je) {
+        log("contentObjectUpdated", je);
+    }
+
+    public void errorOccurred(JahiaErrorEvent je) {
+        log("errorOccurred", je);
+    }
+
+    public void fieldAdded(JahiaEvent je) {
+        log("fieldAdded", je);
+    }
+
+    public void fieldDeleted(JahiaEvent je) {
+        log("fieldDeleted", je);
+    }
+
+    public void fieldUpdated(JahiaEvent je) {
+        log("fieldUpdated", je);
+    }
+
+    public void fileManagerAclChanged(JahiaEvent je) {
+        log("fileManagerAclChanged", je);
+    }
+
+    public void flushEsiCacheEvent(JahiaEvent je) {
+        log("flushEsiCacheEvent", je);
+    }
+
+    public void groupAdded(JahiaEvent je) {
+        log("groupAdded", je);
+    }
+
+    public void groupDeleted(JahiaEvent je) {
+        log("groupDeleted", je);
+    }
+
+    public void groupUpdated(JahiaEvent je) {
+        log("groupUpdated", je);
+        ServicesRegistry.getInstance().getJahiaACLManagerService().flushCache();
+
+    }
+
+    public void metadataEngineAfterInit(JahiaEvent je) {
+        log("metadataEngineAfterInit", je);
+    }
+
+    public void metadataEngineAfterSave(JahiaEvent je) {
+        log("metadataEngineAfterSave", je);
+    }
+
+    public void metadataEngineBeforeSave(JahiaEvent je) {
+        log("metadataEngineBeforeSave", je);
+    }
+
+    public void objectChanged(WorkflowEvent je) {
+        log("objectChanged", je);
+    }
+
+    public void pageAccepted(JahiaEvent je) {
+        log("pageAccepted", je);
+    }
+
+    public void pageAdded(JahiaEvent je) {
+        log("pageAdded", je);
+    }
+
+    public void pageDeleted(JahiaEvent je) {
+        log("pageDeleted", je);
+    }
+
+    public void pageLoaded(JahiaEvent je) {
+        log("pageLoaded", je);
+    }
+
+    public void pageLoadedFromCache(JahiaEvent je) {
+        log("pageLoadedFromCache", je);
+
+    }
+
+    public void pagePropertiesSet(JahiaEvent je) {
+        log("pagePropertiesSet", je);
+    }
+
+    public void pageRejected(JahiaEvent je) {
+        log("pageRejected", je);
+    }
+
+    public void rightsSet(JahiaEvent je) {
+        log("rightsSet", je);
+    }
+
+    public void siteAdded(JahiaEvent je) {
+        log("afterServicesLoad", je);
+    }
+
+    public void siteDeleted(JahiaEvent je) {
+        log("siteDeleted", je);
+    }
+
+    public void templateAdded(JahiaEvent je) {
+        log("templateAdded", je);
+    }
+
+    public void templateDeleted(JahiaEvent je) {
+        log("templateDeleted", je);
+    }
+
+    public void templateUpdated(JahiaEvent je) {
+        log("templateUpdated", je);
+    }
+
+    public void timeBasedPublishingEvent(RetentionRuleEvent je) {
+        log("timeBasedPublishingEvent", je);
+    }
+
+    public void updateContainerEngineAfterInit(JahiaEvent je) {
+        log("updateContainerEngineAfterInit", je);
+    }
+
+    public void updateContainerEngineBeforeSave(JahiaEvent je) {
+        log("updateContainerEngineBeforeSave", je);
+    }
+
+    public void userAdded(JahiaEvent je) {
+        log("userAdded", je);
+    }
+
+    public void userDeleted(JahiaEvent je) {
+        log("userDeleted", je);
+    }
+
+    public void userLoggedIn(JahiaEvent je) {
+        log("userLoggedIn", je);
+    }
+
+    public void userLoggedOut(JahiaEvent je) {
+        log("userLoggedOut", je);
+    }
+
+    /**
+     * Event fired when a user property is set
+     */
+    public void userPropertiesSet(JahiaEvent je) {
+        log("userPropertiesSet", je);
+    }
+
+    public void userUpdated(JahiaEvent je) {
+        log("userUpdated", je);
+    }
+
+}

@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -85,6 +85,14 @@ public interface JahiaEventListenerInterface
 
     public void pageAdded( JahiaEvent je );
     public void pageLoaded( JahiaEvent je );
+    
+    /**
+     * Called when the page is loaded from the cache.
+     * 
+     * @param je
+     *            the jahia event object
+     */
+    public void pageLoadedFromCache(JahiaEvent je);
 
     public void pagePropertiesSet( JahiaEvent je );
     public void containerListPropertiesSet( JahiaEvent je );
@@ -247,4 +255,11 @@ public interface JahiaEventListenerInterface
     public void groupUpdated( JahiaEvent je );
     // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - End
 
-} // end JahiaEventListenerInterface
+    /**
+     * Called when an exception occurs in the system.
+     * 
+     * @param je
+     *            the jahia event object
+     */
+    public void errorOccurred(JahiaErrorEvent je);
+}

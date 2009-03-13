@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -36,7 +36,10 @@ package org.jahia.operations.valves;
 import au.id.jericho.lib.html.OutputDocument;
 import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.StartTag;
+
+import org.apache.log4j.Logger;
 import org.jahia.content.ContentObjectKey;
+import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.operations.PageGeneratorQueue;
@@ -56,6 +59,7 @@ import org.jahia.services.cache.ContainerHTMLCacheEntry;
 import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.services.cache.SkeletonCache;
 import org.jahia.services.cache.SkeletonCacheEntry;
+import org.jahia.services.events.JahiaEventGeneratorBaseService;
 import org.jahia.services.theme.ThemeService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
@@ -79,21 +83,15 @@ import java.util.List;
 
 public class SkeletonAggregatorValve implements Valve {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SkeletonAggregatorValve.class);
-    private static PageGeneratorQueue generatorQueue;
+    private static Logger logger = Logger.getLogger(SkeletonAggregatorValve.class);
     public static final String ESI_VARIABLE_USERNAME = "username";
     public static final String ESI_VARIABLE_USER = "user";
     public static final String THEME_VARIABLE = "theme";
     public static final String GWT_VARIABLE = "gwtInit";
     private static ContainerHTMLCache containerHTMLCache = null;
-    private static CacheKeyGeneratorService service;
-
-    public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
-        this.generatorQueue = generatorQueue;
-    }
-
-    public SkeletonAggregatorValve() {
-    }
+    private JahiaEventGeneratorBaseService eventService;
+    private PageGeneratorQueue generatorQueue;
+    private CacheKeyGeneratorService cacheKeyGeneratorService;
 
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         ProcessingContext processingContext = (ProcessingContext) context;
@@ -102,7 +100,7 @@ public class SkeletonAggregatorValve implements Valve {
         valveContext.invokeNext(context);
     }
 
-    public static boolean checkCache(ProcessingContext processingContext) throws PipelineException {
+    public boolean checkCache(ProcessingContext processingContext) throws PipelineException {
 
         // force generation of page if this one is not cacheable
         boolean iscacheable = false;
@@ -141,7 +139,6 @@ public class SkeletonAggregatorValve implements Valve {
                     throw new PipelineException(ex);
                 }
                 
-                if (service == null) service = ServicesRegistry.getInstance().getCacheKeyGeneratorService();
                 watch.start("computeSkeletonEntryKeyWithGroups");
                 String queryString = processingContext.getQueryString();
                 String aesMode = (String) processingContext.getSessionState().getAttribute("aesMode") ;
@@ -176,7 +173,7 @@ public class SkeletonAggregatorValve implements Valve {
                 String additionalKey = builder.toString() ;
 
                 final JahiaUser jahiaUser = processingContext.getUser();
-                entryKey = service
+                entryKey = cacheKeyGeneratorService
                         .computeSkeletonEntryKeyWithGroups(processingContext.getPage(),
                                                            additionalKey,
                                                            jahiaUser,
@@ -259,7 +256,7 @@ public class SkeletonAggregatorValve implements Valve {
                                     }
                                     int ctnid = Integer.parseInt(attrs[0].split("=")[1]);
                                     GroupCacheKey containerKey =
-                                            service.computeContainerEntryKey(ctnid,
+                                            cacheKeyGeneratorService.computeContainerEntryKey(ctnid,
                                                                              cacheKey,
                                                                              jahiaUser,
                                                                              curLanguageCode,
@@ -316,6 +313,11 @@ public class SkeletonAggregatorValve implements Valve {
                             watch.start("Send to client");
                             if (logger.isDebugEnabled())
                                 logger.debug("Found content in cache, writing directly bypassing processing...");
+                            
+                            eventService.fireLoadPageFromCache(new JahiaEvent(
+                                    this, processingContext, processingContext
+                                            .getPage()));
+                            
                             HttpServletResponse realResp = ((ParamBean) processingContext).
                                     getRealResponse();
                             String contentType = htmlEntry.getContentType();
@@ -374,4 +376,18 @@ public class SkeletonAggregatorValve implements Valve {
 
     public void initialize() {
     }
+
+    public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
+        this.generatorQueue = generatorQueue;
+    }
+
+    public void setCacheKeyGeneratorService(
+            CacheKeyGeneratorService cacheKeyGeneratorService) {
+        this.cacheKeyGeneratorService = cacheKeyGeneratorService;
+    }
+
+    public void setEventService(JahiaEventGeneratorBaseService eventService) {
+        this.eventService = eventService;
+    }
+
 }

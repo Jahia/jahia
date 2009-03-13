@@ -730,6 +730,16 @@
       <servlet-name>ViewCacheServlet</servlet-name>
       <servlet-class>org.jahia.tools.cache.ViewCacheServlet</servlet-class>
     </servlet>   
+    <!-- ====================================================================== -->
+    <!-- A N A L Y T I C SS E R V L E T S                                       -->
+    <!-- ====================================================================== -->
+
+    <servlet>
+        <servlet-name>analyticsGWTService</servlet-name>
+        <servlet-class>
+            org.jahia.analytics.jahiaanalytics.AnalyticsServiceImpl
+        </servlet-class>
+    </servlet>
 
     <!-- ====================================================================== -->
     <!-- P O R T L E T   S E R V L E T S                                        -->
@@ -806,6 +816,10 @@
     </servlet-mapping>
 
     <!-- gwt mapping-->
+    <servlet-mapping>
+        <servlet-name>analyticsGWTService</servlet-name>
+        <url-pattern>/gwt/analytics/*</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>jahiaBaseGWTService</servlet-name>
         <url-pattern>/gwt/base/*</url-pattern>

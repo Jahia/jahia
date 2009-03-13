@@ -98,7 +98,6 @@
     </profiles>
     
   <modules>
-    <module>archetypes</module>
     <module>public-api</module>
     <module>bridges</module>
     <module>taglib</module>

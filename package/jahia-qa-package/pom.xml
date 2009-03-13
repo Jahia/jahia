@@ -30,7 +30,8 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <tasks>
-                                        <exec executable="/home/bamboo/bin/runall.sh" dir="/home/bamboo/bin">
+                                        <exec executable="/home/bamboo/bin/runall.sh" dir="/home/bamboo/bin" >
+                                            <arg value="${jahia.package.version}"/>
                                         </exec>
                                     </tasks>
                                 </configuration>

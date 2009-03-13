@@ -33,6 +33,17 @@
     </repository>
   </repositories>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <id>jahiaRepository</id>
+      <name>Jahia's Maven Repository</name>
+      <url>http://maven.jahia.org/maven2</url>
+    </pluginRepository>
+  </pluginRepositories>
+
     <profiles>
 
       <profile>
@@ -87,8 +98,6 @@
     </profiles>
     
   <modules>
-    <module>maven-jahia-plugin</module>
-    <module>archetypes</module>
     <module>public-api</module>
     <module>bridges</module>
     <module>taglib</module>

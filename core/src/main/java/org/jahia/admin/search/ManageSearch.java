@@ -435,15 +435,18 @@ public class ManageSearch extends AbstractAdministrationModule {
                 boolean result = searchServ.indexSite (site.getID (), jData.getProcessingContext().getUser());
                 searchServ.optimizeIndex (site.getID ());
 
-                request.setAttribute ("result", Boolean.valueOf(result));
+                if (!result) {
+                    request.setAttribute("result", Boolean.valueOf(result));
 
-                // set the default action
-                request.setAttribute ("subAction", "display");
-                // set the default step
-                request.setAttribute ("go", "change");
+                    // set the default action
+                    request.setAttribute("subAction", "display");
+                    // set the default step
+                    request.setAttribute("go", "change");
 
-                doRedirect (request, response, JSP + "indexresult");
-
+                    doRedirect(request, response, JSP + "indexresult");
+                } else {
+                    displayMain (request, response, session);                    
+                }
             } else {
                 displayMain (request, response, session);
             }

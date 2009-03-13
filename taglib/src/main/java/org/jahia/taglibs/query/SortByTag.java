@@ -87,7 +87,7 @@ public class SortByTag extends AbstractJahiaTag {
             propValue.setValueProviderClass(this.valueProviderClass);
             if (this.queryFactory instanceof QueryObjectModelFactoryImpl) {
                 QueryObjectModelFactoryImpl ourQueryFactory = (QueryObjectModelFactoryImpl) this.queryFactory;
-                if (JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
+                if (order != null && order.length() > 0 && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
                         .parseInt(order)) {
                     ordering = ourQueryFactory.descending(propValue, Boolean
                             .valueOf(this.getLocaleSensitive()).booleanValue());
@@ -96,7 +96,7 @@ public class SortByTag extends AbstractJahiaTag {
                             .valueOf(this.getLocaleSensitive()).booleanValue());
                 }
             } else {
-                if (JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
+                if (order != null && order.length() > 0 && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
                         .parseInt(order)) {
                     ordering = this.queryFactory.descending(propValue);
                 } else {

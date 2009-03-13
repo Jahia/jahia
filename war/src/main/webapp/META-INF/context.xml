@@ -49,6 +49,12 @@
             driverClassName="@DRIVER@" url="@URL@" defaultAutoCommit="true" 
             maxActive="20" maxIdle="30" maxWait="10000" accessToUnderlyingConnectionAllowed="true" />
 
+    <Resource name="jdbc/perfmon" auth="Container"
+            factory="org.apache.commons.dbcp.BasicDataSourceFactory"
+            type="javax.sql.DataSource" username="perfmon" password="perfmon"
+            driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost:3306/perfmon" defaultAutoCommit="true"
+            maxActive="20" maxIdle="30" maxWait="10000" accessToUnderlyingConnectionAllowed="true" />
+
 <!--
     <ResourceLink name="jcr/repository"
               global="jcr/repository"

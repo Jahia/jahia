@@ -37,6 +37,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.query.QueryService;
 import org.jahia.services.JahiaService;
+import org.jahia.services.analytics.AnalyticsService;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.opensearch.JahiaOpenSearchService;
 import org.jahia.services.acl.JahiaACLManagerService;
@@ -85,7 +86,6 @@ import org.jahia.services.version.JahiaVersionService;
 import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 import java.util.*;
@@ -239,6 +239,8 @@ public class ServicesRegistry {
     private static final String JAHIA_TOOLBAR_SERVICE = "JahiaToolbarService";
 
     private static final String JAHIA_OPENSEARCH_SERVICE = "JahiaOpenSearchService";
+
+    private static final String ANALYTICS_SERVICE = "AnalyticsService";
 
     // This map is an optimization to avoid synchronization issues.
     private Map<String, JahiaService> servicesCache = new HashMap<String, JahiaService>();
@@ -576,10 +578,14 @@ public class ServicesRegistry {
         return (SubscriptionService) getService("SubscriptionService");
     }
 
+    public AnalyticsService getAnalyticsService() {
+        return (AnalyticsService) getService(ANALYTICS_SERVICE);
+    }
     /**
      * Default constructor, creates a new <code>ServiceRegistry</code> instance.
      */
     private ServicesRegistry() {
     }
+
 
 }

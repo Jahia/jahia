@@ -957,7 +957,7 @@ public class NStepWorkflow implements ExternalWorkflow {
             } else {
                 testResults = workflowService.activate(contentObjectInstance, set, jahiaVersionService.getSiteSaveVersion(jParams.getSiteID()), jParams, stateModifContext);
             }
-            if (testResults.getStatus() != ActivationTestResults.FAILED_OPERATION_STATUS && !testResults.hasBlockerError()) {
+            if (testResults.getStatus() == ActivationTestResults.COMPLETED_OPERATION_STATUS) {
                 instanceManager.abortWorkflow(objectKey, languageCode);
             } else {
                 instanceManager.rollbackWorkflow(jParams.getUser().getUsername(), objectKey, languageCode);

@@ -38,7 +38,6 @@ package org.jahia.data.fields;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import org.jahia.data.ConnectionTypes;
@@ -337,13 +336,16 @@ public class JahiaFileFieldWrapper extends JahiaField implements JahiaAllowApply
                 (JahiaFileField) this.getObject();
         aField.setObject(fField);
     }
-
+    
     /**
-     * Returns an Hashmap of language_code/value used by search index engine
+     * Returns an array of values for the given language Code.
+     * By Default, return the field values in the field current language code.
+     *
+     * @param languageCode
+     * @return
+     * @throws JahiaException
      */
-    public Map<String, String[]> getValuesForSearch() throws JahiaException {
-        final Map<String, String[]> values = new HashMap<String, String[]>();
-        values.put(this.getLanguageCode(), new String[]{""});
-        return values;
+    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
+        return EMPTY_STRING_ARRAY;
     }
 }

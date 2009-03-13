@@ -411,11 +411,11 @@ public class JahiaPageField extends JahiaField {
      * @return
      * @throws JahiaException
      */
-    public String[] getValuesForSearch(String languageCode, ProcessingContext context) throws JahiaException {
+    public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
 
         String[] values = this.getValues();
         if (values == null || values.length == 0) {
-            values = new String[]{""};
+            values = EMPTY_STRING_ARRAY;
         }
         for (int i = 0; i < values.length; i++) {
             values[i] = TextHtml.html2text(values[i]);
@@ -434,7 +434,7 @@ public class JahiaPageField extends JahiaField {
                 logger.debug("Exception evaluation page field indexation rule",t);
             }
             if ( rule != null && rule.getIndexationMode() == IndexationRuleInterface.DONT_INDEX ){
-                return new String[]{};
+                return EMPTY_STRING_ARRAY;
             }
             String title = page.getTitle();
             if ( title != null && !"".equals(title.trim()) ){

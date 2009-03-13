@@ -231,13 +231,8 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
         }
 
         Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
-        List<String> arrayList = new ArrayList<String>();
-        String[] strVals = this.getValues();
-        if (strVals != null) {
-            arrayList.addAll(Arrays.asList(strVals));
-        }
 
-        for (String val : arrayList) {
+        for (String val : this.getValues()) {
             ResourceBundleMarker resMarker =
                     ResourceBundleMarker.parseMarkerValue(val);
             if (resMarker == null) {
@@ -275,18 +270,12 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
         Map<String, String[]> values = new HashMap<String, String[]>();
         
         for (Map.Entry<String, List<String>> entry : tempValues.entrySet()) {
-            strVals = new String[entry.getValue().size()];
-            values.put(entry.getKey(), entry.getValue().toArray(strVals) );
+            values.put(entry.getKey(), entry.getValue().toArray(new String[entry.getValue().size()]) );
         }
         return values;
     }
 
     public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
-        List<String> arrayList = new ArrayList<String>();
-        String[] strVals = this.getValues();
-        if (strVals != null) {
-            arrayList.addAll(Arrays.asList(strVals));
-        }
         EntryLoadRequest loadRequest = (EntryLoadRequest) context.getEntryLoadRequest().clone();
         loadRequest.getLocales().clear();
         loadRequest.getLocales().add(LanguageCodeConverters.languageCodeToLocale(languageCode));
@@ -296,7 +285,7 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
         try {
             context.setSubstituteEntryLoadRequest(loadRequest);
             Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-            for (String val : arrayList) {
+            for (String val : this.getValues()) {
                 ResourceBundleMarker resMarker = expand ? ResourceBundleMarker
                         .parseMarkerValue(val) : null;
                 if (resMarker == null) {

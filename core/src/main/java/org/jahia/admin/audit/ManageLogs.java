@@ -132,9 +132,19 @@ public class ManageLogs extends AbstractAdministrationModule {
         else if(op.equals("flush"))          processFlush( req, res, sess );
         else if(op.equals("enable"))         processEnable( req, res, sess );
         else if(op.equals("disable"))        processDisable( req, res, sess );
+        else if(op.equals("analytics"))      displayAnalytics( req, res, sess );
 
     } // userRequestDispatcher
 
+    private void displayAnalytics(HttpServletRequest req, HttpServletResponse res, HttpSession sess) {
+        try {
+            JahiaAdministration.doRedirect( req, res, sess, JSP_PATH + "gwtanalytics.jsp" );
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ServletException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
 
     /**
@@ -202,6 +212,9 @@ public class ManageLogs extends AbstractAdministrationModule {
                               HttpSession          sess )
     throws IOException, ServletException
     {
+        //todo ib for test purpose
+        displayAnalytics( req, res, sess );
+
         String   jahiaDisplayMessage = (String)  sess.getAttribute(CLASS_NAME + "jahiaDisplayMessage");
 
         JahiaData jData = (JahiaData) req.getAttribute("org.jahia.data.JahiaData");
@@ -244,7 +257,7 @@ public class ManageLogs extends AbstractAdministrationModule {
 
             req.setAttribute("logData", logData);
             sess.setAttribute(CLASS_NAME + "jahiaDisplayMessage",  jahiaDisplayMessage);
-            JahiaAdministration.doRedirect( req, res, sess, JSP_PATH + "logs.jsp" );
+        //    JahiaAdministration.doRedirect( req, res, sess, JSP_PATH + "logs.jsp" ); //todo ib for test purpose
 
         } else {
 

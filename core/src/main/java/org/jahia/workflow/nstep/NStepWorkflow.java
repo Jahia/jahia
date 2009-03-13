@@ -367,19 +367,9 @@ public class NStepWorkflow implements ExternalWorkflow {
      */
     public void abortProcess(final String processName, final String objectKey, final String languageCode, final ProcessingContext jParams) {
         try {
-//            transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-//                protected void doInTransactionWithoutResult(TransactionStatus status) {
-//                    try {
             WorkflowInstance instance = instanceManager.getWorkflowInstanceByObjectKey(objectKey, languageCode);
             historyManager.saveWorkflowHistory(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(instance.getAuthorEmail()).getUsername(), jParams.getUser().getUsername(), processName, "abort process", objectKey, languageCode, "abort process");
             instanceManager.abortWorkflow(objectKey, languageCode);
-//                    } catch (ObjectRetrievalFailureException e) {
-//                        log.debug("Object " + objectKey + " not found in database");
-//                    } catch (Exception e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//            });
         } catch (ObjectRetrievalFailureException e) {
             log.debug("Object " + objectKey + " not found in database", e);
         }

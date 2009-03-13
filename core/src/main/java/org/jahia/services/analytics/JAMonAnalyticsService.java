@@ -258,7 +258,6 @@ public class JAMonAnalyticsService extends AnalyticsService {
         // get the most active N users 
         Map<String, String> mostActiveUsers = new HashMap<String, String>();
         for (int i = 1; i <= N; i++) {
-            logger.info(" iteration " + i);
             String mostActive = "";
             resultCopy = result;
             double max = 0;
@@ -278,19 +277,19 @@ public class JAMonAnalyticsService extends AnalyticsService {
             mostActiveUsers.put(mostActive, String.valueOf(max));
             result.remove(mostActive);
         }
-        logger.info("==================================================");
+
 
         return mostActiveUsers;
     }
 
     public Map<String, String> getLeastNactiveUsers(int N) {
-        logger.info("--- > " + N + " Least active users ");
+
 
         Map<String, String> result = new HashMap<String, String>();// username,totalop_lastaccess
         Map<String, String> resultCopy = new HashMap<String, String>();
         String query = "select * from counterdata cross join counters where name like '%JahiaEvent%' and counter = counters.id";
         List counterdata = jdbcTemplate.query(query, new DataRowMapper());
-        double min = 0;
+      
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
             JAMonCounterData jmd = (JAMonCounterData) (it.next());
             String username = (jmd.getUser().split("_"))[1];
@@ -301,11 +300,10 @@ public class JAMonAnalyticsService extends AnalyticsService {
                 result.put(username, String.valueOf(jmd.getHits()));
             }
         }
-        int size = result.size();
         // get the most active N users
-        Map<String, String> mostActiveUsers = new HashMap<String, String>();
+
         for (int i = 1; i <= N; i++) {
-            logger.info(" iteration " + i);
+
             String mostActive = "";
             resultCopy = result;
             double max = 0;
@@ -346,9 +344,9 @@ public class JAMonAnalyticsService extends AnalyticsService {
         String query = "select * from counterdata cross join counters where name like '%JahiaEvent%" + params + "' and counter = counters.id order by ts DESC limit 0," + N;
 
 
-        logger.info("__________________________________________________________________________________________");
-        logger.info(query);
-        logger.info("__________________________________________________________________________________________");
+       // logger.info("__________________________________________________________________________________________");
+       // logger.info(query);
+       // logger.info("__________________________________________________________________________________________");
         List counterdata = jdbcTemplate.query(query, new DataRowMapper());
 
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
@@ -373,6 +371,7 @@ public class JAMonAnalyticsService extends AnalyticsService {
             result.put("siteid" + i, data.getSiteId());
             result.put("pid" + i, String.valueOf(data.getPid()));
             result.put("uuid" + i, data.getUuid());
+            result.put("hits" + i, String.valueOf(data.getHits()));
 
 
             i++;

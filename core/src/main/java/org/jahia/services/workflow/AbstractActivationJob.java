@@ -230,6 +230,15 @@ public abstract class AbstractActivationJob extends BackgroundJob {
                         }
                     }
                 }
+
+                Map<String,Integer> states = service.getLanguagesStates(object);
+                if (!states.containsKey("shared") || states.get("shared")==1) {
+                    for (String s : states.keySet()) {
+                        if (!s.equals("shared") && states.get(s)==1 && externalWorkflow.isProcessStarted(processId, key.toString(), s)) {
+                            externalWorkflow.abortProcess(processId, key.toString(),s, jParams);
+                        }
+                    }
+                }
             }
         } catch (Exception e) {
             logger.error("Error during workflow operation! We must flush all caches to ensure integrity between database and viewing", e);

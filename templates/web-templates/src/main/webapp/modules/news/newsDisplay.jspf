@@ -8,7 +8,7 @@
 
         <p class="newsInfo">
             <span class="newsLabelDate"><fmt:message key="news.date"/> :</span>
-            <template:field name='newsDate' display="false" valueBeanID="newsDate"/>
+            <template:field name='newsDate' display="false" var="newsDate"/>
             <span class="newsDate">
                 <fmt:formatDate value="${newsDate.date}" pattern="dd/MM/yyyy"/>&nbsp;<fmt:formatDate value="${newsDate.date}" pattern="HH:mm" var="dateTimeNews"/>
                 <c:if test="${dateTimeNews != '00:00'}">${dateTimeNews}</c:if>

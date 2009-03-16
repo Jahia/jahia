@@ -1,25 +1,23 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 <template:container id="eventContainer"  actionMenuNamePostFix="event"  emptyContainerDivCssClassName="mockup-eventlist">
-        <template:field name="startDate" display="false" beanID="startDate"/>
-        <template:field name="endDate" display="false" beanID="endDate"/>
-        <fmt:parseDate var="startDateP" value="${startDate.value}" pattern="dd.MM.yyyy HH:mm" type="both"/>
-        <fmt:parseDate var="endDateP" value="${endDate.value}" pattern="dd.MM.yyyy HH:mm" type="both"/>
+        <template:field name="startDate" display="false" var="startDate"/>
+        <template:field name="endDate" display="false" var="endDate"/>
         <div class="eventsListItem"><!--start eventsListItem -->
             <div class="eventsInfoDate">
                 <div class="eventsDate">
-                    <span class="day"><fmt:formatDate pattern="dd" value="${startDateP}"/></span>
-                    <span class="month"><fmt:formatDate pattern="MM" value="${startDateP}"/></span>
-                    <span class="year"><fmt:formatDate pattern="yyyy" value="${startDateP}"/></span>
+                    <span class="day"><fmt:formatDate pattern="dd" value="${startDate.date}"/></span>
+                    <span class="month"><fmt:formatDate pattern="MM" value="${startDate.date}"/></span>
+                    <span class="year"><fmt:formatDate pattern="yyyy" value="${startDate.date}"/></span>
                 </div>
-                <c:if test="${(!empty endDate.value) && (endDate.value ne '')}">
+                <c:if test="${not empty endDate}">
                     <div class="eventsTxtDate">
                         <span><fmt:message key='to'/></span>
                     </div>
                     <div class="eventsDate">
-                        <span class="day"><fmt:formatDate pattern="dd" value="${endDateP}"/></span>
-                        <span class="month"><fmt:formatDate pattern="MM" value="${endDateP}"/></span>
-                        <span class="year"><fmt:formatDate pattern="yyyy" value="${endDateP}"/></span>
+                        <span class="day"><fmt:formatDate pattern="dd" value="${endDate.date}"/></span>
+                        <span class="month"><fmt:formatDate pattern="MM" value="${endDate.date}"/></span>
+                        <span class="year"><fmt:formatDate pattern="yyyy" value="${endDate.date}"/></span>
                     </div>
                 </c:if>
             </div>

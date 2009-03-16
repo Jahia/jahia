@@ -20,7 +20,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
 
@@ -44,9 +44,9 @@
                             displaySkins="false" displayExtensions="false">
             <template:container id="newsContainer" displayActionMenu="false" displayContainerAnchor="false"
                                displaySkins="false" displayExtensions="false" cacheKey="rss">
-                <template:field name="newsTitle" valueBeanID="newsTitle" display="false" removeHtmlTags="true"/>
-                <template:field name="newsDesc" valueBeanID="newsDesc" display="false" removeHtmlTags="true"/>
-                <template:field name="newsDate" valueBeanID="newsDate" display="false"/>
+                <template:field name="newsTitle" var="newsTitle" display="false" removeHtmlTags="true"/>
+                <template:field name="newsDesc" var="newsDesc" display="false" removeHtmlTags="true"/>
+                <template:field name="newsDate" var="newsDate" display="false"/>
                 <item>
                     <title><c:out value="${newsTitle}"/></title>
                     <description><![CDATA[<c:out value="${newsDesc}"/>]]></description>

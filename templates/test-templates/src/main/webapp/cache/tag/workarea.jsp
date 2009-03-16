@@ -88,8 +88,8 @@
             <template:addDependency bean="${cachecontentContainer}"/>
             <div>
                 <fmt:formatDate value="${now}" dateStyle="full" type="both"/><br/>
-                <template:field name="mainContentTitle" beanID="title"/>
-                <template:field name="mainContentBody" beanID="body"/>
+                <template:field name="mainContentTitle"/>
+                <template:field name="mainContentBody"/>
             </div>
         </template:container>
     </template:containerList>

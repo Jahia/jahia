@@ -39,12 +39,12 @@
 <template:containerList name="portletContainer" id="portlets"
                        actionMenuNamePostFix="portlets" actionMenuNameLabelKey="portlets.add">
     <template:container id="portletsContainer" actionMenuNamePostFix="portlet" actionMenuNameLabelKey="portlet">
-        <template:field name='portlet' beanID="portlet" display="false"/>
-        <c:if test="${!empty portlet.object}">
-            <c:set var="portletWindowBean" value="${portlet.object}" />
+        <template:field name='portlet' var="portlet" display="false"/>
+        <c:if test="${!empty portlet.field.object}">
+            <c:set var="portletWindowBean" value="${portlet.field.object}" />
             <ui:portletModes name="portletWindowBean"/>
             <br/>
-            <c:out escapeXml="false" value="${portlet.value}"/>
+            <c:out escapeXml="false" value="${portlet.field.value}"/>
         </c:if>
     </template:container>
 </template:containerList>

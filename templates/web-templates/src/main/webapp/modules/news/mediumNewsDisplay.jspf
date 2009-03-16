@@ -3,7 +3,7 @@
     <template:container id="newsContainer" cacheKey="shortNews" displayActionMenu="false" displayExtensions="false" displayContainerAnchor="false">
         <li class="summary">
             <!--start newsListItem -->
-            <template:field name="newsImage" valueBeanID="newsImage" display="false"/>
+            <template:field name="newsImage" var="newsImage" display="false"/>
 
             <div class="summaryImg"><img src="${newsImage.file.downloadUrl}" alt='<template:field
                     name="newsTitle" inlineEditingActivated="false"/>'/></div>

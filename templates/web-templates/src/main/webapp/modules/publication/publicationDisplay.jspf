@@ -5,11 +5,11 @@
 <div class="box4-text">
 	<template:container id="publicationContainer" displayActionMenu="false" emptyContainerDivCssClassName="mockup-publication">
 
-	<template:field name='file' valueBeanID="file" display="false"/>
-	<template:field name='preview' valueBeanID="preview" display="false"/>
-	<template:field name='author' valueBeanID="author" display="false"/>
-	<template:field name='source' valueBeanID="source" display="false"/>
-	<template:field name='date' valueBeanID="date" display="false"/>
+	<template:field name='file' var="file" display="false"/>
+	<template:field name='preview' var="preview" display="false"/>
+	<template:field name='author' var="author" display="false"/>
+	<template:field name='source' var="source" display="false"/>
+	<template:field name='date' var="date" display="false"/>
 
 	<div class="publicationListItem"><!--start publicationListItem -->
 	<ui:actionMenu contentObjectName="publicationContainer" namePostFix="publication" labelKey="publication.update">

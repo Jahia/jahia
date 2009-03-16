@@ -82,7 +82,7 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void containerListPropertiesSet(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, "containerListProperties", "Container properties set");
+            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 10, "Container properties set");
         }
         //logger.info("JAMonEventListener containerListPropertiesSet");
     }
@@ -90,7 +90,7 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void containerValidation(JahiaEvent je) {
         if (je != null && je.getObject() != null ) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, "", "validated");
+            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 3, "validated");
         }
     }
 
@@ -136,7 +136,7 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void pagePropertiesSet(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, "pageProperties", "Page Properties set");
+            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 4, "Page Properties set");
         }
         //logger.info("JAMonEventListener pagePropertiesSet");
     }

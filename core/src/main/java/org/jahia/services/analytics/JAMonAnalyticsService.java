@@ -182,6 +182,10 @@ public class JAMonAnalyticsService extends AnalyticsService {
                 logger.info("rights :" + operation);
                 break;
             }
+            case 10: { // event on container list
+                // TODO implement me!
+                break;
+            }
             default: {
                 break;
             }

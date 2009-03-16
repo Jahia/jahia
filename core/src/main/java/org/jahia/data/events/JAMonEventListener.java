@@ -82,7 +82,7 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void containerListPropertiesSet(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 10, "Container properties set");
+            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 3, "Container properties set");
         }
         //logger.info("JAMonEventListener containerListPropertiesSet");
     }

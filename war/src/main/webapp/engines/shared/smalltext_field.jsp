@@ -268,16 +268,16 @@
                 for (int j = 0; j < subs.length; j++) {
                     if (j>0) theList += ":";
                     ExtendedNodeType subType = subs[j];
-                    System.out.println("--->"+subType.getSystemId());
+                    //System.out.println("--->"+subType.getSystemId());
                     if (!subType.getSystemId().equals("system-standard")) {
                         JahiaTemplatesPackage defPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(subType.getSystemId());
-                        System.out.println("---1>"+subType.getSystemId());
+                        //System.out.println("---1>"+subType.getSystemId());
                         if (defPackage != null)  {
-                            System.out.println("---2>"+subType.getSystemId());
+                            //System.out.println("---2>"+subType.getSystemId());
                             JahiaTemplatesPackage parentPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(containerDefinition.getDeclaringNodeType().getSystemId());
-                            System.out.println("---3>"+parentPackage + "/ "+nt.getSystemId());
+                            //System.out.println("---3>"+parentPackage + "/ "+nt.getSystemId());
                             if (parentPackage != null && !parentPackage.getInvertedHierarchy().contains(defPackage.getName())) {
-                                System.out.println("---4>"+subType.getSystemId());
+                                //System.out.println("---4>"+subType.getSystemId());
                                 continue;
                             }
                         }

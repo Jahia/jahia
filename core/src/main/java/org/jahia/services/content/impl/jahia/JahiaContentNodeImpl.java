@@ -172,7 +172,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             JahiaFieldDefinition def = (JahiaFieldDefinition) ContentDefinition.getContentDefinitionInstance(contentField.getDefinitionKey(EntryLoadRequest.STAGED));
             switch (contentField.getType()) {
                 case FieldTypes.DATE: {
-                    if (value == null || value.length()==0) {
+                    if (value == null || value.length()==0 || value.equals("<empty>")) {
                         emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField));
                     } else {
                         GregorianCalendar cal = new GregorianCalendar();
@@ -182,7 +182,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     break;
                 }
                 case FieldTypes.PAGE: {
-                    if (value == null || value.length()==0) {
+                    if (value == null || value.length()==0 || value.equals("<empty>")) {
                         //emptyFields.add(new JahiaPageLinkNodeImpl(getSession(), this, def.getNodeDefinition(), null));
                     } else {
                         ContentPage p = ((ContentPageField)contentField).getContentPage(getProcessingContext());
@@ -193,7 +193,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     break;
                 }
                 case FieldTypes.BIGTEXT: {
-                    if (value == null || value.length()==0) {
+                    if (value == null || value.length()==0 || value.equals("<empty>")) {
                         emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField));
                     } else {
                         Value v = new ValueImpl(contentField.getValue(getProcessingContext()), PropertyType.STRING);
@@ -205,7 +205,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     if (def.getCtnType().equals(definition.getName()+" jcr_primaryType")) {
                         return;
                     }
-                    if (value == null || value.length()==0) {
+                    if (value == null || value.length()==0 || value.equals("<empty>")) {
                         emptyFields.add(new JahiaFieldPropertyImpl(getSession(), this, def.getPropertyDefinition(), new Value[0],contentField));
                     } else {
                         Value v = new ValueImpl(contentField.getValue(getProcessingContext()), PropertyType.STRING);

@@ -94,7 +94,7 @@ public class FileUploader extends Window {
         Hidden dest = new Hidden() ;
         dest.setName("uploadLocation") ;
 
-        CheckBox unzip = new CheckBox() ;
+        final CheckBox unzip = new CheckBox() ;
         unzip.setFieldLabel(Messages.getResource("fm_autoUnzip"));
         unzip.setName("unzip");
 
@@ -165,7 +165,11 @@ public class FileUploader extends Window {
                 bar.reset() ;
                 hide();
                 linker.setSelectPathAfterDataUpdate(location.getPath()+"/"+upload.getFilename());
-                linker.refreshTable();
+                if (unzip.getValue().booleanValue()) {
+                    linker.refreshAll();
+                } else {
+                    linker.refreshTable();
+                }
                 String result = formEvent.resultHtml ;
                 if (!result.contains("OK")) {
                     com.google.gwt.user.client.Window.alert(new HTML(result).getText());

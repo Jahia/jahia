@@ -83,7 +83,7 @@
                 <ref bean="JSPEventListener" />
                 <ref bean="GroovyEventListener" />
                 <ref bean="JahiaSearchListener" />
-                <!-- ref bean="JAMonEventListener" / -->
+                <!-- ref bean="JAMonEventListener" /  -->
             </list>
         </property>
     </bean>

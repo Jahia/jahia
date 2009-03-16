@@ -48,9 +48,6 @@ import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
-import org.jahia.bin.Jahia;
 
 /**
  * Template packages registry service.
@@ -259,7 +256,6 @@ class TemplatePackageRegistry {
                 logger.warn("Cannot parse rules for "+templatePackage.getName(),e);
             }
         }
-        String bundleName = templatePackage.getResourceBundleName();
     }
 
     public void unregister(JahiaTemplatesPackage templatePackage) {

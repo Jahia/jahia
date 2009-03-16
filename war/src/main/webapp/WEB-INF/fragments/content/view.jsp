@@ -64,9 +64,9 @@
             <h3><template:field name='mainContentTitle' diffActive="true"/></h3>
 
             <p class="maincontent">
-                <template:field name='mainContentAlign' display="false" valueBeanID="mainContentAlign"/>
-                <template:image file="mainContentImage" cssClassName="${mainContentAlign}"
-                                        align="${mainContentAlign}"/>
+                <template:field name='mainContentAlign' display="false" var="mainContentAlign"/>
+                <template:image file="mainContentImage" cssClassName="${mainContentAlign.value}"
+                                        align="${mainContentAlign.value}"/>
                 <template:field name="mainContentBody"/>
             </p>
             <br class="clear"/>

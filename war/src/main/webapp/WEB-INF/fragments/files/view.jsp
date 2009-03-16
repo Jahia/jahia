@@ -10,7 +10,7 @@
     <ul>
         <template:container id="fileContainer" displayActionMenu="false">
 
-            <template:field name="fileDisplayDetails" valueBeanID="displayDetails" display="false"/>
+            <template:field name="fileDisplayDetails" var="displayDetails" display="false"/>
             <li class="document">
                 <ui:actionMenu contentObjectName="fileContainer" namePostFix="file" labelKey="file.update">
                     <template:field name="file"/>

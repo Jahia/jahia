@@ -96,7 +96,7 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
                 // containers
                 final Set containerListIDs = jahiaContainersService.
                         getAllPageTopLevelContainerListIDs(
-                                contentPage.getID(), processingContext.getEntryLoadRequest());
+                                contentPage.getID(), getEntryLoadRequest());
                 final Iterator containerListIDIter = containerListIDs.iterator();
                 while (containerListIDIter.hasNext()) {
                     final Integer curContainerListID = (Integer) containerListIDIter.next();
@@ -162,7 +162,7 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         try {
             ProcessingContext processingContext = getProcessingContext();
-            int i = contentPage.getParentID(processingContext.getEntryLoadRequest());
+            int i = contentPage.getParentID(getEntryLoadRequest());
             if (i>0) {
                 ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(i, true);
                 return session.getJahiaPageNode(page);

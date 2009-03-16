@@ -100,7 +100,7 @@ public class JahiaContainerListNodeImpl extends JahiaContentNodeImpl {
 
             ProcessingContext processingContext = getProcessingContext();
             try {
-                List conts = contentContainerList.getChilds(processingContext.getUser(),processingContext.getEntryLoadRequest());
+                List conts = contentContainerList.getChilds(processingContext.getUser(),getEntryLoadRequest());
 
                 for (Iterator iterator = conts.iterator(); iterator.hasNext();) {
                     ContentContainer cont = (ContentContainer) iterator.next();
@@ -114,8 +114,7 @@ public class JahiaContainerListNodeImpl extends JahiaContentNodeImpl {
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         try {
-            ProcessingContext processingContext = getProcessingContext();
-            ContentObject contentObject = contentContainerList.getParent(processingContext.getEntryLoadRequest());
+            ContentObject contentObject = contentContainerList.getParent(getEntryLoadRequest());
             if (contentObject instanceof ContentContainer) {
                 return session.getJahiaContainerNode((ContentContainer) contentObject);
             } else if (contentObject instanceof ContentPage) {

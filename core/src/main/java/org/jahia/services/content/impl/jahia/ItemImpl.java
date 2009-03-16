@@ -35,6 +35,7 @@ package org.jahia.services.content.impl.jahia;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.version.EntryLoadRequest;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -86,6 +87,10 @@ public abstract class ItemImpl implements Item {
 
     protected ProcessingContext getProcessingContext() throws RepositoryException {
         return getSession().getProcessingContext(getSite());
+    }
+
+    protected EntryLoadRequest getEntryLoadRequest() throws RepositoryException {
+        return getSession().getEntryLoadRequest(getSite());
     }
 
     public boolean isNode() {

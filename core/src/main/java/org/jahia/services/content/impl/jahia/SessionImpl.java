@@ -45,6 +45,7 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.content.ContentObject;
 import org.jahia.bin.Jahia;
 import org.xml.sax.ContentHandler;
@@ -87,6 +88,10 @@ public class SessionImpl implements Session {
 
     public ProcessingContext getProcessingContext(JahiaSite jahiaSite) throws RepositoryException {
         return Jahia.getThreadParamBean();
+    }
+
+    public EntryLoadRequest getEntryLoadRequest(JahiaSite jahiaSite)  throws RepositoryException {
+        return new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE,0,getProcessingContext(jahiaSite).getEntryLoadRequest().getLocales(),false);
     }
 
     public RepositoryImpl getRepository() {

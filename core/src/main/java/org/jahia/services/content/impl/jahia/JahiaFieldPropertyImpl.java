@@ -93,7 +93,7 @@ public class JahiaFieldPropertyImpl extends PropertyImpl {
             Value value = values[0];
             try {
                 if (field != null) {
-                    JahiaField jahiaField = field.getJahiaField(getProcessingContext().getEntryLoadRequest());
+                    JahiaField jahiaField = field.getJahiaField(getEntryLoadRequest());
 
                     String v = getValue(value, jahiaField.getType());
                     updateField(v, jahiaField);

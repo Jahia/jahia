@@ -60,33 +60,33 @@ import org.jahia.data.files.JahiaFileField;
  */
 public class FieldValueBean<E> extends ValueBaseBean<E> {
 
-    private Object bean;
+    private FieldBean field;
 
-    private int fieldType;
+    private Object rawValue;
 
     private String value;
 
     /**
      * Initializes an instance of this class.
      * 
-     * @param fieldType
-     *            the type of the field
+     * @param field
+     *            the field bean
      * @param value
      *            the string representation of the field's value
-     * @param bean
+     * @param rawValue
      *            the corresponding bean instance for the field value, depending
      *            on its type
      */
-    public FieldValueBean(int fieldType, String value, Object bean) {
-        this.fieldType = fieldType;
+    public FieldValueBean(FieldBean field, String value, Object rawValue) {
+        this.field = field;
         this.value = value;
-        this.bean = bean;
+        this.rawValue = rawValue;
     }
 
     private void assertType(int... requiredFieldTypes) {
         boolean supported = false;
         for (int requiredType : requiredFieldTypes) {
-            if (fieldType == requiredType) {
+            if (field.getFieldType() == requiredType) {
                 supported = true;
                 break;
             }
@@ -94,7 +94,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
         if (!supported) {
             throw new UnsupportedOperationException(
                     "This operation is not supported for the field of type '"
-                            + typeName[fieldType] + "'");
+                            + typeName[field.getFieldType()] + "'");
         }
     }
 
@@ -103,9 +103,10 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
      * type.
      * 
      * @return the corresponding bean for the field value, depending on its type
+     * @deprecated use {@link #getRawValue()} instead
      */
     public Object getBean() {
-        return bean;
+        return rawValue;
     }
 
     /**
@@ -117,7 +118,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
     public Boolean getBoolean() {
         assertType(BOOLEAN);
 
-        return (Boolean) bean;
+        return (Boolean) rawValue;
     }
 
     /**
@@ -129,7 +130,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
      */
     public List<CategoryBean> getCategory() {
         assertType(CATEGORY);
-        return (List<CategoryBean>) bean;
+        return (List<CategoryBean>) rawValue;
     }
 
     /**
@@ -141,7 +142,16 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
     public Date getDate() {
         assertType(DATE);
 
-        return (Date) bean;
+        return (Date) rawValue;
+    }
+
+    /**
+     * Returns the corresponding field bean.
+     * 
+     * @return the corresponding field bean
+     */
+    public FieldBean getField() {
+        return field;
     }
 
     /**
@@ -154,7 +164,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
     public JahiaFileField getFile() {
         assertType(FILE);
 
-        return (JahiaFileField) bean;
+        return (JahiaFileField) rawValue;
     }
 
     /**
@@ -165,7 +175,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
      */
     public Float getFloat() {
         assertType(FLOAT);
-        return (Float) bean;
+        return (Float) rawValue;
     }
 
     /**
@@ -177,7 +187,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
     public Integer getInteger() {
         assertType(INTEGER);
 
-        return (Integer) bean;
+        return (Integer) rawValue;
     }
 
     /**
@@ -189,7 +199,11 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
     public PageBean getPage() {
         assertType(PAGE);
 
-        return (PageBean) bean;
+        return (PageBean) rawValue;
+    }
+
+    public Object getRawValue() {
+        return rawValue;
     }
 
     /**
@@ -198,7 +212,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
      * @return a resource value as an instance of the {@link ResourceBean}
      */
     public ResourceBean getResource() {
-        return (ResourceBean) bean;
+        return (ResourceBean) rawValue;
     }
 
     /**
@@ -219,7 +233,7 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
      * @return the type of the field
      */
     public int getType() {
-        return fieldType;
+        return field.getFieldType();
     }
 
     /**
@@ -234,9 +248,9 @@ public class FieldValueBean<E> extends ValueBaseBean<E> {
     @Override
     public boolean isEmpty() {
         boolean isEmpty = false;
-        switch (fieldType) {
+        switch (field.getFieldType()) {
         case PAGE:
-            isEmpty = bean == null;
+            isEmpty = rawValue == null;
             break;
 
         case CATEGORY:

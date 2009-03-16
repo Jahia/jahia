@@ -37,9 +37,6 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.TextExtractor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.ajax.gwt.client.util.EngineOpener;
-import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
-import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuURIFormatter;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.data.beans.FieldBean;
@@ -73,6 +70,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
+ * The tag is responsible for displaying content field value or exposing it into
+ * a page scope, depending on its type.
+ * 
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
@@ -81,7 +81,13 @@ public class FieldTag extends AbstractFieldTag {
     private static final transient Logger logger = Logger.getLogger(FieldTag.class);
 
     private String name;
+    /** 
+     * @deprecated use {@link #var} instead
+     */
     private String valueBeanID;
+    /** 
+     * @deprecated use {@link #var} instead
+     */
     private String beanID;
     private String containerName;
     private boolean display = true;
@@ -93,6 +99,7 @@ public class FieldTag extends AbstractFieldTag {
     private String continueString = "...";
     private String namePostFix;
     private boolean removeHtmlTags = false;
+    private String var;
 
     public void setContainerName(String containerName) {
         this.containerName = containerName;
@@ -123,11 +130,29 @@ public class FieldTag extends AbstractFieldTag {
     }
 
     public void setValueBeanID(String valueBeanID) {
-        this.valueBeanID = valueBeanID;
+        if (logger.isDebugEnabled()) {
+            logger
+                    .warn(
+                            "The valueBeanID attribute is deprecated. Please, use var attribute instead.",
+                            new JspException());
+        } else {
+            logger
+                    .warn("The valueBeanID attribute is deprecated. Please, use var attribute instead.");
+        }
+        this.valueBeanID = valueBeanID == null || valueBeanID.length() == 0 ? null : valueBeanID;
     }
 
     public void setBeanID(String beanID) {
-        this.beanID = beanID;
+        if (logger.isDebugEnabled()) {
+            logger
+                    .warn(
+                            "The beanID attribute is deprecated. Please, use var attribute instead.",
+                            new JspException());
+        } else {
+            logger
+                    .warn("The beanID attribute is deprecated. Please, use var attribute instead.");
+        }
+        this.beanID = beanID == null || beanID.length() == 0 ? null : beanID;
     }
 
     public void setInlineEditingActivated(boolean inlineEditingActivated) {
@@ -154,6 +179,9 @@ public class FieldTag extends AbstractFieldTag {
         }
         if (beanID != null) {
             pageContext.removeAttribute(beanID, PageContext.PAGE_SCOPE);
+        }
+        if (var != null) {
+            pageContext.removeAttribute(var, PageContext.PAGE_SCOPE);
         }
 
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -227,6 +255,7 @@ public class FieldTag extends AbstractFieldTag {
         name = null;
         namePostFix = null;
         removeHtmlTags = false;
+        var = null;
         super.resetState();
     }
 
@@ -280,11 +309,16 @@ public class FieldTag extends AbstractFieldTag {
     protected void setValueIDAttribute(final JahiaField theField, final JahiaData jData) throws JahiaException {
         if (theField == null) return;
 
-        if (beanID != null && beanID.length() > 0) {
-            pageContext.setAttribute(beanID, new FieldBean(theField, jData.getProcessingContext()));
+        FieldBean fieldBean = null;
+        if (beanID!=null || valueBeanID != null || var != null) {
+            fieldBean = new FieldBean(theField, jData.getProcessingContext());
+        }
+        if (beanID != null) {
+            pageContext.setAttribute(beanID, fieldBean);
         }
 
-        if (valueBeanID != null && valueBeanID.length() > 0) {
+        if (valueBeanID != null || var != null) {
+            
             String fieldValue = null;
             Object rawValue = null;
 
@@ -382,7 +416,13 @@ public class FieldTag extends AbstractFieldTag {
                     break;
             }
 
-            pageContext.setAttribute(valueBeanID, new FieldValueBean(theField.getType(), fieldValue, rawValue));
+            FieldValueBean valueBean = new FieldValueBean(fieldBean, fieldValue, rawValue);
+            if (valueBeanID != null) {
+                pageContext.setAttribute(valueBeanID, valueBean);
+            }
+            if (var != null) {
+                pageContext.setAttribute(var, valueBean);
+            }
         }
     }
 
@@ -697,5 +737,9 @@ public class FieldTag extends AbstractFieldTag {
         }
 
         return endvalue;
+    }
+
+    public void setVar(String var) {
+        this.var = var == null || var.length() == 0 ? null : var;
     }
 }

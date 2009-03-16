@@ -855,12 +855,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope bean (of type org.jahia.data.beans.FieldBean) to expose the field
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>beanID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The name of the page scope bean (of type org.jahia.data.beans.FieldValueBean) to expose the field's value</description>
+            <description>
+                The name of the page scope bean (of type org.jahia.data.beans.FieldValueBean) to expose the field's value
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueBeanID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -923,6 +930,12 @@
         </attribute>
         <attribute>
             <name>namePostFix</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The name of the page scope variable, to expose the FieldValueBean instance</description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

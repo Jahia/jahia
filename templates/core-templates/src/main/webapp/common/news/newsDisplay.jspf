@@ -3,7 +3,7 @@
                    actionMenuNameLabelKey="news.update">
     <h3>
         <template:field name="newsImage" cssClassName="left"/>
-        <template:field name="newsTitle" valueBeanID="newsTitle" display="false"/>
+        <template:field name="newsTitle" var="newsTitle" display="false"/>
         <template:field name='newsLink' defaultValue="${newsTitle}"/>
     </h3>
     <cite><fmt:message key='postedOn'/>&nbsp;

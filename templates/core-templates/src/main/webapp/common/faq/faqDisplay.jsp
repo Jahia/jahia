@@ -39,9 +39,9 @@
 <template:containerList name="faq" id="faqList" actionMenuNamePostFix="faqs" actionMenuNameLabelKey="faqs.add">
     <template:container id="faqContainer" cacheKey="onlyQuestions" actionMenuNamePostFix="faq"
                         actionMenuNameLabelKey="faq.update">
-        <template:field name="faqTitle" display="false" valueBeanID="title"/>
+        <template:field name="faqTitle" display="false" var="title"/>
         <h4>
-            <a href="#<c:out value="${title}"/>"><c:out value="${title}"/></a>
+            <a href="#<c:out value='${title}'/>"><c:out value="${title}"/></a>
         </h4>
         <template:containerList name="faqQA" id="faqQAList"
                                 actionMenuNamePostFix="qas" actionMenuNameLabelKey="qas.add">
@@ -60,8 +60,8 @@
 <hr/>
 <template:containerList name="faq" id="faqList" displayActionMenu="false">
     <template:container id="faqContainer" cacheKey="allFields" displayActionMenu="false">
-        <template:field name="faqTitle" display="false" valueBeanID="title"/>
-        <h3 id="<c:out value="${title}"/>"><c:out value="${title}"/></h3>
+        <template:field name="faqTitle" display="false" var="title"/>
+        <h3 id="<c:out value='${title}'/>"><c:out value="${title}"/></h3>
 
         <template:containerList name="faqQA" id="faqQAList" displayActionMenu="false">
             <ol>

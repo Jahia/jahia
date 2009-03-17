@@ -46,7 +46,7 @@
     <%-- Let us define the layout manager area. This should be composed only by layout manager boxes --%>
     <template:layoutManagerArea>
         <template:container id="boxContainer" displayActionMenu="false">
-            <template:field name="boxTitle" valueBeanID="boxTitle" display="false"/>
+            <template:field name="boxTitle" var="boxTitle" display="false"/>
             <%-- Let us define the current box as a layout-manager box. --%>
             <template:layoutManagerBox id="lm_box_${boxContainer.id}" title="${boxTitle}">
                 <ui:actionMenu contentObjectName="boxContainer" namePostFix="box" labelKey="box.update">

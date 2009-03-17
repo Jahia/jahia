@@ -40,11 +40,11 @@
                        actionMenuNamePostFix="savedSearches" actionMenuNameLabelKey="savedSearches.add">
     <template:container id="savedSearchContainer" cache="off" actionMenuNamePostFix="savedSearch"
                        actionMenuNameLabelKey="savedSearch.update">
-        <template:field name="boxSavedSearchTitle" valueBeanID="boxSavedSearchTitle" display="false"/>
+        <template:field name="boxSavedSearchTitle" var="boxSavedSearchTitle" display="false"/>
         <c:if test="${not empty boxSavedSearchTitle}">
             <c:out value="${boxSavedSearchTitle}"/>
         </c:if>
-        <template:field name="boxSavedSearchQuery" valueBeanID="boxSavedSearchQuery" display="false"/>
+        <template:field name="boxSavedSearchQuery" var="boxSavedSearchQuery" display="false"/>
         <c:if test="${not empty boxSavedSearchQuery}">
             <div>
                 Not implemented yet

@@ -39,12 +39,12 @@
 <template:containerList name="${boxID}_usersContainer" id="users"
                         actionMenuNamePostFix="userQueries" actionMenuNameLabelKey="userQueries.add">
     <template:container id="usersContainer" actionMenuNamePostFix="userQuery" actionMenuNameLabelKey="userQuery.update">
-        <template:field name='userDisplayLimit' defaultValue="5" valueBeanID="boxUserDisplayLimit" display="false"/>
-        <template:field name='userQuery' defaultValue="*" valueBeanID="boxUserQuery" display="false"/>
+        <template:field name="userDisplayLimit" var="boxUserDisplayLimit" display="false"/>
+        <template:field name="userQuery" var="boxUserQuery" display="false"/>
         <h4>
             <fmt:message key="queryResult"/>
         </h4>
-        <ui:userList displayLimit="${boxUserDisplayLimit}" query="${boxUserQuery}" scope="all" styleClass=""/>
+        <ui:userList displayLimit="${not empty boxUserDisplayLimit ? boxUserDisplayLimit.integer : 5}" query="${not empty boxUserQuery ? boxUserQuery.text : '*'}" scope="all" styleClass=""/>
     </template:container>
     <br class="clear"/>
 </template:containerList>

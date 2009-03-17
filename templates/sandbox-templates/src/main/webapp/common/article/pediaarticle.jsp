@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -46,11 +46,11 @@
     <template:containerList name="articles" id="pediaarticle" displayActionMenu="false">
         <template:container id="article" displayActionMenu="false" cacheKey="contents">
 
-            <template:field name='articleLevel' display="false" valueBeanID="artLevel"/>
-            <c:forEach var="i" begin="2" end="${artLevel.integer}">
+            <template:field name='articleLevel' display="false" var="artLevel"/>
+            <c:forEach var="i" begin="2" end="${not empty artLevel ? artLevel.integer : 0}">
                 &nbsp;&nbsp;&nbsp;&nbsp;
             </c:forEach>
-            <a href="#<template:field name='articleTitle'/>"><template:field name='articleTitle'/></a>
+            <a href="#<template:field name='articleTitle' inlineEditingActivated='false' diffActive='false'/>"><template:field name='articleTitle'/></a>
             <br class="clear"/>
         </template:container>
     </template:containerList>
@@ -64,7 +64,7 @@
     <template:container id="article" actionMenuNamePostFix="mainContent" actionMenuNameLabelKey="mainContent.update"
                         cacheKey="display">
 
-        <a name="<template:field name='articleTitle' />"></a>
+        <a name="<template:field name='articleTitle' inlineEditingActivated='false' diffActive='false'/>"></a>
 
         <h3><template:field name='articleTitle'/></h3>
         <h5><template:field name='articleNote'/></h5>

@@ -129,11 +129,11 @@
 
     alter table jahia_sites_grps 
         drop 
-        foreign key FK7B245597F46755FE;
+        foreign key FK7B24559790F996AC;
 
     alter table jahia_sites_grps 
         drop 
-        foreign key FK7B24559790F996AC;
+        foreign key FK7B245597F46755FE;
 
     alter table jahia_sites_users 
         drop 
@@ -859,14 +859,14 @@
     create table jahia_sites_grps (
         grpname_sites_grps varchar(50) not null,
         siteid_sites_grps integer not null,
-        grpid_sites_grps varchar(255),
+        grpid_sites_grps varchar(200),
         primary key (grpname_sites_grps, siteid_sites_grps)
     );
 
     create table jahia_sites_users (
         username_sites_users varchar(50) not null,
         siteid_sites_users integer not null,
-        userid_sites_users varchar(255),
+        userid_sites_users varchar(50),
         primary key (username_sites_users, siteid_sites_users)
     );
 
@@ -1113,16 +1113,16 @@
         references jahia_sites (id_jahia_sites);
 
     alter table jahia_sites_grps 
-        add index FK7B245597F46755FE (siteid_sites_grps), 
-        add constraint FK7B245597F46755FE 
-        foreign key (siteid_sites_grps) 
-        references jahia_sites (id_jahia_sites);
-
-    alter table jahia_sites_grps 
         add index FK7B24559790F996AC (grpid_sites_grps), 
         add constraint FK7B24559790F996AC 
         foreign key (grpid_sites_grps) 
         references jahia_grps (key_jahia_grps);
+
+    alter table jahia_sites_grps 
+        add index FK7B245597F46755FE (siteid_sites_grps), 
+        add constraint FK7B245597F46755FE 
+        foreign key (siteid_sites_grps) 
+        references jahia_sites (id_jahia_sites);
 
     alter table jahia_sites_users 
         add index FKEA2BF1BF6CF683C0 (userid_sites_users), 

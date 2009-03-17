@@ -719,14 +719,14 @@
     create table jahia_sites_grps (
         grpname_sites_grps varchar2(50 char) not null,
         siteid_sites_grps number(10,0) not null,
-        grpid_sites_grps varchar2(255 char),
+        grpid_sites_grps varchar2(200 char),
         primary key (grpname_sites_grps, siteid_sites_grps)
     );
 
     create table jahia_sites_users (
         username_sites_users varchar2(50 char) not null,
         siteid_sites_users number(10,0) not null,
-        userid_sites_users varchar2(255 char),
+        userid_sites_users varchar2(50 char),
         primary key (username_sites_users, siteid_sites_users)
     );
 
@@ -941,14 +941,14 @@
         references jahia_sites;
 
     alter table jahia_sites_grps 
-        add constraint FK7B245597F46755FE 
-        foreign key (siteid_sites_grps) 
-        references jahia_sites;
-
-    alter table jahia_sites_grps 
         add constraint FK7B24559790F996AC 
         foreign key (grpid_sites_grps) 
         references jahia_grps (key_jahia_grps);
+
+    alter table jahia_sites_grps 
+        add constraint FK7B245597F46755FE 
+        foreign key (siteid_sites_grps) 
+        references jahia_sites;
 
     alter table jahia_sites_users 
         add constraint FKEA2BF1BF6CF683C0 

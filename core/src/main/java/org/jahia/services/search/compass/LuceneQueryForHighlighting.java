@@ -46,6 +46,7 @@ import java.util.*;
  * Time: 15:19:12
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class LuceneQueryForHighlighting extends Query  {
 
     private Query query;
@@ -85,30 +86,30 @@ public class LuceneQueryForHighlighting extends Query  {
         // needs to be implemented by query subclasses
         query.extractTerms(terms);
         if ( rewriteQueryWithFieldName ){
-            List v = new ArrayList();
-            for (Iterator iter = terms.iterator(); iter.hasNext();)
+            List<Term> v = new ArrayList<Term>();
+            for (Iterator<?> iter = terms.iterator(); iter.hasNext();)
             {
-                Term term = (Term) iter.next();
+                Term term = (Term)iter.next();
                 v.add(new Term(this.fieldName,term.text()));
             }
             terms.clear();
             terms.addAll(v);
         } else {
-            Map fieldsGrouping = ServicesRegistry.getInstance().getJahiaSearchService().getFieldsGrouping();
+            Map<String, Set<String>> fieldsGrouping = ServicesRegistry.getInstance().getJahiaSearchService().getFieldsGrouping();
             if ( fieldsGrouping != null && this.fieldName != null ){
-                Set l = (Set)fieldsGrouping.get(fieldName);
+                Set<String> l = fieldsGrouping.get(fieldName);
                 if (l != null && !l.isEmpty() ) {
-                    Set termsSet = new HashSet();
-                    for (Iterator iter = terms.iterator(); iter.hasNext();)
+                    Set<Term> termsSet = new HashSet<Term>();
+                    for (Iterator<?> iter = terms.iterator(); iter.hasNext();)
                     {
-                        Term term = (Term) iter.next();
+                        Term term = (Term)iter.next();
                         if ( !l.contains(term.field()) && !this.fieldName.equals(term.field()) ){
                             termsSet.add(term);
                         }
                     }
-                    for (Iterator iter = termsSet.iterator(); iter.hasNext();)
+                    for (Iterator<Term> iter = termsSet.iterator(); iter.hasNext();)
                     {
-                        Term term = (Term) iter.next();
+                        Term term = iter.next();
                         terms.remove(term);
                     }
                 }

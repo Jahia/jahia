@@ -39,7 +39,6 @@ import org.compass.core.*;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.search.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -143,10 +142,8 @@ public class CompassSearchIndexer implements SearchIndexer {
         }
         CompassTemplate template = new CompassTemplate(compass);
         CompassDetachedHits hits = template.find(document.getKeyFieldName()+":"+NumberPadding.pad(document.getKey())).detach();
-        int size = hits.getLength();
-        Resource res = null;
-        for ( int i=0; i<size; i++ ){
-            res = hits.resource(i);
+        for ( int i=0, size = hits.getLength(); i<size; i++ ){
+            Resource res = hits.resource(i);
             try {
                 template.delete(res);
             } catch ( Exception t ){
@@ -155,7 +152,7 @@ public class CompassSearchIndexer implements SearchIndexer {
         }
     }
 
-    public synchronized void batchIndexing(final List toRemove, final List toAdd){
+    public synchronized void batchIndexing(final List<RemovableDocument> toRemove, final List<IndexableDocument> toAdd){
         if ( !this.localIndexing ){
             return;
         }
@@ -164,18 +161,13 @@ public class CompassSearchIndexer implements SearchIndexer {
         try {
             final CompassTemplate template = new CompassTemplate(compass);
             final ResourceFactory factory = compass.getResourceFactory();
-            template.execute(CompassTransaction.TransactionIsolation.READ_COMMITTED,new CompassCallback() {
+            template.execute(CompassTransaction.TransactionIsolation.READ_COMMITTED, new CompassCallback<Object>() {
                 public Object doInCompass(CompassSession session) throws CompassException {
-                    Iterator iterator = toRemove.iterator();
-                    IndexableDocument doc = null;
-                    while ( iterator.hasNext() ){
-                        doc = (RemovableDocument)iterator.next();
+                    for ( IndexableDocument doc : toRemove ){
                         CompassDetachedHits hits = session.find(doc.getKeyFieldName()+":"+
                                 NumberPadding.pad(doc.getKey())).detach();
-                        int size = hits.getLength();
-                        Resource res = null;
-                        for ( int i=0; i<size; i++ ){
-                            res = hits.resource(i);
+                        for ( int i=0, size = hits.getLength(); i<size; i++ ){
+                            Resource res = hits.resource(i);
                             try {
                                 session.delete(res);
                             } catch ( Exception t ){
@@ -186,14 +178,10 @@ public class CompassSearchIndexer implements SearchIndexer {
                     return null;
                 }
             } );
-            template.execute(CompassTransaction.TransactionIsolation.BATCH_INSERT,new CompassCallback() {
+            template.execute(CompassTransaction.TransactionIsolation.LUCENE, new CompassCallback<Object>() {
                 public Object doInCompass(CompassSession session) throws CompassException {
-                    Iterator iterator = toAdd.iterator();
-                    IndexableDocument doc = null;
-                    Resource res = null;
-                    while ( iterator.hasNext() ){
-                        doc = (IndexableDocument)iterator.next();
-                        res = ServicesRegistry.getInstance().getJahiaSearchService()
+                    for ( IndexableDocument doc : toAdd ){
+                        Resource res = ServicesRegistry.getInstance().getJahiaSearchService()
                                 .getCompassResourceConverter().getResourceFromIndexableDocument(doc);
                         if ( res ==  null ){
                             continue;
@@ -225,7 +213,7 @@ public class CompassSearchIndexer implements SearchIndexer {
      * @param toRemove
      * @param toAdd
      */
-    public void synchronizedBatchIndexing(List toRemove, List toAdd){
+    public void synchronizedBatchIndexing(List<RemovableDocument> toRemove, List<IndexableDocument> toAdd){
         // @COMPASS NOT UP TO DATE ANYMORE
     }
     

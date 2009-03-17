@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -55,14 +55,14 @@ limitations under the License.
 <template:containerList name="groupsContainer" id="groups"
                        actionMenuNamePostFix="groupQueries" actionMenuNameLabelKey="groupQueries.add">
     <template:container id="groupsContainer" actionMenuNamePostFix="groupQuery" actionMenuNameLabelKey="groupQuery.update">
-        <template:field name='groupDisplayLimit' defaultValue="5" valueBeanID="boxGroupDisplayLimit" display="false"/>
-        <template:field name='groupQuery' defaultValue="*" valueBeanID="boxGroupQuery" display="false"/>
+        <template:field name='groupDisplayLimit' var="boxGroupDisplayLimit" display="false"/>
+        <template:field name='groupQuery' var="boxGroupQuery" display="false"/>
         <h4>
             <fmt:message key="queryResult"/>
         </h4>
         <ui:groupList
-                displayLimit="${boxGroupDisplayLimit}"
-                query="${boxGroupQuery}"
+                displayLimit="${not empty boxGroupDisplayLimit ? boxGroupDisplayLimit.integer : 5}"
+                query="${not empty boxGroupQuery ? boxGroupQuery.text : '*'}"
                 scope="all"
                 membersLimit="12"
                 membersVisibility="true"

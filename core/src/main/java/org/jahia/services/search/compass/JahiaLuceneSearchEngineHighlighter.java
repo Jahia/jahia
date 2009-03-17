@@ -56,12 +56,23 @@ public class JahiaLuceneSearchEngineHighlighter extends LuceneSearchEngineHighli
             Logger.getLogger (JahiaLuceneSearchEngineHighlighter.class);
 
     private Query searchQuery;
-    private boolean differenthQueryForHighlighting = false;
+    private boolean differentQueryForHighlighting = false;
     private LuceneSearchEngine searchEngine;
     private IndexReader indexReader;
-    public JahiaLuceneSearchEngineHighlighter( LuceneSearchEngineQuery searchEngineQuery, 
-                                               IndexReader indexReader, LuceneSearchEngine searchEngine, Query query)
-    throws SearchEngineException {
+    
+    public JahiaLuceneSearchEngineHighlighter(
+            LuceneSearchEngineQuery searchEngineQuery, IndexReader indexReader,
+            LuceneSearchEngine searchEngine)
+            throws SearchEngineException {
+        super(searchEngineQuery.getQuery(), indexReader, searchEngine);
+        this.searchEngine = searchEngine;
+        this.indexReader = indexReader;
+    }
+    
+    public JahiaLuceneSearchEngineHighlighter(
+            LuceneSearchEngineQuery searchEngineQuery, IndexReader indexReader,
+            LuceneSearchEngine searchEngine, Query query)
+            throws SearchEngineException {
         super(searchEngineQuery.getQuery(), indexReader, searchEngine);
         this.searchQuery = query;
         this.searchEngine = searchEngine;
@@ -74,12 +85,15 @@ public class JahiaLuceneSearchEngineHighlighter extends LuceneSearchEngineHighli
 
     public void setSearchQuery(Query searchQuery) {
         this.searchQuery = searchQuery;
-        try {
-            this.searchQuery = this.searchQuery.rewrite(this.indexReader);
-        } catch ( Exception t ){
-            logger.debug("Exception occured creating scorer",t);
+        if (searchEngine.getSearchEngineFactory().getHighlighterManager()
+                .getDefaultHighlighterSettings().isRewriteQuery()) {
+            try {
+                this.searchQuery = this.searchQuery.rewrite(this.indexReader);
+            } catch (Exception t) {
+                logger.debug("Exception occured creating scorer", t);
+            }
         }
-        this.differenthQueryForHighlighting = true;
+        this.differentQueryForHighlighting = true;
     }
 
     public LuceneSearchEngine getSearchEngine() {
@@ -91,7 +105,10 @@ public class JahiaLuceneSearchEngineHighlighter extends LuceneSearchEngineHighli
     }
 
     protected Scorer createScorer(String propertyName) throws SearchEngineException {
-        return new QueryScorer(new LuceneQueryForHighlighting(this.searchQuery,propertyName,this.differenthQueryForHighlighting), null);
+        return this.searchQuery != null ? new QueryScorer(
+                new LuceneQueryForHighlighting(this.searchQuery, propertyName,
+                        this.differentQueryForHighlighting), null) : super
+                .createScorer(propertyName);
     }
 
     public IndexReader getIndexReader() {

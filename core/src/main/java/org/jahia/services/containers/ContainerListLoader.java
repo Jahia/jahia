@@ -212,7 +212,7 @@ public class ContainerListLoader implements Serializable {
                                         resultBitSet, loadVersion);
                     }
                 } catch (Exception t) {
-                    logger.warn(t);
+                    logger.warn("Error retrieving container ids", t);
                 }
             }
 

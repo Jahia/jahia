@@ -78,9 +78,8 @@ public class LuceneSearchResult extends SearchResultImpl {
         if ( searchEngine != null ){
             try {
                 highlighter = new JahiaLuceneSearchEngineHighlighter(
-                        new LuceneSearchEngineQuery(searchEngine,query),
-                        indexReader,searchEngine,query.rewrite(indexReader));
-                highlighter.setAnalyzer("highlighting");
+                        new LuceneSearchEngineQuery(searchEngine, query),
+                        indexReader, searchEngine);
             } catch ( Exception t ){
                 logger.debug(t);
             }
@@ -108,7 +107,8 @@ public class LuceneSearchResult extends SearchResultImpl {
             if ( doc == null ){
                 doc = new Document();
             }
-            LuceneResource res = new LuceneResource(doc,searchHit.getDocNumber(),searchEngine.getSearchEngineFactory());
+            LuceneResource res = new LuceneResource(doc, searchHit
+                    .getDocNumber(), searchEngine.getSearchEngineFactory());
             return ServicesRegistry.getInstance().getJahiaSearchService()
                     .getCompassHighlighter(getHighlighter(), res);
         }

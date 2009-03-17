@@ -351,6 +351,7 @@ public class SettingsBean {
     // enable ACL check when displaying the current page path
     private boolean checkAclInPagePath ;
 
+    private String ehCacheJahiaFile;
     /**
      * Default constructor.
      *
@@ -744,6 +745,22 @@ public class SettingsBean {
                     getString("templates.boxes.onError", null));
 
             settings.setFast(true);
+            ehCacheJahiaFile = getString("ehcache.jahia.file","ehcache-jahia.xml");
+            // If cluster is activated then try to expose some properties as system properties for JGroups
+            boolean clusterActivated = getBoolean("cluster.activated",false);
+            if(clusterActivated) {
+                // First expose tcp ip binding address
+                String tcpIpBinding = getString("cluster.tcp.start.ip_address");
+                String numInitialMembers = getString("cluster.tcp.num_initial_members");
+                System.setProperty("cluster.tcp.start.ip_address",tcpIpBinding);
+                System.setProperty("cluster.tcp.num_initial_members",numInitialMembers);
+                // Second get ehcache jgroups configuration for jahia
+                System.setProperty("cluster.tcp.ehcache.jahia.nodes.ip_address",getString("cluster.tcp.ehcache.jahia.nodes.ip_address"));
+                System.setProperty("cluster.tcp.ehcache.jahia.port",getString("cluster.tcp.ehcache.jahia.port"));
+                // Second get ehcache jgroups configuration for hibernate
+                System.setProperty("cluster.tcp.ehcache.hibernate.nodes.ip_address",getString("cluster.tcp.ehcache.hibernate.nodes.ip_address"));
+                System.setProperty("cluster.tcp.ehcache.hibernate.port",getString("cluster.tcp.ehcache.hibernate.port"));
+            }
         } catch (NullPointerException npe) {
             logger.debug ("Properties file is not valid...!", npe);
         } catch (NumberFormatException nfe) {
@@ -1922,5 +1939,9 @@ public class SettingsBean {
 
     public boolean isCheckAclInPagePath() {
         return this.checkAclInPagePath ;
+    }
+
+    public String getEhCacheJahiaFile() {
+        return ehCacheJahiaFile;
     }
 }

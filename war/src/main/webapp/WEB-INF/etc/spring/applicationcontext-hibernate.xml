@@ -19,7 +19,7 @@
         <property name="jndiName" value="java:comp/env/jdbc/jahia" />
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="settingsBean">
         <property name="dataSource">
             <ref bean="dataSource"/>
         </property>
@@ -127,7 +127,7 @@
                 <prop key="cacheClusterUnderlyingImplementation">${cacheClusterUnderlyingImplementation}</prop>
                 <prop key="cacheMaxGroups">${cacheMaxGroups}</prop>-->
                 <!-- Configure WEB-INF/classes/ehcache-hibernate.xml to activate cluster-->
-                <prop key="net.sf.ehcache.configurationResourceName">/ehcache-hibernate.xml</prop>                
+                <prop key="net.sf.ehcache.configurationResourceName">/${ehcache.hibernate.file}</prop>                
             </props>
         </property>
         <property name="eventListeners">

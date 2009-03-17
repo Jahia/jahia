@@ -62,13 +62,13 @@ public class EhCacheProvider implements CacheProvider {
     CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
     public EhCacheProvider() {
-        URL url = getClass().getResource("/ehcache-jahia.xml");
-        cacheManager = CacheManager.create(url);        
-        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("SimpleAgent");
-        ManagementService.registerMBeans(cacheManager, mBeanServer, false, false, false, true);
     }
 
     public void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException {
+        URL url = getClass().getResource("/"+settingsBean.getEhCacheJahiaFile());
+        cacheManager = CacheManager.create(url);
+        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("SimpleAgent");
+        ManagementService.registerMBeans(cacheManager, mBeanServer, false, false, false, true);
     }
 
     public void shutdown() {

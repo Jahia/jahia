@@ -36,25 +36,6 @@
     If no class is specified, no listener is created. There is no default.
     -->
     <cacheManagerEventListenerFactory class="" properties=""/>
-    <!-- Uncomment and configure this to activate clustering
-    <cacheManagerPeerProviderFactory
-    class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
-    properties="connect=TCP_NIO(start_port=7800;bind_addr=192.168.1.100;loopback=true;recv_buf_size=20000000;send_buf_size=640000;discard_incompatible_packets=true;max_bundle_size=64000;max_bundle_timeout=30;use_incoming_packet_handler=true;enable_bundling=true;use_send_queues=false;sock_conn_timeout=300;skip_suspected_members=true;use_concurrent_stack=true):
-        TCPPING(initial_hosts=192.168.1.100[7800],192.168.1.200[7800];port_range=10;timeout=3000;num_initial_members=2):
-        MERGE2(max_interval=100000;min_interval=20000):
-FD_SOCK:
-FD(timeout=10000;max_tries=5;shun=true):
-VERIFY_SUSPECT(timeout=1500):
-pbcast.NAKACK(gc_lag=100;retransmit_timeout=3000;discard_delivered_msgs=true):
-pbcast.STABLE:
-pbcast.GMS(join_timeout=5000;shun=true;print_local_addr=true):
-VIEW_SYNC(avg_send_interval=60000):
-FC(max_credits=2000000;min_threshold=0.10):
-FRAG2(frag_size=60000)"
-    propertySeparator="::" />
-            -->
-
-
     <!-- Cache configuration.
 
     The following attributes are required.
@@ -194,20 +175,13 @@ FRAG2(frag_size=60000)"
             eternal="false">
         <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.SkeletonCacheEventListenerFactory"
                                    properties=""/>
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
     </cache>
     <cache
             name="SkeletonCache-groups"
             overflowToDisk="true"
             maxElementsInMemory="500"
             diskPersistent="true"
-            eternal="false">
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
-    </cache>
+            eternal="false"/>
     <!-- This cache parameters define how many fragments of pages do we want to store in cache (based on an average of 5 fragments per page)-->
     <cache
             name="ContainerHTMLCache"
@@ -217,59 +191,35 @@ FRAG2(frag_size=60000)"
             timeToIdleSeconds="3600"
             timeToLiveSeconds="14400"
             maxElementsOnDisk="50000"
-            eternal="false">
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
-    </cache>
+            eternal="false"/>
     <cache
             name="ContainerHTMLCache-groups"
             overflowToDisk="true"
             maxElementsInMemory="500"
             diskPersistent="true"
-            eternal="false">
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
-    </cache>
+            eternal="false"/>
     <cache
             name="LockAlreadyAcquiredMap"
             overflowToDisk="true"
             maxElementsInMemory="300"
             diskPersistent="false"
-            eternal="true">
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
-    </cache>
+            eternal="true"/>
     <cache
             name="LockAlreadyAcquiredMap-groups"
             overflowToDisk="true"
             maxElementsInMemory="300"
             diskPersistent="false"
-            eternal="true">
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
-    </cache>
+            eternal="true"/>
     <cache
             name="LockPrerequisitesResultMap"
             overflowToDisk="true"
             maxElementsInMemory="300"
             diskPersistent="false"
-            eternal="true">
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
-    </cache>
+            eternal="true"/>
     <cache
             name="LockPrerequisitesResultMap-groups"
             overflowToDisk="true"
             maxElementsInMemory="300"
             diskPersistent="false"
-            eternal="true">
-        <!-- Uncomment this to activate clustering
-                <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
-                                   properties="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>-->
-    </cache>
+            eternal="true"/>
 </ehcache>

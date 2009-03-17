@@ -649,8 +649,10 @@ cluster.tcp.service.nodes.ip_address                   =   192.168.1.100[7840],1
 cluster.tcp.service.port                               =   7840
 cluster.tcp.idgenerator.nodes.ip_address               =   192.168.1.100[7850],192.168.1.200[7850]
 cluster.tcp.idgenerator.port                           =   7850
-#cluster.tcp.hibernate.nodes.ip_address                 =   192.168.1.100[7870],192.168.1.200[7870]
-#cluster.tcp.hibernate.port                             =   7870
+cluster.tcp.ehcache.hibernate.nodes.ip_address         =   192.168.1.100[7860],192.168.1.200[7860]
+cluster.tcp.ehcache.hibernate.port                     =   7860
+cluster.tcp.ehcache.jahia.nodes.ip_address             =   192.168.1.100[7870],192.168.1.200[7970]
+cluster.tcp.ehcache.jahia.port                         =   7870
 
 # For clustered caches, we use batching to avoid sending individual
 # messages for each invalidation. Normally the messages are batched
@@ -659,6 +661,15 @@ cluster.tcp.idgenerator.port                           =   7850
 # memory as well as sending huge messages through the network.
 clusterCacheMaxBatchSize                               = 100000
 
+######################################################################
+### EhCache settings  ###############################################
+######################################################################
+ehcache.hibernate.file = ehcache-hibernate.xml
+# For clustering comment above line and uncomment next line
+#ehcache.hibernate.file = ehcache-hibernate_cluster.xml
+ehcache.jahia.file = ehcache-jahia.xml
+# For clustering comment above line and uncomment next line
+#ehcache.jahia.file = ehcache-jahia_cluster.xml
 
 ######################################################################
 ### Workflow settings  ###############################################

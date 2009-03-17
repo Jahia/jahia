@@ -79,14 +79,13 @@ public class ImageResize extends Window {
             h = 350;
         }
 
-        setHeading("Image resize");
+        setHeading(Messages.getResource("fm_resize"));
         setSize(500, 200);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
         final FormPanel form = new FormPanel() ;
         form.setFrame(false);
         form.setHeaderVisible(false);
-        form.setInsetBorder(false);
         form.setBorders(false);
         setModal(true);
 
@@ -138,12 +137,12 @@ public class ImageResize extends Window {
         newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
-        Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button("OK", new SelectionListener<ComponentEvent>() {
+        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 resizeImage(n.getPath(), newname.getValue(), wf.getValue().intValue(), hf.getValue().intValue(), false) ;
             }
@@ -160,12 +159,12 @@ public class ImageResize extends Window {
          JahiaNodeService.App.getInstance().resizeImage(path, targetName, width, height, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\nOverwrite ?")) {
+                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\n" + Messages.getResource("fm_confOverwrite"))) {
                          resizeImage(path, targetName, width, height, true);
                      }
                 } else {
-                    com.google.gwt.user.client.Window.alert("cannot resize image \n\n" + throwable.getLocalizedMessage());
-                    Log.error("failed", throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_failResize") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.getResource("fm_failResize"), throwable);
                 }
              }
 

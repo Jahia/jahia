@@ -65,14 +65,13 @@ public class ImageRotate extends Window {
 
         m_linker = linker ;
 
-        setHeading("Image rotate");
+        setHeading(Messages.getResource("fm_rotate"));
         setSize(500, 150);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
         final FormPanel form = new FormPanel() ;
         form.setFrame(false);
         form.setHeaderVisible(false);
-        form.setInsetBorder(false);
         form.setBorders(false);
         setModal(true);
 
@@ -89,17 +88,17 @@ public class ImageRotate extends Window {
         newname.setFieldLabel(Messages.getResource("fm_newname"));
         form.add(newname);
 
-        Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 hide() ;
             }
         });
-        Button left = new Button("Rotate left", new SelectionListener<ComponentEvent>() {
+        Button left = new Button(Messages.getResource("fm_rotateLeft"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), false, false) ;
             }
         }) ;
-        Button right = new Button("Rotate right", new SelectionListener<ComponentEvent>() {
+        Button right = new Button(Messages.getResource("fm_rotateRight"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 rotateImage(n.getPath(), newname.getValue(), true, false) ;
             }
@@ -117,12 +116,12 @@ public class ImageRotate extends Window {
          JahiaNodeService.App.getInstance().rotateImage(path, target, clockwise, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\nOverwrite ?")) {
+                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\n"+ Messages.getResource("fm_confOverwrite"))) {
                          rotateImage(path, target, clockwise, true);
                      }
                 } else {
-                    com.google.gwt.user.client.Window.alert("cannot rotate image \n\n" + throwable.getLocalizedMessage());
-                    Log.error("failed", throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_failRotate") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.getResource("fm_failRotate"), throwable);
                 }
              }
 

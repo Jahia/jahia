@@ -59,7 +59,7 @@ public class Mounter extends Window {
 
     public Mounter(final BrowserLinker linker) {
         super() ;
-        setHeading("Mount");
+        setHeading(Messages.getResource("fm_mount"));
         setSize(500, 180);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
@@ -85,35 +85,35 @@ public class Mounter extends Window {
 
         final ProgressBar bar = new ProgressBar() ;
         final AdapterField barField = new AdapterField(bar) ;
-        barField.setFieldLabel("Progress");
+        //barField.setFieldLabel("Progress"); // should not be called progress since it is just a moving/resetting bar
         form.add(barField) ;
         barField.setVisible(false);
 
 
-        final Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {
+        final Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 hide() ;
             }
         });
 
-        final Button submit = new Button("OK") ;
+        final Button submit = new Button(Messages.getResource("fm_ok")) ;
         SelectionListener<ComponentEvent> selectionListener = new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 barField.setVisible(true);
                 bar.auto() ;
-                linker.loading("mounting...");
+                linker.loading(Messages.getResource("fm_mounting")) ;
                 submit.setEnabled(false);
                 cancel.setEnabled(false);
                 JahiaNodeService.App.getInstance().mount("", f.getValue(), t.getValue(), new AsyncCallback() {
                     public void onFailure(Throwable throwable) {
-                        Log.error("error", throwable);
+                        Log.error(Messages.getResource("fm_failMount"), throwable);
                         linker.loaded() ;
-                        com.google.gwt.user.client.Window.alert("Cannot mount remote server at " + t.getValue());
+                        com.google.gwt.user.client.Window.alert(Messages.getResource("fm_failMount") + " " + t.getValue());
                         hide();
                     }
 
                     public void onSuccess(Object o) {
-                        Log.info("suceess");
+                        //Log.info("success");
                         bar.reset() ;
                         linker.loaded() ;
                         hide();

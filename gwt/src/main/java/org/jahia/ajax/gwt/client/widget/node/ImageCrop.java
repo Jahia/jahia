@@ -81,6 +81,7 @@ public class ImageCrop extends Window {
             w = 328 ;
         }
         setSize(w + 12, h + 105);
+        setHeading(Messages.getResource("fm_crop"));
 
         setLayout(new FlowLayout()) ;
 
@@ -111,7 +112,6 @@ public class ImageCrop extends Window {
         FormPanel form = new FormPanel();
         form.setFrame(false);
         form.setHeaderVisible(false);
-        form.setInsetBorder(false);
         form.setBorders(false);
         newname.setName("newname");
         int extIndex = n.getName().lastIndexOf(".") ;
@@ -125,12 +125,12 @@ public class ImageCrop extends Window {
         form.add(newname);
 
         ButtonBar buttons = new ButtonBar() ;
-        Button cancel = new Button("Cancel", new SelectionListener<ComponentEvent>() {
+        Button cancel = new Button(Messages.getResource("fm_cancel"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 hide() ;
             }
         });
-        Button submit = new Button("OK", new SelectionListener<ComponentEvent>() {
+        Button submit = new Button(Messages.getResource("fm_ok"), new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 cropImage(n.getPath(), newname.getValue().toString(),
                         Integer.parseInt(top.getValue().toString()),
@@ -157,12 +157,12 @@ public class ImageCrop extends Window {
          JahiaNodeService.App.getInstance().cropImage(path, targetName, top, left, width, height, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\nOverwrite ?")) {
+                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\n" + Messages.getResource("fm_confOverwrite"))) {
                          cropImage(path, targetName, top, left, width, height, true);
                      }
                 } else {
-                    com.google.gwt.user.client.Window.alert("cannot crop image \n\n" + throwable.getLocalizedMessage());
-                    Log.error("failed", throwable);
+                    com.google.gwt.user.client.Window.alert(Messages.getResource("fm_failCrop") + "\n" + throwable.getLocalizedMessage());
+                    Log.error(Messages.getResource("fm_failCrop"), throwable);
                 }
              }
 

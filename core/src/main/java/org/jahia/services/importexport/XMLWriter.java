@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -1187,16 +1187,37 @@ public class XMLWriter extends XMLFilterImpl
                 }
                 break;
             default:
-//                if (ch[i] > '\u007f') {
-//                    write("&#");
-//                    write(Integer.toString(ch[i]));
-//                    write(';');
-//                } else {
+                //UNIL modification: because of XML parser compatibility for ISO/IEC 10646
+                if(ch[i] == '\u0009') {
+                    //ok for tab char or \t
                     write(ch[i]);
-//                }
-            }
-        }
-    }
+                }else if(ch[i] == '\n') {
+                    //ok for LF or u000A
+                    write(ch[i]);
+                }else if(ch[i] == '\r') {
+                    //ok for CR or u000D
+                    write(ch[i]);
+                }else if(ch[i] >= '\u0020' && ch[i] <= '\uD7FF') {
+                    //ok
+                    write(ch[i]);
+                }else if(ch[i] >= '\uE000' && ch[i] <= '\uFFFD') {
+                    //ok
+                    write(ch[i]);
+                }
+                /*
+                 //later for UTF-16 maybe
+                 else if(ch[i] >= '\u10000' && ch[i] <= '\u10FFFF') {
+                    //ok
+                    write(ch[i]);
+                }*/
+                else {
+                    //nothing
+                    System.err.println("Avoided char: "+ch[i] +" or as: "+ Integer.toString(ch[i]));
+                }
+
+            }//switch
+         }//for
+     }
 
 
     /**

@@ -69,6 +69,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
+import org.jahia.utils.FileUtils;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.TextHtml;
@@ -818,8 +819,8 @@ public class JahiaBigTextField extends JahiaField implements
         }
         for (int i = 0; i < values.length; i++) {
             try {
-                values[i] = (new HTMLTextExtractor()).extractText(
-                        new ByteArrayInputStream(values[i].getBytes("UTF-8")), "text/html", "UTF-8").toString();
+                values[i] = FileUtils.readerToString((new HTMLTextExtractor()).extractText(
+                        new ByteArrayInputStream(values[i].getBytes("UTF-8")), "text/html", "UTF-8"));
             } catch (Exception e) {
                 values[i] = TextHtml.html2text(values[i]);
             } 

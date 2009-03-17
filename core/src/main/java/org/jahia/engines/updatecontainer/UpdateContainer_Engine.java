@@ -1205,9 +1205,7 @@ public class UpdateContainer_Engine implements JahiaEngine {
 
                     if (field.getID() < 0) {
                         field.setID(newFieldID);
-                        if (newAclID != 0) {
-                            field.setAclID(newAclID);
-                        }
+                        field.setAclID(newAclID != 0 ? newAclID : theContainer.getAclID());
                     }
 
                     // save the active entry only if the staging doesn't exists.
@@ -1237,7 +1235,6 @@ public class UpdateContainer_Engine implements JahiaEngine {
                         if (field.getID() == 0) {
                             JahiaSaveVersion saveVersion = ServicesRegistry.getInstance().
                                     getJahiaVersionService().getSiteSaveVersion(jParams.getJahiaID());
-                            Object o = field.getObject();
                             field = ServicesRegistry.getInstance().
                                     getJahiaFieldService().
                                     createJahiaField(0, field.getJahiaID(), field.getPageID(),

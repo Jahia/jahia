@@ -42,6 +42,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.compass.core.CompassHighlighter;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
@@ -517,18 +520,15 @@ public class PageSearchResultBuilderImpl extends
     private String createTeaser(JahiaSearchHit thisHit,
             String searchQueryForHighlighting, String defaultTeaser) {
         String teaser = defaultTeaser;
-        CompassHighlighter highlighter = getHighlighter(thisHit.getParsedObject(),
-                searchQueryForHighlighting,
-                JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, "default");
+        
+        CompassHighlighter highlighter = getHighlighter(thisHit.getParsedObject());
         if (highlighter != null) {
-            highlighter
-                    .setSeparator("<p style=\"font-weight: bold\">........</p>");
-            highlighter.setMaxNumFragments(3);
             teaser = highlighter
                     .fragmentsWithSeparator(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD);
             teaser = teaser.replaceAll("\\r\\n", "\r");
             teaser = teaser.replaceAll("\\r{2,}", "<br/>");
-        }
+        } 
+            
         return teaser;
     }
     

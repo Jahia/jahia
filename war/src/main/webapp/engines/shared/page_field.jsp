@@ -503,10 +503,10 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <% if (displayHideFromNavigationMenuInput) { %>
 <tr>
     <th>
-        <fmt:message key="org.jahia.engines.shared.Page_Field.hideFromNavigationMenu.label"/><br/>
+        <label for="hideFromNavigationMenu"><fmt:message key="org.jahia.engines.shared.Page_Field.hideFromNavigationMenu.label"/></label><br/>
     </th>
     <td>
-        <input type="checkbox" name="hideFromNavigationMenu" <% if (hideFromNavigationMenu) { %>
+        <input type="checkbox" id="hideFromNavigationMenu" name="hideFromNavigationMenu" <% if (hideFromNavigationMenu) { %>
                checked="checked" <% } %> />
     </td>
 </tr>

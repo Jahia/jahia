@@ -18,6 +18,9 @@
 
  package org.jahia.services.search.analyzer;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.compass.core.config.CompassSettings;
+import org.compass.core.engine.SearchEngineException;
 import org.compass.core.lucene.engine.analyzer.LuceneAnalyzerFactory;
 
 /**
@@ -29,10 +32,8 @@ import org.compass.core.lucene.engine.analyzer.LuceneAnalyzerFactory;
  */
 public class CompassAnalyzerFactory implements LuceneAnalyzerFactory {
 
-    public org.apache.lucene.analysis.Analyzer
-            createAnalyzer(String string,
-                           org.compass.core.config.CompassSettings compassSettings)
-            throws org.compass.core.engine.SearchEngineException {
+    public Analyzer createAnalyzer(String string,
+            CompassSettings compassSettings) throws SearchEngineException {
         StandardAnalyzer analyzer = new StandardAnalyzer();
         return analyzer;
     }

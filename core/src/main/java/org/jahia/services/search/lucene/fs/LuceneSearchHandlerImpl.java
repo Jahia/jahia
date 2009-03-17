@@ -406,18 +406,15 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
                 searchEngine = (LuceneSearchEngine) se;
             }
         }
-        SearchResult searchResult = null;
-        if (searchEngine != null) {
-            searchResult = new LuceneSearchResult(reader, query, searchEngine);
-            searchResult.getHighlighter().setAnalyzer("highlighting");
-        } else {
-            searchResult = new SearchResultImpl(false);
-        }
 
         if (hits == null || hits.length() == 0) {
             return;
         }
 
+        SearchResult searchResult = searchEngine != null ? new LuceneSearchResult(
+                reader, query, searchEngine)
+                : new SearchResultImpl(false);        
+        
         Set<String> distinctObjectKeys = new HashSet<String>();
         String objectKey = null;
         for (int i = 0, size = hits.length(); i < size; i++) {

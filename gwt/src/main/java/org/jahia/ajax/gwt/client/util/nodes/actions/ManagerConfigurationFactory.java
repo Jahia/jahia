@@ -111,11 +111,6 @@ public class ManagerConfigurationFactory {
         file.addItem(unzip);
 
         FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem refresh = ItemCreator.createRefreshItem(linker);
-        edit.addItem(refresh);
-        completeManagerConfig.addItem(refresh);
-        edit.addItem(new FileActionItemSeparator());
-        completeManagerConfig.addItem(new FileActionItemSeparator());
         FileActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         completeManagerConfig.addItem(rename);
@@ -206,11 +201,6 @@ public class ManagerConfigurationFactory {
         file.addItem(unzip);
 
         FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem refresh = ItemCreator.createRefreshItem(linker);
-        edit.addItem(refresh);
-        fileManagerConfig.addItem(refresh);
-        edit.addItem(new FileActionItemSeparator());
-        fileManagerConfig.addItem(new FileActionItemSeparator());
         FileActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         fileManagerConfig.addItem(rename);
@@ -337,11 +327,6 @@ public class ManagerConfigurationFactory {
         mashupManagerConfig.addItem(new FileActionItemSeparator());
 
         FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
-        FileActionItem refresh = ItemCreator.createRefreshItem(linker);
-        edit.addItem(refresh);
-        mashupManagerConfig.addItem(refresh);
-        edit.addItem(new FileActionItemSeparator());
-        mashupManagerConfig.addItem(new FileActionItemSeparator());
         FileActionItem rename = ItemCreator.createRenameItem(linker);
         edit.addItem(rename);
         mashupManagerConfig.addItem(rename);
@@ -443,19 +428,6 @@ public class ManagerConfigurationFactory {
      * Item creation methods
      */
     private static class ItemCreator {
-
-        private static FileActionItem createRefreshItem(final BrowserLinker linker) {
-            FileActionItem refresh = new FileActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
-                public void onSelection() {
-                    linker.refreshTable();
-                }
-
-                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
-                    setEnabled(treeSelection);
-                }
-            };
-            return refresh;
-        }
 
         private static FileActionItem createRotateItem(final BrowserLinker linker) {
             FileActionItem rotate = new FileActionItem(Messages.getResource("fm_rotate"), "fm-rotate") {

@@ -98,7 +98,6 @@ public class SearchTable extends TopRightComponent {
             }
         });
         m_component.add(table) ;
-        m_component.setBottomComponent(new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes()));
     }
 
     public void setSearchContent(String text) {

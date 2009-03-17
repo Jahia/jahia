@@ -194,7 +194,7 @@ public class FileTable extends TopRightComponent {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
         ColumnConfig col;
         if (configuration.isDisplayExt()) {
-            col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 50);
+            col = new ColumnConfig("ext", Messages.getResource("fm_column_type"), 40);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
@@ -207,7 +207,7 @@ public class FileTable extends TopRightComponent {
         }
 
         if (configuration.isDisplayLock()) {
-            col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 32);
+            col = new ColumnConfig("locked", Messages.getResource("fm_column_locked"), 40);
             col.setAlignment(Style.HorizontalAlignment.CENTER);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
@@ -232,7 +232,7 @@ public class FileTable extends TopRightComponent {
         headerList.add(col);
 
 
-        col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 300);
+        col = new ColumnConfig("path", Messages.getResource("fm_column_path"), 270);
         col.setSortable(true);
         col.setResizable(true);
         headerList.add(col);
@@ -258,7 +258,7 @@ public class FileTable extends TopRightComponent {
         }
 
         if (configuration.isDisplayDate()) {
-            col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 90);
+            col = new ColumnConfig("date", Messages.getResource("fm_column_date"), 100);
             col.setAlignment(Style.HorizontalAlignment.LEFT);
             col.setRenderer(new GridCellRenderer<GWTJahiaNode>() {
                 public String render(GWTJahiaNode modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {

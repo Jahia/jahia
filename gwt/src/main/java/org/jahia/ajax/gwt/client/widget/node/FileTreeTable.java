@@ -55,7 +55,6 @@ import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
-import org.jahia.ajax.gwt.client.widget.node.FileListContextMenu;
 import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
@@ -177,7 +176,6 @@ public class FileTreeTable extends TopRightComponent {
         });
 
         m_component.add(m_treeTable) ;
-        m_component.setBottomComponent(new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes()));
     }
 
     protected void expandAllPreviousPaths(String path) {

@@ -43,8 +43,10 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 
@@ -70,9 +72,23 @@ public class FileToolbar extends TopBar {
         ToolBar shortcuts = new ToolBar();
         //menus.setHeight(21);
 
+        // refresh item not bound to any configuration
+        FileActionItem refresh = new FileActionItem(Messages.getResource("fm_refresh"), "fm-refresh") {
+            public void onSelection() {
+                getLinker().refreshTable();
+            }
+
+            public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                // always enabled
+                // setEnabled(treeSelection);
+            }
+        };
+
         for (FileActionItemItf item: config.getItems()) {
             shortcuts.add(item.getTextToolitem()) ;
         }
+        shortcuts.add(new SeparatorToolItem()) ;
+        shortcuts.add(refresh.getTextToolitem()) ;
 
         if (config.isEnableTextMenu() && config.getGroupedItems().size() > 0) {
             for (FileActionItemGroup group: config.getGroupedItems()) {
@@ -103,6 +119,8 @@ public class FileToolbar extends TopBar {
                 }
             });
             Menu menu = new Menu() ;
+            menu.add(refresh.getMenuItem()) ;
+            menu.add(new SeparatorMenuItem()) ;
             menu.add(list) ;
             menu.add(thumbs) ;
             menu.add(detailedThumbs) ;

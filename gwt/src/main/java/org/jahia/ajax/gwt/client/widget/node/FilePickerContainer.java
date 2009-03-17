@@ -33,7 +33,6 @@
 
 package org.jahia.ajax.gwt.client.widget.node;
 
-import org.jahia.ajax.gwt.client.widget.node.FilePathBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -88,6 +87,7 @@ public class FilePickerContainer extends TopRightComponent {
 
         m_component.add(tabs) ;
         m_component.setTopComponent(pathBar.getComponent());
+        m_component.setBottomComponent(new FilterStatusBar(config.getFilters(), config.getMimeTypes(), config.getNodeTypes()));
     }
 
     public boolean isAllowThumbs() {

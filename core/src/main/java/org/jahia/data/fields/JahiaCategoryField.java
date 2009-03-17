@@ -98,12 +98,18 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
             case (ConnectionTypes.LOCAL) :
                 //this.setValue(this.getValue());
                 if (!this.getValue().equals("<empty>")) {
-                    this.objectItem = ExpressionMarker.getValue(this.getValue(), jParams);
-                    if (jParams != null) {
-                        this.objectItem = ResourceBundleMarker.getValue((String) this.objectItem, jParams.getLocale());
+                    if (!Category_Field.NOSELECTION_MARKER.equals(getValue())) {
+                        this.objectItem = ExpressionMarker.getValue(this.getValue(), jParams);
+                        if (jParams != null) {
+                            this.objectItem = ResourceBundleMarker.getValue((String) this.objectItem, jParams.getLocale());
+                        }
+                        this.setRawValue(this.getValue());
+                        this.setValue(FormDataManager.htmlEncode(this.getValue()));
+                    } else {
+                        this.objectItem = this.getValue();
+                        this.setRawValue(this.getValue());
+                        this.setValue(this.getValue());
                     }
-                    this.setRawValue(this.getValue());
-                    this.setValue(FormDataManager.htmlEncode(this.getValue()));
                 }
                 break;
             case (ConnectionTypes.DATASOURCE) :
@@ -222,7 +228,7 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
 
         Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
         List<String> fieldRawValues = new ArrayList<String>();
-        String[] strVals = this.getValues();
+        String[] strVals = getValue() != null && Category_Field.NOSELECTION_MARKER.equals(getValue()) ? EMPTY_STRING_ARRAY : this.getValues();
         if (strVals != null) {
             fieldRawValues.addAll(Arrays.asList(strVals));
         }
@@ -268,6 +274,10 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
      */
     public String[] getValuesForSearch(String languageCode, ProcessingContext context, boolean expand) throws JahiaException {
 
+        if (getValue() != null && Category_Field.NOSELECTION_MARKER.equals(getValue())) {
+            return EMPTY_STRING_ARRAY;
+        }
+        
         List<String> fieldRawValues = new ArrayList<String>();
         String[] strVals = this.getValues();
         if (strVals != null) {

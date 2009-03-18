@@ -73,7 +73,8 @@ public class JAMonAnalyticsService extends AnalyticsService {
     }
 
     public void trackEvent(JahiaEvent je, int type, String operation) {
-        String username = je.getProcessingContext().getTheUser().getUsername();
+
+        String username = "";
 
         int siteId = je.getProcessingContext().getSiteID();
         //String siteKey = je.getProcessingContext().getSiteKey();
@@ -82,30 +83,27 @@ public class JAMonAnalyticsService extends AnalyticsService {
         int pid = je.getProcessingContext().getPageID();
         //String pageTitle = je.getProcessingContext().getPage().getTitle();
 
-        org.jahia.services.importexport.ImportExportService ies = ServicesRegistry.getInstance().getImportExportService();
+
         int objectId = -1;
         String objectType = "";
         String uuid = "nouuid";
 
-        try {
-            uuid = ies.getUuid(ContentPage.getPage(je.getProcessingContext().getPageID()));
-        } catch (JahiaException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        //logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         switch (type) {
             case 1: { //  event on site
                 //JahiaSite site = (JahiaSite)je.getObject();
-                logger.info(je.getObject().getClass().getName());
-                logger.info("site :" + operation);
+                ////logger.info(je.getObject().getClass().getName());
+                ////logger.info("site :" + operation);
                 break;
             }
             case 2: { //  event on field
-                logger.info(je.getObject().getClass().getName());
-                logger.info("field :" + operation);
+                //logger.info(je.getObject().getClass().getName());
+                //logger.info("field :" + operation);
                 JahiaField field = (JahiaField) je.getObject();
+                uuid = getUUID(je);
+                username = je.getProcessingContext().getTheUser().getUsername();
                 try {
-                    logger.info("field :" + ((field.getDefinition().getName()).split("_"))[field.getDefinition().getName().split("_").length - 1]);
+                    //logger.info("field :" + ((field.getDefinition().getName()).split("_"))[field.getDefinition().getName().split("_").length - 1]);
                     objectType = ((field.getDefinition().getName()).split("_"))[field.getDefinition().getName().split("_").length - 1];
                     objectId = field.getID();
                 } catch (JahiaException e) {
@@ -115,11 +113,12 @@ public class JAMonAnalyticsService extends AnalyticsService {
             }
             case 3: { //  event on container
                 JahiaContainer container = (JahiaContainer) je.getObject();
-                //container.getPageID() then get uuid
-                logger.info(je.getObject().getClass().getName());
-                logger.info("container :" + operation);
+                uuid = getUUID(je);
+                username = je.getProcessingContext().getTheUser().getUsername();
+                //logger.info(je.getObject().getClass().getName());
+                //logger.info("container :" + operation);
                 try {
-                    logger.info(container.getDefinition().getName());
+                    //logger.info(container.getDefinition().getName());
                     objectType = ((container.getDefinition().getName()).split("_"))[container.getDefinition().getName().split("_").length - 1];
                     objectId = container.getID();
                 } catch (JahiaException e) {
@@ -128,58 +127,54 @@ public class JAMonAnalyticsService extends AnalyticsService {
                 break;
             }
             case 4: { //  event on page
-                logger.info(je.getObject().getClass().getName());
-                logger.info("page :" + operation);
+                username = je.getProcessingContext().getTheUser().getUsername();
                 if (operation.equals("accepted") || operation.equals("rejected")) {
                     JahiaPageInfo pageInfo = (JahiaPageInfo) je.getObject();
-                    // logger.info("pageInfo Language " + pageInfo.getLanguageCode());
-                    // logger.info("pageInfo Title " + pageInfo.getTitle());
+                    // //logger.info("pageInfo Language " + pageInfo.getLanguageCode());
+                    // //logger.info("pageInfo Title " + pageInfo.getTitle());
                     objectId = pageInfo.getID();
                     objectType = "info";
                 } else {
                     JahiaPage page = (JahiaPage) je.getObject();
-                    logger.info("page " + page.getTitle());
+                    //logger.info("page " + page.getTitle());
                     objectId = page.getID();
                     objectType = "page";
                 }
-
+                uuid = getUUID(je);
                 break;
             }
             case 5: { //  event on user
+                username = je.getProcessingContext().getTheUser().getUsername();
                 JahiaDBUser user = (JahiaDBUser) je.getObject();
-                logger.info(je.getObject().getClass().getName());
-                //logger.info("user :" + operation);
-                //logger.info("user name :" + user.getName());
+                //logger.info(je.getObject().getClass().getName());
+                ////logger.info("user :" + operation);
+                ////logger.info("user name :" + user.getName());
                 objectId = user.getID();
                 objectType = "user";
                 break;
             }
             case 6: { // event on template
-                logger.info(je.getObject().getClass().getName());
-                logger.info("template :" + operation);
+                //logger.info(je.getObject().getClass().getName());
+                //logger.info("template :" + operation);
                 break;
             }
             case 7: { // event on category
                 JahiaCategory category = (JahiaCategory) je.getObject();
-                logger.info(je.getObject().getClass().getName());
-                //logger.info("category :" + operation);
-                //logger.info("category key :" + category.getKey());
+                //logger.info(je.getObject().getClass().getName());
                 objectId = category.getID();
                 objectType = "category";
                 break;
             }
             case 8: { // event on group
                 JahiaDBGroup group = (JahiaDBGroup) je.getObject();
-                logger.info(je.getObject().getClass().getName());
-                //logger.info("group :" + operation);
-                //logger.info("group key"+group.getGroupKey());
+                //logger.info(je.getObject().getClass().getName());
                 objectId = group.getGroupID();
                 objectType = "group";
                 break;
             }
             case 9: { // event on rights
-                logger.info(je.getObject().getClass().getName());
-                logger.info("rights :" + operation);
+                username = je.getProcessingContext().getTheUser().getUsername();
+                //logger.info("rights :" + operation);
                 break;
             }
             case 10: { // event on container list
@@ -190,11 +185,11 @@ public class JAMonAnalyticsService extends AnalyticsService {
                 break;
             }
         }
-        logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        //logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         String jamonLabel = "JahiaEvent#u_" + username + "::o_" + operation + "::ot_" + objectType + "::oid_" + objectId + "::uu_" + uuid + "::pid_" + pid + "::sid_" + siteId;
-        logger.info("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
-        logger.info("_-_" + jamonLabel);
-        logger.info("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
+        //logger.info("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
+        //logger.info("_-_" + jamonLabel);
+        //logger.info("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
 
         Monitor eventMon = MonitorFactory.start(jamonLabel);
         eventMon.stop();
@@ -210,8 +205,8 @@ public class JAMonAnalyticsService extends AnalyticsService {
         // todo make the limit of the number of events pluggable 
         String query = "select * from counterdata cross join counters where name like '%JahiaEvent%' and counter = counters.id order by ts DESC limit 0," + N;
         List counterdata = jdbcTemplate.query(query, new DataRowMapper());
-        //logger.info("**********************************************************************");
-        //logger.info("");
+        ////logger.info("**********************************************************************");
+        ////logger.info("");
         int i = 1;
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
             JAMonCounterData data = (JAMonCounterData) it.next();
@@ -231,18 +226,18 @@ public class JAMonAnalyticsService extends AnalyticsService {
             result.put("uuid" + i, data.getUuid());
             result.put("hits" + i, String.valueOf(data.getHits()));
             i++;
-            //logger.info(data.getId() + "__" + data.getTimestamp() + "__" + data.getAvgtime() + "__" + data.getHits() + "__" + data.getMaxtime());
+            ////logger.info(data.getId() + "__" + data.getTimestamp() + "__" + data.getAvgtime() + "__" + data.getHits() + "__" + data.getMaxtime());
         }
         result.put("size", String.valueOf(i));
-        //logger.info("");
-        //logger.info("**********************************************************************");
+        ////logger.info("");
+        ////logger.info("**********************************************************************");
 
         return result;
     }
 
 
     public Map<String, String> getMostNactiveUsers(int N) {
-        logger.info("%%%getMostNactiveUsers%%%");
+        //logger.info("%%%getMostNactiveUsers%%%");
         Map<String, String> result = new HashMap<String, String>();// username,totalop_lastaccess
         Map<String, String> resultCopy = new HashMap<String, String>();
         String query = "select * from counterdata cross join counters where name like '%JahiaEvent%' and counter = counters.id";
@@ -252,7 +247,7 @@ public class JAMonAnalyticsService extends AnalyticsService {
             JAMonCounterData jmd = (JAMonCounterData) (it.next());
             String username = (jmd.getUser().split("_"))[1];
             if (result.containsKey(username)) {
-                //logger.info("--> " + result.get(username));
+                ////logger.info("--> " + result.get(username));
                 double newvalue = Double.parseDouble(result.get(username)) + jmd.getHits();
                 result.put(username, String.valueOf(newvalue));
             } else {
@@ -293,7 +288,7 @@ public class JAMonAnalyticsService extends AnalyticsService {
         Map<String, String> resultCopy = new HashMap<String, String>();
         String query = "select * from counterdata cross join counters where name like '%JahiaEvent%' and counter = counters.id";
         List counterdata = jdbcTemplate.query(query, new DataRowMapper());
-      
+
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
             JAMonCounterData jmd = (JAMonCounterData) (it.next());
             String username = (jmd.getUser().split("_"))[1];
@@ -327,7 +322,7 @@ public class JAMonAnalyticsService extends AnalyticsService {
         return result;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Map<String, String> executeQuery(String user, String op, String type, int objId, String uuid, int pageId, int siteId,int N) {
+    public Map<String, String> executeQuery(String user, String op, String type, int objId, String uuid, int pageId, int siteId, int N) {
 
         Map<String, String> result = new HashMap<String, String>();
 
@@ -348,16 +343,13 @@ public class JAMonAnalyticsService extends AnalyticsService {
         String query = "select * from counterdata cross join counters where name like '%JahiaEvent%" + params + "' and counter = counters.id order by ts DESC limit 0," + N;
 
 
-       // logger.info("__________________________________________________________________________________________");
-       // logger.info(query);
-       // logger.info("__________________________________________________________________________________________");
         List counterdata = jdbcTemplate.query(query, new DataRowMapper());
-
+        /*
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
             JAMonCounterData jcd = (JAMonCounterData) it.next();
-            logger.info(jcd.getName());
+            //logger.info(jcd.getName());
         }
-
+        */
         int i = 1;
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
             JAMonCounterData data = (JAMonCounterData) it.next();
@@ -379,7 +371,7 @@ public class JAMonAnalyticsService extends AnalyticsService {
 
 
             i++;
-            // logger.info(data.getTimestamp() + "__" + data.getAvgtime() + "__" + data.getHits() + "__" + data.getMaxtime());
+            // //logger.info(data.getTimestamp() + "__" + data.getAvgtime() + "__" + data.getHits() + "__" + data.getMaxtime());
         }
         result.put("size", String.valueOf(i));
 
@@ -387,11 +379,6 @@ public class JAMonAnalyticsService extends AnalyticsService {
         return result;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    /* public Map<String, String> executeQuery(String user, String op, String type, int objId, String uuid, int siteId) {
-        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-    */
     public Map<String, String> executeQuery(GWTanalyticsQuery query) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -410,15 +397,24 @@ public class JAMonAnalyticsService extends AnalyticsService {
 
         String query = "delete from counterdata";
         jdbcTemplate.execute(query);
-        logger.info(" table counterdata flushed");
+        //logger.info(" table counterdata flushed");
         query = "delete from counters";
         jdbcTemplate.execute(query);
-        logger.info(" table counters flushed");
+        //logger.info(" table counters flushed");
+    }
+
+    private String getUUID(JahiaEvent je){
+        String uuid = "nouuid";
+        org.jahia.services.importexport.ImportExportService ies = ServicesRegistry.getInstance().getImportExportService();
+         try {
+                uuid = ies.getUuid(ContentPage.getPage(je.getProcessingContext().getPageID()));
+            } catch (JahiaException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        return uuid;
     }
 
     public void flushDatabaseOldest() {
-
-
     }
 
 

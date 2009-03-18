@@ -42,9 +42,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.search.highlight.Highlighter;
-import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.compass.core.CompassHighlighter;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
@@ -312,7 +309,6 @@ public class PageSearchResultBuilderImpl extends
                         }
 
                         info.setURL(url == null ? "#" : url);
-                        info.setTeaser(createTeaser(info, searchQuery, defaultTeaser));
                         String languageCode = null;
                         try {
                             languageCode = parsedObject
@@ -517,22 +513,6 @@ public class PageSearchResultBuilderImpl extends
         return shouldAdd;        
     }
     
-    private String createTeaser(JahiaSearchHit thisHit,
-            String searchQueryForHighlighting, String defaultTeaser) {
-        String teaser = defaultTeaser;
-        
-        CompassHighlighter highlighter = getHighlighter(thisHit.getParsedObject());
-        if (highlighter != null) {
-            teaser = highlighter
-                    .fragmentsWithSeparator(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD);
-            teaser = teaser.replaceAll("\\r\\n", "\r");
-            teaser = teaser.replaceAll("\\r{2,}", "<br/>");
-        } 
-            
-        return teaser;
-    }
-    
-
     public Map<Integer, List<JahiaSearchHit>> groupHitsByObject(int objectType,
             JahiaSearchResult jahiaSearchResult) {
         return this.groupingHitsHandler.groupHitsByObject(objectType,

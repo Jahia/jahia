@@ -212,12 +212,12 @@
 <div id="actionBar">
   	<span class="dex-PushButton">
 	  <span class="first-child">
-      	 <a class="ico-back" class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
+      	 <a class="ico-back" class="operationLink" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
       </span>
      </span>
   	 <span class="dex-PushButton">
       <span class="first-child">
-         <a class="ico-next" href="javascript:document.jahiaAdmin.submit();">
+         <a class="ico-next" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">
              <fmt:message key="org.jahia.admin.nextStep.button.label"/>
          </a>
       </span>

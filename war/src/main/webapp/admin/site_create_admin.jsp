@@ -202,16 +202,16 @@
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
       	 <% if (session.getAttribute(JahiaAdministration.CLASS_NAME + "noSites") != null) { %>
-        		<a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+        		<a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
 		<% } else { %>
-		        <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+		        <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
 		<% } %>
       </span>
      </span> 
   	<% if (session.getAttribute(JahiaAdministration.CLASS_NAME + "redirectToJahia") == null) { %>  	
   	<span class="dex-PushButton"> 
 	  <span class="first-child">
-      	 <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();">          
+      	 <a class="ico-ok" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">          
           <fmt:message key="org.jahia.admin.save.label"/>
         </a>
       </span>
@@ -220,14 +220,14 @@
 <%  } else { %>
  	<span class="dex-PushButton"> 
 	  <span class="first-child">
-	  	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'>
+	  	 <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>' onclick="showWorkInProgress(); return true;">
            <internal:message key="org.jahia.back.button"/>
         </a>
 	  </span>
 	</span>
 	<span class="dex-PushButton"> 
 	  <span class="first-child">
-	  	  <a class="ico-next" href="javascript:document.jahiaAdmin.submit();">          
+	  	  <a class="ico-next" href="javascript:document.jahiaAdmin.submit();" onclick="showWorkInProgress(); return true;">          
           <internal:message key="org.jahia.nextStep.button"/>          
         </a>
 	  </span>

@@ -323,7 +323,7 @@ if (!isConfigWizard) {
     <span class="dex-PushButton"> 
       <span class="first-child">
          <a class="ico-back"
-               href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
+               href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=list")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToSitesList.label"/></a>
       </span>
      </span>
       
@@ -331,7 +331,7 @@ if (!isConfigWizard) {
 
         <span class="dex-PushButton"> 
             <span class="first-child">
-            <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processtemplatesetchoice&selectTmplSet="+selectedTmplSet+"&languageList="+selectedLocale)%>'>
+            <a class="ico-back" href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=processtemplatesetchoice&selectTmplSet="+selectedTmplSet+"&languageList="+selectedLocale)%>' onclick="showWorkInProgress(); return true;">
                 <internal:message key="org.jahia.back.button"/>
             </a>
             </span> 
@@ -339,7 +339,7 @@ if (!isConfigWizard) {
         <%}%>
         <span class="dex-PushButton"> 
             <span class="first-child">                  
-             <a class="ico-ok" href="javascript:sendForm();">
+             <a class="ico-ok" href="javascript:sendForm();" onclick="showWorkInProgress(); return true;">
                 <internal:message key="org.jahia.createSite.button"/>
             </a>
             </span> 

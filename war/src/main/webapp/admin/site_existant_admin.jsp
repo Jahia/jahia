@@ -99,7 +99,7 @@ if(siteJS.getID() != 0) { %>
                                                 <fmt:message key="org.jahia.admin.site.ManageSites.virtualSiteWhereAdministrator.label"/>&nbsp;:
                                             </td>
                                             <td>
-                                                <select name="selectSite" onChange="changeSite();">
+                                                <select name="selectSite" onChange="showWorkInProgress(); changeSite();">
                                                     <option value="0"<% if (selectedSite.intValue() == 0) { %>
                                                             selected<%} %>>
                                                         ---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseASite.label"/>&nbsp;&nbsp;---------&nbsp;</option>
@@ -147,13 +147,13 @@ if(siteJS.getID() != 0) { %>
   <span class="dex-PushButton">
     <span class="first-child">
       <a class="ico-back"
-         href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>'><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
+         href='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=add")%>' onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.site.ManageSites.backToPreviousStep.label"/></a>
     </span>
   </span><% if (selectedSite.intValue() > 0) { %>
   <span class="dex-PushButton">
     <span class="first-child">
     <a class="ico-ok"
-       href="javascript:{showWorkInProgress(); document.jahiaAdmin.submit();}"><fmt:message key="org.jahia.admin.save.label"/></a>
+       href="javascript:{showWorkInProgress(); document.jahiaAdmin.submit();}" onclick="showWorkInProgress(); return true;"><fmt:message key="org.jahia.admin.save.label"/></a>
   </span>
   </span><% } %>
 </div>

@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -162,12 +162,15 @@
                 <c:set var="iconUrl"><%=URL%>images/icons/admin/adromeda/${item.icon}.png</c:set>
                 <c:set var="iconUrlDisabled"><%=URL%>images/icons/admin/adromeda/${item.icon}_grey.png</c:set>
             </c:if>
+            <fmt:message key="${item.label}" var="label"/>
+            <c:set var="label" value="${fn:contains(label, '???') ? item.label : label}"/>
             <c:if test="${item.enabled}">
                     <span class="dex-PushButton-big">
                         <span class="first-child">
+                            
                             <a href="${item.link}"><img
                                     name="${item.name}" src="${iconUrl}" width="32"
-                                    height="32" border="0"><span><fmt:message key="${item.label}"/></span></a>
+                                    height="32" border="0"><span><c:out value="${label}"/></span></a>
                         </span>
                     </span>
             </c:if>
@@ -175,7 +178,7 @@
                     <span class="dex-PushButton-big disabled">
                         <span class="first-child" style="cursor: default">
                             <a href="#${item.name}" onclick="return false;" style="cursor: default;"><img name="${item.name}" src="${iconUrlDisabled}" width="32"
-                                             height="32" border="0"><span><fmt:message key="${item.label}"/></span></a></span>
+                                             height="32" border="0"><span><c:out value="${label}"/></span></a>
                         </span>
                     </span>
             </c:if>

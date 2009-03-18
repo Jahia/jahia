@@ -113,6 +113,10 @@ public interface JahiaNodeServiceAsync {
 
     void rotateImage(String path, String target, boolean clockwise, boolean forceReplace, AsyncCallback async);
 
+    void activateVersioning(List<String> path, AsyncCallback async);
+
+    void getVersions(String path, AsyncCallback<List<GWTJahiaNodeVersion>> async);
+
     void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
 
     void createRSSPortletInstance(String path, String url, String name, AsyncCallback<GWTJahiaNode> async);

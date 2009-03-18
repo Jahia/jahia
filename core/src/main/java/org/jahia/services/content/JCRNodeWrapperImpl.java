@@ -1154,7 +1154,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return results;
     }
 
-    public JCRNodeWrapper getVersion(String name) {
+    public JCRNodeWrapper getFrozenVersion(String name) {
         try {
             Version v = objectNode.getVersionHistory().getVersion(name);
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
@@ -1284,15 +1284,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public Item getPrimaryItem() throws ItemNotFoundException, RepositoryException {
-        throw new UnsupportedOperationException();
+        return objectNode.getPrimaryItem();
     }
 
     public int getIndex() throws RepositoryException {
-        throw new UnsupportedOperationException();
+        return objectNode.getIndex();
     }
 
     public PropertyIterator getReferences() throws RepositoryException {
-        throw new UnsupportedOperationException();
+        return objectNode.getReferences();
     }
 
     public boolean hasNode(String s) throws RepositoryException {
@@ -1304,24 +1304,24 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return objectNode.hasNodes();
     }
 
-    public Version checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
-        throw new UnsupportedOperationException();
+    public JCRVersion checkin() throws VersionException, UnsupportedRepositoryOperationException, InvalidItemStateException, LockException, RepositoryException {
+        return (JCRVersion) provider.getNodeWrapper(objectNode.checkin(), session);
     }
 
     public void checkout() throws UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        throw new UnsupportedOperationException();
+        objectNode.checkout();
     }
 
     public void doneMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedOperationException();
+        objectNode.doneMerge(((JCRVersion)version).getRealNode());
     }
 
     public void cancelMerge(Version version) throws VersionException, InvalidItemStateException, UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedOperationException();
+        objectNode.cancelMerge(((JCRVersion)version).getRealNode());
     }
 
     public void update(String s) throws NoSuchWorkspaceException, AccessDeniedException, LockException, InvalidItemStateException, RepositoryException {
-        throw new UnsupportedOperationException();
+        objectNode.update(s);
     }
 
     public NodeIterator merge(String s, boolean b) throws NoSuchWorkspaceException, AccessDeniedException, MergeException, LockException, InvalidItemStateException, RepositoryException {
@@ -1333,31 +1333,31 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean isCheckedOut() throws RepositoryException {
-        throw new UnsupportedOperationException();
+        return objectNode.isCheckedOut();
     }
 
     public void restore(String s, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
-        throw new UnsupportedOperationException();
+        getRealNode().restore(s,b);
     }
 
     public void restore(Version version, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, RepositoryException {
-        throw new UnsupportedOperationException();
+        getRealNode().restore(((JCRVersion)version).getRealNode(),b);
     }
 
     public void restore(Version version, String s, boolean b) throws PathNotFoundException, ItemExistsException, VersionException, ConstraintViolationException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
-        throw new UnsupportedOperationException();
+        getRealNode().restore(((JCRVersion)version).getRealNode(),s,b);
     }
 
     public void restoreByLabel(String s, boolean b) throws VersionException, ItemExistsException, UnsupportedRepositoryOperationException, LockException, InvalidItemStateException, RepositoryException {
-        throw new UnsupportedOperationException();
+        getRealNode().restoreByLabel(s,b);
     }
 
     public VersionHistory getVersionHistory() throws UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedOperationException();
+        return (VersionHistory) getProvider().getNodeWrapper((Node) getRealNode().getVersionHistory(), (JCRSessionWrapper) getSession());
     }
 
     public Version getBaseVersion() throws UnsupportedRepositoryOperationException, RepositoryException {
-        throw new UnsupportedOperationException();
+        return (Version) getProvider().getNodeWrapper((Node) getRealNode().getBaseVersion(), (JCRSessionWrapper) getSession());
     }
 
     public JCRFileContent getFileContent() {

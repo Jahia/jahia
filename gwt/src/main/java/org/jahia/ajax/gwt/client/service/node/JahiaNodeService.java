@@ -132,6 +132,10 @@ public interface JahiaNodeService extends RemoteService {
 
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException;
 
+    public void activateVersioning(List<String> path) throws GWTJahiaServiceException;
+
+    public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException;
+
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createRSSPortletInstance(String path, String url, String name) throws GWTJahiaServiceException;

@@ -300,8 +300,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getVersions();
     }
 
-    public JCRNodeWrapper getVersion(String name) {
-        return node.getVersion(name);
+    public JCRNodeWrapper getFrozenVersion(String name) {
+        return node.getFrozenVersion(name);
     }
 
     public JCRStoreProvider getJCRProvider() {

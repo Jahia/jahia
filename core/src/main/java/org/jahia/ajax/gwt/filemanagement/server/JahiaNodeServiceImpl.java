@@ -52,6 +52,7 @@ import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.definitions.server.ContentDefinitionHelper;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.filemanagement.server.helper.FileManagerWorker;
+import org.jahia.ajax.gwt.filemanagement.server.helper.JCRVersioningHelper;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
@@ -62,6 +63,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.tools.imageprocess.ImageProcess;
 import org.jahia.utils.FileUtils;
 import org.apache.log4j.Logger;
+
+import javax.jcr.RepositoryException;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -324,6 +327,19 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         try {
             return FileManagerWorker.searchPortlets(retrieveParamBean());
         } catch (Exception e) {
+            throw new GWTJahiaServiceException(e.getMessage());
+        }
+    }
+
+    public void activateVersioning(List<String> path) throws GWTJahiaServiceException {
+        JCRVersioningHelper.activateVersioning(path, retrieveParamBean());
+    }
+
+    public List<GWTJahiaNodeVersion> getVersions(String path) throws GWTJahiaServiceException {
+        try {
+            JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
+            return JCRVersioningHelper.getVersions(jcr.getThreadSession(getUser()).getNode(path), retrieveParamBean());
+        } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

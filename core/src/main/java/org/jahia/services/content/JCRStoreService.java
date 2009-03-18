@@ -180,7 +180,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
 
         try {
             if (s != null && !username.equals(s.getUserID())) {
-                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username);
+                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username+ " @"+Thread.currentThread().getName());
                 s.logout();
             }
         } catch (IllegalStateException e) {
@@ -365,14 +365,8 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
         Session s = userSession.get();
         if (s != null) {
             s.logout();
+            userSession.set(null);
         }
-//        for (JCRStoreProvider storeProvider : getMountPoints().values()) {
-//            try {
-//                storeProvider.closeThreadSession();
-//            } catch (RepositoryException e) {
-//                logger.warn("Cannot close session",e);
-//            }
-//        }
     }
 
     public List<UsageEntry> findUsages(String sourceUri, boolean onlyLockedUsages) {
@@ -461,6 +455,10 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
                 return new JCRMountPointNode(w);
             } else if (w.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
                 return new JCRJahiaContentNode(w);
+            } else if (w.isNodeType(Constants.NT_VERSION)) {
+                return new JCRVersion(w);
+            } else if (w.isNodeType(Constants.NT_VERSIONHISTORY)) {
+                return new JCRVersionHistory(w);
             }
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

@@ -197,7 +197,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     List<String> getVersions();
 
-    JCRNodeWrapper getVersion(String name);
+    JCRNodeWrapper getFrozenVersion(String name);
 
     JCRStoreProvider getJCRProvider();
 

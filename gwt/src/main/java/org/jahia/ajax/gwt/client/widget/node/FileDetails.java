@@ -36,41 +36,49 @@ package org.jahia.ajax.gwt.client.widget.node;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.table.Table;
 import com.extjs.gxt.ui.client.widget.table.TableColumn;
 import com.extjs.gxt.ui.client.widget.table.TableColumnModel;
 import com.extjs.gxt.ui.client.widget.table.TableItem;
-import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.event.TableListener;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Grid;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
-import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
-import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
-import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
-import org.jahia.ajax.gwt.client.util.Formatter;
-import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
-import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionService;
+import org.jahia.ajax.gwt.client.service.definition.ContentDefinitionServiceAsync;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
+import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.util.Formatter;
+import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
+import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
+import org.jahia.ajax.gwt.client.util.nodes.actions.ManagerConfiguration;
+import org.jahia.ajax.gwt.client.util.nodes.actions.FileActions;
+import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -88,6 +96,7 @@ public class FileDetails extends BottomRightComponent {
     private AsyncTabItem rolesTabItem;
     private AsyncTabItem modesTabItem;
     private AsyncTabItem usagesTabItem;
+    private AsyncTabItem versioningTabItem;
     private FlowPanel infoPanel;
     private TabPanel tabs;
     private AclEditor modeAclEditor;
@@ -145,6 +154,11 @@ public class FileDetails extends BottomRightComponent {
         usagesTabItem.setText(Messages.getResource("fm_usages"));
         usagesTabItem.setLayout(new FitLayout());
 
+        // versions
+        versioningTabItem = new AsyncTabItem();
+        versioningTabItem.setText("Versioning");
+        versioningTabItem.setLayout(new FitLayout());
+
         // add all tabs
         tabs.add(infoTabItem);
         tabs.add(propertiesTabItem);
@@ -156,6 +170,7 @@ public class FileDetails extends BottomRightComponent {
         }
         tabs.add(authorizationsTabItem);
         tabs.add(usagesTabItem);
+        tabs.add(versioningTabItem);
 
         tabs.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
@@ -181,6 +196,7 @@ public class FileDetails extends BottomRightComponent {
         modesTabItem.removeAll();
         authorizationsTabItem.removeAll();
         usagesTabItem.removeAll();
+        versioningTabItem.removeAll();
         selectedNodes = null;
         infoTabItem.setProcessed(false);
         propertiesTabItem.setProcessed(false);
@@ -188,6 +204,7 @@ public class FileDetails extends BottomRightComponent {
         modesTabItem.setProcessed(false);
         authorizationsTabItem.setProcessed(false);
         usagesTabItem.setProcessed(false);
+        versioningTabItem.setProcessed(false);
     }
 
     public void fillData(Object selectedItem) {
@@ -258,6 +275,8 @@ public class FileDetails extends BottomRightComponent {
             displayAuthorization();
         } else if (currentTab == usagesTabItem) {
             displayFileUsages();
+        } else if (currentTab == versioningTabItem) {
+            displayVersioning();
         }
     }
 
@@ -712,4 +731,84 @@ public class FileDetails extends BottomRightComponent {
 
         }
     }
+
+    public void displayVersioning() {
+        if (selectedNodes.size() == 1) {
+            final GWTJahiaNode selectedNode = selectedNodes.get(0);
+            if (!versioningTabItem.isProcessed()) {
+                if (selectedNode.getNodeTypes().contains("mix:versionable") || selectedNode.getNodeTypes().contains("mix:simpleVersionable")) {
+                    List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
+
+                    ColumnConfig col = new ColumnConfig("versionNumber","version number", 100);
+                    columns.add(col);
+                    col = new ColumnConfig("date","date", 200);
+                    columns.add(col);
+
+                    final ListStore<GWTJahiaNodeVersion> store = new ListStore<GWTJahiaNodeVersion>();
+                    
+                    ColumnModel cm = new ColumnModel(columns);
+                    final com.extjs.gxt.ui.client.widget.grid.Grid<GWTJahiaNodeVersion> grid = new com.extjs.gxt.ui.client.widget.grid.Grid(store, cm);
+                    versioningTabItem.add(grid);
+
+                    grid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
+                        public void handleEvent(GridEvent event) {
+                            List<GWTJahiaNodeVersion> sel = grid.getSelectionModel().getSelectedItems();
+                            if (sel != null && sel.size() == 1) {
+                                GWTJahiaNodeVersion el = sel.get(0);
+                                if (config.isEnableFileDoubleClick()) {
+                                    if (selectedNode.isDisplayable()) {
+                                        ImagePopup.popImage(el.getNode());
+                                    } else {
+                                        FileActions.download(getLinker(),el.getNode(), el.getNode().getUrl());
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    service.getVersions(selectedNode.getPath(), new AsyncCallback<List<GWTJahiaNodeVersion>>() {
+                        public void onFailure(Throwable caught) {
+                            Window.alert("failure");
+                        }
+
+                        public void onSuccess(List<GWTJahiaNodeVersion> result) {
+                            store.add(result);
+                        }
+                    });
+                } else {
+                    versioningTabItem.setLayout(new FlowLayout());
+                    versioningTabItem.add(new Text("File is not versioned yet"));
+                    com.extjs.gxt.ui.client.widget.button.Button button = new com.extjs.gxt.ui.client.widget.button.Button("Activate versioning");
+
+                    button.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                        public void componentSelected(ComponentEvent event) {
+                            List list = new ArrayList<String>();
+                            list.add(selectedNode.getPath());
+                            service.activateVersioning(list, new AsyncCallback() {
+                                public void onFailure(Throwable caught) {
+                                    Window.alert("failure");
+                                }
+
+                                public void onSuccess(Object result) {
+                                    selectedNode.getNodeTypes().add("mix:versionable");
+                                    versioningTabItem.removeAll();
+                                    versioningTabItem.setProcessed(false);
+                                    versioningTabItem.setLayout(new FitLayout());
+                                    TabItem currentTab = tabs.getSelectedItem();
+                                    if (currentTab == versioningTabItem) {
+                                        displayVersioning();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    versioningTabItem.add(button);
+                }
+                versioningTabItem.setProcessed(true);
+                versioningTabItem.layout();
+            }
+        }
+    }
+
+
 }

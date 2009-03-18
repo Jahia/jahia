@@ -115,7 +115,18 @@ public class FilesServlet extends HttpServlet {
 
         JCRNodeWrapper n = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(p, jahiaUser);
 
-        if (n.isFile()) {
+        boolean valid = false;
+        String v = req.getParameter("v");
+        if (v != null) {
+            n = n.getFrozenVersion(v);
+            if (n != null) {
+                valid = true;
+            }
+        } else {
+            valid = n.isFile();
+        }
+
+        if (valid) {
             // check presence of the 'If-Modified-Since' header
             long modifiedSince = req.getDateHeader("If-Modified-Since");
             Date lastModified = n.getLastModifiedAsDate();
@@ -138,13 +149,13 @@ public class FilesServlet extends HttpServlet {
             InputStream is = null;
 
             if (contentLength < cacheThreshold) {
-
-                byte[] b = (byte[]) cache.get(p);
+                String cacheKey = p + ":" + (v==null ? "0" : v);
+                byte[] b = (byte[]) cache.get(cacheKey);
                 if (b == null) {
                     is = fileContent.downloadFile();
                     b = new byte[contentLength];
                     is.read(b);
-                    cache.put(p, b);
+                    cache.put(p, cacheKey);
                     IOUtils.closeQuietly(is);
                 }
                 is = new ByteArrayInputStream(b);

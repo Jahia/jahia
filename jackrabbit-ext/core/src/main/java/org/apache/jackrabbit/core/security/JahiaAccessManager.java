@@ -71,15 +71,9 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.Item;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
+import javax.jcr.*;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionHistory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -246,13 +240,26 @@ public class JahiaAccessManager implements AccessManager {
             }
 
             String site = null;
-            
+
             int depth = 1;
             while (!s.itemExists(jcrPath)) {
                 jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
             }
 
             Item i = s.getItem(jcrPath);
+
+            if (i instanceof Version) {
+                i = ((Version)i).getContainingHistory();
+            }
+            if (i instanceof VersionHistory) {
+                PropertyIterator pi = ((VersionHistory)i).getReferences();
+                if (pi.hasNext()) {
+                    Property p = pi.nextProperty();
+                    i = p.getParent();
+                    jcrPath = i.getPath();
+                }
+            }
+
             try {
                 while ( !i.isNode() || !((Node)i).isNodeType("jnt:virtualsite") ) {
                     i = i.getParent();

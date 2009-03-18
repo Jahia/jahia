@@ -45,17 +45,13 @@ import org.jahia.ajax.gwt.client.widget.form.FormQuickRSS;
 import org.jahia.ajax.gwt.client.widget.form.FormQuickGoogleGadget;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -182,24 +178,27 @@ public class FileActions {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() == 1) {
             final GWTJahiaNode selection = selectedItems.get(0);
-            if (selection != null && selection.isFile().booleanValue()) {
-                linker.loading("generating download link...");
-                String url = selection.getUrl();
-                if (url != null) {
-                    HTML link = new HTML("Your file is ready to be downloaded, please click the following link to proceed :<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
-                    final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
-                    dl.setModal(true);
-                    dl.setHeading("File download");
-                    dl.setLayout(new FlowLayout());
-                    dl.setScrollMode(Style.Scroll.AUTO);
-                    dl.add(link);
-                    dl.setHeight(120);
-                    dl.show();
-                } else {
-                    Window.alert("The url does not exist");
-                }
-                linker.loaded();
+            download(linker, selection, selection.getUrl());
+        }
+    }
+
+    public static void download(BrowserLinker linker, GWTJahiaNode selection, String url) {
+        if (selection != null && selection.isFile().booleanValue()) {
+            linker.loading("generating download link...");
+            if (url != null) {
+                HTML link = new HTML("Your file is ready to be downloaded, please click the following link to proceed :<br /><br /><a href=\"" + url + "\" target=\"_new\">" + selection.getName() + "</a>");
+                final com.extjs.gxt.ui.client.widget.Window dl = new com.extjs.gxt.ui.client.widget.Window();
+                dl.setModal(true);
+                dl.setHeading("File download");
+                dl.setLayout(new FlowLayout());
+                dl.setScrollMode(Style.Scroll.AUTO);
+                dl.add(link);
+                dl.setHeight(120);
+                dl.show();
+            } else {
+                Window.alert("The url does not exist");
             }
+            linker.loaded();
         }
     }
 

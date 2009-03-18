@@ -35,10 +35,12 @@ package org.jahia.taglibs.template.templatestructure;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
+import org.jahia.data.beans.JahiaBean;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.AdvPreviewSettings;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
 import org.jahia.operations.valves.SkeletonAggregatorValve;
@@ -47,8 +49,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * <p>Title: Defines the head part of a jahia template</p>
@@ -158,7 +162,7 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         StringBuffer buf = new StringBuffer("<head>\n");
 
         if (AdvPreviewSettings.isInUserAliasingMode() || isLogged() || gwtForGuest) {
-            buf.append(("<!-- cache:vars var=\""+ SkeletonAggregatorValve.GWT_VARIABLE+"\" -->"));
+            buf.append(("<!-- cache:vars var=\"" + SkeletonAggregatorValve.GWT_VARIABLE + "\" -->"));
             buf.append(GWTInitializer.getInitString(pageContext)).append("\n");
             buf.append("<!-- /cache:vars -->");
             buf.append(DefaultIncludeProvider.getJSToolsImport((HttpServletRequest) request, jData));
@@ -178,6 +182,16 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         buf.append("/css/portlets.css\"/>");
         buf.append("\t<title>").append(title).append("</title>\n");
 
+        // add the JavaScript necessary for the use of the Google Visualisation API
+        if (checkGAprofilePresent(jData) && !isLiveMode()) {
+            String gviz =
+                    "<script type='text/javascript' src='http://www.google.com/jsapi'></script>" +
+                            "<script type='text/javascript'>" +
+                            "google.load('visualization', '1', {packages:['annotatedtimeline','piechart','geomap']});" +
+                            "</script>";
+
+            buf.append(gviz);
+        }
         // write StringBuffer to JspWriter
         try {
             pageContext.getOut().println(buf.toString());
@@ -196,4 +210,28 @@ public class TemplateHeaderTag extends AbstractJahiaTag {
         return EVAL_PAGE;
     }
 
+    /*
+    * @author Ibrahim El Ghandour
+    */
+    // google analytics
+    // check if there is at least one profile is configured
+    private boolean checkGAprofilePresent(JahiaData jData) {
+        boolean atLeast1TPconf = false;
+        JahiaSite currentSite = jData.getProcessingContext().getSite();
+
+        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
+        // check if at list one profile is enabled
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            if (key.startsWith("jahiaGAprofile")) {
+                atLeast1TPconf = true;
+                break;
+            }
+        }
+        return atLeast1TPconf;
+    }
+    private boolean isLiveMode() {
+        final JahiaBean jBean = (JahiaBean) pageContext.getAttribute("jahia", PageContext.REQUEST_SCOPE);
+        return jBean.getRequestInfo().isNormalMode();
+    }
 }

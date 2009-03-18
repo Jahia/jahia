@@ -186,16 +186,6 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 if (isLiveMode()) {
                     buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".live.Live").toString())).append("\n");
                 } else {
-
-                    if (checkGAprofilePresent(jData)) {
-                        String gviz =
-                                "<script type='text/javascript' src='http://www.google.com/jsapi'></script>" +
-                                        "<script type='text/javascript'>" +
-                                        "google.load('visualization', '1', {packages:['annotatedtimeline','piechart','geomap']});" +
-                                        "</script>";
-                        buf.append(gviz);
-                    }
-
                     buf.append(GWTIncluder.generateGWTImport(pageContext, new StringBuilder("org.jahia.ajax.gwt.template.").append(gwtScript).append(".edit.Edit").toString())).append("\n");
                 }
 
@@ -340,21 +330,5 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         return atLeast1TPon;
     }
 
-    // check if there is at least one profile is configured
-    private boolean checkGAprofilePresent(JahiaData jData) {
-        boolean atLeast1TPconf = false;
-        JahiaSite currentSite = jData.getProcessingContext().getSite();
-        // google analytics
-        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
-        // check if at list one profile is enabled
-        while (it.hasNext()) {
-            String key = (String) it.next();
-            if (key.startsWith("jahiaGAprofile")) {
-                logger.info("AT least one profile in the db !!!!");
-                atLeast1TPconf = true;
-                break;
-            }
-        }
-        return atLeast1TPconf;
-    }
+  
 }

@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -34,19 +34,22 @@
 --%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <utility:setBundle basename="JahiaInternalResources"/>
 <div class="leftMenu">
     <ul>
         <li class="section first"><span>Main Menu</span></li>
     <c:forEach items="${param.mode == 'server' ? administrationServerModules : administrationSiteModules}" var="item">
         <li class="item">
+            <fmt:message key="${item.label}" var="label"/>
+            <c:set var="label" value="${fn:contains(label, '???') ? item.label : label}"/>
             <c:if test="${item.enabled}">
-                <a href="${item.link}" class="set-${param.mode} ico-${param.mode}-${item.name}${item.selected ? ' selected' : ''}"><fmt:message key="${item.label}"/></a>
+                <a href="${item.link}" class="set-${param.mode} ico-${param.mode}-${item.name}${item.selected ? ' selected' : ''}"><c:out value="${label}"/></a>
             </c:if>
             <c:if test="${not item.enabled}">
-                <span class="set-${param.mode}-disabled ico-${param.mode}-${item.name}"><fmt:message key="${item.label}"/></span>
+                <span class="set-${param.mode}-disabled ico-${param.mode}-${item.name}"><c:out value="${label}"/></span>
             </c:if>
         </li>
     </c:forEach>

@@ -34,6 +34,7 @@
 package org.jahia.ajax.gwt.client.widget.node;
 
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.nodes.FileStoreSorter;
@@ -54,6 +55,8 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Events;
+import com.extjs.gxt.ui.client.dnd.DragSource;
+import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
@@ -117,6 +120,13 @@ public class FileTable extends TopRightComponent {
         });
 
         m_component.add(m_table);
+    }
+
+    @Override
+    public void initWithLinker(BrowserLinker linker) {
+        super.initWithLinker(linker);
+        DragSource source = new GridDragSource(m_table);
+        source.addDNDListener(linker.getDndListener());
     }
 
     public void setContextMenu(Menu menu) {

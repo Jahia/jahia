@@ -34,6 +34,7 @@
 package org.jahia.ajax.gwt.client.widget.tripanel;
 
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.event.DNDListener;
 
 /**
  * This is the linker that allow communication between all the browser components.
@@ -49,6 +50,7 @@ public class BrowserLinker {
     private BottomRightComponent m_bottomRightComponent;
     private TopBar m_topBar;
     private BottomBar m_bottomBar;
+    private DNDListener dndListener;
 
     public BrowserLinker() {}
 
@@ -90,6 +92,8 @@ public class BrowserLinker {
      * Set up linker (callback for each member).
      */
     protected void registerLinker() {
+        
+        dndListener = new DNDListener();
         if (m_bottomBar != null) {
             m_bottomBar.initWithLinker(this) ;
         }
@@ -270,6 +274,10 @@ public class BrowserLinker {
 
     public BottomBar getBottomObject() {
         return m_bottomBar ;
+    }
+
+    public DNDListener getDndListener() {
+        return dndListener;
     }
 
     ////////////////////////

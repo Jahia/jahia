@@ -161,6 +161,33 @@ public class FileActions {
         }
     }
 
+
+    public static void move(final BrowserLinker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
+        service.paste(sources, target.getPath(), true, new AsyncCallback() {
+            public void onFailure(Throwable throwable) {
+                Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
+                linker.loaded();
+            }
+
+            public void onSuccess(Object o) {
+                boolean refreshAll = false;
+                for (GWTJahiaNode n : sources) {
+                    if (!n.isFile()) {
+                        refreshAll = true;
+                        break;
+                    }
+                }
+
+                linker.loaded();
+                if (refreshAll) {
+                    linker.refreshAll();
+                } else {
+                    linker.refreshTable();
+                }
+            }
+        });
+    }
+
     public static void upload(final BrowserLinker linker) {
         GWTJahiaNode m = (GWTJahiaNode) linker.getTreeSelection();
         if (m == null) {

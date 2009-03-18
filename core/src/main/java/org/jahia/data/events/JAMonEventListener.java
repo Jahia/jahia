@@ -19,14 +19,14 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void siteAdded(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 1, "Added");
+            //ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 1, "Added");
         }
     }
 
     @Override
     public void siteDeleted(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 1, "deleted");
+            //ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 1, "deleted");
         }
     }
 
@@ -136,12 +136,29 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void pagePropertiesSet(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 4, "Page Properties set");
+            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 4, "propertiesSet");
         }
         //logger.info("JAMonEventListener pagePropertiesSet");
     }
 
-    /*----------------------------------------------------------------------------------------------*/
+    @Override
+    public void pageLoadedFromCache(JahiaEvent je) {
+        if (je != null && je.getObject() != null) {
+           // ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 4, "loadedFromCache");
+        }
+        logger.info("---------------------------------------pageLoadedFromCache");
+    }
+
+    @Override
+    public void errorOccurred(JahiaErrorEvent je) {
+        logger.info("--------------------------------------------errorOccurred ");
+        if (je != null && je.getObject() != null) {
+            //ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 4, "error");
+            logger.info("Exception = "+je.getException().getMessage());
+            logger.info("ErrorCode = "+je.getErrorCode()); 
+        }
+
+    }/*----------------------------------------------------------------------------------------------*/
     /*USER = 5*/
     @Override
     public void userAdded(JahiaEvent je) {
@@ -190,21 +207,21 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void templateUpdated(JahiaEvent je) {
         if (je != null && je.getObject() != null ) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 6, "updated");
+            //ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 6, "updated");
         }
     }
 
     @Override
     public void templateAdded(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 6, "added");
+            //ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 6, "added");
         }
     }
 
     @Override
     public void templateDeleted(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 6, "deleted");
+            //ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 6, "deleted");
         }
     }
 
@@ -245,7 +262,6 @@ public class JAMonEventListener extends JahiaEventListener {
     @Override
     public void rightsSet(JahiaEvent je) {
         if (je != null && je.getObject() != null) {
-            logger.info("----- > rights set");
             ServicesRegistry.getInstance().getAnalyticsService().trackEvent(je, 9, "rights set");
         }
     }

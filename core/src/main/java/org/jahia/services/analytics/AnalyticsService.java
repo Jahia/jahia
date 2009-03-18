@@ -70,14 +70,4 @@ public abstract class AnalyticsService extends JahiaService {
     public abstract void flushDatabase();
 
     public abstract void flushDatabaseOldest();
-
-    //public abstract void getJamonDataFromJarepDB(String query);
-
-    //public abstract void trackEvent(String event);
-
-    //public abstract void trackEvent(JahiaEvent je);
-
-    //public abstract void trackEvent(JahiaEvent je,String type,String operation);
-    
-    //public abstract Map<String,String> getMostActiveUsers();
 }

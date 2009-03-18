@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -34,6 +34,9 @@
 package org.jahia.services.events;
 
 import groovy.lang.Binding;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
@@ -41,13 +44,19 @@ import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.data.events.JahiaErrorEvent;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
+import org.jahia.hibernate.manager.SpringContextSingleton;
+import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.pages.ContentPage;
+import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.services.workflow.WorkflowEvent;
+import org.jahia.settings.SettingsBean;
+import org.springframework.beans.factory.InitializingBean;
 
-import java.io.File;
+import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p>
@@ -68,64 +77,39 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  */
 
-public class GroovyEventListener extends JahiaEventListener {
+public class GroovyEventListener extends JahiaEventListener implements InitializingBean {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
-            .getLogger(GroovyEventListener.class);
-
-    private boolean configLoaded = false;
-    private String defaultPathToGroovy = null;
-    private String groovyFileName = null;
+    private static Logger logger = Logger.getLogger(GroovyEventListener.class);
 
     private static final String DEFAULT_PATH_TO_GROOVY = "events/EventListener.groovy";
     private static final String GROOVY_FILE_NAME = "EventListener.groovy";
 
     private JahiaGroovyEngine jahiaScriptEngine;
-    private static long lastCall = 0;// used for performance mode
+    private long lastCall = 0;// used for performance mode
 
-    private boolean checkConfig(ProcessingContext processingContext) {
-        if (configLoaded)
-            return configLoaded;
+    private Map<String, String> siteEventFile = new HashMap<String, String>();
 
-        loadConfig(processingContext);
-
-        return configLoaded;
-    }
-
-    private static Map eventsHandled = null;
-    private static Map siteEventFile = new ConcurrentHashMap(64);
-    private static String staticeventsToHandleList = "";
-
-    private void loadConfig(ProcessingContext processingContext) {
-
-        /**
-         * @todo for the moment this stuff is hardcoded, but we might want to make this configurable through an XML file.
-         */
-
-        defaultPathToGroovy = GroovyEventListener.DEFAULT_PATH_TO_GROOVY;
-        groovyFileName = GroovyEventListener.GROOVY_FILE_NAME;
-
-        configLoaded = true;
-    }
-
-    public GroovyEventListener() {
-    }
+    private String defaultListenerFilePath = null;
+    private String listenerFileName = null;
     
     public void setGroovyScriptEngine (JahiaGroovyEngine jahiaScriptEngine) {
        this.jahiaScriptEngine = jahiaScriptEngine;
     }
 
     private void dispatchToGroovyScript(String eventName, JahiaEvent je) {
-        ProcessingContext processingContext = je.getProcessingContext();
-        if (checkConfig(processingContext)
-                && (eventsHandled == null || eventsHandled
-                        .containsKey(eventName))) {
+        
+        ProcessingContext ctx = je.getProcessingContext();
+        SettingsBean settings = SettingsBean.getInstance();
+        
+        if (!settings.isDevelopmentMode() && ctx != null && ctx.getSiteKey() != null && siteEventFile.containsKey(ctx.getSiteKey()) && !needToHandleEvent(eventName)) {
+            return;
+        }
+        
             try {
-                String groovyFileName = resolveGroovyFullFileName(processingContext);
+                String groovyFileName = resolveGroovyFullFileName(ctx);
 
-                // Developement mode flag
-                boolean checkDependances = org.jahia.settings.SettingsBean.getInstance()
-                        .isDevelopmentMode();
+                // Development mode flag
+                boolean checkDependances = settings.isDevelopmentMode();
                 long startTime = System.currentTimeMillis();
 
                 // performance mode
@@ -133,8 +117,10 @@ public class GroovyEventListener extends JahiaEventListener {
                         && enabledPerformanceMode) {
                     // under heavy load we avoid the checking bottleneck repeatedly, assuming script unchanged and dependencies too
                     checkDependances = false;
-                    logger
-                            .debug("lapse between 2 dependency checks too close: no checks");
+                    if (logger.isDebugEnabled()) {
+                        logger
+                                .debug("lapse between 2 dependency checks too close: no checks");
+                    }
                 }
                 if (lastCall == 0)
                     checkDependances = true;// only the first time
@@ -146,60 +132,74 @@ public class GroovyEventListener extends JahiaEventListener {
                     jahiaScriptEngine.run(groovyFileName, binding,
                             checkDependances);
                 }
-                long endTime = System.currentTimeMillis();
-                long executionTime = endTime - startTime;
-                logger.debug("Groovy script event listener=" + groovyFileName
-                        + " event=" + eventName + " execution time="
-                        + executionTime + "ms");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Groovy script event listener=" + groovyFileName
+                            + " event=" + eventName + " execution time="
+                            + (System.currentTimeMillis() - startTime) + "ms");
+                }
 
             } catch (Exception t) {
                 logger.error("Error while dispatching to Groovy script : "
-                        + groovyFileName, t);
+                        + listenerFileName, t);
             }
-        }
     }
 
-    private String resolveGroovyFullFileName(ProcessingContext processingContext) {
-        String groovyFullFileName;
-        StringBuffer nameBuilder = new StringBuffer("/");
+    private String resolveGroovyFullFileName(ProcessingContext ctx) {
+        String groovyFullFileName = null;
 
-        if (processingContext != null && processingContext.getSiteKey() != null
-                && siteEventFile.containsKey(processingContext.getSiteKey()))
-            return (String) siteEventFile.get(processingContext.getSiteKey());
-        else if ((processingContext != null)
-                && (processingContext.getSite() != null)
-                && (processingContext.getSite().getHomeContentPage() != null)
-                && (processingContext.getSite().getHomeContentPage()
-                        .getPageTemplate(processingContext) != null)
-                && (processingContext.getSite().getHomeContentPage()
-                        .getPageTemplate(processingContext).getSourcePath() != null)) {
-            groovyFullFileName = processingContext.getSite()
-                    .getHomeContentPage().getPageTemplate(processingContext)
-                    .getSourcePath();
-            logger.debug("template source path :" + groovyFullFileName);
-
-            groovyFullFileName = groovyFullFileName.substring(0,
-                    groovyFullFileName.lastIndexOf("/") + 1)
-                    + groovyFileName;
-
-            groovyFullFileName = groovyFullFileName.substring(nameBuilder
-                    .length());
-
-            logger.debug("resolvedGroovyFullFileName :" + groovyFullFileName);
-
-            File groovyScriptFile = new File(processingContext.settings()
-                    .getPathResolver().resolvePath(groovyFullFileName));
-            if (!groovyScriptFile.exists()) {
-                groovyFullFileName = defaultPathToGroovy;
-            }
-            siteEventFile.put(processingContext.getSiteKey(),
-                    groovyFullFileName);
-        } else {
-            groovyFullFileName = defaultPathToGroovy;
+        if (ctx != null && ctx.getSiteKey() != null
+                && siteEventFile.containsKey(ctx.getSiteKey())) {
+            groovyFullFileName = siteEventFile.get(ctx.getSiteKey());
         }
+        String checkedPath = null;
+        if (groovyFullFileName == null && ctx != null && ctx.getSite() != null) {
+            ContentPage homePage = ctx.getSite().getHomeContentPage();
+            if (homePage != null) {
+                JahiaPageDefinition pageTemplate = homePage
+                        .getPageTemplate(ctx);
+                if (pageTemplate != null
+                        && pageTemplate.getSourcePath() != null) {
+                    checkedPath = pageTemplate.getSourcePath().substring(0,
+                            pageTemplate.getSourcePath().lastIndexOf("/") + 1)
+                            + listenerFileName;
+                    checkedPath = StringUtils.substringAfter(checkedPath, ctx.settings().getTemplatesContext());
+                    groovyFullFileName = checkPath(checkedPath, ctx);
+                }
+            }
+        }
+        if (groovyFullFileName == null && ctx != null && ctx.getSite() != null && ctx.getSite().getTemplatePackageName() != null) {
+            String templateSetSpecificPath = ctx.getSite().getTemplateFolder()
+                    + "/" + listenerFileName;
+            if (checkedPath == null
+                    || !templateSetSpecificPath.equals(checkedPath)) {
+                groovyFullFileName = checkPath(templateSetSpecificPath, ctx);
+            }
+        }
+        if (groovyFullFileName == null) {
+            groovyFullFileName = defaultListenerFilePath;
+        }
+
+        if (ctx != null && ctx.getSiteKey() != null) {
+            siteEventFile.put(ctx.getSiteKey(), groovyFullFileName);
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("resolveGroovyFullFileName: " + groovyFullFileName);
+        }
+
         return groovyFullFileName;
     }
 
+    private String checkPath(String path, ProcessingContext ctx) {
+        String listenerPath = null;
+        try {
+            listenerPath = ((ParamBean)ctx).getContext().getResource(ctx.settings().getTemplatesContext() + path) != null ? path : null;
+        } catch (MalformedURLException e) {
+            logger.warn(e.getMessage(), e);
+        }
+    return listenerPath;
+    }
+    
     public void beforeServicesLoad(JahiaEvent je) {
         dispatchToGroovyScript("beforeServicesLoad", je);
     }
@@ -463,18 +463,55 @@ public class GroovyEventListener extends JahiaEventListener {
         dispatchToGroovyScript("errorOccurred", je);
     }
 
+    private static GroovyEventListener getInstance() {
+        return (GroovyEventListener) SpringContextSingleton.getInstance()
+                .getContext().getBean("GroovyEventListener");
+    }
+
+    private void addEvent(String event) {
+        if (skipEvents != null && skipEvents.contains(event)) {
+            skipEvents.remove(event);
+        }
+        if (handleEvents != null && !handleEvents.contains(event)) {
+            handleEvents.add(event);
+        }
+    }
+    
+    /**
+     * Allows to register events to be handled. The method can only add events, but not remove already registered events.
+     * For default list of handled/skipped events, see <code>applicationcontext-listeners.xml</code> file. 
+     * @param eventsToHandleList comma-separated list of events to handle
+     */
     public static void registerEvents(String eventsToHandleList) {
-        if (!staticeventsToHandleList.equals(eventsToHandleList)) {
-            staticeventsToHandleList = eventsToHandleList;
+        if (eventsToHandleList != null && eventsToHandleList.length() > 0) {
             String eventsToHandle[] = eventsToHandleList.split(",");
-            eventsHandled = new ConcurrentHashMap(64);
-            for (int i = 0; i < eventsToHandle.length; i++) {
-                String s = eventsToHandle[i];
-                eventsHandled.put(s, s);
+            for (String evt : eventsToHandle) {
+                getInstance().addEvent(evt.trim());
             }
         }
     }
 
     // this flag could be use to control the repeated dependencies check from groovy script
     public static boolean enabledPerformanceMode = true;
+
+    public void afterPropertiesSet() {
+        if (listenerFileName == null || listenerFileName.length() == 0) {
+            listenerFileName = GROOVY_FILE_NAME;
+        }
+        if (defaultListenerFilePath == null
+                || defaultListenerFilePath.length() == 0) {
+            defaultListenerFilePath = DEFAULT_PATH_TO_GROOVY;
+        }
+        logger.info("Listener initialized with listener file name '"
+                + listenerFileName + "' and default listener file path '"
+                + defaultListenerFilePath + "'");
+    }
+
+    public void setDefaultListenerFilePath(String defaultListenerFilePath) {
+        this.defaultListenerFilePath = defaultListenerFilePath;
+    }
+
+    public void setListenerFileName(String listenerFileName) {
+        this.listenerFileName = listenerFileName;
+    }
 }

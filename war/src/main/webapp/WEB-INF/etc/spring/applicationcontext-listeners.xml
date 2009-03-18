@@ -50,7 +50,27 @@
 # default /events/eventlistener.jsp file or include an
 # "eventlistener.jsp" file in your template directory.
 -->
-    <bean id="JSPEventListener" class="org.jahia.services.events.JSPEventListener" />
+    <bean id="JSPEventListener" class="org.jahia.services.events.JSPEventListener">
+        <property name="listenerFileName" value="eventlistener.jsp"/>
+        <property name="defaultListenerFilePath" value="/events/eventlistener.jsp"/>
+        <!-- list of events to skip (takes precedence over handleEvents) -->
+        <property name="skipEvents">
+            <set>
+                <value>pageLoadedFromCache</value>
+            </set>
+        </property>
+        <!-- list of events to handle: others will be skipped.
+        If the list is not provided, all events are handled (considering skipEvents)  
+        -->
+        <!-- 
+        <property name="handleEvents">
+            <set>
+                <value>containerAdded</value>
+                <value>containerUpdated</value>
+            </set>
+        </property>
+         -->
+    </bean>
 
 <!--
 # Activate the Groovy Event listener if you want to be able to implement event
@@ -59,7 +79,19 @@
 # "eventlistener.groovy" file in your template directory.
 -->
     <bean id="GroovyEventListener" class="org.jahia.services.events.GroovyEventListener" >
-        <property name="groovyScriptEngine" ref="groovyScriptEngine" />    
+        <property name="listenerFileName" value="EventListener.groovy"/>
+        <property name="defaultListenerFilePath" value="events/EventListener.groovy"/>
+        <property name="groovyScriptEngine" ref="groovyScriptEngine" />
+        <property name="skipEvents">
+            <set>
+                <value>pageLoadedFromCache</value>
+            </set>
+        </property>
+        <property name="handleEvents">
+            <set>
+            <!-- by default this list is empty and no event is handled by Groovy listener -->
+            </set>
+        </property>
     </bean>
 
     <bean id="JahiaSearchListener" class="org.jahia.services.search.JahiaSearchListener" />

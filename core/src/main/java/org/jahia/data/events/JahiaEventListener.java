@@ -37,6 +37,8 @@
 //
 package org.jahia.data.events;
 
+import java.util.Set;
+
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.content.events.ContentActivationEvent;
@@ -51,12 +53,21 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
     private static transient Category logger = Logger
             .getLogger(JahiaEventListener.class);
 
+    protected Set<String> skipEvents;
+    
+    protected Set<String> handleEvents;
+    
     private static void log(String eventType, JahiaEvent evt) {
         if (logger.isDebugEnabled()) {
             logger.debug("Received event '" + eventType + "'. Details: " + evt);
         }
     }
 
+    protected boolean needToHandleEvent(String eventName) {
+        return (skipEvents == null || !skipEvents.contains(eventName))
+                && (handleEvents == null || handleEvents.contains(eventName));
+    }
+    
     public void addContainerEngineAfterInit(JahiaEvent je) {
         log("addContainerEngineAfterInit", je);
     }
@@ -352,4 +363,11 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
         log("userUpdated", je);
     }
 
+    public void setSkipEvents(Set<String> skipEvents) {
+        this.skipEvents = skipEvents;
+    }
+
+    public void setHandleEvents(Set<String> handleEvents) {
+        this.handleEvents = handleEvents;
+    }
 }

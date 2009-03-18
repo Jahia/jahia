@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -33,6 +33,7 @@
 
  package org.jahia.services.events;
 
+import org.apache.log4j.Logger;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
@@ -45,8 +46,9 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.services.workflow.WorkflowEvent;
+import org.springframework.beans.factory.InitializingBean;
 
-import java.io.File;
+import java.net.MalformedURLException;
 
 /**
  * <p>Title: A Jahia Event Listener that dispatches to JSP files</p>
@@ -62,49 +64,35 @@ import java.io.File;
  * @version 1.0
  */
 
-public class JSPEventListener extends JahiaEventListener {
+public class JSPEventListener extends JahiaEventListener implements InitializingBean {
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (JSPEventListener.class);
+    private static final String DEFAULT_PATH_TO_JSP = "/events/eventlistener.jsp";
 
-    private boolean configLoaded = false;
-    private String defaultPathToJSP = null;
-    private String jspFileName = null;
-
-    private static final String DEFAULT_PATH_TO_JSP =
-            "/events/eventlistener.jsp";
     private static final String JSP_FILE_NAME = "eventlistener.jsp";
 
-    private boolean checkConfig (ProcessingContext processingContext) {
-        if (configLoaded)
-            return configLoaded;
+    private static Logger logger = Logger.getLogger (JSPEventListener.class);
 
-        loadConfig (processingContext);
-
-        return configLoaded;
-    }
-
-    private void loadConfig (ProcessingContext processingContext) {
-
-        /**
-         * @todo for the moment this stuff is hardcoded, but we might want to
-         * make this configurable through an XML file.
-         */
-
-        defaultPathToJSP = DEFAULT_PATH_TO_JSP;
-        jspFileName = JSP_FILE_NAME;
-
-        configLoaded = true;
-    }
-
-    public JSPEventListener () {
+    private String defaultListenerFilePath = null;
+    private String listenerFileName = null;
+    
+    public void afterPropertiesSet() {
+        if (listenerFileName == null || listenerFileName.length() == 0) {
+            listenerFileName = JSP_FILE_NAME;
+        }
+        if (defaultListenerFilePath == null
+                || defaultListenerFilePath.length() == 0) {
+            defaultListenerFilePath = DEFAULT_PATH_TO_JSP;
+        }
+        logger.info("Listener initialized with listener file name '"
+                + listenerFileName + "' and default listener file path '"
+                + defaultListenerFilePath + "'");
     }
 
     private void dispatchToJSP (String eventName, JahiaEvent je) {
-        if (!checkConfig (je.getProcessingContext ())) {
+        if (!needToHandleEvent(eventName)) {
             return;
         }
-
+        
         ProcessingContext processingContext = je.getProcessingContext ();
         if ((processingContext == null) ||
             !(processingContext instanceof ParamBean)) {
@@ -114,8 +102,9 @@ public class JSPEventListener extends JahiaEventListener {
             return;
         }
         ParamBean paramBean = (ParamBean) processingContext;
+        String jspFileName = null;
         try {
-            String jspFileName = resolveJSPFullFileName (processingContext);
+            jspFileName = resolveJSPFullFileName (processingContext);
 
             if (logger.isDebugEnabled())
 				logger.debug("Dispatching to JSP " + jspFileName
@@ -138,34 +127,54 @@ public class JSPEventListener extends JahiaEventListener {
                 paramBean.getRequest(), paramBean.getResponse());
             */
         } catch (Exception t) {
-            logger.error ("Error while dispatching to JSP : " + jspFileName, t);
+            logger.error ("Error while dispatching to JSP: " + jspFileName, t);
         }
     }
 
-    private String resolveJSPFullFileName (ProcessingContext processingContext) {
-        String jspFullFileName;
-        if ((processingContext.getPage () != null) &&
-                (processingContext.getPage ().getPageTemplate () != null) &&
-                (processingContext.getPage ().getPageTemplate ().getSourcePath () != null)) {
-            jspFullFileName = processingContext.getPage ().getPageTemplate ().
-                    getSourcePath ();
+    private String resolveJSPFullFileName(ProcessingContext ctx) {
+        String jspFullFileName = null;
+        String checkedPath = null;
+        if ((ctx.getPage() != null)
+                && (ctx.getPage().getPageTemplate() != null)
+                && (ctx.getPage().getPageTemplate().getSourcePath() != null)) {
+            jspFullFileName = ctx.getPage().getPageTemplate().getSourcePath();
             if (logger.isDebugEnabled())
-            	logger.debug ("template source path :" + jspFullFileName);
+                logger.debug("template source path: " + jspFullFileName);
 
-            jspFullFileName = jspFullFileName.substring (0,
-                    jspFullFileName.lastIndexOf ("/") + 1) + jspFileName;
-
-            if (logger.isDebugEnabled())
-            	logger.debug ("resolvedJSPFullFileName :" + jspFullFileName);
-
-            File jspFile = new File (processingContext.settings().getPathResolver().resolvePath(jspFullFileName));
-            if (!jspFile.exists ()) {
-                jspFullFileName = defaultPathToJSP;
-            }
-        } else {
-            jspFullFileName = defaultPathToJSP;
+            checkedPath = jspFullFileName.substring(0, jspFullFileName
+                    .lastIndexOf("/") + 1)
+                    + listenerFileName;
+            jspFullFileName = checkPath(checkedPath, ctx);
         }
+        if (jspFullFileName == null && ctx.getSite() != null && ctx.getSite().getTemplatePackageName() != null) {
+            String templateSetSpecificPath = ServicesRegistry.getInstance()
+                    .getJahiaTemplateManagerService().getTemplatePackage(
+                            ctx.getSite().getTemplatePackageName())
+                    .getRootFolderPath()
+                    + "/" + listenerFileName;
+            if (checkedPath == null
+                    || !templateSetSpecificPath.equals(checkedPath)) {
+                jspFullFileName = checkPath(templateSetSpecificPath, ctx);
+            }
+        }
+        if (jspFullFileName == null) {
+            jspFullFileName = defaultListenerFilePath;
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("resolvedJSPFullFileName: " + jspFullFileName);
+        }
+
         return jspFullFileName;
+    }
+
+    private String checkPath(String path, ProcessingContext ctx) {
+        String jspPath = null;
+            try {
+                jspPath = ((ParamBean)ctx).getContext().getResource(path) != null ? path : null;
+            } catch (MalformedURLException e) {
+                logger.warn(e.getMessage(), e);
+            }
+        return jspPath;
     }
 
     public void beforeServicesLoad (JahiaEvent je) {
@@ -426,4 +435,13 @@ public class JSPEventListener extends JahiaEventListener {
     public void errorOccurred(JahiaErrorEvent je) {
         dispatchToJSP("errorOccurred", je);
     }
+
+    public void setDefaultListenerFilePath(String defaultListenerFilePath) {
+        this.defaultListenerFilePath = defaultListenerFilePath;
+    }
+
+    public void setListenerFileName(String listenerFileName) {
+        this.listenerFileName = listenerFileName;
+    }
+
 }

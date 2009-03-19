@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.compass.core.CompassHighlighter;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.PageReferenceableInterface;
@@ -153,8 +152,6 @@ public class PageSearchResultBuilderImpl extends
             Collection<ParsedObject> parsedObjects, ProcessingContext jParams,
             int permission, String[] queryArray) {
         
-        String searchQuery = queryArray[0];
-        
         JahiaSearchResult result = new JahiaSearchResult(this, parsedObjects);
 
         if (parsedObjects == null || parsedObjects.isEmpty())
@@ -251,7 +248,6 @@ public class PageSearchResultBuilderImpl extends
                         info.setPage(aPage);
                         
                         String url = "#";
-                        String defaultTeaser = "";
                         if (aPage != null) {
                             if (isFile) {
                                 String mimeType = null;
@@ -290,7 +286,6 @@ public class PageSearchResultBuilderImpl extends
                                                 + "contributor");
                             } else {
                                 try {
-                                    defaultTeaser = aPage.getTitle();
                                     if (SettingsBean.getInstance()
                                             .isSiteIDInSearchHitPageURL()
                                             && aPage.getJahiaID() != jParams
@@ -309,7 +304,6 @@ public class PageSearchResultBuilderImpl extends
                         }
 
                         info.setURL(url == null ? "#" : url);
-                        info.setTeaser(createTeaser(info, searchQuery, defaultTeaser));
                         String languageCode = null;
                         try {
                             languageCode = parsedObject
@@ -514,25 +508,6 @@ public class PageSearchResultBuilderImpl extends
         return shouldAdd;        
     }
     
-    private String createTeaser(JahiaSearchHit thisHit,
-            String searchQueryForHighlighting, String defaultTeaser) {
-        String teaser = defaultTeaser;
-        CompassHighlighter highlighter = getHighlighter(thisHit.getParsedObject(),
-                searchQueryForHighlighting,
-                JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, "default");
-        if (highlighter != null) {
-            highlighter
-                    .setSeparator("<p style=\"font-weight: bold\">........</p>");
-            highlighter.setMaxNumFragments(3);
-            teaser = highlighter
-                    .fragmentsWithSeparator(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD);
-            teaser = teaser.replaceAll("\\r\\n", "\r");
-            teaser = teaser.replaceAll("\\r{2,}", "<br/>");
-        }
-        return teaser;
-    }
-    
-
     public Map<Integer, List<JahiaSearchHit>> groupHitsByObject(int objectType,
             JahiaSearchResult jahiaSearchResult) {
         return this.groupingHitsHandler.groupHitsByObject(objectType,

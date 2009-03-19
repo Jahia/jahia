@@ -40,6 +40,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.search.JahiaSearchConstant;
 
 /**
  * Search hit that represents internal page object.
@@ -154,8 +155,19 @@ public class PageHit extends AbstractHit implements Hit {
      * @see org.jahia.data.search.Hit#getSummary()
      */
     public String getSummary() {
-        return searchHit.getTeaser();
-    }
+        String summary = searchHit.getTeaser();
+
+        if ((summary == null || summary.length() == 0)
+                && searchHit.getParsedObject() != null
+                && searchHit.getParsedObject().getSearchHit() != null) {
+            summary = searchHit.getParsedObject().getSearchHit().highlighter()
+                    .fragmentsWithSeparator(
+                            JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD);
+            summary = summary.replaceAll("\\r\\n", "\r");
+            summary = summary.replaceAll("\\r{2,}", "<br/>");
+        }
+        return summary;
+    } 
 
     /**
      * Returns the page text content.

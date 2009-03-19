@@ -1,20 +1,29 @@
 <%--
-Copyright 2002-2008 Jahia Ltd
 
-Licensed under the JAHIA SUSTAINABLE SOFTWARE LICENSE (JSSL),
-Version 1.0 (the "License"), or (at your option) any later version; you may
-not use this file except in compliance with the License. You should have
-received a copy of the License along with this program; if not, you may obtain
-a copy of the License at
+        
+        This file is part of Jahia Enterprise Edition v6 - Early Adopter Package
+        
+        Copyright (C) 2002-2009 Jahia. All rights reserved.
+    
+    	  Jahia delivers the first Open Source Web Content Integration Software 
+    	  by combining Enterprise Web Content Management 
+    	  with Document Management and Portal features. 
+        
+        The Jahia Enterprise Edition - Early Adopter package is delivered ON AN "AS IS" BASIS, 
+        WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED.
+       
+       	Jahia Enterprise Edition - Early Adopter Package CANNOT be used for 
+       	any production environment and is strictly and exclusively delivered to You by Jahia 
+       	for test and development purpose.
+        
+        Jahia Enterprise Edition must be used in accordance with the terms contained 
+        in a separate license agreement between you and Jahia (JSEL).
+         
+        If you are unsure which license is appropriate
+        for your use, please contact the sales department at sales@jahia.com.
 
- http://www.jahia.org/license/
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 --%>
+
 <%@include file="/admin/include/header.inc" %>
 <%@page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
@@ -282,7 +291,7 @@ limitations under the License.
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
+                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Acme demo</option>
                         <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
                     </select>
                     </td>
@@ -427,8 +436,9 @@ else { %>
                     </td>
                     <td>
                         &nbsp;<select name="importpath">
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
-                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
+                        <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Acme demo</option>
+												<option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
+
                     </select>
                     </td>
                     <td>
@@ -503,8 +513,10 @@ else { %>
 
         <div class="head headtop">
             <div class="object-title">
+            	<font color=red>
                 1.&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.importprepackaged.label"/>&nbsp;<fmt:message key="org.jahia.admin.virtualSitesManagement.label.default"/>
-            </div>
+            </font>
+</div>
         </div>
         <div  class="content-item">
             <% if (warningMsg != "" && sub.equals("prepareimport")) { %>
@@ -523,8 +535,9 @@ else { %>
                         </td>
                         <td>
                             &nbsp;<select name="importpath">
-                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Corporate demo</option>
-                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>Test and training demo</option>
+                            <option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/webtemplates.zip"%>'>Acme demo</option>
+														<option value='<%=org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath()+"/prepackagedSites/testSite.zip"%>'>TCK (test compatibility kit) demo</option>
+
                         </select>
                         </td>
                         <td>

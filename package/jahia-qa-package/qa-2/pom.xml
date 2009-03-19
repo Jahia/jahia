@@ -142,6 +142,7 @@
                     <localIp>10.8.37.243</localIp>
                     <clusterNodes>
                         <param>10.8.37.244</param>
+                        <param>10.8.37.243</param>
                     </clusterNodes>
                 </configuration>
                 <executions>

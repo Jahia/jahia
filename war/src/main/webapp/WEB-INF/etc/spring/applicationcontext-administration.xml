@@ -284,12 +284,36 @@
         <property name="urlParams" value="&amp;sub=display" />
     </bean>
 
+    <bean id="communityJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+        <property name="urlKey" value="community-jira" />
+        <property name="name" value="community-jira" />
+        <property name="icon" value="debug_view" />
+        <property name="label" value="Issue tracking" />
+        <property name="urlAction" value="http://jira.jahia.org/" />
+    </bean>
+    
+    <bean id="enterpriseJiraAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+        <property name="urlKey" value="enterprise-jira" />
+        <property name="name" value="enterprise-jira" />
+        <property name="icon" value="debug_view" />
+        <property name="label" value="Issue tracking" />
+        <property name="urlAction" value="http://support.jahia.com/" />
+    </bean>
+    
     <bean id="jahiaPediaAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
         <property name="urlKey" value="pedia" />
         <property name="name" value="pedia" />
-        <property name="icon" value="http://www2.jahia.org/files/content/shared/logo-top.png" />
+        <property name="icon" value="books" />
         <property name="label" value="Jahiapedia" />
-        <property name="urlAction" value="http://www2.jahia.org/cms/home/jahiapedia" />
+        <property name="urlAction" value="http://www.jahia.org/cms/home/jahiapedia" />
+    </bean>
+    
+    <bean id="docsAdministrationModule" class="org.jahia.admin.PlaceholderAdministrationModule">
+        <property name="urlKey" value="docs" />
+        <property name="name" value="docs" />
+        <property name="icon" value="books" />
+        <property name="label" value="Documentation" />
+        <property name="urlAction" value="http://extranet.jahia.com/jahia/Jahia/documentation" />
     </bean>
     
     <bean id="administrationModulesRegistry" class="org.jahia.admin.AdministrationModulesRegistry">
@@ -305,10 +329,15 @@
                 <ref bean="serverPermissionsAdministrationModule" />
                 <ref bean="passwordPoliciesAdministrationModule" />
                 <ref bean="patchesAdministrationModule" />
-                <ref bean="infoAdministrationModule" />
+                <ref bean="communityJiraAdministrationModule"/>
                 <!-- 
-                <ref bean="jahiaPediaAdministrationModule"/>
+                <ref bean="enterpriseJiraAdministrationModule"/>
                  -->
+                <ref bean="jahiaPediaAdministrationModule"/>
+                <!-- 
+                <ref bean="docsAdministrationModule"/>
+                 -->
+                <ref bean="infoAdministrationModule" />
             </list>
         </property>
         <property name="siteModules">

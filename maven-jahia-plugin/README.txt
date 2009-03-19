@@ -48,7 +48,9 @@ to create as many virtual sites as you want
 
 <jahia.configure.localIp>10.8.37.243</jahia.configure.localIp> <!-- the ip of your node -->
 <jahia.configure.clusterNodes>
-	<param>10.8.37.244</param> <!-- here add as many nodes as you want, but be careful as you may encounter some licence problems-->
+    <!-- here add as many nodes as you want, but be careful as you may encounter some licence problems-->
+	<param>10.8.37.243</param> 
+    <param>10.8.37.244</param>
 </jahia.configure.clusterNodes>
 
 in the configure section of your plugin

@@ -40,6 +40,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.cache.JahiaBatchingClusterCacheHibernateProvider;
 import org.jahia.hibernate.manager.JahiaInstalledPatchManager;
 import org.jahia.hibernate.manager.JahiaVersionManager;
+import org.jahia.hibernate.model.JahiaInstalledPatch;
 import org.jahia.hibernate.model.JahiaVersion;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
@@ -65,13 +66,13 @@ public class VersionService extends JahiaService {
     private JahiaVersionManager manager;
     private JahiaInstalledPatchManager patchManager;
 
-    private SortedSet patches = new TreeSet();
+    private SortedSet<Patch> patches = new TreeSet<Patch>();
 
-    private List patchers = new ArrayList();
+    private List<Patcher> patchers = new ArrayList<Patcher>();
 
-    private List status = new ArrayList();
+    private List<Status> status = new ArrayList<Status>();
 
-    private SortedMap versions = new TreeMap();
+    private SortedMap<Integer, String> versions = new TreeMap<Integer, String>();
 
     public static VersionService getInstance() {
         if (instance == null) {
@@ -102,16 +103,16 @@ public class VersionService extends JahiaService {
     }
 
     public boolean installAllPatches() {
-        status = new ArrayList();
+        status = new ArrayList<Status>();
         Jahia.setMaintenance(true);
         try {
-            List list = manager.getAllVersion();
+            List<JahiaVersion> list = manager.getAllVersion();
             if (!list.isEmpty()) {
-                Map patchesToInstall = getPatchesToInstall();
+                Map<Patch, Patcher> patchesToInstall = getPatchesToInstall();
 
-                for (Iterator iterator = patchesToInstall.keySet().iterator(); iterator.hasNext();) {
-                    Patch patch = (Patch) iterator.next();
-                    Patcher patcher = (Patcher) patchesToInstall.get(patch);
+                for (Iterator<Patch> iterator = patchesToInstall.keySet().iterator(); iterator.hasNext();) {
+                    Patch patch = iterator.next();
+                    Patcher patcher = patchesToInstall.get(patch);
                     Status s = new Status();
                     s.scriptName = patch.getName();
                     status.add(s);
@@ -138,24 +139,23 @@ public class VersionService extends JahiaService {
         return false;
     }
 
-    public SortedMap getPatchesToInstall() {
-        List list = manager.getAllVersion();
+    public SortedMap<Patch, Patcher> getPatchesToInstall() {
+        List<JahiaVersion> list = manager.getAllVersion();
         int firstVersion = 0;
-        for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-            JahiaVersion version = (JahiaVersion) iterator.next();
+        for (JahiaVersion version : list) {
             int b = version.getBuildNumber().intValue();
             if (firstVersion == 0 || b < firstVersion) {
                 firstVersion = b;
             }
         }
 
-        SortedMap patchesToInstall = new TreeMap();
+        SortedMap<Patch, Patcher> patchesToInstall = new TreeMap<Patch, Patcher>();
 
-        for (Iterator iterator = patches.iterator(); iterator.hasNext();) {
-            Patch patch = (Patch) iterator.next();
+        for (Iterator<Patch> iterator = patches.iterator(); iterator.hasNext();) {
+            Patch patch = iterator.next();
             if (!patchManager.hasPatchBeenInstalled(patch.getName())) {
-                for (Iterator it2 = patchers.iterator(); it2.hasNext();) {
-                    Patcher patcher = (Patcher) it2.next();
+                for (Iterator<Patcher> it2 = patchers.iterator(); it2.hasNext();) {
+                    Patcher patcher = it2.next();
                     if (patcher.canHandlePatch(patch, firstVersion, Jahia.getBuildNumber())) {
                         patchesToInstall.put(patch, patcher);
                         break;
@@ -171,11 +171,11 @@ public class VersionService extends JahiaService {
             return false;
         }
 
-        SortedMap headMap = versions.headMap(new Integer(buildNumber));
+        SortedMap<Integer, String> headMap = versions.headMap(new Integer(buildNumber));
         String s = null;
 
         if (!headMap.isEmpty()) {
-            s = (String) headMap.get(headMap.lastKey());
+            s = headMap.get(headMap.lastKey());
         }
 
         manager.createOldVersion(buildNumber, s);
@@ -187,23 +187,21 @@ public class VersionService extends JahiaService {
         return true;
     }
 
-    public SortedMap getInstalledPatchesByVersion() {
-        SortedMap results = new TreeMap();
-        List versions = manager.getAllVersion();
-        for (Iterator iterator = versions.iterator(); iterator.hasNext();) {
-            JahiaVersion jahiaVersion = (JahiaVersion) iterator.next();
-            List patches = patchManager.getPatchesForBuild(jahiaVersion.getBuildNumber().intValue());
-            results.put(jahiaVersion, patches);
+    public SortedMap<JahiaVersion, List<JahiaInstalledPatch>> getInstalledPatchesByVersion() {
+        SortedMap<JahiaVersion, List<JahiaInstalledPatch>> results = new TreeMap<JahiaVersion, List<JahiaInstalledPatch>>();
+        List<JahiaVersion> versions = manager.getAllVersion();
+        for (JahiaVersion jahiaVersion : versions) {
+            results.put(jahiaVersion, patchManager.getPatchesForBuild(jahiaVersion.getBuildNumber().intValue()));
         }
         return results;
     }
 
-    public List getScriptsStatus() {
+    public List<Status> getScriptsStatus() {
         return status;
     }
 
     public Status getLastScriptStatus() {
-        return (Status) status.get(status.size() - 1);
+        return status.get(status.size() - 1);
     }
 
     public void setSubStatus(String v) {
@@ -227,7 +225,7 @@ public class VersionService extends JahiaService {
         Properties v = new Properties();
         try {
             v.load(new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaVarDiskPath() + File.separator + "versions.properties"));
-            for (Iterator it = v.keySet().iterator(); it.hasNext();) {
+            for (Iterator<?> it = v.keySet().iterator(); it.hasNext();) {
                 String s = (String) it.next();
                 versions.put(new Integer(s), v.getProperty(s));
             }

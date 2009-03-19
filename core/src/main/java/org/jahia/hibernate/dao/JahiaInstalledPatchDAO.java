@@ -47,18 +47,18 @@ import java.util.List;
  */
 public class JahiaInstalledPatchDAO extends AbstractGeneratorDAO {
 
-    public List findAll() {
+    public List<JahiaInstalledPatch> findAll() {
         HibernateTemplate template = getHibernateTemplate();
         return template.find("from JahiaInstalledPatch order by installNumber");
     }
 
-    public List findByBuildNumber(int number) {
+    public List<JahiaInstalledPatch> findByBuildNumber(int number) {
         HibernateTemplate template = getHibernateTemplate();
         return template.find("from JahiaInstalledPatch where build=? order by installNumber", new Object[] {new Integer(number)} );
     }
 
 
-    public List findByName(String name) {
+    public List<JahiaInstalledPatch> findByName(String name) {
         HibernateTemplate template = getHibernateTemplate();
         return template.find("from JahiaInstalledPatch where name=? order by installNumber", new Object[] {name} );
     }

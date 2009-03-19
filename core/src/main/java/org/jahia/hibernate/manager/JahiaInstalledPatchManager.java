@@ -34,7 +34,6 @@
 package org.jahia.hibernate.manager;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jahia.bin.Jahia;
@@ -50,18 +49,17 @@ public class JahiaInstalledPatchManager {
         this.jahiaInstalledPatchDao = jahiaInstalledPatchDao;
     }
 
-    public List getAllInstalledPatches() {
+    public List<JahiaInstalledPatch> getAllInstalledPatches() {
         return jahiaInstalledPatchDao.findAll();
     }
 
-    public List getPatchesForBuild(int build) {
+    public List<JahiaInstalledPatch> getPatchesForBuild(int build) {
         return jahiaInstalledPatchDao.findByBuildNumber(build);        
     }
 
     public boolean hasPatchBeenInstalled(String name) {
-        List l = jahiaInstalledPatchDao.findByName(name);
-        for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-            JahiaInstalledPatch jahiaInstalledPatch = (JahiaInstalledPatch) iterator.next();
+        List<JahiaInstalledPatch> l = jahiaInstalledPatchDao.findByName(name);
+        for (JahiaInstalledPatch jahiaInstalledPatch : l) {
             if (jahiaInstalledPatch.getResultCode().intValue() == 0) {
                 return true;
             }

@@ -315,6 +315,8 @@ public class JahiaContainerListPagination {
             if (lastEditedItemIsInTheRange){
                 if (count<=this.windowSize){
                     this.windowOffset = 0;
+                } else if (this.windowSize == 1) {
+                    this.windowOffset = count - 1;                                        
                 } else {
                     this.windowOffset = (count / this.windowSize) * this.windowSize;
                 }

@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.compass.core.CompassHighlighter;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.PageReferenceableInterface;
@@ -153,8 +152,6 @@ public class PageSearchResultBuilderImpl extends
             Collection<ParsedObject> parsedObjects, ProcessingContext jParams,
             int permission, String[] queryArray) {
         
-        String searchQuery = queryArray[0];
-        
         JahiaSearchResult result = new JahiaSearchResult(this, parsedObjects);
 
         if (parsedObjects == null || parsedObjects.isEmpty())
@@ -251,7 +248,6 @@ public class PageSearchResultBuilderImpl extends
                         info.setPage(aPage);
                         
                         String url = "#";
-                        String defaultTeaser = "";
                         if (aPage != null) {
                             if (isFile) {
                                 String mimeType = null;
@@ -290,7 +286,6 @@ public class PageSearchResultBuilderImpl extends
                                                 + "contributor");
                             } else {
                                 try {
-                                    defaultTeaser = aPage.getTitle();
                                     if (SettingsBean.getInstance()
                                             .isSiteIDInSearchHitPageURL()
                                             && aPage.getJahiaID() != jParams

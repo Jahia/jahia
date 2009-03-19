@@ -33,217 +33,205 @@
 
  package org.jahia.services.search.compass;
 
-import org.apache.log4j.Logger;
-import org.apache.lucene.index.IndexReader;
-import org.compass.core.*;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.search.*;
+ import org.apache.log4j.Logger;
+ import org.apache.lucene.index.IndexReader;
+ import org.compass.core.*;
+ import org.jahia.registries.ServicesRegistry;
+ import org.jahia.services.search.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+ import java.util.List;
+ import java.util.Properties;
 
-/**
- * Created by IntelliJ IDEA.
- * User: hollis
- * Date: 15 f�vr. 2005
- * Time: 13:05:57
- * To change this template use File | Settings | File Templates.
- */
-public class CompassSearchIndexer implements SearchIndexer {
+ /**
+  * Created by IntelliJ IDEA.
+  * User: hollis
+  * Date: 15 f�vr. 2005
+  * Time: 13:05:57
+  * To change this template use File | Settings | File Templates.
+  */
+ public class CompassSearchIndexer implements SearchIndexer {
 
-    static String SEARCH_HANDLER_NAME = "jahia.searchhandler_name";
+     static String SEARCH_HANDLER_NAME = "jahia.searchhandler_name";
 
-    private static Logger logger =
-            Logger.getLogger (CompassSearchIndexer.class);
+     private static Logger logger =
+             Logger.getLogger (CompassSearchIndexer.class);
 
-    private Properties config = new Properties();
+     private Properties config = new Properties();
 
-    private boolean localIndexing = true;
+     private boolean localIndexing = true;
 
-    private SearchHandler searchHandler;
+     private SearchHandler searchHandler;
 
-    private Compass compass = null;
+     private Compass compass = null;
 
-    public CompassSearchIndexer(){
-    }
+     public CompassSearchIndexer(){
+     }
 
-    public CompassSearchIndexer( boolean localIndexing,
-                                 Properties config){
-        this.localIndexing = localIndexing;
-        this.setConfig(config);
-    }
+     public CompassSearchIndexer( boolean localIndexing,
+                                  Properties config){
+         this.localIndexing = localIndexing;
+         this.setConfig(config);
+     }
 
-    public void start() throws Exception {
-        compass = ServicesRegistry.getInstance()
-                .getJahiaSearchService().getCompass();
-    }
+     public void start() throws Exception {
+         compass = ServicesRegistry.getInstance()
+                 .getJahiaSearchService().getCompass();
+     }
 
-    public boolean isLocalIndexing() {
-        return localIndexing;
-    }
+     public boolean isLocalIndexing() {
+         return localIndexing;
+     }
 
-    public void setLocalIndexing(boolean localIndexing) {
-        this.localIndexing = localIndexing;
-    }
+     public void setLocalIndexing(boolean localIndexing) {
+         this.localIndexing = localIndexing;
+     }
 
-    public Properties getConfig() {
-        return config;
-    }
+     public Properties getConfig() {
+         return config;
+     }
 
-    public void setConfig(Properties config) {
-        this.config = config;
-        if ( this.config == null ){
-            this.config = new Properties();
-        }
-    }
+     public void setConfig(Properties config) {
+         this.config = config;
+         if ( this.config == null ){
+             this.config = new Properties();
+         }
+     }
 
-    /**
-     * Returns an IndexReader. Always return null. Not supported.
-     *
-     * @return
-     * @throws Exception
-     */
-    public IndexReader getIndexReader() throws Exception {
-        return null;
-    }
+     /**
+      * Returns an IndexReader. Always return null. Not supported.
+      *
+      * @return
+      * @throws Exception
+      */
+     public IndexReader getIndexReader() throws Exception {
+         return null;
+     }
 
-    public synchronized void addDocument(IndexableDocument document){
-        if ( document == null ) {
-            return;
-        }
-        if ( !this.localIndexing ){
-            return;
-        }
-        final Resource res = ServicesRegistry.getInstance().getJahiaSearchService()
-                .getCompassResourceConverter().getResourceFromIndexableDocument(document);
-        if ( res ==  null ){
-            return;
-        }
-        try {
-            ResourceFactory factory = compass.getResourceFactory();
-            Property prop = factory.createProperty(SEARCH_HANDLER_NAME,
-                    this.getSearchHandler().getName()
-                    ,Property.Store.YES,Property.Index.TOKENIZED);
-            res.addProperty(prop);
-            CompassTemplate template = new CompassTemplate(compass);
-            template.create(res);
-        } catch (Exception t) {
-            logger.error ("Error while indexing object " + document.getKey () + ":", t);
-        } finally {
-        }
-    }
+     public synchronized void addDocument(IndexableDocument document){
+         if ( document == null ) {
+             return;
+         }
+         if ( !this.localIndexing ){
+             return;
+         }
+         final Resource res = ServicesRegistry.getInstance().getJahiaSearchService()
+                 .getCompassResourceConverter().getResourceFromIndexableDocument(document);
+         if ( res ==  null ){
+             return;
+         }
+         try {
+             ResourceFactory factory = compass.getResourceFactory();
+             Property prop = factory.createProperty(SEARCH_HANDLER_NAME,
+                     this.getSearchHandler().getName()
+                     ,Property.Store.YES,Property.Index.TOKENIZED);
+             res.addProperty(prop);
+             CompassTemplate template = new CompassTemplate(compass);
+             template.create(res);
+         } catch (Exception t) {
+             logger.error ("Error while indexing object " + document.getKey () + ":", t);
+         } finally {
+         }
+     }
 
-    public synchronized void removeDocument(RemovableDocument document){
-        if ( document == null ){
-            return;
-        }
-        if ( !this.localIndexing ){
-            return;
-        }
-        CompassTemplate template = new CompassTemplate(compass);
-        CompassDetachedHits hits = template.find(document.getKeyFieldName()+":"+NumberPadding.pad(document.getKey())).detach();
-        int size = hits.getLength();
-        Resource res = null;
-        for ( int i=0; i<size; i++ ){
-            res = hits.resource(i);
-            try {
-                template.delete(res);
-            } catch ( Exception t ){
-                logger.debug("Exception deleting resource res",t);
-            }
-        }
-    }
+     public synchronized void removeDocument(RemovableDocument document){
+         if ( document == null ){
+             return;
+         }
+         if ( !this.localIndexing ){
+             return;
+         }
+         CompassTemplate template = new CompassTemplate(compass);
+         CompassDetachedHits hits = template.find(document.getKeyFieldName()+":"+NumberPadding.pad(document.getKey())).detach();
+         for ( int i=0, size = hits.getLength(); i<size; i++ ){
+             Resource res = hits.resource(i);
+             try {
+                 template.delete(res);
+             } catch ( Exception t ){
+                 logger.debug("Exception deleting resource res",t);
+             }
+         }
+     }
 
-    public synchronized void batchIndexing(final List toRemove, final List toAdd){
-        if ( !this.localIndexing ){
-            return;
-        }
-        long indexingStartTime = System.currentTimeMillis();
+     public synchronized void batchIndexing(final List<RemovableDocument> toRemove, final List<IndexableDocument> toAdd){
+         if ( !this.localIndexing ){
+             return;
+         }
+         long indexingStartTime = System.currentTimeMillis();
 
-        try {
-            final CompassTemplate template = new CompassTemplate(compass);
-            final ResourceFactory factory = compass.getResourceFactory();
-            template.execute(CompassTransaction.TransactionIsolation.READ_COMMITTED,new CompassCallback() {
-                public Object doInCompass(CompassSession session) throws CompassException {
-                    Iterator iterator = toRemove.iterator();
-                    IndexableDocument doc = null;
-                    while ( iterator.hasNext() ){
-                        doc = (RemovableDocument)iterator.next();
-                        CompassDetachedHits hits = session.find(doc.getKeyFieldName()+":"+
-                                NumberPadding.pad(doc.getKey())).detach();
-                        int size = hits.getLength();
-                        Resource res = null;
-                        for ( int i=0; i<size; i++ ){
-                            res = hits.resource(i);
-                            try {
-                                session.delete(res);
-                            } catch ( Exception t ){
-                                logger.debug("Exception deleting resource res",t);
-                            }
-                        }
-                    }
-                    return null;
-                }
-            } );
-            template.execute(CompassTransaction.TransactionIsolation.BATCH_INSERT,new CompassCallback() {
-                public Object doInCompass(CompassSession session) throws CompassException {
-                    Iterator iterator = toAdd.iterator();
-                    IndexableDocument doc = null;
-                    Resource res = null;
-                    while ( iterator.hasNext() ){
-                        doc = (IndexableDocument)iterator.next();
-                        res = ServicesRegistry.getInstance().getJahiaSearchService()
-                                .getCompassResourceConverter().getResourceFromIndexableDocument(doc);
-                        if ( res ==  null ){
-                            continue;
-                        }
-                        Property prop = factory.createProperty(SEARCH_HANDLER_NAME,
-                                getSearchHandler().getName()
-                                ,Property.Store.YES,Property.Index.TOKENIZED);
-                        res.addProperty(prop);
-                        session.create(res);
-                    }
-                    return null;
-                }
-            } );
-        } catch (Exception t) {
-            logger.error ("Error indexing ", t);
-        } finally {
-        }
+         try {
+             final CompassTemplate template = new CompassTemplate(compass);
+             final ResourceFactory factory = compass.getResourceFactory();
+             template.execute(CompassTransaction.TransactionIsolation.READ_COMMITTED, new CompassCallback<Object>() {
+                 public Object doInCompass(CompassSession session) throws CompassException {
+                     for ( IndexableDocument doc : toRemove ){
+                         CompassDetachedHits hits = session.find(doc.getKeyFieldName()+":"+
+                                 NumberPadding.pad(doc.getKey())).detach();
+                         for ( int i=0, size = hits.getLength(); i<size; i++ ){
+                             Resource res = hits.resource(i);
+                             try {
+                                 session.delete(res);
+                             } catch ( Exception t ){
+                                 logger.debug("Exception deleting resource res",t);
+                             }
+                         }
+                     }
+                     return null;
+                 }
+             } );
+             template.execute(CompassTransaction.TransactionIsolation.LUCENE, new CompassCallback<Object>() {
+                 public Object doInCompass(CompassSession session) throws CompassException {
+                     for ( IndexableDocument doc : toAdd ){
+                         Resource res = ServicesRegistry.getInstance().getJahiaSearchService()
+                                 .getCompassResourceConverter().getResourceFromIndexableDocument(doc);
+                         if ( res ==  null ){
+                             continue;
+                         }
+                         Property prop = factory.createProperty(SEARCH_HANDLER_NAME,
+                                 getSearchHandler().getName()
+                                 ,Property.Store.YES,Property.Index.TOKENIZED);
+                         res.addProperty(prop);
+                         session.create(res);
+                     }
+                     return null;
+                 }
+             } );
+         } catch (Exception t) {
+             logger.error ("Error indexing ", t);
+         } finally {
+         }
 
-        long indexingElapsedTime = System.currentTimeMillis() - indexingStartTime;
-        if (logger.isInfoEnabled()) {
-            logger.info(
-                "Finished processing " + (toRemove.size() + toAdd.size()) +
-                " indexing orders in " + indexingElapsedTime + "ms.");
-        }
-    }
+         long indexingElapsedTime = System.currentTimeMillis() - indexingStartTime;
+         if (logger.isInfoEnabled()) {
+             logger.info(
+                 "Finished processing " + (toRemove.size() + toAdd.size()) +
+                 " indexing orders in " + indexingElapsedTime + "ms.");
+         }
+     }
 
-    /**
-     * syncrhonized batch removing of RemovableDocument from toRemoveList and then adding IndexableDocuments of toAdd
-     * @param toRemove
-     * @param toAdd
-     */
-    public void synchronizedBatchIndexing(List toRemove, List toAdd){
-        // @COMPASS NOT UP TO DATE ANYMORE
-    }
-    
-    public void setSearchHandler(SearchHandler searchHandler){
-        this.searchHandler = searchHandler;
-    }
+     /**
+      * syncrhonized batch removing of RemovableDocument from toRemoveList and then adding IndexableDocuments of toAdd
+      * @param toRemove
+      * @param toAdd
+      */
+     public void synchronizedBatchIndexing(List<RemovableDocument> toRemove, List<IndexableDocument> toAdd){
+         // @COMPASS NOT UP TO DATE ANYMORE
+     }
+     
+     public void setSearchHandler(SearchHandler searchHandler){
+         this.searchHandler = searchHandler;
+     }
 
-    public SearchHandler getSearchHandler(){
-        return this.searchHandler;
-    }
+     public SearchHandler getSearchHandler(){
+         return this.searchHandler;
+     }
 
-    public int getBufferedDocs(){
-        return -1; // not supported yet
-    }
+     public int getBufferedDocs(){
+         return -1; // not supported yet
+     }
 
-    public void wakeUp(){
-    }
+     public void wakeUp(){
+     }
 
-    public void shutdown(){
-    }
-}
+     public void shutdown(){
+     }
+ }

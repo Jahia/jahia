@@ -18,62 +18,37 @@
 
  package org.jahia.services.search.analyzer;
 
-import java.io.IOException;
-import java.util.Stack;
-import java.util.StringTokenizer;
+ import java.util.StringTokenizer;
 
-import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.TokenFilter;
-import org.apache.lucene.analysis.TokenStream;
+ import org.apache.lucene.analysis.Token;
+ import org.apache.lucene.analysis.TokenStream;
+ import org.apache.lucene.analysis.standard.StandardTokenizer;
 
-/**
- * Created by IntelliJ IDEA.
- * User: hollis
- * Date: 25 mai 2005
- * Time: 21:05:11
- * To change this template use File | Settings | File Templates.
- */
-public class TokenWithQuoteFilter extends TokenFilter {
+ /**
+  * Created by IntelliJ IDEA.
+  * User: hollis
+  * Date: 25 mai 2005
+  * Time: 21:05:11
+  * To change this template use File | Settings | File Templates.
+  */
+ public class TokenWithQuoteFilter extends SplitTokenFilter {
 
-    private static final String APOSTROPHE_TYPE = StandardTokenizerImpl.TOKEN_TYPES[StandardTokenizerImpl.APOSTROPHE];
+     private static final String APOSTROPHE_TYPE = StandardTokenizer.TOKEN_TYPES[StandardTokenizer.APOSTROPHE];
 
-    private Stack splittedWords;
+     public TokenWithQuoteFilter(TokenStream in) {
+         super(in);
+     }
 
-    public TokenWithQuoteFilter(TokenStream in) {
-        super(in);
-        splittedWords = new Stack();
-    }
+     protected StringTokenizer splitWords(Token t) {
+         StringTokenizer st = null;
+         if (t.type() == APOSTROPHE_TYPE) {
+             String termText = t.termText();
+             if (termText.indexOf("'") != -1) {
+                 st = new StringTokenizer(termText, "'");
+             }
+         }
+         return st;
+     }
 
-    public final Token next() throws IOException {
-        if (splittedWords.size() > 0) {
-            return (Token) splittedWords.pop();
-        }
-        Token t = input.next();
-        if (t == null) {
-            return null;
-        }
-        splitWords(t);
-        return t;
-    }
+ }
 
-    private void splitWords(Token t) {
-        if (t.type() == APOSTROPHE_TYPE) {
-            String termText = t.termText();
-            if (termText.indexOf("'") != -1) {
-
-                StringTokenizer st = new StringTokenizer(termText, "'");
-                Token token = null;
-                String text = null;
-                while (st.hasMoreTokens()) {
-                    text = st.nextToken();
-                    if (text.length() > 1) {
-                        token = new Token(text, t.startOffset(), t.endOffset());
-                        token.setPositionIncrement(0);
-                        splittedWords.push(token);
-                    }
-                }
-            }
-        }
-    }
-
-}

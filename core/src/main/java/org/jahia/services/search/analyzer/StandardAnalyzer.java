@@ -72,226 +72,65 @@
  * <http://www.apache.org/>.
  */
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.Reader;
+ import java.util.Set;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardFilter;
-import org.compass.core.CompassException;
-import org.compass.core.config.CompassConfigurable;
-import org.compass.core.config.CompassSettings;
-import org.compass.core.lucene.LuceneEnvironment;
 
-/**
- * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link
- * LowerCaseFilter} and {@link StopFilter}.
- *
- * @version $Id$
- */
-public class StandardAnalyzer extends Analyzer implements CompassConfigurable {
+ import org.apache.lucene.analysis.ISOLatin1AccentFilter;
+ import org.apache.lucene.analysis.LowerCaseFilter;
+ import org.apache.lucene.analysis.StopFilter;
+ import org.apache.lucene.analysis.TokenStream;
+ import org.apache.lucene.analysis.WordlistLoader;
+ import org.apache.lucene.analysis.standard.StandardFilter;
 
-    /**
-     * An array containing some common English words that are usually not
-     * useful for searching.
-     */
-    private Set stopWords = new HashSet();
+ /**
+  * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link
+  * LowerCaseFilter} and {@link StopFilter}.
+  *
+  * @version $Id$
+  */
+ public class StandardAnalyzer extends org.apache.lucene.analysis.standard.StandardAnalyzer {
 
-    /**
-     * Specifies whether deprecated acronyms should be replaced with HOST type.
-     * This is false by default to support backward compatibility.
-     * 
-     * @deprecated this should be removed in the next release (3.0).
-     *
-     * See https://issues.apache.org/jira/browse/LUCENE-1068
-     */
-    private boolean replaceInvalidAcronym = defaultReplaceInvalidAcronym;
+     
+     /** Builds an analyzer with the default stop words ({@link #STOP_WORDS}). */
+     public StandardAnalyzer() {
+       super();
+     }
 
-    private static boolean defaultReplaceInvalidAcronym;
-    
-    // Default to false (fixed the bug), unless the system prop is set
-    static {
-      final String v = System.getProperty("org.apache.lucene.analysis.standard.StandardAnalyzer.replaceInvalidAcronym");
-      if (v == null || v.equals("true"))
-        defaultReplaceInvalidAcronym = true;
-      else
-        defaultReplaceInvalidAcronym = false;
-    }
-    /**
-    *
-    * @return true if new instances of StandardTokenizer will
-    * replace mischaracterized acronyms
-    *
-    * See https://issues.apache.org/jira/browse/LUCENE-1068
-    * @deprecated This will be removed (hardwired to true) in 3.0
-    */
-   public static boolean getDefaultReplaceInvalidAcronym() {
-     return defaultReplaceInvalidAcronym;
-   }
+     /** Builds an analyzer with the given stop words. */
+     public StandardAnalyzer(Set<?> stopWords) {
+         super(stopWords);
+     }
 
-   /**
-    *
-    * @param replaceInvalidAcronym Set to true to have new
-    * instances of StandardTokenizer replace mischaracterized
-    * acronyms by default.  Set to false to preseve the
-    * previous (before 2.4) buggy behavior.  Alternatively,
-    * set the system property
-    * org.apache.lucene.analysis.standard.StandardAnalyzer.replaceInvalidAcronym
-    * to false.
-    *
-    * See https://issues.apache.org/jira/browse/LUCENE-1068
-    * @deprecated This will be removed (hardwired to true) in 3.0
-    */
-   public static void setDefaultReplaceInvalidAcronym(boolean replaceInvalidAcronym) {
-     defaultReplaceInvalidAcronym = replaceInvalidAcronym;
-   }    
-    
-    /**
-     * Builds an analyzer.
-     */
-    public StandardAnalyzer() {
-    }
+     /** Builds an analyzer with the given stop words. */
+     public StandardAnalyzer(String[] stopWords) {
+         super(stopWords);
+     }
 
-    /**
-     * Builds an analyzer with the given stop words.
-     */
-    public StandardAnalyzer(String[] stopWords) {
-        this.stopWords = StopFilter.makeStopSet(stopWords);
-    }
+     /** Builds an analyzer with the stop words from the given file.
+      * @see WordlistLoader#getWordSet(File)
+      */
+     public StandardAnalyzer(File stopWords) throws IOException {
+         super(stopWords);
+     }
 
-    /**
-     * Constructs a {@link StandardTokenizer} filtered by a {@link
-     * StandardFilter}, a {@link LowerCaseFilter} and a {@link StopFilter}.
-     */
-    public TokenStream tokenStream(String fieldName, Reader reader) {
-        StandardTokenizer tokenStream = new StandardTokenizer(reader, replaceInvalidAcronym);
-        tokenStream.setMaxTokenLength(maxTokenLength);
-        TokenStream result = new StandardFilter(tokenStream);
-        result = new LowerCaseFilter(result);
-        result = new StopFilter(result, stopWords);
-        result = new TokenWithCommaFilter(result);
-        result = new LanguageIndependantFilter(result);
-        return result;
-    }
-    
-    private static final class SavedStreams {
-        StandardTokenizer tokenStream;
-        TokenStream filteredTokenStream;
-      }    
+     /** Builds an analyzer with the stop words from the given reader.
+      * @see WordlistLoader#getWordSet(Reader)
+      */
+     public StandardAnalyzer(Reader stopWords) throws IOException {
+         super(stopWords);
+     }
 
-    /** Default maximum allowed token length */
-    public static final int DEFAULT_MAX_TOKEN_LENGTH = 255;
-
-    private int maxTokenLength = DEFAULT_MAX_TOKEN_LENGTH;
-
-    /**
-     * Set maximum allowed token length.  If a token is seen
-     * that exceeds this length then it is discarded.  This
-     * setting only takes effect the next time tokenStream or
-     * reusableTokenStream is called.
-     */
-    public void setMaxTokenLength(int length) {
-      maxTokenLength = length;
-    }
-      
-    /**
-     * @see #setMaxTokenLength
-     */
-    public int getMaxTokenLength() {
-      return maxTokenLength;
-    }
-    
-    public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-        SavedStreams streams = (SavedStreams) getPreviousTokenStream();
-        if (streams == null) {
-          streams = new SavedStreams();
-          setPreviousTokenStream(streams);
-          streams.tokenStream = new StandardTokenizer(reader);
-          streams.filteredTokenStream = new StandardFilter(streams.tokenStream);
-          streams.filteredTokenStream = new LowerCaseFilter(streams.filteredTokenStream);
-          streams.filteredTokenStream = new StopFilter(streams.filteredTokenStream, stopWords);
-        } else {
-          streams.tokenStream.reset(reader);
-        }
-        streams.tokenStream.setMaxTokenLength(maxTokenLength);
-        
-        streams.tokenStream.setReplaceInvalidAcronym(replaceInvalidAcronym);
-
-        return streams.filteredTokenStream;
-      }
-
-      /**
-       *
-       * @return true if this Analyzer is replacing mischaracterized acronyms in the StandardTokenizer
-       *
-       * See https://issues.apache.org/jira/browse/LUCENE-1068
-       * @deprecated This will be removed (hardwired to true) in 3.0
-       */
-      public boolean isReplaceInvalidAcronym() {
-        return replaceInvalidAcronym;
-      }
-
-      /**
-       *
-       * @param replaceInvalidAcronym Set to true if this Analyzer is replacing mischaracterized acronyms in the StandardTokenizer
-       *
-       * See https://issues.apache.org/jira/browse/LUCENE-1068
-       * @deprecated This will be removed (hardwired to true) in 3.0
-       */
-      public void setReplaceInvalidAcronym(boolean replaceInvalidAcronym) {
-          this.replaceInvalidAcronym = replaceInvalidAcronym;
-      }
-    
-    public void configure(CompassSettings settings)
-    throws CompassException {
-        String[] stopWords = parseStopWords(settings,new String[]{});
-        this.stopWords.addAll(Arrays.asList(stopWords));
-    }
-
-    public String[] parseStopWords(CompassSettings settings, String[] defaultStopWords) {
-        String stopWords = settings.getSetting(LuceneEnvironment.Analyzer.STOPWORDS);
-        if (stopWords == null) {
-            return defaultStopWords;
-        }
-        boolean addStopWords = false;
-        if (stopWords.startsWith("+")) {
-            addStopWords = true;
-            stopWords = stopWords.substring(1);
-        }
-        StringTokenizer st = new StringTokenizer(stopWords, ",");
-        String[] arrStopWords = new String[st.countTokens()];
-        for (int i = 0; st.hasMoreTokens(); i++) {
-            arrStopWords[i] = st.nextToken().trim();
-        }
-        if (addStopWords) {
-            String[] tempStopWords = arrStopWords;
-            arrStopWords = new String[tempStopWords.length + defaultStopWords.length];
-            System.arraycopy(defaultStopWords, 0, arrStopWords, 0, defaultStopWords.length);
-            System.arraycopy(tempStopWords, 0, arrStopWords, defaultStopWords.length, tempStopWords.length);
-        }
-        return arrStopWords;
-    }
-
-    private ThreadLocal tokenStreams = new ThreadLocal();
-
-    /** Used by Analyzers that implement reusableTokenStream
-     *  to retrieve previously saved TokenStreams for re-use
-     *  by the same thread. */
-    protected Object getPreviousTokenStream() {
-      return tokenStreams.get();
-    }
-
-    /** Used by Analyzers that implement reusableTokenStream
-     *  to save a TokenStream for later re-use by the same
-     *  thread. */
-    protected void setPreviousTokenStream(Object obj) {
-      tokenStreams.set(obj);
-    }    
-    
-}
+     /**
+      * Constructs a {@link StandardTokenizer} filtered by a {@link
+      * StandardFilter}, a {@link LowerCaseFilter} and a {@link StopFilter}.
+      */
+     public TokenStream tokenStream(String fieldName, Reader reader) {
+         TokenStream result = super.tokenStream(fieldName, reader);
+         result = new TokenWithCommaFilter(result);
+         result = new ISOLatin1AccentFilter(result);
+         return result;
+     }    
+ }

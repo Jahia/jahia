@@ -25,6 +25,7 @@ import org.compass.core.CompassException;
 import org.compass.core.engine.SearchEngineException;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.snowball.SnowballFilter;
 
 public class SnowballFilterProvider implements LuceneAnalyzerTokenFilterProvider {
 

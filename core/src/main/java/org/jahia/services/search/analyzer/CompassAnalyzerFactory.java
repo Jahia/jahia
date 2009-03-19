@@ -18,22 +18,23 @@
 
  package org.jahia.services.search.analyzer;
 
-import org.compass.core.lucene.engine.analyzer.LuceneAnalyzerFactory;
+ import org.apache.lucene.analysis.Analyzer;
+ import org.compass.core.config.CompassSettings;
+ import org.compass.core.engine.SearchEngineException;
+ import org.compass.core.lucene.engine.analyzer.LuceneAnalyzerFactory;
 
-/**
- * Created by IntelliJ IDEA.
- * User: hollis
- * Date: 21 sept. 2005
- * Time: 15:46:50
- * To change this template use File | Settings | File Templates.
- */
-public class CompassAnalyzerFactory implements LuceneAnalyzerFactory {
+ /**
+  * Created by IntelliJ IDEA.
+  * User: hollis
+  * Date: 21 sept. 2005
+  * Time: 15:46:50
+  * To change this template use File | Settings | File Templates.
+  */
+ public class CompassAnalyzerFactory implements LuceneAnalyzerFactory {
 
-    public org.apache.lucene.analysis.Analyzer
-            createAnalyzer(String string,
-                           org.compass.core.config.CompassSettings compassSettings)
-            throws org.compass.core.engine.SearchEngineException {
-        StandardAnalyzer analyzer = new StandardAnalyzer();
-        return analyzer;
-    }
-}
+     public Analyzer createAnalyzer(String string,
+             CompassSettings compassSettings) throws SearchEngineException {
+         StandardAnalyzer analyzer = new StandardAnalyzer();
+         return analyzer;
+     }
+ }

@@ -34,7 +34,6 @@
 package org.jahia.version;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,11 +52,11 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 public class SqlPatcher implements Patcher {
     private Logger logger = Logger.getLogger(SqlPatcher.class);
     private String dbSchema;
-    private static Map schemas;
+    private static Map<String, String> schemas;
     private DatabaseScripts scriptHelper = new DatabaseScripts();
 
     static {
-        schemas = new HashMap();
+        schemas = new HashMap<String, String>();
         schemas.put("jsqlconnect.script", "sqlserver");
         schemas.put("sqlserver_jtds.script", "sqlserver");
         schemas.put("sqlserver_tds.script", "sqlserver");
@@ -66,7 +65,7 @@ public class SqlPatcher implements Patcher {
     public SqlPatcher() {
         dbSchema = org.jahia.settings.SettingsBean.getInstance().getPropertiesFile().getProperty("db_script");
         if (schemas.containsKey(dbSchema)) {
-            dbSchema = (String) schemas.get(dbSchema);
+            dbSchema = schemas.get(dbSchema);
         } else {
             dbSchema = dbSchema.substring(0, dbSchema.indexOf('.'));
         }
@@ -78,7 +77,7 @@ public class SqlPatcher implements Patcher {
             if (!db.equals(dbSchema)) {
                 return false;
             }
-            return patch.getNumber() > lastVersion && patch.getNumber() < currentVersion;
+            return patch.getNumber() == 0 || (patch.getNumber() > lastVersion && patch.getNumber() <= currentVersion);
         }
         return false;
     }
@@ -90,10 +89,9 @@ public class SqlPatcher implements Patcher {
                         JahiaVersionManager.class.getName());
         try {
             int count = 0;
-            List stmts = scriptHelper.getScriptFileStatements(patch.getFile());
+            List<String> stmts = scriptHelper.getScriptFileStatements(patch.getFile());
             int total = stmts.size();
-            for (Iterator iterator = stmts.iterator(); iterator.hasNext();) {
-                String line = (String) iterator.next();
+            for (String line : stmts) {
                 try {
                     versionMgr.executeSqlStmt(line);
                 } catch (Exception e) {

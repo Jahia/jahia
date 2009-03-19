@@ -62,7 +62,7 @@ public class GroovyPatcher implements Patcher {
 
     public boolean canHandlePatch(Patch patch, int lastVersion, int currentVersion) {
         if ("groovy".equals(patch.getExt()) && scriptEngine != null) {
-            return patch.getNumber() > lastVersion && patch.getNumber() < currentVersion;
+            return patch.getNumber() == 0 || (patch.getNumber() > lastVersion && patch.getNumber() <= currentVersion);
         }
         return false;
     }

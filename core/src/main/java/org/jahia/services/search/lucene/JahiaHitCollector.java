@@ -60,6 +60,7 @@ public class JahiaHitCollector extends JahiaAbstractHitCollector {
     private List<String> allowedFields;
     private boolean ignoreAcl = false;
     private boolean ignoreTbp = false;
+    private Map<Integer, Boolean> aclCache = new HashMap<Integer, Boolean>();
 
     public JahiaHitCollector() {
         if (this.getFieldSelector() == null) {
@@ -287,7 +288,7 @@ public class JahiaHitCollector extends JahiaAbstractHitCollector {
         this.luceneDocsCount = luceneDocsCount;
     }
 
-    public static boolean checkAccess(Document luceneDoc, JahiaObjectManager jahiaObjectManager, boolean ignoreAcl, boolean ignoreTbp){
+    public boolean checkAccess(Document luceneDoc, JahiaObjectManager jahiaObjectManager, boolean ignoreAcl, boolean ignoreTbp){
         boolean accessAllowed = true;
         // acl check
         Fieldable field = luceneDoc.getFieldable(JahiaSearchConstant.ACL_ID);
@@ -295,38 +296,65 @@ public class JahiaHitCollector extends JahiaAbstractHitCollector {
             try {
                 if (!ignoreAcl) {
                     int aclID = Integer.parseInt(field.stringValue());
-                    final JahiaBaseACL acl = JahiaBaseACL.getACL(aclID);
-                    if (!acl.getPermission(Jahia.getThreadParamBean().getUser(),
-                            JahiaBaseACL.READ_RIGHTS)) {
-                        accessAllowed = false;
+                    Boolean accessFlag = aclCache.get(aclID);
+                    if (accessFlag != null) {
+                        accessAllowed = accessFlag.booleanValue();
+                    } else {
+                        try {
+                            accessAllowed = false;
+                            accessFlag = Boolean.FALSE;
+                            final JahiaBaseACL acl = JahiaBaseACL.getACL(aclID);
+                            if (acl.getPermission(Jahia.getThreadParamBean()
+                                    .getUser(), JahiaBaseACL.READ_RIGHTS)) {
+                                accessAllowed = true;
+                                accessFlag = Boolean.TRUE;
+                            }
+                        } catch (Exception ex) {
+                            logger.debug("Exception checking hit access - ACL-ID: " + aclID);
+                        }
+                        aclCache.put(aclID, accessFlag);
                     }
                 }
-                field = luceneDoc.getFieldable(JahiaSearchConstant.OBJECT_KEY);
-                if ( field != null ){
-                    if (!ignoreTbp) {
-                        ObjectKey objectKey = ObjectKey.getInstance(field.stringValue());
-                        // Check for expired container
-                        boolean disableTimeBasedPublishingFilter = Jahia.getThreadParamBean()
-                                .isFilterDisabled(CoreFilterNames.
-                                        TIME_BASED_PUBLISHING_FILTER);
-                        ProcessingContext context = Jahia.getThreadParamBean();
-                        final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance().getTimeBasedPublishingService();
-                        if ( !disableTimeBasedPublishingFilter ){
-                            if ( ParamBean.NORMAL.equals(context.getOperationMode()) ){
-                                accessAllowed = tbpServ.isValid(objectKey,
-                                       context.getUser(),context.getEntryLoadRequest(),
-                                        context.getOperationMode(),
-                                        (Date)null);
-                            } else if ( ParamBean.PREVIEW.equals(context.getOperationMode()) ){
-                                accessAllowed = tbpServ.isValid(objectKey,
-                                        context.getUser(),context.getEntryLoadRequest(),context.getOperationMode(),
-                                        AdvPreviewSettings.getThreadLocaleInstance());
+                if (accessAllowed) {
+                    field = luceneDoc
+                            .getFieldable(JahiaSearchConstant.OBJECT_KEY);
+                    if (field != null) {
+                        if (!ignoreTbp) {
+                            ObjectKey objectKey = ObjectKey.getInstance(field
+                                    .stringValue());
+                            // Check for expired container
+                            boolean disableTimeBasedPublishingFilter = Jahia
+                                    .getThreadParamBean()
+                                    .isFilterDisabled(
+                                            CoreFilterNames.TIME_BASED_PUBLISHING_FILTER);
+                            ProcessingContext context = Jahia
+                                    .getThreadParamBean();
+                            final TimeBasedPublishingService tbpServ = ServicesRegistry
+                                    .getInstance()
+                                    .getTimeBasedPublishingService();
+                            if (!disableTimeBasedPublishingFilter) {
+                                if (ParamBean.NORMAL.equals(context
+                                        .getOperationMode())) {
+                                    accessAllowed = tbpServ.isValid(objectKey,
+                                            context.getUser(), context
+                                                    .getEntryLoadRequest(),
+                                            context.getOperationMode(),
+                                            (Date) null);
+                                } else if (ParamBean.PREVIEW.equals(context
+                                        .getOperationMode())) {
+                                    accessAllowed = tbpServ.isValid(objectKey,
+                                            context.getUser(), context
+                                                    .getEntryLoadRequest(),
+                                            context.getOperationMode(),
+                                            AdvPreviewSettings
+                                                    .getThreadLocaleInstance());
+                                }
                             }
                         }
                     }
                 }
             } catch ( Exception t){
-                logger.debug("Exception checking hit access");
+                logger.debug("Exception checking hit access", t);
                 return false;
             }
         }

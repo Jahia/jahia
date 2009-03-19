@@ -42,7 +42,7 @@ import java.io.File;
  * Time: 18:41:08
  * To change this template use File | Settings | File Templates.
  */
-public class Patch implements Comparable {
+public class Patch implements Comparable<Patch> {
     private File file;
     private String name;
     private int number;
@@ -78,8 +78,7 @@ public class Patch implements Comparable {
         return ext;
     }
 
-    public int compareTo(Object o) {
-        Patch other = (Patch)o;
+    public int compareTo(Patch other) {
         int diff = getNumber() - other.getNumber();
         if (diff == 0) {
             diff = file.compareTo(other.getFile());

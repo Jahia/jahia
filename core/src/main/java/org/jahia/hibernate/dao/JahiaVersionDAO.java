@@ -47,12 +47,12 @@ import java.util.List;
  */
 public class JahiaVersionDAO extends AbstractGeneratorDAO {
 
-    public List findAll() {
+    public List<JahiaVersion> findAll() {
         HibernateTemplate template = getHibernateTemplate();
         return template.find("from JahiaVersion order by installNumber");
     }
 
-    public List findByBuildNumber(int number) {
+    public List<JahiaVersion> findByBuildNumber(int number) {
         HibernateTemplate template = getHibernateTemplate();
         return template.find("from JahiaVersion where build=? order by installNumber", new Object[] {new Integer(number)} );
     }
@@ -63,7 +63,7 @@ public class JahiaVersionDAO extends AbstractGeneratorDAO {
         template.saveOrUpdate(version);
     }
     
-    public List executeSqlStmt(String statement) {
+    public <E> List<E> executeSqlStmt(String statement) {
         return this.getSession().createSQLQuery(statement).list();
     }      
 

@@ -55,11 +55,11 @@ public class JahiaVersionManager {
     }
 
     public boolean isCurrentBuildDefined() {
-        List l = jahiaVersionDao.findByBuildNumber(Jahia.getBuildNumber());
+        List<JahiaVersion> l = jahiaVersionDao.findByBuildNumber(Jahia.getBuildNumber());
         return !l.isEmpty();                     
     }
 
-    public List getAllVersion() {
+    public List<JahiaVersion> getAllVersion() {
         return jahiaVersionDao.findAll();
     }
 
@@ -73,7 +73,7 @@ public class JahiaVersionManager {
         jahiaVersionDao.save(v);
     }
     
-    public List executeSqlStmt(String statement) {
+    public <E> List<E> executeSqlStmt(String statement) {
         return jahiaVersionDao.executeSqlStmt(statement);
     }    
 }

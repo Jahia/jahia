@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.ISOLatin1AccentFilter;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -18,7 +19,6 @@ import org.compass.core.mapping.ResourceMapping;
 import org.compass.core.mapping.ResourcePropertyMapping;
 import org.jahia.services.search.JahiaSearchConstant;
 import org.jahia.services.search.NumberPadding;
-import org.jahia.services.search.analyzer.LanguageIndependantFilter;
 
 /**
  * Jahia QueryParser that is used to rewrite lucene query in order to support score boost factor.
@@ -208,7 +208,7 @@ public class JahiaLuceneQueryParser extends QueryParser {
 
     protected Query getPrefixQuery(String field, String termStr)
             throws ParseException {
-        termStr = LanguageIndependantFilter.format(termStr);
+        termStr = removeAccents(termStr);
         String paddedText = NumberPadding.pad(termStr);
         String queryText = NumberPadding.unpad(termStr);
         boolean addPadded = !paddedText.equals(queryText);
@@ -287,6 +287,20 @@ public class JahiaLuceneQueryParser extends QueryParser {
             return getBooleanQuery(clauses, true);
         }
         return super.getPrefixQuery(field, termStr);
+    }
+    
+    private String removeAccents (String text) {
+        char[] term = text.toCharArray();
+        
+        for(int i=0, length = text.length();i<length;i++) {
+            final char c = term[i];
+            if (c >= '\u00c0' && c <= '\u0178') {
+                (new ISOLatin1AccentFilter(null)).removeAccents(term, text.length());
+              text = new String(term);
+              break;
+            }
+          }
+        return text;
     }
 
     protected Query getWildcardQuery(String field, String termStr)

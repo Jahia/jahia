@@ -37,10 +37,12 @@
 
 package org.jahia.services.search;
 
+import org.apache.lucene.search.SortField;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.search.lucene.JahiaLuceneSort;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
 
@@ -477,6 +479,10 @@ public class ContainerSearcher extends JahiaSearcher {
             String[] queries = (String[]) queryList.toArray(new String[queryList.size()]);
             if (this.getSearchResultBuilder().getSorter() != null
                     || this.getSearchResultBuilder().getHitCollector() == null) {
+                if (this.getSearchResultBuilder().getSorter() == null) {
+                    this.getSearchResultBuilder().setSorter(
+                            new JahiaLuceneSort(new SortField(JahiaSearchConstant.ID)));
+                }
                 searchResult = sReg.getJahiaSearchService().search(queries, searchHandlers,
                         this.getLanguageCodes(), jParams,
                         this.getSearchResultBuilder(),

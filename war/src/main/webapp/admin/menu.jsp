@@ -168,7 +168,7 @@
                     <span class="dex-PushButton-big">
                         <span class="first-child">
                             
-                            <a href="${item.link}"><img
+                            <a href="${item.link}" ${fn:indexOf(item.link, 'http://') == 0 || fn:indexOf(item.link, 'https://') == 0 ? 'target="_blank"' : ''}><img
                                     name="${item.name}" src="${iconUrl}" width="32"
                                     height="32" border="0"><span><c:out value="${label}"/></span></a>
                         </span>

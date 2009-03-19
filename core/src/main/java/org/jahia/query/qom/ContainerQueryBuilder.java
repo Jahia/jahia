@@ -436,7 +436,7 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                     // it's root "/"
                     queryContext.setSiteLevelQuery(true);
                 } else if (nodeObject instanceof PageBean){
-//                  queryContext.setSiteLevelQuery(true);                                         
+                    queryContext.setSiteLevelQuery(true);                                         
                 } else if (nodeObject instanceof SiteBean){
                     SiteBean siteBean = (SiteBean)nodeObject;
                     List<Integer> siteIDs = queryContext.getSiteIDs();

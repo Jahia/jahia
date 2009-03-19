@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -34,7 +34,7 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %><%@ page import="org.apache.log4j.Logger" %>
-<%@ page import="org.jahia.ajax.monitors.SiteIndexingJobDisplayAction" %>
+<%@ page import="org.jahia.admin.search.ManageSearch" %>
 <%@ page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.content.ObjectKey" %>
 <%@ page import="org.jahia.content.TreeOperationResult" %>
@@ -407,6 +407,8 @@
     response.setHeader("Expires", "0");
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
 
+    final int currentSiteID = ((ParamBean) request.getAttribute("org.jahia.params.ParamBean")).getSiteID();
+    
     String command = request.getParameter("command");//to choose the process to display
     String size = request.getParameter("size");//to choose the size of process to display
     String order = request.getParameter("order");//sort order
@@ -459,11 +461,7 @@
 
     List alls = null;
     try {
-        if (command == null || command.equalsIgnoreCase("current")) {
-            alls = SiteIndexingJobDisplayAction.getJobsDetails(true);
-        } else {
-            alls = SiteIndexingJobDisplayAction.getJobsDetails(false);
-        }
+        alls = ManageSearch.getJobsDetails(currentSiteID, command == null || command.equalsIgnoreCase("current"));
     } catch (JahiaException e) {
         logger.debug("error",e);
         dispOK = false;
@@ -1098,7 +1096,7 @@
             <td width="30px">&nbsp;&nbsp;</td>
             <td align="left">
                 <%
-                    String url = request.getContextPath() + "/admin/?do=search&sub=display&?del=" + jd.getName() + "&delgroup=" + jd.getGroup();
+                    String url = JahiaAdministration.composeActionURL(request, response, "search", "&sub=display&?del=" + jd.getName() + "&delgroup=" + jd.getGroup());
                 %>
                 <a href="<%=url%>"><img src="<%=request.getContextPath()%>/engines/images/deleting.png"
                                         width="16" height="16"
@@ -1190,7 +1188,7 @@
             <td align="left">
                 <%
                     if(theUser.isRoot()){
-                    String url = request.getContextPath() + "/admin/?do=search&sub=display&?del=" + jd.getName();
+                    String url = JahiaAdministration.composeActionURL(request, response, "search", "&sub=display&?del=" + jd.getName());
                 %>
                 <a href="<%=url%>"><img src="<%=request.getContextPath()%>/engines/images/deleting.png"
                                         width="16" height="16"
@@ -1355,7 +1353,7 @@ if (infos[14] != null && !infos[14].equalsIgnoreCase("")) {
                             if (size != null) pars += ("&size=" + size);
                             if(order != null) pars += ("&order=" + order);
                             if(cronlimit != null) pars += ("&cl=" + cronlimit);
-                            urlinfo = "<a href='" + request.getContextPath() + "/admin/?do=search&sub=display&command=past" + pars + "' title='fermer les infos'><img src='" + request.getContextPath() + "/engines/images/about.gif' width='16' height='16' border='0'></a>";
+                            urlinfo = "<a href='" + JahiaAdministration.composeActionURL(request, response, "search", "&sub=display&command=past" + pars) + "'><img src='" + request.getContextPath() + "/engines/images/about.gif' width='16' height='16' border='0' alt='info'></a>";
                         } else if(!failedjob) {
                             urlinfo = "";
 
@@ -1368,7 +1366,7 @@ if (infos[14] != null && !infos[14].equalsIgnoreCase("")) {
                                 urlinfo = "<img src='" + request.getContextPath() + "/engines/images/icons/workflow/accept.gif' width='9' height='10' border='0'>";
                             if (jobstatus == 2)
                                 urlinfo = "<img src='" + request.getContextPath() + "/engines/images/icons/workflow/warnings.gif' width='9' height='10' border='0'>";
-                            urlinfo += "&nbsp;&nbsp;<a href='" + request.getContextPath() + "/admin/?do=search&sub=display&command=past&info=" + jd.getName() + pars + "' title='voir les infos'><img src='" + request.getContextPath() + "/engines/images/about.gif' width='16' height='16' border='0'></a>";
+                            urlinfo += "&nbsp;&nbsp;<a href='" + JahiaAdministration.composeActionURL(request, response, "search", "&sub=display&command=past&info=" + jd.getName() + pars) + "'><img src='" + request.getContextPath() + "/engines/images/about.gif' width='16' height='16' border='0' alt='info'></a>";
                         } else {
                         	urlinfo = getRessource("org.jahia.engines.processDisplay.failed.label", locale);
                         }
@@ -1411,13 +1409,15 @@ if (infos[14] != null && !infos[14].equalsIgnoreCase("")) {
          border="0"> <%=getRessource("org.jahia.engines.processDisplay.error.message", locale)%>
     <%
           break;
-    }    
+    }
+    /*
     if (!result.getErrors().isEmpty() || !result.getWarnings().isEmpty()) {
     %>
-      <a href="<%=request.getContextPath()%>/admin/?do=search&sub=displaylog&command=warn&jd=<%=jd.getName()%>"><%=getRessource("org.jahia.engines.processDisplay.allmessages.message", locale)%>
+      <a href="<%= JahiaAdministration.composeActionURL(request, response, "search", "&sub=displaylog&command=warn&jd=" + jd.getName())%>"><%=getRessource("org.jahia.engines.processDisplay.allmessages.message", locale)%>
       </a>
     <%   
     }
+    */
     %>
     <br>
     <br>

@@ -203,24 +203,6 @@
                 validate="false">
         </action>
 
-        <action path="/clipboard"
-                type="org.jahia.ajax.usersession.clipboardAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/PDisp"
-                type="org.jahia.ajax.monitors.PDisplayAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/SiteIndexingJobDisp"
-                type="org.jahia.ajax.monitors.SiteIndexingJobDisplayAction"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/GetChildPages"
             type="org.jahia.ajax.sitemap.GetChildPages"
                 parameter="method"

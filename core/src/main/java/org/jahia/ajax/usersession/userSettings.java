@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -50,12 +50,11 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Class to manage directly user settings without the need to reload the jsps.<br>
- * used to enable or unenable the workflow checks and visibility, the timebasedPublishing checks
+ * Class to manage directly user settings without the need to reload the JSPs.<br>
+ * used to enable or disable the workflow checks and visibility, the timebasedPublishing checks
  * and the displaying of monitor modules and other modules in the topbar.
  *
  * @author joe pillot
- * @see org.jahia.ajax.monitors.PDisplayAction
  * @version $Id$
  */
 public class userSettings extends AjaxAction {
@@ -67,7 +66,6 @@ public class userSettings extends AjaxAction {
     public final static String ACL_VISU_ENABLED = "acl_visu_enabled";
     public final static String CHAT_VISU_ENABLED = "chat_visu_enabled";
     public final static String MONITOR_VISU_ENABLED = "pdisp_visu_enabled";
-    private boolean needToPurge = false;
 
     public userSettings() {
         super();
@@ -92,7 +90,6 @@ public class userSettings extends AjaxAction {
                                  final HttpServletRequest request,
                                  final HttpServletResponse response)
             throws IOException, ServletException {
-        needToPurge = false;
         final HttpSession mysession = request.getSession(false);
         final JahiaUser currentUser = (JahiaUser) mysession.getAttribute(ParamBean.SESSION_USER);
         final JahiaSite site = (JahiaSite) mysession.getAttribute(ParamBean.SESSION_SITE);
@@ -151,7 +148,6 @@ public class userSettings extends AjaxAction {
         boolean change = currentSessionAttributeValue == null || !currentSessionAttributeValue.equals(paramValue) ;
 
         if (change && request.getParameter(sessionAttributeName)!=null) {
-            needToPurge = true;
             session.setAttribute(sessionAttributeName, paramValue);
             logger.debug("found " + paramName + " param: " + paramValue + " ->setting the session");
         }

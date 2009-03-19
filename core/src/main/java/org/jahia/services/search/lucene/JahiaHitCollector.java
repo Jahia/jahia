@@ -60,6 +60,7 @@ public class JahiaHitCollector extends JahiaAbstractHitCollector {
     private List<String> allowedFields;
     private boolean ignoreAcl = false;
     private boolean ignoreTbp = false;
+    private Map<Integer, Boolean> aclCache = new HashMap<Integer, Boolean>();
 
     public JahiaHitCollector() {
         if (this.getFieldSelector() == null) {
@@ -193,54 +194,37 @@ public class JahiaHitCollector extends JahiaAbstractHitCollector {
     }
 
     public SearchResult getSearchResult(Query q) throws JahiaException {
-        InternalCompass internalCompass = null;
         LuceneSearchEngine searchEngine = null;
         Compass compass = ServicesRegistry.getInstance().getJahiaSearchService().getCompass();
 
         if (compass != null && compass instanceof InternalCompass) {
-            internalCompass = (InternalCompass) compass;
+            InternalCompass internalCompass = (InternalCompass) compass;
             SearchEngine se = internalCompass.getSearchEngineFactory().openSearchEngine(new RuntimeCompassSettings(internalCompass.getSettings()));
             if (se instanceof LuceneSearchEngine) {
                 searchEngine = (LuceneSearchEngine) se;
             }
         }
-        SearchResult searchResult = null;
-        if (searchEngine != null) {
-            searchResult = new LuceneSearchResult(((JahiaIndexSearcher)this.searcher).getReader(), q, searchEngine);
-        } else {
-            searchResult = new SearchResultImpl(false);
-        }
+        
+        SearchResult searchResult = searchEngine != null ? new LuceneSearchResult(
+                ((JahiaIndexSearcher) this.searcher).getReader(), q,
+                searchEngine)
+                : new SearchResultImpl(false);
 
-        LuceneSearchHit searchHit = null;
-        Document doc = null;
-        Fieldable field = null;
-        String name = null;
-        List<Object> list = null;
-        Map<String, List<Object>> fieldsMap = null;
-        Float score = null;
-        Integer docId = null;
+        float scoreNorm = this.maxScore > 1.0f ? 1.0f / this.maxScore : 1.0f;
 
-        float scoreNorm = 1.0f;
+        for (Map.Entry<Integer, Document> docEntry : docs.entrySet()) {
+            Float score = scores.get(docEntry.getKey());
 
-        if (this.maxScore > 1.0f) {
-          scoreNorm = 1.0f / this.maxScore;
-        }
-
-        for (Iterator<Integer> it = docs.keySet().iterator(); it.hasNext(); ) {
-            docId = it.next();
-            doc = docs.get(docId);
-            score = scores.get(docId);
-
-            searchHit = new LuceneSearchHit(doc);
-            fieldsMap = new HashMap<String, List<Object>>();
+            LuceneSearchHit searchHit = new LuceneSearchHit(docEntry.getValue());
+            Map<String, List<Object>> fieldsMap = new HashMap<String, List<Object>>();
             searchHit.setSearchResult(searchResult);
             searchHit.setScore(score.floatValue() * scoreNorm);
-            searchHit.setDocNumber(docId.intValue());
+            searchHit.setDocNumber(docEntry.getKey().intValue());
 
-            for (Iterator<?> it2 = doc.getFields().iterator(); it2.hasNext();) {
-                field = (Fieldable) it2.next();
-                name = field.name();
-                list = fieldsMap.get(name);
+            for (Iterator<?> it = docEntry.getValue().getFields().iterator(); it.hasNext();) {
+                Fieldable field = (Fieldable) it.next();
+                String name = field.name();
+                List<Object> list = fieldsMap.get(name);
                 if ( list == null ){
                     list = new ArrayList<Object>();
                     fieldsMap.put(name, list);
@@ -304,7 +288,7 @@ public class JahiaHitCollector extends JahiaAbstractHitCollector {
         this.luceneDocsCount = luceneDocsCount;
     }
 
-    public static boolean checkAccess(Document luceneDoc, JahiaObjectManager jahiaObjectManager, boolean ignoreAcl, boolean ignoreTbp){
+    public boolean checkAccess(Document luceneDoc, JahiaObjectManager jahiaObjectManager, boolean ignoreAcl, boolean ignoreTbp){
         boolean accessAllowed = true;
         // acl check
         Fieldable field = luceneDoc.getFieldable(JahiaSearchConstant.ACL_ID);
@@ -312,38 +296,65 @@ public class JahiaHitCollector extends JahiaAbstractHitCollector {
             try {
                 if (!ignoreAcl) {
                     int aclID = Integer.parseInt(field.stringValue());
-                    final JahiaBaseACL acl = JahiaBaseACL.getACL(aclID);
-                    if (!acl.getPermission(Jahia.getThreadParamBean().getUser(),
-                            JahiaBaseACL.READ_RIGHTS)) {
-                        accessAllowed = false;
+                    Boolean accessFlag = aclCache.get(aclID);
+                    if (accessFlag != null) {
+                        accessAllowed = accessFlag.booleanValue();
+                    } else {
+                        try {
+                            accessAllowed = false;
+                            accessFlag = Boolean.FALSE;
+                            final JahiaBaseACL acl = JahiaBaseACL.getACL(aclID);
+                            if (acl.getPermission(Jahia.getThreadParamBean()
+                                    .getUser(), JahiaBaseACL.READ_RIGHTS)) {
+                                accessAllowed = true;
+                                accessFlag = Boolean.TRUE;
+                            }
+                        } catch (Exception ex) {
+                            logger.debug("Exception checking hit access - ACL-ID: " + aclID);
+                        }
+                        aclCache.put(aclID, accessFlag);
                     }
                 }
-                field = luceneDoc.getFieldable(JahiaSearchConstant.OBJECT_KEY);
-                if ( field != null ){
-                    if (!ignoreTbp) {
-                        ObjectKey objectKey = ObjectKey.getInstance(field.stringValue());
-                        // Check for expired container
-                        boolean disableTimeBasedPublishingFilter = Jahia.getThreadParamBean()
-                                .isFilterDisabled(CoreFilterNames.
-                                        TIME_BASED_PUBLISHING_FILTER);
-                        ProcessingContext context = Jahia.getThreadParamBean();
-                        final TimeBasedPublishingService tbpServ = ServicesRegistry.getInstance().getTimeBasedPublishingService();
-                        if ( !disableTimeBasedPublishingFilter ){
-                            if ( ParamBean.NORMAL.equals(context.getOperationMode()) ){
-                                accessAllowed = tbpServ.isValid(objectKey,
-                                       context.getUser(),context.getEntryLoadRequest(),
-                                        context.getOperationMode(),
-                                        (Date)null);
-                            } else if ( ParamBean.PREVIEW.equals(context.getOperationMode()) ){
-                                accessAllowed = tbpServ.isValid(objectKey,
-                                        context.getUser(),context.getEntryLoadRequest(),context.getOperationMode(),
-                                        AdvPreviewSettings.getThreadLocaleInstance());
+                if (accessAllowed) {
+                    field = luceneDoc
+                            .getFieldable(JahiaSearchConstant.OBJECT_KEY);
+                    if (field != null) {
+                        if (!ignoreTbp) {
+                            ObjectKey objectKey = ObjectKey.getInstance(field
+                                    .stringValue());
+                            // Check for expired container
+                            boolean disableTimeBasedPublishingFilter = Jahia
+                                    .getThreadParamBean()
+                                    .isFilterDisabled(
+                                            CoreFilterNames.TIME_BASED_PUBLISHING_FILTER);
+                            ProcessingContext context = Jahia
+                                    .getThreadParamBean();
+                            final TimeBasedPublishingService tbpServ = ServicesRegistry
+                                    .getInstance()
+                                    .getTimeBasedPublishingService();
+                            if (!disableTimeBasedPublishingFilter) {
+                                if (ParamBean.NORMAL.equals(context
+                                        .getOperationMode())) {
+                                    accessAllowed = tbpServ.isValid(objectKey,
+                                            context.getUser(), context
+                                                    .getEntryLoadRequest(),
+                                            context.getOperationMode(),
+                                            (Date) null);
+                                } else if (ParamBean.PREVIEW.equals(context
+                                        .getOperationMode())) {
+                                    accessAllowed = tbpServ.isValid(objectKey,
+                                            context.getUser(), context
+                                                    .getEntryLoadRequest(),
+                                            context.getOperationMode(),
+                                            AdvPreviewSettings
+                                                    .getThreadLocaleInstance());
+                                }
                             }
                         }
                     }
                 }
             } catch ( Exception t){
-                logger.debug("Exception checking hit access");
+                logger.debug("Exception checking hit access", t);
                 return false;
             }
         }

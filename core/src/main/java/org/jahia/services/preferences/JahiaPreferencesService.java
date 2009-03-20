@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -37,19 +37,20 @@ package org.jahia.services.preferences;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.pages.ContentPage;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
-import org.jahia.services.preferences.exception.JahiaPreferencesVersionningException;
-import org.jahia.services.preferences.generic.GenericJahiaPreferenceKey;
-import org.jahia.services.preferences.generic.GenericJahiaPreferenceValue;
-import org.jahia.services.preferences.page.PageJahiaPreferenceKey;
-import org.jahia.services.preferences.page.PageJahiaPreferenceValue;
+import org.jahia.services.preferences.generic.GenericJahiaPreference;
+import org.jahia.services.preferences.page.PageJahiaPreference;
+import org.jahia.registries.ServicesRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.beans.BeansException;
 
+import javax.jcr.RepositoryException;
 import java.security.Principal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -130,38 +131,6 @@ public class JahiaPreferencesService extends JahiaService implements Application
         }
     }
 
-    /**
-     * Restore all prefences
-     *
-     * @param date
-     * @throws JahiaPreferencesVersionningException
-     *
-     */
-    public void restore(Date date) throws JahiaPreferencesVersionningException {
-        Map allProviders = getProvidersMap();
-        Iterator providersIt = allProviders.keySet().iterator();
-        while (providersIt.hasNext()) {
-            JahiaPreferencesProvider jahiaPreferencesProvider = (JahiaPreferencesProvider) providersIt.next();
-            jahiaPreferencesProvider.restore(date);
-        }
-    }
-
-    /**
-     * Save all preferences (versionning)
-     *
-     * @param date
-     * @throws JahiaPreferencesVersionningException
-     *
-     */
-    public void save(Date date) throws JahiaPreferencesVersionningException {
-        Map allProviders = getProvidersMap();
-        Iterator providersIt = allProviders.keySet().iterator();
-        while (providersIt.hasNext()) {
-            JahiaPreferencesProvider jahiaPreferencesProvider = (JahiaPreferencesProvider) providersIt.next();
-            jahiaPreferencesProvider.save(date);
-        }
-    }
-
 
     /**
      * Get provider by type
@@ -172,7 +141,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
      *
      */
     public JahiaPreferencesProvider getPreferencesProviderByType(String providerType) throws JahiaPreferenceProviderException {
-        Object o = applicationContext.getBean(providerType);
+        Object o = applicationContext.getBean("org.jahia.preferences.provider."+providerType);
         if (o == null) {
             throw new JahiaPreferenceProviderException();
         } else if (o instanceof JahiaPreferencesProvider) {
@@ -190,7 +159,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
      *
      */
     public JahiaPreferencesProvider getGenericPreferencesProvider() throws JahiaPreferenceProviderException {
-        return getPreferencesProviderByType("org.jahia.preferences.provider.generic");
+        return getPreferencesProviderByType("simple");
     }
 
     /**
@@ -201,7 +170,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
      *
      */
     public JahiaPreferencesProvider getPagePreferencesProvider() throws JahiaPreferenceProviderException {
-        return getPreferencesProviderByType("org.jahia.preferences.provider.page");
+        return getPreferencesProviderByType("page");
     }
 
     /**
@@ -237,14 +206,14 @@ public class JahiaPreferencesService extends JahiaService implements Application
      */
     public String getGenericPreferenceValue(String key, ProcessingContext jParams) {
         try {
-            // create generic preference key
-            GenericJahiaPreferenceKey preferenceKey = (GenericJahiaPreferenceKey) getGenericPreferencesProvider().createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setName(key);
 
-            JahiaPreference value = getGenericPreferencesProvider().getJahiaPreference(preferenceKey);
-            if (!value.isEmpty()) {
-                GenericJahiaPreferenceValue val = (GenericJahiaPreferenceValue) value.getValue();
-                return val.getValue();
+            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(key));
+            if (preference != null && !preference.isEmpty()) {
+                try {
+                    return ((GenericJahiaPreference) preference).getPrefValue();
+                } catch (RepositoryException e) {
+                    logger.error("Preference provider was not found.", e);
+                }
             }
         } catch (JahiaPreferenceProviderException e) {
             logger.error("Preference provider was not found.", e);
@@ -274,87 +243,40 @@ public class JahiaPreferencesService extends JahiaService implements Application
      */
     public String getPagePreferenceValue(String key, ProcessingContext jParams) {
         try {
-            // create page preference key
-            PageJahiaPreferenceKey preferenceKey = (PageJahiaPreferenceKey) getPagePreferencesProvider().createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setPid(jParams.getPageID());
-            preferenceKey.setName(key);
-
-            JahiaPreference value = getPagePreferencesProvider().getJahiaPreference(preferenceKey);
-            if (!value.isEmpty()) {
-                PageJahiaPreferenceValue val = (PageJahiaPreferenceValue) value.getValue();
-                return val.getValue();
+            JahiaPreference preference = getPagePreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), key));
+            if (!preference.isEmpty()) {
+                return ((PageJahiaPreference) preference).getPrefValue();
             }
-        } catch (JahiaPreferenceProviderException e) {
+        } catch (Exception e) {
             logger.error("Preference provider was not found.", e);
         }
         return null;
     }
 
-    public String getPagePreferenceValue(Principal p, String key, ProcessingContext jParams) {
-        try {
-            // create page preference key
-            PageJahiaPreferenceKey preferenceKey = (PageJahiaPreferenceKey) getPagePreferencesProvider().createPartialJahiaPreferenceKey(p);
-            preferenceKey.setPid(jParams.getPageID());
-            preferenceKey.setName(key);
-
-            JahiaPreference value = getPagePreferencesProvider().getJahiaPreference(preferenceKey);
-            if (!value.isEmpty()) {
-                PageJahiaPreferenceValue val = (PageJahiaPreferenceValue) value.getValue();
-                return val.getValue();
-            }
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error("Preference provider was not found.", e);
-        }
-        return null;
-    }
-
-    /**
-     * Return the value associated with the given wokflowState and key using the page preference provider.
-     *
-     * @param key     the key
-     * @param jParams the processing context
-     * @return the value
-     */
-    /* public String getStagedPagePreferenceValue(int workflowState, String key, ProcessingContext jParams) {
-       try {
-           // create page preference key
-           PageJahiaPreferenceStagingKey preferenceKey = (PageJahiaPreferenceStagingKey) getPagePreferencesProvider().createPartialJahiaPreferenceKey(jParams);
-           preferenceKey.setPid(jParams.getPageID());
-           preferenceKey.setName(key);
-           preferenceKey.setWorkflowState(workflowState);
-
-           JahiaPreference value = getPagePreferencesProvider().getJahiaPreference(preferenceKey);
-           if (!value.isEmpty()) {
-               PageJahiaPreferenceValue val = (PageJahiaPreferenceValue) value.getValue();
-               return val.getValue();
-           }
-       } catch (JahiaPreferenceProviderException e) {
-           logger.error("Preference provider was not found.", e);
-       }
-       return null;
-   } */
 
     /**
      * Set a preference value associated with the given key using the generic preference provider.
      *
-     * @param key     the key
-     * @param value   the value
-     * @param jParams the processing context
+     * @param prefName  the key
+     * @param prefValue the value
+     * @param jParams   the processing context
      */
-    public void setGenericPreferenceValue(String key, String value, ProcessingContext jParams) {
+    public void setGenericPreferenceValue(String prefName, String prefValue, ProcessingContext jParams) {
         try {
             JahiaPreferencesProvider basicProvider = getGenericPreferencesProvider();
 
             // create generic preference key
-            GenericJahiaPreferenceKey preferenceKey = (GenericJahiaPreferenceKey) basicProvider.createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setName(key);
+            GenericJahiaPreference preference = (GenericJahiaPreference) basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(prefName));
+            if (preference == null) {
+                preference = (GenericJahiaPreference) basicProvider.getNewJahiaPreferenceNode(jParams);
+                preference.setPrefName(prefName);
+            }
 
             // create genereic preference value
-            GenericJahiaPreferenceValue preferenceValue = (GenericJahiaPreferenceValue) basicProvider.createEmptyJahiaPreferenceValue();
-            preferenceValue.setValue(value);
+            preference.setPrefValue(prefValue);
 
-            basicProvider.setJahiaPreference(preferenceKey, preferenceValue);
-        } catch (JahiaPreferenceProviderException e) {
+            basicProvider.setJahiaPreference(preference);
+        } catch (Exception e) {
             logger.error("Preference provider was not found.", e);
         }
     }
@@ -362,106 +284,84 @@ public class JahiaPreferencesService extends JahiaService implements Application
     /**
      * Set a preference value associated with the given key using the page preference provider.
      *
-     * @param key     the key
-     * @param value   the value
-     * @param jParams the processing context
+     * @param prefName  the key
+     * @param prefValue the value
+     * @param jParams   the processing context
      */
-    public void setPagePreferenceValue(String key, String value, ProcessingContext jParams) {
+    public void setPagePreferenceValue(String prefName, String prefValue, ProcessingContext jParams) {
         try {
-            JahiaPreferencesProvider pageProvider = getPagePreferencesProvider();
+            JahiaPreferencesProvider basicProvider = getGenericPreferencesProvider();
 
             // create generic preference key
-            PageJahiaPreferenceKey preferenceKey = (PageJahiaPreferenceKey) pageProvider.createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setPid(jParams.getPageID());
-            preferenceKey.setName(key);
+            PageJahiaPreference preference = (PageJahiaPreference) basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), prefName));
+            if (preference == null) {
+                preference = (PageJahiaPreference) basicProvider.getNewJahiaPreferenceNode(jParams);
+                preference.setPrefName(prefName);
+                ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jParams.getPageID(), false);
+                String pageUUID = page.getUUID();
+                preference.setPageUUID(pageUUID);
+            }
 
             // create genereic preference value
-            PageJahiaPreferenceValue preferenceValue = (PageJahiaPreferenceValue) pageProvider.createEmptyJahiaPreferenceValue();
-            preferenceValue.setValue(value);
+            preference.setPrefValue(prefValue);
 
-            pageProvider.setJahiaPreference(preferenceKey, preferenceValue);
-        } catch (JahiaPreferenceProviderException e) {
+            basicProvider.setJahiaPreference(preference);
+        } catch (Exception e) {
             logger.error("Preference provider was not found.", e);
         }
     }
 
     /**
-     * Set a preference value associated with the given key using the page preference provider.
+     * @param prefName the key
+     * @param jParams  the processing context
+     */
+    public void deleteGenericPreferenceValue(String prefName, ProcessingContext jParams) {
+        try {
+            // create generic preference key
+            GenericJahiaPreference preference = (GenericJahiaPreference) getGenericPreferencesProvider().getNewJahiaPreferenceNode(jParams);
+            preference.setPrefName(prefName);
+
+            getGenericPreferencesProvider().deleteJahiaPreference(preference);
+        } catch (Exception e) {
+            logger.error("Preference provider was not found.", e);
+        }
+    }
+
+    /**
+     * @param prefName the key
+     * @param jParams  the processing context
+     */
+    public void deletePagePreferenceValue(String prefName, ProcessingContext jParams) {
+        try {
+            // create generic preference key
+            PageJahiaPreference preference = (PageJahiaPreference) getPagePreferencesProvider().getNewJahiaPreferenceNode(jParams);
+            ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jParams.getPageID(), false);
+            String pageUUID = page.getUUID();
+            preference.setPageUUID(pageUUID);
+            preference.setPrefName(prefName);
+
+            getPagePreferencesProvider().deleteJahiaPreference(preference);
+        } catch (Exception e) {
+            logger.error("Preference provider was not found.", e);
+        }
+    }
+
+    /**
+     * Get content page
      *
-     * @param key     the key
-     * @param value   the value
-     * @param jParams the processing context
+     * @param uuid
+     * @param jahiaUser
+     * @return
      */
-    /* public void setPagePreferenceStagedValue(int workflowSate, String key, String value, ProcessingContext jParams) {
+    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
         try {
-            JahiaPreferencesProvider pageProvider = getPagePreferencesProvider();
-
-            // create generic preference key
-            PageJahiaPreferenceStagingKey preferenceKey = (PageJahiaPreferenceStagingKey) pageProvider.createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setPid(jParams.getPageID());
-            preferenceKey.setName(key);
-            preferenceKey.setWorkflowState(workflowSate);
-
-            // create genereic preference value
-            PageJahiaPreferenceValue preferenceValue = (PageJahiaPreferenceValue) pageProvider.createEmptyJahiaPreferenceValue();
-            preferenceValue.setValue(value);
-
-            pageProvider.setJahiaPreference(preferenceKey, preferenceValue);
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error("Preference provider was not found.", e);
-        }
-    }*/
-
-    /**
-     * @param key     the key
-     * @param jParams the processing context
-     */
-    public void deleteGenericPreferenceValue(String key, ProcessingContext jParams) {
-        try {
-            // create generic preference key
-            GenericJahiaPreferenceKey preferenceKey = (GenericJahiaPreferenceKey) getGenericPreferencesProvider().createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setName(key);
-
-            getGenericPreferencesProvider().deleteJahiaPreference(preferenceKey);
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error("Preference provider was not found.", e);
+            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
+            return (ContentPage) nodeWrapper.getContentObject();
+        } catch (Exception e) {
+            logger.error(e, e);
+            return null;
         }
     }
-
-    /**
-     * @param key     the key
-     * @param jParams the processing context
-     */
-    public void deletePagePreferenceValue(String key, ProcessingContext jParams) {
-        try {
-            // create generic preference key
-            PageJahiaPreferenceKey preferenceKey = (PageJahiaPreferenceKey) getPagePreferencesProvider().createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setPid(jParams.getPageID());
-            preferenceKey.setName(key);
-
-            getPagePreferencesProvider().deleteJahiaPreference(preferenceKey);
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error("Preference provider was not found.", e);
-        }
-    }
-
-    /**
-     * @param key     the key
-     * @param jParams the processing context
-     */
-    /*  public void deleteStagedPagePreferenceValue(int workflowState, String key, ProcessingContext jParams) {
-        try {
-            // create generic preference key
-            PageJahiaPreferenceStagingKey preferenceKey = (PageJahiaPreferenceStagingKey) getPagePreferencesProvider().createPartialJahiaPreferenceKey(jParams);
-            preferenceKey.setPid(jParams.getPageID());
-            preferenceKey.setWorkflowState(workflowState);
-            preferenceKey.setName(key);
-
-            getPagePreferencesProvider().deleteJahiaPreference(preferenceKey);
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error("Preference provider was not found.", e);
-        }
-    }*/
 
 
 }

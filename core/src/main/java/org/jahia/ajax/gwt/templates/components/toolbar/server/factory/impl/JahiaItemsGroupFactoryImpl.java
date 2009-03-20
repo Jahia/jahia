@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -53,14 +53,16 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.pages.ContentPage;
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.JahiaPreferenceKey;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceKey;
+import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.toolbar.resolver.impl.URLPropertyResolver;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.JCRJahiaContentNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,14 +98,11 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             if (input.equalsIgnoreCase(HISTORY)) {
                 int historyPathLength = 5;
                 return populateWithHistoryItems(gwtToolbarItemsList, jahiaData, historyPathLength);
-            }
-            else if (input.equalsIgnoreCase(BOOKMARKS)) {
+            } else if (input.equalsIgnoreCase(BOOKMARKS)) {
                 return populateWithBookmarksItems(gwtToolbarItemsList, jahiaData);
-            }
-            else if (input.equalsIgnoreCase(SITES)) {
+            } else if (input.equalsIgnoreCase(SITES)) {
                 return populateWithChangeSiteItems(gwtToolbarItemsList, jahiaData);
-            }
-            else if (input.equalsIgnoreCase(QUICK_WORKFLOW)) {
+            } else if (input.equalsIgnoreCase(QUICK_WORKFLOW)) {
                 return populateWithQuickWorkflowItems(gwtToolbarItemsList, jahiaData);
             }
         }
@@ -153,13 +152,16 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
     public List<GWTJahiaToolbarItem> populateWithBookmarksItems(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
         // get bookmarks provider
         JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
-        Map<JahiaPreferenceKey, JahiaPreference> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaPreferences(jahiaData.getProcessingContext());
-        if (jahiaPreferencesMap != null) {
-            for (JahiaPreferenceKey key : jahiaPreferencesMap.keySet()) {
+        List<JahiaPreference> jahiaPreferenceList = jahiaPreferencesProvider.getAllJahiaPreferences(jahiaData.getProcessingContext());
+        if (jahiaPreferenceList != null) {
+            for (JahiaPreference pref : jahiaPreferenceList) {
                 // current bookmark
-                BookmarksJahiaPreferenceKey bKey = (BookmarksJahiaPreferenceKey) key;
-                int pid = bKey.getPid();
+                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) pref;
                 try {
+                    String pageUUID = bPref.getPageUUID();
+                    ContentPage contentPage = getContentPage(pageUUID, jahiaData.getProcessingContext().getUser());
+                    int pid = contentPage.getPageID();
+
                     GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, null, pid);
                     if (gwtToolbarItem != null) {
                         String minIconStyle = "gwt-toolbar-ItemsGroup-icons-bookmark-min";
@@ -170,7 +172,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                         gwtToolbarItemsList.add(gwtToolbarItem);
                     }
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e, e);
                 }
             }
         }
@@ -185,7 +187,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
     private JahiaPreferencesProvider getBookmarksJahiaPreferencesProvider() {
         try {
             if (bookmarksPreferencesProvider == null) {
-                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("org.jahia.preferences.provider.bookmarks");
+                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("bookmarks");
             }
             return bookmarksPreferencesProvider;
         } catch (JahiaPreferenceProviderException e) {
@@ -251,7 +253,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 int errors = 0;
                 List<GWTJahiaNodeOperationResultItem> vals = new ArrayList<GWTJahiaNodeOperationResultItem>();
                 GWTJahiaNodeOperationResult validation = val.get(processingContext.getCurrentLocale().toString());
-                if (validation != null)  {
+                if (validation != null) {
                     vals.addAll(validation.getErrorsAndWarnings());
                     for (GWTJahiaNodeOperationResultItem resultItem : vals) {
                         if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.WARNING) {
@@ -261,22 +263,9 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                         }
                     }
                 }
-                if (warns>0) {
+                if (warns > 0) {
                     GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-                    gwtToolbarItem.setTitle(vals.size()+" warnings");
-                    gwtToolbarItem.setDisplayTitle(true);
-                    gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
-                    
-                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
-                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
-                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
-                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
-                    
-                    gwtToolbarItemsList.add(gwtToolbarItem);
-                }
-                if (errors>0) {
-                    GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-                    gwtToolbarItem.setTitle(vals.size()+" errors");
+                    gwtToolbarItem.setTitle(vals.size() + " warnings");
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
 
@@ -284,7 +273,20 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
                     gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
-                    
+
+                    gwtToolbarItemsList.add(gwtToolbarItem);
+                }
+                if (errors > 0) {
+                    GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
+                    gwtToolbarItem.setTitle(vals.size() + " errors");
+                    gwtToolbarItem.setDisplayTitle(true);
+                    gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
+
+                    gwtToolbarItem.setType(JahiaProviderFactory.ORG_JAHIA_TOOLBAR_ITEM_OPEN_WINDOW);
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.WIDTH, "1020"));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.HEIGHT, "730"));
+                    gwtToolbarItem.addProperty(new GWTJahiaProperty(ToolbarConstants.URL, new URLPropertyResolver().getValue(jahiaData, URLPropertyResolver.GWT_WORKFLOWMANAGER)));
+
                     gwtToolbarItemsList.add(gwtToolbarItem);
                 }
             }
@@ -344,11 +346,11 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                     JahiaBaseACL.READ_RIGHTS, processingContext.getSiteID()) > 0) {
                 Set<String> m = ServicesRegistry.getInstance().getWorkflowService().getAllStagingAndWaitingObject(jahiaData.getProcessingContext().getSiteID()).keySet();
                 if (!m.isEmpty()) {
-                    String publishAllLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.publishAll",                            
-                            processingContext.getLocale() );
+                    String publishAllLabel = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.workflow.publishAll",
+                            processingContext.getLocale());
                     GWTJahiaToolbarItem gwtToolbarItem = createPublishAllItem(publishAllLabel);
                     // add to itemsgroup
-                
+
                     if (gwtToolbarItem != null) {
                         String minIconStyle = "gwt-toolbar-ItemsGroup-icons-action-publish-min";
                         String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-action-publish-min";
@@ -504,6 +506,22 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         gwtToolbarItem.addProperty(gwtProperty);
 
         return gwtToolbarItem;
+    }
+
+    /**
+     * Get Content page from uuid
+     * @param uuid
+     * @param jahiaUser
+     * @return
+     */
+    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
+        try {
+            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
+            return (ContentPage) nodeWrapper.getContentObject();
+        } catch (Exception e) {
+            logger.error(e, e);
+            return null;
+        }
     }
 
 }

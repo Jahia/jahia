@@ -112,7 +112,7 @@ public class JahiaPortletInstance extends JahiaPortlet {
     }
 
     public String getWindowID() {
-        return getPorletConfig().getWindowId();
+        return getPorletConfig().getPortlet();
     }
 
 

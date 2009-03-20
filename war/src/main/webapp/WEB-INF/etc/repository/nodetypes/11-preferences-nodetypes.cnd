@@ -5,16 +5,41 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:preferenceValue] > jnt:folder
-- * (string) multiple
-
-[jnt:preference] > jnt:folder
-- * (string)
-+ preferenceValue  (jnt:preferenceValue)
-
-[jnt:preferenceProvider] > jnt:folder  
-+ * (jnt:preference) multiple
-
 [jnt:preferences] > jnt:folder
 + * (jnt:preferenceProvider)
- 
+
+[jnt:preferenceProvider] > jnt:folder
++ * (jnt:preference) multiple
+
+[jnt:preference] > jnt:folder
+
+[jnt:toolbarPreference] > jnt:preference
+- j:toolbarName (string)
+- j:type (string)
+- j:state (long)
+- j:toolbarIndex (long)
+- j:positionX (long)
+- j:positionY (long)
+- j:display (boolean)
+
+[jnt:simplePreference] > jnt:preference
+- j:prefName (string)
+- j:prefValue (string)
+
+[jnt:pagePreference] > jnt:preference
+- j:page (string)
+- j:prefName (string)
+- j:prefValue (string)
+
+[jnt:bookmarkPreference] > jnt:preference
+- j:page (string)
+
+[jnt:layoutItemPreference] > jnt:preference
+- j:page (string)
++ j:layout (jnt:layout)
+
+[jnt:portletPreference] > jnt:preference
+- j:portletName (string)
+- j:prefName (string)
+- j:readOnly (boolean)
+- j:values (string) multiple

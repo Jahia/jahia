@@ -166,7 +166,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
             .getLogger(JahiaSearchBaseService.class);
 
     /**
-     * The unique instance of this service *
+     * The unique instance of this service *    s
      */
     protected static JahiaSearchBaseService theObject;
     

@@ -44,12 +44,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ProcessingContextFactory;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.preferences.generic.GenericJahiaPreferenceValue;
-import org.jahia.services.preferences.generic.GenericJahiaPreferenceKey;
-import org.jahia.services.preferences.generic.GenericJahiaPreference;
-import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -481,30 +476,6 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
                         getLocale()),message.getValues());
     }
 
-    /**
-     * Get generic jahia preference value object (as bean)
-     *
-     * @return
-     * @throws org.jahia.services.preferences.exception.JahiaPreferenceProviderException
-     *
-     */
-    protected GenericJahiaPreferenceValue getGenericPreferenceValueObj(String name) {
-        GenericJahiaPreferenceValue value = null;
-        try {
-            JahiaPreferencesProvider basicProvider = JAHIA_PREFERENCES_SERVICE.getGenericPreferencesProvider();
-
-            // // create generic preference key
-            GenericJahiaPreferenceKey preferenceKey = (GenericJahiaPreferenceKey) basicProvider.createPartialJahiaPreferenceKey(retrieveParamBean());
-            preferenceKey.setName(name);
-
-            // retrieve preference
-            GenericJahiaPreference preference = (GenericJahiaPreference) basicProvider.getJahiaPreference(preferenceKey);
-            value = (GenericJahiaPreferenceValue) preference.getValue();
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error(e, e);
-        }
-        return value;
-    }
 
     /**
      * Get generic jahia preference value as string

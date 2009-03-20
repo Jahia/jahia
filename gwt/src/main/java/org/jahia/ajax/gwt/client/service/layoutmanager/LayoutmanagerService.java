@@ -42,7 +42,6 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.client.data.rss.GWTJahiaRSSFeed;
 
 import java.util.List;
 
@@ -89,8 +88,6 @@ public interface LayoutmanagerService extends RemoteService {
 
     public List<GWTJahiaLayoutItem> getLayoutItems(GWTJahiaPageContext page) throws GWTJahiaServiceException;
 
-    public GWTJahiaRSSFeed loalRssFeed(GWTJahiaPageContext pageContext, String url) throws GWTJahiaServiceException;
 
-    public void updateRSSWidgetPreference(GWTJahiaPageContext pageContext, String widgetId, String url, int maxEntryDisplay) throws GWTJahiaServiceException;
 
 }

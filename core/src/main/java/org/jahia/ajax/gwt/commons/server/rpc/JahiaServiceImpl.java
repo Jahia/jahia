@@ -67,16 +67,14 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRJahiaContentNode;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
-import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pagesusers.JahiaPageUserPropService;
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.JahiaPreferenceKey;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceKey;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceValue;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
@@ -354,7 +352,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
         // create a jahiaPreferenceKey
-        JahiaPreferenceKey jahiaPreferenceKey = jahiaPreferencesProvider.createPartialJahiaPreferenceKey(retrieveParamBean(page));
+        JahiaPreference jahiaPreferenceKey = jahiaPreferencesProvider.getNewJahiaPreferenceNode(retrieveParamBean(page));
 
         // set preference
         jahiaPreferencesProvider.deleteJahiaPreference(jahiaPreferenceKey);
@@ -371,20 +369,19 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
 
         // get bookmarks provider
         JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
-        Map<JahiaPreferenceKey, JahiaPreference> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaPreferences(retrieveParamBean(page));
+        List<JahiaPreference> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaAllPreferences(getRemoteJahiaUser());
         if (jahiaPreferencesMap != null) {
-            for (JahiaPreferenceKey key : jahiaPreferencesMap.keySet()) {
+            for (JahiaPreference jahiaPreference : jahiaPreferencesMap) {
                 // current bookmark
-                BookmarksJahiaPreferenceKey bKey = (BookmarksJahiaPreferenceKey) key;
-                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) jahiaPreferencesMap.get(key);
-                BookmarksJahiaPreferenceValue bValue = bPref.getBookmarksJahiaPreferenceValue();
+                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) jahiaPreference;
 
                 // pid
-                int pid = bKey.getPid();
                 try {
-                    JahiaPage jahiaPage = ServicesRegistry.getInstance().getJahiaPageService().lookupPage(pid);
-                    String url = jahiaPage.getRemoteURL();
-                    String title = jahiaPage.getTitle();
+                    String pageUUID = bPref.getPageUUID();
+                    ContentPage contentPage = getContentPage(pageUUID,getRemoteJahiaUser());
+                    String url = contentPage.getURL(retrieveParamBean());
+                    String title = contentPage.getTitle(retrieveParamBean());
+                    int pid = contentPage.getPageID();
 
                     // create gwt bean
                     GWTJahiaBookmark gwtJahiaBookmark = new GWTJahiaBookmark();
@@ -393,7 +390,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
                     gwtJahiaBookmark.setUrl(url);
                     gwtBookmarks.add(gwtJahiaBookmark);
 
-                } catch (JahiaException e) {
+                } catch (Exception e) {
                     logger.error(e, e);
                 }
 
@@ -425,7 +422,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     private JahiaPreferencesProvider getBookmarksJahiaPreferencesProvider() {
         try {
             if (bookmarksPreferencesProvider == null) {
-                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("org.jahia.preferences.provider.bookmarks");
+                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("bookmarks");
             }
             return bookmarksPreferencesProvider;
         } catch (JahiaPreferenceProviderException e) {
@@ -674,6 +671,16 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         }
 
         return result;
+    }
+
+    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
+        try {
+            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
+            return (ContentPage) nodeWrapper.getContentObject();
+        } catch (Exception e) {
+            logger.error(e, e);
+            return null;
+        }
     }
 
 }

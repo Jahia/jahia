@@ -21,7 +21,7 @@
         <toolbar name="subscriptions" ref-type="org.jahia.toolbar.subscriptions" state="top" draggable="true" displayed="false"
                  mandatory="false" display-title="true"/>
     </display>
-    <!-- define toolbar -->
+    <!-- define toolbar -->                            mys
     <custom-toolbar>
         <!-- switching mode -->
         <toolbar type="org.jahia.toolbar.switchingmode">

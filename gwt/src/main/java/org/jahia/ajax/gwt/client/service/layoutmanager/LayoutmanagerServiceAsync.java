@@ -61,9 +61,4 @@ public interface LayoutmanagerServiceAsync {
 
     public void getLayoutItems(GWTJahiaPageContext pageContext, AsyncCallback<List<GWTJahiaLayoutItem>> async);
 
-    public void loalRssFeed(GWTJahiaPageContext pageContext, String widgetId, AsyncCallback async);
-
-    public void updateRSSWidgetPreference(GWTJahiaPageContext pageContext, String widgetId, String url, int maxEntryDisplay, AsyncCallback async);
-
-
 }

@@ -310,14 +310,14 @@ public class JahiaPortalManager extends ContentPanel {
                 if (gwtLayoutItem != null) {
                     try {
                         // set gwtJahiaDraggableWidgetIterator's preferences
-                        if (gwtLayoutItem.getWindowId() != null) {
+                        if (gwtLayoutItem.getPortlet() != null) {
                             addJahiaPortlet(gwtLayoutItem);
                         } else {
                             Log.error("error when loading widget,  widetId is not defined.");
                         }
 
                     } catch (Exception e) {
-                        Log.error("error when loading widget instance with id[" + gwtLayoutItem.getWindowId() + "]", e);
+                        Log.error("error when loading widget instance with id[" + gwtLayoutItem.getPortlet() + "]", e);
 
                     }
                 }else{
@@ -334,7 +334,7 @@ public class JahiaPortalManager extends ContentPanel {
     public void addJahiaPortlet(GWTJahiaLayoutItem gwtLayoutItem) {
         int column = gwtLayoutItem.getColumn();
         int row = gwtLayoutItem.getRow();
-        Log.debug("add widget" + "[" + gwtLayoutItem.getWindowId() + " in column " + column + "]");
+        Log.debug("add widget" + "[" + gwtLayoutItem.getPortlet() + " in column " + column + "]");
         if (column < 0) {
             column = 0;
         }
@@ -356,7 +356,7 @@ public class JahiaPortalManager extends ContentPanel {
                 }
             }
         } else {
-            Log.warn("Portlet with id: " + gwtLayoutItem.getWindowId());
+            Log.warn("Portlet with id: " + gwtLayoutItem.getPortlet());
         }
         layout();
     }

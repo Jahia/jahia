@@ -49,8 +49,10 @@ import org.apache.lucene.search.Sort;
 import org.compass.core.Compass;
 import org.compass.core.Resource;
 import org.compass.core.Property.Index;
+import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassSettings;
 import org.compass.core.engine.SearchEngineHighlighter;
+import org.compass.core.engine.naming.StaticPropertyPath;
 import org.compass.core.lucene.LuceneEnvironment;
 import org.compass.core.lucene.engine.LuceneSearchEngineFactory;
 import org.compass.core.lucene.engine.analyzer.LuceneAnalyzerTokenFilterProvider;
@@ -330,7 +332,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
         configureSystemProperties();
 
-        String val = config.getProperty(JahiaSearchConfigConstant.SEARCH_INDEX_ROOT_DIR);
+        String val = getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_INDEX_ROOT_DIR);
         if (val != null) {
             val = JahiaTools.convertContexted (val,
                     SettingsBean.getInstance().getPathResolver());
@@ -339,8 +341,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 searchIndexesDiskPath = val;
             } else {
                 if (val.startsWith("/")) {
-                    searchIndexesDiskPath = org.jahia.bin.Jahia.
-                        getStaticServletConfig()
+                    searchIndexesDiskPath = Jahia.getStaticServletConfig()
                         .getServletContext().getRealPath(val);
                 } else {
                     searchIndexesDiskPath = val;
@@ -360,14 +361,14 @@ public class JahiaSearchBaseService extends JahiaSearchService
             f.mkdir();
         }
 
-        val = config.getProperty(JahiaSearchConfigConstant.SEARCH_LOCAL_INDEXING);
+        val = getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_LOCAL_INDEXING);
         localIndexing = !((val != null && "0".equals(val.trim())));
         if (!localIndexing) {
             logger
                     .info("This node will not perfom search indexation, just search.");
         }
 
-        val = config.getProperty(JahiaSearchConfigConstant.SEARCH_MULTIPLE_INDEXING_SERVER);
+        val = getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_MULTIPLE_INDEXING_SERVER);
         this.multipleIndexingServer = (val != null && "1".equals(val.trim()));
 
         try {
@@ -386,16 +387,16 @@ public class JahiaSearchBaseService extends JahiaSearchService
             throw new JahiaInitializationException("Exception creating Search Manager", e);
         }
 
-        this.indexingJobInsertMinInterval = JahiaTools.getTimeAsLong(config.getProperty(
+        this.indexingJobInsertMinInterval = JahiaTools.getTimeAsLong(getIndexationConfig().getProperty(
                  JahiaSearchConfigConstant.SEARCH_INDEXING_JOB_EXECUTION_DELAY_TIME),"600").longValue()/2;
         try {
-            this.indexingJobInserMapMaxSize = Integer.parseInt(config.getProperty(
+            this.indexingJobInserMapMaxSize = Integer.parseInt(getIndexationConfig().getProperty(
                  JahiaSearchConfigConstant.SEARCH_INDEXING_JOB_INSERT_MAP_MAXSIZE,"5000"));
         } catch ( Throwable t ){
             logger.debug("Wrong value for indexing job insert map max size, use default " + this.indexingJobInserMapMaxSize,t);
         }
         this.indexingJobInserts = new LRUMap(this.indexingJobInserMapMaxSize);
-        this.searchScoreBoostRefreshDelayTime = JahiaTools.getTimeAsLong(config.getProperty(
+        this.searchScoreBoostRefreshDelayTime = JahiaTools.getTimeAsLong(getIndexationConfig().getProperty(
                  JahiaSearchConfigConstant.SEARCH_SCORE_BOOST_REFRESH_DELAY_TIME,"0"),"0").longValue();
         if ( this.searchScoreBoostRefreshDelayTime > 0 && this.searchScoreBoostRefreshDelayTime < 5000 ){
             this.searchScoreBoostRefreshDelayTime = 5000;
@@ -405,7 +406,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
 //        This is now triggered from the TemplateService         
 //        initSearchFieldConfiguration(); 
 
-        val = config.getProperty(JahiaSearchConfigConstant.DATE_ROUNDING);
+        val = getIndexationConfig().getProperty(JahiaSearchConfigConstant.DATE_ROUNDING);
         try {
             this.dateRounding = Integer.parseInt(val);
             if ( this.dateRounding < 0 ){
@@ -415,7 +416,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
             this.dateRounding = 5;
         }
 
-        this.synchronizedIndexationWaitDelay = JahiaTools.getTimeAsLong(config.getProperty(
+        this.synchronizedIndexationWaitDelay = JahiaTools.getTimeAsLong(getIndexationConfig().getProperty(
                  JahiaSearchConfigConstant.SYNCHRONIZED_INDEXATION_WAIT_DELAY,"5s"),"5s").longValue();
 
         try {
@@ -499,12 +500,12 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     private void configureSystemProperties() {
 
-        if (this.config != null) {
+        if (this.getIndexationConfig() != null) {
 
-            for (Iterator<Object> it = this.config.keySet().iterator(); it.hasNext();) {
-                String key = (String)it.next();
+            for (Map.Entry<Object, Object> entry : this.getIndexationConfig().entrySet()) {
+                String key = (String)entry.getKey();
                 if (key.startsWith("org.apache.lucene")) {
-                    String val  = this.config.getProperty(key);
+                    String val  = (String)entry.getValue();
                     if (val != null && !"".equals(val.trim())) {
                         System.setProperty(key, val);
                     }
@@ -843,7 +844,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     public boolean isDisabled() {
         if (indexationDisabled == null) {
-            indexationDisabled = Boolean.parseBoolean(getIndexationConfig().getProperty("indexingDisabled"));
+            indexationDisabled = Boolean.parseBoolean(getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_INDEXING_DISABLED));
         }
         return indexationDisabled.booleanValue();
     }
@@ -1076,7 +1077,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     private void triggerImmediateExecutionOnAllNodes (JahiaIndexingJob job) {
         boolean notifyCluster = true;
-        String indexingServerID = config.getProperty(JahiaSearchConfigConstant.SEARCH_INDEXER_SERVER_ID);
+        String indexingServerID = getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_INDEXER_SERVER_ID);
         if (this.localIndexing && !this.multipleIndexingServer){
             notifyCluster = false;
         }
@@ -2661,7 +2662,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
             Object msg = clusterMessage.getObject();
             if (msg instanceof IndexUpdatedMessage){
                 IndexUpdatedMessage indexUpdatedMsg = (IndexUpdatedMessage) clusterMessage.getObject();
-                if (indexUpdatedMsg.getServerId().equals(config
+                if (indexUpdatedMsg.getServerId().equals(getIndexationConfig()
                             .getProperty(JahiaSearchConfigConstant.SEARCH_INDEXER_SERVER_ID))) {
                     SearchHandler searchHandler = this.getSearchManager()
                             .getSearchHandler(
@@ -2805,7 +2806,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
      */
     public void indexFileRepository(int siteId, JahiaUser user)
     throws JahiaException {
-        if (! this.localIndexing || !Boolean.parseBoolean(getConfig().getProperty("enableJcrSearch"))){
+        if (! this.localIndexing || !Boolean.parseBoolean(getConfig().getProperty(JahiaSearchConfigConstant.ENABLE_FILE_INDEXING))){
             return;
         }
     }
@@ -2947,16 +2948,19 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     public void initSearchFieldConfiguration() {
 
-        String value = config.getProperty(
-                "org.jahia.services.search.scoreBoost.metadata", "1.0");
+        String value = config.getProperty(JahiaSearchConfigConstant.METADATA_SCOREBOOST, "1.0");
         float metadataScoreBoost = NumberUtils.toFloat(value, 1.0f);
 
-        String numericAnalyzer = config
-                .getProperty("org.jahia.services.search.analyzerForNumerics");
+        String numericAnalyzer = getIndexationConfig()
+                .getProperty(JahiaSearchConfigConstant.ANALYZER_FOR_NUMERICS);
+        String keywordAnalyzer = getIndexationConfig()
+                .getProperty(JahiaSearchConfigConstant.ANALYZER_FOR_KEYWORDS);        
 
         Map<String, Set<String>> newFieldsGrouping = new HashMap<String, Set<String>>();
-        CompassMapping compassMapping = ((LuceneSearchEngineFactory) ((InternalCompass) getCompass())
-                .getSearchEngineFactory()).getMapping();
+        CompassConfiguration compassConfig = getCompass().getConfig();
+        LuceneSearchEngineFactory searchEngineFactory = (LuceneSearchEngineFactory) ((InternalCompass) getCompass())
+                .getSearchEngineFactory();
+        CompassMapping compassMapping = searchEngineFactory.getMapping();
         ResourceMapping[] compassMappings = compassMapping.getRootMappings();
         NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
         boolean compassConfigChanged = false;
@@ -3017,19 +3021,24 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
                     String name;
                     boolean isMetadata = def.getIsMetadata();
+                    String lowerCaseName = def.getName().toLowerCase();
+                    
                     if (isMetadata) {
                         name = JahiaSearchConstant.METADATA_PREFIX
-                                + def.getName().toLowerCase();
+                                + lowerCaseName;
                     } else {
                         if (def.getCtnType() != null) {
-                            name = JahiaSearchConstant.CONTAINER_FIELD_PREFIX + def.getCtnType().replace(':','_').toLowerCase();
-                            String key = name.split(" ")[0];
-                            name = name.replace(' ' , '_');
+                            lowerCaseName = def.getCtnType().replace(':', '_')
+                                    .toLowerCase();
+                            String key = JahiaSearchConstant.CONTAINER_FIELD_PREFIX + lowerCaseName.split(" ")[0];
+                            lowerCaseName = lowerCaseName.replace(' ', '_');
+                            name = JahiaSearchConstant.CONTAINER_FIELD_PREFIX
+                                    + lowerCaseName;
                             addToFieldsGroup(newFieldsGrouping, key, name, def
                                     .getJahiaID());
                         } else {
                             name = JahiaSearchConstant.CONTAINER_FIELD_PREFIX
-                                    + def.getName().toLowerCase();
+                                + lowerCaseName;
                         }
                     }
 
@@ -3054,6 +3063,37 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                     compassConfigChanged = true;
                                 }
                             }                            
+                        }
+                    }
+                    
+                    if (propertyDef != null) {
+                        if (propertyDef.isFacetable()) {
+                            if (updateCompassMappings(
+                                    compassMappings,
+                                    JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
+                                            + lowerCaseName,
+                                    isDefault,
+                                    scoreBoost,
+                                    keywordAnalyzer,
+                                    ExtendedPropertyDefinition.INDEXED_UNTOKENIZED)) {
+                                if (!compassConfigChanged) {
+                                    compassConfigChanged = true;
+                                }
+                            }
+                        }
+                        if (propertyDef.isSortable()) {
+                            if (updateCompassMappings(
+                                    compassMappings,
+                                    JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
+                                            + lowerCaseName,
+                                    isDefault,
+                                    scoreBoost,
+                                    keywordAnalyzer,
+                                    ExtendedPropertyDefinition.INDEXED_UNTOKENIZED)) {
+                                if (!compassConfigChanged) {
+                                    compassConfigChanged = true;
+                                }
+                            }
                         }
                     }
 
@@ -3090,8 +3130,10 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     if (resourceMapping instanceof RawResourceMapping) {
                         ((RawResourceMapping) resourceMapping).postProcess();
                     }
+                    compassConfig.removeMappingByAlias(resourceMapping.getAlias());
+                    compassConfig.addResourceMapping(resourceMapping);
                 }
-                compassMapping.postProcess();
+                getCompass().rebuild();
             }
         }
 
@@ -3112,9 +3154,11 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 mappingAdded = true;
                 propertyMapping = new RawResourcePropertyMapping();
                 propertyMapping.setName(fieldName);
+                propertyMapping.setPath(new StaticPropertyPath(fieldName));
             }
             if (propertyMapping instanceof ResourcePropertyMapping) {
                 RawResourcePropertyMapping rawMapping = (RawResourcePropertyMapping) propertyMapping;
+                rawMapping.setOverrideByName(true);
                 if (newMapping
                         || !isDefault
                         || (rawMapping.getAnalyzer() == null

@@ -46,7 +46,7 @@
             <fmt:message key="${item.label}" var="label"/>
             <c:set var="label" value="${fn:contains(label, '???') ? item.label : label}"/>
             <c:if test="${item.enabled}">
-                <a href="${item.link}" class="set-${param.mode} ico-${param.mode}-${item.name}${item.selected ? ' selected' : ''}"><c:out value="${label}"/></a>
+                <a href="${item.link}" ${fn:indexOf(item.link, 'http://') == 0 || fn:indexOf(item.link, 'https://') == 0 ? 'target="_blank"' : ''} class="set-${param.mode} ico-${param.mode}-${item.name}${item.selected ? ' selected' : ''}"><c:out value="${label}"/></a>
             </c:if>
             <c:if test="${not item.enabled}">
                 <span class="set-${param.mode}-disabled ico-${param.mode}-${item.name}"><c:out value="${label}"/></span>

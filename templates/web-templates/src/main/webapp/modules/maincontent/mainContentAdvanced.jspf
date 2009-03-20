@@ -3,7 +3,7 @@
     <h3><template:field name='mainContentTitle' /></h3>
 
     <p class="maincontent">
-        <template:field name='mainContentAlign' display="false" valueBeanID="mainContentAlign"/>
+        <template:field name='mainContentAlign' display="false" var="mainContentAlign"/>
         <template:image file="mainContentImage" cssClassName="${mainContentAlign.defaultValue}"
                                 align="${mainContentAlign.defaultValue}"/>
         <template:field name="mainContentBody"/>

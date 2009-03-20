@@ -69,7 +69,7 @@
 
             <template:field name='Text' containerName="testContainer"/>
 
-            <template:field name='file' valueBeanID='fileMultSearch' display="false" containerName="testContainer"/>
+            <template:field name='file' var='fileMultSearch' display="false" containerName="testContainer"/>
             <c:if test="${!empty fileMultSearch && fileMultSearch.file.downloadable}">
                 <c:choose>
                     <c:when test="${fileMultSearch.file.image}">

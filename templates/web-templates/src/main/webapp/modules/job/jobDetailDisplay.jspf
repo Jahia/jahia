@@ -14,7 +14,7 @@
                     name="town"/></span><span class="jobtxt"><template:field name="country"/></span>
             </p>
             <p class="jobType">
-                <template:field name="contract" valueBeanID="contractBean" display="false"/>
+                <template:field name="contract" var="contractBean" display="false"/>
                 <span class="jobLabel"><fmt:message key="web_templates_jobContainer.contract"/>:
                 </span><span class="jobtxt">${contractBean}</span>
             </p>

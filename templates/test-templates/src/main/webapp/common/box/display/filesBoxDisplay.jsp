@@ -38,8 +38,8 @@
 <template:containerList name="files${boxID}" id="files">
     <table class="files" border="0" cellspacing="0" cellpadding="0" width="100%">
         <template:container id="fileContainer">
-            <template:field name="boxFile" valueBeanID="myFileField" display="false"/>
-            <template:field name="boxFileDisplayDetails" valueBeanID="displayDetails" display="false"/>
+            <template:field name="boxFile" var="myFileField" display="false"/>
+            <template:field name="boxFileDisplayDetails" var="displayDetails" display="false"/>
             <c:if test="${!empty myFileField}">
                 <tr>
                     <td>
@@ -51,7 +51,7 @@
                         </c:if>
                     </td>
                     <td>
-                        <template:field valueBeanID="boxFileDesc" name="fileDesc" display="false"/>
+                        <template:field var="boxFileDesc" name="fileDesc" display="false"/>
                         <c:if test="${!empty fileDesc}">
                             <c:out value="${fileDesc}" escapeXml="false"/>
                         </c:if>

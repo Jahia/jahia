@@ -2,7 +2,7 @@
 
 <template:container id="pressReleaseContainer" cacheKey="resume" displayActionMenu="true"  emptyContainerDivCssClassName="mockup-pressreleases" displayContainerAnchor="false">
     <li class="pressRealeseItem">
-            <template:field name='date' display="false" valueBeanID="datePress"/>
+            <template:field name='date' display="false" var="datePress"/>
             <span class="pressRealeseDate"><fmt:formatDate value="${datePress.date}" pattern="dd/MM/yyyy"/></span>
             <template:getContentObjectCategories valueID="pressReleaseContainerCatKeys" objectKey="contentContainer_${pageScope.pressReleaseContainer.ID}"/>
         <c:if test="${!empty pressReleaseContainerCatKeys }">

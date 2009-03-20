@@ -2,8 +2,8 @@
 <template:containerList name="paragraph" id="paragraph" actionMenuNamePostFix="paragraph"
                         actionMenuNameLabelKey="paragraph.update">
     <template:container id="paragraphContent">
-        <template:field name="insertPosition"  inlineEditingActivated="false" valueBeanID="insertPosition" display="false"/>
-        <template:field name="insertType" inlineEditingActivated="false" display="false" valueBeanID="insertType"/>
+        <template:field name="insertPosition"  inlineEditingActivated="false" var="insertPosition" display="false"/>
+        <template:field name="insertType" inlineEditingActivated="false" display="false" var="insertType"/>
         <h3><template:field name='mainContentTitle' /></h3>
         <div class='${insertType.resource.defaultValue}-top float${insertPosition.resource.defaultValue}'
              style='width:<template:field name="insertWidth" inlineEditingActivated="false"/>px'>
@@ -12,7 +12,7 @@
                 <template:field name='insertText' />
             </div>
         </div>
-        <template:field name='mainContentAlign' valueBeanID="mainContentAlign" display="false" inlineEditingActivated="false"/>
+        <template:field name='mainContentAlign' var="mainContentAlign" display="false" inlineEditingActivated="false"/>
         <div class="float${mainContentAlign.resource.defaultValue}"><template:image file="mainContentImage"/></div>
         <div>
             <template:field name="mainContentBody"/>

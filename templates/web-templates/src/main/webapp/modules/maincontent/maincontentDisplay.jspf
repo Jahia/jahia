@@ -6,7 +6,7 @@
     <div class="maincontent">
         <h3><template:field name='mainContentTitle'/></h3>
 
-            <template:field name='mainContentAlign' valueBeanID="mainContentAlign" display="false"/>
+            <template:field name='mainContentAlign' var="mainContentAlign" display="false"/>
             <template:image file="mainContentImage" cssClassName="${mainContentAlign.resource.defaultValue}"
                             align="${mainContentAlign.resource.defaultValue}"/>
             <template:field name="mainContentBody"/>

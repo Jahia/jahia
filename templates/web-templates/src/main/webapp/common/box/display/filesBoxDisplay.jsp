@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -40,9 +40,9 @@
 <template:containerList name="fileContainer" id="files" actionMenuNamePostFix="files" actionMenuNameLabelKey="files">
         <ul class="document">
         <template:container id="fileContainer" actionMenuNamePostFix="file" displayContainerAnchor="false">
-            <template:field name="title" valueBeanID="title" display="false"/>
-            <template:field name="file" valueBeanID="file" display="false"/>
-            <template:field name="fileDisplayDetails" display="false" valueBeanID="fileDisplayDetails"/>
+            <template:field name="title" var="title" display="false"/>
+            <template:field name="file" var="file" display="false"/>
+            <template:field name="fileDisplayDetails" display="false" var="fileDisplayDetails"/>
             
             <li class="document ${file.file.picto}">
                 <c:if test="${!empty title.value}">

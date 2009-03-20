@@ -2,16 +2,16 @@
 <template:container id="peopleContainer" displayActionMenu="false"  emptyContainerDivCssClassName="mockup-people">
     <ui:actionMenu contentObjectName="peopleContainer" namePostFix="people" labelKey="people.update">
 	<div class="peopleListItem">
-        <template:field name="peoplePicture" valueBeanID="peoplePicture" display="false"/>
+        <template:field name="peoplePicture" var="peoplePicture" display="false"/>
 		<div class="peoplePhoto">
-        <template:field name="peopleLastname" display="false" valueBeanID="peopleLastname"/>
+        <template:field name="peopleLastname" display="false" var="peopleLastname"/>
         <img src="${peoplePicture.file.thumbnailUrl}" alt="${peopleLastname} picture"></div>
         <div class="peopleBody">
             <h5><template:field name="peopleFirstname"/>&nbsp;<template:field name="peopleLastname"/></h5>
             <p class="peopleFonction"><template:field name="peopleFunction"/></p>
             <p class="peopleBusinessUnit"><template:field name="peopleBusinessUnit"/></p>
 
-                <template:field name="peopleEmail" display="false" valueBeanID="email"/>
+                <template:field name="peopleEmail" display="false" var="email"/>
 				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail"/></a></p>
 
 				<div class="peopleAction">

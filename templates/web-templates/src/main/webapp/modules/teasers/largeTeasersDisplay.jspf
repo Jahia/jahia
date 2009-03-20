@@ -5,7 +5,7 @@
         <div class="spacer">
             <!--start box -->
             <div class="box2 "><!--start box 2 default-->
-                <template:field name="image" valueBeanID="imageBean" display="false"/>
+                <template:field name="image" var="imageBean" display="false"/>
                 <div class="box2-topright"></div><div class="box2-topleft"></div>
                 <h3 class="box2-header"><span><template:field name='title'/></span></h3>
                 <div class="box2-illustration" style="background-image:url(${imageBean.file.downloadUrl})"></div>
@@ -13,7 +13,7 @@
                 <div class="box2-text">
                 <template:field name='abstract'/>
                 </div>
-                <template:field name="link" valueBeanID="link" display="false"/>
+                <template:field name="link" var="link" display="false"/>
                 <c:if test="${!empty link}">
                     <div class="box2-more"><template:link page="link" maxChar="20"/></div>
                 </c:if>

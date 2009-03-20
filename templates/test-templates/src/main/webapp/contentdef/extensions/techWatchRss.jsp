@@ -48,9 +48,9 @@
                             displaySkins="false" displayExtensions="false">
             <template:container id="myContainer" displayActionMenu="false" displayContainerAnchor="false"
                                displaySkins="false" displayExtensions="false" cacheKey="myrss">
-                <template:field name="title" valueBeanID="title" display="false" removeHtmlTags="true"/>
-                <template:field name="teaser" valueBeanID="teaser" display="false" removeHtmlTags="true"/>
-                <template:field name="date" valueBeanID="date" display="false"/>
+                <template:field name="title" var="title" display="false" removeHtmlTags="true"/>
+                <template:field name="teaser" var="teaser" display="false" removeHtmlTags="true"/>
+                <template:field name="date" var="date" display="false"/>
                 <item>
                     <title><c:out value="${title}"/></title>
                     <description><![CDATA[<c:out value="${teaser}"/>]]></description>

@@ -56,7 +56,7 @@
     <template:link page="page" openExternalLinkInNewWindow="true"/>
     
     <br/>
-    <b><fmt:message key='display.randomimage'/> (<template:field name="RandomPath" valueBeanID="RandomPath" />):</b>
+    <b><fmt:message key='display.randomimage'/> (<template:field name="RandomPath" var="RandomPath" />):</b>
     <ui:displayRandomImage path="RandomPath" fileTypes="jpg,gif,png"/>
     
 	</template:container>

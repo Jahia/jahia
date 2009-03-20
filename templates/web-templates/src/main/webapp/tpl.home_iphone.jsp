@@ -82,8 +82,8 @@
 
                         <p>
                             <template:field name="abstract" diffActive="false"/><br/>
-                            <template:field name="link" display="false" beanID="promolink"/>
-                            <c:if test="${!empty promolink && promolink != ''}">
+                            <template:field name="link" display="false" var="promolink"/>
+                            <c:if test="${!empty promolink}">
                                 <template:link page="link" maxChar="20"/>
                             </c:if>
                         </p>

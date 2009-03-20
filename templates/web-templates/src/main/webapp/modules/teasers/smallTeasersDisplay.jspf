@@ -9,8 +9,8 @@
                     <h3><template:field name='title'/></h3>
                     <p><template:field name='abstract'/></p>
                 </div>
-                <template:field name="link" display="false" beanID="promolink"/>
-                <c:if test="${!empty promolink && promolink != ''}">
+                <template:field name="link" display="false" var="promolink"/>
+                <c:if test="${!empty promolink}">
                 <div class="more">
                     <span><template:link page="link" maxChar="20"/></span>
                  </div>

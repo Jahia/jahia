@@ -38,8 +38,7 @@
 <c:forEach items="${processedContainer.fields}" var="processedEntry">
   <c:set var="processedField" value="${processedEntry.value}"/>
   <div class="fieldTitle">${processedField.title}:</div>
-  <template:field name='${processedField.name}' containerName="processedContainer" valueBeanID="fldValue" display="false"/>
-  <div class="fieldValue">Value bean: isEmpty: ${empty fldValue}</div>
+  <template:field name='${processedField.name}' containerName="processedContainer" var="fldValue" display="false"/>
   <div class="fieldValue">
     <c:choose>
       <c:when test="${processedField.fieldType == fieldTypeConstants.BIGTEXT}">
@@ -53,8 +52,8 @@
       </c:when>
       <c:when test="${processedField.fieldType == fieldTypeConstants.DATE}">
         <template:field name='${processedField.name}' containerName="processedContainer"/>
-        <template:field name='${processedField.name}' beanID="theFieldBean"
-        	             valueBeanID="theDateBean" display="false" containerName="processedContainer"/>
+        <template:field name='${processedField.name}'
+        	             var="theDateBean" display="false" containerName="processedContainer"/>
         &nbsp;(<fmt:formatDate value="${theDateBean.date}" pattern="yyyy-MM-dd HH:mm"/>)
       </c:when>
       <c:when test="${processedField.fieldType == fieldTypeConstants.PAGE}">
@@ -63,8 +62,8 @@
       </c:when>
       <c:when test="${processedField.fieldType == fieldTypeConstants.FILE}">
         <template:field name='${processedField.name}' containerName="processedContainer"/>
-        <template:field name='${processedField.name}' beanID="theFieldBean"
-        	             valueBeanID="${processedField.name}value" display="false" containerName="processedContainer"/>
+        <template:field name='${processedField.name}'
+        	             var="${processedField.name}value" display="false" containerName="processedContainer"/>
 
         <template:file file="${processedField.name}value" containerName="processedContainer"/>
       </c:when>

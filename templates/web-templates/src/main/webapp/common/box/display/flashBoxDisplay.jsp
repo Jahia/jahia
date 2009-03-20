@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -38,24 +38,24 @@
                        actionMenuNamePostFix="flash" actionMenuNameLabelKey="flash">
         <template:container id="flashContainer" displayActionMenu="false">
             <ui:actionMenu contentObjectName="flashContainer" namePostFix="flash" labelKey="flash.update">
-            <template:field name="flashSourceFlashContainer" display="false" valueBeanID="flashSource" inlineEditingActivated="false" />
-            <template:field name="widthFlashContainer" display="false" valueBeanID="widthFlash" inlineEditingActivated="false" />
-            <template:field name="heightFlashContainer" display="false" valueBeanID="heightFlash" inlineEditingActivated="false"/>
-            <template:field name="flashPlayerFlashContainer" display="false" valueBeanID="flashPlayer" inlineEditingActivated="false"/>
-            <template:field name="idFlashContainer" display="false" valueBeanID="idFlash" inlineEditingActivated="false"/>
-            <template:field name="nameFlashContainer" display="false" valueBeanID="nameFlash" inlineEditingActivated="false"/>
-            <template:field name="swliveconnectFlashContainer" display="false" valueBeanID="swliveconnectFlash" inlineEditingActivated="false"/>
-            <template:field name="playFlashContainer" display="false" valueBeanID="playFlash" inlineEditingActivated="false"/>
-            <template:field name="loopFlashContainer" display="false" valueBeanID="loopFlash" inlineEditingActivated="false"/>
-            <template:field name="menuFlashContainer" display="false" valueBeanID="menuFlash" inlineEditingActivated="false"/>
-            <template:field name="qualityFlashContainer" display="false" valueBeanID="qualityFlash" inlineEditingActivated="false"/>
-            <template:field name="scaleFlashContainer" display="false" valueBeanID="scaleFlash" inlineEditingActivated="false"/>
-            <template:field name="alignFlashContainer" display="false" valueBeanID="alignFlash" inlineEditingActivated="false"/>
-            <template:field name="salignFlashContainer" display="false" valueBeanID="salignFlash" inlineEditingActivated="false"/>
-            <template:field name="wmodeFlashContainer" display="false" valueBeanID="wmodeFlash" inlineEditingActivated="false"/>
-            <template:field name="bgcolorFlashContainer" display="false" valueBeanID="bgcolorFlash" inlineEditingActivated="false"/>
-            <template:field name="baseFlashContainer" display="false" valueBeanID="baseFlash" inlineEditingActivated="false"/>
-            <template:field name="flashvarsFlashContainer" display="false" valueBeanID="flashvarsFlash" inlineEditingActivated="false"/>
+            <template:field name="flashSourceFlashContainer" display="false" var="flashSource" inlineEditingActivated="false" />
+            <template:field name="widthFlashContainer" display="false" var="widthFlash" inlineEditingActivated="false" />
+            <template:field name="heightFlashContainer" display="false" var="heightFlash" inlineEditingActivated="false"/>
+            <template:field name="flashPlayerFlashContainer" display="false" var="flashPlayer" inlineEditingActivated="false"/>
+            <template:field name="idFlashContainer" display="false" var="idFlash" inlineEditingActivated="false"/>
+            <template:field name="nameFlashContainer" display="false" var="nameFlash" inlineEditingActivated="false"/>
+            <template:field name="swliveconnectFlashContainer" display="false" var="swliveconnectFlash" inlineEditingActivated="false"/>
+            <template:field name="playFlashContainer" display="false" var="playFlash" inlineEditingActivated="false"/>
+            <template:field name="loopFlashContainer" display="false" var="loopFlash" inlineEditingActivated="false"/>
+            <template:field name="menuFlashContainer" display="false" var="menuFlash" inlineEditingActivated="false"/>
+            <template:field name="qualityFlashContainer" display="false" var="qualityFlash" inlineEditingActivated="false"/>
+            <template:field name="scaleFlashContainer" display="false" var="scaleFlash" inlineEditingActivated="false"/>
+            <template:field name="alignFlashContainer" display="false" var="alignFlash" inlineEditingActivated="false"/>
+            <template:field name="salignFlashContainer" display="false" var="salignFlash" inlineEditingActivated="false"/>
+            <template:field name="wmodeFlashContainer" display="false" var="wmodeFlash" inlineEditingActivated="false"/>
+            <template:field name="bgcolorFlashContainer" display="false" var="bgcolorFlash" inlineEditingActivated="false"/>
+            <template:field name="baseFlashContainer" display="false" var="baseFlash" inlineEditingActivated="false"/>
+            <template:field name="flashvarsFlashContainer" display="false" var="flashvarsFlash" inlineEditingActivated="false"/>
 	    <div id="flashcontent${flashContainer.ID}">
             <div id="flashcontent"><!--START FLASH -->
                 <strong>You need to upgrade your Flash Player</strong><br />

@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -40,7 +40,7 @@
                         actionMenuNamePostFix="lastnewss" actionMenuNameLabelKey="lastnewss">
     <template:container id="lastNewsContainer" cache="off" actionMenuNamePostFix="lastnews"
                         actionMenuNameLabelKey="lastnews.update">
-        <template:field name="filter"display="false" valueBeanID="newsCategoriesFilter" />
+        <template:field name="filter"display="false" var="newsCategoriesFilter" />
         <c:set var="categoriesFilter" value=""/>
         <c:set var="categoriesDisplay" value=""/>
         <c:forEach items="${newsCategoriesFilter.category}" var="newsCategoryFilter" varStatus="status">
@@ -53,8 +53,8 @@
                 <c:set var="categoriesDisplay" value="${categoriesDisplay}${newsCategoryFilter.title}, "/>
             </c:if>
         </c:forEach>
-        <template:field name="display" valueBeanID="display"  defaultValue="short" display="false"/>
-        <template:field name="maxNews" valueBeanID="maxNews"  defaultValue="10" display="false"/>
+        <template:field name="display" var="display" defaultValue="short" display="false"/>
+        <template:field name="maxNews" var="maxNews" defaultValue="10" display="false"/>
         <c:if test="${requestScope.currentRequest.editMode}">
         <div class="preferences">    
         <h2><fmt:message key="web_templates_newsList.preferences"/></h2>

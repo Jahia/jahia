@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -42,7 +42,7 @@
 <%-- Let us now display the main box list with all the different boxes it has --%>
 <template:boxList name="${param.name}" id="${param.name}" actionMenuNamePostFix="boxes" actionMenuNameLabelKey="boxes">
     <template:container id="boxContainer" actionMenuNamePostFix="box" actionMenuNameLabelKey="box.update" cache="false" emptyContainerDivCssClassName="mockup-boxes">
-        <template:field name="boxTitle" valueBeanID="boxTitle" display="false"/>
+        <template:field name="boxTitle" var="boxTitle" display="false"/>
         <%-- Set boxTitle to be use in box skinner template_rep/skins/myskin/myskin.jsp --%>
         <c:set var="boxTitle" scope="request" value="${boxTitle}"/>
         <%-- Let us invoke the box tag so it will dispatch the request to the correct JSP file used for box display --%>

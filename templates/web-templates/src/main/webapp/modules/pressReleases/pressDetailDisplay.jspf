@@ -12,11 +12,11 @@
 
         <h4><template:field name='title'/></h4>
 
-        <template:field name='date' display="false" valueBeanID="datePress"/>
+        <template:field name='date' display="false" var="datePress"/>
         <span class="pressRealeseDate"><fmt:formatDate value="${datePress.date}" pattern="dd/MM/yyyy"/></span>
 
         <div><template:field name='body'/></div>
-        <template:field name="pdfVersion" display="false" valueBeanID="pdfVersion"/>
+        <template:field name="pdfVersion" display="false" var="pdfVersion"/>
         <c:if test="${!empty pdfVersion.file.fileFieldTitle}">
             <div><strong><fmt:message key="web_templates_publicationContainer.download"/> :</strong>
                 <template:field name="pdfVersion"/></div>

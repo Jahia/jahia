@@ -59,7 +59,7 @@ public class ResourceBundle implements ValueInitializer {
         if (jParams != null) {
             final String bundleName = params.get(0);
             java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle(bundleName,
-                    jParams.getCurrentLocale(), new JahiaTemplatesRBLoader(this.getClass().getClassLoader(),
+                    jParams.getCurrentLocale(), JahiaTemplatesRBLoader.getInstance(this.getClass().getClassLoader(),
                             declaringPropertyDefinition.getDeclaringNodeType().getSystemId()));
             SortedSet<Value> values = new TreeSet<Value>(new Comparator<Value>() {
                 public int compare(Value o, Value o1) {

@@ -118,23 +118,25 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
         try {
             ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jahiaPageContext.getPid(), false);
             JCRNodeWrapper layoutmanagerNode = findLayoutmanagerNode();
-            JCRLayoutNode layoutNode = findDefaultLayoutNode();
+            if (layoutmanagerNode != null) {
+                JCRLayoutNode layoutNode = findDefaultLayoutNode();
 
-            // remove layout_{pid} and its children
-            if (layoutNode != null) {
-                layoutNode.remove();
+                // remove layout_{pid} and its children
+                if (layoutNode != null) {
+                    layoutNode.remove();
+                    layoutmanagerNode.save();
+                }
+
+                // update layoutNode
+                layoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("layout", Constants.JAHIANT_LAYOUT));
+                layoutNode.setPage(currentContentPage.getUUID());
+
+                // update layout node
+                updateLayoutNode(getLayoutItems(jahiaPageContext), new JCRLayoutNode(layoutNode));
+
+                // save changes
                 layoutmanagerNode.save();
             }
-
-            // update layoutNode
-            layoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("layout", Constants.JAHIANT_LAYOUT));
-            layoutNode.setPage(currentContentPage.getUUID());
-
-            // update layout node
-            updateLayoutNode(getLayoutItems(jahiaPageContext), new JCRLayoutNode(layoutNode));
-
-            // save changes
-            layoutmanagerNode.save();
         } catch (Exception e) {
             logger.error("Unable to save default config due to", e);
 
@@ -244,11 +246,12 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
             LayoutmanagerJahiaPreference layoutmanagerJahiaPreference = (LayoutmanagerJahiaPreference) getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(pageContext.getPid()));
             if (layoutmanagerJahiaPreference == null) {
                 layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
-                layoutmanagerJahiaPreference.setPage("" + pageContext.getPid());
-                layoutmanagerJahiaPreference.setNbColumns(gwtLayoutManagerConfig.getNbColumns());
-                layoutmanagerJahiaPreference.setLiveDraggable(gwtLayoutManagerConfig.isLiveDraggable());
-                layoutmanagerJahiaPreference.setLiveDraggable(gwtLayoutManagerConfig.isLiveQuickbarVisible());
+                ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(pageContext.getPid(), false);
+                layoutmanagerJahiaPreference.setPage(currentContentPage.getUUID());
             }
+            layoutmanagerJahiaPreference.setNbColumns(gwtLayoutManagerConfig.getNbColumns());
+            layoutmanagerJahiaPreference.setLiveDraggable(gwtLayoutManagerConfig.isLiveDraggable());
+            layoutmanagerJahiaPreference.setLiveDraggable(gwtLayoutManagerConfig.isLiveQuickbarVisible());
             getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
         } catch (Exception e) {
             logger.error("Can't save layout manager config.", e);
@@ -268,9 +271,9 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
         gwtLayoutManagerConfig.setLiveQuickbarVisible(true);
         if (layoutmanagerJahiaPreference != null) {
             try {
-                //gwtLayoutManagerConfig.setNbColumns((int) layoutmanagerJahiaPreference.getNbColumns());
-                //gwtLayoutManagerConfig.setLiveDraggable(layoutmanagerJahiaPreference.isLiveDraggable());
-                //gwtLayoutManagerConfig.setLiveQuickbarVisible(layoutmanagerJahiaPreference.isLiveEditable());
+                gwtLayoutManagerConfig.setNbColumns((int) layoutmanagerJahiaPreference.getNbColumns());
+                gwtLayoutManagerConfig.setLiveDraggable(layoutmanagerJahiaPreference.isLiveDraggable());
+                gwtLayoutManagerConfig.setLiveQuickbarVisible(layoutmanagerJahiaPreference.isLiveEditable());
             } catch (Exception e) {
                 logger.error(e, e);
             }
@@ -430,11 +433,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @return
      */
     private JCRNodeWrapper findLayoutmanagerNode() {
-        NodeIterator ni = findNodeIteratorByXpath(getRemoteJahiaUser(), LAYOUTMANAGER_NODE_PATH);
-        if (ni != null && ni.hasNext()) {
-            return (JCRNodeWrapper) ni.nextNode();
-        }
-        return null;
+        return getJCRStoreService().getFileNode(LAYOUTMANAGER_NODE_PATH, getRemoteJahiaUser());
     }
 
 

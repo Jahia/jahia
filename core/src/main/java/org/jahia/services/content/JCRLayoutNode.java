@@ -30,7 +30,10 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     }
 
     public boolean isLiveDraggable() throws RepositoryException {
-        return getProperty("j:liveDraggable").getBoolean();
+        if (hasProperty("j:liveDraggable")) {
+            return getProperty("j:liveDraggable").getBoolean();
+        }
+        return true;
     }
 
     public void setLiveDraggable(boolean liveDraggable) throws RepositoryException {
@@ -38,7 +41,10 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     }
 
     public boolean isLiveEditable() throws RepositoryException {
-        return getProperty("j:liveEditable").getBoolean();
+        if (hasProperty("j:liveEditable")) {
+            return getProperty("j:liveEditable").getBoolean();
+        }
+        return true;
     }
 
     public void setLiveEditable(boolean liveEditable) throws RepositoryException {
@@ -46,7 +52,10 @@ public class JCRLayoutNode extends JCRNodeDecorator {
     }
 
     public long getNbColumns() throws RepositoryException {
-        return getProperty("j:nbColumns").getLong();
+        if (hasProperty("j:nbColumns")) {
+            return getProperty("j:nbColumns").getLong();
+        }
+        return 3;
     }
 
     public void setNbColumns(long nbColumns) throws RepositoryException {

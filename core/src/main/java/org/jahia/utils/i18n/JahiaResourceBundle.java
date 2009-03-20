@@ -158,7 +158,7 @@ public class JahiaResourceBundle extends ResourceBundle {
         try{
             return resourceBundle.getString(key);
         } catch (MissingResourceException e) {
-            return MISSING_RESOURCE +defaultValue!=null?defaultValue:key+ MISSING_RESOURCE;
+            return defaultValue != null ? defaultValue : (MISSING_RESOURCE + key + MISSING_RESOURCE);
         }
     }
 
@@ -171,7 +171,7 @@ public class JahiaResourceBundle extends ResourceBundle {
         try{
             return resourceBundle.getString(key);
         } catch (MissingResourceException e) {
-            return MISSING_RESOURCE +defaultValue!=null?defaultValue:key+ MISSING_RESOURCE;
+            return defaultValue != null ? defaultValue : (MISSING_RESOURCE + key + MISSING_RESOURCE);
         }
     }
 

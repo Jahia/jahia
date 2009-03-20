@@ -40,8 +40,8 @@
                        actionMenuNamePostFix="lastnewss" actionMenuNameLabelKey="lastnewss.add">
     <template:container id="lastNewsContainer" cache="off" actionMenuNamePostFix="lastnews"
                        actionMenuNameLabelKey="lastnews.update">
-        <template:field name="maxNews" valueBeanID="maxNews" display="false" defaultValue="10"/>
-        <template:containerList name="news${param.id}" windowSize="${maxNews.integer}" id="newsList" displayActionMenu="false">
+        <template:field name="maxNews" var="maxNews" display="false"/>
+        <template:containerList name="news${param.id}" windowSize="${not empty maxNews ? maxNews.integer : 10}" id="newsList" displayActionMenu="false">
             <query:containerQuery>
                 <query:selector nodeTypeName="jnt:newsContainer" selectorName="newsList"/>
                 <query:descendantNode selectorName="newsList" path="${currentSite.JCRPath}"/>

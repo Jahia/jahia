@@ -41,9 +41,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 
 public class JahiaTemplatesRBLoader extends ClassLoader {
@@ -79,6 +81,21 @@ public class JahiaTemplatesRBLoader extends ClassLoader {
         }
 
         return instance;
+    }
+    
+    /**
+     * Flushes the ResourceBundle internal caches.
+     * TODO use ResourceBundle#clearCache() after switch to Java 6
+     */
+    public static void clearCache() {
+        try {
+            Field cacheList = ResourceBundle.class
+                    .getDeclaredField("cacheList");
+            cacheList.setAccessible(true);
+            ((Map) cacheList.get(ResourceBundle.class)).clear();
+        } catch (Exception e) {
+            logger.warn("Unable to flush resource bundle cache", e);
+        }
     }
     
     private JahiaTemplatesRBLoader(ClassLoader loader, String templatePackageName) {

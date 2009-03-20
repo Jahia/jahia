@@ -54,6 +54,41 @@
         </resources>
 
         <plugins>
+        <!--plugin>
+            <groupId>com.google.code.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <configuration>
+                <basedir>${basedir}</basedir>
+                <header>../header.txt</header>
+                <quiet>false</quiet>
+                <mapping>
+                    <cnd>JAVADOC_STYLE</cnd>
+                </mapping>
+                <failIfMissing>true</failIfMissing>
+                <aggregate>false</aggregate>
+                <includes>
+                    <include>src/**</include>
+                    <include>**/test/**</include>
+                </includes>
+                <excludes>
+                    <exclude>target/**</exclude>
+                    <exclude>.clover/**</exclude>
+                </excludes>
+                <useDefaultExcludes>true</useDefaultExcludes>
+                <useDefaultMapping>true</useDefaultMapping>
+                <properties>
+                </properties>
+                <encoding>iso-8859-1</encoding>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>check</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin!-->
+        
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

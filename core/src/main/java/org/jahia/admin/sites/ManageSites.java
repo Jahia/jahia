@@ -456,6 +456,9 @@ public class ManageSites extends AbstractAdministrationModule {
                 } else if (siteKey.equals("site")) {
                     warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherSiteKey.label",
                             jParams.getLocale());
+                } else if (!isServerNameValid(siteServerName)) { 
+                    warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.invalidServerName.label",
+                            jParams.getLocale());
                 } else if (siteServerName.equals("default")) {
                     warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
                             jParams.getLocale());
@@ -556,6 +559,10 @@ public class ManageSites extends AbstractAdministrationModule {
             request.getSession().setAttribute("lastPage", "processadd");
         }
     } // end processAdd
+
+    private boolean isServerNameValid(String serverName) {
+        return !serverName.contains(" ");
+    }
 
     /**
      * Display page to create an administrator for the new site.
@@ -1525,7 +1532,11 @@ public class ManageSites extends AbstractAdministrationModule {
             if (siteTitle != null && (siteTitle.trim().length() > 0)
                     && siteServerName != null && (siteServerName.trim().length() > 0)
                     ) {
-                if (!site.getServerName().equals(siteServerName)) {
+                if (!isServerNameValid(siteServerName)) {
+                    warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.invalidServerName.label",
+                            jParams.getLocale());
+                    processError = true;
+                } else if (!site.getServerName().equals(siteServerName)) {
                     if (sMgr.getSite(siteServerName) != null) {
                         warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.chooseAnotherServerName.label",
                                 jParams.getLocale());

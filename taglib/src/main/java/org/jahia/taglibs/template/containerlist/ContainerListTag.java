@@ -36,8 +36,6 @@ package org.jahia.taglibs.template.containerlist;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -918,38 +916,36 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
 
         TemplatePathResolverBean templatePath = getJahiaBean().getIncludes()
                 .getTemplatePath();
-        try {
-            String containerListType = getContainerList().getDefinition()
-                    .getContainerListNodeType();
-            if (containerListType == null) {
-                return body;
-            }
-            ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(
-                    containerListType);
-            List<ExtendedNodeType> superTypes = new ArrayList<ExtendedNodeType>(
-                    Arrays.asList(nt.getSupertypes()));
-            superTypes
-                    .addAll(getContainerList().getDefinition().getContainerListMixinNodeTypes());
-            for (ExtendedNodeType superType : superTypes) {
-                if (displayExtensions
-                        && superType.isNodeType("jmix:containerExtension")
-                        && !superType.getName().equals(
-                        "jmix:containerExtension")) {
-                    String n = StringUtils.substringAfter(superType.getName(),
-                            ":");
-                    String resolvedPath = templatePath.lookup("extensions/" + n
-                            + "/"
-                            + JCRContentUtils.cleanUpNodeName(nt.getName())
-                            + "/" + n + ".jsp", "extensions/" + n + "/" + n
-                            + ".jsp");
-
-                    extensions.put(superType.getName(), resolvedPath);
+        if (displayExtensions) {
+            try {
+                String containerListType = getContainerList().getDefinition()
+                        .getContainerListNodeType();
+                if (containerListType == null) {
+                    return body;
                 }
+                ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(
+                        containerListType);
+                List<ExtendedNodeType> superTypes = getContainerList().getDefinition().getContainerListMixinNodeTypes();
+                for (ExtendedNodeType superType : superTypes) {
+                    if (superType.isNodeType("jmix:containerExtension")
+                            && !superType.getName().equals(
+                            "jmix:containerExtension")) {
+                        String n = StringUtils.substringAfter(superType.getName(),
+                                ":");
+                        String resolvedPath = templatePath.lookup("extensions/" + n
+                                + "/"
+                                + JCRContentUtils.cleanUpNodeName(nt.getName())
+                                + "/" + n + ".jsp", "extensions/" + n + "/" + n
+                                + ".jsp");
+    
+                        extensions.put(superType.getName(), resolvedPath);
+                    }
+                }
+            } catch (NoSuchNodeTypeException e) {
+                logger.error("NoSuchNodeTypeException ", e);
+            } catch (JahiaException e) {
+                logger.error("JahiaException in skinnify", e);
             }
-        } catch (NoSuchNodeTypeException e) {
-            logger.error("NoSuchNodeTypeException ", e);
-        } catch (JahiaException e) {
-            logger.error("JahiaException in skinnify", e);
         }
         if ("noskin".equals(skin) && extensions.isEmpty()) {
             return body;

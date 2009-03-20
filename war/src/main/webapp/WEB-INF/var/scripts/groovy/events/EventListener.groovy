@@ -28,6 +28,7 @@ import org.jahia.utils.TextHtml
 
 
 // register comma separated list of events we want trap
+/*
 GroovyEventListener.registerEvents("contentObjectCreated");
 
 
@@ -102,3 +103,4 @@ logger.debug("Entering in groovy Eventlistener")
 			}
 	}
 }
+*/

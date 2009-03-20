@@ -52,9 +52,9 @@
         <query:sortBy propertyName="glossaryTerm" order="${queryConstants.ORDER_ASCENDING}"/>
     </query:containerQuery>
     <template:container id="pediaGlossary" cacheKey="pediaGlossary">
-        <template:field name='glossaryTerm'  display="false" valueBeanID="term"/>
+        <template:field name="glossaryTerm" display="false" var="term"/>
 
-        <c:set value="${fn:substring(term, 0, 1)}" var="term1"/>
+        <c:set value="${fn:substring(not empty term ? term.text : '', 0, 1)}" var="term1"/>
         <c:set value="${fn:toUpperCase(term1)}" var="term1"/>
         <c:set value="1" var="end"/>
         <c:set value="1" var="start"/>

@@ -95,7 +95,7 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
                     }
                     SequenceStyleGenerator generator = new SequenceStyleGenerator();
                     Properties properties = new Properties();
-                    final String dbSequenceName = tableName + "_seq";
+                    final String dbSequenceName = tableName.replace("jahia","seq");
                     properties.setProperty(SequenceStyleGenerator.SEQUENCE_PARAM, dbSequenceName);
                     properties.setProperty(SequenceStyleGenerator.INITIAL_PARAM, String.valueOf(maxValue + 1l));
                     properties.setProperty(SequenceStyleGenerator.OPT_PARAM, hibernateSequenceOptimizer);

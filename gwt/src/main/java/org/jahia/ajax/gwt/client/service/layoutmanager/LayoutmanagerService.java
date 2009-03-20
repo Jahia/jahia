@@ -89,8 +89,4 @@ public interface LayoutmanagerService extends RemoteService {
 
     public List<GWTJahiaLayoutItem> getLayoutItems(GWTJahiaPageContext page) throws GWTJahiaServiceException;
 
-    public GWTJahiaRSSFeed loalRssFeed(GWTJahiaPageContext pageContext, String url) throws GWTJahiaServiceException;
-
-    public void updateRSSWidgetPreference(GWTJahiaPageContext pageContext, String widgetId, String url, int maxEntryDisplay) throws GWTJahiaServiceException;
-
 }

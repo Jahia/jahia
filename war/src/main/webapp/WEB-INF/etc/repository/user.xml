@@ -12,6 +12,13 @@
     <mashups jcr:primaryType="jnt:folder"/>
 
 
-    <preferences jcr:primaryType="jnt:preferences" j:hidden="true" j:applyAcl="g:guest:--" />
+    <preferences jcr:primaryType="jnt:preferences" j:hidden="true" j:applyAcl="g:guest:--" >
+        <simple jcr:primaryType="jnt:preferenceProvider" j:hidden="true" j:applyAcl="g:guest:--"/>
+        <page jcr:primaryType="jnt:preferenceProvider" j:hidden="true" j:applyAcl="g:guest:--"/>
+        <toolbar jcr:primaryType="jnt:preferenceProvider" j:hidden="true" j:applyAcl="g:guest:--"/>
+        <portlet jcr:primaryType="jnt:preferenceProvider" j:hidden="true" j:applyAcl="g:guest:--"/>
+        <layoutmanager jcr:primaryType="jnt:preferenceProvider" j:hidden="true" j:applyAcl="g:guest:--"/>
+        <bookmarks jcr:primaryType="jnt:preferenceProvider" j:hidden="true" j:applyAcl="g:guest:--"/>
+    </preferences>
 
 </user>

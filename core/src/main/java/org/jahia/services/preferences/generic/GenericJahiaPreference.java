@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -34,6 +34,9 @@
 package org.jahia.services.preferences.generic;
 
 import org.jahia.services.preferences.JahiaPreference;
+import org.jahia.services.content.JCRNodeWrapper;
+
+import javax.jcr.RepositoryException;
 
 /**
  * User: jahia
@@ -41,19 +44,38 @@ import org.jahia.services.preferences.JahiaPreference;
  * Time: 16:30:31
  */
 public class GenericJahiaPreference extends JahiaPreference {
-    public GenericJahiaPreferenceKey getGenericPreferenceKey() {
-        return (GenericJahiaPreferenceKey) getKey();
+
+    public GenericJahiaPreference(JCRNodeWrapper node) {
+        super(node);
     }
 
-    public GenericJahiaPreferenceValue getGenericPreferenceValue() {
-        return (GenericJahiaPreferenceValue) getValue();
+    public String getPrefName() throws RepositoryException {
+        return getProperty("j:prefName").getString();
     }
 
-    public void setGenericPreferenceKey(GenericJahiaPreferenceKey genericJahiaPreferenceKey) {
-        setKey(genericJahiaPreferenceKey);
+    public void setPrefName(String prefName) throws RepositoryException {
+        setProperty("j:prefName", prefName);
     }
 
-    public void setGenericPreferenceValue(GenericJahiaPreferenceValue genericJahiaPreferenceValue) {
-        setValue(genericJahiaPreferenceValue);
+    public String getPrefValue() throws RepositoryException {
+        return getProperty("j:prefValue").getString();
     }
+
+    public void setPrefValue(String prefValue) throws RepositoryException {
+        setProperty("j:prefValue", prefValue);
+    }
+
+    public String toString() {
+        try {
+            return super.toString()+" ,[prefName=" + getPrefName() + ",prefValue" + getPrefValue() + "]";
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+        return super.toString();
+    }
+
+    public void init() {
+        // not implemented
+    }
+
 }

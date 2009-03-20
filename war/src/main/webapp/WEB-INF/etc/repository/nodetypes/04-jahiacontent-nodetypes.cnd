@@ -65,7 +65,7 @@
 
 [jnt:contentPortlet] > jnt:portlet
 
-[jnt:layoutItem]
+[jnt:layoutItem]  > nt:base, mix:referenceable, jmix:hierarchyNode
  - j:columnIndex (long)
  - j:rowIndex (long)
  - j:status (string)

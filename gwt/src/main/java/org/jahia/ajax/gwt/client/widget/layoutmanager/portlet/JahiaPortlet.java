@@ -105,6 +105,7 @@ public class JahiaPortlet extends Portlet {
         return true;
     }
 
+
     public void doView() {
         mode = MODE_VIEW;
         // to implement
@@ -274,7 +275,7 @@ public class JahiaPortlet extends Portlet {
     }
 
     public String getWindowId() {
-        return porletConfig.getWindowId();
+        return porletConfig.getPortlet();
     }
 
     public Widget getViewContainer() {

@@ -55,10 +55,9 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
+import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
-import org.jahia.services.preferences.toolbar.ToolbarJahiaPreferenceKey;
-import org.jahia.services.preferences.toolbar.ToolbarJahiaPreferenceValue;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.scheduler.ProcessAction;
@@ -78,6 +77,7 @@ import org.jahia.exceptions.JahiaException;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 
@@ -116,7 +116,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                     GWTJahiaToolbarSet gwtJahiaToolbarSet = createGWTToolbarSet(pageContext, toolbarSet);
                     return gwtJahiaToolbarSet;
                 } else {
-                    logger.info("Toolbars are not visible.");
+                    logger.info("Toolbar are not visible.");
                     return null;
                 }
             } else {
@@ -146,9 +146,11 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                 // add toolbar only if not empty
                 if (gwtToolbar != null && gwtToolbar.getGwtToolbarItemsGroups() != null && !gwtToolbar.getGwtToolbarItemsGroups().isEmpty()) {
                     gwtJahiaToolbarSet.addGWTToolbar(gwtToolbar);
+                } else{
+                    logger.debug("["+(gwtToolbar != null) +","+ (gwtToolbar.getGwtToolbarItemsGroups() != null) +","+ (!gwtToolbar.getGwtToolbarItemsGroups().isEmpty())+"]"+" toolbar: " + toolbar.getName() + " has no items -->  not visible");
                 }
             } else {
-                logger.debug("toolbar: " + toolbar.getType() + ":  not visible");
+                logger.debug("toolbar: " + toolbar.getName() + ":  not visible");
             }
         }
         return gwtJahiaToolbarSet;
@@ -175,9 +177,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @throws GWTJahiaServiceException
      */
     public void updateToolbar(GWTJahiaPageContext pageContext, GWTJahiaToolbar gwtToolbar) throws GWTJahiaServiceException {
-        ToolbarJahiaPreferenceKey key = createToolbarPreferenceKey(gwtToolbar);
-        ToolbarJahiaPreferenceValue value = createToolbarJahiaPreferenceValue(gwtToolbar);
-        getToolbarJahiaPreferencesProvider().setJahiaPreference(key, value);
+        getToolbarJahiaPreferencesProvider().setJahiaPreference(createToolbarPreference(gwtToolbar));
     }
 
 
@@ -188,9 +188,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @return
      */
     public GWTJahiaToolbar loadGWTToolbar(GWTJahiaPageContext pageContext, GWTJahiaToolbar gwtToolbar) {
-        ToolbarJahiaPreferenceKey key = createToolbarPreferenceKey(gwtToolbar);
-        ToolbarJahiaPreferenceValue value = createToolbarJahiaPreferenceValue(gwtToolbar);
-        getToolbarJahiaPreferencesProvider().setJahiaPreference(key, value);
+        getToolbarJahiaPreferencesProvider().setJahiaPreference(createToolbarPreference(gwtToolbar));
         Toolbar toolbar = getToolbarService().getToolbarByIndex(gwtToolbar.getIndex());
         return createGWTToolbar(pageContext, toolbar);
     }
@@ -251,8 +249,11 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
             if (toolbarPreferencesProvider == null) {
                 toolbarPreferencesProvider = SERVICES_REGISTRY.getJahiaPreferencesService().getPreferencesProviderByType(ToolbarJahiaPreference.PROVIDER_TYPE);
             }
+            if (toolbarPreferencesProvider == null) {
+                logger.error("Toolbar preference profider not found.");
+            }
             return toolbarPreferencesProvider;
-        } catch (JahiaPreferenceProviderException e) {
+        } catch (Exception e) {
             logger.error(e, e);
         }
         return null;
@@ -262,7 +263,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
     private GWTJahiaToolbar createGWTToolbar(GWTJahiaPageContext pageContext, Toolbar toolbar) {
         // don't add the tool bar if  has no items group
         if (toolbar.getItemsGroupList() == null || toolbar.getItemsGroupList().isEmpty()) {
-            logger.debug("toolbar itemsgroup list is empty");
+            logger.debug("toolbar["+toolbar.getName()+"] itemsgroup list is empty");
             return null;
         }
 
@@ -316,7 +317,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                     }
                 }
             } else {
-                logger.debug("itemsGroup: " + itemsGroup.getTitleKey() + ":  not visible");
+                logger.debug("toolbar["+gwtToolbar.getName()+"] - itemsGroup [" +itemsGroup.getType()+","+ itemsGroup.getTitleKey() + "]  not visible");
             }
             index++;
         }
@@ -326,50 +327,67 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
     }
 
     private GWTJahiaState createJahiaToolbarState(GWTJahiaToolbar gwtToolbar, GWTJahiaState defaultState) {
-        JahiaPreferencesProvider provider = getToolbarJahiaPreferencesProvider();
-        ToolbarJahiaPreferenceKey key = createToolbarPreferenceKey(gwtToolbar);
-        if (key != null) {
-            ToolbarJahiaPreference preference = (ToolbarJahiaPreference) provider.getJahiaPreference(key);
-            if (preference != null && preference.getValue() != null) {
-                logger.debug("Preference found for toolbar: " + gwtToolbar.getName());
-                ToolbarJahiaPreferenceValue value = (ToolbarJahiaPreferenceValue) preference.getValue();
-                GWTJahiaState state = new GWTJahiaState();
-                state.setValue(value.getState());
-                state.setIndex(value.getIndex());
-                state.setPagePositionX(value.getPositionX());
-                state.setPagePositionY(value.getPositionY());
-                state.setDisplay(gwtToolbar.isMandatory() || value.getDisplay());
-                return state;
+        try {
+            ToolbarJahiaPreference preference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
+            if (preference == null) {
+                return defaultState;
             }
+            logger.debug("Preference found for toolbar: " + gwtToolbar.getName());
+            GWTJahiaState state = new GWTJahiaState();
+            state.setValue(preference.getState());
+            state.setIndex(preference.getToolbarIndex());
+            state.setPagePositionX(preference.getPositionX());
+            state.setPagePositionY(preference.getPositionY());
+            state.setDisplay(gwtToolbar.isMandatory() || preference.isDisplay());
+            return state;
+
+        } catch (Exception e) {
+            logger.debug(e, e);
+            return defaultState;
         }
 
-        return defaultState;
+
     }
 
-    private ToolbarJahiaPreferenceKey createToolbarPreferenceKey(GWTJahiaToolbar toolbar) {
+    private ToolbarJahiaPreference createToolbarPreference(GWTJahiaToolbar gwtToolbar) {
         JahiaUser remoteJahiaUser = getRemoteJahiaUser();
-        ToolbarJahiaPreferenceKey key = new ToolbarJahiaPreferenceKey();
-        key.setPrincipal(remoteJahiaUser);
-        key.setName(toolbar.getName());
-        key.setType(toolbar.getType());
-        logger.debug("toolbar: " + toolbar.getType() + "," + toolbar.getName());
-        return key;
+        try {
+            ToolbarJahiaPreference jahiaPreference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
+            if (jahiaPreference == null) {
+                jahiaPreference = (ToolbarJahiaPreference) getToolbarJahiaPreferencesProvider().createJahiaPreferenceNode(remoteJahiaUser);
+            }
+            jahiaPreference.setToolbarName(gwtToolbar.getName());
+            jahiaPreference.setType(gwtToolbar.getType());
+            jahiaPreference.setState(gwtToolbar.getState().getValue());
+            jahiaPreference.setToolbarIndex(gwtToolbar.getState().getIndex());
+            jahiaPreference.setPositionX(gwtToolbar.getState().getPagePositionX());
+            jahiaPreference.setPositionY(gwtToolbar.getState().getPagePositionY());
+            jahiaPreference.setDisplay(gwtToolbar.getState().isDisplay());
+            logger.debug("toolbar: " + gwtToolbar.getType() + "," + gwtToolbar.getName());
+            return jahiaPreference;
+        } catch (RepositoryException e) {
+            logger.error(e, e);
+        }
+        return null;
     }
 
-    private ToolbarJahiaPreferenceValue createToolbarJahiaPreferenceValue(GWTJahiaToolbar gwtToolbar) {
-        ToolbarJahiaPreferenceValue value = new ToolbarJahiaPreferenceValue();
-        value.setState(gwtToolbar.getState().getValue());
-        value.setIndex(gwtToolbar.getState().getIndex());
-        value.setPositionX(gwtToolbar.getState().getPagePositionX());
-        value.setPositionY(gwtToolbar.getState().getPagePositionY());
-        value.setDisplay(gwtToolbar.getState().isDisplay());
-        return value;
+    /**
+     * Get toolbar pref
+     *
+     * @param name
+     * @param type
+     * @return
+     */
+    private ToolbarJahiaPreference getToolbarPreference(String name, String type) {
+        JahiaUser remoteJahiaUser = getRemoteJahiaUser();
+        return (ToolbarJahiaPreference) getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesXpathHelper.getToolbarXpath(name, type));
     }
+
 
     private GWTJahiaToolbarItemsGroup createGWTItemsGroup(GWTJahiaPageContext page, String toolbarName, int index, ItemsGroup itemsGroup) {
         // don't add the items group if  has no items group
         if (itemsGroup.getItemList() == null || itemsGroup.getItemList().isEmpty()) {
-            logger.debug("itemlist is empty");
+            logger.debug("toolbar["+toolbarName+"] itemlist is empty");
             return null;
         }
 
@@ -418,7 +436,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
 
         // don't add the items group if  has no items group
         if (gwtToolbarItemsList == null || gwtToolbarItemsList.isEmpty()) {
-            logger.debug("itemlist is empty");
+            logger.debug("toolbar["+toolbarName+"] itemlist is empty");
             return null;
         }
 
@@ -578,7 +596,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                     } else if (lastExecutedJobType.equalsIgnoreCase(CopyJob.COPYPASTE_TYPE)) {
                         lastExecutedJobLabel = getLocaleJahiaEnginesResource("org.jahia.engines.processDisplay.op.copypaste.label");
                     }
-                    
+
                     // check if current page validated
                     List<ProcessAction> processActionList = (List<ProcessAction>) lastExecutedJobDataMap.get(BackgroundJob.ACTIONS);
                     if (processActionList != null) {
@@ -749,11 +767,11 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
     public Map<String, String> getGAdata(GWTJahiaAnalyticsParameter p) throws GWTJahiaServiceException {
         ParamBean paramBean = retrieveParamBean();
         JahiaSite currentSite = paramBean.getSite();
-        String gaLogin = currentSite.getSettings().getProperty(p.getJahiaGAprofile()+"_"+currentSite.getSiteKey()+"_gaLogin");
-        String gaPassword =  currentSite.getSettings().getProperty(p.getJahiaGAprofile()+"_"+currentSite.getSiteKey()+"_gaPassword");
-        String gaAccount =  currentSite.getSettings().getProperty(p.getJahiaGAprofile()+"_"+currentSite.getSiteKey()+"_gaUserAccount");
-        String profile = currentSite.getSettings().getProperty(p.getJahiaGAprofile()+"_"+currentSite.getSiteKey()+"_gaProfile");
-       
+        String gaLogin = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaLogin");
+        String gaPassword = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaPassword");
+        String gaAccount = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaUserAccount");
+        String profile = currentSite.getSettings().getProperty(p.getJahiaGAprofile() + "_" + currentSite.getSiteKey() + "_gaProfile");
+
         String statType = p.getStatType();
         String dateRange = p.getDateRange();
         String chartType = p.getChartType();
@@ -766,7 +784,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
     }
 
     /*
-   * Google analytics  
+   * Google analytics
    *
    * */
     public Map<String, String> getGAsiteProperties(int pid) {
@@ -790,26 +808,26 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
             /*gaSiteProperties.put("gaProfileCustom", currentSite.getSettings().getProperty("gaProfileCustom"));
             gaSiteProperties.put("gaProfileDefault", currentSite.getSettings().getProperty("gaProfileDefault"));*/
             it = ((currentSite.getSettings()).keySet()).iterator();
-           // logger.info("###############################################################################");
-           // logger.info("----------------------GA settings-----------------------");
+            // logger.info("###############################################################################");
+            // logger.info("----------------------GA settings-----------------------");
             while (it.hasNext()) {
                 String key = (String) it.next();
                 if (key.startsWith("jahiaGAprofile")) {
                     // logger.info("--------------------------------------------------");
                     //logger.info("profile = " + currentSite.getSettings().get(key));// profile name
-                    gaSiteProperties.put("jahiaGAprofileName"+currentSite.getSettings().get(key), (String) currentSite.getSettings().get(key));
+                    gaSiteProperties.put("jahiaGAprofileName" + currentSite.getSettings().get(key), (String) currentSite.getSettings().get(key));
                     //logger.info("gaUserAccount = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key)+"#gaUserAccount", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
-                   // logger.info("gaProfile = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key)+"#gaProfile", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
+                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#gaUserAccount", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaUserAccount"));
+                    // logger.info("gaProfile = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
+                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#gaProfile", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaProfile"));
                     //logger.info("gaLogin = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key)+"#gaLogin", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
+                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#gaLogin", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaLogin"));
                     //logger.info("gaPassword = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaPassword"));
                     //gaSiteProperties.put(currentSite.getSettings().get(key)+"#gaPassword", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_gaPassword"));
                     //logger.info("trackedUrls = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key)+"#trackedUrls", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
+                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#trackedUrls", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackedUrls"));
                     //logger.info("trackingEnabled = " + currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
-                    gaSiteProperties.put(currentSite.getSettings().get(key)+"#trackingEnabled", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
+                    gaSiteProperties.put(currentSite.getSettings().get(key) + "#trackingEnabled", currentSite.getSettings().getProperty(currentSite.getSettings().get(key) + "_" + currentSite.getSiteKey() + "_trackingEnabled"));
                     //logger.info("--------------------------------------------------");
 
                 }
@@ -832,8 +850,8 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         while (it.hasNext()) {
             String key = (String) it.next();
             if (key.startsWith("jahiaGAprofile")) {
-                    oneConfigured = true;
-                    break;
+                oneConfigured = true;
+                break;
             }
         }
         return oneConfigured;

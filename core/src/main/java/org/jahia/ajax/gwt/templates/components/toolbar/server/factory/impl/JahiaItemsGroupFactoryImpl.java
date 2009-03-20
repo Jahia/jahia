@@ -53,14 +53,16 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.pages.ContentPage;
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.JahiaPreferenceKey;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceKey;
+import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.toolbar.resolver.impl.URLPropertyResolver;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.JCRJahiaContentNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,19 +149,22 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         return gwtToolbarItemsList;
     }
 
-    /**
+     /**
      * populate with bookmark items
      */
     public List<GWTJahiaToolbarItem> populateWithBookmarksItems(List<GWTJahiaToolbarItem> gwtToolbarItemsList, JahiaData jahiaData) {
         // get bookmarks provider
         JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
-        Map<JahiaPreferenceKey, JahiaPreference> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaPreferences(jahiaData.getProcessingContext());
-        if (jahiaPreferencesMap != null) {
-            for (JahiaPreferenceKey key : jahiaPreferencesMap.keySet()) {
+        List<JahiaPreference> jahiaPreferenceList = jahiaPreferencesProvider.getAllJahiaPreferences(jahiaData.getProcessingContext());
+        if (jahiaPreferenceList != null) {
+            for (JahiaPreference pref : jahiaPreferenceList) {
                 // current bookmark
-                BookmarksJahiaPreferenceKey bKey = (BookmarksJahiaPreferenceKey) key;
-                int pid = bKey.getPid();
+                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) pref;
                 try {
+                    String pageUUID = bPref.getPageUUID();
+                    ContentPage contentPage = getContentPage(pageUUID, jahiaData.getProcessingContext().getUser());
+                    int pid = contentPage.getPageID();
+
                     GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, null, pid);
                     if (gwtToolbarItem != null) {
                         String minIconStyle = "gwt-toolbar-ItemsGroup-icons-bookmark-min";
@@ -170,13 +175,12 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                         gwtToolbarItemsList.add(gwtToolbarItem);
                     }
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(e, e);
                 }
             }
         }
         return gwtToolbarItemsList;
     }
-
     /**
      * Get Bookmark jahia preference provider
      *
@@ -185,7 +189,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
     private JahiaPreferencesProvider getBookmarksJahiaPreferencesProvider() {
         try {
             if (bookmarksPreferencesProvider == null) {
-                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("org.jahia.preferences.provider.bookmarks");
+                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("bookmarks");
             }
             return bookmarksPreferencesProvider;
         } catch (JahiaPreferenceProviderException e) {
@@ -504,6 +508,22 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         gwtToolbarItem.addProperty(gwtProperty);
 
         return gwtToolbarItem;
+    }
+
+    /**
+     * Get Content page from uuid
+     * @param uuid
+     * @param jahiaUser
+     * @return
+     */
+    private static ContentPage getContentPage(String uuid, JahiaUser jahiaUser) {
+        try {
+            JCRJahiaContentNode nodeWrapper = (JCRJahiaContentNode) ServicesRegistry.getInstance().getJCRStoreService().getNodeByUUID(uuid, jahiaUser);
+            return (ContentPage) nodeWrapper.getContentObject();
+        } catch (Exception e) {
+            logger.error(e, e);
+            return null;
+        }
     }
 
 }

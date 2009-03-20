@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -41,10 +41,15 @@ import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceKey;
-import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreferenceValue;
+import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
+import org.jahia.services.pages.ContentPage;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.JCRJahiaContentNode;
+import org.jahia.exceptions.JahiaException;
 
+import javax.jcr.RepositoryException;
 import java.util.Map;
 
 /**
@@ -79,50 +84,57 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
      * @return
      */
     public String deleteBookmarkCurrentPage(JahiaData jahiaData, Map<String, GWTJahiaProperty> gwtPropertiesMap) {
-        // get processing context
-        ProcessingContext processingContext = jahiaData.getProcessingContext();
 
-        // get bookmarks provider
-        JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
+        try {
+            ProcessingContext processingContext = jahiaData.getProcessingContext();
 
-        // create a bookmarksJahiaPreferenceKey
-        BookmarksJahiaPreferenceKey bookmarksJahiaPreferenceKey = (BookmarksJahiaPreferenceKey) jahiaPreferencesProvider.createPartialJahiaPreferenceKey(processingContext);
-        bookmarksJahiaPreferenceKey.setPid(processingContext.getPageID());
+            // get bookmarks provider
+            JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
-        // set preference
-        jahiaPreferencesProvider.deleteJahiaPreference(bookmarksJahiaPreferenceKey);
-        logger.debug("bookmark [pageID=" + bookmarksJahiaPreferenceKey.getPid() + " added]");
-        return "bookmark [pageID=" + bookmarksJahiaPreferenceKey.getPid() + " added]";
+            // delete a bookmarksJahiaPreferenceKey
+            jahiaPreferencesProvider.deleteJahiaPreference(processingContext.getUser(), JahiaPreferencesXpathHelper.getBookmarkXpath(processingContext.getPageID()));
+
+            // set preference
+            return "";
+        } catch (Exception e) {
+            logger.error(e, e);
+            return "";
+        }
+
     }
 
     /**
      * Bookmark currentpage
+     *
      * @param jahiaData
      * @param gwtPropertiesMap
      * @return
      */
     public String bookmarkCurrentPage(JahiaData jahiaData, Map<String, GWTJahiaProperty> gwtPropertiesMap) {
-        // get processing context
-        ProcessingContext processingContext = jahiaData.getProcessingContext();
+        try {
+            // get processing context
+            ProcessingContext processingContext = jahiaData.getProcessingContext();
+            ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(processingContext.getPageID(), false);
+            String pageUUID = page.getUUID();
 
-        // get bookmarks provider
-        JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
+            // get bookmarks provider
+            JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
-        // create a bookmarksJahiaPreferenceKey
-        BookmarksJahiaPreferenceKey bookmarksJahiaPreferenceKey = (BookmarksJahiaPreferenceKey) jahiaPreferencesProvider.createPartialJahiaPreferenceKey(processingContext);
-        bookmarksJahiaPreferenceKey.setPid(processingContext.getPageID());
-        
-        // create a jahiaPreferenceValue
-        BookmarksJahiaPreferenceValue jahiaPreferenceValue = (BookmarksJahiaPreferenceValue) jahiaPreferencesProvider.createEmptyJahiaPreferenceValue();
+            // create a bookmarksJahiaPreferenceKey
+            BookmarksJahiaPreference bookmarksJahiaPreference = (BookmarksJahiaPreference) jahiaPreferencesProvider.getNewJahiaPreferenceNode(processingContext);
+            bookmarksJahiaPreference.setPageUUID(pageUUID);
 
-        //jahiaPreferenceValue.setProperty("url", url);
-        bookmarksJahiaPreferenceKey.setPid(processingContext.getPageID());
 
-        // set preference
-        jahiaPreferencesProvider.setJahiaPreference(bookmarksJahiaPreferenceKey, jahiaPreferenceValue);
-        logger.debug("bookmark [pageID=" + bookmarksJahiaPreferenceKey.getPid() + " added]");
-        return "bookmark [pageID=" + bookmarksJahiaPreferenceKey.getPid() + " added]";
+            // set preference
+            jahiaPreferencesProvider.setJahiaPreference(bookmarksJahiaPreference);
+            logger.debug("bookmark [pageID=" + bookmarksJahiaPreference.getPageUUID() + " added]");
+            return "bookmark [pageID=" + bookmarksJahiaPreference.getPageUUID() + " added]";
+        } catch (Exception e) {
+            logger.error(e, e);
+            return null;
+        }
     }
+
 
     /**
      * Get Bookmark jahia preference provider
@@ -132,7 +144,7 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
     private JahiaPreferencesProvider getBookmarksJahiaPreferencesProvider() {
         try {
             if (bookmarksPreferencesProvider == null) {
-                bookmarksPreferencesProvider = SERVICES_REGISTRY.getJahiaPreferencesService().getPreferencesProviderByType("org.jahia.preferences.provider.bookmarks");
+                bookmarksPreferencesProvider = SERVICES_REGISTRY.getJahiaPreferencesService().getPreferencesProviderByType("bookmarks");
             }
             return bookmarksPreferencesProvider;
         } catch (JahiaPreferenceProviderException e) {
@@ -140,4 +152,5 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
         }
         return null;
     }
+
 }

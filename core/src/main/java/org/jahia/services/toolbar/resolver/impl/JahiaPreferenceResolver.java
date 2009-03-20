@@ -36,12 +36,7 @@ package org.jahia.services.toolbar.resolver.impl;
 import org.jahia.data.JahiaData;
 import org.jahia.services.toolbar.resolver.SelectedResolver;
 import org.jahia.services.toolbar.resolver.VisibilityResolver;
-import org.jahia.services.preferences.generic.GenericJahiaPreferenceValue;
-import org.jahia.services.preferences.generic.GenericJahiaPreferenceKey;
-import org.jahia.services.preferences.generic.GenericJahiaPreference;
-import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.registries.ServicesRegistry;
 import org.apache.log4j.Logger;
 
@@ -96,7 +91,7 @@ public class JahiaPreferenceResolver implements SelectedResolver, VisibilityReso
         return getPreferenceValueAsBoolean(jData, type);
     }
 
-    /**
+   /**
      * Get the generic preference provider
      *
      * @param jahiaData
@@ -104,24 +99,6 @@ public class JahiaPreferenceResolver implements SelectedResolver, VisibilityReso
      * @return
      */
     private String getGenericPreferenceValue(JahiaData jahiaData, String name) {
-        String valueAsStrg = null;
-        try {
-            JahiaPreferencesProvider basicProvider = JAHIA_PREFERENCES_SERVICE.getGenericPreferencesProvider();
-
-            // // create generic preference key
-            GenericJahiaPreferenceKey preferenceKey = (GenericJahiaPreferenceKey) basicProvider.createPartialJahiaPreferenceKey(jahiaData.getProcessingContext());
-            preferenceKey.setName(name);
-
-            // retrieve preference
-            GenericJahiaPreference preference = (GenericJahiaPreference) basicProvider.getJahiaPreference(preferenceKey);
-            GenericJahiaPreferenceValue value = (GenericJahiaPreferenceValue) preference.getValue();
-            if (value != null) {
-                valueAsStrg = value.getValue();
-            }
-        } catch (JahiaPreferenceProviderException e) {
-            logger.error(e, e);
-        }
-        
-        return valueAsStrg;
+        return JAHIA_PREFERENCES_SERVICE.getGenericPreferenceValue(name, jahiaData.getProcessingContext());
     }
 }

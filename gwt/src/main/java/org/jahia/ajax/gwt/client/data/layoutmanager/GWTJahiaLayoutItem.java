@@ -43,6 +43,7 @@ import java.io.Serializable;
  * Time: 11:19:43
  */
 public class GWTJahiaLayoutItem implements Serializable {
+    private String uuid;
     private String viewModeLink;
     private String editModeLink;
     private String helpModeLink;
@@ -56,14 +57,23 @@ public class GWTJahiaLayoutItem implements Serializable {
     public GWTJahiaLayoutItem() {
     }
 
-    public GWTJahiaLayoutItem(GWTJahiaNode gwtJahiaNode, int column, int row, String status) {
+    public GWTJahiaLayoutItem(String uuid,GWTJahiaNode gwtJahiaNode, int column, int row, String status) {
         this.gwtJahiaNode = gwtJahiaNode;
         this.column = column;
         this.row = row;
         this.status = status;
+        this.uuid = uuid;
     }
 
-    public String getWindowId() {
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getPortlet() {
         if(gwtJahiaNode != null){
             return gwtJahiaNode.getUUID();
         }

@@ -788,43 +788,45 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
         Map<String, String> extensions = new HashMap<String, String>();
 
         TemplatePathResolverBean templatePath = getJahiaBean().getIncludes().getTemplatePath();
-        try {
-            String containerType = container.getDefinition().getContainerType();
-            if (containerType == null) {
-                return body;
-            }
-            ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(containerType);
-            List<ExtendedNodeType> superTypes = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
-            superTypes.addAll(container.getDefinition().getMixinNodeTypes());
-            for (ExtendedNodeType superType : superTypes) {
-                if (displayExtensions && superType.isNodeType("jmix:containerExtension") && !superType.getName().equals("jmix:containerExtension")) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("supertype name:" + superType.getName());
-                    }
-                    String n = StringUtils.substringAfter(superType.getName(), ":");
-                    String resolvedPath = templatePath.lookup("extensions/" + n
-                            + "/"
-                            + JCRContentUtils.cleanUpNodeName(nt.getName())
-                            + "/" + n + ".jsp", "extensions/" + n + "/" + n
-                            + ".jsp");
-
-                    extensions.put(superType.getName(), resolvedPath);
+        if (displayExtensions || displaySkins) {
+            try {
+                String containerType = container.getDefinition().getContainerType();
+                if (containerType == null) {
+                    return body;
                 }
-                if (displaySkins && !Boolean.TRUE.equals(request.getAttribute("skinned")) && superType.getName().equals("jmix:skinnable")) {
-                    JahiaField field = container.getField("skin");
-                    if (field != null) {
-                        skin = field.getValue();
-                        ResourceBundleMarker marker = ResourceBundleMarker.parseMarkerValue(skin);
-                        if (marker != null) {
-                            skin = marker.getDefaultValue();
+                ExtendedNodeType nt = NodeTypeRegistry.getInstance().getNodeType(containerType);
+                List<ExtendedNodeType> superTypes = new ArrayList<ExtendedNodeType>(Arrays.asList(nt.getSupertypes()));
+                superTypes.addAll(container.getDefinition().getMixinNodeTypes());
+                for (ExtendedNodeType superType : superTypes) {
+                    if (displayExtensions && superType.isNodeType("jmix:containerExtension") && !superType.getName().equals("jmix:containerExtension")) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("supertype name:" + superType.getName());
+                        }
+                        String n = StringUtils.substringAfter(superType.getName(), ":");
+                        String resolvedPath = templatePath.lookup("extensions/" + n
+                                + "/"
+                                + JCRContentUtils.cleanUpNodeName(nt.getName())
+                                + "/" + n + ".jsp", "extensions/" + n + "/" + n
+                                + ".jsp");
+    
+                        extensions.put(superType.getName(), resolvedPath);
+                    }
+                    if (displaySkins && !Boolean.TRUE.equals(request.getAttribute("skinned")) && superType.getName().equals("jmix:skinnable")) {
+                        JahiaField field = container.getField("skin");
+                        if (field != null) {
+                            skin = field.getValue();
+                            ResourceBundleMarker marker = ResourceBundleMarker.parseMarkerValue(skin);
+                            if (marker != null) {
+                                skin = marker.getDefaultValue();
+                            }
                         }
                     }
                 }
+            } catch (NoSuchNodeTypeException e) {
+                logger.error("NoSuchNodeTypeException ", e);
+            } catch (JahiaException e) {
+                logger.error("JahiaException in skinnify", e);
             }
-        } catch (NoSuchNodeTypeException e) {
-            logger.error("NoSuchNodeTypeException ", e);
-        } catch (JahiaException e) {
-            logger.error("JahiaException in skinnify", e);
         }
         if ("noskin".equals(skin) && extensions.isEmpty()) {
             return body;

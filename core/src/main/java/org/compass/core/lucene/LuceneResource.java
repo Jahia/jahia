@@ -185,7 +185,7 @@ public class LuceneResource implements AliasedObject, InternalResource, Map<Stri
             throw new SearchEngineException("No resource property mapping is defined for alias [" + alias
                     + "] and resource property [" + name + "]");
         }
-        ResourcePropertyConverter converter = (ResourcePropertyConverter) propertyMapping.getConverter();
+        ResourcePropertyConverter converter = propertyMapping.getResourcePropertyConverter();
         if (converter == null) {
             converter = (ResourcePropertyConverter) searchEngineFactory.getMapping().
                     getConverterLookup().lookupConverter(value.getClass());
@@ -207,7 +207,7 @@ public class LuceneResource implements AliasedObject, InternalResource, Map<Stri
         }
 
         Field.TermVector fieldTermVector = LuceneUtils.getFieldTermVector(propertyMapping.getTermVector());
-        Fieldable field = new Field(name, value, fieldTermVector);
+        Field field = new Field(name, value, fieldTermVector);
         LuceneProperty property = new LuceneProperty(field);
         property.setBoost(propertyMapping.getBoost());
         property.setPropertyMapping(propertyMapping);

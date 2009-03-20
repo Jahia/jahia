@@ -70,7 +70,7 @@ public class LuceneProperty implements InternalProperty {
         if (propertyMapping == null) {
             return value;
         }
-        ResourcePropertyConverter converter = (ResourcePropertyConverter) propertyMapping.getConverter();
+        ResourcePropertyConverter converter = propertyMapping.getResourcePropertyConverter();
         if (converter == null) {
             return null;
         }

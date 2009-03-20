@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -57,9 +57,9 @@ limitations under the License.
     <template:container id="faqContainer" cacheKey="onlyQuestions" actionMenuNamePostFix="faq"
                        actionMenuNameLabelKey="faq.update">
         <div class="faqSummaryItem">
-        <template:field name="faqTitle" display="false" valueBeanID="title"/>
+        <template:field name="faqTitle" display="false" var="title"/>
         <h3>
-            <a href="#<c:out value="${title}"/>"><c:out value="${title}"/></a>
+            <a href="#<c:out value='${title}'/>"><c:out value="${title}"/></a>
         </h3>
         <template:containerList name="faqQA" id="faqQAList"
                                actionMenuNamePostFix="qas" actionMenuNameLabelKey="qas.add">
@@ -81,8 +81,8 @@ limitations under the License.
 <template:containerList name="faq" id="faqList" displayActionMenu="false">
 <div class="topicItem">
     <template:container id="faqContainer" cacheKey="allFields" displayActionMenu="false">
-        <template:field name="faqTitle" display="false" valueBeanID="title"/>
-        <h3 id="<c:out value="${title}"/>"><c:out value="${title}"/></h3>
+        <template:field name="faqTitle" display="false" var="title"/>
+        <h3 id="<c:out value='${title}'/>"><c:out value="${title}"/></h3>
         <template:containerList name="faqQA" id="faqQAList" displayActionMenu="false">
             <ol>
                 <template:container id="qaContainer" cacheKey="questionAndAnswer" actionMenuNamePostFix="qa" actionMenuNameLabelKey="qa.update">

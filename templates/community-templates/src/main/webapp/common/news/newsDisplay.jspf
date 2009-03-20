@@ -3,7 +3,7 @@
                    actionMenuNameLabelKey="news.update">
     <div class="newsListItem"><!--start newsListItem -->
         <div class="newsImg"><a href="#"><template:image file="newsImage"/></a></div>
-        <template:field name="newsTitle" valueBeanID="newsTitle" display="false"/>
+        <template:field name="newsTitle" var="newsTitle" display="false"/>
         <h4><template:link page="newsLink" linkBody="${newsTitle}"/></h4>
 
         <p class="newsInfo">

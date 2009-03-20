@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -37,10 +37,10 @@
 <%@ include file="../../declarations.jspf" %>
 <template:containerList name="rssContainer" id="rss">
         <template:container id="rssContainer">
-            <template:field name="url" display="false" valueBeanID="url"/>
-            <template:field name="entriesCount" display="false" valueBeanID="entriesCount"/>
+            <template:field name="url" display="false" var="url"/>
+            <template:field name="entriesCount" display="false" var="entriesCount"/>
             <div id="<%=new StringBuilder(String.valueOf(System.currentTimeMillis() % 3600000)).append("_").append(Math.random()).toString()%>" jahiatype="rss" url="${url}"
-                    entriesCount="${entriesCount}" >
+                    entriesCount="${not empty entriesCount ? entriesCount.integer : entriesCount}" >
             </div>
         </template:container>
 </template:containerList>

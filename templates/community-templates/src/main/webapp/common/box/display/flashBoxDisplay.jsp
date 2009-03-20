@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -38,24 +38,24 @@
                        actionMenuNamePostFix="flash" actionMenuNameLabelKey="flash.add">
         <template:container id="flashContainer" displayActionMenu="false">
             <ui:actionMenu contentObjectName="flashContainer" namePostFix="flash" labelKey="flash.update">
-            <template:field name="flashSourceFlashContainer" display="false" valueBeanID="flashSource"/>
-            <template:field name="widthFlashContainer" display="false" valueBeanID="widthFlash"/>
-            <template:field name="heightFlashContainer" display="false" valueBeanID="heightFlash"/>
-            <template:field name="flashPlayerFlashContainer" display="false" valueBeanID="flashPlayer"/>
-            <template:field name="idFlashContainer" display="false" valueBeanID="idFlash"/>
-            <template:field name="nameFlashContainer" display="false" valueBeanID="nameFlash"/>
-            <template:field name="swliveconnectFlashContainer" display="false" valueBeanID="swliveconnectFlash"/>
-            <template:field name="playFlashContainer" display="false" valueBeanID="playFlash"/>
-            <template:field name="loopFlashContainer" display="false" valueBeanID="loopFlash"/>
-            <template:field name="menuFlashContainer" display="false" valueBeanID="menuFlash"/>
-            <template:field name="qualityFlashContainer" display="false" valueBeanID="qualityFlash"/>
-            <template:field name="scaleFlashContainer" display="false" valueBeanID="scaleFlash"/>
-            <template:field name="alignFlashContainer" display="false" valueBeanID="alignFlash"/>
-            <template:field name="salignFlashContainer" display="false" valueBeanID="salignFlash"/>
-            <template:field name="wmodeFlashContainer" display="false" valueBeanID="wmodeFlash"/>
-            <template:field name="bgcolorFlashContainer" display="false" valueBeanID="bgcolorFlash"/>
-            <template:field name="baseFlashContainer" display="false" valueBeanID="baseFlash"/>
-            <template:field name="flashvarsFlashContainer" display="false" valueBeanID="flashvarsFlash"/>
+            <template:field name="flashSourceFlashContainer" display="false" var="flashSource"/>
+            <template:field name="widthFlashContainer" display="false" var="widthFlash"/>
+            <template:field name="heightFlashContainer" display="false" var="heightFlash"/>
+            <template:field name="flashPlayerFlashContainer" display="false" var="flashPlayer"/>
+            <template:field name="idFlashContainer" display="false" var="idFlash"/>
+            <template:field name="nameFlashContainer" display="false" var="nameFlash"/>
+            <template:field name="swliveconnectFlashContainer" display="false" var="swliveconnectFlash"/>
+            <template:field name="playFlashContainer" display="false" var="playFlash"/>
+            <template:field name="loopFlashContainer" display="false" var="loopFlash"/>
+            <template:field name="menuFlashContainer" display="false" var="menuFlash"/>
+            <template:field name="qualityFlashContainer" display="false" var="qualityFlash"/>
+            <template:field name="scaleFlashContainer" display="false" var="scaleFlash"/>
+            <template:field name="alignFlashContainer" display="false" var="alignFlash"/>
+            <template:field name="salignFlashContainer" display="false" var="salignFlash"/>
+            <template:field name="wmodeFlashContainer" display="false" var="wmodeFlash"/>
+            <template:field name="bgcolorFlashContainer" display="false" var="bgcolorFlash"/>
+            <template:field name="baseFlashContainer" display="false" var="baseFlash"/>
+            <template:field name="flashvarsFlashContainer" display="false" var="flashvarsFlash"/>
 	    <div id="flashcontent${flashContainer.id}">
             <div id="flashcontent"><!--START FLASH -->
                 <strong>You need to upgrade your Flash Player</strong><br />

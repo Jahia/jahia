@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -55,12 +55,12 @@ limitations under the License.
 <template:containerList name="usersContainer" id="users"
                        actionMenuNamePostFix="userQueries" actionMenuNameLabelKey="userQueries.add">
     <template:container id="usersContainer" actionMenuNamePostFix="userQuery" actionMenuNameLabelKey="userQuery.update">
-        <template:field name='userDisplayLimit' defaultValue="5" beanID="boxUserDisplayLimit" display="false"/>
-        <template:field name='userQuery' defaultValue="*" beanID="boxUserQuery" display="false"/>
+        <template:field name="userDisplayLimit" var="boxUserDisplayLimit" display="false"/>
+        <template:field name="userQuery" var="boxUserQuery" display="false"/>
         <h4>
             <fmt:message key="queryResult"/>
         </h4>
-        <ui:userList displayLimit="${boxUserDisplayLimit}" query="${boxUserQuery}" scope="all" styleClass=""/>
+        <ui:userList displayLimit="${not empty boxUserDisplayLimit ? boxUserDisplayLimit.integer : 5}" query="${not empty boxUserQuery ? boxUserQuery.text : '*'}" scope="all" styleClass=""/>
     </template:container>
     <br class="clear"/>
 </template:containerList>

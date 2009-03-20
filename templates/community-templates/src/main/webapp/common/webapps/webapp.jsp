@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -38,12 +38,12 @@
 <template:containerList name="webapps${name}" id="webapps"
                        actionMenuNamePostFix="webapps" actionMenuNameLabelKey="webapps.add">
     <template:container id="webappsContainer" actionMenuNamePostFix="webapp" actionMenuNameLabelKey="webapp.update">
-        <template:field name='portlet' beanID="webapp" display="false"/>
-        <c:if test="${!empty webapp.object}">
-            <c:set var="portletWindowBean" value="${webapp.object}"/>
+        <template:field name="portlet" var="webapp" display="false"/>
+        <c:if test="${!empty webapp.field.object}">
+            <c:set var="portletWindowBean" value="${webapp.field.object}"/>
             <ui:portletModes name="portletWindowBean"/>
             <br/>
-            <c:out escapeXml="false" value="${webapp.value}"/>
+            <c:out escapeXml="false" value="${webapp.field.value}"/>
         </c:if>
     </template:container>
 </template:containerList>

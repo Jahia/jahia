@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -56,11 +56,11 @@ limitations under the License.
                        actionMenuNamePostFix="savedSearches" actionMenuNameLabelKey="savedSearches.add">
     <template:container id="savedSearchContainer" cache="off" actionMenuNamePostFix="savedSearch"
                        actionMenuNameLabelKey="savedSearch.update">
-        <template:field name="boxSavedSearchTitle" valueBeanID="boxSavedSearchTitle" display="false"/>
+        <template:field name="boxSavedSearchTitle" var="boxSavedSearchTitle" display="false"/>
         <c:if test="${not empty boxSavedSearchTitle}">
             <c:out value="${boxSavedSearchTitle}"/>
         </c:if>
-        <template:field name="boxSavedSearchQuery" valueBeanID="boxSavedSearchQuery" display="false"/>
+        <template:field name="boxSavedSearchQuery" var="boxSavedSearchQuery" display="false"/>
         <c:if test="${not empty boxSavedSearchQuery}">
             <div>
                 Not implemented yet

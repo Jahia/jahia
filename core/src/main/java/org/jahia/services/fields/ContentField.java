@@ -50,12 +50,10 @@ import org.jahia.hibernate.manager.JahiaFieldsDataManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
-import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.FieldsChangeEventListener;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.events.JahiaEventGeneratorService;
 import org.jahia.services.pages.ContentPage;
@@ -2038,14 +2036,7 @@ public abstract class ContentField extends ContentObject
      * @param operation @see ContainersChangeEventListener
      */
     private void notifyFieldUpdate(){
-
-        FieldsChangeEventListener listener = (
-                FieldsChangeEventListener)JahiaListenersRegistry.
-                getInstance ()
-                .getListenerByClassName (FieldsChangeEventListener.class.getName ());
-        if ( listener != null ){
-            listener.notifyChange(this);
-        }
+        // do nothing
     }
 
     public Map<Object, Object> getProperties(){

@@ -42,9 +42,11 @@
 
 .set-server {
   background: url(images/andromeda/iconSet-server.gif) no-repeat;
+  background-position: 4px -526px;
 }
 .set-server-disabled {
   background: url(images/andromeda/iconSet-server-grey.gif) no-repeat;
+  background-position: 4px -526px;
 }
 
 .ico-server-sites {
@@ -95,11 +97,21 @@
   background-position: 4px -526px;
 }
 
+.ico-server-pedia, ico-server-docs {
+  background-position: 4px -576px;
+}
+
+.ico-server-community-jira, ico-server-enterprise-jira {
+  background-position: 4px -628px;
+}
+
 .set-site {
   background: url(images/andromeda/iconSet-site.gif) no-repeat;
+  background-position: 4px -625px;
 }
 .set-site-disabled {
   background: url(images/andromeda/iconSet-site-grey.gif) no-repeat;
+  background-position: 4px -625px;
 }
 .ico-site-pages {
   background-position: 4px 2px;
@@ -147,4 +159,8 @@
 
 .ico-site-themes {
   background-position: 4px -382px;
+}
+
+.ico-site-analytics {
+  background-position: 4px -575px;
 }

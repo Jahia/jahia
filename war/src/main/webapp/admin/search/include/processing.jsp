@@ -65,7 +65,6 @@
      */
 
     // declarations
-    private static final String bundle_prefix = "org.jahia.time";
     private static final Logger logger = Logger.getLogger("jsp.jahia.engines");
     private static SchedulerService service = ServicesRegistry.getInstance().getSchedulerService();
     //private static JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
@@ -84,7 +83,7 @@
         JobDataMap data = detail.getJobDataMap();
         if (data == null) {
             logger.debug("jobdata of " + detail.getName() + " is null");
-            throw new NullPointerException("data is NULL!");
+            throw new IllegalArgumentException("data is NULL!");
         }
 
         infos[0] = data.getString(BackgroundJob.JOB_TYPE);
@@ -105,90 +104,7 @@
         infos[7] = data.getString(BackgroundJob.JOB_DURATION);
 
         // specific infos for each type
-        if (infos[0].equalsIgnoreCase("import")) {
-
-            //import case
-            if (data.get(ImportJob.FILENAME) == null) {
-                infos[10] = data.getString(ImportJob.URI).trim();//source
-                // remove the useless path
-                infos[10] = infos[10].substring(infos[10].lastIndexOf("/") + 1);
-                // remove denomination import_into & final date/hour IDs
-                infos[10] = infos[10].substring(infos[10].indexOf("_") + 1, infos[10].lastIndexOf("_"));
-            } else {
-                infos[10] = data.getString(ImportJob.FILENAME).trim();//filename source
-            }
-            if (data.get("sitekey") != null) {
-                //destination
-                infos[11] = data.getString("sitekey");
-            }
-
-        } else if (infos[0].equalsIgnoreCase("copypaste")) {
-            //copypaste
-            try {
-                if (data.get("sitesource") != null) infos[10] = (String) data.get("sitesource");
-                if (data.get("sitedest") != null) infos[11] = (String) data.get("sitedest");
-            } catch (ClassCastException e) {
-                logger.debug("error", e);
-            }
-        } else if (infos[0].equalsIgnoreCase("workflow")) {
-            //workflow
-            infos[10] = "";
-            if (data.get("sitedest") != null) infos[11] = (String) data.get("sitedest");
-            if(data.get(ActivationJob.ACTIONS)!=null) infos[12] = (String) data.get(ActivationJob.ACTIONS);
-            else infos[12] = "No Workflow";
-            if(data.get(ActivationJob.COMMENTS_INPUT)!=null) infos[13] = (String) data.get(ActivationJob.COMMENTS_INPUT);
-            if(data.get(ActivationJob.SELECTED_ENTRIES)!=null) {
-            infos[14] = ""+((Map) data.get(ActivationJob.SELECTED_ENTRIES)).size();
-}
-
-        } else if (infos[0].equalsIgnoreCase("pickercopy")) {
-            //pickercopy
-            try {
-                if (data.get("sitesource") != null) infos[10] = (String) data.get("sitesource");
-                if (data.get("sitedest") != null) infos[11] = (String) data.get("sitedest");
-            } catch (ClassCastException e) {
-                logger.debug("error", e);
-            }
-        } else if (infos[0].equalsIgnoreCase("picked")) {
-            //picked propagate
-            infos[10] = "";
-            if (data.get("sitedest") != null) infos[11] = (String) data.get("sitedest");
-        } else if (infos[0].equalsIgnoreCase("propagate1") || infos[0].equalsIgnoreCase("propagate2")) {
-            if (data.get("sitesource") != null) infos[10] = (String) data.get("sitesource");
-            infos[11] = "";
-        } else if (infos[0].equalsIgnoreCase("production")) {
-            if (!detail.getGroup().equals("ProductionJob")) {
-                //production job import action
-                if (data.get("uri") != null) infos[10] = (String) data.get("uri");
-                infos[11] = "";
-            } else {
-                //production job cron action
-                try {
-                    infos[11] = data.getString(ProductionJob.SITE_NAME); //dest
-
-                    infos[10] = ServicesRegistry.getInstance().getJahiaSitesService().getSite(data.getInt(ProductionJob.SITE_ID)).getSiteKey();   //source
-
-                    if (data.get(BackgroundJob.JOB_BEGIN) != null) {
-                        infos[12] = "" + data.get(BackgroundJob.JOB_BEGIN); // job
-                    } else {
-                        logger.debug("fired time of this production" + detail.getName() + " job is unavailable");
-                        infos[12] = "" + 0;
-                    }
-                    if (data.get(BackgroundJob.JOB_SCHEDULED) != null) {
-                        infos[13] = (String) data.get(BackgroundJob.JOB_SCHEDULED); // job
-                    } else {
-                        infos[13] = "" + 0;
-                    }
-                    infos[19] = "true";
-                } catch (NullPointerException e) {
-                    logger.debug("!!!!!npe on" + e);
-                }
-            }
-        } else if (infos[0].equalsIgnoreCase("timebasedpublishing")) {
-            infos[10] = ((ObjectKey)data.get(TimeBasedPublishingJob.OBJECT_KEY)).toString();
-            infos[11] = "";
-            infos[12] = "";
-        } else if (infos[0].equalsIgnoreCase("siteindexation")) {
+        if (infos[0].equalsIgnoreCase("siteindexation")) {
             infos[10] = data.getString(BackgroundJob.JOB_SITEKEY);
             infos[11] = "";
             infos[12] = "";
@@ -251,16 +167,14 @@
             long difsec1 = difsec % 60;
             long difmin = diftime / 60000;
             if (difmin < 60) {
-
-                String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".processDisplay.launchedsince.label");
-                return pref + difmin + " minutes " + difsec1 + " sec";
+                return difmin + " minutes " + difsec1 + " sec " + getRessourceForTime(".today.postfix", l);
             } else {
-                String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.prefix");
+                String pref = getRessourceForTime(".today.prefix", l);
                 return pref + "&nbsp;" + sd.format(date);
             }
         } else if (c.after(hier) && c.before(now)) {
             //yesterday
-            String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".yesterday.prefix");
+            String pref = getRessourceForTime(".yesterday.prefix", l);
             return pref + "&nbsp;" + sd.format(date);
         }
         // all other dates in the past
@@ -301,10 +215,10 @@
                 long difsec1 = difsec % 60;
                 long difmin = dif / 60000;
                 if (difmin < 60) {
-                    String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.futurerangeprefix");
+                    String pref = getRessourceForTime(".today.futurerangeprefix", l);
                     return pref + "&nbsp;" + difmin + " minutes " + difsec1 + " sec";
                 } else {
-                    String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".today.prefix");
+                    String pref = getRessourceForTime(".today.prefix", l);
                     return pref + "&nbsp;" + sd.format(new Date(time));
                 }
             } else {
@@ -315,7 +229,7 @@
                 tom.set(Calendar.MINUTE, now.getActualMaximum(Calendar.MINUTE));
                 tom.set(Calendar.SECOND, now.getActualMaximum(Calendar.SECOND));
                 if(c.before(tom)){
-                String pref = getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".tomorrow.prefix");
+                String pref = getRessourceForTime(".tomorrow.prefix", l);
                 s = pref+"&nbsp;"+sd.format(new Date(time));
                 } else {
                 s = df.format(new Date(time));
@@ -337,7 +251,7 @@
 
 
         if(duration<=0){
-                timeduration=getRessource("org.jahia.engines.processDisplay.executed.label", l)+"&nbsp;"+getRessource(ResourceBundle.getBundle("JahiaInternalResources", l), ".duration.shortime");
+                timeduration=getRessource("org.jahia.engines.processDisplay.executed.label", l)+"&nbsp;"+getRessourceForTime(".duration.shortime", l);
                 return timeduration;
                 } else if(duration<60){
                 sec=duration;
@@ -367,16 +281,9 @@
                 return getRessource("org.jahia.engines.processDisplay.executed.label", l) + "&nbsp;"+timeduration;
 
 	}
-    /**
-     * internal method to render bundle resources
-     * @return a string empty if resource is non existent
-     */
-    private String getRessource(ResourceBundle bundle, String label) {
-        try {
-            return bundle.getString(bundle_prefix + label);
-        } catch (Exception e) {
-            return "";
-        }
+    private String getRessourceForTime(String label, Locale locale) {
+        String fullLabel = "org.jahia.time" + label;
+        return getRessource(fullLabel, locale, fullLabel);
     }
 
     /**
@@ -446,10 +353,6 @@
     List runningprocess = new ArrayList();
     List wait = new ArrayList();
 
-    // load running and waitings of other users
-    List othersrunning = new ArrayList();
-    List otherswaiting = new ArrayList();
-
     // passed jobs
     List past = new ArrayList();
     String theUserKey = null;
@@ -476,8 +379,7 @@
           String status = data.getString(BackgroundJob.JOB_STATUS);
           String userkey = data.getString(BackgroundJob.JOB_USERKEY);
           //ignore production or timebased job
-          if(data.getString(BackgroundJob.JOB_TYPE) == null || data.getString(BackgroundJob.JOB_TYPE).equals("timebased")){
-              logger.debug("ignoring timebased jobs");
+          if(data.getString(BackgroundJob.JOB_TYPE) == null){
               continue;
           }
           if(status== null || userkey==null) {
@@ -487,19 +389,10 @@
           if (status.equals(BackgroundJob.STATUS_POOLED)) {
               long crontime=System.currentTimeMillis()+(3600000*Integer.parseInt(cronlimit));
               if(Long.parseLong(data.getString(BackgroundJob.JOB_SCHEDULED))<crontime) crons.add(jd);
-          } else if (status.equals(BackgroundJob.STATUS_RUNNING) && userkey.equals(theUserKey)) {
-  
+          } else if (status.equals(BackgroundJob.STATUS_RUNNING) || status.equals(BackgroundJob.STATUS_INTERRUPTED)) {
               runningprocess.add(jd);
-          } else if (status.equals(BackgroundJob.STATUS_RUNNING) && !userkey.equals(theUserKey)) {
-              othersrunning.add(jd);
-          } else if (status.equals(BackgroundJob.STATUS_WAITING) && userkey.equals(theUserKey)) {
+          } else if (status.equals(BackgroundJob.STATUS_WAITING)) {
               wait.add(jd);
-          } else if (status.equals(BackgroundJob.STATUS_WAITING) && !userkey.equals(theUserKey)) {
-              otherswaiting.add(jd);
-          } else if (status.equals(BackgroundJob.STATUS_INTERRUPTED) && !userkey.equals(theUserKey)) {
-              othersrunning.add(jd);
-          } else if (status.equals(BackgroundJob.STATUS_INTERRUPTED) && userkey.equals(theUserKey)) {
-              runningprocess.add(jd);
           } else {
               past.add(jd);
           }
@@ -558,7 +451,7 @@
 } else {
 
 %>
-<!-- c:<%=crons.size()%> r:<%=runningprocess.size()%> or:<%=othersrunning.size()%> w:<%=wait.size()%> ow:<%=otherswaiting.size()%>-->
+<!-- c:<%=crons.size()%> r:<%=runningprocess.size()%> w:<%=wait.size()%> -->
 <table cellspacing="0" cellpadding="0" width="100%" border="0" bgcolor="#FFFFFF">
 <tr>
 	<td align="right" colspan="2" class="nopadding">
@@ -689,14 +582,20 @@
         %>
         </th>
     
-    <th class="lastCol"><%=getRessource("org.jahia.engines.processDisplay.operations.label", locale, "Operations")%></th>
+    <th class="lastCol" width="15%"><%=getRessource("org.jahia.engines.processDisplay.operations.label", locale, "Operations")%></th>
 
 </tr>
 <%
 
 
-    if ((command == null || command.equalsIgnoreCase("current"))
-            && (crons.size() + runningprocess.size() + othersrunning.size() + wait.size() + otherswaiting.size() > 0)) {
+    if (command == null || command.equalsIgnoreCase("current")) {
+        
+        if (crons.size() + runningprocess.size() + wait.size() == 0) {
+            %><tr><td colspan="5">
+                <%= getRessource("net.sf.displaytag.basic.msg.empty_list", locale, "No jobs found") %>&nbsp;&gt;&gt;
+                <a href="#past" onclick="submitFormular('display','chooseoperation&command=past'); return false;"><%= getRessource("org.jahia.engines.processDisplay.pastjobs.label", locale, "Past jobs") %></a> 
+            </td></tr> <%
+        } else {
 
         // 1st display crons process scheduled if any (for all users)
         logger.debug("displaying the crons jobs" + crons.size());
@@ -724,19 +623,6 @@
                     String source = "";
                     if (infos[10] != null && !infos[10].equalsIgnoreCase(""))
                         source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                    //import case
-                    if (infos[0] != null && (infos[0].equalsIgnoreCase("import") || infos[0].equalsIgnoreCase("production")))
-                    {
-                        if (infos[19] != null && infos[19].equalsIgnoreCase("true")) {
-                            source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                            sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-                        } else {
-                            source = getRessource("org.jahia.engines.processDisplay.fromfile.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                        }
-                    }
-                    if (infos[0].equalsIgnoreCase("timebasedpublishing")) {
-                        source = getRessource("org.jahia.engines.processDisplay.timebasedpublishing.fromObject.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                    }
 
                     if (infos[11] != null && !infos[11].equalsIgnoreCase(""))
                         sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
@@ -787,125 +673,6 @@
         }//next row
     } //end display of crons process
 
-    //display others running stuff if any
-    logger.debug("displaying the other jobs" + othersrunning.size());
-    if (othersrunning.size() > 0) {
-
-        boolean loopOK = true;//used to protect this page from NPE from infos
-        for (Iterator it = othersrunning.iterator(); it.hasNext();) {
-            String[] infos = new String[20];
-            JobDetail jd = (JobDetail) it.next();
-            JobDataMap data = jd.getJobDataMap();
-
-            if (jd != null) {
-                try {
-                    infos = getJobInfos(jd);
-                } catch (Exception e) {
-                    //we catch all
-                    logger.error("ERROR ON other user jobs",e);
-                    loopOK = false;
-                }
-            } else {
-                loopOK = false;
-                logger.debug("other jobs are empty");
-            }
-
-            if (loopOK) {
-                String type = getRessource("org.jahia.engines.processDisplay.op." + infos[0] + ".label", locale);
-                if(infos[0].equals("workflow")){
-
-                	if(infos[12].indexOf("First_step") != -1) type +="<br/>(notification)";
-                	if(infos[12].indexOf("Second_step") != -1) type +="<br/>(approbation)";
-                }
-                String sitekey = "";
-                String user = infos[2];
-                String source = "";
-                if (infos[10] != null && !infos[10].equalsIgnoreCase(""))
-                    source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                //import case
-                if (infos[0] != null && (infos[0].equalsIgnoreCase("import") || infos[0].equalsIgnoreCase("production")))
-                {
-                    if (infos[19] != null && infos[19].equalsIgnoreCase("true")) {
-                        source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                        sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-                    } else {
-                        source = getRessource("org.jahia.engines.processDisplay.fromfile.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                    }
-                }
-                if (infos[0].equalsIgnoreCase("timebasedpublishing")) {
-                    source = getRessource("org.jahia.engines.processDisplay.timebasedpublishing.fromObject.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                }
-
-                if (infos[11] != null && !infos[11].equalsIgnoreCase(""))
-                    sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-                String fired = infos[4];
-                long f = 0;
-                try {
-                    f = Long.parseLong(fired);
-                } catch (NumberFormatException e) {
-                    f = 0;
-                }
-                fired = printFriendlyRange(f, locale);
-                String prefix_fired = getRessource("org.jahia.engines.processDisplay.status.running", locale);
-
-%>
-<tr valign="top" class="greyed">
-    <td align="left"><%= type %></td>
-    <td align="left" width="300px"><%= source %><%= sitekey %></td>
-
-    <td align="left"><%= user %></td>
-    <td align="left" valign="top">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr valign="top">
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td width="200px" align="left" valign="middle">
-                <%=prefix_fired%>&nbsp;<%=fired%>
-            </td>
-
-
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td align="left"><img src="<%=request.getContextPath()%>/engines/images/waiting.gif"></td>
-        </tr></table>
-
-    </td>
-    <td align="left" class="lastCol">
-      <%
-        String serverId = jd.getJobDataMap().getString(BackgroundJob.JOB_SERVER);
-        String interruptStatus = jd.getJobDataMap().getString(JahiaSiteIndexingJob.INTERRUPT_STATUS);
-        
-        if ( BackgroundJob.STATUS_INTERRUPTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobInterrupted.label", locale, "Job interrupted")%></p><br/><%        
-        } else if ( BackgroundJob.STATUS_ABORTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobAborted.label", locale, "Job aborted")%></p><br/><%        
-        } else if ( JahiaSiteIndexingJob.INTERRUPT_STATUS_INTERRUPT_REQUESTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobInterruptRequested.label", locale, "Job interruption requested")%></p><br/><%        
-        } else if ( JahiaSiteIndexingJob.INTERRUPT_STATUS_ABORT_REQUESTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobAbortRequested.label", locale, "Job abort requested")%></p><br/><%        
-        } 
-        if ( !BackgroundJob.STATUS_ABORTED.equals(interruptStatus) && !JahiaSiteIndexingJob.INTERRUPT_STATUS_ABORT_REQUESTED.equals(interruptStatus) ){
-      %>
-        <a href="javascript:submitFormular('display','abortJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsAbort.label", locale, "Abort")%></a>
-      <% } %>
-      <%
-        if ( !BackgroundJob.STATUS_INTERRUPTED.equals(interruptStatus) 
-          && !JahiaSiteIndexingJob.INTERRUPT_STATUS_INTERRUPT_REQUESTED.equals(interruptStatus)
-          && !BackgroundJob.STATUS_ABORTED.equals(interruptStatus) 
-          && !JahiaSiteIndexingJob.INTERRUPT_STATUS_ABORT_REQUESTED.equals(interruptStatus) ){
-      %>
-        <a href="javascript:submitFormular('display','interruptJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsInterrupt.label", locale, "Interrupt")%></a>
-      <% } %>
-      <%
-        if (BackgroundJob.STATUS_INTERRUPTED.equals(interruptStatus) ){
-      %>
-        <a href="javascript:submitFormular('display','resumeJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsResume.label", locale, "Resume")%></a>
-      <% } %>
-    </td>
-</tr>
-
-<%
-            }//end running ok
-        }//next row
-    } //end display of others process
-
     //display my running stuff if any
     if (runningprocess.size() > 0) {
         //logger.debug("displaying running jobs");
@@ -928,32 +695,9 @@
 
             if (loopOK) {
                 String type = getRessource("org.jahia.engines.processDisplay.op." + infos[0] + ".label", locale);
-                if(infos[0].equals("workflow")){
-
-                	if(infos[12].indexOf("First_step") != -1) type +="<br/>(notification)";
-                	if(infos[12].indexOf("Second_step") != -1) type +="<br/>(approbation)";
-                }
                 String sitekey = "";
                 String user = infos[2];
-                String source = "";
-                if (infos[10] != null && !infos[10].equalsIgnoreCase(""))
-                    source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                //import case
-                if (infos[0] != null && (infos[0].equalsIgnoreCase("import") || infos[0].equalsIgnoreCase("production")))
-                {
-                    if (infos[19] != null && infos[19].equalsIgnoreCase("true")) {
-                        source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                        sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-                    } else {
-                        source = getRessource("org.jahia.engines.processDisplay.fromfile.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                    }
-                }
-                if (infos[0].equalsIgnoreCase("timebasedpublishing")) {
-                    source = getRessource("org.jahia.engines.processDisplay.timebasedpublishing.fromObject.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                }
-
-                if (infos[11] != null && !infos[11].equalsIgnoreCase(""))
-                    sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
+                String source = getRessource("org.jahia.engines.processDisplay.siteindexation.ofSite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
                 String fired = infos[4];
                 long f = 0;
                 try {
@@ -971,34 +715,33 @@
 
     <td align="left"><%= user %></td>
     <td align="left" valign="top">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr valign="top">
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td width="200px" align="left">
-                <%=prefix_fired%>&nbsp;<%=fired%>
-            </td>
-
-
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td align="left"><img src="<%=request.getContextPath()%>/engines/images/waiting.gif"></td>
-        </tr></table>
-
-    </td>
-    <td align="left" class="lastCol">
       <%
         String serverId = jd.getJobDataMap().getString(BackgroundJob.JOB_SERVER);
         String interruptStatus = jd.getJobDataMap().getString(JahiaSiteIndexingJob.INTERRUPT_STATUS);
+
+        String status = "";
         if ( BackgroundJob.STATUS_INTERRUPTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobInterrupted.label", locale, "Job interrupted")%></p><br/><%        
+            status = getRessource("org.jahia.engines.processDisplay.jobInterrupted.label", locale, "Job interrupted");        
         } else if ( BackgroundJob.STATUS_ABORTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobAborted.label", locale, "Job aborted")%></p><br/><%        
+            status = getRessource("org.jahia.engines.processDisplay.jobAborted.label", locale, "Job aborted");        
         } else if ( JahiaSiteIndexingJob.INTERRUPT_STATUS_INTERRUPT_REQUESTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobInterruptRequested.label", locale, "Job interruption requested")%></p><br/><%        
+            status = getRessource("org.jahia.engines.processDisplay.jobInterruptRequested.label", locale, "Job interruption requested");        
         } else if ( JahiaSiteIndexingJob.INTERRUPT_STATUS_ABORT_REQUESTED.equals(interruptStatus) ){
-        %><p><%=getRessource("org.jahia.engines.processDisplay.jobAbortRequested.label", locale, "Job abort requested")%></p><br/><%        
-        } 
+            status = getRessource("org.jahia.engines.processDisplay.jobAbortRequested.label", locale, "Job abort requested");        
+        } else { %>
+        <img src="<%=request.getContextPath()%>/engines/images/waiting.gif" alt=" "/>&nbsp;
+        <% } 
+        if (status.length() > 0) {
+        %><%= status %>&nbsp;(<% } %>
+        <%=prefix_fired%>&nbsp;<%=fired%>
+        <% if (status.length() > 0) {
+        %>)<% } %>
+    </td>
+    <td align="left" class="lastCol">
+      <%
         if ( !BackgroundJob.STATUS_ABORTED.equals(interruptStatus) && !JahiaSiteIndexingJob.INTERRUPT_STATUS_ABORT_REQUESTED.equals(interruptStatus) ){
       %>
-        <a href="javascript:submitFormular('display','abortJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsAbort.label", locale, "Abort")%></a>
+        <a href="javascript:submitFormular('display','abortJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><img src="${pageContext.request.contextPath}/css/images/andromeda/icons/delete.png" alt=" "/>&nbsp;<%=getRessource("org.jahia.engines.processDisplay.operationsAbort.label", locale, "Abort")%></a><br/>
       <% } %>
       <%
         if ( !BackgroundJob.STATUS_INTERRUPTED.equals(interruptStatus) 
@@ -1006,12 +749,12 @@
           && !BackgroundJob.STATUS_ABORTED.equals(interruptStatus) 
           && !JahiaSiteIndexingJob.INTERRUPT_STATUS_ABORT_REQUESTED.equals(interruptStatus) ){
       %>
-        <a href="javascript:submitFormular('display','interruptJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsInterrupt.label", locale, "Interrupt")%></a>
+        <a href="javascript:submitFormular('display','interruptJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><img src="${pageContext.request.contextPath}/css/images/andromeda/icons/media_pause.png" alt=" "/>&nbsp;<%=getRessource("org.jahia.engines.processDisplay.operationsInterrupt.label", locale, "Interrupt")%></a>
       <% } %>
       <%
         if ( BackgroundJob.STATUS_INTERRUPTED.equals(interruptStatus) ){
       %>
-        <a href="javascript:submitFormular('display','resumeJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsResume.label", locale, "Resume")%></a>
+        <a href="javascript:submitFormular('display','resumeJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><img src="${pageContext.request.contextPath}/css/images/andromeda/icons/media_play_green.png" alt=" "/>&nbsp;<%=getRessource("org.jahia.engines.processDisplay.operationsResume.label", locale, "Resume")%></a>
       <% } %>
     </td>
 </tr>
@@ -1022,7 +765,6 @@
 
     } //end display of running process
 %>
-<tr valign="top"><td colspan="5"></td></tr>
 <%
 
     //display my waiting(pooled process)
@@ -1048,30 +790,9 @@
             }
             if (loopOK) {
                 String type = getRessource("org.jahia.engines.processDisplay.op." + infos[0] + ".label", locale);
-                if(infos[0].equals("workflow")){
-
-                	if(infos[12].indexOf("First_step") != -1) type +="<br/>(notification)";
-                	if(infos[12].indexOf("Second_step") != -1) type +="<br/>(approbation)";
-                }
                 String user = infos[2];
-                String source = "";
+                String source = getRessource("org.jahia.engines.processDisplay.siteindexation.ofSite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
                 String sitekey = "";
-                if (infos[10] != null && !infos[10].equalsIgnoreCase(""))
-                    source = getRessource("org.jahia.engines.processDisplay.from.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                //import case
-                if (infos[0].equalsIgnoreCase("import") || infos[0].equalsIgnoreCase("production")) {
-                    if (infos[19] != null && infos[19].equalsIgnoreCase("true")) {
-                        source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                        sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-                    } else {
-                        source = getRessource("org.jahia.engines.processDisplay.fromfile.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                    }
-                } else if (infos[0].equalsIgnoreCase("timebasedpublishing")){
-                    source = getRessource("org.jahia.engines.processDisplay.timebasedpublishing.fromObject.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                }
-                if (infos[0].equalsIgnoreCase("siteindexation")) {
-                    source = getRessource("org.jahia.engines.processDisplay.siteindexation.ofSite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                }
                 if (infos[11] != null && !infos[11].equalsIgnoreCase(""))
                     sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
 
@@ -1090,128 +811,18 @@
     <td align="left"><%= source %><%= sitekey %></td>
     <td align="left"><%= user %></td>
     <td align="left" valign="top">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr valign="top">
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td align="left"><%=getRessource("org.jahia.engines.processDisplay.status.waiting", locale)%>&nbsp;<%=fired%></td>
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td align="left">
-                <%
-                    String url = JahiaAdministration.composeActionURL(request, response, "search", "&sub=display&?del=" + jd.getName() + "&delgroup=" + jd.getGroup());
-                %>
-                <a href="<%=url%>"><img src="<%=request.getContextPath()%>/engines/images/deleting.png"
-                                        width="16" height="16"
-                                        border="0"></a></td>
-        </tr></table>
+        <%=getRessource("org.jahia.engines.processDisplay.status.waiting", locale)%>&nbsp;<%=fired%>
     </td>
     <td align="left" class="lastCol">
-        <%
-        String serverId = jd.getJobDataMap().getString(BackgroundJob.JOB_SERVER);
-        String interruptStatus = jd.getJobDataMap().getString(JahiaSiteIndexingJob.INTERRUPT_STATUS);
-        %>
-        <a href="javascript:submitFormular('display','abortJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsAbort.label", locale, "Abort")%></a>
-        <a href="javascript:submitFormular('display','resumeJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsResume.label", locale, "Resume")%></a>
+        <% String serverId = jd.getJobDataMap().getString(BackgroundJob.JOB_SERVER); %>
+        <a href="javascript:submitFormular('display','abortJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><img src="${pageContext.request.contextPath}/css/images/andromeda/icons/delete.png" alt=" "/>&nbsp;<%=getRessource("org.jahia.engines.processDisplay.operationsAbort.label", locale, "Abort")%></a>
     </td>
 </tr>
 <%
             } //end loopOK
         } // end loop
     } //end processcount
-    //display waiting(pooled process)
-    if (otherswaiting.size() > 0) {
-        //logger.debug("displaying pooled jobs");
-        boolean loopOK = true;//used to protect this page from NPE from infos?
-        //loop
-        for (Iterator it = otherswaiting.iterator(); it.hasNext();) {
-            String[] infos = new String[20];
-            JobDetail jd = (JobDetail) it.next();
-            if (jd != null) {
-                String jname = jd.getName();
-
-                try {
-                    infos = getJobInfos(jd);
-                    logger.debug("job type="+infos[0]);
-                } catch (Exception e) {
-                    logger.error("ERROR on waiting jobs:",e);
-                    loopOK = false;
-                }
-            } else {
-                loopOK = false;
-                logger.error("no waiting jobs");
-            }
-            if (loopOK) {
-                String type = getRessource("org.jahia.engines.processDisplay.op." + infos[0] + ".label", locale);
-                if(infos[0].equals("workflow")){
-
-                	if(infos[12].indexOf("First_step") != -1) type +="<br/>(notification)";
-                	if(infos[12].indexOf("Second_step") != -1) type +="<br/>(approbation)";
-                }
-                String user = infos[2];
-                String source = "";
-                String sitekey = "";
-                if (infos[10] != null && !infos[10].equalsIgnoreCase(""))
-                    source = getRessource("org.jahia.engines.processDisplay.from.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                //import case
-                if (infos[0].equalsIgnoreCase("import") || infos[0].equalsIgnoreCase("production")) {
-                    if (infos[19] != null && infos[19].equalsIgnoreCase("true")) {
-                        source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                        sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-                    } else {
-                        source = getRessource("org.jahia.engines.processDisplay.fromfile.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                    }
-                } else if (infos[0].equalsIgnoreCase("timebasedpublishing")){
-                    source = getRessource("org.jahia.engines.processDisplay.timebasedpublishing.fromObject.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                }
-
-                if (infos[11] != null && !infos[11].equalsIgnoreCase(""))
-                    sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-
-                String fired = infos[3];
-                long f = 0;
-                try {
-                    f = Long.parseLong(fired);
-                } catch (NumberFormatException e) {
-                    f = 0;
-                }
-                fired = printFriendlyRange(f, locale);
-
-%>
-<tr valign="top" class="greyed">
-    <td align="left"><%= type %></td>
-    <td align="left"><%= source %><%= sitekey %></td>
-    <td align="left"><%= user %></td>
-    <td align="left" valign="top">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0"><tr valign="top">
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td align="left"><%=getRessource("org.jahia.engines.processDisplay.status.waiting", locale)%>
-                &nbsp;<%=fired%></td>
-            <td width="30px">&nbsp;&nbsp;</td>
-            <td align="left">
-                <%
-                    if(theUser.isRoot()){
-                    String url = JahiaAdministration.composeActionURL(request, response, "search", "&sub=display&?del=" + jd.getName());
-                %>
-                <a href="<%=url%>"><img src="<%=request.getContextPath()%>/engines/images/deleting.png"
-                                        width="16" height="16"
-                                        border="0"></a>
-                <%
-                    }
-                %>
-                                        </td>
-        </tr></table>
-    </td>
-    <td align="left" class="lastCol">
-        <%
-        String serverId = jd.getJobDataMap().getString(BackgroundJob.JOB_SERVER);
-        String interruptStatus = jd.getJobDataMap().getString(JahiaSiteIndexingJob.INTERRUPT_STATUS);
-        %>
-        <a href="javascript:submitFormular('display','abortJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsAbort.label", locale, "Abort")%></a>
-        <a href="javascript:submitFormular('display','resumeJob&job=<%=jd.getName()%>&jobGroup=<%=jd.getGroup()%>&serverId=<%=serverId%>&jobSiteKey=<%=jd.getJobDataMap().getString(BackgroundJob.JOB_SITEKEY)%>');"><%=getRessource("org.jahia.engines.processDisplay.operationsResume.label", locale, "Resume")%></a>
-    </td>
-</tr>
-<%
-            } //end loopOK
-        } // end loop
-    } //end processcount
+    } // proess count == 0
 } else if (command != null && command.equalsIgnoreCase("past")) {
     // here displaying past jobs
     // we need to limit the number of displayed past jobs?
@@ -1251,37 +862,10 @@
             //logger.debug("type past job:"+infos[0]);
                 boolean failedjob= ((String) jd.getJobDataMap().get(BackgroundJob.JOB_STATUS)).equalsIgnoreCase(BackgroundJob.STATUS_FAILED);
                 String type = getRessource("org.jahia.engines.processDisplay.op." + infos[0] + ".label", locale);
-String source = "";
-String sitekey = "";
-
-                if (infos[10] != null && !infos[10].equalsIgnoreCase(""))
-                    source = getRessource("org.jahia.engines.processDisplay.fromsite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-
-                if (infos[11] != null && !infos[11].equalsIgnoreCase(""))
-                    sitekey = "&nbsp;" + getRessource("org.jahia.engines.processDisplay.tosite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-                if(infos[0].equals("workflow")){
-					//todo rbundle
-                	if(infos[12] != null && infos[12].indexOf("First_step") != -1) type +="<br/>(notification)";
-                	if(infos[12] != null && infos[12].indexOf("Second_step") != -1) type +="<br/>(approbation)";
-
-if (infos[14] != null && !infos[14].equalsIgnoreCase("")) {
-    if(infos[14].equals("1"))
-    sitekey = infos[14]+"&nbsp;"+getRessource("org.jahia.engines.processDisplay.element.label", locale)+"&nbsp;" + getRessource("org.jahia.engines.processDisplay.onsite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-    else
-    sitekey = infos[14]+"&nbsp;"+getRessource("org.jahia.engines.processDisplay.elements.label", locale)+"&nbsp;" + getRessource("org.jahia.engines.processDisplay.onsite.label", locale) + "&nbsp;<b>" + infos[11] + "</b>";
-}
-                }
-                if (infos[0].equalsIgnoreCase("timebasedpublishing")) {
-                    source = getRessource("org.jahia.engines.processDisplay.timebasedpublishing.fromObject.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-                }
+                String source = getRessource("org.jahia.engines.processDisplay.siteindexation.ofSite.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
+                String sitekey = "";
 
                 String user = infos[2];
-
-                    if (infos[0].equalsIgnoreCase("import") || infos[0].equalsIgnoreCase("production"))
-                        source = getRessource("org.jahia.engines.processDisplay.fromfile.label", locale) + "&nbsp;<b>" + infos[10] + "</b>";
-
-
-
 
                 String fired = infos[4];
                 String duration = infos[8];
@@ -1410,7 +994,7 @@ if (infos[14] != null && !infos[14].equalsIgnoreCase("")) {
     <%
           break;
     }
-    /*
+    /* not implemented yet
     if (!result.getErrors().isEmpty() || !result.getWarnings().isEmpty()) {
     %>
       <a href="<%= JahiaAdministration.composeActionURL(request, response, "search", "&sub=displaylog&command=warn&jd=" + jd.getName())%>"><%=getRessource("org.jahia.engines.processDisplay.allmessages.message", locale)%>
@@ -1431,21 +1015,12 @@ if (infos[14] != null && !infos[14].equalsIgnoreCase("")) {
         }//data check
     }//end loop
 
-} else {
-%><tr><td colspan="5" class="lastCol">
-    <!--empty list-->
-    &nbsp;
-</td></tr>
-<%
-    }
-%>
+} %>
 
 </table>
 
 </td>
 </tr>
-<tr><td colspan="2">
-</td></tr>
 </table>
 <script language="javascript">
     // to erase del from GET request

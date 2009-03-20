@@ -43,6 +43,8 @@ import java.util.Set;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.struts.action.ActionMessages;
+
 /**
  * <p>Title: Container for EngineMessage objects</p> <p>Description: Inspired by Struts
  * ActionMessages, but more JavaBean compliant so that it can work with JSTL and better with
@@ -152,5 +154,18 @@ public class EngineMessages {
         buff.append("org.jahia.engines.EngineMessages : ");
         buff.append(messages);
         return buff.toString();
+    }
+    
+    public ActionMessages toActionMessages() {
+        ActionMessages msgs = new ActionMessages();
+        for (String property : (Set<String>) getProperties()) {
+            List<EngineMessage> messagesByProperty = getMessages(property);
+            if (messagesByProperty != null) {
+                for (EngineMessage engineMessage : messagesByProperty) {
+                    msgs.add(property, engineMessage.toActionMessage());
+                }
+            }
+        }
+        return msgs;
     }
 }

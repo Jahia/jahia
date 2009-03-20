@@ -58,6 +58,16 @@
                                 <template:include page="common/breadcrumb.jsp"/>
                                 <div class="box">
                                     <h2><fmt:message key="mySettings.title"/></h2>
+                                    <c:if test="${not empty passwordPolicyMessages}">
+                                        <div class="error">
+                                          <fmt:message key="mySettings.errors"/>:
+                                          <ul>
+                                            <c:forEach items="${passwordPolicyMessages}" var="msg">
+                                                <li><c:out value="${msg}"/></li>
+                                            </c:forEach>
+                                          </ul>
+                                        </div>
+                                    </c:if>
                                     <template:gwtJahiaModule id="mysettings" jahiaType="mySettings">
                                          <internal:gwtResourceBundle resourceName="mySettings.password"
                                                                    aliasResourceName="pwd"/>

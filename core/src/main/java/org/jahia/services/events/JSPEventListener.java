@@ -37,6 +37,7 @@ import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
 import org.jahia.content.events.ContentUndoStagingEvent;
+import org.jahia.data.events.JahiaErrorEvent;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
 import org.jahia.params.ParamBean;
@@ -125,12 +126,10 @@ public class JSPEventListener extends JahiaEventListener {
                 long startTime = System.currentTimeMillis();
                 ServicesRegistry.getInstance ().getJahiaFetcherService ()
                         .fetchServlet (paramBean, jspFileName);
-                long endTime = System.currentTimeMillis();
-                long executionTime = endTime - startTime;
                 if (logger.isDebugEnabled())
 					logger.debug("JSP Event Listener " + jspFileName
 							+ " event=" + eventName + " execution time="
-							+ executionTime + "ms");
+							+ (System.currentTimeMillis() - startTime) + " ms");
             } else {
                 logger.warn("ParamBean is null, why ?");
             }
@@ -247,6 +246,11 @@ public class JSPEventListener extends JahiaEventListener {
 
     public void pageLoaded (JahiaEvent je) {
         dispatchToJSP ("pageLoaded", je);
+    }
+
+    @Override
+    public void pageLoadedFromCache(JahiaEvent je) {
+        dispatchToJSP ("pageLoadedFromCache", je);
     }
 
     public void pagePropertiesSet (JahiaEvent je) {
@@ -417,5 +421,9 @@ public class JSPEventListener extends JahiaEventListener {
         dispatchToJSP("groupUpdated", theEvent);
         super.groupUpdated(theEvent);
     }
-    
+
+    @Override
+    public void errorOccurred(JahiaErrorEvent je) {
+        dispatchToJSP("errorOccurred", je);
+    }
 }

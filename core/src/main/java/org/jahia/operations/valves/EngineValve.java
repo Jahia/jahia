@@ -64,6 +64,7 @@ public class EngineValve implements Valve {
     private static Category logger = org.apache.log4j.Logger.getLogger(EngineValve.class);
 
     private PageGeneratorQueue generatorQueue;
+    private SkeletonAggregatorValve skeletonAggregatorValve;
 
     public EngineValve() {
     }
@@ -150,7 +151,7 @@ public class EngineValve implements Valve {
 
                 latch = avoidParallelProcessingOfSamePage(state, processingContext);
 
-                if (SkeletonAggregatorValve.checkCache(processingContext)) return;
+                if (skeletonAggregatorValve.checkCache(processingContext)) return;
             }
 
             if (!getGeneratorQueue().getAvailableProcessings()
@@ -263,6 +264,11 @@ public class EngineValve implements Valve {
 
     public void setGeneratorQueue(PageGeneratorQueue generatorQueue) {
         this.generatorQueue = generatorQueue;
+    }
+
+    public void setSkeletonAggregatorValve(
+            SkeletonAggregatorValve skeletonAggregatorValve) {
+        this.skeletonAggregatorValve = skeletonAggregatorValve;
     }
 
 }

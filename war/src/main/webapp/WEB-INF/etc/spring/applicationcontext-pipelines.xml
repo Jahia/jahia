@@ -32,6 +32,12 @@
         </property>
     </bean>
 
+    <bean id="org.jahia.operations.valves.SkeletonAggregatorValve" class="org.jahia.operations.valves.SkeletonAggregatorValve">
+        <property name="cacheKeyGeneratorService" ref="CacheKeyGeneratorService"/>
+        <property name="eventService" ref="JahiaEventService"/>
+        <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
+    </bean>
+                
     <bean id="processPipeline" class="org.jahia.pipelines.impl.GenericPipeline">
         <property name="name" value="processPipeline" />
         <property name="valves">
@@ -53,11 +59,10 @@
                     <property name="cacheInstance" ref="JahiaCacheService"/>
                     <property name="cacheKeyGeneratorService" ref="CacheKeyGeneratorService"/>
                 </bean>
-                <bean class="org.jahia.operations.valves.SkeletonAggregatorValve" >
-                    <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
-                </bean>
+                <ref bean="org.jahia.operations.valves.SkeletonAggregatorValve"/>
                 <bean class="org.jahia.operations.valves.EngineValve" >
                     <property name="generatorQueue" ref="org.jahia.operations.PageGeneratorQueue" />
+                    <property name="skeletonAggregatorValve" ref="org.jahia.operations.valves.SkeletonAggregatorValve"/>
                 </bean>
                 <bean class="org.jahia.operations.valves.ResponseOutputValve" />
                 <bean class="org.jahia.operations.valves.SkeletonParseAndStoreValve">

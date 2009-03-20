@@ -38,6 +38,7 @@ import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
 import org.jahia.content.events.ContentUndoStagingEvent;
+import org.jahia.data.events.JahiaErrorEvent;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
 import org.jahia.params.ProcessingContext;
@@ -279,6 +280,11 @@ public class GroovyEventListener extends JahiaEventListener {
         dispatchToGroovyScript("pageLoaded", je);
     }
 
+    @Override
+    public void pageLoadedFromCache(JahiaEvent je) {
+        dispatchToGroovyScript("pageLoadedFromCache", je);
+    }
+
     public void pagePropertiesSet(JahiaEvent je) {
         dispatchToGroovyScript("pagePropertiesSet", je);
     }
@@ -450,6 +456,11 @@ public class GroovyEventListener extends JahiaEventListener {
     public void groupUpdated(JahiaEvent theEvent) {
         dispatchToGroovyScript("groupUpdated", theEvent);
         super.groupUpdated(theEvent);
+    }
+    
+    @Override
+    public void errorOccurred(JahiaErrorEvent je) {
+        dispatchToGroovyScript("errorOccurred", je);
     }
 
     public static void registerEvents(String eventsToHandleList) {

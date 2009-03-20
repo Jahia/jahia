@@ -44,9 +44,9 @@ import java.util.*;
 
 import javax.servlet.ServletConfig;
 
+import org.apache.log4j.Logger;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListenerInterface;
-import org.jahia.exceptions.JahiaException;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 import org.jahia.spring.aop.interceptor.SilentJamonPerformanceMonitorInterceptor;
@@ -54,17 +54,17 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 
 public class JahiaListenersRegistry {
 
-    private static org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger(JahiaListenersRegistry.class);
+    private static Logger logger =
+        Logger.getLogger(JahiaListenersRegistry.class);
 
-    private static final org.apache.log4j.Logger monitorLogger = org.apache.log4j.Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
+    private static final Logger monitorLogger = Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
 
     private static JahiaListenersRegistry instance = null;
 
-    private Map classNameToInstance = new HashMap();
+    private Map<String, JahiaEventListenerInterface> classNameToInstance = new HashMap<String, JahiaEventListenerInterface>();
     private boolean initialized = false;
 
-    public List listeners = new ArrayList();
+    public List<JahiaEventListenerInterface> listeners = new LinkedList<JahiaEventListenerInterface>();
 
     /***
      * constructor
@@ -73,16 +73,14 @@ public class JahiaListenersRegistry {
     public JahiaListenersRegistry () {
     } // end constructor
 
-    public List getListeners() {
+    public List<JahiaEventListenerInterface> getListeners() {
         return listeners;
     }
 
-    public void setListeners(List listeners) {
+    public void setListeners(List<JahiaEventListenerInterface> listeners) {
         this.listeners = listeners;
-        Iterator listenerIterator = listeners.iterator();
-        while (listenerIterator.hasNext()) {
-            JahiaEventListenerInterface currentListener = (JahiaEventListenerInterface) listenerIterator.next();
-            classNameToInstance.put(currentListener.getClass().getName(), currentListener);
+        for (JahiaEventListenerInterface listener : listeners) {
+            classNameToInstance.put(listener.getClass().getName(), listener);
         }
     }
 
@@ -157,7 +155,7 @@ public class JahiaListenersRegistry {
      *
      */
     public synchronized boolean removeListenerByClassName(String className) {
-        JahiaEventListenerInterface listener = (JahiaEventListenerInterface) classNameToInstance.get(className);
+        JahiaEventListenerInterface listener = classNameToInstance.get(className);
         if (listener != null) {
             listeners.remove(listener);
             classNameToInstance.remove(className);
@@ -172,51 +170,39 @@ public class JahiaListenersRegistry {
      * @param        theEvent            the event to send
      *
      */
-    public void wakeupListeners (String methodName, JahiaEvent theEvent)
-        throws JahiaException {
-        try {
-            Iterator listenerIterator = getListeners().iterator();
-            while (listenerIterator.hasNext()) {
-                JahiaEventListenerInterface theListener = (
-                    JahiaEventListenerInterface) listenerIterator.next();
+    public void wakeupListeners (String methodName, JahiaEvent theEvent) {
+        for (JahiaEventListenerInterface theListener : getListeners()) {
+            try {
                 Class theClass = theListener.getClass();
                 Class eventClass = theEvent.getClass();
                 Method theMethod = theClass.getMethod(methodName,
-                    new Class[] {eventClass});
+                        new Class[] { eventClass });
                 if (theMethod != null) {
                     Monitor listenerMonitor = null;
-                    if (monitorLogger.isDebugEnabled()) listenerMonitor = MonitorFactory.start(theMethod.toString());
+                    if (monitorLogger.isDebugEnabled())
+                        listenerMonitor = MonitorFactory.start(theMethod
+                                .toString());
                     theMethod.invoke(theListener,
-                                     new Object[] { (org.jahia.data.events.
-                        JahiaEvent) theEvent});
-                    if (monitorLogger.isDebugEnabled()) listenerMonitor.stop();
+                            new Object[] { (JahiaEvent) theEvent });
+                    if (monitorLogger.isDebugEnabled())
+                        listenerMonitor.stop();
                 }
+            } catch (NoSuchMethodException nsme) {
+                logger.error(
+                        "NoSuchMethodException when trying to execute method "
+                                + methodName + ". Cause: " + nsme.getMessage(),
+                        nsme);
+            } catch (InvocationTargetException ite) {
+                logger.error(
+                        "InvocationTargetException when trying to execute method "
+                                + methodName + ". Cause: " + ite.getMessage(),
+                        ite.getTargetException());
+            } catch (IllegalAccessException iae) {
+                logger.error(
+                        "IllegalAccessException when trying to execute method "
+                                + methodName + ". Cause: " + iae.getMessage(),
+                        iae);
             }
-        } catch (NoSuchMethodException nsme) {
-            String errorMsg =
-                "NoSuchMethodException when trying to execute method " +
-                methodName + "(" + nsme.getMessage() + ")";
-            logger.error( errorMsg, nsme);
-            throw new JahiaException("NoSuchMethodException",
-                                     errorMsg, JahiaException.LISTENER_ERROR,
-                                     JahiaException.WARNING_SEVERITY, nsme);
-        } catch (InvocationTargetException ite) {
-            String errorMsg =
-                "InvocationTargetException when trying to execute method " +
-                methodName + "(" + ite.getTargetException().getMessage() + ")";
-            logger.error( errorMsg, ite.getTargetException());
-            throw new JahiaException("InvocationTargetException",
-                                     errorMsg, JahiaException.LISTENER_ERROR,
-                                     JahiaException.WARNING_SEVERITY,
-                                     ite.getTargetException());
-        } catch (IllegalAccessException iae) {
-            String errorMsg =
-                "IllegalAccessException when trying to execute method " +
-                methodName + "(" + iae.getMessage() + ")";
-            logger.error( errorMsg, iae);
-            throw new JahiaException("IllegalAccessException",
-                                     errorMsg, JahiaException.LISTENER_ERROR,
-                                     JahiaException.WARNING_SEVERITY, iae);
         }
     } // end wakeupListener
 

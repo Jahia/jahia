@@ -132,13 +132,9 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
                 SortedSet<AggregatedEvents> orderedEvents = new TreeSet<AggregatedEvents>(new AggregateEventComparator());
                 orderedEvents.addAll(aggregateEvents.values());
                 for (AggregatedEvents aggEvent : orderedEvents) {
-                    try {
-                        JahiaEvent event = new JahiaEvent(this,null,aggEvent.getEvents());
-                        listenersRegistry.wakeupListeners ("aggregated"
-                                +StringUtils.capitalize(aggEvent.getName()),event);
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
-                    }
+                    JahiaEvent event = new JahiaEvent(this,null,aggEvent.getEvents());
+                    listenersRegistry.wakeupListeners ("aggregated"
+                            +StringUtils.capitalize(aggEvent.getName()),event);
                 }
             }
         }
@@ -149,11 +145,7 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
         List<MethodWithEvent> events = tlevents.get();
         if ( events != null ){
             JahiaEvent event = new JahiaEvent(this,null,events);
-            try {
-                listenersRegistry.wakeupListeners ("aggregatedEventsFlush",event);
-            } catch (JahiaException e) {
-                logger.error(e.getMessage(), e);
-            }
+            listenersRegistry.wakeupListeners ("aggregatedEventsFlush",event);
         }
     }
 
@@ -250,6 +242,15 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
 
     public void fireLoadPage (JahiaEvent theEvent) throws JahiaException {
         listenersRegistry.wakeupListeners ("pageLoaded", theEvent);
+    }
+
+    /**
+     * Triggers the <code>pageLoadedFromCache</code> event
+     * @param theEvent the event object
+     * @throws JahiaException in case an error occurs invoking listeners
+     */
+    public void fireLoadPageFromCache (JahiaEvent theEvent) {
+        listenersRegistry.wakeupListeners ("pageLoadedFromCache", theEvent);
     }
 
 
@@ -458,6 +459,11 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
     }
 
     // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - end
+    
+    public void fireErrorOccurred(JahiaEvent je) {
+        listenersRegistry.wakeupListeners ("errorOccurred", je);
+    }
+    
     // ==================================================================
 
     class MethodWithEvent {

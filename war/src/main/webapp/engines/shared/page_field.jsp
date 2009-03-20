@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -63,6 +63,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="org.jahia.bin.Jahia" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
@@ -591,9 +592,11 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                 pageContext.setAttribute("pageTemplate", theTemplate);
                 if (!checkedTemplates || tVlist.contains(theTemplate.getName())) {
             %>
+            <fmt:message key='${pageTemplate.description}' var="description"/>
+            <fmt:message key="${pageTemplate.displayName}" var="dispName"/>
             <option value="<%=theTemplate.getID()%>"<% if (theTemplate.getID() == pageBean.getPageTemplateID()) { %>
                     selected="selected"<% } %>
-                    title="<fmt:message key='${pageTemplate.description}'/>"><fmt:message key="${pageTemplate.displayName}"/></option>
+                    title="${fn:contains(description, '???') ? pageTemplate.description : description}">${fn:contains(dispName, '???') ? pageTemplate.displayName : dispName}</option>
             <% }
             }
                 if (templateNotFound) { %>

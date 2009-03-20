@@ -47,6 +47,7 @@
 <%@ page import="org.jahia.utils.JahiaTools"%>
 <%@ page import="java.util.*"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -267,7 +268,7 @@
                 if (theTemplate.getID() == pageBean.getPageTemplateID()) {
                 pageContext.setAttribute("displayName", theTemplate.getDisplayName()); 
                 %>
-            <fmt:message key="${displayName}"/>
+            <fmt:message key="${displayName}" var="name"/>${fn:contains(name, '???') ? displayName : name}
             <% break; } %>
             <% } %>
             <% } %>

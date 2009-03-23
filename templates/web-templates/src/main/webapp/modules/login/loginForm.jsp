@@ -52,7 +52,7 @@
                     <ui:loginRememberMe labelCssClassName="rememberLabel" cssClassName="rememberme" labelKey="rememberme" tabIndex="8"/>
                 </p>
                 <p><input type="submit" name="submit" id="submit" class="button" value="Login" tabindex="9"/></p>
-                <p><ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/></p>
+                <p><ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePassword" cssClassName="error"/></p>
             </fieldset>
         </ui:loginArea>
     </div>

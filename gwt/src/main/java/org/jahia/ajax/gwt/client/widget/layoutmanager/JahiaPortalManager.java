@@ -124,9 +124,6 @@ public class JahiaPortalManager extends ContentPanel {
             portal.setColumnWidth(i, columnWidth);
         }
 
-        // add on drop listener
-        portal.addListener(Events.Drop, new OnPortletMovedListener(portal));
-
 
         portletPickerButton = new TextToolItem(Messages.getNotEmptyResource("p_add_mashups", "Add mashups"));
         portletPickerButton.addSelectionListener(new SelectionListener<ComponentEvent>() {

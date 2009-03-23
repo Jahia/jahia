@@ -83,6 +83,8 @@ public interface LayoutmanagerService extends RemoteService {
 
     public void saveLayoutItems(GWTJahiaPageContext pageContext, List<GWTJahiaLayoutItem> layoutItems) throws GWTJahiaServiceException;
 
+    public void addLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem layoutItem) throws GWTJahiaServiceException;    
+
     public GWTJahiaLayoutManagerConfig getLayoutmanagerConfig() throws GWTJahiaServiceException;
 
     public void saveLayoutmanagerConfig(GWTJahiaPageContext pageContext, GWTJahiaLayoutManagerConfig gwtLayoutManagerConfig) throws GWTJahiaServiceException;

@@ -57,7 +57,7 @@ public class GWTJahiaLayoutItem implements Serializable {
     public GWTJahiaLayoutItem() {
     }
 
-    public GWTJahiaLayoutItem(String uuid,GWTJahiaNode gwtJahiaNode, int column, int row, String status) {
+    public GWTJahiaLayoutItem(String uuid, GWTJahiaNode gwtJahiaNode, int column, int row, String status) {
         this.gwtJahiaNode = gwtJahiaNode;
         this.column = column;
         this.row = row;
@@ -74,7 +74,7 @@ public class GWTJahiaLayoutItem implements Serializable {
     }
 
     public String getPortlet() {
-        if(gwtJahiaNode != null){
+        if (gwtJahiaNode != null) {
             return gwtJahiaNode.getUUID();
         }
         return "";
@@ -142,6 +142,25 @@ public class GWTJahiaLayoutItem implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || !(o instanceof GWTJahiaLayoutItem)) {
+            return false;
+        }
+
+        GWTJahiaLayoutItem that = (GWTJahiaLayoutItem) o;
+
+        if (uuid != null ? !uuid.equals(that.uuid) : that.uuid != null) {
+            return false;
+        }
+
+        return true;
     }
 
 }

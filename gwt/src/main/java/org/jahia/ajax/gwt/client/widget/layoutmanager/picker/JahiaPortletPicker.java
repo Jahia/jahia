@@ -254,8 +254,6 @@ public class JahiaPortletPicker extends ContentPanel {
     public static void addToMyPortal(String uuid) {
         Element ele = DOM.getElementById(uuid);
         DOM.setElementAttribute(ele, "disabled", "disabled");
-        final List<GWTJahiaLayoutItem> layoutItemList = new ArrayList<GWTJahiaLayoutItem>();
-
         GWTJahiaNode gwtJahiaNode = new GWTJahiaNode();
         gwtJahiaNode.setUUID(uuid);
         GWTJahiaLayoutItem gwtLayoutItem = new GWTJahiaLayoutItem();
@@ -263,10 +261,9 @@ public class JahiaPortletPicker extends ContentPanel {
         gwtLayoutItem.setRow(0);
         gwtLayoutItem.setStatus(JahiaPropertyHelper.getStatusNormaleValue());
         gwtLayoutItem.setGwtJahiaNode(gwtJahiaNode);
-        layoutItemList.add(gwtLayoutItem);
 
         // make a call ajax
-        LayoutmanagerService.App.getInstance().saveLayoutItems(JahiaPageEntryPoint.getJahiaGWTPage(), layoutItemList, new AsyncCallback() {
+        LayoutmanagerService.App.getInstance().addLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(),gwtLayoutItem, new AsyncCallback() {
             public void onSuccess(Object o) {
 
             }

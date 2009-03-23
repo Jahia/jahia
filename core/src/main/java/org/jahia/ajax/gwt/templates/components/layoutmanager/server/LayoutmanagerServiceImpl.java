@@ -167,9 +167,42 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
 
             // update layout node
             updateLayoutNode(gwtJahiaLayoutItems, layoutNode);
+            
+        } catch (Exception e) {
+            logger.error("Error while saving layoumanager pref.", e);
 
-            // save pref
-            getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+        }
+
+    }
+
+    /**
+     * @param jahiaPageContext
+     * @param gwtJahiaLayoutItem
+     * @throws GWTJahiaServiceException
+     */
+    public void addLayoutItem(GWTJahiaPageContext jahiaPageContext, GWTJahiaLayoutItem gwtJahiaLayoutItem) throws GWTJahiaServiceException {
+        try {
+
+            JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
+            if (portletNode != null) {
+                ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jahiaPageContext.getPid(), false);
+
+
+                // get layout manager node
+                LayoutmanagerJahiaPreference layoutmanagerJahiaPreference = (LayoutmanagerJahiaPreference) getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
+                if (layoutmanagerJahiaPreference == null) {
+                    layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
+                    // update page
+                    layoutmanagerJahiaPreference.setPage(currentContentPage.getUUID());
+                }
+
+                //add layout item
+                JCRLayoutNode layoutNode = layoutmanagerJahiaPreference.getLayoutNode();
+                layoutNode.addLayoutItem(portletNode, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
+
+                // save pref
+                getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+            }
         } catch (Exception e) {
             logger.error("Error while saving layoumanager pref.", e);
 
@@ -185,27 +218,19 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @throws RepositoryException
      */
     private void updateLayoutNode(List<GWTJahiaLayoutItem> gwtJahiaLayoutItems, JCRLayoutNode layoutNode) throws RepositoryException {
-        JCRStoreService jcrStoreService = ServicesRegistry.getInstance().getJCRStoreService();
         for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
             JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
             if (portletNode != null) {
                 // retrieve layout item node
-                JCRNodeWrapper nodeWrapper = null;
                 if (gwtJahiaLayoutItem.getUuid() != null) {
-                    nodeWrapper = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
+                    JCRNodeWrapper nodeWrapper = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getUuid(), getRemoteJahiaUser());
                     JCRLayoutItemNode jcrLayoutItemNode = new JCRLayoutItemNode(nodeWrapper);
                     jcrLayoutItemNode.setColumnIndex(gwtJahiaLayoutItem.getColumn());
                     jcrLayoutItemNode.setRowIndex(gwtJahiaLayoutItem.getRow());
                     jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
                     jcrLayoutItemNode.setPortlet(portletNode);
+                    jcrLayoutItemNode.save();
                 }
-
-                // uuid null or not valid --> create a new layoutItem
-                if (nodeWrapper == null) {
-                    // create on if it is not exist
-                    nodeWrapper = layoutNode.addLayoutItem(portletNode, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
-                }
-
             } else {
                 logger.error("Portlet Instance with uuid[" + gwtJahiaLayoutItem.getPortlet() + "] not found.");
             }

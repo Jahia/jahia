@@ -61,11 +61,10 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    public List getSites() {
-        List retval = null;
+    public List<JahiaSite> getSites() {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        retval = template.find("from JahiaSite");
+        List<JahiaSite> retval = template.find("from JahiaSite");
         return retval;
     }
 
@@ -84,7 +83,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
      *
      * @param active The search criteria.
      */
-    public List findByActive(Integer active) throws HibernateException {
+    public List<JahiaSite> findByActive(Integer active) throws HibernateException {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         return active == null ? template
@@ -97,7 +96,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
      *
      * @param defaultpageid The search criteria.
      */
-    public List findByDefaultpageid(java.lang.Integer defaultpageid) throws HibernateException {
+    public List<JahiaSite> findByDefaultpageid(Integer defaultpageid) throws HibernateException {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         return defaultpageid == null ? template
@@ -110,7 +109,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
      *
      * @param defaulttemplateid The search criteria.
      */
-    public List findByDefaulttemplateid(Integer defaulttemplateid) throws HibernateException {
+    public List<JahiaSite> findByDefaulttemplateid(Integer defaulttemplateid) throws HibernateException {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         return defaulttemplateid == null ? template
@@ -151,7 +150,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         }
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
-        List objects = template.find(
+        List<JahiaSite> objects = template.find(
                 "from JahiaSite where key = ?", key);
             if (objects.size() == 1) {
                 retval = (JahiaSite) objects.get(0);
@@ -178,7 +177,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         }
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
-        List objects = template
+        List<JahiaSite> objects = template
                 .find("from JahiaSite where servername = ?",
                         servername);
             if (objects.size() == 1) {
@@ -200,7 +199,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
      *
      * @param title The search criteria.
      */
-    public List findByTitle(String title) throws HibernateException {
+    public List<JahiaSite> findByTitle(String title) throws HibernateException {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         return title == null ? template
@@ -213,7 +212,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
      *
      * @param tplDeploymode The search criteria.
      */
-    public List findByTplDeploymode(Integer tplDeploymode) throws HibernateException {
+    public List<JahiaSite> findByTplDeploymode(Integer tplDeploymode) throws HibernateException {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         return tplDeploymode == null ? template
@@ -226,7 +225,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
      *
      * @param webappsDeploymode The search criteria.
      */
-    public List findByWebappsDeploymode(Integer webappsDeploymode) throws HibernateException {
+    public List<JahiaSite> findByWebappsDeploymode(Integer webappsDeploymode) throws HibernateException {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         return webappsDeploymode == null ? template

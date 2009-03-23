@@ -159,7 +159,7 @@ public class LuceneCoreSearcher {
      * @param waitSearcher       if non-null, will be filled in with a {@link Future} that will return after the new searcher is registered.
      * @throws IOException
      */
-    public RefCounted getSearcher(boolean forceNew, boolean returnSearcher, final Future[] waitSearcher) throws IOException, JahiaException {
+    public RefCounted getSearcher(boolean forceNew, boolean returnSearcher, final Future<Object>[] waitSearcher) throws IOException, JahiaException {
       // it may take some time to open an index.... we may need to make
       // sure that two threads aren't trying to open one at the same time
       // if it isn't necessary.
@@ -273,13 +273,13 @@ public class LuceneCoreSearcher {
         // and newSearcher has been de-registered, what's the point of continuing?
         //
 
-        Future future=null;
+        Future<Object> future=null;
 
         // warm the new searcher based on the current searcher.
         // should this go before the other event handlers or after?
         if (currSearcher != null) {
           future = searcherExecutor.submit(
-                  new Callable() {
+                  new Callable<Object>() {
                     public Object call() throws Exception {
                       try {
                         newSearcher.warm(currSearcher);
@@ -297,7 +297,7 @@ public class LuceneCoreSearcher {
         final RefCounted currSearcherHolderF = currSearcherHolder;
         if (!alreadyRegistered) {
           future = searcherExecutor.submit(
-                  new Callable() {
+                  new Callable<Object>() {
                     public Object call() throws Exception {
                       try {
                         // signal that we no longer need to decrement

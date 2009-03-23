@@ -174,7 +174,7 @@ public abstract class JahiaSitesService extends JahiaService {
     public abstract void updateSiteProperties (JahiaSite site, Properties props) throws JahiaException;
 
 
-    public abstract void removeSiteProperties (JahiaSite site,List propertiesToBeRemoved) throws JahiaException;
+    public abstract void removeSiteProperties (JahiaSite site, List<String> propertiesToBeRemoved) throws JahiaException;
     //-------------------------------------------------------------------------
     /**
      * Return the amount of sites in the system.

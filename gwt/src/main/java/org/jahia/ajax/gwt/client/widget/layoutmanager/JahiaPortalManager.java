@@ -361,7 +361,7 @@ public class JahiaPortalManager extends ContentPanel {
     private void insertJahiaPortlet(JahiaPortlet portlet, int row, int column) {
         final LayoutContainer columnContainer = portal.getItem(column);
         final int currentColumnNbPortlets = columnContainer.getItemCount();
-        if (row < currentColumnNbPortlets - 1) {
+        if (row < currentColumnNbPortlets) {
             portal.insert(portlet, row, column);
         } else {
             portal.add(portlet, column);

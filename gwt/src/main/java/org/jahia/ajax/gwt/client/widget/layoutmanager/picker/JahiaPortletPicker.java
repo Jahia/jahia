@@ -35,6 +35,7 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager.picker;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -254,6 +255,7 @@ public class JahiaPortletPicker extends ContentPanel {
     public static void addToMyPortal(String uuid) {
         Element ele = DOM.getElementById(uuid);
         DOM.setElementAttribute(ele, "disabled", "disabled");
+        DOM.setElementAttribute(ele, "value", "added !");
         GWTJahiaNode gwtJahiaNode = new GWTJahiaNode();
         gwtJahiaNode.setUUID(uuid);
         GWTJahiaLayoutItem gwtLayoutItem = new GWTJahiaLayoutItem();
@@ -265,7 +267,7 @@ public class JahiaPortletPicker extends ContentPanel {
         // make a call ajax
         LayoutmanagerService.App.getInstance().addLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(),gwtLayoutItem, new AsyncCallback() {
             public void onSuccess(Object o) {
-
+                Info.display("","Mashup added to 'MyPortal'");
             }
 
             public void onFailure(Throwable t) {

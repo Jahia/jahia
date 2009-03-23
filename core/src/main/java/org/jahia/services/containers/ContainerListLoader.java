@@ -340,10 +340,10 @@ public class ContainerListLoader implements Serializable {
                 cList.setIsContainersLoaded(false);
             }
         }
-        if (fakeSearcher){
-            this.containerSearchersMap.remove(key);
-        } else {
+        if (!fakeSearcher){
             this.containerSearchersMap.put(key,cSearcher);
+        } else if (this.containerSearchersMap == null){
+            this.containerSearchersMap.remove(key);            
         }
 
         return cSearcher;
@@ -437,10 +437,11 @@ public class ContainerListLoader implements Serializable {
                 cList.setIsContainersLoaded(false);
             }
         }
-        if (fakeFilter){
+        
+        if (!fakeFilter) {
+            this.containerFiltersMap.put(key, cFilters);
+        } else if (this.containerFiltersMap != null) {
             this.containerFiltersMap.remove(key);
-        } else {
-            this.containerFiltersMap.put(key,cFilters);
         }
         return cFilters;
     }
@@ -477,7 +478,7 @@ public class ContainerListLoader implements Serializable {
                 key += sorter.getContextID();
             }
             cachedSorter = (ContainerSorterInterface) this.containerSortersMap.get(key);
-        } else {
+        } else if (this.containerSortersMap != null){
             this.containerSortersMap.remove(key);
         }
         boolean doNewSorting = false;
@@ -564,7 +565,7 @@ public class ContainerListLoader implements Serializable {
         }
         if (sorter != null){
             this.containerSortersMap.put(key,sorter);
-        } else {
+        } else if (this.containerSortersMap != null){
             this.containerSortersMap.remove(key);
         }
         return sorter;

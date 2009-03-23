@@ -1478,7 +1478,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
 
                 logger.info("unzipping jahia GWT folder from "+pathResolver.resolvePath("WEB-INF/jahia/jsp/jahia/gwt.zip")+ " to"+(String)values.get("server_home")+"webapps/"+deployToDir+"jsp/jahia/gwt" );
-                FileUtils.unzipFile(pathResolver.resolvePath("WEB-INF/jahia/gwt.zip"),(String) values.get("server_home")+"webapps/"+deployToDir+"/jsp/jahia/gwt/" );
+                FileUtils.unzipFile(pathResolver.resolvePath("WEB-INF/jahia/gwt.zip"),(String) values.get("server_home")+"webapps/"+deployToDir+"/gwt/" );
                 logger.info("deleting  gwt zip file");
                 FileUtils.deleteFile(pathResolver.resolvePath("WEB-INF/jahia/gwt.zip"));
                 logger.info("copying "+ oldDir.getCanonicalFile()+ " to "+newDir+"" );

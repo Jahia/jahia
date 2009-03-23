@@ -15,7 +15,7 @@
 
     <imports jcr:primaryType="jnt:importDropBox" j:hidden="true"/>
 
-    <layoutmanager jcr:primaryType="jnt:folder" j:hidden="true" j:applyAcl="g:users:rw" />
+    <layoutmanager jcr:primaryType="jnt:layoutManager" j:hidden="true" j:applyAcl="g:users:rw" />
 
     <mounts jcr:primaryType="jnt:folder" j:applyAcl="g:users:rw" />
 </content>

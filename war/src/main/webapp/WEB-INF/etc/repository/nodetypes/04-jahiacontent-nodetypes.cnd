@@ -77,3 +77,6 @@
  - j:liveEditable (boolean)
  - j:liveDraggable (boolean)
  + j:item (jnt:layoutItem) multiple
+
+[jnt:layoutManager] > jnt:folder
++ j:layout (jnt:layout)

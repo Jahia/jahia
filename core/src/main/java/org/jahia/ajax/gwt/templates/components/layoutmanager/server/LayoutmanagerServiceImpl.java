@@ -123,16 +123,32 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
 
                 // remove layout_{pid} and its children
                 if (layoutNode != null) {
-                    layoutNode.remove();
-                    layoutmanagerNode.save();
+                    List<JCRNodeWrapper> nodeWrappers = layoutNode.getChildren();
+                    for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
+                        nodeWrapper.remove();
+                    }
+                } else {
+                    // update layoutNode
+                    layoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("j:layout", Constants.JAHIANT_LAYOUT));
+                    layoutNode.setPage(currentContentPage.getUUID());
                 }
 
-                // update layoutNode
-                layoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("layout", Constants.JAHIANT_LAYOUT));
-                layoutNode.setPage(currentContentPage.getUUID());
-
                 // update layout node
-                updateLayoutNode(getLayoutItems(jahiaPageContext), new JCRLayoutNode(layoutNode));
+                List<GWTJahiaLayoutItem> gwtJahiaLayoutItems = getLayoutItems(jahiaPageContext);
+                for (GWTJahiaLayoutItem gwtJahiaLayoutItem : gwtJahiaLayoutItems) {
+                    JCRNodeWrapper portletNode = jcrStoreService.getNodeByUUID(gwtJahiaLayoutItem.getPortlet(), getRemoteJahiaUser());
+                    if (portletNode != null) {
+                        // retrieve layout item node
+                        if (gwtJahiaLayoutItem.getUuid() != null) {
+                            JCRNodeWrapper nodeWrapper = layoutNode.addLayoutItem(portletNode, gwtJahiaLayoutItem.getColumn(), gwtJahiaLayoutItem.getRow(), gwtJahiaLayoutItem.getStatus());
+                            JCRLayoutItemNode jcrLayoutItemNode = new JCRLayoutItemNode(nodeWrapper);
+                            jcrLayoutItemNode.setColumnIndex(gwtJahiaLayoutItem.getColumn());
+                            jcrLayoutItemNode.setRowIndex(gwtJahiaLayoutItem.getRow());
+                            jcrLayoutItemNode.setStatus(gwtJahiaLayoutItem.getStatus());
+                            jcrLayoutItemNode.setPortlet(portletNode);
+                        }
+                    }
+                }
 
                 // save changes
                 layoutmanagerNode.save();
@@ -167,7 +183,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
 
             // update layout node
             updateLayoutNode(gwtJahiaLayoutItems, layoutNode);
-            
+
         } catch (Exception e) {
             logger.error("Error while saving layoumanager pref.", e);
 
@@ -329,8 +345,10 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
             LayoutmanagerJahiaPreference layoutmanagerNode = (LayoutmanagerJahiaPreference) getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
 
             if (layoutmanagerNode != null) {
+                logger.error("Layoutmanager config found for user [" + getRemoteUser() + "]");
                 return fillGWTLayoutItems(jahiaPageContext, layoutmanagerNode.getLayoutNode());
             } else {
+                logger.error("Layoutmanager for user [" + getRemoteUser() + "] not found --> load default one");
                 return getDefaultLayoutItems(jahiaPageContext);
             }
         } catch (RepositoryException e) {
@@ -441,7 +459,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
         try {
             ContentPage currentContentPage = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(retrieveParamBean().getPageID(), false);
 
-            String path = LAYOUTMANAGER_NODE_PATH + "/layout[@j:page='" + currentContentPage.getUUID() + "']";
+            String path = "/"+LAYOUTMANAGER_NODE_PATH + "/j:layout[@j:page='" + currentContentPage.getUUID() + "']";
             NodeIterator ni = findNodeIteratorByXpath(getRemoteJahiaUser(), path);
             if (ni != null && ni.hasNext()) {
                 return new JCRLayoutNode((JCRNodeWrapper) ni.nextNode());

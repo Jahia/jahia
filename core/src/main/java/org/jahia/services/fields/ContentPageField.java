@@ -371,7 +371,7 @@ public class ContentPageField extends ContentField {
                                 try {
                                     final EngineMessage msg = new EngineMessage(
                                             "org.jahia.services.fields.ContentPageField.pageOnlyInStagingWarning",
-                                            Integer.toString(linkPage.getID()));
+                                            new StringBuilder(linkPage.getTitle()).append(" (pid:").append(Integer.toString(linkPage.getID())).append(")").toString());
                                     final IsValidForActivationResults activationResults = new
                                             IsValidForActivationResults(mainKey,
                                             jParams.getLocale().toString(), msg);

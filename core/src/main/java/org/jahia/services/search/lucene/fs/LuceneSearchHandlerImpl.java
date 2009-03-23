@@ -34,6 +34,7 @@ import org.compass.core.lucene.engine.LuceneSearchEngine;
 import org.compass.core.lucene.engine.LuceneSearchEngineFactory;
 import org.compass.core.lucene.engine.analyzer.LuceneAnalyzerManager;
 import org.compass.core.lucene.util.ChainedFilter;
+import org.compass.core.lucene.util.ChainedFilter.ChainedFilterType;
 import org.compass.core.mapping.ResourceMapping;
 import org.compass.core.spi.InternalCompass;
 import org.jahia.registries.ServicesRegistry;
@@ -248,7 +249,7 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
                         if (filter != null) {
                             filterArray[i] = filter;
                         }
-                        filter = new ChainedFilter(filterArray);
+                        filter = new ChainedFilter(filterArray, ChainedFilterType.AND);
                     } else {
                         filter = jahiaSearcher.getFilter(queryParser.parse(filterQueries[0]));
                     }

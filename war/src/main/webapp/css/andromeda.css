@@ -68,7 +68,7 @@ body {
 }
 
 body.login, #bodyLogin {
-  background:url(images/andromeda/bg-body_enterprise.png) no-repeat 50% 0%;
+  background:url(images/andromeda/bg-body_community.png) no-repeat 50% 0%;
   background-color: #FFFFFF;
   margin:230px auto 0 auto;
   text-align:center

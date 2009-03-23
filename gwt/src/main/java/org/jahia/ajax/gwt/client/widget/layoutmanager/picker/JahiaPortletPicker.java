@@ -167,7 +167,7 @@ public class JahiaPortletPicker extends ContentPanel {
 
     private void initCreatePortletInstanceToolItem() {
         // add to my portal
-        createPortletInstance = new TextToolItem(Messages.getNotEmptyResource("p_mashup_create","Create module"));
+        createPortletInstance = new TextToolItem(Messages.getNotEmptyResource("p_mashup_create","Create mashup"));
         createPortletInstance.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
                 PortletWizardWindow window = new PortletWizardWindow(null,selection) {

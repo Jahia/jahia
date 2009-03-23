@@ -31,9 +31,9 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%>
-
-<%@include file="/admin/include/header.inc" %>
+--%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
+%><c:set var="jahiaAdministrationLogin" value="true" 
+/><%@include file="/admin/include/header.inc" %>
 <%@page import="java.net.URLEncoder" %>
 <%
 String  jahiaLoginUsername   = (String) request.getAttribute("jahiaLoginUsername");
@@ -64,7 +64,6 @@ inputSize = 22;
 </script>
 <center>
 <div id="adminLogin">
-<h1 class="big">Jahia</h1>
 <h3 class="loginIcon"><fmt:message key="org.jahia.admin.jahiaAdministration.label"/></h3>
 <br class="clearFloat" />
 <form name="jahiaAdmin" action='<%=JahiaAdministration.composeActionURL(request,response,"processlogin","&redirectTo=" + URLEncoder.encode(redirectTo))%>' method="post">
@@ -74,7 +73,7 @@ inputSize = 22;
         <fmt:message key="org.jahia.admin.username.label"/>
       </th>
       <td>
-        <input class="input" type="text" name="login_username" size="<%=inputSize%>" maxlength="250" value="<%=jahiaLoginUsername%>" tabindex="1">
+        <input class="input" type="text" name="login_username" style="width: 150px" size="<%=inputSize%>" maxlength="250" value="<%=jahiaLoginUsername%>" tabindex="1">
       </td>
     </tr>
     <tr>
@@ -82,7 +81,7 @@ inputSize = 22;
         <fmt:message key="org.jahia.admin.password.label"/>
       </th>
       <td>
-        <input class="input" type="password" name="login_password" size="<%=inputSize%>" maxlength="250" tabindex="2" onkeydown="if (event.keyCode == 13) javascript:document.jahiaAdmin.submit();">
+        <input class="input" type="password" name="login_password" style="width: 150px" size="<%=inputSize%>" maxlength="250" tabindex="2" onkeydown="if (event.keyCode == 13) javascript:document.jahiaAdmin.submit();">
       </td>
     </tr>
   </table>

@@ -257,12 +257,6 @@
                 validate="false">
         </action>
 
-        <action path="/GetSearchHighlight"
-                type="org.jahia.ajax.searchhighlight.SearchHighlightAction"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/GetCategories"
                 type="org.jahia.ajax.categories.GetCategories"
                 parameter="method"

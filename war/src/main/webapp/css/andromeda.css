@@ -1534,6 +1534,9 @@ tr.oddLine {
 margin:0 auto;
 clear:both
 }
+#adminLogin .formTable th {
+    text-align: left;
+}
 
 .formTable{
   background-color: #DCE9ED;

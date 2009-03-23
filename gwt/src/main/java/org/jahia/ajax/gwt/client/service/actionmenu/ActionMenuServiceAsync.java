@@ -69,6 +69,8 @@ public interface ActionMenuServiceAsync {
 
     void clipboardPaste(GWTJahiaPageContext page, String objectKey, AsyncCallback<Boolean> async);
 
+    void clipboardPasteReference(GWTJahiaPageContext page, String objectKey, AsyncCallback<Boolean> async);
+
     void hack(GWTJahiaAction action, AsyncCallback async);
     
 }

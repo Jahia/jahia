@@ -61,6 +61,8 @@ public class GWTJahiaClipboardAction extends GWTJahiaAction implements Serializa
             ActionMenuJahiaModule.getClipboardTool().copy(objectKey);
         } else if (item.equals(PASTE)) {
             ActionMenuJahiaModule.getClipboardTool().paste(objectKey);
+        } else if (item.equals(PASTE_REF)) {
+            ActionMenuJahiaModule.getClipboardTool().pasteReference(objectKey);
         } else {
             Window.alert("Unknown action " + item) ;
         }

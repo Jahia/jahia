@@ -185,6 +185,15 @@ public interface ActionMenuService extends RemoteService {
     public Boolean clipboardPaste(GWTJahiaPageContext page, String objectKey) ;
 
     /**
+     * Paste the clipboard content into the selected object as a reference (linked copy).
+     *
+     * @param page the current page
+     * @param objectKey the target object key
+     * @return true if paste succeeded, false otherwise
+     */
+    public Boolean clipboardPasteReference(GWTJahiaPageContext page, String objectKey) ;
+
+    /**
      * Hack to avoid a rpc issue (blank method)
      * @param action the parameter (type in fact) causing trouble
      */

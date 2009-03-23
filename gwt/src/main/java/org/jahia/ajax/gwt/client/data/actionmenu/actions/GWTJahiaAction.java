@@ -43,8 +43,9 @@ import java.io.Serializable;
 public abstract class GWTJahiaAction implements Serializable {
 
     public static final String ADD = "add" ;
-    public static final String UPDATE = "update " ;
+    public static final String UPDATE = "update" ;
     public static final String PASTE = "paste" ;
+    public static final String PASTE_REF = "pasteref" ;
     public static final String COPY = "copy" ;
     public static final String RESTORE = "restore" ;
     public static final String DELETE = "delete" ;

@@ -52,6 +52,7 @@ import org.jahia.services.importexport.CopyJob;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
+import org.jahia.content.StructuralRelationship;
 import org.quartz.JobDetail;
 import org.quartz.JobDataMap;
 
@@ -189,9 +190,10 @@ public class ClipboardHelper {
      * @param session the current session
      * @param processingContext the processing context
      * @param destObjectKey the object key to copy
+     * @param linkedCopy true to make a linked copy, false to make a real copy
      * @return true if paste succeeded, false otherwise
      */
-    public static boolean clipboardPaste(HttpSession session, ProcessingContext processingContext, String destObjectKey) {
+    public static boolean clipboardPaste(HttpSession session, ProcessingContext processingContext, String destObjectKey, boolean linkedCopy) {
         final String skey = (String) session.getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT);
         final LockRegistry lockRegistry = LockRegistry.getInstance();
         try {
@@ -207,9 +209,12 @@ public class ClipboardHelper {
                 JobDataMap jobDataMap = jobDetail.getJobDataMap();
                 jobDataMap.put(CopyJob.SOURCE, source.getObjectKey().toString());
                 jobDataMap.put(CopyJob.DEST, dest.getObjectKey().toString());
+                if (linkedCopy) {
+                    jobDataMap.put(CopyJob.LINK, StructuralRelationship.ACTIVATION_PICKER_LINK);
+                }
                 jobDataMap.put(CopyJob.SITESOURCE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(source.getSiteID()).getSiteKey());
                 jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(dest.getSiteID()).getSiteKey());
-                jobDataMap.put(BackgroundJob.JOB_TYPE, CopyJob.COPYPASTE_TYPE);
+                jobDataMap.put(BackgroundJob.JOB_TYPE, linkedCopy ? CopyJob.PICKERCOPY_TYPE : CopyJob.COPYPASTE_TYPE);
 
                 synchronized(lockRegistry) {
                     boolean acq = true;

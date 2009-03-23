@@ -77,26 +77,20 @@ public class ActionMenuLabelProvider {
      */
     private static String getActionLabel(ProcessingContext ctx, String action) {
         return new JahiaResourceBundle(ctx.getLocale(), ctx.getSite().getTemplatePackageName()).getString(new StringBuilder("actionmenus.actions.").append(action).toString(), action);
-
     }
 
     private static String getSuffixLabel(String bundleName, ProcessingContext ctx, String action, String postfix, String type) {
-
-        String suffix = postfix != null && postfix.length() > 0 ? postfix
-                : type;
-
-        JahiaResourceBundle bundle = new JahiaResourceBundle(bundleName != null
-                && bundleName.length() > 0 ? bundleName : null,
-                ctx.getLocale(), ctx.getSite().getTemplatePackageName());
+        String suffix = postfix != null && postfix.length() > 0 ? postfix : type;
+        JahiaResourceBundle bundle = new JahiaResourceBundle(bundleName != null && bundleName.length() > 0 ? bundleName : null, ctx.getLocale(), ctx.getSite().getTemplatePackageName());
         
-        String suffixLabel = null ;
-        suffixLabel = getMessage(bundle, 
-                new StringBuilder("actionmenus.postfixes.").append(suffix).append(".").append(action).toString(), 
+        String suffixLabel ;
+        suffixLabel = getMessage(bundle,
+                new StringBuilder("actionmenus.postfixes.").append(suffix).append(".").append(action).toString(),
                 new StringBuilder("actionmenus.postfixes.").append(suffix).append(".default").toString());
         
         if (suffixLabel == null && !suffix.equals(type)) {
-            suffixLabel = getMessage(bundle, 
-                    new StringBuilder("actionmenus.postfixes.").append(type).append(".").append(action).toString(), 
+            suffixLabel = getMessage(bundle,
+                    new StringBuilder("actionmenus.postfixes.").append(type).append(".").append(action).toString(),
                     new StringBuilder("actionmenus.postfixes.").append(type).append(".default").toString());
         }
         
@@ -134,7 +128,7 @@ public class ActionMenuLabelProvider {
                     break;
                 }
             } catch (MissingResourceException ex) {
-                logger.debug("No resource for entry '" + label + "' in bundles " + bundle.getLookupBundles());
+                logger.debug("No resource for entry '" + label + "' in bundle " + bundle.getLookupBundles());
             }
         }
 

@@ -192,7 +192,7 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     public String getString(String key, String defaultValue) {
-        String message = defaultValue;
+        String message ;
         try {
             message = getString(key);
         } catch (MissingResourceException e) {

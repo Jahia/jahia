@@ -169,7 +169,13 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     public Boolean clipboardPaste(GWTJahiaPageContext page, String destObjectKey) {
         final HttpSession session = getThreadLocalRequest().getSession() ;
         final ProcessingContext processingContext  = retrieveParamBean(page) ;
-        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey) ;
+        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey, false) ;
+    }
+
+    public Boolean clipboardPasteReference(GWTJahiaPageContext page, String destObjectKey) {
+        final HttpSession session = getThreadLocalRequest().getSession() ;
+        final ProcessingContext processingContext  = retrieveParamBean(page) ;
+        return ClipboardHelper.clipboardPaste(session, processingContext,  destObjectKey, true) ;
     }
 
     public void hack(GWTJahiaAction action) {

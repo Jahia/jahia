@@ -182,7 +182,7 @@ public class ActionMenuHelper {
                 // Update
                 String url = ActionMenuURIFormatter.drawPageUpdateUrl(jParams, contentObject.getID()) ;
                 if (url != null) {
-                    GWTJahiaAction updatePage = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "update", namePostFix, ActionMenuLabelProvider.PAGE),url) ;
+                    GWTJahiaAction updatePage = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.UPDATE, namePostFix, ActionMenuLabelProvider.PAGE),url) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_PAGE_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
                         updatePage.setLocked(true);
@@ -203,7 +203,7 @@ public class ActionMenuHelper {
                 // Add
                 url = ActionMenuURIFormatter.drawContainerListAddUrl(jParams, containerList) ;
                 if (url != null) {
-                    GWTJahiaAction addContainer = new GWTJahiaEngineAction(GWTJahiaAction.ADD, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "add", namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), url) ;
+                    GWTJahiaAction addContainer = new GWTJahiaEngineAction(GWTJahiaAction.ADD, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.ADD, namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), url) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.ADD_CONTAINER_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
                         addContainer.setLocked(true);
@@ -217,7 +217,7 @@ public class ActionMenuHelper {
                 // Update
                 url = ActionMenuURIFormatter.drawContainerListUpdateUrl(jParams, containerList) ;
                 if (url != null) {
-                    GWTJahiaAction updateContainerList = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "update", namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), url) ;
+                    GWTJahiaAction updateContainerList = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.UPDATE, namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), url) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINERLIST_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
                         updateContainerList.setLocked(true);
@@ -229,7 +229,7 @@ public class ActionMenuHelper {
                 }
                 // Copy
                 if (objectKey != null && !containerList.isMarkedForDelete() && containerList.getJahiaContainerList(jParams, elr).getFullSize() > 0) {
-                    actions.add(new GWTJahiaClipboardAction(GWTJahiaAction.COPY, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "copy", namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), objectKey)) ;
+                    actions.add(new GWTJahiaClipboardAction(GWTJahiaAction.COPY, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.COPY, namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), objectKey)) ;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Copy action : " + objectKey);
                     }
@@ -237,7 +237,7 @@ public class ActionMenuHelper {
                 // Paste
                 String pastedType ;
                 if ((pastedType = ClipboardHelper.isPasteAllowed(session, jParams, objectKey)) != null) {
-                    GWTJahiaAction pasteContainer = new GWTJahiaClipboardAction(GWTJahiaAction.PASTE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "paste", namePostFix, pastedType), objectKey) ;
+                    GWTJahiaAction pasteContainer = new GWTJahiaClipboardAction(GWTJahiaAction.PASTE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.PASTE, namePostFix, pastedType), objectKey) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.ADD_CONTAINER_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
                         pasteContainer.setLocked(true);
@@ -247,6 +247,18 @@ public class ActionMenuHelper {
                         logger.debug("Paste action : " + objectKey);
                     }
                 }
+                // Paste reference
+                if (pastedType != null && ActionMenuLabelProvider.CONTAINER.equals(pastedType)) { // paste only container reference
+                    GWTJahiaAction pasteContainerReference = new GWTJahiaClipboardAction(GWTJahiaAction.PASTE_REF, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.PASTE_REF, namePostFix, pastedType), objectKey) ;
+                    LockKey lockKey = LockKey.composeLockKey(LockKey.ADD_CONTAINER_TYPE, contentObject.getID());
+                    if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
+                        pasteContainerReference.setLocked(true);
+                    }
+                    actions.add(pasteContainerReference) ;
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Paste reference action : " + objectKey);
+                    }
+                }
 
             // GWTJahiaAction Menu for a Container
             } else if (ContainerBean.TYPE.equals(objectType)) {
@@ -254,7 +266,7 @@ public class ActionMenuHelper {
                 // Update
                 String url = ActionMenuURIFormatter.drawContainerUpdateUrl(jParams, container, 0) ;
                 if (url != null) {
-                    GWTJahiaAction updateContainer = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "update", namePostFix, ActionMenuLabelProvider.CONTAINER), url) ;
+                    GWTJahiaAction updateContainer = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.UPDATE, namePostFix, ActionMenuLabelProvider.CONTAINER), url) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_CONTAINER_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
                         updateContainer.setLocked(true);
@@ -280,7 +292,7 @@ public class ActionMenuHelper {
                 }*/
                 // Copy
                 if (objectKey != null && !container.isMarkedForDelete()) {
-                    actions.add(new GWTJahiaClipboardAction(GWTJahiaAction.COPY, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "copy", namePostFix, ActionMenuLabelProvider.CONTAINER), objectKey)) ;
+                    actions.add(new GWTJahiaClipboardAction(GWTJahiaAction.COPY, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.COPY, namePostFix, ActionMenuLabelProvider.CONTAINER), objectKey)) ;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Copy action : " + objectKey);
                     }
@@ -288,7 +300,7 @@ public class ActionMenuHelper {
                 // Delete
                 url = ActionMenuURIFormatter.drawContainerDeleteUrl(jParams, container) ;
                 if (url != null) {
-                    GWTJahiaAction deleteContainer = new GWTJahiaEngineAction(GWTJahiaAction.DELETE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "delete", namePostFix, ActionMenuLabelProvider.CONTAINER), url) ;
+                    GWTJahiaAction deleteContainer = new GWTJahiaEngineAction(GWTJahiaAction.DELETE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.DELETE, namePostFix, ActionMenuLabelProvider.CONTAINER), url) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.DELETE_CONTAINER_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
                         deleteContainer.setLocked(true);
@@ -301,7 +313,7 @@ public class ActionMenuHelper {
                 // Picked
                 url = ActionMenuURIFormatter.drawContainerPickedUrl(jParams, container) ;
                 if (url != null) {
-                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.PICKED, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "picked", namePostFix, ActionMenuLabelProvider.CONTAINER), url)) ;
+                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.PICKED, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.PICKED, namePostFix, ActionMenuLabelProvider.CONTAINER), url)) ;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Picked action : " + url);
                     }
@@ -313,7 +325,7 @@ public class ActionMenuHelper {
                     for (String title: pickers.keySet()) {
                         pickersRedirect.add(new GWTJahiaRedirectAction(GWTJahiaAction.PICKER_LIST, title, pickers.get(title))) ;
                     }
-                    actions.add(new GWTJahiaDisplayPickersAction(GWTJahiaAction.PICKER_LIST, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "pickerlist", namePostFix, ActionMenuLabelProvider.CONTAINER), pickersRedirect)) ;
+                    actions.add(new GWTJahiaDisplayPickersAction(GWTJahiaAction.PICKER_LIST, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.PICKER_LIST, namePostFix, ActionMenuLabelProvider.CONTAINER), pickersRedirect)) ;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Picker list action : " + url);
                     }
@@ -321,7 +333,7 @@ public class ActionMenuHelper {
                 // Source
                 url = ActionMenuURIFormatter.drawContainerSourcePageReferenceUrl(jParams, container) ;
                 if (url != null) {
-                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "source", namePostFix, ActionMenuLabelProvider.CONTAINER), url)) ;
+                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.SOURCE, namePostFix, ActionMenuLabelProvider.CONTAINER), url)) ;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Source action : " + url);
                     }
@@ -333,7 +345,7 @@ public class ActionMenuHelper {
                 // Update
                 String url = ActionMenuURIFormatter.drawFieldUpdateUrl(field, jParams) ;
                 if (url != null) {
-                    GWTJahiaAction updateField = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "update", namePostFix, ActionMenuLabelProvider.FIELD), url) ;
+                    GWTJahiaAction updateField = new GWTJahiaEngineAction(GWTJahiaAction.UPDATE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.UPDATE, namePostFix, ActionMenuLabelProvider.FIELD), url) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_FIELD_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {
                         updateField.setLocked(true);
@@ -346,7 +358,7 @@ public class ActionMenuHelper {
                 // Source
                 url = ActionMenuURIFormatter.drawFieldSourcePageReferenceUrl(field, jParams) ;
                 if (url != null) {
-                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, "source", namePostFix, ActionMenuLabelProvider.FIELD), url)) ;
+                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.SOURCE, namePostFix, ActionMenuLabelProvider.FIELD), url)) ;
                     if (logger.isDebugEnabled()) {
                         logger.debug("Source action : " + url);
                     }

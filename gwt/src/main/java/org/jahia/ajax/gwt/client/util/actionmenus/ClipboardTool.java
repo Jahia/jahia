@@ -117,4 +117,19 @@ public class ClipboardTool /*extends HTML*/ {
         });
     }
 
+    public void pasteReference(String objectKey) {
+        actionMenuService.clipboardPasteReference(jahiaPageContext, objectKey, new AsyncCallback<Boolean>() {
+            public void onFailure(Throwable throwable) {
+                Window.alert("Paste failed :\n" + throwable.getLocalizedMessage()) ;
+            }
+            public void onSuccess(Boolean success) {
+                if (success != null && success.booleanValue()) {
+                    //setStyleName("clipboard-pasted");
+                } else {
+                    checkClipboardState();
+                }
+            }
+        });
+    }
+
 }

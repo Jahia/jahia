@@ -922,6 +922,10 @@
     background: url( ../images/actions/paste.png ) no-repeat scroll 2px center ;
 }
 
+.action-menu-pasteref {
+    background: url( ../images/actions/pasteref.png ) no-repeat scroll 2px center ;
+}
+
 .action-menu-delete {
     background: url( ../images/actions/delete.png ) no-repeat scroll 2px center ;
 }

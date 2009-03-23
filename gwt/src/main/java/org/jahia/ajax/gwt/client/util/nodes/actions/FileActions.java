@@ -199,6 +199,16 @@ public class FileActions {
         }
     }
 
+    public static void preview(final BrowserLinker linker) {
+        final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
+        if (selectedItems != null && selectedItems.size() == 1) {
+            final GWTJahiaNode selection = selectedItems.get(0);
+            if (selection != null && selection.isFile().booleanValue()) {
+                ImagePopup.popImage(selection);
+            }
+        }
+    }
+
     public static void openWebFolder(final BrowserLinker linker) {
         List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
         final GWTJahiaNode selection;

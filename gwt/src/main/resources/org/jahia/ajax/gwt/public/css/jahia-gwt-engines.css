@@ -104,6 +104,10 @@
     background-image: url( ../images/download.png ) !important;
 }
 
+.fm-preview {
+    background-image: url( ../images/preview.png ) !important;
+}
+
 .fm-webfolder {
     background-image: url( ../images/webfolder.png ) !important;
 }
@@ -190,6 +194,10 @@
 
 .fm-download-bw {
     background-image: url( ../images/disabled/download.png ) !important;
+}
+
+.fm-preview-bw {
+    background-image: url( ../images/disabled/preview.png ) !important;
 }
 
 .fm-webfolder-bw {

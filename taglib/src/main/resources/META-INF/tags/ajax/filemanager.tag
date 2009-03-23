@@ -79,6 +79,8 @@
                             aliasResourceName="fm_unzip"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.downloadFile.label"
                             aliasResourceName="fm_download"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.previewFile.label"
+                            aliasResourceName="fm_preview"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.downloadMessage.label"
                             aliasResourceName="fm_downloadMessage"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.upload.label"

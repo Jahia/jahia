@@ -183,6 +183,9 @@ public class ManagerConfigurationFactory {
         FileActionItem download = ItemCreator.createDownloadItem(linker);
         file.addItem(download);
         fileManagerConfig.addItem(download);
+        FileActionItem preview = ItemCreator.createPreviewItem(linker);
+        file.addItem(preview);
+        fileManagerConfig.addItem(preview);
         if (GXT.isIE) {
             FileActionItem webFolder = ItemCreator.createWebfolderItem(linker);
             file.addItem(webFolder);
@@ -266,6 +269,12 @@ public class ManagerConfigurationFactory {
         FileActionItem upload = ItemCreator.createUploadItem(linker);
         filePickerConfig.addItem(upload);
         file.addItem(upload);
+        FileActionItem download = ItemCreator.createDownloadItem(linker);
+        file.addItem(download);
+        filePickerConfig.addItem(download);
+        FileActionItem preview = ItemCreator.createPreviewItem(linker);
+        file.addItem(preview);
+        filePickerConfig.addItem(preview);
         filePickerConfig.addItem(new FileActionItemSeparator());
 
         FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
@@ -645,6 +654,19 @@ public class ManagerConfigurationFactory {
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
                     setEnabled(tableSelection && singleFile);
+                }
+            };
+            return download;
+        }
+
+        private static FileActionItem createPreviewItem(final BrowserLinker linker) {
+            FileActionItem download = new FileActionItem(Messages.getResource("fm_preview"), "fm-preview") {
+                public void onSelection() {
+                    FileActions.preview(linker);
+                }
+
+                public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
+                    setEnabled(tableSelection && singleFile && isImage);
                 }
             };
             return download;

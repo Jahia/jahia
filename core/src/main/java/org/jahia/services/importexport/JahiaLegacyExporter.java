@@ -387,6 +387,10 @@ public class JahiaLegacyExporter extends Exporter{
                         }
                         break;
                 }
+                String p = cp.getProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU);
+                if (p != null) {
+                    attr.addAttribute(ImportExportService.JAHIA_URI, "hideFromNavigationMenu", "jahia:hideFromNavigationMenu", CDATA, "true");
+                }
             } else if (object instanceof ContentContainerList) {
                 ContentContainerList ccl = (ContentContainerList) object;
                 ContainerDefinitionKey cdk = (ContainerDefinitionKey) ccl.getDefinitionKey(toLoadRequest);

@@ -1541,6 +1541,9 @@ public class ImportHandler extends DefaultHandler {
             String pageKey = atts.getValue(ImportExportBaseService.JAHIA_URI, "pageKey");
             setPageKey(pageKey, cp);
         }
+        if (atts.getValue(ImportExportBaseService.JAHIA_URI, "hideFromNavigationMenu") != null) {
+            cp.setProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU, "true");
+        }
         cp.commitChanges(true,true,jParams.getUser());
         pageID = cp.getID();
         return pageID;

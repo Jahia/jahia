@@ -57,7 +57,7 @@
                 <ui:loginButton cssClassName="button" labelKey="loginbutton"/>
             </p>
 
-            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePassword" cssClassName="error"/>
+            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
 
         </fieldset>
     </div>

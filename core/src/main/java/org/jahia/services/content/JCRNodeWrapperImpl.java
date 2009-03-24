@@ -1196,13 +1196,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         if (aceg == null) {
-            aceg = acl.addNode("j:ace","jnt:ace");
+            aceg = acl.addNode("GRANT_" + user.replace(':','_') , "jnt:ace");
             aceg.setProperty("j:principal",user);
             aceg.setProperty("j:protected",false);
             aceg.setProperty("j:aceType","GRANT");
         }
         if (aced == null) {
-            aced = acl.addNode("j:ace","jnt:ace");
+            aced = acl.addNode("DENY_" + user.replace(':','_') , "jnt:ace");
             aced.setProperty("j:principal",user);
             aced.setProperty("j:protected",false);
             aced.setProperty("j:aceType","DENY");

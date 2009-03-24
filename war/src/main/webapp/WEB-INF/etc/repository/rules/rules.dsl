@@ -57,7 +57,7 @@
 [consequence][]Set the property {property} of the {node} with the height of the image= imageService.setHeight({node}, "{property}", drools);
 [consequence][]Set the property {property} of the {node} with the width of the image= imageService.setWidth({node}, "{property}", drools);
 [consequence][]Import the node=service.importNode(node,drools);
-[consequence][]Log {message}= logger.info({message});
+[consequence][]Log {message}= logger.debug({message});
 [consequence][]Fire {eventType} notification event for {node}=service.notify({node}, "{eventType}", drools);
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]- the container is of type {containerType}=type == JahiaSearchHitInterface.CONTAINER_TYPE && containerType == "{containerType}"

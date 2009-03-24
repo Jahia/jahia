@@ -4,7 +4,14 @@
            xmlns:j="http://www.jahia.org/jahia/1.0"
            xmlns:jnt="http://www.jahia.org/jahia/nt/1.0">
 
-    <shared jcr:primaryType="jnt:folder" j:applyAcl="g:users:rw" >
+    <shared jcr:primaryType="jnt:folder" >
+
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>
+            <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
+        </j:acl>
+
         <files jcr:primaryType="jnt:folder"/>
         <mashups jcr:primaryType="jnt:folder"/>
     </shared>
@@ -15,7 +22,18 @@
 
     <imports jcr:primaryType="jnt:importDropBox" j:hidden="true"/>
 
-    <layoutmanager jcr:primaryType="jnt:layoutManager" j:hidden="true" j:applyAcl="g:users:rw" />
+    <layoutmanager jcr:primaryType="jnt:layoutManager" j:hidden="true" >
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>
+            <!--<DENY_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="" j:aceType="DENY"/>-->
+        </j:acl>
+    </layoutmanager>
 
-    <mounts jcr:primaryType="jnt:folder" j:applyAcl="g:users:rw" />
+    <mounts jcr:primaryType="jnt:folder" >
+        <j:acl jcr:primaryType="jnt:acl">
+            <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
+            <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>
+        </j:acl>
+    </mounts>
 </content>

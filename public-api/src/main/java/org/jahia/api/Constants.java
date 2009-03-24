@@ -132,7 +132,6 @@ public class Constants {
     public static final String JAHIANT_PREF = "jnt";
     public static final String JAHIAMIX_PREF = "jmix";
 
-    public static final String JAHIAMIX_ACL = "jmix:acl";
     public static final String JAHIAMIX_DESCRIPTION = "jmix:description";
     public static final String JAHIAMIX_CATEGORIZED = "jmix:categorized";
     public static final String JAHIAMIX_LASTPUBLISHED = "jmix:lastPublished";

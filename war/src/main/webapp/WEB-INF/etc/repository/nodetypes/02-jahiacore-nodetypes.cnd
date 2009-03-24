@@ -28,11 +28,8 @@
 
 [jnt:acl] > nt:base
  orderable
- + j:ace (jnt:ace) = jnt:ace multiple
+ + * (jnt:ace) = jnt:ace
  - j:inherit (boolean)
-
-[jmix:acl] mixin
- - j:applyAcl (string)
 
 [jmix:lockable] > mix:lockable mixin
  - j:locktoken (string) protected indexed=no

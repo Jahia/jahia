@@ -352,7 +352,7 @@ public class JahiaAccessManager implements AccessManager {
                     } else if (node.hasNode("j:acl")) {
                         // Jahia specific ACL
                         Node acl = node.getNode("j:acl");
-                        NodeIterator aces = acl.getNodes("j:ace");
+                        NodeIterator aces = acl.getNodes();
 
                         while (aces.hasNext()) {
                             Node ace = aces.nextNode();

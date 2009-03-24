@@ -58,7 +58,7 @@
                 <ui:loginButton cssClassName="button" labelKey="loginbutton" tabIndex="4"/>
             </p>
 
-            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
+            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePassword" cssClassName="error"/>
 
         </fieldset>
     </div>
@@ -79,7 +79,7 @@
             <p style="float:left">
                 <ui:loginButton cssClassName="button" labelKey="loginbutton" tabIndex="7"/>
             </p>
-            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
+            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePassword" cssClassName="error"/>
         </fieldset>
     </div>
 </ui:loginArea>

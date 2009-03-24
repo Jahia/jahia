@@ -43,7 +43,7 @@
         <input type="image" class="gobutton"
                src="${pageContext.request.contextPath}/templates/community_templates/theme/${requestScope.currentTheme}/img/go-button.png" tabindex="3"/>
         <!-- input type bouton image non géré pour le moment -->
-        <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePassword" cssClassName="error"/>
+        <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
     </p>
 </ui:loginArea>
 

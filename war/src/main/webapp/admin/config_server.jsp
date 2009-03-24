@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -34,7 +34,7 @@
 --%>
 
 <%@page import="org.jahia.bin.*" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://www.jahia.org/tags/functions" prefix="functions" %>
 <%@include file="/admin/include/header.inc" %>
 <%
     stretcherToOpen = 0; %>
@@ -42,11 +42,14 @@
 <!--
 function testSettings() {
     if (document.jahiaAdmin.host.value.length == 0) {
-        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label'/>");
+    	<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
     } else if (document.jahiaAdmin.to.value.length == 0) {
-        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label'/>");
+        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
     } else if (document.jahiaAdmin.from.value.length == 0) {
-        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label'/>");
+    	<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
     } else {
         if (typeof workInProgressOverlay != 'undefined') {
         	workInProgressOverlay.start();
@@ -65,16 +68,19 @@ function testSettingsSuccess(text, code, statusText) {
         workInProgressOverlay.stop();
     }
 	if (code == 200) {
-        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.success'/>");
+        <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.success" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
     } else {
-        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n" + code + " " + statusText + (code >= 500 ? ("\n" + text) : ''));
+    	<fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}" + "\n" + code + " " + statusText + (code >= 500 ? ("\n" + text) : ''));
     }
 }
 function testSettingsFailure(text, code, statusText) {
     if (typeof workInProgressOverlay != 'undefined') {
         workInProgressOverlay.stop();
     }
-    alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n'" + code + " " + statusText + "\n" + text);
+    <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+    alert("${functions:escapeJavaScript(msg)}" + "\n'" + code + " " + statusText + "\n" + text);
 }
 //-->
 </script>

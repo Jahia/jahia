@@ -31,7 +31,22 @@
             &lt;c:out value="${functions:default(param.itemsPerPage, '10')}"&gt;
         </example>
     </function>
-
+    
+    <function>
+        <description>
+            Escapes the characters in a String using JavaScript String rules.
+            Escapes any values it finds into their JavaScript String form.
+            Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.)         
+        </description>
+        <name>escapeJavaScript</name>
+        <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String escapeJavaScript(java.lang.String)</function-signature>
+        <example>
+            &lt;c:set var="msg"&gt;He didn't say, "Stop!"&lt;/c:set&gt;
+            ${functions:escapeJavaScript(msg) will result in: He didn\'t say, \"Stop!\"
+        </example>
+    </function>
+    
     <function>
         <description>Returns the page ID of the page referenced by a URL key, or -1 if not found
         </description>
@@ -124,4 +139,14 @@
             &lt;c:out value="${functions:stringConcatenation('new', ' ', 'value')}"&gt;
         </example>
     </function>
+
+    <function>
+        <description>
+            Unescapes any JavaScript literals found in the String.
+        </description>
+        <name>unescapeJavaScript</name>
+        <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String unescapeJavaScript(java.lang.String)</function-signature>
+    </function>
+    
 </taglib>

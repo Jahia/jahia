@@ -64,6 +64,7 @@ import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -142,22 +143,30 @@ public class WorkflowDetails extends BottomRightComponent {
             for (String lang: valid.keySet()) {
                 GWTJahiaNodeOperationResult validForLang = valid.get(lang) ;
                 if (!validForLang.getErrorsAndWarnings().isEmpty()) {
-                    flowPanel.add(new HTML("<div><span class=\"flag_" + lang + "\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;" + lang + "</span></div>"));
-                    StringBuilder sbWars = new StringBuilder("<ul>");
-                    StringBuilder sbErrs = new StringBuilder("<ul>");
+                    List<String> errs = new ArrayList<String>() ;
+                    List<String> wars = new ArrayList<String>() ;
+                    // remove duplicates
                     for (GWTJahiaNodeOperationResultItem err : validForLang.getErrorsAndWarnings()) {
-                        if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.ERROR) {
-                            sbErrs.append("\n<li>").append(err.getMessage()).append("</li>");
-                        } else if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.WARNING) {
-                            sbWars.append("\n<li>").append(err.getMessage()).append("</li>");
+                        String message = err.getMessage() ;
+                        if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.ERROR && !errs.contains(message)) {
+                            errs.add(message) ;
+                        } else if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.WARNING && !wars.contains(message)) {
+                            wars.add(message) ;
                         }
                     }
-                    sbWars.append("\n</ul>");
+                    flowPanel.add(new HTML("<div><span class=\"flag_" + lang + "\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;" + lang + "</span></div>"));
+                    StringBuilder sbErrs = new StringBuilder("<ul>");
+                    for (String errMessage: errs) {
+                        sbErrs.append("\n<li>").append(errMessage).append("</li>");
+                    }
                     sbErrs.append("\n</ul>");
-                    String errs = new StringBuilder(sbErrs.toString()).append("\n").append(sbWars.toString()).toString();
-                    flowPanel.add(new HTML(errs)) ;
+                    StringBuilder sbWars = new StringBuilder("<ul>");
+                    for (String warMessage: wars) {
+                        sbWars.append("\n<li>").append(warMessage).append("</li>");
+                    }
+                    sbWars.append("\n</ul>");
+                    flowPanel.add(new HTML(new StringBuilder(sbErrs.toString()).append("\n").append(sbWars.toString()).toString())) ;
                 }
-
             }
             validation.setProcessed(true);
             validation.layout() ;

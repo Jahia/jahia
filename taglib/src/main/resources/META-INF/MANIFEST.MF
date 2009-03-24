@@ -2,6 +2,6 @@ Specification-Title: Jahia Tag Library
 Specification-Version: 6.0
 Implementation-Title: Jahia Tag Library
 Implementation-Version: 6.0-SNAPSHOT
-Implementation-Vendor: Jahia Group Solutions
+Implementation-Vendor: Jahia Solutions Group
 Implementation-Vendor-Id: org.jahia
 Extension-Name: org.jahia.taglibs

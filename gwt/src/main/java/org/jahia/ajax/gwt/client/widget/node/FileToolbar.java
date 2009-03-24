@@ -107,7 +107,7 @@ public class FileToolbar extends TopBar {
                     setListView();
                 }
             });
-            MenuItem thumbs = new MenuItem(Messages.getResource("fm_icons"), "fm-iconview", new SelectionListener<ComponentEvent>() {
+            MenuItem thumbs = new MenuItem(Messages.getResource("fm_thumbs"), "fm-iconview", new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     setThumbView();
                 }

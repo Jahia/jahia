@@ -177,7 +177,6 @@ public class ThumbView extends TopRightComponent {
                         }
                     } else {
                         getLinker().onTableItemDoubleClicked(selected);
-
                     }
                 }
             }

@@ -83,7 +83,6 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setExt("icon-dir");
         setLocked(locked);
         setLockOwner(lockOwner);
-        setPreview("../images/types/gwt/large/folder.png");
         setThumbnailsMap(new HashMap<String, String>());
     }
 
@@ -92,7 +91,7 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setSize(size);
         setFile(Boolean.TRUE);
         setExt(ext);
-        setPreview("../images/types/gwt/large/file.png");
+        //setPreview("../images/types/gwt/large/icon-file.png");
     }
 
     public void setHasChildren(boolean hasChildren) {

@@ -89,8 +89,8 @@
                             aliasResourceName="fm_webfolder"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.webFolderMessage.label"
                             aliasResourceName="fm_webfolderMessage"/>
-<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.icons.label"
-                            aliasResourceName="fm_icons"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.thumbs.label"
+                            aliasResourceName="fm_thumbs"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.icons.detailed.label"
                             aliasResourceName="fm_icons_detailed"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.list.label"
@@ -224,6 +224,8 @@
                             aliasResourceName="fm_imageMenu"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.viewMenu.label"
                             aliasResourceName="fm_viewMenu"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.browse.label"
+                            aliasResourceName="fm_browse"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.saveSearch.label"
                             aliasResourceName="fm_saveSearch"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.search.label"

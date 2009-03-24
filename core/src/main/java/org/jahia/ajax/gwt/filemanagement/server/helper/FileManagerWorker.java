@@ -66,6 +66,7 @@ import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.FileUtils;
+import org.jahia.bin.Jahia;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.lang.ArrayUtils;
@@ -566,6 +567,13 @@ public class FileManagerWorker {
         if (names.contains("thumbnail")) {
             n.setPreview(f.getThumbnailUrl("thumbnail"));
             n.setDisplayable(true);
+        } else {
+            StringBuilder buffer = new StringBuilder();
+            ProcessingContext pBean = Jahia.getThreadParamBean() ;
+            buffer.append(pBean.getScheme()).append("://").append(pBean.getServerName()).append(":").append(pBean.getServerPort()).append(Jahia.getContextPath());
+            buffer.append("/engines/images/types/gwt/large/") ;
+            buffer.append(n.getExt()).append(".png") ;
+            n.setPreview(buffer.toString());
         }
         for (String name : names) {
             n.getThumbnailsMap().put(name, f.getThumbnailUrl(name));

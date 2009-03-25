@@ -13,6 +13,8 @@ import java.util.Map;
  * @author Ibrahim El Ghandour
  */
 public interface GWTAnalyticsServiceAsync {
+    public void getLastNSystemErrors(int N, AsyncCallback<Map<String, String>> async);
+
     public void getLastNActivities(int N, AsyncCallback<Map<String, String>> async);
 
     public void getMostNactiveUsers(int N,AsyncCallback<Map<String, String>> asyncCallback);

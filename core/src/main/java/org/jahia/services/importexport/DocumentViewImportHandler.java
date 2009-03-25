@@ -201,7 +201,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                     }
 
                     if (child.isCollection()) {
-                        nodes.peek().saveSession();
+//                        nodes.peek().saveSession();
                     } else if (currentFilePath == null) {
                         currentFilePath = child.getPath();
                     }
@@ -251,15 +251,21 @@ public class DocumentViewImportHandler extends DefaultHandler {
         }
         if (w != null && currentFilePath != null && w.getPath().equals(currentFilePath)) {
             currentFilePath = null;
-            try {
-                nodes.peek().saveSession();
-            } catch (RepositoryException e) {
-                throw new SAXException(e);
-            }
+//            try {
+//                nodes.peek().saveSession();
+//            } catch (RepositoryException e) {
+//                throw new SAXException(e);
+//            }
         }
     }
 
     public void endDocument() throws SAXException {
+        try {
+            nodes.peek().saveSession();
+        } catch (RepositoryException e) {
+            throw new SAXException(e);
+        }
+
         if (zis != null) {
             try {
                 zis.reallyClose();

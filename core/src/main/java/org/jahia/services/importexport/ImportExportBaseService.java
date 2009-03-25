@@ -570,8 +570,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             name = name.substring(0, name.indexOf('/'));
                         }
                         String encodedName = ISO9075.encode(name);
-                        ch.startElement("", encodedName, encodedName, new AttributesImpl());
-                        stack.push(stack.peek() + "/" + name);
+                        String currentpath = stack.peek() + "/" + name;
+                        String pt = JCRStoreService.getInstance().getFileNode(currentpath, file.getUser()).getPrimaryNodeTypeName();
+                        AttributesImpl atts = new AttributesImpl();
+                        atts.addAttribute(Constants.JCR_NS, "primaryType", "jcr:primaryType", CDATA, pt);
+                        ch.startElement("", encodedName, encodedName, atts);
+                        stack.push(currentpath);
                     }
 
                     AttributesImpl attrs = new AttributesImpl();

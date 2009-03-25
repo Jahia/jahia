@@ -207,7 +207,7 @@ public class SessionImpl implements Session {
     }
 
     public boolean hasPendingChanges() throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        return !modifiedItems.isEmpty();
     }
 
     public void checkPermission(String path, String actions) throws AccessControlException, RepositoryException {

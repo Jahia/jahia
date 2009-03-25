@@ -175,12 +175,6 @@ public abstract class BackgroundJob implements StatefulJob {
             data.put("message", e.toString());
             throw new JobExecutionException(e);
         } finally {
-            try {
-                ServicesRegistry.getInstance().getSchedulerService().endRequest();
-            } catch (JahiaException e) {
-                logger.error("Cannot execute waiting jobs", e);
-            }
-
             ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
 
             try {
@@ -229,6 +223,12 @@ public abstract class BackgroundJob implements StatefulJob {
             data.put(JOB_STATUS, status);
             this.postExecution(jobExecutionContext, context);
             ServicesRegistry.getInstance().getJCRStoreService().closeAllSessions();
+
+            try {
+                ServicesRegistry.getInstance().getSchedulerService().endRequest();
+            } catch (JahiaException e) {
+                logger.error("Cannot execute waiting jobs", e);
+            }
         }
     }
 

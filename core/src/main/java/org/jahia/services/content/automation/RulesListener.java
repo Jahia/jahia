@@ -308,6 +308,7 @@ public class RulesListener extends DefaultEventListener {
                     }
                 }
                 if (!list.isEmpty()) {
+                    long time = System.currentTimeMillis();
                     if (list.size()>3) {
                         logger.debug("Executing rules for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
                     } else {
@@ -352,12 +353,14 @@ public class RulesListener extends DefaultEventListener {
                     executeRules(list, globals);
 
                     if (list.size()>3) {
-                        logger.debug("Rules executed for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
+                        logger.info("Rules executed for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes in " + (System.currentTimeMillis()- time)+"ms");
                     } else {
-                        logger.debug("Rules executed for " + list);
+                        logger.info("Rules executed for " + list + " in " + (System.currentTimeMillis()- time)+"ms");
                     }
 
-                    s.save();
+                    if (s.hasPendingChanges()) {
+                        s.save();
+                    }
 
                     if (!delayedUpdates.isEmpty()) {
                         TimerTask t = new DelayedUpdatesTimerTask(username, delayedUpdates);

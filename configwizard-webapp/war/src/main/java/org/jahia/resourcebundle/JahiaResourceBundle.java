@@ -33,6 +33,7 @@
 package org.jahia.resourcebundle;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 
@@ -75,7 +76,6 @@ public class JahiaResourceBundle
                 locale + "]");
         return resValue;
     }
-
 
     public static String getMessageResource( final String resourceName,
                                              final Locale locale,
@@ -153,5 +153,23 @@ public class JahiaResourceBundle
         return res;
     }
 
+    /**
+     * Returns the resource string.
+     *
+     * @param res
+     * @param resName
+     * @param defaultValue
+     * @return String
+     */
+    public static String getString(final ResourceBundle res,
+            final String resName, final String defaultValue) {
+        String resource = null;
+        try {
+            resource = res.getString(resName);
+        } catch (MissingResourceException ex) {
+            resource = defaultValue;
+        }
+        return resource;
+    }
+    
 }
-

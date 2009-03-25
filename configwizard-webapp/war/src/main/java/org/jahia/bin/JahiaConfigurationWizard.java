@@ -33,10 +33,11 @@
 
 package org.jahia.bin;
 
+import static javax.servlet.http.HttpServletResponse.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -51,7 +52,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -61,7 +70,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.util.RequestUtils;
 import org.jahia.admin.database.DatabaseConnection;
 import org.jahia.admin.database.DatabaseScripts;
@@ -401,8 +410,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
             displayWelcome(request,response);
             logger.info("redirecting the call to displayWelcome");
-        }
-        if(call.equals("welcome_process")){
+        } else if(call.equals("welcome_process")){
 
             try {
                 processWelcome(request,response);
@@ -411,38 +419,31 @@ public class JahiaConfigurationWizard extends HttpServlet {
             } catch (ServletException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-        }
-        if(call.equals("chooseedition")){
+        } else if(call.equals("chooseedition")){
 
             displayChooseEdition(request,response);
 
-        }
-        if(call.equals("chooseedition_process")){
+        } else if(call.equals("chooseedition_process")){
 
             processChooseEdition(request,response);
 
-        }
-        if(call.equals("licenseagreement")){
+        } else if(call.equals("licenseagreement")){
 
             displayLicenseAgreement(request,response);
 
-        }
-        if(call.equals("licenseagreement_process")){
+        } else if(call.equals("licenseagreement_process")){
 
             processLicenseAgreement(request,response);
 
-        }
-        if(call.equals("root")){
+        } else if(call.equals("root")){
 
             displayRoot(request,response);
 
-        }
-        if(call.equals("root_process")){
+        } else if(call.equals("root_process")){
 
             processRoot(request,response);
 
-        }
-        if(call.equals("server")){
+        } else if(call.equals("server")){
 
             displayServer(request,response);
 
@@ -451,47 +452,43 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
             processServer(request,response);
 
-        }
-        if(call.equals("adv_settings")){
+        } else if(call.equals("adv_settings")){
 
             displayAdvSettings(request,response);
 
-        }
-        if(call.equals("adv_settings_process")){
+        } else if(call.equals("adv_settings_process")){
 
             processAdvSettings(request,response);
 
-        }
-        if(call.equals("mail")){
+        } else if(call.equals("mail")){
 
             displayMail(request,response);
 
-        }
-        if(call.equals("mail_process")){
+        } else if(call.equals("mail_process")){
 
             processMail(request,response);
 
-        }
-        if(call.equals("values")){
+        } else if(call.equals("values")){
 
             displayValues(request,response);
 
-        }
-        if(call.equals("values_process")){
+        } else if(call.equals("values_process")){
             logger.info("processing values...");
             processValues(request,response);
 
-        }
-        if(call.equals("mail")){
+        } else if(call.equals("mail")){
 
             displayMail(request,response);
 
-        }
-        if(call.equals("mail_process")){
+        } else if(call.equals("mail_process")){
 
             processMail(request,response);
 
-        }
+        } else if(call.equals("testEmail")){
+
+            testEmail(request,response);
+
+        } 
 
         // call the action handler...
         //actionHandler.call(this, call, request, response);
@@ -1272,7 +1269,10 @@ public class JahiaConfigurationWizard extends HttpServlet {
             MailSettingsValidationResult result = MailSettings.validateSettings(cfg, true);
             if (!result.isSuccess()) {
                 error = true;
-                msg = JahiaResourceBundle.getAdminDefaultResourceBundle(newSelectedLocale).getString(result.getMessageKey());
+                msg = JahiaResourceBundle.getString(ResourceBundle.getBundle(
+                        JahiaResourceBundle.MESSAGE_DEFAULT_RESOURCE_BUNDLE,
+                        newSelectedLocale), result.getMessageKey(), result
+                        .getMessageKey());
                 focus = result.getProperty();
             }
         }
@@ -2104,5 +2104,98 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
 
 
 
+    }
+
+    private void testEmail(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        try {
+            String host = getParameter(request, "host");
+            String from = getParameter(request, "from");
+            String to = getParameter(request, "to");
+
+            Locale locale = (Locale) request.getSession(true).getAttribute(SESSION_LOCALE);
+            locale = locale != null ? locale : request.getLocale();
+            
+            ResourceBundle bundle = ResourceBundle.getBundle(JahiaResourceBundle.MESSAGE_DEFAULT_RESOURCE_BUNDLE, locale);
+
+            response.setContentType("text/html;charset=UTF-8");
+            if (!MailSettings.isValidEmailAddress(to, true)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response
+                        .getWriter()
+                        .append(
+                                JahiaResourceBundle
+                                        .getString(bundle, 
+                                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
+                                                "Please provide a valid administrator e-mail address"));
+                return;
+            }
+            if (!MailSettings.isValidEmailAddress(from, false)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response
+                        .getWriter()
+                        .append(
+                                JahiaResourceBundle
+                                        .getString(bundle,
+                                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
+                                                "Please provide a valid sender e-mail address"));
+                return;
+            }
+
+            sendEmail(
+                    host,
+                    from,
+                    to,
+                    JahiaResourceBundle
+                            .getString(
+                                    bundle,
+                                    "org.jahia.admin.server.ManageServer.testSettings.mailSubject",
+                                    "[Jahia] Test message"),
+                    JahiaResourceBundle
+                            .getString(
+                                    bundle,
+                                    "org.jahia.admin.server.ManageServer.testSettings.mailText",
+                                    "Test message"));
+
+            response.setStatus(HttpServletResponse.SC_OK);
+
+        } catch (IllegalArgumentException iae) {
+            response.sendError(SC_BAD_REQUEST, iae.getMessage());
+        } catch (Exception e) {
+            response.setStatus(SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().append(e.getMessage());
+            if (e.getCause() != null) {
+                response.getWriter().append("\n").append(e.getCause().getMessage());
+            }
+            logger.warn("Error sending test e-mail message. Cause: "
+                    + e.getMessage(), e);
+        }
+    }
+    
+    private static void sendEmail(String host, String from, String to, String subject,
+            String text) throws AddressException, MessagingException {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", host);
+        Session session = Session.getInstance(props, null);
+        MimeMessage msg = new MimeMessage(session);
+        msg.setFrom(new InternetAddress(from));
+        String[] recipients = StringUtils.split(to, ",");
+        for (String rcp : recipients) {
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(rcp.trim()));
+        }
+        msg.setSubject(subject);
+        msg.setText(text);
+        Transport.send(msg);
+    }
+
+
+    private static String getParameter(final HttpServletRequest request,
+            final String name) throws IllegalArgumentException {
+        final String value = request.getParameter(name);
+        if (value == null) {
+            throw new IllegalArgumentException("Missing required '" + name
+                    + "' parameter in request.");
+        }
+        return value;
     }
 }

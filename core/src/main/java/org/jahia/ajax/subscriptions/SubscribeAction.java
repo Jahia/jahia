@@ -35,7 +35,6 @@ package org.jahia.ajax.subscriptions;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +53,7 @@ import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.mail.MailSettings;
 import org.jahia.services.notification.Subscription;
@@ -61,6 +61,7 @@ import org.jahia.services.notification.SubscriptionService.ConfirmationResult;
 import org.jahia.services.notification.templates.TemplateUtils;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
 /**
@@ -309,7 +310,7 @@ public class SubscribeAction extends AjaxDispatchAction {
             String text) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom(from);
-        msg.setTo(to);
+        msg.setTo(StringUtils.split(to, ","));
         msg.setSubject(subject);
         msg.setText(text);
 
@@ -333,20 +334,49 @@ public class SubscribeAction extends AjaxDispatchAction {
                 throw new JahiaUnauthorizedException(
                         "Action for sending test e-mail is available only for the super administator user.");
             }
-
+            
             Locale locale = (Locale) request.getSession(true).getAttribute(
                     ProcessingContext.SESSION_LOCALE);
             locale = locale != null ? locale : request.getLocale();
 
-            ResourceBundle resourceBundle = new JahiaResourceBundle(JahiaResourceBundle.JAHIA_INTERNAL_RESOURCES,locale);
+            if (!MailService.isValidEmailAddress(to, true)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response
+                        .getWriter()
+                        .append(
+                                JahiaResourceBundle
+                                        .getJahiaInternalResource(
+                                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
+                                                locale,
+                                                "Please provide a valid administrator e-mail address"));
+                return null;
+            }
+            if (!MailService.isValidEmailAddress(from, false)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response
+                        .getWriter()
+                        .append(
+                                JahiaResourceBundle
+                                        .getJahiaInternalResource(
+                                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
+                                                locale,
+                                                "Please provide a valid sender e-mail address"));
+                return null;
+            }
 
-            String subject = resourceBundle.getString("org.jahia.admin.server.ManageServer.testSettings.mailSubject");
-            String text = resourceBundle.getString("org.jahia.admin.server.ManageServer.testSettings.mailText");
+            String subject = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.server.ManageServer.testSettings.mailSubject", locale, "[Jahia] Test message");
+            String text = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.server.ManageServer.testSettings.mailText", locale, "Test message");
 
             sendEmail(host, from, to, subject, text);
 
             response.setStatus(HttpServletResponse.SC_OK);
 
+        } catch (MailSendException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().append(e.getMessage());
+            logger.warn("Error sending test e-mail message. Cause: "
+                    + e.getMessage(), e);
+            
         } catch (Exception e) {
             handleException(e, request, response);
         }

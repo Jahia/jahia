@@ -382,6 +382,11 @@ select, h4 {
   margin-left: 4px;
 }
 
+.ico-mail-test {
+  background: url(images/mail_write.png) no-repeat 4px 5px;
+  margin-left: 4px;
+}
+
 #content {
   background-color: #ffffff;  
   float: left;

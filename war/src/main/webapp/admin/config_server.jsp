@@ -44,12 +44,15 @@ function testSettings() {
     if (document.jahiaAdmin.host.value.length == 0) {
     	<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
+        document.jahiaAdmin.host.focus();
     } else if (document.jahiaAdmin.to.value.length == 0) {
         <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
+        document.jahiaAdmin.to.focus();
     } else if (document.jahiaAdmin.from.value.length == 0) {
     	<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
+        document.jahiaAdmin.from.focus();
     } else {
         if (typeof workInProgressOverlay != 'undefined') {
         	workInProgressOverlay.start();
@@ -70,9 +73,11 @@ function testSettingsSuccess(text, code, statusText) {
 	if (code == 200) {
         <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.success" var="msg"/>
         alert("${functions:escapeJavaScript(msg)}");
+	} else if (code == 400) {
+        alert(text);
     } else {
     	<fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
-        alert("${functions:escapeJavaScript(msg)}" + "\n" + code + " " + statusText + (code >= 500 ? ("\n" + text) : ''));
+        alert("${functions:escapeJavaScript(msg)}" + "\n" + code + " " + statusText + "\n" + text);
     }
 }
 function testSettingsFailure(text, code, statusText) {

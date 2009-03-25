@@ -35,7 +35,53 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ include file="header.inc" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <jsp:useBean id="input" class="java.lang.String" scope="request"/>
+<script type="text/javascript">
+<!--
+function testSettings() {
+    if (document.mainForm.host.value.length == 0) {
+        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label'/>");
+        document.mainForm.host.focus();
+    } else if (document.mainForm.to.value.length == 0) {
+        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label'/>");
+        document.mainForm.to.focus();
+    } else if (document.mainForm.from.value.length == 0) {
+        alert('<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label"/>');
+        document.mainForm.from.focus();
+    } else {
+        if (typeof workInProgressOverlay != 'undefined') {
+            workInProgressOverlay.start();
+        }
+        jahia.request('${pageContext.request.contextPath}/installation', {onSuccess: testSettingsSuccess, onFailure: testSettingsFailure,
+            parameters: {
+                call: 'testEmail',
+                host: document.mainForm.host.value,
+                from: document.mainForm.from.value,
+                to: document.mainForm.to.value
+            }});
+    }
+}
+function testSettingsSuccess(text, code, statusText) {
+    if (typeof workInProgressOverlay != 'undefined') {
+        workInProgressOverlay.stop();
+    }
+    if (code == 200) {
+        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.success'/>");
+    } else if (code == 400) {
+        alert(text);
+    } else {
+        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n" + code + " " + statusText + "\n" + text);
+    }
+}
+function testSettingsFailure(text, code, statusText) {
+    if (workInProgressOverlay) {
+        workInProgressOverlay.stop();
+    }
+    alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n'" + code + " " + statusText + "\n" + text);
+}
+//-->
+</script>
 <div class="head">
   <div class="object-title">
     <fmt:message key="org.jahia.mailSettings.label"/>
@@ -64,7 +110,6 @@
         </span>
       </th>
     </tr>
-    <fmt:bundle basename="JahiaAdministrationResources">
     <tr>
       <td headers="t1" class="t5">
         <fmt:message key="org.jahia.admin.server.ManageServer.mailServer.label"/>
@@ -93,11 +138,19 @@
       <td headers="t1" class="t5">
         <fmt:message key="org.jahia.admin.server.ManageServer.eventNotificationLevel.label"/>
       </td>
-    </fmt:bundle>
       <td headers="t2" class="t6">
         <select class="choix" name="notificationLevel">
         <option value="Disabled"<% if ((values.get("mail_parano")).equals("Disabled")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.disabled.label"/></option><option value="Standard"<% if ((values.get("mail_parano")).equals("Standard")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.standard.label"/></option><option value="Wary"<% if ((values.get("mail_parano")).equals("Wary")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.wary.label"/></option><option value="Paranoid"<% if ((values.get("mail_parano")).equals("Paranoid")) { %> selected="selected"<%} %>><fmt:message key="org.jahia.bin.JahiaConfigurationWizard.mail.paranoid.label"/></option>
         </select>
+      </td>
+    </tr>
+    <tr>
+      <td headers="t1" colspan="2" style="text-align: right">
+        <span class="dex-PushButton">
+            <span class="first-child">
+                <a class="ico-mail-test" href="#" onclick="testSettings(); return false;"><fmt:message key="org.jahia.admin.server.ManageServer.testSettings.label"/></a>
+            </span>
+        </span>
       </td>
     </tr>
 </table>

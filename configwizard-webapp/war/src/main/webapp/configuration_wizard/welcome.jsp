@@ -101,7 +101,7 @@
     <h4>
         <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.welcome.selectInstallationLanguage.label"/>
     </h4>
-    <select name="newLocale" onchange="submitFormular('welcome', 'back')">
+    <select name="newLocale" onchange="setWaitingCursor(); submitFormular('welcome', 'back')">
         <%
         Locale usedLocale = session.getAttribute(JahiaConfigurationWizard.SESSION_LOCALE) != null ?
         		(Locale)session.getAttribute(JahiaConfigurationWizard.SESSION_LOCALE) : request.getLocale();

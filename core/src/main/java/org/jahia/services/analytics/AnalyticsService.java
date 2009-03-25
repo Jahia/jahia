@@ -34,6 +34,7 @@ package org.jahia.services.analytics;
 
 import org.jahia.services.JahiaService;
 import org.jahia.data.events.JahiaEvent;
+import org.jahia.data.events.JahiaErrorEvent;
 
 import java.util.Map;
 
@@ -48,6 +49,10 @@ public abstract class AnalyticsService extends JahiaService {
 
 
     public abstract void trackEvent(JahiaEvent je, int type, String operation);
+
+    public abstract void trackError(JahiaErrorEvent jee);
+
+    public abstract Map<String, String> getLastNSystemErrors(int N);
 
     public abstract Map<String, String> getLastNactivities(int N);
 

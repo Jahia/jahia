@@ -269,10 +269,7 @@ public class RulesListener extends DefaultEventListener {
                                     Property p = (Property) s.getItem(path);
 
                                     Node parent = p.getParent();
-                                    if (parent.isNodeType(Constants.NT_RESOURCE)) {
-                                        parent = parent.getParent();
-                                    }
-                                    if (parent.isNodeType(Constants.NT_HIERARCHYNODE) || parent.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
+                                    if (parent.isNodeType(Constants.NT_HIERARCHYNODE) || parent.isNodeType(Constants.JAHIANT_JAHIACONTENT) || parent.isNodeType(Constants.NT_RESOURCE)) {
                                         NodeWrapper rn = eventsMap.get(parent.getUUID());
                                         if (rn == null) {
                                             rn = new NodeWrapper(parent);

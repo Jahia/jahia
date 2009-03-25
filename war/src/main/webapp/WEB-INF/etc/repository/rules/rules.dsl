@@ -8,7 +8,7 @@
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]- it has the type {type}=types contains "{type}"
 [condition][]- it is in {path}=path matches "{path}/*"
-[condition][]A file content has been modified=property : PropertyWrapper ( name == "jcr:data", node : node )
+[condition][]A file content has been modified=property : PropertyWrapper ( name == "jcr:data", contentnode : node ) and NodeWrapper ( name == "jcr:content" ) from contentnode and node : NodeWrapper () from contentnode.parent
 [condition][]A variable {name} has been extracted=ExtractedVariable ( node == node, name == "{name}", {name} : value )
 [condition][]The type {name} has been assigned to a node=m : PropertyWrapper ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node )
 [condition][]The {node} has a property {property}=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValue ) from {node}.properties

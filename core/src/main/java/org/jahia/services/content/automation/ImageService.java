@@ -42,6 +42,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.Calendar;
 
 import javax.jcr.Node;
 
@@ -141,16 +142,18 @@ public class ImageService {
 
 
     public void addThumbnail(NodeWrapper imageNode, String name, int size, KnowledgeHelper drools) throws Exception {
-        if (!imageNode.getNode().hasNode(name)) {
-            String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
-            File Ftemp = new File(savePath);
-            if (!Ftemp.exists()) Ftemp.mkdir();
-            final File f = File.createTempFile("thumb","jpg", Ftemp);
-
-            ImageWrapper iw = getImageWrapper(imageNode, drools);
-
-            createThumb(iw, f, size);
-            f.deleteOnExit();
+        if (imageNode.getNode().hasNode(name)) {
+            Node node = imageNode.getNode().getNode(name);
+            Calendar thumbDate = node.getProperty("jcr:lastModified").getDate();
+            Calendar contentDate = imageNode.getNode().getNode("jcr:content").getProperty("jcr:lastModified").getDate();
+            if (contentDate.after(thumbDate)) {
+                NodeWrapper thumbNode = new NodeWrapper(node);
+                File f = getThumbFile(imageNode, size, drools);
+                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_DATA, f, drools));
+                drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
+            }
+        } else {
+            File f = getThumbFile(imageNode, size, drools);
 
             NodeWrapper thumbNode = new NodeWrapper(imageNode, name, "jnt:extraResource", drools);
             if (thumbNode.getNode() != null) {
@@ -160,6 +163,19 @@ public class ImageService {
                 drools.insert(new PropertyWrapper(thumbNode, Constants.JCR_LASTMODIFIED, new GregorianCalendar(), drools));
             }
         }
+    }
+
+    private File getThumbFile(NodeWrapper imageNode, int size, KnowledgeHelper drools) throws Exception {
+        String savePath = org.jahia.settings.SettingsBean.getInstance().getTmpContentDiskPath();
+        File Ftemp = new File(savePath);
+        if (!Ftemp.exists()) Ftemp.mkdir();
+        final File f = File.createTempFile("thumb","jpg", Ftemp);
+
+        ImageWrapper iw = getImageWrapper(imageNode, drools);
+
+        createThumb(iw, f, size);
+        f.deleteOnExit();
+        return f;
     }
 
     public void setHeight(NodeWrapper imageNode, String propertyName, KnowledgeHelper drools) throws Exception {

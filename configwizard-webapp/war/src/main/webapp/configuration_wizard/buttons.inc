@@ -39,7 +39,7 @@
   <% if (! jsp.equals("welcome.jsp")) { %>
   <span class="dex-PushButton">
     <span class="first-child">
-      <a class="ico-nav-previous" href="#previous" onclick="javascript:{submitFormular('<%=method%>','back'); return false;}" title="<fmt:message key="org.jahia.back.button"/>"><fmt:message key="org.jahia.back.button"/></a>
+      <a class="ico-nav-previous" href="#previous" onclick="javascript:{setWaitingCursor(); submitFormular('<%=method%>','back'); return false;}" title="<fmt:message key="org.jahia.back.button"/>"><fmt:message key="org.jahia.back.button"/></a>
     </span>
   </span>
   <% } %>

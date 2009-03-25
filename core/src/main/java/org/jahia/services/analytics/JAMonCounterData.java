@@ -1,5 +1,7 @@
 package org.jahia.services.analytics;
 
+import org.apache.log4j.Logger;
+
 /**
  * Created by IntelliJ IDEA.
  * Date: 27 févr. 2009
@@ -10,8 +12,26 @@ package org.jahia.services.analytics;
 public class JAMonCounterData {
     private String oid;
     private String pid;
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JAMonCounterData.class);
 
-    public String getOid() {
+
+
+    private String timestamp;
+    private double avgtime;
+    private double hits;
+    private double maxtime;
+    private String name;
+    private String user;
+    private String uuid;
+    private String objectId;
+    private String objectType;
+    private String operation;
+    private String siteId;
+    private String systemErrorMessage;
+    private String errorSource;
+    private int errorCode;
+
+  public String getOid() {
         return oid;
     }
 
@@ -26,33 +46,33 @@ public class JAMonCounterData {
     public void setPid(String pid) {
         this.pid = pid;
     }
-
-    private String timestamp;
-    private double avgtime;
-    private double hits;
-    private double maxtime;
-    private String name;
-    private String user;
-    private String uuid;
-    private String objectId;
-    private String objectType;
-    private String operation;
-    private String siteId;
-
-
     public String getName() {
         return name;
     }
 
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public void setSystemErrorMessage(String systemErrorMessage) {
+        this.systemErrorMessage = systemErrorMessage;
+    }
+
     public void setName(String name) {
         this.name = name;
-        setUser(name.split("#")[1].split("::")[0]);
-        setOperation(name.split("#")[1].split("::")[1]);
-        setObjectType(name.split("#")[1].split("::")[2]);
-        setObjectId(name.split("#")[1].split("::")[3]);
-        setUuid(name.split("#")[1].split("::")[4]);
-        setPid(name.split("#")[1].split("::")[5]);
-        setSiteId(name.split("#")[1].split("::")[6]);
+        if (name.contains("JahiaEvent")) {
+            setUser((name.split("#")[1].split("::")[0]).split("_")[1]);
+            setOperation((name.split("#")[1].split("::")[1]).split("_")[1]);
+            setObjectType((name.split("#")[1].split("::")[2]).split("_")[1]);
+            setObjectId((name.split("#")[1].split("::")[3]).split("_")[1]);
+            setUuid((name.split("#")[1].split("::")[4]).split("_")[1]);
+            setPid((name.split("#")[1].split("::")[5]).split("_")[1]);
+            setSiteId((name.split("#")[1].split("::")[6]).split("_")[1]);
+        }else if(name.contains("JahiaError")){
+            setErrorCode(Integer.parseInt((name.split("#")[1].split("::")[0]).split("_")[1]));
+            setSystemErrorMessage((name.split("#")[1].split("::")[1]).split("_")[1]);
+            setErrorSource(name.split("#")[1].split("::")[2]);
+        }
     }
 
     public String getUser() {
@@ -104,7 +124,6 @@ public class JAMonCounterData {
     }
 
 
-
     public String getTimestamp() {
         return timestamp;
     }
@@ -135,5 +154,20 @@ public class JAMonCounterData {
 
     public void setMaxtime(double maxtime) {
         this.maxtime = maxtime;
+    }
+
+    public int getErrorCode() {
+        return errorCode;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public String getErrorMessage() {
+        return systemErrorMessage;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    public String getErrorSource() {
+        return errorSource;  //To change body of created methods use File | Settings | File Templates.
+    }
+    public void  setErrorSource(String src){
+         this.errorSource = src;       
     }
 }

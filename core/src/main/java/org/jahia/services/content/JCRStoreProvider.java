@@ -38,9 +38,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NamespaceException;
@@ -121,7 +119,7 @@ public class JCRStoreProvider {
     private boolean isDynamicallyMounted = false;
 
     //    private ThreadLocal systemSession = new ThreadLocal();
-    protected ThreadLocal<Session> userSession = new ThreadLocal<Session>();
+    protected ThreadLocal<Map<String,Session>> userSession = new ThreadLocal<Map<String,Session>>();
 
     public String getKey() {
         return key;
@@ -408,7 +406,12 @@ public class JCRStoreProvider {
     protected Session getThreadSession(JahiaUser user) throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
 
-        Session s = userSession.get();
+        Map<String,Session> smap = userSession.get();
+        if (smap == null) {
+            smap = new HashMap<String,Session>();
+        }
+        userSession.set(smap);
+
         String username;
 
         if (JahiaUserManagerService.isGuest(user)) {
@@ -417,16 +420,16 @@ public class JCRStoreProvider {
             username = user.getUsername();
         }
 
-        try {
-            if (s != null && loginModuleActivated && !s.getUserID().equals(username)) {
-                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username);
-                s.logout();
-            }
-        } catch (IllegalStateException e) {
-            logger.error("Exception on session : "+e);
-            s = null;
-        }
-
+//        try {
+//            if (s != null && loginModuleActivated && !s.getUserID().equals(username)) {
+//                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username, new Exception());
+//                s.logout();
+//            }
+//        } catch (IllegalStateException e) {
+//            logger.error("Exception on session : "+e);
+//            s = null;
+//        }
+        Session s = smap.get(username);
         if (s == null || !s.isLive()) {
             if (loginModuleActivated) {
                 if (!JahiaLoginModule.GUEST.equals(username)) {
@@ -440,7 +443,7 @@ public class JCRStoreProvider {
                 s = repo.login(new SimpleCredentials(this.user, password.toCharArray()));
             }
             registerNamespaces(s.getWorkspace());
-            userSession.set(s);
+            smap.put(username, s);
         } else {
             s.refresh(true);
         }
@@ -448,9 +451,11 @@ public class JCRStoreProvider {
     }
 
     public void closeThreadSession() throws RepositoryException {
-        Session s = userSession.get();
-        if (s != null) {
-            s.logout();
+        Map<String, Session> smap = userSession.get();
+        if (smap != null) {
+            for (Session s : smap.values()) {
+                s.logout();
+            }
             userSession.set(null);
         }
     }

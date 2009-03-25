@@ -53,9 +53,12 @@ public class JcrSessionFilter implements Filter {
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        filterChain.doFilter (servletRequest, servletResponse );
-        if (Jahia.isInitiated()) {
-            ServicesRegistry.getInstance().getJCRStoreService().closeAllSessions();
+        try {
+            filterChain.doFilter (servletRequest, servletResponse );
+        } finally {
+            if (Jahia.isInitiated()) {
+                ServicesRegistry.getInstance().getJCRStoreService().closeAllSessions();
+            }
         }
     }
 

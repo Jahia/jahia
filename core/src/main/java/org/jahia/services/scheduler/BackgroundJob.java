@@ -228,6 +228,7 @@ public abstract class BackgroundJob implements StatefulJob {
             }
             data.put(JOB_STATUS, status);
             this.postExecution(jobExecutionContext, context);
+            ServicesRegistry.getInstance().getJCRStoreService().closeAllSessions();
         }
     }
 

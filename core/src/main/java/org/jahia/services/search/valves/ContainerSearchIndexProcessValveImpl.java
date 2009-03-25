@@ -68,6 +68,7 @@ import org.jahia.services.search.SearchIndexationPipeline;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.bin.Jahia;
 
 /**
  * <p>Title: </p>
@@ -227,7 +228,8 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     if ( fField == null ){
                         return new String[]{};
                     }
-                    JahiaUser root = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
+//                    JahiaUser root = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
+                    JahiaUser root = Jahia.getThreadParamBean().getUser();
                     JCRNodeWrapper file = JCRStoreService.getInstance ()
                             .getFileNode(fField.getRealName (), root);
                     if (file.isValid () && !file.isCollection ()) {

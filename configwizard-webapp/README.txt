@@ -2,7 +2,7 @@
 
 simply do 
 
-mvn clean install 
+mvn clean install jahia:deploy
 
 in the configwizard-webapp directory.
 

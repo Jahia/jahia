@@ -312,9 +312,9 @@ public class RulesListener extends DefaultEventListener {
                 }
                 if (!list.isEmpty()) {
                     if (list.size()>3) {
-                        logger.info("Executing rules for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
+                        logger.debug("Executing rules for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
                     } else {
-                        logger.info("Executing rules for " + list);
+                        logger.debug("Executing rules for " + list);
                     }
 
                     final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
@@ -355,9 +355,9 @@ public class RulesListener extends DefaultEventListener {
                     executeRules(list, globals);
 
                     if (list.size()>3) {
-                        logger.info("Rules executed for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
+                        logger.debug("Rules executed for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
                     } else {
-                        logger.info("Rules executed for " + list);
+                        logger.debug("Rules executed for " + list);
                     }
 
                     s.save();

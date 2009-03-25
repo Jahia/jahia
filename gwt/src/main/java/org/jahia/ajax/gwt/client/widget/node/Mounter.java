@@ -85,7 +85,7 @@ public class Mounter extends Window {
 
         final ProgressBar bar = new ProgressBar() ;
         final AdapterField barField = new AdapterField(bar) ;
-        //barField.setFieldLabel("Progress"); // should not be called progress since it is just a moving/resetting bar
+        barField.setFieldLabel(Messages.getResource("fm_mounting"));
         form.add(barField) ;
         barField.setVisible(false);
 

@@ -144,9 +144,28 @@ public class ClipboardHelper {
      * @param request the current request
      * @return true ir empty, false otherwise
      */
-    public static Boolean clipboardIsEmpty(HttpServletRequest request) {
+    public static boolean clipboardIsEmpty(HttpServletRequest request) {
         Object clipboardContent = request.getSession().getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT) ;
         return clipboardContent == null ;
+    }
+
+    public static boolean clipboardContentHasActiveEntries(HttpSession session) {
+        final String skey = (String) session.getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT);
+
+        // is there an object to paste ?
+        if (skey != null) {
+            try {
+                ContentObject obj = JahiaObjectCreator.getContentObjectFromString(skey) ;
+                if (obj != null) {
+                    return obj.hasActiveEntries() ;
+                }
+            } catch (ClassNotFoundException e) {
+                logger.error(e, e) ;
+            } catch (JahiaException e) {
+                logger.error(e, e) ;
+            }
+        }
+        return false ;
     }
 
     /**

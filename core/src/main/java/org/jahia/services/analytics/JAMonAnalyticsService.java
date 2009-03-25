@@ -42,10 +42,12 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaDBUser;
 import org.jahia.services.usermanager.JahiaDBGroup;
 import org.jahia.data.events.JahiaEvent;
+import org.jahia.data.events.JahiaErrorEvent;
 import org.jahia.data.fields.JahiaPageField;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.hibernate.model.JahiaCategory;
+import org.jahia.bin.errors.ErrorEventFilter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import com.jamonapi.Monitor;
@@ -91,19 +93,14 @@ public class JAMonAnalyticsService extends AnalyticsService {
         //logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         switch (type) {
             case 1: { //  event on site
-                //JahiaSite site = (JahiaSite)je.getObject();
-                ////logger.info(je.getObject().getClass().getName());
-                ////logger.info("site :" + operation);
+                //todo to be implemented
                 break;
             }
             case 2: { //  event on field
-                //logger.info(je.getObject().getClass().getName());
-                //logger.info("field :" + operation);
                 JahiaField field = (JahiaField) je.getObject();
                 uuid = getUUID(je);
                 username = je.getProcessingContext().getTheUser().getUsername();
                 try {
-                    //logger.info("field :" + ((field.getDefinition().getName()).split("_"))[field.getDefinition().getName().split("_").length - 1]);
                     objectType = ((field.getDefinition().getName()).split("_"))[field.getDefinition().getName().split("_").length - 1];
                     objectId = field.getID();
                 } catch (JahiaException e) {
@@ -115,10 +112,7 @@ public class JAMonAnalyticsService extends AnalyticsService {
                 JahiaContainer container = (JahiaContainer) je.getObject();
                 uuid = getUUID(je);
                 username = je.getProcessingContext().getTheUser().getUsername();
-                //logger.info(je.getObject().getClass().getName());
-                //logger.info("container :" + operation);
                 try {
-                    //logger.info(container.getDefinition().getName());
                     objectType = ((container.getDefinition().getName()).split("_"))[container.getDefinition().getName().split("_").length - 1];
                     objectId = container.getID();
                 } catch (JahiaException e) {
@@ -130,13 +124,10 @@ public class JAMonAnalyticsService extends AnalyticsService {
                 username = je.getProcessingContext().getTheUser().getUsername();
                 if (operation.equals("accepted") || operation.equals("rejected")) {
                     JahiaPageInfo pageInfo = (JahiaPageInfo) je.getObject();
-                    // //logger.info("pageInfo Language " + pageInfo.getLanguageCode());
-                    // //logger.info("pageInfo Title " + pageInfo.getTitle());
                     objectId = pageInfo.getID();
                     objectType = "info";
                 } else {
                     JahiaPage page = (JahiaPage) je.getObject();
-                    //logger.info("page " + page.getTitle());
                     objectId = page.getID();
                     objectType = "page";
                 }
@@ -146,39 +137,28 @@ public class JAMonAnalyticsService extends AnalyticsService {
             case 5: { //  event on user
                 username = je.getProcessingContext().getTheUser().getUsername();
                 JahiaDBUser user = (JahiaDBUser) je.getObject();
-                //logger.info(je.getObject().getClass().getName());
-                ////logger.info("user :" + operation);
-                ////logger.info("user name :" + user.getName());
                 objectId = user.getID();
                 objectType = "user";
                 break;
             }
             case 6: { // event on template
-                //logger.info(je.getObject().getClass().getName());
-                //logger.info("template :" + operation);
+                //todo to be implemented
                 break;
             }
             case 7: { // event on category
                 JahiaCategory category = (JahiaCategory) je.getObject();
-                //logger.info(je.getObject().getClass().getName());
                 objectId = category.getID();
                 objectType = "category";
                 break;
             }
             case 8: { // event on group
                 JahiaDBGroup group = (JahiaDBGroup) je.getObject();
-                //logger.info(je.getObject().getClass().getName());
                 objectId = group.getGroupID();
                 objectType = "group";
                 break;
             }
             case 9: { // event on rights
                 username = je.getProcessingContext().getTheUser().getUsername();
-                //logger.info("rights :" + operation);
-                break;
-            }
-            case 10: { // event on container list
-                // TODO implement me!
                 break;
             }
             default: {
@@ -186,6 +166,12 @@ public class JAMonAnalyticsService extends AnalyticsService {
             }
         }
         //logger.info("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+        if (objectType.equals("")) {
+            objectType = "unknown";
+        }
+        if (username.equals("")) {
+            username = "unknown";
+        }
         String jamonLabel = "JahiaEvent#u_" + username + "::o_" + operation + "::ot_" + objectType + "::oid_" + objectId + "::uu_" + uuid + "::pid_" + pid + "::sid_" + siteId;
         //logger.info("-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_");
         //logger.info("_-_" + jamonLabel);
@@ -197,12 +183,41 @@ public class JAMonAnalyticsService extends AnalyticsService {
 
     }
 
+    public void trackError(JahiaErrorEvent jee) {
+    
+        logger.info("===============================================");
+        logger.info("====================ERROR======================");
+        StackTraceElement[] ste = jee.getException().getStackTrace();
+        String jamonLabel = "JahiaError#Code_" + jee.getErrorCode() + "::Message_" + jee.getException().getMessage()+"::"+ste[0];
+        Monitor eventMon = MonitorFactory.start(jamonLabel);
+        eventMon.stop();
+        logger.info("===============================================");
+    }
+
+    public Map<String, String> getLastNSystemErrors(int N) {
+        //logger.info("getLastNSystemErrors");
+        Map<String, String> result = new HashMap<String, String>();
+         String query = "select * from counterdata cross join counters where name like '%JahiaError%' and counter = counters.id order by ts DESC limit 0," + N;
+        List counterdata = jdbcTemplate.query(query, new DataRowMapper());
+        int i = 1;
+        for (Iterator it = counterdata.iterator(); it.hasNext();) {
+            JAMonCounterData data = (JAMonCounterData) it.next();
+            result.put("time" + i, String.valueOf(data.getTimestamp()));
+            result.put("code" + i, String.valueOf(data.getErrorCode()));
+            result.put("msg" + i, String.valueOf(data.getErrorMessage()));
+            result.put("src" + i, String.valueOf(data.getErrorSource()));
+            i++;
+        }
+        result.put("size", String.valueOf(i));
+        return result;
+    }
+
     @Override
     public Map<String, String> getLastNactivities(int N) {
 
         /* get the last N events */
         Map<String, String> result = new HashMap<String, String>();
-        // todo make the limit of the number of events pluggable 
+        
         String query = "select * from counterdata cross join counters where name like '%JahiaEvent%' and counter = counters.id order by ts DESC limit 0," + N;
         List counterdata = jdbcTemplate.query(query, new DataRowMapper());
         ////logger.info("**********************************************************************");
@@ -245,9 +260,9 @@ public class JAMonAnalyticsService extends AnalyticsService {
 
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
             JAMonCounterData jmd = (JAMonCounterData) (it.next());
-            String username = (jmd.getUser().split("_"))[1];
+            String username = jmd.getUser();//.split("_"))[1];
             if (result.containsKey(username)) {
-                ////logger.info("--> " + result.get(username));
+                //logger.info("--> " + username);
                 double newvalue = Double.parseDouble(result.get(username)) + jmd.getHits();
                 result.put(username, String.valueOf(newvalue));
             } else {
@@ -273,11 +288,11 @@ public class JAMonAnalyticsService extends AnalyticsService {
                     }
                 }
             }
-            mostActiveUsers.put(mostActive, String.valueOf(max));
+            if(!mostActiveUsers.equals("")){
+                mostActiveUsers.put(mostActive, String.valueOf(max));
+            }
             result.remove(mostActive);
         }
-
-
         return mostActiveUsers;
     }
 
@@ -291,7 +306,7 @@ public class JAMonAnalyticsService extends AnalyticsService {
 
         for (Iterator it = counterdata.iterator(); it.hasNext();) {
             JAMonCounterData jmd = (JAMonCounterData) (it.next());
-            String username = (jmd.getUser().split("_"))[1];
+            String username = jmd.getUser();
             if (result.containsKey(username)) {
                 double newvalue = Double.parseDouble(result.get(username)) + jmd.getHits();
                 result.put(username, String.valueOf(newvalue));
@@ -403,14 +418,14 @@ public class JAMonAnalyticsService extends AnalyticsService {
         //logger.info(" table counters flushed");
     }
 
-    private String getUUID(JahiaEvent je){
+    private String getUUID(JahiaEvent je) {
         String uuid = "nouuid";
         org.jahia.services.importexport.ImportExportService ies = ServicesRegistry.getInstance().getImportExportService();
-         try {
-                uuid = ies.getUuid(ContentPage.getPage(je.getProcessingContext().getPageID()));
-            } catch (JahiaException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
+        try {
+            uuid = ies.getUuid(ContentPage.getPage(je.getProcessingContext().getPageID()));
+        } catch (JahiaException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         return uuid;
     }
 

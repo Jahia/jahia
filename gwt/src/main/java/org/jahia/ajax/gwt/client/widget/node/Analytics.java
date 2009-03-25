@@ -21,6 +21,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 
 import com.extjs.gxt.ui.client.util.Margins;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
 import com.allen_sauer.gwt.log.client.Log;
 
 
@@ -48,11 +49,13 @@ public class Analytics extends LayoutContainer {
     private TabItem tabItemMostActiveUsers;
     private TabItem tabItemLeastActiveUsers;
     private TabItem tabItemPredefinedQuery;
+    private TabItem tabItemErrors;
     private ListStore<BaseModelData> storeLastNactivities = new ListStore<BaseModelData>();
     private ListStore<BaseModelData> storeLastMostRequested = new ListStore<BaseModelData>();
     private ListStore<BaseModelData> storeMostActiveUsers = new ListStore<BaseModelData>();
     private ListStore<BaseModelData> storeLeastActiveUsers = new ListStore<BaseModelData>();
     private ListStore<BaseModelData> storeResult = new ListStore<BaseModelData>();
+    private ListStore<BaseModelData> storeSystemErrors = new ListStore<BaseModelData>();
 
 
     public Analytics() {
@@ -64,11 +67,13 @@ public class Analytics extends LayoutContainer {
         panel.setLayout(new RowLayout(Style.Orientation.VERTICAL));
         panel.setHeight(600);
         /*  get the last 20 activities */
-       getLastNactivities(20);
+        getLastNactivities(20);
         /*  get the most 5 active users */
         getMostNactiveUsers(5);
         /*  get the least 5 active users */
-        getLeastNactiveUsers(5);
+        //getLeastNactiveUsers(5);
+        /*  get the last 5 system errors*/
+        getLastNSystemErrors(5);
 
         toolbarr = getToolbar();
         tabs = getTabs();
@@ -81,10 +86,77 @@ public class Analytics extends LayoutContainer {
         add(panel);
     }
 
-    private void getLeastNactiveUsers(int N) {
-         GWTAnalyticsService.App.getInstance().getLeastNactiveUsers(N, new AsyncCallback<Map<String, String>>() {
+    private void getLastNSystemErrors(int N) {
+        GWTAnalyticsService.App.getInstance().getLastNSystemErrors(N, new AsyncCallback<Map<String, String>>() {
 
             public void onSuccess(Map<String, String> result) {
+
+                storeSystemErrors.removeAll();
+
+                int size = Integer.parseInt(result.get("size"));
+                BaseModelData bm11 = new BaseModelData();
+                for (int i = 1; i <= size; i++) {
+                    bm11.set("time", result.get("time" + i));
+                    bm11.set("code", (result.get("code" + i)));
+                    String msg = result.get("msg" + i);
+                    Log.info("------------------");
+                    Log.info(msg);
+                    Log.info(msg.split(",")[0].split("=")[1]);
+                    Log.info(msg.split(",")[1].split("=")[1]);
+                    Log.info("------------------");
+                    bm11.set("msgUsr", msg.split(",")[0].split("=")[1]);
+                    bm11.set("msgSys", (msg.split(",")[1].split("=")[1]).split(":")[1]);
+                    bm11.set("source",result.get("src" + i));
+                    storeSystemErrors.add(bm11);
+                    bm11 = new BaseModelData();
+                }
+            }
+
+            public void onFailure(Throwable throwable) {
+                Info.display("", "Error occured on the server side");
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        }
+        );
+    }
+
+    public void getLastNactivities(int N) {
+        GWTAnalyticsService.App.getInstance().getLastNActivities(N, new AsyncCallback<Map<String, String>>() {
+
+            public void onSuccess(Map<String, String> result) {
+
+                storeLastNactivities.removeAll();
+
+                int size = Integer.parseInt(result.get("size"));
+                BaseModelData bm11 = new BaseModelData();
+                for (int i = 1; i <= size; i++) {
+                    bm11.set("id", result.get("id" + i));
+                    bm11.set("time", result.get("time" + i));
+                    bm11.set("user", (result.get("user" + i)));
+                    bm11.set("objectid", (result.get("objectid" + i)));
+                    bm11.set("type", (result.get("type" + i)));
+                    bm11.set("operation", (result.get("operation" + i)));
+                    bm11.set("uuid", (result.get("uuid" + i)));
+                    bm11.set("sid", (result.get("siteid" + i)));
+                    bm11.set("pid", (result.get("pid" + i)));
+                    bm11.set("hits", result.get("hits" + i));
+                    storeLastNactivities.add(bm11);
+                    bm11 = new BaseModelData();
+                }
+            }
+
+            public void onFailure(Throwable throwable) {
+                Info.display("", "Error occured on the server side");
+            }
+        }
+        );
+    }
+
+    private void getLeastNactiveUsers(int N) {
+        GWTAnalyticsService.App.getInstance().getLeastNactiveUsers(N, new AsyncCallback<Map<String, String>>() {
+
+            public void onSuccess(Map<String, String> result) {
+                storeLeastActiveUsers.removeAll();
                 BaseModelData bm11;
                 for (Iterator it = result.keySet().iterator(); it.hasNext();) {
                     String name = (String) it.next();
@@ -98,16 +170,17 @@ public class Analytics extends LayoutContainer {
             }
 
             public void onFailure(Throwable throwable) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                Info.display("", "Error occured on the server side");
             }
         }
         );
     }
 
     private void getMostNactiveUsers(int N) {
-          GWTAnalyticsService.App.getInstance().getMostNactiveUsers(N, new AsyncCallback<Map<String, String>>() {
+        GWTAnalyticsService.App.getInstance().getMostNactiveUsers(N, new AsyncCallback<Map<String, String>>() {
 
             public void onSuccess(Map<String, String> result) {
+                storeMostActiveUsers.removeAll();
                 BaseModelData bm11;
                 for (Iterator it = result.keySet().iterator(); it.hasNext();) {
                     String name = (String) it.next();
@@ -121,7 +194,7 @@ public class Analytics extends LayoutContainer {
             }
 
             public void onFailure(Throwable throwable) {
-                //To change body of implemented methods use File | Settings | File Templates.
+                Info.display("", "Error occured on the server side");
             }
         }
         );
@@ -241,7 +314,7 @@ public class Analytics extends LayoutContainer {
                 if (pageId[0].getValue() != null) {
                     pid = pageId[0].getValue().intValue();
                 }
-                executeQuery(name, op, type, oid, uu, pid, sid,20);
+                executeQuery(name, op, type, oid, uu, pid, sid, 20);
 
             }
         };
@@ -252,7 +325,7 @@ public class Analytics extends LayoutContainer {
         final SelectionListener resetActionListener = new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent ce) {
 
-              Info.display("r","reset fields");
+                Info.display("r", "reset fields");
 
 
             }
@@ -270,34 +343,34 @@ public class Analytics extends LayoutContainer {
 
     }
 
-    private void executeQuery(String name, String op, String type, int oid, String uu, int pid, int sid,int N) {
-         GWTAnalyticsService.App.getInstance().executeQuery(name, op, type, oid, uu, pid, sid,N, new AsyncCallback<Map<String, String>>() {
-                    public void onSuccess(Map<String, String> result) {
-                        storeResult.removeAll();
-                        int size = Integer.parseInt(result.get("size"));
-                        BaseModelData bm11 = new BaseModelData();
-                        for (int i = 1; i <= size; i++) {
-                            bm11.set("id", result.get("id" + i));
-                            bm11.set("time", result.get("time" + i));
-                            bm11.set("user", (result.get("user" + i)).split("_")[1]);
-                            bm11.set("objectid", (result.get("objectid" + i)).split("_")[1]);
-                            bm11.set("type", (result.get("type" + i)).split("_")[1]);
-                            bm11.set("operation", (result.get("operation" + i)).split("_")[1]);
-                            bm11.set("uuid", (result.get("uuid" + i)).split("_")[1]);
-                            bm11.set("sid", (result.get("siteid" + i)).split("_")[1]);
-                            bm11.set("pid", (result.get("pid" + i)).split("_")[1]);
-                            storeResult.add(bm11);
-                            bm11 = new BaseModelData();
-                        }
-
-                        Info.display("", "your query has been successfully executed");
-                    }
-
-                    public void onFailure(Throwable throwable) {
-                        Info.display("Error", "execution failure");
-                    }
+    private void executeQuery(String name, String op, String type, int oid, String uu, int pid, int sid, int N) {
+        GWTAnalyticsService.App.getInstance().executeQuery(name, op, type, oid, uu, pid, sid, N, new AsyncCallback<Map<String, String>>() {
+            public void onSuccess(Map<String, String> result) {
+                storeResult.removeAll();
+                int size = Integer.parseInt(result.get("size"));
+                BaseModelData bm11 = new BaseModelData();
+                for (int i = 1; i <= size; i++) {
+                    bm11.set("id", result.get("id" + i));
+                    bm11.set("time", result.get("time" + i));
+                    bm11.set("user", (result.get("user" + i)));
+                    bm11.set("objectid", (result.get("objectid" + i)));
+                    bm11.set("type", (result.get("type" + i)));
+                    bm11.set("operation", (result.get("operation" + i)));
+                    bm11.set("uuid", (result.get("uuid" + i)));
+                    bm11.set("sid", (result.get("siteid" + i)));
+                    bm11.set("pid", (result.get("pid" + i)));
+                    storeResult.add(bm11);
+                    bm11 = new BaseModelData();
                 }
-                );
+
+                Info.display("", "your query has been successfully executed");
+            }
+
+            public void onFailure(Throwable throwable) {
+                Info.display("Error", "execution failure");
+            }
+        }
+        );
     }
 
     private Grid getGridResult() {
@@ -323,7 +396,7 @@ public class Analytics extends LayoutContainer {
         configsResult.add(column);
 
         column = new ColumnConfig("pid", "Page id", 75);
-        column.setHidden(true);
+        //column.setHidden(true);
         column.setAlignment(Style.HorizontalAlignment.CENTER);
         configsResult.add(column);
 
@@ -333,7 +406,7 @@ public class Analytics extends LayoutContainer {
         configsResult.add(column);
 
         column = new ColumnConfig("sid", "Site id", 75);
-        column.setHidden(true);
+        //column.setHidden(true);
         column.setAlignment(Style.HorizontalAlignment.CENTER);
         configsResult.add(column);
          /**/
@@ -420,62 +493,7 @@ public class Analytics extends LayoutContainer {
         toolbar.add(atiflushOldestbutton);
         toolbar.add(new SeparatorToolItem());
 
-
-        final SelectionListener executeActionListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent ce) {
-                GWTAnalyticsService.App.getInstance().getLastNActivities(20, new AsyncCallback<Map<String, String>>() {
-
-                    public void onSuccess(Map<String, String> result) {
-                         /**/int size = Integer.parseInt(result.get("size"));
-                        BaseModelData bm11 = new BaseModelData();
-                        String event = "";
-                        for (int i = 1; i <= size; i++) {
-                            event = result.get("name" + i).split("")[1];
-                            bm11.set("id", result.get("id" + i));
-                            bm11.set("time", result.get("time" + i));
-                            bm11.set("user", event.split("::")[0]);
-                            Log.info("user : " + event.split("::")[0]);
-                            bm11.set("objectid", event.split("::")[2]);
-                            Log.info("objectid : " + event.split("::")[2]);
-                            bm11.set("type", event.split("::")[3]);
-                            Log.info("type :" + event.split("::")[3]);
-                            bm11.set("operation", event.split("::")[4]);
-                            Log.info("operation :" + event.split("::")[4]);
-                            //Log.info("user",event.split("::")[0]);
-                            //storeLastNactivities[0].add(bm11);
-                            bm11 = new BaseModelData();
-                        }
-                    }
-
-                    public void onFailure(Throwable throwable) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
-                }
-                );
-                Info.display("e", "execute");
-            }
-        };
-
-        Button executeQuerybutton = new Button("Execute query");
-        executeQuerybutton.addSelectionListener(executeActionListener);
-        AdapterToolItem atiexecuteQuerybutton = new AdapterToolItem(executeQuerybutton);
-        toolbar.add(atiexecuteQuerybutton);
-        toolbar.add(new SeparatorToolItem());
-
-        Button resetQuerytbutton = new Button("Reset query");
-        final SelectionListener resetActionListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent ce) {
-                //queryList.getStore().removeAll();
-                Info.display("r", "reset");
-
-            }
-        };
-        resetQuerytbutton.addSelectionListener(resetActionListener);
-        AdapterToolItem atiresetQuerytbutton = new AdapterToolItem(resetQuerytbutton);
-        toolbar.add(atiresetQuerytbutton);
-        toolbar.add(new SeparatorToolItem());
-
-        LabelToolItem labelNbOfLinesToDisplay= new LabelToolItem("Lines to display");
+        LabelToolItem labelNbOfLinesToDisplay = new LabelToolItem("Lines to display");
         AdapterToolItem atiNblabel = new AdapterToolItem(labelNbOfLinesToDisplay);
         toolbar.add(atiNblabel);
         final SimpleComboBox<Integer>[] nbrOfLinesToDisplay = new SimpleComboBox[1];
@@ -489,56 +507,27 @@ public class Analytics extends LayoutContainer {
         nbrOfLinesToDisplay[0].addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue> se) {
-                if(tabItemLastActivities.isEnabled()){
+                if (tabItemLastActivities.isVisible()) {
                     getLastNactivities(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
-                }else if(tabItemMostActiveUsers.isEnabled()){
-                    //getMostNactiveUsers(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
+                } else if (tabItemMostActiveUsers.isVisible()) {
+                    getMostNactiveUsers(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
                     //getLeastNactiveUsers(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
-                }else if(tabItemLeastActiveUsers.isEnabled()){
-                    //getMostNactiveUsers(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
-                    //getLeastNactiveUsers(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
-                }else if(tabItemPredefinedQuery.isEnabled()){
+                } else if (tabItemPredefinedQuery.isVisible()) {
                     //executeQuery();
+                } else if (tabItemErrors.isVisible()) {
+                    getLastNSystemErrors(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
                 }
+                /* else if (tabItemLeastActiveUsers.isVisible()) {
+                    getMostNactiveUsers(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
+                    getLeastNactiveUsers(Integer.parseInt(nbrOfLinesToDisplay[0].getSimpleValue().toString()));
+                }*/
+
             }
 
         });
         AdapterToolItem atiNbOfEntries = new AdapterToolItem(nbrOfLinesToDisplay[0]);
         toolbar.add(atiNbOfEntries);
         return toolbar;  //To change body of created methods use File | Settings | File Templates.
-    }
-
-    public void getLastNactivities(int N) {
-         GWTAnalyticsService.App.getInstance().getLastNActivities(N, new AsyncCallback<Map<String, String>>() {
-
-            public void onSuccess(Map<String, String> result) {
-
-                storeLastNactivities.removeAll();
-
-                int size = Integer.parseInt(result.get("size"));
-                BaseModelData bm11 = new BaseModelData();
-                for (int i = 1; i <= size; i++) {
-                    bm11.set("id", result.get("id" + i));
-                    bm11.set("time", result.get("time" + i));
-                    bm11.set("user", (result.get("user" + i)).split("_")[1]);
-                    bm11.set("objectid", (result.get("objectid" + i)).split("_")[1]);
-                    bm11.set("type", (result.get("type" + i)).split("_")[1]);
-                    bm11.set("operation", (result.get("operation" + i)).split("_")[1]);
-                    bm11.set("uuid", (result.get("uuid" + i)).split("_")[1]);
-                    bm11.set("sid", (result.get("siteid" + i)).split("_")[1]);
-                    bm11.set("pid", (result.get("pid" + i)).split("_")[1]);
-                    bm11.set("hits", result.get("hits" + i));
-                    // todo add hits
-                    storeLastNactivities.add(bm11);
-                    bm11 = new BaseModelData();
-                }
-            }
-
-            public void onFailure(Throwable throwable) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        }
-        );
     }
 
 
@@ -549,15 +538,20 @@ public class Analytics extends LayoutContainer {
         tabItemLastActivities.add(getGridLastActivities());//, new RowData(.5, 1));
         tabPanel.add(tabItemLastActivities);
 
-        tabItemMostActiveUsers = new TabItem("Most active users");
+        tabItemErrors = new TabItem("Errors");
+        tabItemErrors.setLayout(new FitLayout());
+        tabItemErrors.add(getGridErrors(), new RowData(.5, 1));
+        tabPanel.add(tabItemErrors);
+
+        tabItemMostActiveUsers = new TabItem("Total activities per user");
         tabItemMostActiveUsers.setLayout(new FitLayout());
         tabItemMostActiveUsers.add(getGridMostNactiveUsers(), new RowData(.5, 1));
         tabPanel.add(tabItemMostActiveUsers);
 
-        tabItemLeastActiveUsers = new TabItem("Least active users");
+        /*tabItemLeastActiveUsers = new TabItem("Least active users");
         tabItemLeastActiveUsers.setLayout(new FitLayout());
         tabItemLeastActiveUsers.add(getGridLeastNactiveUsers(), new RowData(.5, 1));
-        tabPanel.add(tabItemLeastActiveUsers);
+        tabPanel.add(tabItemLeastActiveUsers);*/
 
         tabItemPredefinedQuery = new TabItem("Advanced");
         tabItemPredefinedQuery.setLayout(new FitLayout());
@@ -576,39 +570,34 @@ public class Analytics extends LayoutContainer {
         tabPanel.add(tabItemLeastRequested);*/
 
 
-
-
         return tabPanel;
     }
 
-    private Grid getGridSummary() {
+    private Grid getGridErrors() {
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
-        ColumnConfig column = new ColumnConfig("user", "User", 100);
+        ColumnConfig column = new ColumnConfig("time", "Time", 75);
         column.setAlignment(Style.HorizontalAlignment.CENTER);
         config.add(column);
-        column = new ColumnConfig("added", "Added", 200);
-        config.add(column);
-        column = new ColumnConfig("updated", "Updated", 75);
-        column.setAlignment(Style.HorizontalAlignment.LEFT);
-        config.add(column);
-        column = new ColumnConfig("deleted", "Deleted", 100);
-        column.setAlignment(Style.HorizontalAlignment.LEFT);
-        config.add(column);
-        column = new ColumnConfig("mostrequestedObj", "most requested Obj", 200);
-        column.setAlignment(Style.HorizontalAlignment.LEFT);
-        config.add(column);
-        column = new ColumnConfig("leastrequestedObj", "least requested Obj", 200);
-        config.add(column);
-        column = new ColumnConfig("lastaccess", "Last access", 200);
+        column = new ColumnConfig("code", "Code", 75);
         config.add(column);
 
-        Grid<BaseModelData> grid = new Grid<BaseModelData>(storeLeastActiveUsers, new ColumnModel(config));
+        column = new ColumnConfig("msgUsr", "User message", 85);
+        config.add(column);
+
+        column = new ColumnConfig("msgSys", "System message", 250);
+        config.add(column);
+
+        column = new ColumnConfig("source", "Source", 250);
+        config.add(column);
+
+        Grid<BaseModelData> grid = new Grid<BaseModelData>(storeSystemErrors, new ColumnModel(config));
         grid.setBorders(false);
-        grid.setAutoExpandColumn("lastaccess");
+        grid.setAutoExpandColumn("msgSys");
         grid.setBorders(true);
 
         return grid;
     }
+
 
     private Grid getGridLeastNactiveUsers() {
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
@@ -726,7 +715,7 @@ public class Analytics extends LayoutContainer {
 
 
         column = new ColumnConfig("pid", "Page id", 75);
-        column.setHidden(true);
+        //column.setHidden(true);
         column.setAlignment(Style.HorizontalAlignment.CENTER);
         configsLastTenActivities.add(column);
 
@@ -736,16 +725,13 @@ public class Analytics extends LayoutContainer {
         configsLastTenActivities.add(column);
 
         column = new ColumnConfig("sid", "Site id", 75);
-        column.setHidden(true);
+        //column.setHidden(true);
         column.setAlignment(Style.HorizontalAlignment.CENTER);
         configsLastTenActivities.add(column);
 
-         /**/
-
-
         Grid<BaseModelData> gridLastTenActivities = new Grid<BaseModelData>(storeLastNactivities, new ColumnModel(configsLastTenActivities));
         gridLastTenActivities.setBorders(false);
-        gridLastTenActivities.setAutoExpandColumn("time");
+        //gridLastTenActivities.setAutoExpandColumn("time");
         gridLastTenActivities.setBorders(true);
 
         return gridLastTenActivities;

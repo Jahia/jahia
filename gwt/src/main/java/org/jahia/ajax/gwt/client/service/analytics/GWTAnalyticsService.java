@@ -37,6 +37,8 @@ public interface GWTAnalyticsService extends RemoteService {
 
     public Map<String, String> getLastNActivities(int N);
 
+    public Map<String, String> getLastNSystemErrors(int N);
+
     public Map<String,String> getMostNactiveUsers(int N);
 
     public Map<String,String> getLeastNactiveUsers(int N);

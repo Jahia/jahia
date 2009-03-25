@@ -32,6 +32,7 @@
  */
 package org.jahia.ajax.gwt.configwizard.client;
 
+import org.jahia.ajax.gwt.client.core.JavaScriptApi;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -44,6 +45,7 @@ import com.google.gwt.core.client.EntryPoint;
 public class ConfigWizardEntryPoint implements EntryPoint {
 
     public void onModuleLoad() {
+        JavaScriptApi.init();
         WorkInProgress.init();
     }
 }

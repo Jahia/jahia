@@ -48,6 +48,7 @@ import javax.jcr.*;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.Locale;
+import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -92,7 +93,13 @@ public class TextExtractionListener extends DefaultEventListener {
                     }
                     Node n = p.getParent();
                     if (n.hasProperty(Constants.JCR_MIMETYPE) && TextExtractorJob.getContentTypes().contains(n.getProperty(Constants.JCR_MIMETYPE).getString())) {
-
+                        if (n.hasProperty(Constants.EXTRACTION_DATE)) {
+                            Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
+                            Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
+                            if (extractionDate.after(lastModified)) {
+                                continue;
+                            }
+                        }
                         JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
                         ProcessingContext jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
                         jParams.setCurrentLocale(Locale.getDefault());

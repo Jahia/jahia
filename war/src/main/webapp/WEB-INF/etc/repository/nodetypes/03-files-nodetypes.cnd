@@ -21,6 +21,7 @@
 // Files
 [jnt:resource] > nt:resource
  - j:extractedText (string)
+ - j:lastExtractionDate (date)
 
 [jnt:extraResource] > nt:resource
  - j:name

@@ -57,9 +57,7 @@ import javax.jcr.Session;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -133,6 +131,7 @@ public class TextExtractorJob extends BackgroundJob {
                                     return temp[i++];
                                 }
                             });
+                            n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
                             n.save();
                         } finally {
                             reader.close();

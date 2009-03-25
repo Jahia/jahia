@@ -172,6 +172,7 @@ public class Constants {
     public static final String FILTERS = "j:filters";
     public static final String AUTOMATIONS = "j:automations";
     public static final String EXTRACTED_TEXT = "j:extractedText";
+    public static final String EXTRACTION_DATE = "j:lastExtractionDate";
 
     public static final String APPLY_ACL = "j:applyAcl";
     public static final String THUMBNAIL = "j:thumbnail";

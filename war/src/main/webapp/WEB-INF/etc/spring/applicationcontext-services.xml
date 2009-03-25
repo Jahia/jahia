@@ -126,6 +126,16 @@ FRAG2(frag_size=60000)</value>
     </bean>
     <bean id="JahiaPreferencesService" class="org.jahia.services.preferences.JahiaPreferencesService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="cacheService" ref="JahiaCacheService" />
+        <property name="providerTypes">
+            <map>
+                <entry key="simple" value="jnt:simplePreference" />
+                <entry key="page" value="jnt:pagePreference"  />
+                <entry key="toolbar" value="jnt:toolbarPreference"  />
+                <entry key="portlet" value="jnt:portletPreference"  />
+                <entry key="layoutmanager" value="jnt:layoutItemPreference"  />
+                <entry key="bookmarks" value="jnt:bookmarkPreference"  />
+            </map>
+        </property>
     </bean>
      <bean id="JahiaToolbarService" class="org.jahia.services.toolbar.JahiaToolbarService" parent="jahiaServiceTemplate" factory-method="getInstance"/>
     <bean id="JahiaPageTemplateService" parent="proxyTemplate" depends-on="org.jahia.hibernate.manager.JahiaTemplateManager,org.jahia.hibernate.manager.JahiaLinkManager">
@@ -754,6 +764,23 @@ FRAG2(frag_size=60000)</value>
         <property name="target">
             <bean class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
+                <property name="decorators">
+                    <map>
+                        <entry key="nt:file" value="org.jahia.services.content.JCRFileNode"/>
+                        <entry key="nt:folder" value="org.jahia.services.content.JCRFileNode"/>
+                        <entry key="jnt:portlet" value="org.jahia.services.content.JCRPortletNode"/>
+                        <entry key="nt:query" value="org.jahia.services.content.JCRQueryNode"/>
+                        <entry key="jnt:mountPoint" value="org.jahia.services.content.JCRMountPointNode"/>
+                        <entry key="jnt:jahiacontent" value="org.jahia.services.content.JCRJahiaContentNode"/>
+
+                        <entry key="jnt:simplePreference" value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
+                        <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
+                        <entry key="jnt:layoutItemPreference" value="org.jahia.services.preferences.layoutmanager.LayoutmanagerJahiaPreference"/>
+                        <entry key="jnt:toolbarPreference" value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreference"/>                        
+                        <entry key="jnt:bookmarkPreference" value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
+                        <entry key="jnt:portletPreference" value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
+                    </map>
+                </property>
             </bean>
         </property>
     </bean>

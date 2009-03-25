@@ -74,8 +74,4 @@ public class GenericJahiaPreference extends JahiaPreference {
         return super.toString();
     }
 
-    public void init() {
-        // not implemented
-    }
-
 }

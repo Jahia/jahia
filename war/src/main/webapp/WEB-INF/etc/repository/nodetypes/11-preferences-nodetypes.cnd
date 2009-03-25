@@ -5,13 +5,13 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:preferences] > jnt:folder
+[jnt:preferences] > nt:base, jmix:hierarchyNode
 + * (jnt:preferenceProvider)
 
-[jnt:preferenceProvider] > jnt:folder
+[jnt:preferenceProvider] > nt:base, jmix:hierarchyNode
 + * (jnt:preference) multiple
 
-[jnt:preference] > jnt:folder
+[jnt:preference] > nt:base, jmix:hierarchyNode
 
 [jnt:toolbarPreference] > jnt:preference
 - j:toolbarName (string)

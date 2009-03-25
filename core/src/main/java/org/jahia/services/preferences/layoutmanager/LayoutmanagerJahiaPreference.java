@@ -101,8 +101,5 @@ public class LayoutmanagerJahiaPreference extends JahiaPreference {
         return getProperty("j:page").getString();
     }
 
-    public void init() throws RepositoryException {
-    }
-
 
 }

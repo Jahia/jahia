@@ -75,8 +75,4 @@ public class PageJahiaPreference extends JahiaPreference {
         setProperty("j:prefValue",prefValue);
     }
 
-    public void init() {
-        // not implemented
-    }
-
 }

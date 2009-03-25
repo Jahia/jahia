@@ -34,7 +34,6 @@
 package org.jahia.services.preferences.toolbar;
 
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
@@ -105,10 +104,6 @@ public class ToolbarJahiaPreference extends JahiaPreference {
 
     public void setDisplay(boolean display) throws RepositoryException {
         setProperty("j:display", display);
-    }
-
-    public void init() {
-        // not implemented
     }
 
 }

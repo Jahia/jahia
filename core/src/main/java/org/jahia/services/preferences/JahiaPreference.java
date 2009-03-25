@@ -67,6 +67,4 @@ public abstract class JahiaPreference extends JCRNodeDecorator {
         return false;
     }
 
-    abstract public void init() throws RepositoryException;
-
 }

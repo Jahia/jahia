@@ -44,43 +44,43 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.preferences.page.PageJahiaPreference;
+import org.jahia.services.preferences.impl.JahiaPreferencesJCRProviders;
 import org.jahia.registries.ServicesRegistry;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.beans.BeansException;
 
 import javax.jcr.RepositoryException;
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Iterator;
 
 /**
  * User: jahia
  * Date: 19 mars 2008
  * Time: 11:39:09
  */
-public class JahiaPreferencesService extends JahiaService implements ApplicationContextAware {
+public class JahiaPreferencesService extends JahiaService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesService.class);
     private static JahiaPreferencesService instance;
     private CacheService cacheService;
-    private ApplicationContext applicationContext;
 
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+    private Map<String, String> providerTypes;
+    private Map<String, JahiaPreferencesProvider> providers;
 
     public synchronized void start() throws JahiaInitializationException {
         logger.debug("** Initializing the Preferences Service ...");
-        debug();
-
+        providers = new HashMap<String, JahiaPreferencesProvider>();
+        for (String providerType : providerTypes.keySet()) {
+            JahiaPreferencesJCRProviders provider = new JahiaPreferencesJCRProviders();
+            provider.setType(providerType);
+            provider.setNodeType(providerTypes.get(providerType));
+            providers.put(providerType, provider);
+        }
     }
 
     public synchronized void stop() {
         logger.debug("** Stop the Preferences Service ...");
 
     }
-
 
     public static synchronized JahiaPreferencesService getInstance() {
         if (instance == null) {
@@ -97,15 +97,20 @@ public class JahiaPreferencesService extends JahiaService implements Application
         this.cacheService = cacheService;
     }
 
-    private void debug() {
-        if (logger.isDebugEnabled()) {
-            Map allProviders = getProvidersMap();
-            Iterator providersIt = allProviders.values().iterator();
-            while (providersIt.hasNext()) {
-                JahiaPreferencesProvider jahiaPreferencesProvider = (JahiaPreferencesProvider) providersIt.next();
-                logger.debug("jahiaPreferencesProvider:" + jahiaPreferencesProvider.getType());
-            }
-        }
+    public Map<String, String> getProviderTypes() {
+        return providerTypes;
+    }
+
+    public void setProviderTypes(Map<String, String> providerTypes) {
+        this.providerTypes = providerTypes;
+    }
+
+    public Map getProviders() {
+        return providers;
+    }
+
+    public void setProviders(Map providers) {
+        this.providers = providers;
     }
 
     /**
@@ -123,7 +128,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
      * @param principal
      */
     public void deleteAllPreferencesByPrincipal(Principal principal) {
-        Map allProviders = getProvidersMap();
+        Map<String, JahiaPreferencesProvider> allProviders = getProvidersMap();
         Iterator providersIt = allProviders.values().iterator();
         while (providersIt.hasNext()) {
             JahiaPreferencesProvider jahiaPreferencesProvider = (JahiaPreferencesProvider) providersIt.next();
@@ -141,14 +146,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
      *
      */
     public JahiaPreferencesProvider getPreferencesProviderByType(String providerType) throws JahiaPreferenceProviderException {
-        Object o = applicationContext.getBean("org.jahia.preferences.provider."+providerType);
-        if (o == null) {
-            throw new JahiaPreferenceProviderException();
-        } else if (o instanceof JahiaPreferencesProvider) {
-            return (JahiaPreferencesProvider) o;
-        } else {
-            throw new JahiaPreferenceProviderException();
-        }
+        return providers.get(providerType);
     }
 
     /**
@@ -174,27 +172,12 @@ public class JahiaPreferencesService extends JahiaService implements Application
     }
 
     /**
-     * Get all providers
-     *
-     * @return
-     */
-    public Iterator getAllProviders() {
-        Map allProviders = getProvidersMap();
-        return allProviders.keySet().iterator();
-    }
-
-    /**
      * Get providers map.
      *
      * @return
      */
-    private Map getProvidersMap() {
-        Map providersMap = applicationContext.getBeansOfType(JahiaPreferencesProvider.class);
-        if (providersMap == null) {
-            logger.warn("There is no preference provider set.");
-            return new HashMap();
-        }
-        return providersMap;
+    private Map<String, JahiaPreferencesProvider> getProvidersMap() {
+        return providers;
     }
 
     /**
@@ -268,7 +251,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
             // create generic preference key
             GenericJahiaPreference preference = (GenericJahiaPreference) basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(prefName));
             if (preference == null) {
-                preference = (GenericJahiaPreference) basicProvider.getNewJahiaPreferenceNode(jParams);
+                preference = (GenericJahiaPreference) basicProvider.createJahiaPreferenceNode(jParams);
                 preference.setPrefName(prefName);
             }
 
@@ -295,7 +278,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
             // create generic preference key
             PageJahiaPreference preference = (PageJahiaPreference) basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), prefName));
             if (preference == null) {
-                preference = (PageJahiaPreference) basicProvider.getNewJahiaPreferenceNode(jParams);
+                preference = (PageJahiaPreference) basicProvider.createJahiaPreferenceNode(jParams);
                 preference.setPrefName(prefName);
                 ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jParams.getPageID(), false);
                 String pageUUID = page.getUUID();
@@ -318,7 +301,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
     public void deleteGenericPreferenceValue(String prefName, ProcessingContext jParams) {
         try {
             // create generic preference key
-            GenericJahiaPreference preference = (GenericJahiaPreference) getGenericPreferencesProvider().getNewJahiaPreferenceNode(jParams);
+            GenericJahiaPreference preference = (GenericJahiaPreference) getGenericPreferencesProvider().createJahiaPreferenceNode(jParams);
             preference.setPrefName(prefName);
 
             getGenericPreferencesProvider().deleteJahiaPreference(preference);
@@ -334,7 +317,7 @@ public class JahiaPreferencesService extends JahiaService implements Application
     public void deletePagePreferenceValue(String prefName, ProcessingContext jParams) {
         try {
             // create generic preference key
-            PageJahiaPreference preference = (PageJahiaPreference) getPagePreferencesProvider().getNewJahiaPreferenceNode(jParams);
+            PageJahiaPreference preference = (PageJahiaPreference) getPagePreferencesProvider().createJahiaPreferenceNode(jParams);
             ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jParams.getPageID(), false);
             String pageUUID = page.getUUID();
             preference.setPageUUID(pageUUID);

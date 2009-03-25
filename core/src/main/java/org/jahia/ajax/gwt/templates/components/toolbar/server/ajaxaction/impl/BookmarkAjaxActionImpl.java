@@ -45,11 +45,7 @@ import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.pages.ContentPage;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRJahiaContentNode;
-import org.jahia.exceptions.JahiaException;
 
-import javax.jcr.RepositoryException;
 import java.util.Map;
 
 /**
@@ -121,7 +117,7 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
             JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
             // create a bookmarksJahiaPreferenceKey
-            BookmarksJahiaPreference bookmarksJahiaPreference = (BookmarksJahiaPreference) jahiaPreferencesProvider.getNewJahiaPreferenceNode(processingContext);
+            BookmarksJahiaPreference bookmarksJahiaPreference = (BookmarksJahiaPreference) jahiaPreferencesProvider.createJahiaPreferenceNode(processingContext);
             bookmarksJahiaPreference.setPageUUID(pageUUID);
 
 

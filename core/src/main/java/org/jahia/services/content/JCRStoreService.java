@@ -84,6 +84,8 @@ public class JCRStoreService extends JahiaService {
     private SortedMap<String,JCRStoreProvider> dynamicMountPoints = new TreeMap<String,JCRStoreProvider>();
     private JahiaFieldXRefManager fieldXRefManager = null;
 
+    private Map<String,String> decorators = new HashMap<String,String>();
+
     static private JCRStoreService instance = null;
 
     protected JCRStoreService() {
@@ -114,6 +116,14 @@ public class JCRStoreService extends JahiaService {
 
     public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {
         this.fieldXRefManager = fieldXRefManager;
+    }
+
+    public Map<String, String> getDecorators() {
+        return decorators;
+    }
+
+    public void setDecorators(Map<String, String> decorators) {
+        this.decorators = decorators;
     }
 
     public void stop() throws JahiaException {
@@ -367,19 +377,29 @@ public class JCRStoreService extends JahiaService {
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {
         try {
-            if (w.isNodeType(Constants.NT_FILE)) {
-                return new JCRFileNode(w);
-            } else if (w.isNodeType(Constants.NT_FOLDER)) {
-                return new JCRFileNode(w);
-            } else if (w.isNodeType(Constants.JAHIANT_PORTLET)) {
-                return new JCRPortletNode(w);
-            } else if (w.isNodeType(Constants.NT_QUERY)) {
-                return new JCRQueryNode(w);
-            } else if (w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
-                return new JCRMountPointNode(w);
-            } else if (w.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
-                return new JCRJahiaContentNode(w);
+            for (String type : decorators.keySet()) {
+                if (w.isNodeType(type)) {
+                    String className = decorators.get(type);
+                    try {
+                        return (JCRNodeWrapper) Class.forName(className).getConstructor(JCRNodeWrapper.class).newInstance(w);
+                    } catch (Exception e) {
+                        logger.error("Cannot decorate node",e);
+                    }
+                }
             }
+//            if (w.isNodeType(Constants.NT_FILE)) {
+//                return new JCRFileNode(w);
+//            } else if (w.isNodeType(Constants.NT_FOLDER)) {
+//                return new JCRFileNode(w);
+//            } else if (w.isNodeType(Constants.JAHIANT_PORTLET)) {
+//                return new JCRPortletNode(w);
+//            } else if (w.isNodeType(Constants.NT_QUERY)) {
+//                return new JCRQueryNode(w);
+//            } else if (w.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+//                return new JCRMountPointNode(w);
+//            } else if (w.isNodeType(Constants.JAHIANT_JAHIACONTENT)) {
+//                return new JCRJahiaContentNode(w);
+//            }
         } catch (RepositoryException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

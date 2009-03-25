@@ -23,7 +23,6 @@ import java.security.Principal;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import java.lang.reflect.Constructor;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,32 +34,12 @@ import java.lang.reflect.Constructor;
 public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesJCRProviders.class);
 
-    // node type
-    private static final String JNT_PREFERENCE_PROVIDER = "jnt:preferenceProvider";
-
     // node name
     private static final String PREFERENCE = "preference";
 
     // bean values
-    private String providerType;
-    private String preferenceClass;
+    private String type;
     private String nodeType;
-
-    public String getProviderType() {
-        return providerType;
-    }
-
-    public void setProviderType(String providerType) {
-        this.providerType = providerType;
-    }
-
-    public String getPreferenceClass() {
-        return preferenceClass;
-    }
-
-    public void setPreferenceClass(String preferenceClass) {
-        this.preferenceClass = preferenceClass;
-    }
 
     public String getNodeType() {
         return nodeType;
@@ -70,8 +49,12 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
         this.nodeType = nodeType;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getType() {
-        return providerType;
+        return type;
     }
 
     /**
@@ -80,15 +63,9 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      * @param processingContext
      * @return
      */
-    public JahiaPreference getNewJahiaPreferenceNode(ProcessingContext processingContext) {
-        try {
-            JahiaPreference jahiaPreference = createJahiaPreferenceNode(processingContext.getUser());
-            jahiaPreference.init();
-            return jahiaPreference;
-        } catch (RepositoryException e) {
-            logger.error(e, e);
-            return null;
-        }
+    public JahiaPreference createJahiaPreferenceNode(ProcessingContext processingContext) {
+        JahiaPreference jahiaPreference = createJahiaPreferenceNode(processingContext.getUser());
+        return jahiaPreference;
     }
 
     /**
@@ -101,9 +78,9 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
         try {
             logger.debug("Create Jahia Preference Node [" + principal + "]");
 
-            Node prefrencesNode = getProviderPreferencesNode(principal);
-            if (prefrencesNode != null) {
-                Node newChildNode = prefrencesNode.addNode(PREFERENCE, getNodeType());
+            Node preferencesNode = getProviderPreferencesNode(principal);
+            if (preferencesNode != null) {
+                Node newChildNode = preferencesNode.addNode(PREFERENCE, nodeType);
                 return createJahiaPreference(principal, newChildNode);
             } else {
                 logger.debug("Preferences node not found for user [" + principal + "]");
@@ -122,15 +99,12 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      */
     private JahiaPreference createJahiaPreference(Principal p, Node node) {
         try {
-            Class c = Class.forName(getPreferenceClass());
-            Constructor construc = c.getConstructor(JCRNodeWrapper.class);
-            Object o = construc.newInstance(node);
-            if (o instanceof JahiaPreference) {
-                JahiaPreference pref = (JahiaPreference) o;
+            if (node instanceof JahiaPreference) {
+                JahiaPreference pref = (JahiaPreference) node;
                 pref.setPrincipal(p);
                 return pref;
             } else {
-                logger.error(getPreferenceClass() + " not instance of JahiaPreference");
+                logger.error(node.getClass() + " not instance of JahiaPreference");
                 return null;
             }
         } catch (Exception e) {
@@ -348,7 +322,13 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      */
     private Node getProviderPreferencesNode(Principal principal) {
         try {
-            return getPreferencesNode(principal).getNode(getType());
+            JCRNodeWrapper preferences = getPreferencesNode(principal);
+            if (!preferences.hasNode(getType())) {
+                Node p = preferences.addNode(getType(), "jnt:preferenceProvider");
+                preferences.save();
+                return p;
+            }
+            return preferences.getNode(getType());
         } catch (Exception e) {
             logger.error(e, e);
         }

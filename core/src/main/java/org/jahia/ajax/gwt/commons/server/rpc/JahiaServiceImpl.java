@@ -70,7 +70,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRJahiaContentNode;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
-import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pagesusers.JahiaPageUserPropService;
 import org.jahia.services.preferences.JahiaPreference;
@@ -353,7 +352,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
         // create a jahiaPreferenceKey
-        JahiaPreference jahiaPreferenceKey = jahiaPreferencesProvider.getNewJahiaPreferenceNode(retrieveParamBean(page));
+        JahiaPreference jahiaPreferenceKey = jahiaPreferencesProvider.createJahiaPreferenceNode(retrieveParamBean(page));
 
         // set preference
         jahiaPreferencesProvider.deleteJahiaPreference(jahiaPreferenceKey);

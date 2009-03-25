@@ -100,7 +100,4 @@ public class JahiaPortletPreference extends JahiaPreference {
         setProperty("j:values", values);
     }
 
-    public void init() {
-        // not implemented
-    }
 }

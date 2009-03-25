@@ -63,7 +63,7 @@ public interface JahiaPreferencesProvider {
      * @param processingContext
      * @return
      */
-    abstract public JahiaPreference getNewJahiaPreferenceNode(ProcessingContext processingContext);
+    abstract public JahiaPreference createJahiaPreferenceNode(ProcessingContext processingContext);
 
 
     /**

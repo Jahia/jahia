@@ -56,7 +56,4 @@ public class BookmarksJahiaPreference extends JahiaPreference {
         setProperty("j:page", pUUID);
     }
 
-    public void init() {
-        // not implemented
-    }
 }

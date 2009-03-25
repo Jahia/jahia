@@ -6,7 +6,6 @@
     <files jcr:primaryType="jnt:folder">
         <private jcr:primaryType="jnt:folder" >
             <j:acl jcr:primaryType="jnt:acl">
-                <!--<GRANT_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="" j:aceType="GRANT"/>-->
                 <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"/>
                 <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"/>
             </j:acl>
@@ -17,21 +16,11 @@
 
     <mashups jcr:primaryType="jnt:folder"/>
 
-
-    <preferences jcr:primaryType="jnt:preferences" j:hidden="true" >
+    <preferences jcr:primaryType="jnt:preferences"  >
         <j:acl jcr:primaryType="jnt:acl">
-            <!--<GRANT_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="" j:aceType="GRANT"/>-->
-            <!--<DENY_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read jcr:write" j:aceType="DENY"/>-->
             <DENY_jcr_read_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:read" j:aceType="DENY"/>
             <DENY_jcr_write_g_guest j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:guest" j:privileges="jcr:write" j:aceType="DENY"/>
         </j:acl>
-
-        <simple jcr:primaryType="jnt:preferenceProvider" j:hidden="true" />
-        <page jcr:primaryType="jnt:preferenceProvider" j:hidden="true" />
-        <toolbar jcr:primaryType="jnt:preferenceProvider" j:hidden="true" />
-        <portlet jcr:primaryType="jnt:preferenceProvider" j:hidden="true" />
-        <layoutmanager jcr:primaryType="jnt:preferenceProvider" j:hidden="true" />
-        <bookmarks jcr:primaryType="jnt:preferenceProvider" j:hidden="true" />
     </preferences>
 
 </user>

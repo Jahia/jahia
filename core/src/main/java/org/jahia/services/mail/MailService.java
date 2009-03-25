@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -41,6 +41,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 /**
+ * The base class for the Jahia mail service implementation.
  * User: Serge Huber
  * Date: Jul 25, 2005
  * Time: 12:22:20 PM
@@ -77,7 +78,7 @@ public abstract class MailService extends JahiaService {
 
     /**
      * Send message to the desired destination with cc and bcc option. The
-     * subject can also be mentionned.
+     * subject can also be mentioned.
      *
      * @param from The message sender
      * @param to The message destination.
@@ -92,7 +93,7 @@ public abstract class MailService extends JahiaService {
 
     /**
      * Send message to the desired destination with cc and bcc option. The
-     * subject can also be mentionned. Also the
+     * subject can also be mentioned. Also the
      *
      * @param from The message sender
      * @param to The message destination.
@@ -145,14 +146,14 @@ public abstract class MailService extends JahiaService {
     public abstract MailSettings getSettings();
 
     /**
-     * Checks, if the specfied string is a valid e-mail address according to
+     * Checks, if the specified string is a valid e-mail address according to
      * RFC822.
      * 
      * @param address
      *            the address to be checked
      * @param allowMultiple
      *            are multiple addresses allowed (separated by comma)
-     * @return <code>true</code>, if the specfied string is a valid e-mail
+     * @return <code>true</code>, if the specified string is a valid e-mail
      *         address according to RFC822
      */
     public static boolean isValidEmailAddress(String address,
@@ -161,12 +162,16 @@ public abstract class MailService extends JahiaService {
         try {
             if (allowMultiple) {
                 addr = InternetAddress.parse(address, true);
+                for (InternetAddress internetAddress : addr) {
+                    internetAddress.validate();
+                }
             } else {
                 addr = new InternetAddress[] { new InternetAddress(address,
                         true) };
             }
         } catch (AddressException e) {
             // address is not valid
+            addr = null;
         }
         return addr != null;
     }

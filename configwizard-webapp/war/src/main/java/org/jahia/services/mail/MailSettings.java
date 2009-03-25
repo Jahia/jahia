@@ -240,7 +240,7 @@ public class MailSettings implements Serializable {
      * @param cfg
      *            the mail settings, entered by user
      * @param skipIfEmpty
-     *            skips the validation and returns successfull result if all
+     *            skips the validation and returns successful result if all
      *            values are empty
      * @return the validation result object
      */
@@ -271,18 +271,34 @@ public class MailSettings implements Serializable {
 
         return result;
     }
+
+    /**
+     * Checks, if the specified string is a valid e-mail address according to
+     * RFC822.
+     * 
+     * @param address
+     *            the address to be checked
+     * @param allowMultiple
+     *            are multiple addresses allowed (separated by comma)
+     * @return <code>true</code>, if the specified string is a valid e-mail
+     *         address according to RFC822
+     */
     public static boolean isValidEmailAddress(String address,
             boolean allowMultiple) {
         InternetAddress[] addr = null;
         try {
             if (allowMultiple) {
                 addr = InternetAddress.parse(address, true);
+                for (InternetAddress internetAddress : addr) {
+                    internetAddress.validate();
+                }
             } else {
                 addr = new InternetAddress[] { new InternetAddress(address,
                         true) };
             }
         } catch (AddressException e) {
             // address is not valid
+            addr = null;
         }
         return addr != null;
     }

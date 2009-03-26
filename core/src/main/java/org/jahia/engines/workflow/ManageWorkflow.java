@@ -279,7 +279,7 @@ public class ManageWorkflow {
                 if (object != null) {
                     ContentObject objectHavingTheWorkflow = service.getMainLinkObject(object);
                     if (objectHavingTheWorkflow != null) {
-                        engineMap.put("infos", workflow.getCurrentInfo(process,
+                        engineMap.put("infos", workflow.getCurrentInfo(
                                 objectHavingTheWorkflow.getObjectKey().toString(), locale.getLanguage()));
                     }
                 }

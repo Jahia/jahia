@@ -76,14 +76,18 @@ public class JCRListener extends JahiaEventListener {
         ObservationManagerImpl.fireEvents(allEvents);
     }
 
-
     @Override
-    public void contentActivation(ContentActivationEvent theEvent) {
-        super.contentActivation(theEvent);    //To change body of overridden methods use File | Settings | File Templates.
+    public void aggregatedContentActivation(JahiaEvent je) {
+        workflowEvent(je);
+
     }
 
     @Override
-    public void aggregatedContentActivation(JahiaEvent je) {
+    public void aggregatedContentWorkflowStatusChanged(JahiaEvent je) {
+        workflowEvent(je);
+    }
+
+    private void workflowEvent(JahiaEvent je) {
         List allEvents = (List) je.getObject();
 
         Set<String> viewed = new HashSet<String>();
@@ -95,7 +99,7 @@ public class JCRListener extends JahiaEventListener {
             if (objectKey == null) {
                 allEvents.remove(i);
             } else {
-                
+
                 String k = objectKey.toString();
                 if (viewed.contains(k)) {
                     allEvents.remove(i);
@@ -106,6 +110,6 @@ public class JCRListener extends JahiaEventListener {
             }
         }
         ObservationManagerImpl.fireActivationEvents(allEvents);
-
     }
+
 }

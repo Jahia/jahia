@@ -1136,11 +1136,18 @@ public class WorkflowService extends JahiaService {
        for (ContentObjectKey contentObjectKey : objects) {
            try {
                ContentObject contentObject = (ContentObject) ContentObject.getInstance(contentObjectKey);
-               if (!contentObject.getStagingLanguages(false, true).isEmpty()) {
+               Set<String> stagingLanguages = contentObject.getStagingLanguages(false, true);
+               boolean ok = false;
+               for (String languageCode : languageCodes) {
+                   if (stagingLanguages.contains(languageCode)) {
+                       ok = true;
+                   }
+               }
+               if (ok) {
                    if (contentObject.checkWriteAccess(jParams.getUser())) {
                        
+                       ActivationTestResults testActivationResults = isValidForActivation(contentObjectKey, languageCodes, jParams, stateModifContext);
                        if (!bypassValidation) {
-                           ActivationTestResults testActivationResults = isValidForActivation(contentObjectKey, languageCodes, jParams, stateModifContext);
                            if (testActivationResults.getStatus() == ActivationTestResults.FAILED_OPERATION_STATUS) {
                                if (testActivationResults.getErrors().size() == 0) {
                                    testActivationResults.appendError(new NodeOperationResult(null,
@@ -1153,6 +1160,10 @@ public class WorkflowService extends JahiaService {
                                return;
                            }
                        }
+                       ContentActivationEvent event = new ContentActivationEvent(contentObject, contentObject.getObjectKey(), jParams.getUser(),
+                               languageCodes, true, new JahiaSaveVersion(), jParams, stateModifContext, testActivationResults);
+
+                       ServicesRegistry.getInstance().getJahiaEventService().fireContentWorkflowStatusChanged(event);
 
                        contentObject.setWorkflowState(languageCodes, newWorkflowState, jParams, stateModifContext);
                        if ( rollBackMarkForDelete && contentObject.isMarkedForDelete() ){
@@ -1643,7 +1654,7 @@ public class WorkflowService extends JahiaService {
                 String processName = getInheritedExternalWorkflowName(objKey);
                 ExternalWorkflow workflow = getExternalWorkflow(processName);
                 if (workflow != null) {
-                    ExternalWorkflowInstanceCurrentInfos info = workflow.getCurrentInfo(processName, objKey.getKey(), language);
+                    ExternalWorkflowInstanceCurrentInfos info = workflow.getCurrentInfo(objKey.getKey(), language);
                     if (info != null) {
                         extWorkflowStep = info.getNextStep();
                     }
@@ -1772,16 +1783,6 @@ public class WorkflowService extends JahiaService {
             }
 
             if (SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages() && getWorkflowMode(contentObject) == LINKED) {
-                // here are special icons for linked pages
-                if (WorkflowService.EXTERNAL == workflowMode) {
-                    int newWfState = 3;
-                    if (workflowState == 0) {
-                        newWfState = 1;
-                    } else if (workflowState == 1 || isEditable) {
-                        newWfState = 2;
-                    }
-                    workflowState = newWfState;
-                }
                 workflowMode = 9;
                 isEditable = false;
             }

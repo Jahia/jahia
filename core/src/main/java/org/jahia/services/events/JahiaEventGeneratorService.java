@@ -180,6 +180,9 @@ public abstract class JahiaEventGeneratorService extends JahiaService {
     public abstract void fireContentActivation (JahiaEvent theEvent)
     throws JahiaException;
 
+    public abstract void fireContentWorkflowStatusChanged (JahiaEvent theEvent)
+    throws JahiaException;
+
     /**
      * Should be fired once a content object has been first created ( stored in persistence )
      * The Event source object is the JahiaUser

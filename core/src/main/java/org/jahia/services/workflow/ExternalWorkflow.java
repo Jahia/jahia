@@ -153,7 +153,7 @@ public interface ExternalWorkflow {
 
     List<ExternalWorkflowHistoryEntry> getWorkflowHistoryByObject(String objectKey);
 
-    ExternalWorkflowInstanceCurrentInfos getCurrentInfo(String processName, String objectKey, String languageCode);
+    ExternalWorkflowInstanceCurrentInfos getCurrentInfo(String objectKey, String languageCode);
 
     /**
      * Check if the already started process needs to be aborted and restarted

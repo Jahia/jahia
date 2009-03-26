@@ -57,7 +57,7 @@ rule "Metadata update / content validated"
     salience -9
     no-loop
     when
-        A property j:workflowState has been set on a node
+        A node has been published
              - the node has the type jmix:contentmetadata
     then
         Set the property j:lastPublisher of the node with the name of the current user
@@ -75,6 +75,13 @@ rule "Notifications: content published"
         A node has been published
  then
         Fire contentPublished notification event for node
+end
+
+rule "Notifications: content workflow updated"
+    when
+        A property j:workflowState has been set on a node
+ then
+        Log "new worklowstate " + propertyValue + " " + node.getPath()
 end
 
 rule "Notifications: comment added (jnt:comment)"

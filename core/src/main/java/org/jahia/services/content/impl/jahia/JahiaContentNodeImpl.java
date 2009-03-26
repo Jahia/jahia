@@ -33,11 +33,7 @@
 
 package org.jahia.services.content.impl.jahia;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
@@ -50,6 +46,7 @@ import javax.jcr.Value;
 import org.jahia.api.Constants;
 import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
+import org.jahia.content.ContentObjectKey;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
@@ -63,6 +60,10 @@ import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.workflow.ExternalWorkflowInstanceCurrentInfos;
+import org.jahia.services.workflow.ExternalWorkflow;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.containers.ContentContainer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -94,13 +95,55 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 //            initProperty(new PropertyImpl(getSession(),this, extendedNodeType.getPropertyDefinition("j:diff"), value));
 
             // workflowState
-            Map<String, Integer> s = object.getLanguagesStates();
-            int state = 0;
-            for (Integer integer : s.values()) if (integer > state)  state = integer;
+            try {
 
-            initProperty(new PropertyImpl(getSession(), this,
-                    extendedNodeType.getPropertyDefinition("j:workflowState"),
-                    new ValueImpl(state == 1?"active":"staging", PropertyType.STRING)));
+                String v = "";
+
+                WorkflowService workflowService = ServicesRegistry.getInstance().getWorkflowService();
+//                if (workflowService.getWorkflowMode(object) != WorkflowService.LINKED) {
+                int state;
+
+                if (object.isShared()) {
+                    state = object.getLanguagesStates().get("shared");
+                } else {
+                    state = object.getLanguagesStates().get(getProcessingContext().getCurrentLocale().toString());
+                }
+                if (object instanceof ContentContainer) {
+                    List<ContentObject> l = object.getChilds(getProcessingContext().getUser(), getProcessingContext().getEntryLoadRequest());
+                    for (Iterator<ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
+                        ContentObject child = contentObjectIterator.next();
+                        if (child instanceof ContentField) {
+                            if (child.isShared()) {
+                                state = Math.max(state,child.getLanguagesStates().get("shared"));
+                            } else {
+                                state = Math.max(state,child.getLanguagesStates().get(getProcessingContext().getCurrentLocale().toString()));
+                            }
+                        }
+                    }
+                }
+                if (state == 1) {
+                    v = "active";
+                } else {
+                    char c = workflowService.getExtendedWorkflowState(object,  getProcessingContext().getCurrentLocale().toString()).charAt(1);
+                    switch (c) {
+                        case '0':
+                            v = "active"; break;
+                        case '1':
+                            v = "staging"; break;
+                        case '2':
+                            v = "validationStep1"; break;
+                        case '3':
+                            v = "validationStep2"; break;
+                        case '4':                            
+                            v = "validationStep3"; break;
+                    }
+                }
+                initProperty(new PropertyImpl(getSession(), this,
+                        extendedNodeType.getPropertyDefinition("j:workflowState"),
+                        new ValueImpl(v, PropertyType.STRING)));
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
 
             // uuid
             ExtendedNodeType ref = NodeTypeRegistry.getInstance().getNodeType("mix:referenceable");

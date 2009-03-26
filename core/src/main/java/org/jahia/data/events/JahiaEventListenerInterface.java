@@ -161,6 +161,9 @@ public interface JahiaEventListenerInterface
     public void contentActivation (ContentActivationEvent theEvent);
     public void aggregatedContentActivation( JahiaEvent je );
 
+    public void contentWorkflowStatusChanged (ContentActivationEvent theEvent);
+    public void aggregatedContentWorkflowStatusChanged( JahiaEvent je );
+
     /**
      * Event fired once a content object has been first created ( stored in persistence )
      * The Event source object is the JahiaUser

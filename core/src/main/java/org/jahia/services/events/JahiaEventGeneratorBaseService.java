@@ -343,6 +343,11 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
         listenersRegistry.wakeupListeners ("contentActivation", theEvent);
     }
 
+    public void fireContentWorkflowStatusChanged (JahiaEvent theEvent) throws JahiaException {
+        addAggregableEvent("contentWorkflowStatusChanged", theEvent);
+        listenersRegistry.wakeupListeners ("contentWorkflowStatusChanged", theEvent);
+    }
+
     /**
      * Should be fired once a content object has been first created ( stored in persistence )
      * The Event source object is the JahiaUser

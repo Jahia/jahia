@@ -36,6 +36,7 @@ package org.jahia.services.content.impl.jahia;
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.log4j.Logger;
 import org.jahia.services.workflow.WorkflowEvent;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.pages.ContentPage;
@@ -49,6 +50,7 @@ import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
+import org.jahia.registries.ServicesRegistry;
 
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.observation.EventListener;

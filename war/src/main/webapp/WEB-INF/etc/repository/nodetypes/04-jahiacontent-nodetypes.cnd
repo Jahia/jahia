@@ -21,7 +21,7 @@
  + j:workflow (jnt:workflow)
  + j:jahialink (jnt:jahialink) *
  - j:diff (string)
- - j:workflowState (string) < 'staging','active'
+ - j:workflowState (string)
 
 [jnt:page] > jnt:jahiacontent
  - j:pageTitle (string) primary mandatory i15d sortable

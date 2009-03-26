@@ -91,6 +91,9 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
     public void aggregatedContentActivation(JahiaEvent je) {
         log("aggregatedContentActivation", je);
     }
+    public void aggregatedContentWorkflowStatusChanged(JahiaEvent je) {
+        log("aggregatedContentWorkflowStatusChanged", je);
+    }
 
     public void aggregatedContentObjectCreated(JahiaEvent je) {
         log("aggregatedContentObjectCreated", je);
@@ -175,6 +178,10 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
 
     public void contentActivation(ContentActivationEvent je) {
         log("contentActivation", je);
+    }
+
+    public void contentWorkflowStatusChanged(ContentActivationEvent je) {
+        log("contentWorkflowStatusChanged", je);
     }
 
     public void contentObjectCreated(JahiaEvent je) {

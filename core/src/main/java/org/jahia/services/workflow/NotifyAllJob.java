@@ -117,7 +117,7 @@ public class NotifyAllJob extends AbstractActivationJob {
                     String wfName = service.getInheritedExternalWorkflowName(theObject);
                     ExternalWorkflow external = service.getExternalWorkflow(wfName);
                     final String processID = service.getInheritedExternalWorkflowProcessId(theObject);
-                    final ExternalWorkflowInstanceCurrentInfos infos = external.getCurrentInfo(processID, key, jParams.getLocale().toString());
+                    final ExternalWorkflowInstanceCurrentInfos infos = external.getCurrentInfo(key, jParams.getLocale().toString());
                     if (infos.isLastStep()) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Ignoring action since we are on last step");

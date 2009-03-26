@@ -527,6 +527,8 @@ public class JCRStoreProvider {
                                         if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
                                             session.importXML(f.getPath(), new FileInputStream(org.jahia.settings.SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/" + usersFolderNode.getProperty("j:usersFolderSkeleton").getString()),ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
                                             session.move(f.getPath()+"/user", f.getPath()+"/"+username);
+                                            Node userNode = f.getNode(username);
+                                            JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");
                                         } else {
                                             Node userNode = f.addNode(username, Constants.JAHIANT_USER_FOLDER);
                                             JCRNodeWrapperImpl.changePermissions(userNode, "u:"+username, "rw");

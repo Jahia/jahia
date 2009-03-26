@@ -51,15 +51,6 @@ rule "Filename"
         Set the property j:filename of the node with the name of the node
 end
 
-rule "Set acl by property"
-    when
-        A property j:applyAcl has been set on a node
-    then
-        Log "Set acl by property"
-		Assign permissions on the node from the property value
-		Remove this property
-end
-
 rule "Image type"
     salience 50
     no-loop

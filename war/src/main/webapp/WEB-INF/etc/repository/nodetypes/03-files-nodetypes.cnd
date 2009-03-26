@@ -9,7 +9,7 @@
 
 [jmix:filemetadata] > mix:createdBy, mix:lastModified, mix:title, jmix:categorized mixin
 
-[jmix:hierarchyNode] > jmix:filemetadata, jmix:acl, mix:referenceable mixin
+[jmix:hierarchyNode] > jmix:filemetadata, mix:referenceable mixin
  - j:filename (string) protected
  - j:fullpath (string) protected
  - j:hidden (boolean) hidden

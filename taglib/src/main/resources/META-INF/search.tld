@@ -313,5 +313,13 @@
         <name>term</name>
         <path>/META-INF/tags/search/term.tag</path>
     </tag-file>
+    <tag-file>
+        <name>termFields</name>
+        <path>/META-INF/tags/search/termFields.tag</path>
+    </tag-file>
+    <tag-file>
+        <name>termMatch</name>
+        <path>/META-INF/tags/search/termMatch.tag</path>
+    </tag-file>
 
 </taglib>

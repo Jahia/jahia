@@ -541,7 +541,9 @@ public class SearchCriteria implements Serializable {
             }
 
             public boolean isContent() {
-                return content;
+                return content
+                        || (!description && !documentTitle && !filename
+                                && !keywords && !metadata);
             }
 
             public boolean isDescription() {
@@ -571,6 +573,33 @@ public class SearchCriteria implements Serializable {
                 setFilename(all);
                 setKeywords(all);
                 setMetadata(all);
+            }
+
+            public void setCustom(String custom) {
+                if (custom != null) {
+                    if (custom.contains("all")) {
+                        setAll(true);
+                    } else {
+                        if (custom.contains("content")) {
+                            setContent(true);
+                        }
+                        if (custom.contains("description")) {
+                            setDescription(true);
+                        }
+                        if (custom.contains("documentTitle")) {
+                            setDocumentTitle(true);
+                        }
+                        if (custom.contains("filename")) {
+                            setFilename(true);
+                        }
+                        if (custom.contains("keywords")) {
+                            setKeywords(true);
+                        }
+                        if (custom.contains("metadata")) {
+                            setMetadata(true);
+                        }
+                    }
+                }
             }
 
             public void setContent(boolean content) {

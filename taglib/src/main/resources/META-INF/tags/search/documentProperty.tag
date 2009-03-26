@@ -76,7 +76,7 @@
             <c:when test="${descriptor.type == 'TEXT'}">
                 <c:if test="${descriptor.constrained}">
                     <select ${h:attributes(attributes)}>
-                        <option value=""><fmt:message key="searchForm.any.any"/></option>
+                        <option value=""><fmt:message key="searchForm.any"/></option>
                         <c:forEach items="${descriptor.allowedValues}" var="allowedValue">
                             <option value="${fn:escapeXml(allowedValue)}" ${value == allowedValue ? 'selected="selected"' : ''}>${fn:escapeXml(allowedValue)}</option>
                         </c:forEach>
@@ -86,18 +86,10 @@
                     <c:set var="propName" value="src_properties(${documentType}).${name}.match"/>
                     <c:set var="match" value="${h:default(param[propName], match)}"/>
                     <select name="src_properties(${documentType}).${name}.match">
-                        <option value="any_word" ${'any_word' == match ? 'selected="selected"' : ''}>!!!contains any
-                            word
-                        </option>
-                        <option value="all_words" ${'all_words' == match ? 'selected="selected"' : ''}>!!!contains all
-                            words
-                        </option>
-                        <option value="exact_phrase" ${'exact_phrase' == match ? 'selected="selected"' : ''}>!!!contains
-                            exact phrase
-                        </option>
-                        <option value="without_words" ${'without_words' == match ? 'selected="selected"' : ''}>!!!does
-                            not contain
-                        </option>
+                        <option value="any_word" ${'any_word' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.any_word"/></option>
+                        <option value="all_words" ${'all_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.all_words"/></option>
+                        <option value="exact_phrase" ${'exact_phrase' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.exact_phrase"/></option>
+                        <option value="without_words" ${'without_words' == match ? 'selected="selected"' : ''}><fmt:message key="searchForm.documentProperty.match.without_words"/></option>
                     </select>
                     <input ${h:attributes(attributes)} value="${fn:escapeXml(value)}"/>
                 </c:if>

@@ -27,6 +27,8 @@
 <s:rawQuery/>
 <s:resultsPageUrl var=""/>
 <s:resultTable/>
+<s:termFields/>
+<s:termMatch/>
 <s:term/>
 <internal:processDisplay/>
 <internal:fileManager/>

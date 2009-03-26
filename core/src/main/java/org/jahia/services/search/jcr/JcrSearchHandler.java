@@ -149,7 +149,7 @@ public class JcrSearchHandler extends SearchHandlerImpl {
 
             collector.results().addAll(searchResult.results());
         } catch (Exception t) {
-            logger.error("Exception Slide search", t);
+            logger.error("Exception in document search. Cause: " + t.getMessage(), t);
         }
     }
 

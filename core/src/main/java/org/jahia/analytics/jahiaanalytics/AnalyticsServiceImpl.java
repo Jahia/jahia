@@ -20,14 +20,19 @@ import java.util.Map;
 public class AnalyticsServiceImpl extends AbstractJahiaGWTServiceImpl implements GWTAnalyticsService {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(AnalyticsServiceImpl.class);
     public Map<String, String> getLastNActivities(int N) {
-        logger.info(" getLastNActivities ");
+        //logger.info(" getLastNActivities ");
         AnalyticsService as = ServicesRegistry.getInstance().getAnalyticsService();
         return  as.getLastNactivities(N);
     }
 
+    public Map<String, String> getLastNSystemErrors(int N) {
+        //logger.info(" getLastNSystemErrors ");
+        AnalyticsService as = ServicesRegistry.getInstance().getAnalyticsService();
+        return  as.getLastNSystemErrors(N);
+    }
 
-  
     public Map<String, String> getMostNactiveUsers(int N) {
+        //logger.info(" getMostNactiveUsers ");
          AnalyticsService as = ServicesRegistry.getInstance().getAnalyticsService();
         return  as.getMostNactiveUsers(N);
     }

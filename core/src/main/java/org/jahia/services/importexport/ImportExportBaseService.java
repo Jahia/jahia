@@ -1627,7 +1627,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void startProductionJob(JahiaSite site, ProcessingContext jParams) throws ParseException {
         Properties siteSettings = site.getSettings();
-        String[] targetSites = siteSettings.getProperty(PRODUCTION_TARGET_LIST_PROPERTY, "").split(",");
+        String s = siteSettings.getProperty(PRODUCTION_TARGET_LIST_PROPERTY, "");
+        if ("".equals(s)) {
+            return;
+        }
+        String[] targetSites = s.split(",");
         if (targetSites.length > 0) {
             for (int i = 0; i < targetSites.length; i++) {
                 String targetSite = targetSites[i];

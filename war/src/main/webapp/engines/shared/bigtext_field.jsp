@@ -113,7 +113,7 @@ if (defaultEditor != null && defaultEditor.enableCSS()) {
   cssList = new HashMap();
 }
 if (cssList.size() > 0) {
-    String cssId = theField.getDefinition().getProperty(JahiaFieldDefinitionProperties.FIELD_STYLESHEET_ID_PROP);
+    String cssId = theField.getDefinition().getPropertyDefinition().getSelectorOptions().get("stylesheetId");
     HtmlEditorCSS htmlEditorCSS = null;
     if (cssId != null && cssId.length() > 0) {
       htmlEditorCSS = (HtmlEditorCSS)cssList.get(cssId);

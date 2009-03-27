@@ -636,10 +636,9 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
                 "Cannot retrieve content definition",
                 JahiaException.DATA_ERROR, JahiaException.CRITICAL_SEVERITY, cnfe);
             }
-            String isDeleted = fieldDef.getProperty("isDeleted");
-            String required = fieldDef.getProperty("required");
+            boolean required = fieldDef.getPropertyDefinition().isMandatory();
 
-            if ( !"true".equals(isDeleted) && (!requiredOnly || "true".equals(required)) ) {
+            if ( !requiredOnly || required ) {
                 fieldOrder.add(fieldDef.getName());
                 orderedFields.add(null); //fake element
                 fieldDefs.put(fieldDef.getName(),fieldDef);

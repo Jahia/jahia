@@ -42,7 +42,6 @@
 <%@ page import="org.jahia.engines.EngineLanguageHelper" %>
 <%@ page import="org.jahia.engines.JahiaEngine" %>
 <%@ page import="org.jahia.params.ParamBean" %>
-<%@ page import="org.jahia.services.metadata.FieldDefinition" %>
 <%@ page import="java.util.*" %>
 <%@page import="org.jahia.data.fields.ExpressionMarker"%>
 <%@page import="org.jahia.utils.i18n.ResourceBundleMarker"%>
@@ -76,7 +75,7 @@
     }
 </script>
 
-<% final boolean readOnly = Boolean.parseBoolean(def.getProperty(FieldDefinition.READ_ONLY)); %>
+<% final boolean readOnly = def.getItemDefinition().isProtected(); %>
 
 <ui:dateSelector fieldName='<%= "_Str" + theField.getID() %>'
                            value='<%= val != null ? val : "" %>'

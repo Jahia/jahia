@@ -45,7 +45,6 @@
 
 package org.jahia.services.containers;
 
-import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +86,11 @@ public abstract class JahiaContainersService extends JahiaService {
     public abstract JahiaContainerSet buildContainerStructureForPage (ProcessingContext processingContext, JahiaPage page)
         throws JahiaException;
 
+    /**
+     * builds the complete container definition structure for a specific page template
+     */
+    public abstract Map<String, Integer> buildContainerDefinitionsForTemplate(String typeName, int siteId, int pageDefID, JahiaContainerSet theSet) throws JahiaException;
+    
     /**
      * gets all container definitions ids on a page
      *
@@ -1031,10 +1035,10 @@ public abstract class JahiaContainersService extends JahiaService {
      * @throws JahiaException generated if there were problems executing the
      *                        query or communicating with the database.
      */
-    public abstract Map<String, String> getContainerProperties (int containerID)
+    public abstract Map<Object, Object> getContainerProperties (int containerID)
         throws JahiaException;
 
-    public abstract Map<String, String> getContainerListProperties (int containerListID)
+    public abstract Map<Object, Object> getContainerListProperties (int containerListID)
             throws JahiaException;
 
     /**
@@ -1054,13 +1058,13 @@ public abstract class JahiaContainersService extends JahiaService {
      */
     public abstract void setContainerProperties (int containerID,
                                                  int jahiaID,
-                                                 Map<String, String> containerProperties)
+                                                 Map<Object, Object> containerProperties)
         throws JahiaException;
 
 
     public abstract void setContainerListProperties (int containerListID,
                                         int jahiaID,
-                                        Map<String, String> containerProperties)
+                                        Map<Object, Object> containerProperties)
             throws JahiaException;
 
     /**

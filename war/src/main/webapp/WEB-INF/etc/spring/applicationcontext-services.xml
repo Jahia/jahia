@@ -179,6 +179,7 @@
                 <property name="containerListManager" ref="org.jahia.hibernate.manager.JahiaContainerListManager" />
                 <property name="containerStructureManager" ref="org.jahia.hibernate.manager.JahiaContainerStructureManager" />
                 <property name="fieldsDataManager" ref="org.jahia.hibernate.manager.JahiaFieldsDataManager" />
+                <property name="tplService" ref="JahiaPageTemplateService" />
             </bean>
         </property>
     </bean>
@@ -422,7 +423,6 @@
                 <property name="sitesService" ref="JahiaSitesService" />
                 <property name="schedulerService" ref="SchedulerService" />
                 <property name="clusterService" ref="clusterService" />
-                <property name="pageService" ref="JahiaPageService" />
                 <property name="containersService" ref="JahiaContainersService" />
                 <property name="groupManagerService" ref="JahiaGroupManagerService" />
                 <property name="fieldService" ref="JahiaFieldService" />
@@ -864,7 +864,6 @@
                       <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
                     </bean>
                 </property>
-                <property name="searchService" ref="JahiaSearchService" />
                 <property name="siteService" ref="JahiaSitesService" />
                 <property name="tplService" ref="JahiaPageTemplateService" />
                 <property name="pageService" ref="JahiaPageService" />
@@ -872,6 +871,8 @@
                 <property name="pageDefinitionHelper">
                     <bean class="org.jahia.services.templates.PageDefinitionHelper">
                       <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+                      <property name="containerService" ref="JahiaContainersService" />
+                      <property name="searchService" ref="JahiaSearchService" />                      
                     </bean>
                 </property>
             </bean>

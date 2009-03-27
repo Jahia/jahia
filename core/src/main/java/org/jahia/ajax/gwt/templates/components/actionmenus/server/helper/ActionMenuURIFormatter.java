@@ -142,7 +142,7 @@ public class ActionMenuURIFormatter {
      * @throws JahiaException sthg bad happened
      */
     private static boolean canAddContainerInContainerList(JahiaContainerList jahiaContainerList) throws JahiaException {
-        final int containerListTypePropValue = Integer.parseInt(jahiaContainerList.getDefinition().getProperties().getProperty(JahiaContainerDefinition.CONTAINER_LIST_TYPE_PROPERTY));
+        final int containerListTypePropValue = jahiaContainerList.getDefinition().getContainerListType();
         return (containerListTypePropValue & JahiaContainerDefinition.SINGLE_TYPE) <= 0 || jahiaContainerList.getFullSize() == 0;
     }
 
@@ -154,7 +154,7 @@ public class ActionMenuURIFormatter {
      * @throws JahiaException sthg bad happened
      */
     private static boolean canDeleteContainerInContainerList(JahiaContainerList jahiaContainerList) throws JahiaException {
-        final int containerListTypePropValue = Integer.parseInt(jahiaContainerList.getDefinition().getProperties().getProperty(JahiaContainerDefinition.CONTAINER_LIST_TYPE_PROPERTY));
+        final int containerListTypePropValue = jahiaContainerList.getDefinition().getContainerListType();
         return (containerListTypePropValue & JahiaContainerDefinition.MANDATORY_TYPE) <= 0 || jahiaContainerList.getFullSize() > 1;
     }
     
@@ -270,7 +270,7 @@ public class ActionMenuURIFormatter {
                         logger.debug("cross-site");
                     }
                 }
-                final List<ContentObject> children = pickedContainer.getChilds(null, EntryLoadRequest.STAGED);
+                final List<? extends ContentObject> children = pickedContainer.getChilds(null, EntryLoadRequest.STAGED);
                 for (final ContentObject container : children) {
                     if (!(container instanceof ContentPageField)) continue;
                     //defensive code relative to poor impl of exception catching/throwing of method getPage below

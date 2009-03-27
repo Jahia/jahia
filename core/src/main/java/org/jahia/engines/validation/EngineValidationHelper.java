@@ -123,8 +123,13 @@ public class EngineValidationHelper {
         final JahiaContainerDefinition def = parentContainer.getDefinition();
         if (def == null) return false;
 
-        final String containerBeanName = def.getProperty("containerBeanName");
-        final String validatorKey = def.getProperty("validatorKey");
+        String v = def.getNodeType().getValidator();
+        String containerBeanName = null;
+        String validatorKey = null;
+        if ( v != null ) {
+            containerBeanName = v.contains(":") ? v.substring(0,v.indexOf(":")) : null;
+            validatorKey = v.contains(":") ? v.substring(v.indexOf(":")+1) : v;
+        }
 
         logger.debug("containerBeanName: " + containerBeanName +
                 ", validatorKey: " + validatorKey);

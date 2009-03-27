@@ -51,11 +51,11 @@ import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.pages.JahiaPageDefinition;
 import java.io.Serializable;
 
 public class JahiaContainerStructure implements Serializable {
+
+    private static final long serialVersionUID = 1371864326264863710L;
 
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(JahiaContainerStructure.class);
@@ -69,7 +69,6 @@ public class JahiaContainerStructure implements Serializable {
     private Object objectDef;
     private int objectDefID;
     private int rank;
-    private int jahiaID;
 
     /***
      * constructor
@@ -84,7 +83,6 @@ public class JahiaContainerStructure implements Serializable {
         this.objectType = objectType;
         this.objectDefID = objectDefID;
         this.rank = rank;
-        this.jahiaID = jahiaID;
         switch (objectType) {
             case (JAHIA_FIELD):
                 this.objectDef = JahiaFieldDefinitionsRegistry.getInstance().
@@ -108,7 +106,6 @@ public class JahiaContainerStructure implements Serializable {
         throws JahiaException {
         this.subctndefid = subctndefid;
         this.rank = rank;
-        this.jahiaID = jahiaID;
 
         boolean isField = objectName.startsWith("@f ");
         boolean isContainer = objectName.startsWith("@c ");
@@ -120,7 +117,7 @@ public class JahiaContainerStructure implements Serializable {
         if (!isContainer) {
             fDef= JahiaFieldDefinitionsRegistry.getInstance().getDefinition(jahiaID, objectName);
         }
-        if ( (fDef != null) && (!fDef.getTitle().equals(""))) {
+        if ( fDef != null ) {
             this.objectType = JahiaContainerStructure.JAHIA_FIELD;
             this.objectDefID = fDef.getID();
             this.objectDef = fDef;

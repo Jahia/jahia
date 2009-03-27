@@ -50,6 +50,7 @@
 package org.jahia.data.containers;
 
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.content.ContainerDefinitionKey;
 import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
@@ -59,7 +60,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.version.ContentObjectEntryState;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -82,10 +82,7 @@ import java.util.*;
 
 public class JahiaContainerDefinition extends ContentDefinition implements Serializable {
 
-
-    public static final String ALIAS_PROP_NAME = "ALIAS_NAME";
-
-    public static final String CONTAINER_LIST_TYPE_PROPERTY = "CONTAINER_LIST_TYPE";
+    private static final long serialVersionUID = 701533160597674738L;
 
     // standard container list type
     public static final int STANDARD_TYPE = 0;
@@ -403,25 +400,18 @@ public class JahiaContainerDefinition extends ContentDefinition implements Seria
      * @return
      */
     public String[] getAliasNames() {
-        if (ctnDefProperties == null) {
-            return new String[]{};
-        }
-        String strVal = ctnDefProperties.getProperty(ALIAS_PROP_NAME);
-        if (strVal == null || "".equals(strVal.trim())) {
-            return new String[]{};
-        }
-        return JahiaTools.getTokens(strVal, ",");
+        return new String[]{};
     }
 
     public int getContainerListType() {
+        ExtendedNodeDefinition nodeDef = getContainerListNodeDefinition();
+        if (nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
+            nodeDef = nodeDef.getRequiredPrimaryTypes()[0].getChildNodeDefinitionsAsMap().get("*");
+        }        
+
         int type = JahiaContainerDefinition.STANDARD_TYPE;
-        String value = this.getProperty(JahiaContainerDefinition.CONTAINER_LIST_TYPE_PROPERTY);
-        if (value != null) {
-            try {
-                type = Integer.parseInt(value);
-            } catch (Exception t) {
-            }
-        }
+        if (!nodeDef.allowsSameNameSiblings()) type += JahiaContainerDefinition.SINGLE_TYPE;
+        if (nodeDef.isMandatory()) type += JahiaContainerDefinition.MANDATORY_TYPE;
         return type;
     }
 

@@ -103,10 +103,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.JahiaFieldService;
-import org.jahia.services.metadata.FieldDefinition;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.compass.CompassResourceConverter;
@@ -244,7 +242,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
     private JahiaSitesService sitesService;
     private SchedulerService schedulerService;
     private ClusterService clusterService;
-    private JahiaPageService pageService;
     private JahiaContainersService containersService;
     private JahiaGroupManagerService groupManagerService;
     private JahiaFieldService fieldService;
@@ -308,11 +305,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
     public void setClusterService(ClusterService clusterService) {
         this.clusterService = clusterService;
     }
-
-    public void setPageService(JahiaPageService pageService) {
-        this.pageService = pageService;
-    }
-
+    
     public void setContainersService(JahiaContainersService containersService) {
         this.containersService = containersService;
     }
@@ -2763,13 +2756,13 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     fieldScoreSemaphore.acquire();
                     semaphoreAcquired = true;
                     if (fieldsGrouping == null || fieldsGrouping.isEmpty()) {
-                        initSearchFieldConfiguration();
+                        initSearchFieldConfiguration(0);
                         this.fieldsScoreBoostLastUpdateTime = System.currentTimeMillis();
                     }
                 } else {
                     if (fieldScoreSemaphore.tryAcquire()) {
                         semaphoreAcquired = true;
-                        initSearchFieldConfiguration();
+                        initSearchFieldConfiguration(0);
                         this.fieldsScoreBoostLastUpdateTime = System.currentTimeMillis();
                     }
                 }
@@ -2946,7 +2939,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
         return null;
     }
 
-    public void initSearchFieldConfiguration() {
+    public void initSearchFieldConfiguration(int siteId) {
 
         String value = config.getProperty(JahiaSearchConfigConstant.METADATA_SCOREBOOST, "1.0");
         float metadataScoreBoost = NumberUtils.toFloat(value, 1.0f);
@@ -2956,7 +2949,19 @@ public class JahiaSearchBaseService extends JahiaSearchService
         String keywordAnalyzer = getIndexationConfig()
                 .getProperty(JahiaSearchConfigConstant.ANALYZER_FOR_KEYWORDS);        
 
-        Map<String, Set<String>> newFieldsGrouping = new HashMap<String, Set<String>>();
+        Map<String, Set<String>> newFieldsGrouping = siteId > 0 && fieldsGrouping != null ? new HashMap<String, Set<String>>(fieldsGrouping) : new HashMap<String, Set<String>>();
+        if (newFieldsGrouping.isEmpty()) {
+            addDefaultGroups(newFieldsGrouping, 0);                    
+        } 
+        if (siteId > 0 && fieldsGrouping != null) {
+            for (String key : fieldsGrouping.keySet()) {
+                if (key.startsWith(siteId + "_")) {
+                    newFieldsGrouping.remove(key);
+                }
+            }
+            addDefaultGroups(newFieldsGrouping, siteId);
+        }
+        
         CompassConfiguration compassConfig = getCompass().getConfig();
         LuceneSearchEngineFactory searchEngineFactory = (LuceneSearchEngineFactory) ((InternalCompass) getCompass())
                 .getSearchEngineFactory();
@@ -2966,15 +2971,14 @@ public class JahiaSearchBaseService extends JahiaSearchService
         boolean compassConfigChanged = false;
 
         try {
-            for (Integer currentID : fieldService.getAllFieldDefinitionIDs()) {
+            for (Integer currentID : siteId > 0 ? fieldService.getAllFieldDefinitionIDs(siteId) : fieldService.getAllFieldDefinitionIDs()) {
                 JahiaFieldDefinition def = fieldService
                         .loadFieldDefinition(currentID.intValue());
                 float scoreBoost = 0;
                 String analyzer = null;
                 int indexMode = ExtendedPropertyDefinition.INDEXED_NO;
                 if (def != null) {
-                    String ntDefinition = def
-                            .getProperty(FieldDefinition.DEFINITION);
+                    String ntDefinition = def.getCtnType();
                     boolean isDefault = true;
                     ExtendedPropertyDefinition propertyDef = null;
                     if (ntDefinition != null) {
@@ -3003,22 +3007,8 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             indexMode = ExtendedPropertyDefinition.INDEXED_UNTOKENIZED;
                             }
                         }
-                    } else {
-                        String scoreBoostStr = def
-                                .getProperty(FieldDefinition.SCORE_BOOST);
-                        if (scoreBoostStr != null) {
-                            isDefault = false;
-                            scoreBoost = NumberUtils.toFloat(scoreBoostStr,
-                                    1.0f);
-                        }
-                        boolean indexable = Boolean.parseBoolean(def
-                                .getProperty(FieldDefinition.INDEXABLE_FIELD));
-                        if (indexable) {
-                            isDefault = false;
-                            indexMode = ExtendedPropertyDefinition.INDEXED_TOKENIZED;
-                        }
-                    }
-
+                    } 
+                    
                     String name;
                     boolean isMetadata = def.getIsMetadata();
                     String lowerCaseName = def.getName().toLowerCase();
@@ -3141,17 +3131,33 @@ public class JahiaSearchBaseService extends JahiaSearchService
             fieldsGrouping = newFieldsGrouping;
         }
     }
+    
+    private void addDefaultGroups (Map<String, Set<String>> newFieldGrouping, int siteId) {
+        Set<String> l = new HashSet<String>();
+        l.add(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
+        l.add(JahiaSearchConstant.TITLE);                    
+        newFieldGrouping.put(siteId + "_" + JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, l);
+        
+        l = new HashSet<String>();
+        l.add(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
+        l.add(JahiaSearchConstant.TITLE);
+        newFieldGrouping.put(siteId + "_" + JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, l);
+        
+        l = new HashSet<String>();
+        l.add(JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
+        newFieldGrouping.put(siteId + "_" + JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD, l);
+    }
 
     private boolean updateCompassMappings(ResourceMapping[] compassMappings,
             String fieldName, boolean isDefault, float scoreBoost,
             String analyzer, int indexMode) {
-        boolean mappingAdded = false;
+        boolean mappingChanged = false;
         for (ResourceMapping compassMapping : compassMappings) {
             Mapping propertyMapping = compassMapping.getMapping(fieldName);
             boolean newMapping = false;
             if (propertyMapping == null) {
                 newMapping = true;
-                mappingAdded = true;
+                mappingChanged = true;
                 propertyMapping = new RawResourcePropertyMapping();
                 propertyMapping.setName(fieldName);
                 propertyMapping.setPath(new StaticPropertyPath(fieldName));
@@ -3159,21 +3165,21 @@ public class JahiaSearchBaseService extends JahiaSearchService
             if (propertyMapping instanceof ResourcePropertyMapping) {
                 RawResourcePropertyMapping rawMapping = (RawResourcePropertyMapping) propertyMapping;
                 rawMapping.setOverrideByName(true);
-                if (newMapping
-                        || !isDefault
-                        || (rawMapping.getAnalyzer() == null
-                                && rawMapping.getBoost() == 1 && rawMapping
-                                .getIndex().equals(Index.TOKENIZED))) {
+                if (rawMapping.getAnalyzer() == null && analyzer != null
+                        || (rawMapping.getAnalyzer() != null && !rawMapping.getAnalyzer().equals(analyzer))
+                        || rawMapping.getBoost() != scoreBoost
+                        || !rawMapping.getIndex().equals(getIndexMode(indexMode))) {
                     rawMapping.setAnalyzer(analyzer);
                     rawMapping.setBoost(scoreBoost);
                     rawMapping.setIndex(getIndexMode(indexMode));
+                    mappingChanged = true;
                 }
                 if (newMapping) {
                     compassMapping.addMapping(propertyMapping);
                 }
             }
         }
-        return mappingAdded;
+        return mappingChanged;
     }
 
     private Index getIndexMode(int indexMode) {
@@ -3195,43 +3201,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     private void addToFieldsGroup(Map<String, Set<String>> fieldGroups, String groupName,
             String value, int siteId) {
-        if (fieldGroups.isEmpty()) {
-            Set<String> l = new HashSet<String>();
-            l.add(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-            l.add(JahiaSearchConstant.TITLE);                    
-            fieldGroups.put(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, l);
-            
-            l = new HashSet<String>();
-            l.add(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-            l.add(JahiaSearchConstant.TITLE);
-            fieldGroups.put(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, l);
-            
-            l = new HashSet<String>();
-            l.add(JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-            fieldGroups.put(JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD, l);                    
-            
-            try {
-                Integer[] siteIds = sitesService.getSiteIds();
-                for (int siteLoop = 0; siteLoop < siteIds.length; siteLoop++) {
-                    l = new HashSet<String>();
-                    l.add(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-                    l.add(JahiaSearchConstant.TITLE);                    
-                    fieldGroups.put(siteIds[siteLoop] + "_" + JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, l);
-                    
-                    l = new HashSet<String>();
-                    l.add(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-                    l.add(JahiaSearchConstant.TITLE);
-                    fieldGroups.put(siteIds[siteLoop] + "_" + JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, l);
-                    
-                    l = new HashSet<String>();
-                    l.add(JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-                    fieldGroups.put(siteIds[siteLoop] + "_" + JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD, l);                          
-                }
-            } catch (JahiaException e) {
-                logger.warn("Exception retrieving existing site-IDs", e);
-            }
-        } 
-        
         String key = groupName;    
         for (int i = 0; key != null && i < 2; i++) {
             Set<String> l = fieldGroups.get(key);

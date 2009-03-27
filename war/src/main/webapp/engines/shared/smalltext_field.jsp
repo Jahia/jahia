@@ -44,7 +44,6 @@
 <%@ page import="org.jahia.gui.GuiBean" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.utils.i18n.ResourceBundleMarker" %>
-<%@ page import="org.jahia.services.metadata.FieldDefinition" %>
 <%@ page import="org.jahia.services.pages.ContentPage" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="org.jahia.exceptions.JahiaException" %>
@@ -58,6 +57,7 @@
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="java.io.File" %>
 <%@ page import="org.jahia.bin.Jahia" %>
+<%@ page import="org.jahia.api.Constants" %>
 <%@ page import="org.jahia.operations.valves.ThemeValve" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean" %>
@@ -80,7 +80,7 @@
         final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + ".theField");
 
         try {
-        final boolean readOnly = ("true".equals(theField.getDefinition().getProperty(FieldDefinition.READ_ONLY)));
+        final boolean readOnly = theField.getDefinition().getItemDefinition().isProtected();
 
         final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
         final Locale processingLocale = elh.getCurrentLocale();
@@ -109,7 +109,7 @@
         </logic:iterate>
     </ul>
 </logic:present>
-<%  if ("true".equals(theField.getDefinition().getProperty(JahiaFieldDefinitionProperties.COLOR_PICKER_PROP))) { %>
+<%  if (propDef.getSelector() == SelectorType.COLOR) { %>
 <logic:notEqual name="dynapiInitialized" value="true">
     <bean:define id="dynapiInitialized" value='true' toScope="request"/>
     <script type="text/javascript" src="<%=theURL%>jahiatools/javascript/dynapi.js"></script>
@@ -213,7 +213,7 @@
     </tr>
 </table>
 
-<% } else if (propDef.getSelector() == SelectorType.CHOICELIST || propDef.getName().equals("jcr:primaryType")) {
+<% } else if (propDef.getSelector() == SelectorType.CHOICELIST || propDef.getName().equals(Constants.JCR_PRIMARYTYPE)) {
 
     String theSelectedField = theField.getValue();
     Map<String,String> opts = propDef.getSelectorOptions();
@@ -249,7 +249,7 @@
                 theList += cons[i].getString();
             }
         }
-    } else if (propDef.getName().equals("jcr:primaryType")) {
+    } else if (propDef.getName().equals(Constants.JCR_PRIMARYTYPE)) {
         putRawValue = true;
         ExtendedNodeDefinition containerDefinition = ((JahiaContainer)engineMap.get("theContainer")).getDefinition().getContainerListNodeDefinition();
         ExtendedNodeType nt = ((JahiaContainer)engineMap.get("theContainer")).getDefinition().getNodeType();
@@ -480,7 +480,7 @@
     } else {
         val = JahiaTools.replacePattern(theField.getValue(), "\"", "\\\"");
     }
-    if ("true".equals(theField.getDefinition().getProperty(JahiaFieldDefinitionProperties.FIELD_MULTILINE_SMALLTEXT_PROP))) {
+    if (propDef.getSelectorOptions().containsKey("multiline")) {
 %>
 <textarea id="field_<%=theField.getID()%>" name="_<%=theField.getID()%>" rows="3" cols="100" style="width:98%" <% if ( readOnly ){%> readonly="readonly"<% } %>><%=val%></textarea>
 <%} else { %>

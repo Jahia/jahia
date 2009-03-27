@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipFile;
 
@@ -55,8 +54,6 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.pages.JahiaPageTemplateBaseService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.pages.JahiaPageService;
-import org.jahia.services.search.JahiaSearchBaseService;
-import org.jahia.services.search.JahiaSearchService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.zip.JahiaArchiveFileHandler;
@@ -85,16 +82,10 @@ public class JahiaTemplateManagerService extends JahiaService {
 
     private JahiaPageTemplateService tplService;
     
-    private JahiaSearchService searchService;    
-
     public void setSiteService(JahiaSitesService siteService) {
         this.siteService = siteService;
     }
     
-    public void setSearchService(JahiaSearchService searchService) {
-        this.searchService = searchService;
-    }    
-
     public void setTplService(JahiaPageTemplateService tplService) {
         this.tplService = tplService;
     }
@@ -410,10 +401,7 @@ public class JahiaTemplateManagerService extends JahiaService {
                                        JahiaTemplatesPackage pkg) {
         String path = null;
         if (pkg != null) {
-            for (Iterator iterator = pkg.getLookupPath().iterator(); iterator
-                    .hasNext();) {
-                String rootFolderPath = (String) iterator.next();
-
+            for (String rootFolderPath : pkg.getLookupPath()) {
                 try {
                     StringBuffer buff = new StringBuffer(64);
                     buff.append(rootFolderPath);
@@ -542,8 +530,6 @@ public class JahiaTemplateManagerService extends JahiaService {
 
         ((JahiaPageTemplateBaseService)tplService).setTemplateManagerService(this);
         
-        ((JahiaSearchBaseService)searchService).initSearchFieldConfiguration();        
-
         // update all page definitions
         try {
             pageDefinitionHelper.updateAllPageDefinitions(pageService, siteService, tplService);
@@ -566,7 +552,7 @@ public class JahiaTemplateManagerService extends JahiaService {
         templatePackageRegistry.stopWatchdog();
 
         templatePackageRegistry.reset();
-        Cache templateCache = ServicesRegistry.getInstance().getCacheService()
+        Cache<?, ?> templateCache = ServicesRegistry.getInstance().getCacheService()
                 .getCache(JahiaPageTemplateBaseService.PAGE_TEMPLATE_CACHE);
         if (templateCache != null) {
             templateCache.flush();

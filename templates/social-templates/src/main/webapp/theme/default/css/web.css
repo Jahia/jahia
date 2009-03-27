@@ -1,0 +1,804 @@
+* {
+margin:0;
+padding:0
+}
+/*SPECIAL ELEMENTS*/
+	#bodywrapper img 			{ border: 0px;}
+/******************************************************************************
+* Utils
+******************************************************************************/
+.collapsible {
+	display:none;
+}
+#bodywrapper .clear 	{
+	clear:both;
+}
+
+#bodywrapper br.clear {
+	clear:both;
+	font-family: Arial, Helvetica, sans-serif;
+	line-height:0px;	/* no height ! */		
+	font-size:0px;
+}
+#bodywrapper .hide, #bodywrapper .hidden {
+	display:none;
+}
+
+#bodywrapper .floatright {
+	float:right;
+	margin: 5px;
+}
+#bodywrapper .floatleft {
+	float:left;
+	margin: 5px;
+}
+.small{
+	font-size:0.8em;
+}
+
+/******************************************************************************
+* Basic 
+******************************************************************************/
+body {
+	background:#eaeaea url(../img/bg.png) repeat top left;
+}
+#bodywrapper {
+	width:100%;
+	font-size:80%;
+	color:#586b7a;
+	font-family: Arial, Helvetica, sans-serif;
+	line-height:160%;
+}
+
+#bodywrapper a,
+#bodywrapper a:link,
+#bodywrapper a:visited {
+	color:#0074d4;
+	text-decoration:none;
+	background:none;
+}
+#bodywrapper a:hover,
+#bodywrapper a:active {
+	color:#0074d4;
+	text-decoration:underline;
+	background:none;
+}
+
+#bodywrapper ul  {
+	margin:1em 0 1em 2em;
+	padding:0;
+}
+
+#bodywrapper li  {
+	margin:0;
+	padding:0;
+}
+#bodywrapper ol  {
+	margin:1em 0 1em 2em;
+	padding:0;
+}
+
+#bodywrapper ol li {
+	margin:0;
+	padding:0;
+	background: none;
+}
+#bodywrapper dt {
+	font-weight:bold;
+	color:#0074d4
+}
+#bodywrapper dd {
+	padding:0 0 0 0.5em;
+}
+#bodywrapper h1 {
+	color:#0074d4;
+	font-weight:normal;
+	font-size:2.6em;
+	margin:0;
+	padding:0;
+	font-weight:bold;
+}
+#bodywrapper h2 {
+	color:#0074d4;
+	font-weight:normal;
+	font-size:2em;
+	margin:0.5em 0 0.5em 0 ;
+	padding:0;
+}
+
+#bodywrapper h3 {
+	color:#333;
+	font-size:1.2em;
+	font-weight:bold;
+	margin:0.5em 0 0.5em 0 ;
+	padding:0;
+}
+
+#bodywrapper h4 {
+	font-size:1em;
+	color:#0074d4;
+	font-weight:bold;
+	margin:0.5em 0 0.5em 0 ;
+	padding:0 0 5px 0;
+	border-bottom:1px dotted #ccc
+}
+
+#bodywrapper h5 {
+	font-size:1em;
+	font-weight:bold;
+	color:#586B7A;
+	margin:0;
+	padding:0;
+
+}
+
+#bodywrapper fieldset {
+	padding:0.5em;
+	border:none;
+}
+
+#bodywrapper legend{
+	text-transform:uppercase;
+	color:#ccc;
+	padding:0 0.5em;
+	font-weight:bold
+}
+
+#bodywrapper hr {
+	height:1px;
+	background-color:#e0e4e5;
+	color:#e0e4e5;
+	border: none;
+	margin : 1em 0; 
+}
+#bodywrapper blockquote {}
+
+#bodywrapper input:focus,
+#bodywrapper textarea:focus, 
+#bodywrapper select:focus{
+background-color:#eaeaea;
+}
+
+
+
+/******************************************************************************
+* Generic
+******************************************************************************/
+#bodywrapper #InsetA ,
+#bodywrapper #InsetB  {
+	font-size:0.9em;
+	line-height:140%
+}
+#bodywrapper .button{
+	background:#fff url(../img/bg-button.png) repeat-x bottom left;
+	border:1px solid #333;
+	color:#333;
+	text-transform:uppercase;
+	font-family:"lucida grande", tahoma, verdana, arial, sans-serif;
+	text-align:center;
+	font-size:80%;
+	padding:2px 15px 3px 15px;
+}
+#bodywrapper .button:hover {
+	cursor: pointer; 
+	background:#fff url(../img/bg-button-on.png) repeat-x top left;
+	color:#900;
+}
+#bodywrapper div.bottomanchor {
+	border-top:1px dotted #ccc;
+	line-height:1.2em;
+	padding:0.2em;
+	margin: 1em 0;
+}
+#bodywrapper .bottomanchor a,
+#bodywrapper .bottomanchor a:link,
+#bodywrapper .bottomanchor a:visited  {
+	float:right;
+	margin:0 ;
+	font-size:80%;
+	background: url(../img/bottomanchor.png) no-repeat top right;
+	padding-right:20px;
+}
+#bodywrapper .bottomanchor a:hover ,
+#bodywrapper .bottomanchor a:active  {
+	cursor: pointer; 
+	background: url(../img/bottomanchor-on.png) no-repeat top right;
+}
+
+/******************************************************************************
+* LAYOUT Header
+******************************************************************************/
+#bodywrapper #container {
+	width:850px;
+	margin:0 auto;
+	overflow:hidden;
+	text-align:left;
+
+}
+#bodywrapper #page {
+	margin:0;
+	width:850px;
+}
+
+
+
+/******************************************************************************
+* Page Top
+******************************************************************************/
+#bodywrapper #pageTop {
+	clear:both;
+	height:1%;
+	float:left;
+	width:820px;
+	background:transparent url(../img/bg-pagetop.png) no-repeat top left;
+	padding:0 15px;
+	padding-top:15px
+}
+/*logo*/
+
+#bodywrapper #pageTop #logotop{
+width:820px;
+height:150px;
+position:relative; 
+overflow:hidden;
+background:transparent url(../img/bg-logo.png) no-repeat top left;
+}
+
+#bodywrapper #pageTop .name{
+width:250px;
+height:90px;
+position:absolute;
+top:0;
+left:0;
+margin:40px 30px 20px 30px;
+overflow:hidden;
+}
+#bodywrapper #pageTop #logotop h1{
+color:#fff;
+display:none
+}
+#bodywrapper #pageTop .desc{
+width:450px;
+height:90px;
+position:absolute;
+margin:40px 30px 20px 30px;
+top:0;
+right:0;
+color:#fff;
+font-weight:bold;
+font-size:14px;
+text-align:right;
+overflow:hidden;
+}
+
+
+
+/******************************************************************************
+* LAYOUT CONTENEUR  
+******************************************************************************/
+#bodywrapper #containerdata {
+	clear:both;
+	height:1%;
+	float:left;
+	width:820px;
+	background:transparent url(../img/shadow.png) repeat-y top left;
+	padding:0 15px;
+}
+/******************************************************************************
+* LAYOUT WRAPPER
+******************************************************************************/
+#bodywrapper #wrapper{
+	clear:both;
+	height:1%;
+	float:left;
+	width:820px;
+
+}
+/******************************************************************************
+* LAYOUT CONTENT & INSETS 
+******************************************************************************/
+/*3 colums InsetB/content/InsetA */
+#bodywrapper #content{
+	margin: 0 260px;
+	overflow:hidden;
+
+} 
+/*2 colums InsetB/content  */
+#bodywrapper #content2{
+	margin: 0 260px 0 0;
+	overflow:hidden;
+}
+/*2 colums content/InsetA */
+#bodywrapper #content3{
+	margin: 0 0 0 260px;
+	overflow:hidden;
+}
+/* content alone*/
+#bodywrapper #content4{
+	margin: 0;
+	overflow:hidden;
+}
+
+
+#bodywrapper #areaA{
+	float:left;
+	width:260px;
+	margin-left:-820px;
+	overflow:hidden;
+	display:block;
+
+}
+#bodywrapper #areaB{
+	float:left;
+	width:260px;
+	margin-left:-260px;
+	overflow:hidden;
+	display:block;
+}
+
+
+#bodywrapper .spacer{
+	padding:20px 10px 20px 10px;
+}
+
+/******************************************************************************
+* footer
+******************************************************************************/ 
+#bodywrapper #footer {
+	clear:both;
+	height:1%;
+	float:left;
+	width:820px;
+	background:transparent url(../img/bg-footer.png) no-repeat bottom	 left;
+	padding:0 15px;
+	padding-bottom:15px;
+	font-size:0.85em;
+	line-height:normal	
+}
+#bodywrapper #footer {
+	clear:both;
+	height:1%;
+	float:left;
+	width:820px;
+	background:transparent url(../img/bg-footer.png) no-repeat bottom	 left;
+	padding:0 15px;
+	padding-bottom:15px;
+}
+#bodywrapper #footerContent{
+background-color:#00a0dd;
+height:1%;
+color:#fff;
+}
+#bodywrapper #footerContent h4{
+color:#fff;
+}
+#bodywrapper #footer a,
+#bodywrapper #footer a:link,
+#bodywrapper #footer a:visited {
+	color:#fff;
+	text-decoration:none;
+	background:none;
+}
+#bodywrapper #footer a:hover,
+#bodywrapper #footer a:active {
+	color:#fff;
+	text-decoration:underline;
+	background:none;
+}
+
+/******************************************************************************
+* columns LAYOUT
+******************************************************************************/
+/*2columns*/
+#bodywrapper .columns2{
+	float:left;
+	width:100%;
+	overflow:hidden;
+	clear:both
+}
+#bodywrapper .columns2 .column-item{
+	float:left;
+	width:50%;
+	overflow:hidden;
+	display:block;
+}
+
+#bodywrapper .columns2 .column-item .columnspace{
+	padding:10px;
+}
+
+/*3columns*/
+#bodywrapper .columns3{
+	float:left;
+	width:100%;
+	overflow:hidden;
+	clear:both
+}
+#bodywrapper .columns3 .column-item{
+	float:left;
+	width:33.33%;
+	overflow:hidden;
+	display:block;
+}
+#bodywrapper .columns3 .column-item .columnspace{
+	padding:10px;
+}
+
+
+
+/******************************************************************************
+* POST
+******************************************************************************/
+
+#bodywrapper .post-date {
+	width: 45px;
+	height: 50px;
+	text-align: center;
+	padding: 0 2px 0 0;
+	line-height: 140%;
+	float: left;
+	background:  url(../img/date-bg.png) no-repeat;
+	font-size: 1.6em;
+	color: #000;
+	margin: 0 5px 0 0;
+	font-weight:bold;
+}
+#bodywrapper .post h2 a,
+#bodywrapper .post h2 a:link,
+#bodywrapper .post h2 a:visited {
+	color:#88BB22;
+	text-decoration:none;
+	background:none;
+}
+#bodywrapper .post h2 a:hover,
+#bodywrapper .post h2 a:active {
+	color:#88BB22;
+	text-decoration:underline;
+	background:none;
+}
+#bodywrapper .post-date span {
+	height: 16px;
+	display: block;
+	font: normal 8px Arial, Helvetica, sans-serif;
+	color: #ffffff;
+	text-align: center;
+	padding-top: 0;
+}
+
+#bodywrapper .post {
+	margin: 0 0 2em 0;
+	padding: 0 0 0.5em 0;
+	border-bottom:1px dotted #e0e4e5
+}
+#bodywrapper .post-title {
+	color: #0074d4;
+	font-size:1.8em;
+}
+
+#bodywrapper .post-info {
+	margin: 0.2em 0 0.2em 50px;
+}
+
+
+#bodywrapper .post-tags {
+	list-style: none;
+	margin: 0.2em 0 0.2em 50px;
+	padding: 3px 0;
+}
+#bodywrapper .post-tags li {
+	display: inline;
+	margin-right: 8px;
+	padding: 5px 0 5px 18px;
+	background: transparent url(../img/tag.png) no-repeat 0 70%;
+}
+#bodywrapper .post-info-links a {
+	padding:2px 10px 2px 18px;
+}
+#bodywrapper .post-info-links a.comment_count {
+	background: transparent url(../img/comment.png) no-repeat 0 50%;
+}
+#bodywrapper .post-info-links a.ping_count {
+	background: transparent url(../img/retro-link.png) no-repeat 0 50%;
+}
+
+#bodywrapper .read-more {
+	font-weight: bold;
+	clear: left;
+	text-align:right;
+}
+/******************************************************************************
+* Search
+******************************************************************************/
+#bodywrapper #search p{
+	margin:0;
+	padding:0;
+	background-color:#fff;
+	overflow:hidden;
+	border: 1px solid #ccc;
+	margin-bottom:1em
+}
+#bodywrapper #search fieldset {
+padding:0 ;
+}
+#bodywrapper #search .search{
+	margin:0;
+	padding:0;
+	border:0px;
+	color:#ccc;
+	height:22px;
+	width:200px;
+	float:left
+}
+
+#bodywrapper #search .gobutton{
+	background-color:#fff;
+	border: none;
+	width: 30px;
+	height: 22px;
+	font: bold 13px Arial, Helvetica, sans-serif;
+	color: #0074d4;
+	vertical-align: middle;
+	float:right;
+	margin:0;
+	padding:0;
+}
+/******************************************************************************
+* Archives
+******************************************************************************/
+#bodywrapper div.archives {
+margin-bottom:1em;
+}
+#bodywrapper .archives h4 {	}
+#bodywrapper .archives ul {
+margin:0.2em 0.5em;
+}
+#bodywrapper .archives li{
+	list-style-type:none;
+	background: url(../img/arrow.png) no-repeat 0.5em 0.6em;
+	padding:0.2em;
+	padding-left:18px;
+}
+#bodywrapper .archives li:hover{
+	background-color:#eaeaea
+}
+/******************************************************************************
+*  About Me 
+******************************************************************************/
+#bodywrapper div.aboutMeListItem{
+	padding-bottom:1em;
+
+}
+
+#bodywrapper div.aboutMePhoto{
+	float:left;
+	width:58px;
+	height:58px;
+	display:block;
+	border: 1px solid #ccc;
+	overflow:hidden;
+}
+#bodywrapper .aboutMeBody{
+	margin:0 0 0 70px;
+
+}
+#bodywrapper .aboutMeBody p{
+	padding:0;
+	margin:0;
+}
+#bodywrapper .aboutMeAction{
+text-align:right;
+font-weight:bold
+}
+#bodywrapper .aboutMeAction a,
+#bodywrapper .aboutMeAction a:link,
+#bodywrapper .aboutMeAction a:visited {
+}
+#bodywrapper .aboutMeAction a:hover,
+#bodywrapper .aboutMeAction a:active {
+}
+/******************************************************************************
+*  About Me 
+******************************************************************************/
+#bodywrapper div.tags{
+	margin-bottom:1em;
+}
+#bodywrapper .tags ul {
+	border-top: none;
+	font-size: 1.1em;
+	text-align: justify;
+	margin:1em 0.5em
+}
+#bodywrapper .tags ul li {
+	display: inline;
+	background: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+	line-height: 1.8em;
+}
+
+#bodywrapper .tag0 { font-size: 75%; }
+#bodywrapper .tag10 { font-size: 80%; }
+#bodywrapper .tag20 { font-size: 90%; }
+#bodywrapper .tag30 { font-size: 100%; }
+#bodywrapper .tag40 { font-size: 110%; }
+#bodywrapper .tag50 { font-size: 120%; }
+#bodywrapper .tag60 { font-size: 140%; }
+#bodywrapper .tag70 { font-size: 150%; }
+#bodywrapper .tag80 { font-size: 160%; }
+#bodywrapper .tag90 { font-size: 170%; }
+#bodywrapper .tag100 { font-size: 180%; }
+
+#bodywrapper ul.tags {
+	list-style: none;
+	margin: 1em 0;
+	padding: 0;
+	font-size: 1.3em;
+	text-align: justify;
+}
+#bodywrapper ul.tags li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	line-height: 1.8em;
+}
+#bodywrapper .moreTags{
+text-align:right;
+font-weight:bold
+}
+
+/******************************************************************************
+*  Pagination
+******************************************************************************/
+#bodywrapper div.pagination {
+	height:1%;
+	overflow:hidden;
+	text-transform:uppercase;
+	background-color:#e0e4e5;
+	padding:0.5em 0.5em;
+	margin:0.5em 0;
+}
+#bodywrapper .paginationPosition {
+	float:left;
+	font-size:0.9em;
+	font-weight:bold;
+	color:#586B7A;
+}
+#bodywrapper .paginationNavigation {
+	float:right;
+	font-size:0.9em;
+
+}
+#bodywrapper .paginationNavigation a:link,
+#bodywrapper .paginationNavigation a:visited,
+#bodywrapper .paginationNavigation a:hover,
+#bodywrapper .paginationNavigation a:active {
+	text-decoration:none;
+	padding:0.2em 0.5em;
+}
+
+#bodywrapper .paginationNavigation a:hover {
+	background:#00a0dd;
+	color:#fff;
+}
+#bodywrapper .paginationNavigation .currentPage{
+	background:#00a0dd;
+	color:#fff;
+	padding:0.2em 0.5em;
+}
+
+
+#bodywrapper .paginationNavigation span {
+	text-decoration:none;
+	color:#ccc;
+	padding:0;
+}
+
+/******************************************************************************
+*  syndicate
+******************************************************************************/
+#bodywrapper div.syndicate{
+	margin-bottom:1em;
+}
+#bodywrapper .syndicate ul {
+	margin:0;
+	padding:0;
+}
+#bodywrapper .syndicate li {
+	list-style:none;
+	padding:0.2em;
+	padding-left:22px;
+	
+}
+
+
+/******************************************************************************
+*  Form comments
+******************************************************************************/
+#bodywrapper #commentsForm {
+	margin: 0;
+	padding: 0.5em 1em;
+	background: #e0e4e5;
+}
+/******************************************************************************
+* comments
+******************************************************************************/
+#bodywrapper #comments {
+	margin: 0;
+	padding: 0.5em 1em;
+}
+#bodywrapper #comments dt {
+	margin: 0.5em 0 0 0;
+	padding: 5px 0 16px 0;
+	padding-left: 0px;
+}
+
+#bodywrapper #comments a.comment-number {
+	display: block;
+	float: left;
+	margin-right: 10px;
+	font-size: 1.2em;
+}
+
+#bodywrapper #comments dd {
+	margin: 0;
+	padding: 1px 1em 0.5em 1em;
+	background: #e0e4e5;
+}
+
+#bodywrapper #comments dd p {
+	margin: 0.5em 0;
+	line-height: 1.5em;
+}
+/******************************************************************************
+* pings
+******************************************************************************/
+#bodywrapper div#pings{
+	margin-bottom:1em;
+	padding: 0.5em 1em;
+}
+#bodywrapper #pings p{
+	margin:0.5em 1em;
+}
+#bodywrapper a.rss {
+	background: url(../img/rss.png) no-repeat;
+
+	padding-left:22px;
+	
+}
+/******************************************************************************
+* Footer list
+******************************************************************************/
+#bodywrapper .footer-recent-comments small,
+#bodywrapper .footer-recent-posts small{
+	display: block;
+	color: #c8e1fa
+}
+#bodywrapper ul.footer-recent-comments  {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	font-weight: bold;
+}
+#bodywrapper ul.footer-recent-comments  li {
+	background: url(../img/comment.png) no-repeat;
+	padding: 0px 0px 10px 20px;
+}
+
+#bodywrapper .footer-recent-posts  {
+
+}
+#bodywrapper ul.footer-recent-posts  {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	font-weight: bold;
+}
+#bodywrapper ul.footer-recent-posts  li {
+	background: url(../img/post.png) no-repeat;
+	padding: 0px 0px 10px 20px;
+}
+
+#bodywrapper .credits {
+margin:1em 0;
+}

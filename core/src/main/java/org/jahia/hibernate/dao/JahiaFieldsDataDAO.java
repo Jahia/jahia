@@ -44,6 +44,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.jahia.content.ContentFieldKey;
+import org.jahia.content.ObjectKey;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.hibernate.model.*;
 import org.jahia.services.fields.ContentFieldTypes;
@@ -52,6 +53,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -122,7 +124,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         hibernateTemplate.delete(fieldsData);
     }
 
-    public void deleteJahiaFields(List stagedContainers) {
+    public void deleteJahiaFields(List<JahiaFieldsData> stagedContainers) {
         HibernateTemplate hibernateTemplate = getHibernateTemplate();
         hibernateTemplate.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         hibernateTemplate.deleteAll(stagedContainers);
@@ -139,10 +141,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List props = template.find("select p.comp_id.name,p.value from JahiaFieldsProp p where p.comp_id.fieldId=?", jahiaContainer.getComp_id().getId());
+        List<Object[]> props = template.find("select p.comp_id.name,p.value from JahiaFieldsProp p where p.comp_id.fieldId=?", jahiaContainer.getComp_id().getId());
         FastHashMap properties = new FastHashMap(props.size());
-        for (Object prop : props) {
-            Object[] objects = (Object[]) prop;
+        for (Object[] objects : props) {
             properties.put(objects[0], objects[1]);
         }
         properties.setFast(true);
@@ -283,10 +284,10 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql,
+            List<Integer> list = template.find(hql,
                     new Object[]{siteId, definitionName, pageId});
             if (!list.isEmpty()) {
-                retVal = (Integer) list.get(0);
+                retVal = list.get(0);
             }
         }
         return retVal;
@@ -297,10 +298,10 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List list = template.find(hql,
+        List<Integer> list = template.find(hql,
                 new Object[]{name, ownerKey.getId(), ownerKey.getType()});
         if (!list.isEmpty()) {
-            return (Integer) list.get(0);
+            return list.get(0);
         }
         return null;
     }
@@ -362,7 +363,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql, new Object[]{containerID});
+            List<Object[]> list = template.find(hql, new Object[]{containerID});
             retVal = fillFieldsDataIds(list, false);
         }
         return retVal;
@@ -375,7 +376,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql, new Object[]{pageId});
+            List<Object[]> list = template.find(hql, new Object[]{pageId});
             retVal = fillFieldsDataIds(list, false);
         }
         return retVal;
@@ -583,9 +584,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{pageID.toString()});
+            List<Integer> list = template.find(hql.toString(), new Object[]{pageID.toString()});
             if (!list.isEmpty()) {
-                retInteger = (Integer) list.get(0);
+                retInteger = list.get(0);
             } else {
                 throw new ObjectRetrievalFailureException("Cannot retrieve jahia fields for this page", pageID);
             }
@@ -600,10 +601,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List objects = template.find(hql, new Object[]{pageId});
+            List<Object[]> objects = template.find(hql, new Object[]{pageId});
             retval = new FastHashMap(objects.size());
-            for (Object object : objects) {
-                Object[] objects1 = (Object[]) object;
+            for (Object[] objects1 : objects) {
                 final Integer parent = (Integer) objects1[0];
                 List<Integer> list = retval.get(parent);
                 if (list == null) {
@@ -626,11 +626,10 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{pageID.toString()});
+            List<Object[]> list = template.find(hql.toString(), new Object[]{pageID.toString()});
             if (!list.isEmpty()) {
                 boolean first = true;
-                for (Object aList : list) {
-                    Object[] objects = (Object[]) aList;
+                for (Object[] objects : list) {
                     if (first || (Integer) objects[1] == 0) {
                         retInteger = (Integer) objects[0];
                     } else if ((Integer) objects[1] < 0) {
@@ -658,9 +657,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{pageID.toString()});
+            List<Object[]> list = template.find(hql.toString(), new Object[]{pageID.toString()});
             if (!list.isEmpty()) {
-                retInteger = (Integer) ((Object[]) list.get(0))[0];
+                retInteger = (Integer) list.get(0)[0];
             } else {
                 throw new ObjectRetrievalFailureException("Cannot retrieve jahia fields for this page", pageID);
             }
@@ -680,9 +679,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{pageID.toString()});
+            List<Integer> list = template.find(hql.toString(), new Object[]{pageID.toString()});
             if (!list.isEmpty()) {
-                retInteger = (Integer) list.get(0);
+                retInteger = list.get(0);
             } else {
                 throw new ObjectRetrievalFailureException("Cannot retrieve jahia fields for this page", pageID);
             }
@@ -702,9 +701,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{pageID.toString()});
+            List<Integer> list = template.find(hql.toString(), new Object[]{pageID.toString()});
             if (!list.isEmpty()) {
-                retInteger = (Integer) list.get(0);
+                retInteger = list.get(0);
             } else {
                 throw new ObjectRetrievalFailureException("Cannot retrieve jahia fields for this page", pageID);
             }
@@ -753,9 +752,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{pageID.toString(), versionID, parentPageID});
+            List<Integer> list = template.find(hql.toString(), new Object[]{pageID.toString(), versionID, parentPageID});
             if (!list.isEmpty()) {
-                retInteger = (Integer) list.get(0);
+                retInteger = list.get(0);
             } else {
                 throw new ObjectRetrievalFailureException("Cannot retrieve jahia fields for this page", pageID);
             }
@@ -782,13 +781,11 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List list = template.find(hql.toString(), new Object[]{pageID.toString(), versionID, parentPageID});
+        List<JahiaFieldsDataPK> list = template.find(hql.toString(), new Object[]{pageID.toString(), versionID, parentPageID});
 
-        JahiaFieldsDataPK compId;
         long previousVersionId = 0;
         if (!list.isEmpty()) {
-            for (Object aList : list) {
-                compId = (JahiaFieldsDataPK) aList;
+            for (JahiaFieldsDataPK compId : list) {
                 if (result == -1) {
                     result = compId.getId();
                 } else {
@@ -818,7 +815,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         return retVal;
     }
 
-    public List<JahiaFieldsData> loadAllActiveOrStagedFields(List fieldIds) {
+    public List<JahiaFieldsData> loadAllActiveOrStagedFields(List<Integer> fieldIds) {
         List<JahiaFieldsData> retVal = null;
         String hql = "from JahiaFieldsData f where f.comp_id.id in (:fieldIds) and f.comp_id.workflowState>=1 order by f.comp_id.id";
         if (fieldIds != null) {
@@ -842,7 +839,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         return retVal;
     }
 
-    public List<JahiaFieldsData> loadAllInactiveVersionedFields(List fieldIds) {
+    public List<JahiaFieldsData> loadAllInactiveVersionedFields(List<Integer> fieldIds) {
         List<JahiaFieldsData> retVal = null;
         if (fieldIds != null) {
             String hql = "from JahiaFieldsData f where f.comp_id.id in (:fieldIds) and f.comp_id.workflowState<=0 ";
@@ -862,7 +859,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         return template.find(hql, new Object[]{name, owner.getId(), owner.getType()});
     }
 
-    public List<JahiaFieldsData> loadAllMetadataActiveOrStagedFieldEntryByOwnerAndName(List names, JahiaObjectPK owner) {
+    public List<JahiaFieldsData> loadAllMetadataActiveOrStagedFieldEntryByOwnerAndName(List<String> names, JahiaObjectPK owner) {
         String hql = "from JahiaFieldsData f where f.fieldDefinition.name in (:fieldNames) AND f.metadataOwnerId=(:metadataOwnerId) AND f.metadataOwnerType=(:metadataOwnerType) and f.comp_id.workflowState>=1";
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
@@ -880,7 +877,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         return template.find(hql, new Object[]{name, owner.getId(), owner.getType()});
     }
 
-    public List<JahiaFieldsData> loadAllMetadataInactiveVersionedFieldsByOwnerAndName(List names, JahiaObjectPK owner) {
+    public List<JahiaFieldsData> loadAllMetadataInactiveVersionedFieldsByOwnerAndName(List<String> names, JahiaObjectPK owner) {
         String hql = "from JahiaFieldsData f where f.fieldDefinition.name in (:fieldNames) AND f.metadataOwnerId=(:metadataOwnerId) AND f.metadataOwnerType=(:metadataOwnerType) and f.comp_id.workflowState<=0";
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
@@ -943,7 +940,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString, fieldId);
+        final List<JahiaFieldsData> list = template.find(queryString, fieldId);
         return getJahiaFieldsDataFromList(list);
     }
 
@@ -954,10 +951,10 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql,
+            List<String> list = template.find(hql,
                     new Object[]{fieldId, version, language});
             if (!list.isEmpty()) {
-                retVal = (String) list.get(0);
+                retVal = list.get(0);
             }
         }
         return retVal;
@@ -978,10 +975,10 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql,
+            List<String> list = template.find(hql,
                     new Object[]{fieldId, version, language});
             if (!list.isEmpty()) {
-                retVal = (String) list.get(0);
+                retVal = list.get(0);
             }
         }
         return retVal;
@@ -994,10 +991,10 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql,
+            List<String> list = template.find(hql,
                     new Object[]{fieldId, version, language});
             if (!list.isEmpty()) {
-                retVal = (String) list.get(0);
+                retVal = list.get(0);
             }
         }
         return retVal;
@@ -1046,9 +1043,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
                 .getComp_id().getId()));
     }
 
-    private JahiaFieldsData getJahiaFieldsDataFromList(final List list) {
+    private JahiaFieldsData getJahiaFieldsDataFromList(final List<JahiaFieldsData> list) {
         if (!list.isEmpty()) {
-            final JahiaFieldsData jahiaContainer = (JahiaFieldsData) list.get(0);
+            final JahiaFieldsData jahiaContainer = list.get(0);
             return fillProperties(jahiaContainer);
         } else {
             return null;
@@ -1062,7 +1059,7 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
                     "from JahiaFieldsProp p where p.comp_id.fieldId=?", data
                     .getComp_id().getId()));
             for (Object o : data.getProperties().entrySet()) {
-                Map.Entry entry = (Map.Entry) o;
+                Map.Entry<String, String> entry = (Map.Entry<String, String>) o;
                 template.save(new JahiaFieldsProp(new JahiaFieldsPropPK(data
                         .getComp_id().getId(), (String) entry.getKey()),
                         (String) entry.getValue()));
@@ -1076,15 +1073,15 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         template.setCacheQueries(true);
-        final List list = template.find(queryString, id);
+        final List<JahiaFieldsData> list = template.find(queryString, id);
         JahiaFieldsData data = getJahiaFieldsDataFromList(list);
         data.setProperties(properties);
         saveProperties(data, template);
     }
 
     public int getNBFields(int id) {
-        List nbPages = getHibernateTemplate().find("select count(f.comp_id.id) from JahiaFieldsData f where f.comp_id.id=?", (id));
-        return ((Long) nbPages.get(0)).intValue();
+        List<Long> nbPages = getHibernateTemplate().find("select count(f.comp_id.id) from JahiaFieldsData f where f.comp_id.id=?", (id));
+        return nbPages.get(0).intValue();
     }
 
     public List<Object[]> findUsages(String sourceUri, boolean onlyLockedUsages) {
@@ -1110,8 +1107,8 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List l = template.find(hql.toString(), new Object[]{siteID, sourceUri});
-        return ((Long) l.get(0)).intValue();
+        List<Long> l = template.find(hql.toString(), new Object[]{siteID, sourceUri});
+        return l.get(0).intValue();
     }
 
     public JahiaFieldsData findJahiaFieldsDataByIdAndWorkflowStateAndLanguage(Integer fieldID, Integer workflowState, String languageCode) {
@@ -1119,21 +1116,20 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List list = template.find(hql, new Object[]{fieldID, workflowState, languageCode});
+        List<JahiaFieldsData> list = template.find(hql, new Object[]{fieldID, workflowState, languageCode});
         if (!list.isEmpty()) {
-            return (JahiaFieldsData) list.get(0);
+            return list.get(0);
         }
         return null;
     }
 
-    public Map deleteAllFieldsFromSite(Integer siteID) {
+    public Map<Serializable, Integer> deleteAllFieldsFromSite(Integer siteID) {
         String queryString = "from JahiaFieldsData f where f.siteId=? ";
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        List list = template.find(queryString, siteID);
-        Map map = new HashMap(list.size());
-        for (Object aList : list) {
-            JahiaFieldsData data = (JahiaFieldsData) aList;
+        List<JahiaFieldsData> list = template.find(queryString, siteID);
+        Map<Serializable, Integer> map = new HashMap<Serializable, Integer>(list.size());
+        for (JahiaFieldsData data : list) {
             deleteProperties(data, template);
             if (data.getContainerId() != 0 || data.getMetadataOwnerId() != null) {
                 continue;
@@ -1148,9 +1144,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List list = template.find(hql, new Object[]{fieldId});
+        List<Object[]> list = template.find(hql, new Object[]{fieldId});
         if (!list.isEmpty()) {
-            Object[] objs = (Object[]) list.get(0);
+            Object[] objs = list.get(0);
             return new JahiaObjectPK((String) objs[1], (Integer) objs[0]);
         }
         return null;
@@ -1163,9 +1159,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List list = template.find(hql, new Object[]{fieldId});
+        List<Object[]> list = template.find(hql, new Object[]{fieldId});
         if (!list.isEmpty()) {
-            return (Object[]) list.iterator().next();
+            return list.iterator().next();
         }
         return null;
     }
@@ -1177,9 +1173,9 @@ public class JahiaFieldsDataDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List list = template.find(hql, new Object[]{fieldId});
+        List<Object[]> list = template.find(hql, new Object[]{fieldId});
         if (!list.isEmpty()) {
-            return (Object[]) list.iterator().next();
+            return list.iterator().next();
         }
         return null;
     }

@@ -170,7 +170,7 @@ public abstract class AbstractContentTreeVisitor implements ContentTreeVisitorIn
      * @param currentPageLevel
      * @return
      */
-    public List<ContentObject> getChilds(ContentObject contentObject,
+    public List<? extends ContentObject> getChilds(ContentObject contentObject,
                                int currentPageLevel)
     throws JahiaException {
 

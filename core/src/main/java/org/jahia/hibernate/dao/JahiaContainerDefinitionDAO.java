@@ -37,23 +37,15 @@
 package org.jahia.hibernate.dao;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.CacheMode;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.jahia.content.ContainerDefinitionKey;
 import org.jahia.hibernate.model.JahiaCtnDef;
 import org.jahia.hibernate.model.JahiaCtnDefProperty;
-import org.jahia.hibernate.model.JahiaCtnStruct;
-import org.jahia.hibernate.model.JahiaCtndefProp;
-import org.jahia.hibernate.model.JahiaCtndefPropPK;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
@@ -103,9 +95,9 @@ public class JahiaContainerDefinitionDAO extends AbstractGeneratorDAO {
         JahiaCtnDef ctnDef = null;
         String hql = "from JahiaCtnDef def where def.jahiaSiteId=? and def.name=?";
         if (siteId != null && definitionName != null) {
-            List list = template.find(hql.toString(), new Object[]{siteId, definitionName});
+            List<JahiaCtnDef> list = template.find(hql.toString(), new Object[]{siteId, definitionName});
             if (list.size() > 0) {
-                ctnDef = (JahiaCtnDef) list.get(0);
+                ctnDef = list.get(0);
                 fullyloadSubComponent(ctnDef, template);
             }
         }
@@ -120,9 +112,7 @@ public class JahiaContainerDefinitionDAO extends AbstractGeneratorDAO {
             if (ctnDef.getId() == null) {
                 ctnDef.setId(getNextInteger(ctnDef));
             }
-            Iterator iterator = ctnDef.getSubDefinitions().iterator();
-            while (iterator.hasNext()) {
-                JahiaCtnDefProperty property = (JahiaCtnDefProperty) iterator.next();
+            for (JahiaCtnDefProperty property : ctnDef.getSubDefinitions()) {
                 if (property.getIdJahiaCtnDefProperties() == null) {
                     property.setIdJahiaCtnDefProperties(getNextInteger(property));
                     hibernateTemplate.save(property);
@@ -146,9 +136,7 @@ public class JahiaContainerDefinitionDAO extends AbstractGeneratorDAO {
     public void update(JahiaCtnDef ctnDef) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        Iterator iterator = ctnDef.getSubDefinitions().iterator();
-        while (iterator.hasNext()) {
-            JahiaCtnDefProperty property = (JahiaCtnDefProperty) iterator.next();
+        for (JahiaCtnDefProperty property : ctnDef.getSubDefinitions()) {
             if (property.getIdJahiaCtnDefProperties() == null) {
                 property.setIdJahiaCtnDefProperties(getNextInteger(property));
                 template.save(property);
@@ -168,52 +156,6 @@ public class JahiaContainerDefinitionDAO extends AbstractGeneratorDAO {
         }
     }
 
-    private void saveProperties(JahiaCtnDef ctnDef, final HibernateTemplate template) {
-        final Map properties = ctnDef.getProperties();
-        if (properties != null) {
-            int size = properties.size();
-            if (size > 0) {
-                template.deleteAll(template.find("from JahiaCtndefProp p where p.comp_id.idJahiaCtnDef=?", ctnDef.getId()));
-                Iterator iterator = properties.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry entry = (Map.Entry) iterator.next();
-                    template.save(new JahiaCtndefProp(new JahiaCtndefPropPK(ctnDef.getId(),
-                                                                            (String) entry.getKey()),
-                                                      (String) entry.getValue()));
-                }
-                template.flush();
-            }
-        }
-    }
-
-    private void saveSubDefinition(JahiaCtnDef ctnDef, final HibernateTemplate template) {
-        final Set subdefs = ctnDef.getSubDefinitions();
-        if (subdefs != null) {
-            int size = subdefs.size();
-            if (size > 0) {
-                Iterator iterator = subdefs.iterator();
-                while (iterator.hasNext()) {
-                    JahiaCtnDefProperty property = (JahiaCtnDefProperty) iterator.next();
-                    Set set = property.getJahiaCtnStructs();
-                    Collection oldDef = template.find("from JahiaCtnStruct where comp_id.ctnsubdefid.idJahiaCtnDefProperties=?",property.getIdJahiaCtnDefProperties());
-                    if (set != null) {
-                        Iterator iterator2 = set.iterator();
-                        while (iterator2.hasNext()) {
-                            JahiaCtnStruct struct = (JahiaCtnStruct) iterator2.next();
-                            struct.getComp_id().setCtnsubdefid(property);
-                            oldDef.remove(struct);
-                            template.save(struct);
-                        }
-                        for (Iterator iterator1 = oldDef.iterator(); iterator1.hasNext();) {
-                            JahiaCtnStruct jahiaCtnStruct = (JahiaCtnStruct) iterator1.next();
-                            template.delete(jahiaCtnStruct);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public List<JahiaCtnDef> fullyLoadContainerDefinitionInTemplate(Integer templateId) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
@@ -230,11 +172,11 @@ public class JahiaContainerDefinitionDAO extends AbstractGeneratorDAO {
         return retList;
     }
 
-    public List fullyLoadContainerDefinitionInTemplateForTestingPurpose(Integer templateId) {
+    public List<JahiaCtnDef> fullyLoadContainerDefinitionInTemplateForTestingPurpose(Integer templateId) {
         final Session template = getSession(true);
         template.setCacheMode(CacheMode.GET);
         String hql = "from JahiaCtnDef def where def.subDefinitions.pageDefinitionId=:id  order by def.id";
-        List retList = null;
+        List<JahiaCtnDef> retList = null;
         if (templateId != null) {
             Query query = template.createQuery(hql.toString());
             query.setInteger("id", templateId.intValue());
@@ -262,20 +204,13 @@ public class JahiaContainerDefinitionDAO extends AbstractGeneratorDAO {
         return retCtnDef;
     }
 
-    public void deleteAll(List removed) {
-        HibernateTemplate hibernateTemplate = getHibernateTemplate();
-        hibernateTemplate.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        hibernateTemplate.deleteAll(removed);
-    }
-
-    public List deleteAllDefinitionsFromSite(Integer siteID) {
+    public List<ContainerDefinitionKey> deleteAllDefinitionsFromSite(Integer siteID) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         String hql = "select def.id from JahiaCtnDef def where def.jahiaSiteId=?";
-        List list = template.find(hql.toString(), siteID);
-        List retList = new ArrayList(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            Integer o = (Integer) list.get(i);
+        List<Integer> list = template.find(hql.toString(), siteID);
+        List<ContainerDefinitionKey> retList = new ArrayList<ContainerDefinitionKey>(list.size());
+        for (Integer o : list) {
             delete(o);
             retList.add(new ContainerDefinitionKey(o.intValue()));
         }
@@ -291,11 +226,5 @@ public class JahiaContainerDefinitionDAO extends AbstractGeneratorDAO {
 
         return result;
     }
-
-    public List executeCriteria(DetachedCriteria criteria){
-        Criteria executableCriteria = criteria.getExecutableCriteria(this.getSession());
-        return executableCriteria.list();
-    }
-
 }
 

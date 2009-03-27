@@ -138,7 +138,7 @@ public class JahiaSiteManager {
             JahiaSite convertedSite = null;
             Cache<Comparable<?>, JahiaSite> cache = cacheService.getCache(JahiaSitesBaseService.SITE_CACHE_BYID);
             if (cache != null) {
-                convertedSite = (JahiaSite) cache.get(jahiaSite.getId());
+                convertedSite = cache.get(jahiaSite.getId());
             }
             if (convertedSite == null) {
                 convertedSite = convertModelJahiaSiteToServiceJahiaSite(jahiaSite);
@@ -177,9 +177,11 @@ public class JahiaSiteManager {
         }
 
         Properties props = new Properties();
+
         Iterator<JahiaSiteProp> iterator = sitePropertyDAO.getSitePropById(jahiaSite.getId()).iterator();
+
         while ( iterator.hasNext() ){
-            JahiaSiteProp jahiaSiteProp = (JahiaSiteProp)iterator.next();
+            JahiaSiteProp jahiaSiteProp = iterator.next();
             props.put(jahiaSiteProp.getComp_id().getName(),jahiaSiteProp.getValue() == null ? "" : jahiaSiteProp.getValue());
         }
 

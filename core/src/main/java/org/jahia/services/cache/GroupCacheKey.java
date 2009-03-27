@@ -46,6 +46,9 @@ import java.util.Set;
  * Copyright (C) Jahia Inc.
  */
 public class GroupCacheKey implements Serializable, Comparable<GroupCacheKey> {
+
+    private static final long serialVersionUID = 9006071384859530347L;
+    
     private static String groupSeparator = "#$#G_";
     private static String keyGroupSeparator = "$$$";
 

@@ -169,7 +169,7 @@ public abstract class ContentObject extends JahiaObject {
      * @throws JahiaException thrown in case there was a problem retrieving
      * the children of this object.
      */
-    public abstract List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest) throws JahiaException;
+    public abstract List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest) throws JahiaException;
 
     /**
      * Returns all the childrens of this object, given the current context of
@@ -191,13 +191,13 @@ public abstract class ContentObject extends JahiaObject {
      * @throws JahiaException thrown in case there was a problem retrieving
      * the children of this object.
      */
-    public abstract List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest, int loadFlag) throws JahiaException;
+    public abstract List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest, int loadFlag) throws JahiaException;
     
     /**
      * Backward compatibility
      * @deprecated
      */
-    public List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest, String operationMode) throws JahiaException {
+    public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest, String operationMode) throws JahiaException {
         return getChilds(user,loadRequest);
     }
 
@@ -887,7 +887,7 @@ public abstract class ContentObject extends JahiaObject {
             JahiaBaseACL localAcl = getACL();
             result = localAcl.getPermission (user, permission);
             if (!result && checkChilds) {
-                for (Iterator<ContentObject> it = getChilds(user, null).iterator(); it.hasNext() && !result;) {
+                for (Iterator<? extends ContentObject> it = getChilds(user, null).iterator(); it.hasNext() && !result;) {
                     ContentObject contentObject = it.next();
                     if(!(contentObject instanceof ContentPage))
                         result = contentObject.checkAccess(user, permission, checkChilds);
@@ -913,8 +913,8 @@ public abstract class ContentObject extends JahiaObject {
             JahiaBaseACL acl = getACL();
             result = acl.getPermission (user, permission);
             if (result && forceChildRights) {
-                List<ContentObject> childs = getChilds(user, Jahia.getThreadParamBean().getEntryLoadRequest());
-                for (Iterator<ContentObject> it = childs.iterator(); it.hasNext() && result;) {
+                List<? extends ContentObject> childs = getChilds(user, Jahia.getThreadParamBean().getEntryLoadRequest());
+                for (Iterator<? extends ContentObject> it = childs.iterator(); it.hasNext() && result;) {
                     ContentObject contentObject = it.next();
                     result = contentObject.checkAccess(user, permission, checkChilds, forceChildRights);
                 }
@@ -1044,7 +1044,7 @@ public abstract class ContentObject extends JahiaObject {
                                                     String markDeletedLanguageCode, Set<String> activationLanguageCodes)
         throws JahiaException {
 
-        List<ContentObject> childs = getChilds(user,null);
+        List<? extends ContentObject> childs = getChilds(user,null);
         for (ContentObject contentObject : childs) {
             if (!contentObject.willBeCompletelyDeleted(markDeletedLanguageCode, activationLanguageCodes)) {
                 return false;
@@ -2052,7 +2052,7 @@ public abstract class ContentObject extends JahiaObject {
 
     public abstract String getProperty(String name) throws JahiaException;
 
-    public abstract void setProperty(String name, String val) throws JahiaException;
+    public abstract void setProperty(Object name, Object val) throws JahiaException;
 
     public abstract void removeProperty(String name) throws JahiaException;
 
@@ -2096,9 +2096,9 @@ public abstract class ContentObject extends JahiaObject {
     public boolean checkValidationAccess(JahiaUser user) {
         boolean result = true;
         try {
-            List<ContentObject> childs = getChilds(user, Jahia.getThreadParamBean().getEntryLoadRequest());
+            List<? extends ContentObject> childs = getChilds(user, Jahia.getThreadParamBean().getEntryLoadRequest());
             WorkflowService service = ServicesRegistry.getInstance().getWorkflowService();
-            for (Iterator<ContentObject> it = childs.iterator(); it.hasNext() && result;) {            
+            for (Iterator<? extends ContentObject> it = childs.iterator(); it.hasNext() && result;) {            
                 ContentObject contentObject = it.next();
                 if (service.getWorkflowMode(contentObject) == WorkflowService.EXTERNAL) {
                     final String name = service.getInheritedExternalWorkflowName(contentObject);
@@ -2179,10 +2179,10 @@ public abstract class ContentObject extends JahiaObject {
                     ServicesRegistry.getInstance().getJahiaACLManagerService().updateCache(pickerAcl);
                 }
             }            
-            List<ContentObject> l = getChilds(null,null);
+            List<? extends ContentObject> l = getChilds(null,null);
             for (ContentObject contentObject : l) {
                 if (contentObject instanceof ContentPageField) {
-                    List<ContentObject> c = contentObject.getChilds(null,null);
+                    List<? extends ContentObject> c = contentObject.getChilds(null,null);
                     if (!c.isEmpty()) {
                         contentObject = c.iterator().next();
                     } else {

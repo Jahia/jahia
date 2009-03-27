@@ -35,7 +35,6 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -129,24 +128,20 @@ public class  ContentPageKey extends ContentObjectKey {
         return p;
     }
 
-    public Collection getChilds(EntryLoadRequest request) {
+    public Collection<ContentObjectKey> getChilds(EntryLoadRequest request) {
         return getChilds(request, JahiaContainerStructure.ALL_TYPES);
     }
     
-    public Collection getChilds(EntryLoadRequest request, int loadFlag) {
-        Collection results = new ArrayList();
+    public Collection<ContentObjectKey> getChilds(EntryLoadRequest request, int loadFlag) {
+        Collection<ContentObjectKey> results = new ArrayList<ContentObjectKey>();
         if ((loadFlag & JahiaContainerStructure.JAHIA_CONTAINER) != 0) {
             results = getChildLists(request);
         }
         if ((loadFlag & JahiaContainerStructure.JAHIA_FIELD) != 0
                 && org.jahia.settings.SettingsBean.getInstance().areDeprecatedNonContainerFieldsUsed()) {
             try {
-                Collection c = ServicesRegistry.getInstance()
-                        .getJahiaFieldService()
-                        .getNonContainerFieldIDsAndTypesInPageByWorkflowState(
-                                getIdInType(), request);
-                for (Iterator iterator = c.iterator(); iterator.hasNext();) {
-                    Object[] o = (Object[]) iterator.next();
+                for (Object[] o : ServicesRegistry.getInstance().getJahiaFieldService()
+                        .getNonContainerFieldIDsAndTypesInPageByWorkflowState(getIdInType(), request)) {
                     ContentFieldKey key = new ContentFieldKey(((Integer) o[0])
                             .intValue());
                     key.setFieldType(((Integer) o[1]).intValue());
@@ -160,12 +155,11 @@ public class  ContentPageKey extends ContentObjectKey {
         return results;
     }
 
-    public Collection getChildLists(EntryLoadRequest request) {
-        List results = new ArrayList();
+    public Collection<ContentObjectKey> getChildLists(EntryLoadRequest request) {
+        List<ContentObjectKey> results = new ArrayList<ContentObjectKey>();
         try {
-            Collection c = ServicesRegistry.getInstance().getJahiaContainersService().getAllPageTopLevelContainerListIDs(getIdInType(), request);
-            for (Iterator iterator = c.iterator(); iterator.hasNext();) {
-                Integer integer = (Integer) iterator.next();
+            for (Integer integer : ServicesRegistry.getInstance().getJahiaContainersService()
+                    .getAllPageTopLevelContainerListIDs(getIdInType(), request)) {
                 ContentContainerListKey cclk = new ContentContainerListKey(integer.intValue());
                 cclk.setParent(this);
                 results.add(cclk);

@@ -42,6 +42,9 @@ import org.jahia.content.ObjectKey;
  * Time: 16:26:42
  */
 public class EntryPointObjectKey extends ObjectKey {
+
+    private static final long serialVersionUID = 1135214230216807396L;
+    
     public static final String ENTRY_POINT_TYPE = "entrypoint";
     
     static {

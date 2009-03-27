@@ -33,6 +33,7 @@
 
 package org.jahia.services.importexport;
 
+import org.jahia.api.Constants;
 import org.jahia.content.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.exceptions.JahiaException;
@@ -345,7 +346,7 @@ public class JahiaLegacyExporter extends Exporter{
                             JahiaPageDefinition template = ((ContentPage) object).getPageTemplate(toLoadRequest);
                             attr.addAttribute(ImportExportService.JAHIA_URI, "template", "jahia:template", CDATA, template.getName());
                             if (template.getPageType() != null) {
-                                attr.addAttribute(ImportExportService.JCR_URI, "primaryType", "jcr:primaryType", CDATA, template.getPageType());
+                                attr.addAttribute(ImportExportService.JCR_URI, "primaryType", Constants.JCR_PRIMARYTYPE, CDATA, template.getPageType());
                             }
 
                             PageProperty prop = ((ContentPage) object).getPageLocalProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
@@ -398,7 +399,7 @@ public class JahiaLegacyExporter extends Exporter{
                 JahiaContainerDefinition jcd = (JahiaContainerDefinition) ContentObject.getInstance(cdk);
                 currentPage = ccl.getPage();
                 if (jcd.getContainerType() != null) {
-                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", "jcr:primaryType", CDATA, jcd.getContainerType()+"List");
+                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", Constants.JCR_PRIMARYTYPE, CDATA, jcd.getContainerType()+"List");
                 } else {
                 }
                 ContentDefinition parentDef = (ContentDefinition) ContentDefinition.getInstance(ccl.getParent(toLoadRequest).getDefinitionKey(toLoadRequest));
@@ -446,7 +447,7 @@ public class JahiaLegacyExporter extends Exporter{
                     } catch (RepositoryException e) {
                         e.printStackTrace();
                     }
-                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", "jcr:primaryType", CDATA, type);
+                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", Constants.JCR_PRIMARYTYPE, CDATA, type);
                 } else {
                 }
                 ContentDefinition parentDef = (ContentDefinition) ContentDefinition.getInstance(cc.getParent(toLoadRequest).getParent(toLoadRequest).getDefinitionKey(toLoadRequest));

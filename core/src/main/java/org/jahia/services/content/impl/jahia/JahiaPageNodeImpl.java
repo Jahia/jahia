@@ -33,8 +33,6 @@
 
 package org.jahia.services.content.impl.jahia;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.jcr.AccessDeniedException;
@@ -94,13 +92,10 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
             ProcessingContext processingContext = getProcessingContext();
             try {
                 // containers
-                final Set containerListIDs = jahiaContainersService.
+                final Set<Integer> containerListIDs = jahiaContainersService.
                         getAllPageTopLevelContainerListIDs(
                                 contentPage.getID(), getEntryLoadRequest());
-                final Iterator containerListIDIter = containerListIDs.iterator();
-                while (containerListIDIter.hasNext()) {
-                    final Integer curContainerListID = (Integer) containerListIDIter.next();
-
+                for (final Integer curContainerListID : containerListIDs) {
                     try {
                         ContentContainerList l = ContentContainerList.getContainerList(curContainerListID);
                         initNode(session.getJahiaContainerListNode(l));
@@ -110,10 +105,9 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
                 }
 
                 // subpages
-                List l = ServicesRegistry.getInstance().getJahiaPageService().getContentPageChilds(contentPage.getID(), processingContext.getUser(),LoadFlags.ALL,null,true);
-                for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+                for (ContentPage p : ServicesRegistry.getInstance().getJahiaPageService().getContentPageChilds(
+                        contentPage.getID(), processingContext.getUser(), LoadFlags.ALL, null, true)) {
                     try {
-                        ContentPage p = (ContentPage) iterator.next();
                         initNode(session.getJahiaPageNode(p));
                     } catch (RepositoryException e) {
                         logger.error("Cannot get page",e);
@@ -161,7 +155,6 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         try {
-            ProcessingContext processingContext = getProcessingContext();
             int i = contentPage.getParentID(getEntryLoadRequest());
             if (i>0) {
                 ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(i, true);

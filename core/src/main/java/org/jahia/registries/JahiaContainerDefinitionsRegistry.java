@@ -45,8 +45,6 @@ import org.jahia.services.pages.JahiaPageDefinition;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 
 public class JahiaContainerDefinitionsRegistry implements CacheListener {
 
@@ -60,6 +58,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
             "ContainerDefinitionsBySiteAndName";
 //    private Cache containerDefByID;
 //    private Cache containerDefBySiteIDAndName;
+    @SuppressWarnings("unused")
     private CacheService cacheService;
     private JahiaContainersService containersService;
 

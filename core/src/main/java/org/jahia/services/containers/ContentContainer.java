@@ -90,7 +90,7 @@ public class ContentContainer extends ContentObject
     private List<ContentObjectEntryState> versionedEntryStates = null;
     private int parentContainerListID;
     private int aclID;
-    private Map<String, String> properties;
+    private Map<Object, Object> properties;
 
     private int jahiaID;
     private int pageID;
@@ -238,14 +238,14 @@ public class ContentContainer extends ContentObject
         return entries;
     }
     
-    public List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
+    public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
             throws JahiaException {
 
         return getChilds(user, loadRequest,
                 JahiaContainerStructure.ALL_TYPES);
     }
     
-    public List<ContentObject> getChilds(JahiaUser user,
+    public List<? extends ContentObject> getChilds(JahiaUser user,
                                EntryLoadRequest loadRequest, int loadFlag)    
             throws JahiaException {
         List<ContentObject> resultList = new FastArrayList ();
@@ -358,7 +358,7 @@ public class ContentContainer extends ContentObject
         locales.add (LanguageCodeConverters.languageCodeToLocale (entryState.getLanguageCode ()));
         EntryLoadRequest loadRequest = new EntryLoadRequest (entryState.getWorkflowState (),
                 entryState.getVersionID (), locales);
-        List<ContentObject> children = getChilds (user, loadRequest);
+        List<? extends ContentObject> children = getChilds (user, loadRequest);
         for (ContentObject curChild : children) {
             opResult.merge (
                     curChild.isValidForRestore (user, operationMode, entryState,
@@ -375,7 +375,7 @@ public class ContentContainer extends ContentObject
         String primaryDisplayName = null;
         try {
             if (primaryItemName != null) {
-                List<ContentObject> obj = getChilds(jParams.getUser(), jParams.getEntryLoadRequest());
+                List<? extends ContentObject> obj = getChilds(jParams.getUser(), jParams.getEntryLoadRequest());
                 for (ContentObject contentObject : obj) {
                     ContentDefinition primDef = (ContentDefinition) ContentDefinition.getInstance(contentObject.getDefinitionKey(jParams.getEntryLoadRequest()));
                     if (primDef.getName().equals(def.getName()+"_"+primaryItemName)) {
@@ -416,8 +416,8 @@ public class ContentContainer extends ContentObject
             JahiaBaseACL localAcl = getACL();
             result = localAcl.getPermission (user, permission);
             if (!result && checkChilds) {
-                List<ContentObject> childs = getChilds(user, null, JahiaContainerStructure.JAHIA_CONTAINER);
-                for (Iterator<ContentObject> it = childs.iterator(); it.hasNext() && !result;) {
+                List<? extends ContentObject> childs = getChilds(user, null, JahiaContainerStructure.JAHIA_CONTAINER);
+                for (Iterator<? extends ContentObject> it = childs.iterator(); it.hasNext() && !result;) {
                     ContentObject contentObject = it.next();
                     if(!(contentObject instanceof ContentPage))
                         result = contentObject.checkAccess(user, permission, checkChilds);
@@ -586,7 +586,7 @@ public class ContentContainer extends ContentObject
         locales.add(LanguageCodeConverters.languageCodeToLocale(entryState.getLanguageCode()));
         EntryLoadRequest loadRequest = null;
 
-        List<ContentObject> children = null;
+        List<? extends ContentObject> children = null;
         if ( stateModificationContext.isUndelete() || !isDeleted ){
             // 1. First restore archive
             // load archive to restore
@@ -1264,7 +1264,7 @@ public class ContentContainer extends ContentObject
         return (String) getProperties().get(name);
     }
 
-    public void setProperty(String name, String val) throws JahiaException {
+    public void setProperty(Object name, Object val) throws JahiaException {
         getProperties().put(name,val);
         ServicesRegistry.getInstance().getJahiaContainersService().setContainerProperties(getID(), getSiteID(), getProperties());
     }
@@ -1274,7 +1274,7 @@ public class ContentContainer extends ContentObject
         containerManager.removeContainerProperty(getID(), name);
     }
 
-    public Map<String, String> getProperties() {
+    public Map<Object, Object> getProperties() {
         if (properties == null) {
             try {
                 properties = ServicesRegistry.getInstance().getJahiaContainersService().getContainerProperties(getID());
@@ -1285,7 +1285,7 @@ public class ContentContainer extends ContentObject
         return properties;
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<Object, Object> properties) {
         this.properties = properties;
     }
 
@@ -1333,7 +1333,7 @@ public class ContentContainer extends ContentObject
                 ctx);
 
         // update content childs
-        List<ContentObject> contentChilds = this.getChilds(JahiaAdminUser.getAdminUser(this.getSiteID()),
+        List<? extends ContentObject> contentChilds = this.getChilds(JahiaAdminUser.getAdminUser(this.getSiteID()),
                 EntryLoadRequest.STAGED);
 
         for (ContentObject child : contentChilds) {

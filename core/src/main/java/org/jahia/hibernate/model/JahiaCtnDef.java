@@ -47,6 +47,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @hibernate.cache usage="nonstrict-read-write"
  */
 public class JahiaCtnDef implements Serializable {
+
+    private static final long serialVersionUID = 1249917416490388459L;
+
 // ------------------------------ FIELDS ------------------------------
 
     /**
@@ -54,7 +57,7 @@ public class JahiaCtnDef implements Serializable {
      */
     private Integer id;
 
-    private Map properties;
+    private Map<Object, Object> properties;
 
     /**
      * nullable persistent field
@@ -64,7 +67,7 @@ public class JahiaCtnDef implements Serializable {
     /**
      * persistent field
      */
-    private Set subDefinitions;
+    private Set<JahiaCtnDefProperty> subDefinitions;
 
     /**
      * identifier field
@@ -81,8 +84,8 @@ public class JahiaCtnDef implements Serializable {
      * default constructor
      */
     public JahiaCtnDef() {
-        properties = new ConcurrentHashMap(53);
-        subDefinitions = new HashSet(53);
+        properties = new ConcurrentHashMap<Object, Object>(53);
+        subDefinitions = new HashSet<JahiaCtnDefProperty>(53);
     }
 
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -156,11 +159,11 @@ public class JahiaCtnDef implements Serializable {
      * @hibernate.collection-cache usage="nonstrict-read-write"
      * @return
      */
-    public Map getProperties() {
+    public Map<Object, Object> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map properties) {
+    public void setProperties(Map<Object, Object> properties) {
         this.properties = properties;
     }
 
@@ -172,11 +175,11 @@ public class JahiaCtnDef implements Serializable {
      * @hibernate.collection-one-to-many class="org.jahia.hibernate.model.JahiaCtnDefProperty"
      * @hibernate.collection-cache usage="nonstrict-read-write"
      */
-    public Set getSubDefinitions() {
+    public Set<JahiaCtnDefProperty> getSubDefinitions() {
         return this.subDefinitions;
     }
 
-    public void setSubDefinitions(Set subDefinitions) {
+    public void setSubDefinitions(Set<JahiaCtnDefProperty> subDefinitions) {
         this.subDefinitions = subDefinitions;
     }
 

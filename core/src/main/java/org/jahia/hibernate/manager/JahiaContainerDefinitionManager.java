@@ -73,8 +73,8 @@ public class JahiaContainerDefinitionManager {
     private JahiaSiteDAO siteDAO = null;
     private Log log = LogFactory.getLog(JahiaContainerDefinitionManager.class);
     private CacheService cacheService = null;
-    private Cache definitionCache = null;
-    private Cache listCache = null;
+    private Cache<String, JahiaContainerDefinition> definitionCache = null;
+    private Cache<GroupCacheKey, List<JahiaContainerDefinition>> listCache = null;
 // --------------------- GETTER / SETTER METHODS ---------------------
 
     public List<Integer> getAllContainerDefinitionIds() {
@@ -96,7 +96,7 @@ public class JahiaContainerDefinitionManager {
 
     public void createContainerDefinition(JahiaContainerDefinition theDefinition) {
         JahiaCtnDef ctnDef = new JahiaCtnDef();
-        Set properties = convertToJahiaCtnDef(theDefinition, ctnDef);
+        Set<JahiaCtnDefProperty> properties = convertToJahiaCtnDef(theDefinition, ctnDef);
         JahiaSite site = null;
         try {
             site = siteDAO.findById(new Integer(theDefinition.getJahiaID()));
@@ -156,7 +156,7 @@ public class JahiaContainerDefinitionManager {
             }
         }
         if (definitionCache != null) {
-            definition = (JahiaContainerDefinition) definitionCache.get(CACHEBYID_PREFIX + definitionID);
+            definition = definitionCache.get(CACHEBYID_PREFIX + definitionID);
         }
         if (definition == null) {
             JahiaCtnDef ctnDef = null;
@@ -189,7 +189,7 @@ public class JahiaContainerDefinitionManager {
             }
         }
         if (definitionCache != null) {
-            definition = (JahiaContainerDefinition) definitionCache.get(CACHEBYSITEANDNAME_PREFIX + siteID + definitionName);
+            definition = definitionCache.get(CACHEBYSITEANDNAME_PREFIX + siteID + definitionName);
         }
         if (definition == null) {
             JahiaCtnDef ctnDef = dao.fullyLoadContainerDefinition(new Integer(siteID), definitionName);
@@ -217,7 +217,7 @@ public class JahiaContainerDefinitionManager {
             }
         }
         if (listCache != null) {
-            retList = (List) listCache.get(new GroupCacheKey(CACHEBYTEMPLATEID_PREFIX + templateId, new HashSet()));
+            retList = listCache.get(new GroupCacheKey(CACHEBYTEMPLATEID_PREFIX + templateId, new HashSet<String>()));
         }
         if (retList == null) {
             List<JahiaCtnDef> list = dao.fullyLoadContainerDefinitionInTemplate(new Integer(templateId));
@@ -241,7 +241,7 @@ public class JahiaContainerDefinitionManager {
 
     public void invalidateContainerDefinitionInTemplate(int definitionId){
         if (listCache != null) {
-            listCache.remove(new GroupCacheKey(CACHEBYTEMPLATEID_PREFIX + definitionId, new HashSet()));
+            listCache.remove(new GroupCacheKey(CACHEBYTEMPLATEID_PREFIX + definitionId, new HashSet<String>()));
             listCache.flushGroup(CACHEBYTEMPLATEID_PREFIX + definitionId);
         }
     }
@@ -255,7 +255,7 @@ public class JahiaContainerDefinitionManager {
         } catch (ObjectRetrievalFailureException e) {
             log.warn("JahiaSite not found " + theDefinition.getJahiaID(), e);
         }
-        Set properties = convertToJahiaCtnDef(theDefinition, ctnDef);
+        Set<JahiaCtnDefProperty> properties = convertToJahiaCtnDef(theDefinition, ctnDef);
         ctnDef.setJahiaSiteId(site.getId());
         ctnDef.setName(theDefinition.getName());
         ctnDef.setContainerType(theDefinition.getContainerType());
@@ -289,23 +289,19 @@ public class JahiaContainerDefinitionManager {
             try {
                 FastHashMap subDefinition = new FastHashMap(11);
                 if (ctnDef.getSubDefinitions() != null) {
-                    Iterator iterator = ctnDef.getSubDefinitions().iterator();
-                    while (iterator.hasNext()) {
-                        JahiaCtnDefProperty property = (JahiaCtnDefProperty) iterator.next();
-                        List subdefs = null;
-                        List jahiaCtnStructs = new ArrayList(property.getJahiaCtnStructs());
-                        Collections.sort(jahiaCtnStructs, new Comparator() {
-                            public int compare(Object o1, Object o2) {
-                                JahiaCtnStruct struct1 = (JahiaCtnStruct) o1;
-                                JahiaCtnStruct struct2 = (JahiaCtnStruct) o2;
+                    for (JahiaCtnDefProperty property : ctnDef.getSubDefinitions()) {
+                        List<JahiaContainerStructure> subdefs = null;
+                        List<JahiaCtnStruct> jahiaCtnStructs = new ArrayList<JahiaCtnStruct>(property.getJahiaCtnStructs());
+                        Collections.sort(jahiaCtnStructs, new Comparator<JahiaCtnStruct>() {
+                            public int compare(JahiaCtnStruct struct1, JahiaCtnStruct struct2) {
                                 return struct1.getRankJahiaCtnStruct().compareTo(struct2.getRankJahiaCtnStruct());
                             }
                         });
                         if (jahiaCtnStructs != null) {
-                            subdefs = new ArrayList(jahiaCtnStructs.size());
-                            Iterator iterator2 = jahiaCtnStructs.iterator();
+                            subdefs = new ArrayList<JahiaContainerStructure>(jahiaCtnStructs.size());
+                            Iterator<JahiaCtnStruct> iterator2 = jahiaCtnStructs.iterator();
                             while (iterator2.hasNext()) {
-                                JahiaCtnStruct struct = (JahiaCtnStruct) iterator2.next();
+                                JahiaCtnStruct struct = iterator2.next();
                                 subdefs.add(new JahiaContainerStructure(property.getIdJahiaCtnDefProperties().intValue(),
                                                                         struct.getComp_id().getObjType().intValue(),
                                                                         struct.getComp_id().getObjDefId().intValue(),
@@ -328,9 +324,7 @@ public class JahiaContainerDefinitionManager {
 
                 Properties properties = new Properties();
                 if (ctnDef.getProperties() != null) {
-                    Iterator iterator = ctnDef.getProperties().entrySet().iterator();
-                    while (iterator.hasNext()) {
-                        Map.Entry entry = (Map.Entry) iterator.next();
+                    for (Map.Entry<Object, Object> entry : ctnDef.getProperties().entrySet()) {
                         properties.put(entry.getKey(), entry.getValue());
                     }
                     containerDefinition.setProperties(properties);
@@ -342,23 +336,21 @@ public class JahiaContainerDefinitionManager {
         return containerDefinition;
     }
 
-    private Set convertToJahiaCtnDef(JahiaContainerDefinition theDefinition, JahiaCtnDef ctnDef) {
+    private Set<JahiaCtnDefProperty> convertToJahiaCtnDef(JahiaContainerDefinition theDefinition, JahiaCtnDef ctnDef) {
         // get the stored subdefs
-        Set properties = ctnDef.getSubDefinitions();
+        Set<JahiaCtnDefProperty> properties = ctnDef.getSubDefinitions();
         // iterate over the new subdefs
-        Iterator iterator = theDefinition.getSubDefs().entrySet().iterator();
-        List found = new ArrayList(53);
-        while (iterator.hasNext()) {
-            final Map.Entry entry = (Map.Entry) iterator.next();
-            Integer pageDefinitionId = (Integer) entry.getKey();
-            JahiaContainerSubDefinition subDefinition = (JahiaContainerSubDefinition) entry.getValue();
+        List<JahiaCtnDefProperty> found = new ArrayList<JahiaCtnDefProperty>(53);
+        for (final Map.Entry<Integer, JahiaContainerSubDefinition> entry : theDefinition.getSubDefs().entrySet()) {
+            Integer pageDefinitionId = entry.getKey();
+            JahiaContainerSubDefinition subDefinition = entry.getValue();
             JahiaCtnDefProperty property = new JahiaCtnDefProperty();
             if (subDefinition.getID() > 0) {
                 property.setIdJahiaCtnDefProperties(new Integer(subDefinition.getID()));
                 if (properties.contains(property)) {
-                    Iterator propertiesIterator = properties.iterator();
+                    Iterator<JahiaCtnDefProperty> propertiesIterator = properties.iterator();
                     while (propertiesIterator.hasNext()) {
-                        JahiaCtnDefProperty defProperty = (JahiaCtnDefProperty) propertiesIterator.next();
+                        JahiaCtnDefProperty defProperty = propertiesIterator.next();
                         if (defProperty.equals(property)) {
                             property = defProperty;
                             break;
@@ -369,19 +361,18 @@ public class JahiaContainerDefinitionManager {
             property.setJahiaCtnDef(ctnDef);
             property.setPageDefinitionId(pageDefinitionId);
             if (subDefinition.getStructure() != null) {
-                List foundS = new ArrayList(53);
-                Set subdefs = property.getJahiaCtnStructs();
-                for (Iterator it = subDefinition.getStructure().iterator(); it.hasNext();) {
-                    JahiaContainerStructure structure = (JahiaContainerStructure) it.next();
+                List<JahiaCtnStruct> foundS = new ArrayList<JahiaCtnStruct>(53);
+                Set<JahiaCtnStruct> subdefs = property.getJahiaCtnStructs();
+                for (JahiaContainerStructure structure : subDefinition.getStructure()) {
                     JahiaCtnStruct struct = new JahiaCtnStruct(new JahiaCtnStructPK(property,
                                                                                     new Integer(structure.getObjectType()),
                                                                                     new Integer(structure.getObjectDefID())));
                     if (!subdefs.contains(struct))
                         subdefs.add(struct);
                     else {
-                        Iterator iterator2 = subdefs.iterator();
+                        Iterator<JahiaCtnStruct> iterator2 = subdefs.iterator();
                         while (iterator2.hasNext()) {
-                            JahiaCtnStruct ctnStruct = (JahiaCtnStruct) iterator2.next();
+                            JahiaCtnStruct ctnStruct = iterator2.next();
                             if(ctnStruct.equals(struct)) {
                                 struct = ctnStruct;
                                 break;
@@ -391,10 +382,10 @@ public class JahiaContainerDefinitionManager {
                     struct.setRankJahiaCtnStruct(new Integer(structure.getRank()));
                     foundS.add(struct);
                 }
-                List removed = new ArrayList(53);
-                Iterator subIterator = subdefs.iterator();
+                List<JahiaCtnStruct> removed = new ArrayList<JahiaCtnStruct>(53);
+                Iterator<JahiaCtnStruct> subIterator = subdefs.iterator();
                 while (subIterator.hasNext()) {
-                    JahiaCtnStruct containerStructure = (JahiaCtnStruct) subIterator.next();
+                    JahiaCtnStruct containerStructure = subIterator.next();
                     if (!foundS.contains(containerStructure)) {
                         removed.add(containerStructure);
                     }
@@ -407,10 +398,10 @@ public class JahiaContainerDefinitionManager {
                 properties.add(property);
             found.add(property);
         }
-        List removed = new ArrayList(53);
-        Iterator pIterator = properties.iterator();
+        List<JahiaCtnDefProperty> removed = new ArrayList<JahiaCtnDefProperty>(53);
+        Iterator<JahiaCtnDefProperty> pIterator = properties.iterator();
         while (pIterator.hasNext()) {
-            JahiaCtnDefProperty defProperty = (JahiaCtnDefProperty) pIterator.next();
+            JahiaCtnDefProperty defProperty = pIterator.next();
             if (!found.contains(defProperty))
                 removed.add(defProperty);
         }

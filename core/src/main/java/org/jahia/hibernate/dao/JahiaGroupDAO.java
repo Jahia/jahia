@@ -159,7 +159,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         return properties;
     }
 
-    public void save(JahiaGrp jahiaGrp, String providerName, Map map) {
+    public void save(JahiaGrp jahiaGrp, String providerName, Map<Object, Object> map) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         if (jahiaGrp.getId() == null) {
@@ -167,13 +167,11 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         }
         template.save(jahiaGrp);
         if (map != null && map.size() > 0) {
-            Iterator iterator = map.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+            for (Map.Entry<Object, Object> entry : map.entrySet()) {
                 JahiaGrpProp prop = new JahiaGrpProp(new JahiaGrpPropPK(jahiaGrp.getId(),
-                                                                        (String) entry.getKey(),
+                                                                        (String)entry.getKey(),
                                                                         providerName, jahiaGrp.getKey()),
-                                                     (String) entry.getValue());
+                                                     (String)entry.getValue());
                 template.save(prop);
             }
         }
@@ -305,12 +303,11 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         }
     }
 
-    public List deleteAllFromSite(Integer siteID) {
-        List list = getGroupsInSite(siteID);
-        List res = new ArrayList();
+    public List<String> deleteAllFromSite(Integer siteID) {
+        List<JahiaSitesGrp> list = getGroupsInSite(siteID);
+        List<String> res = new ArrayList<String>();
         removeAllGroupsFromSite(siteID);
-        for (int i = 0; i < list.size(); i++) {
-            JahiaSitesGrp jahiaGrp = (JahiaSitesGrp) list.get(i);
+        for (JahiaSitesGrp jahiaGrp : list) {
             JahiaGrp group = jahiaGrp.getGroup();
             if(group.getSite().getId().equals(siteID)) {
                 res.add(group.getKey());

@@ -74,7 +74,7 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
     // the Page Templates cache name.
     public static final String PAGE_TEMPLATE_CACHE = "PageTemplateCache";
     /** the template cache */
-    private static Cache templateCache = null;
+    private static Cache<Integer, JahiaPageDefinition> templateCache = null;
 
     private JahiaTemplateManager templateManager;
 
@@ -234,7 +234,7 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
      *
      * @throws JahiaException when a database access could not be preformed.
      */
-    public List getAllPageTemplateIDs ()
+    public List<Integer> getAllPageTemplateIDs ()
             throws JahiaException {
         return templateManager.getAllPageTemplateIDs ();
     }
@@ -278,15 +278,13 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
      *
      * @throws JahiaException when a general failure occured
      */
-    public Iterator getPageTemplates (JahiaUser user, int siteID, boolean availableOnly)
+    public Iterator<JahiaPageDefinition> getPageTemplates (JahiaUser user, int siteID, boolean availableOnly)
             throws JahiaException {
 
-        TreeMap tm = new TreeMap ();
-        List templateIDs = templateManager.getPageTemplateIDs(siteID, availableOnly);
-        Iterator templateIDIter = templateIDs.iterator();
-        while (templateIDIter.hasNext()) {
-            Integer entryKey = (Integer) templateIDIter.next();
-            JahiaPageDefinition template = (JahiaPageDefinition) templateCache.get (entryKey);
+        TreeMap<String, JahiaPageDefinition> tm = new TreeMap<String, JahiaPageDefinition> ();
+        List<Integer> templateIDs = templateManager.getPageTemplateIDs(siteID, availableOnly);
+        for (Integer entryKey : templateIDs) {
+            JahiaPageDefinition template = templateCache.get (entryKey);
             if(template == null) {
                 template = lookupPageTemplate(entryKey.intValue());
             }
@@ -294,7 +292,7 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
                 tm.put (template.getName (), template);
             }
         }
-        List theList = new ArrayList(tm.values ());
+        List<JahiaPageDefinition> theList = new ArrayList<JahiaPageDefinition>(tm.values ());
         return theList.iterator();
     }
 
@@ -312,15 +310,13 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
      *
      * @throws JahiaException when a general failure occured
      */
-    public Iterator getPageTemplates (int siteID, boolean availableOnly)
+    public Iterator<JahiaPageDefinition> getPageTemplates (int siteID, boolean availableOnly)
             throws JahiaException {
 
-        TreeMap tm = new TreeMap ();
-        List templateIDs = templateManager.getPageTemplateIDs(siteID, availableOnly);
-        Iterator templateIDIter = templateIDs.iterator();
-        while (templateIDIter.hasNext()) {
-            Integer entryKey = (Integer) templateIDIter.next();
-            JahiaPageDefinition template = (JahiaPageDefinition) templateCache.get (
+        TreeMap<String, JahiaPageDefinition> tm = new TreeMap<String, JahiaPageDefinition> ();
+        List<Integer> templateIDs = templateManager.getPageTemplateIDs(siteID, availableOnly);
+        for (Integer entryKey : templateIDs) {
+            JahiaPageDefinition template = templateCache.get (
                     entryKey);
             if(template == null) {
                 template = lookupPageTemplate(entryKey.intValue());
@@ -328,7 +324,7 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
             tm.put (template.getName (), template);
         }
 
-        List theList = new ArrayList(tm.values());
+        List<JahiaPageDefinition> theList = new ArrayList<JahiaPageDefinition>(tm.values());
         
         return theList.iterator();
     }
@@ -377,9 +373,8 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
 
     private synchronized void loadAllPageTemplates ()
             throws JahiaException {
-        List templateIDs = templateManager.getAllPageTemplateIDs ();
-        for (int i = 0; i < templateIDs.size (); i++) {
-            int templateID = ((Integer) templateIDs.get(i)).intValue ();
+        List<Integer> templateIDs = templateManager.getAllPageTemplateIDs ();
+        for (int templateID : templateIDs) {
 
             // the template which could not be found in the database are not
             // loaded.
@@ -406,7 +401,7 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
 
         // Try to read the page template out of the cache
         JahiaPageDefinition template =
-                (JahiaPageDefinition) templateCache.get (new Integer (templateID));
+                templateCache.get (new Integer (templateID));
 
         // if the template is not present in the cache, read it
         // from the database.
@@ -505,7 +500,7 @@ public class JahiaPageTemplateBaseService extends JahiaPageTemplateService{
      *
      * @param siteID
      */
-    public List getAclIDs (int siteID)
+    public List<Integer> getAclIDs (int siteID)
             throws JahiaException {
         return templateManager.getAllAclId(siteID);
     }

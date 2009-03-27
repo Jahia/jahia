@@ -76,7 +76,7 @@ public class JahiaPropertiesBean {
     private String    jahiaFilesBigTextDiskPath;
     private String bigtext_service  ;
     private String   jahiaxmlPath ;
-    private List  clusterNodes  ;
+    private List<String>  clusterNodes  ;
     private String db_script;
     private String db_starthsqlserver;
     private String developmentMode;
@@ -346,11 +346,11 @@ public class JahiaPropertiesBean {
         this.jahiaxmlPath = jahiaxmlPath;
     }
 
-    public List getClusterNodes() {
+    public List<String> getClusterNodes() {
         return clusterNodes;
     }
 
-    public void setClusterNodes(List clusterNodes) {
+    public void setClusterNodes(List<String> clusterNodes) {
         this.clusterNodes = clusterNodes;
     }
 

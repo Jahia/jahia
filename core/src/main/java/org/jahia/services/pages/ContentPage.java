@@ -1994,12 +1994,12 @@ public class ContentPage extends ContentObject implements
         return childs;
     } // end getChilds
 
-    public List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
+    public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
             throws JahiaException {
         return getChilds(user, loadRequest, JahiaContainerStructure.ALL_TYPES);
     }
 
-    public List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest,
+    public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest,
                                               int loadFlag) throws JahiaException {
         List<ContentObject> resultList = new ArrayList<ContentObject>();
         switch (getPageType(loadRequest)) {
@@ -2321,7 +2321,7 @@ public class ContentPage extends ContentObject implements
      * @throws JahiaException raised if there was a problem accessing the
      *                        backend systems that contain the properties
      */
-    public void setProperty(String name, String value) throws JahiaException {
+    public void setProperty(Object name, Object value) throws JahiaException {
         setProperty(name, null, value);
     }
 
@@ -2338,23 +2338,23 @@ public class ContentPage extends ContentObject implements
      * @throws JahiaException raised if there was a problem accessing the
      *                        backend systems that contain the properties
      */
-    public synchronized void setProperty(String name, String languageCode, String value)
+    public synchronized void setProperty(Object name, String languageCode, Object value)
             throws JahiaException {
         Map<String, PageProperty> pageProperties = getPageService().getPageProperties(this.getID());
 
         PageProperty targetProperty = pageProperties != null ? pageProperties.get(name) : null;
         if (targetProperty == null) {
-            targetProperty = new PageProperty(getID(), name);
+            targetProperty = new PageProperty(getID(), (String)name);
         }
         if (languageCode != null) {
-            targetProperty.setValue(value, languageCode);
+            targetProperty.setValue((String)value, languageCode);
         } else {
-            targetProperty.setValue(value);
+            targetProperty.setValue((String)value);
         }
         pageManager.setPageProperty(targetProperty);
 
         if (pageProperties != null) {
-            pageProperties.put(name, targetProperty);
+            pageProperties.put((String)name, targetProperty);
         }
         getPageService().invalidatePageCache(getID());
     }
@@ -4576,7 +4576,7 @@ public class ContentPage extends ContentObject implements
                     EntryLoadRequest loadRequest = new EntryLoadRequest(entryState.
                             getWorkflowState(), entryState.getVersionID(), locales);
 
-                    List<ContentObject> children = null;
+                    List<? extends ContentObject> children = null;
                     if (!undeletePage) {
                         children = getChilds(user, loadRequest);
                     } else {
@@ -4585,7 +4585,7 @@ public class ContentPage extends ContentObject implements
                     // For performance issue, we don't want to restore twice objects.
                     List<String> processedChilds = new ArrayList<String>();
 
-                    Iterator<ContentObject> childrenIter = children.listIterator();
+                    Iterator<? extends ContentObject> childrenIter = children.listIterator();
                     while (childrenIter.hasNext()) {
                         ContentObject curChild = childrenIter.next();
                         if (!undeletePage) {

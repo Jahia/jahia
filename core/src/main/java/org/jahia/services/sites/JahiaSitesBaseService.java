@@ -136,7 +136,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
     }
-
+    
     public void setSiteManager(JahiaSiteManager siteManager) {
         this.siteManager = siteManager;
     }
@@ -360,7 +360,8 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                              String selectTmplSet, String firstImport, File fileImport, String fileImportName,
                              Boolean asAJob, Boolean doImportServerPermissions, ProcessingContext jParams) throws JahiaException, IOException
     {
-
+        JahiaSearchService searchService = ServicesRegistry.getInstance().getJahiaSearchService();
+        
         JahiaBaseACL acl = null;
         acl = new JahiaBaseACL();
         acl.create(0);
@@ -384,8 +385,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
             addToCache(site);
 
-            ServicesRegistry.getInstance().getJahiaSearchService()
-                    .createSearchHandler(site.getID());
+            searchService.createSearchHandler(site.getID());
             ServicesRegistry.getInstance().getJahiaEventService().fireSiteAdded(new JahiaEvent(this, Jahia.getThreadParamBean() , site));
         } else {
             return null;
@@ -609,9 +609,8 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 //                        ServicesRegistry.getInstance().getJahiaFileWatcherService());
 
             // create the search index
-            JahiaSearchService searchServ = ServicesRegistry.getInstance().getJahiaSearchService();
-            searchServ.createSearchHandler(site.getID());
-            searchServ.indexSite(site.getID(), jParams.getUser());
+            searchService.createSearchHandler(site.getID());
+            searchService.indexSite(site.getID(), jParams.getUser());
         } else {
             removeSite(site);      // remove site because the process generate error(s)...
             return null;
@@ -688,7 +687,7 @@ public class JahiaSitesBaseService extends JahiaSitesService {
         if (sites != null) {
             int size = sites.size ();
             for (int i = 0; i < size; i++) {
-                JahiaSite site = (JahiaSite) sites.get (i);
+                JahiaSite site = sites.get (i);
                 // start and create the site's new templates folder if not exists
                 // JahiaSiteTools.startTemplateObserver (site, settingsBean, templateDeployerService, fileWatcherService);
                 addToCache(site);

@@ -44,6 +44,8 @@
  */
 public class FieldDefinitionKey extends ContentDefinitionKey {
 
+    private static final long serialVersionUID = 4684719533255642932L;
+    
     public static final String FIELD_TYPE = "FieldDefinition";
 
     static {

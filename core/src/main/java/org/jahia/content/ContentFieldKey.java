@@ -120,18 +120,18 @@ public class  ContentFieldKey extends ContentObjectKey {
         return p;
     }
 
-    public Collection getChilds(EntryLoadRequest request, int loadFlag) {
+    public Collection<ContentObjectKey> getChilds(EntryLoadRequest request, int loadFlag) {
         return getChilds(request);
     }
     
-    public Collection getChilds(EntryLoadRequest request) {
-        List results = Collections.emptyList();
+    public Collection<ContentObjectKey> getChilds(EntryLoadRequest request) {
+        List<ContentObjectKey> results = Collections.emptyList();
         if (fieldType == -1 || fieldType == FieldTypes.PAGE) {
             int[] i = ServicesRegistry.getInstance().getJahiaFieldService().getSubPageIdAndType(getIdInType(), request);
             if ( i[0] > 0) {
                 ContentPageKey o = new ContentPageKey(i[0]);
                 o.setPageType(i[1]);
-                results = new ArrayList();                
+                results = new ArrayList<ContentObjectKey>();                
                 results.add(o);
             }
         }

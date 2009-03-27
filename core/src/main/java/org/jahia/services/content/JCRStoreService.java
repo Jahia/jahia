@@ -33,7 +33,6 @@
 
 package org.jahia.services.content;
 
-import java.beans.PropertyDescriptor;
 import java.util.*;
 import java.io.IOException;
 
@@ -66,7 +65,6 @@ import org.jahia.services.webdav.UsageEntry;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 

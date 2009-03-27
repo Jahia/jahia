@@ -80,7 +80,10 @@ import name.fraser.neil.plaintext.DiffMatchPatch;
  * @author Serge Huber
  * @version 2.0
  */
-public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Comparator, Serializable {
+public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Comparator<JahiaPage>, Serializable {
+
+    private static final long serialVersionUID = 310941453247643548L;
+
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (JahiaPage.class);
 
@@ -92,7 +95,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
     private EntryLoadRequest mEntryLoadRequest = null;
 
     private JahiaPageDefinition mTempPageTemplate;
-    private Map mProperties = null;
+    private Map<String, PageProperty> mProperties = null;
 
     private transient JahiaPagesManager pageManager;
     private String title;
@@ -722,22 +725,17 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      * @param languagesSet a set of languages as String for which to set the title.
      * @param titles       Map of key/value pair ( languageCode/title value )
      */
-    public final boolean setTitles (Set languagesSet, Map titles)
+    public final boolean setTitles (Set<String> languagesSet, Map<String, String> titles)
             throws JahiaException {
         mContentPage.setTitles (languagesSet, titles, mEntryLoadRequest);
-        Iterator it = languagesSet.iterator();
         if ( this.getID() <=0 ){
             return true;
         }
         ContentPage contentPage = ContentPage.getPage(this.getID());
-        Map lastUpdatedTitles = contentPage.getTitles(true);
-        String newTitle = null;
-        String title = null;
-        String lang = null;
-        while ( it.hasNext() ){
-            lang = (String)it.next();
-            newTitle = (String)titles.get(lang);
-            title = (String)lastUpdatedTitles.get(lang);
+        Map<String, String> lastUpdatedTitles = contentPage.getTitles(true);
+        for (String lang : languagesSet){
+            String newTitle = titles.get(lang);
+            String title = lastUpdatedTitles.get(lang);
             return (!new EqualsBuilder()
                 .append(title, newTitle)
                 .isEquals());
@@ -841,7 +839,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      *         specified page has not childs, or if no childs matching the
      *         loading flag were found.
      */
-    public Iterator getContentPagePath(String operationMode, JahiaUser user)
+    public Iterator<ContentPage> getContentPagePath(String operationMode, JahiaUser user)
             throws JahiaException {
         return getContentPage().getContentPagePath(mEntryLoadRequest, operationMode, user);
     } // end getPath
@@ -874,7 +872,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      *         specified page has not childs, or if no childs matching the
      *         loading flag were found.
      */
-    public Iterator getContentPagePath(int levels, String operationMode,
+    public Iterator<ContentPage> getContentPagePath(int levels, String operationMode,
             JahiaUser user) throws JahiaException {
         return getContentPage().getContentPagePath(levels, mEntryLoadRequest,
                 operationMode, user, JahiaPageService.PAGEPATH_SHOW_ALL);
@@ -892,7 +890,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      *
      * @deprecated used getContentPagePath
      */
-    public Iterator getPagePath(String operationMode, JahiaUser user)
+    public Iterator<JahiaPage> getPagePath(String operationMode, JahiaUser user)
             throws JahiaException {
         return getContentPage().getPagePath(mEntryLoadRequest, operationMode, user);        
     } // end getPath    
@@ -913,7 +911,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      *
      * @deprecated use getContentPagePath
      */
-    public Iterator getPagePath(int levels, String operationMode,
+    public Iterator<JahiaPage> getPagePath(int levels, String operationMode,
             JahiaUser user) throws JahiaException {
         return getContentPage().getPagePath(levels, mEntryLoadRequest, operationMode, user);        
     } // end getPath
@@ -959,11 +957,10 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      *
      * @throws ClassCastException if the objects where not of type JahiaPage.
      */
-    public int compare (Object c1, Object c2) throws ClassCastException {
+    public int compare (JahiaPage c1, JahiaPage c2) throws ClassCastException {
 
-        return ((JahiaPage) c1)
-                .getTitle ().toLowerCase ()
-                .compareTo (((JahiaPage) c2).getTitle ().toLowerCase ());
+        return (c1.getTitle ().toLowerCase ()
+                .compareTo (c2.getTitle ().toLowerCase ()));
 
     }
 
@@ -1216,7 +1213,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      *                        the page's content (if withContent=true of course)
      */
     public ActivationTestResults activeStagingVersion (
-            Set languageCodes,
+            Set<String> languageCodes,
             JahiaSaveVersion saveVersion,
             JahiaUser user,
             ProcessingContext jParams,
@@ -1242,14 +1239,12 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      * @throws JahiaException
      */
     public ActivationTestResults isValidForActivation (
-            Set languageCodes,
+            Set<String> languageCodes,
             JahiaSaveVersion saveVersion,
             JahiaUser user,
             ProcessingContext jParams,
             StateModificationContext stateModifContext)
             throws JahiaException {
-        boolean versioningActive = ServicesRegistry.getInstance ().getJahiaVersionService ()
-                .isVersioningEnabled (jParams.getSiteID ());
         return mContentPage.isValidForActivation (languageCodes,
                 jParams, stateModifContext);
     }
@@ -1263,7 +1258,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
      *                         equal to JahiaLoadVersion.STAGING, otherwise this method will exist
      *                         immediately.
      */
-    public void changeStagingStatus (Set languageCodes, int newVersionStatus,
+    public void changeStagingStatus (Set<String> languageCodes, int newVersionStatus,
                                      ProcessingContext jParams,
                                      StateModificationContext stateModifContext)
             throws JahiaException {
@@ -1296,7 +1291,7 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
         return mContentPage.hasEntries (pageInfosFlag, languageCode);
     }
 
-    public Map getLanguagesStates (boolean withContent) {
+    public Map<String, Integer> getLanguagesStates (boolean withContent) {
         return mContentPage.getLanguagesStates (withContent);
     }
 

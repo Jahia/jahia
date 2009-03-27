@@ -44,9 +44,8 @@ import org.jahia.services.version.StateModificationContext;
 import java.util.*;
 
 public class ContentSmallTextField extends ContentField implements ContentSimpleField {
-    private static org.apache.log4j.Logger logger
-            = org.apache.log4j.Logger.getLogger (ContentSmallTextField.class);
 
+    private static final long serialVersionUID = 3032739520862231318L;
 
     protected ContentSmallTextField (Integer ID,
                                      Integer jahiaID,

@@ -47,6 +47,8 @@ import java.util.HashSet;
 
 public class CategoryKey extends ObjectKey {
 
+    private static final long serialVersionUID = 5874862723244322929L;
+    
     public static final String CATEGORY_TYPE = "Category";
 
     static {
@@ -92,12 +94,11 @@ public class CategoryKey extends ObjectKey {
      * @param keys
      * @return
      */
-    public static Set getCategories(String[] keys) {
-        Set categories = new HashSet();
-        CategoryKey catKey = null;
+    public static Set<CategoryKey> getCategories(String[] keys) {
+        Set<CategoryKey> categories = new HashSet<CategoryKey>();
         for ( int i=0; i<keys.length; i++ ){
             try {
-                catKey = (CategoryKey)CategoryKey.getInstance(keys[i]);
+                CategoryKey catKey = (CategoryKey)CategoryKey.getInstance(keys[i]);
                 categories.add(catKey);
             } catch ( Exception t ){
             }

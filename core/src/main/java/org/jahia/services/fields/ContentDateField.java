@@ -44,8 +44,7 @@ import org.jahia.services.version.StateModificationContext;
 import java.util.*;
 
 public class ContentDateField extends ContentField {
-    private static org.apache.log4j.Logger logger
-            = org.apache.log4j.Logger.getLogger (ContentDateField.class);
+    private static final long serialVersionUID = -4110973150547236683L;
 
     //--------------------------------------------------------------------------
     protected ContentDateField (Integer ID,

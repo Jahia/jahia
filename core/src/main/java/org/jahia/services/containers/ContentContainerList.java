@@ -83,7 +83,7 @@ public class ContentContainerList extends ContentObject
     private int pageID;
     private int aclID;
     private int containerListDefinitionID;
-    private Map<String, String> properties;
+    private Map<Object, Object> properties;
     private transient JahiaContainerListManager containerListManager;
 
     static {
@@ -230,12 +230,12 @@ public class ContentContainerList extends ContentObject
         return entries;
     }
 
-    public List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest,
+    public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest,
             int loadFlag) throws JahiaException {
         return getChilds(user, loadRequest);
     }
     
-    public List<ContentObject> getChilds(JahiaUser user,
+    public List<? extends ContentObject> getChilds(JahiaUser user,
                                EntryLoadRequest loadRequest
     )
             throws JahiaException {
@@ -330,7 +330,7 @@ public class ContentContainerList extends ContentObject
         locales.add (LanguageCodeConverters.languageCodeToLocale (entryState.getLanguageCode ()));
         EntryLoadRequest loadRequest = new EntryLoadRequest (entryState.getWorkflowState (),
                 entryState.getVersionID (), locales);
-        List<ContentObject> children = getChilds (user, loadRequest);
+        List<? extends ContentObject> children = getChilds (user, loadRequest);
         for (ContentObject curChild : children) {
             RestoreVersionTestResults childResult = curChild.isValidForRestore (user,
                     operationMode, entryState, removeMoreRecentActive,
@@ -495,7 +495,7 @@ public class ContentContainerList extends ContentObject
        // load archive to restore
        loadRequest = new EntryLoadRequest(entryState.
            getWorkflowState(), entryState.getVersionID(), locales);
-       List<ContentObject> children = getChilds(user, loadRequest);
+       List<? extends ContentObject> children = getChilds(user, loadRequest);
 
        // For performance issue, we don't want to restore twice objects.
        List<String> processedChilds = new ArrayList<String>();
@@ -674,7 +674,7 @@ public class ContentContainerList extends ContentObject
     */
     public void updateContentPagePath(ProcessingContext context) throws JahiaException {
         // update content childs
-        List<ContentObject> contentChilds = this.getChilds(JahiaAdminUser.getAdminUser(this.getSiteID()),
+        List<? extends ContentObject> contentChilds = this.getChilds(JahiaAdminUser.getAdminUser(this.getSiteID()),
                 EntryLoadRequest.STAGED);
         for ( ContentObject child : contentChilds){
             child.updateContentPagePath(context);
@@ -705,7 +705,7 @@ public class ContentContainerList extends ContentObject
         }*/
     }
 
-    public Map<String, String> getProperties() {
+    public Map<Object, Object> getProperties() {
         if (properties == null) {
             try {
                 properties = ServicesRegistry.getInstance().getJahiaContainersService().getContainerListProperties(getID());
@@ -720,8 +720,8 @@ public class ContentContainerList extends ContentObject
         return (String) getProperties().get(name);
     }
 
-    public void setProperty(String name, String val) throws JahiaException {
-        final Map<String, String> p = getProperties();
+    public void setProperty(Object name, Object val) throws JahiaException {
+        final Map<Object, Object> p = getProperties();
         if (p.get(name) !=null && p.get(name).equals(val)) {
             return;
         }
@@ -734,7 +734,7 @@ public class ContentContainerList extends ContentObject
         containerListManager.removeContainerListProperty(getID(), name);
     }
 
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<Object, Object> properties) {
         this.properties = properties;
     }
 
@@ -859,10 +859,10 @@ public class ContentContainerList extends ContentObject
         int old = getAclID();
         super.updateAclForChildren(aclid, false);
         try {
-            Map<String, String> properties = getProperties();
-            for (Map.Entry<String, String> property : new HashSet<Map.Entry<String, String>>(properties.entrySet())) {
-                if (property.getKey().startsWith("view_field_acl_")) {
-                    int acl = Integer.parseInt(property.getValue());
+            Map<Object, Object> properties = getProperties();
+            for (Map.Entry<Object, Object> property : new HashSet<Map.Entry<Object, Object>>(properties.entrySet())) {
+                if (((String)property.getKey()).startsWith("view_field_acl_")) {
+                    int acl = Integer.parseInt((String)property.getValue());
                     if (acl == old) {
                         setProperty(property.getKey(), Integer.toString(aclid));
                     } else {

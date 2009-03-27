@@ -89,11 +89,11 @@ public class ContentMetadataKey extends ContentObjectKey {
         return null;  // is this class used somewhere ?
     }
 
-    public Collection getChilds(EntryLoadRequest request) {
+    public Collection<ContentObjectKey> getChilds(EntryLoadRequest request) {
         return null;  // is this class used somewhere ?
     }
 
-    public Collection getChilds(EntryLoadRequest request, int loadFlag) {
+    public Collection<ContentObjectKey> getChilds(EntryLoadRequest request, int loadFlag) {
         return null;  // is this class used somewhere ?
     }    
     

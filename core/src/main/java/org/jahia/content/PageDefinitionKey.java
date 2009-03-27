@@ -44,6 +44,8 @@
 
 public class PageDefinitionKey extends ContentDefinitionKey {
 
+    private static final long serialVersionUID = 5667374333203746317L;
+    
     public static final String PAGE_TYPE = "PageDefinition";
 
     static {

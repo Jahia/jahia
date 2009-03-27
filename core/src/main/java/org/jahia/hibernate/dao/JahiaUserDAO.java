@@ -56,10 +56,10 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         template.setCacheQueries(true);
         JahiaUser jahiaUser = null;
         if (memberKey != null) {
-            List list = template.find("from JahiaUser u where u.key=?",
+            List<JahiaUser> list = template.find("from JahiaUser u where u.key=?",
                                       new Object[]{memberKey});
             if (list.size() > 0) {
-                jahiaUser = (JahiaUser) list.get(0);
+                jahiaUser = list.get(0);
             }
         }
         return jahiaUser;
@@ -70,11 +70,10 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         template.setCacheQueries(true);
         Properties properties = new Properties();
         if (userId != null && key != null && providerName != null) {
-            List list = template.find("select u.comp_id.name,u.value from JahiaUserProp u where u.comp_id.id=? " +
+            List<Object[]> list = template.find("select u.comp_id.name,u.value from JahiaUserProp u where u.comp_id.id=? " +
                                       "and u.comp_id.userkey=? and u.comp_id.provider=?",
                                       new Object[]{userId, key, providerName});
-            for (int i = 0; i < list.size(); i++) {
-                Object[] objects = (Object[]) list.get(i);
+            for (Object[] objects : list) {
                 String name = (String) objects[0];
                 String value = (String) objects[1];
                 if (null == value) value = "";
@@ -84,7 +83,7 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         return properties;
     }
 
-    public void save(JahiaUser jahiaUser, String providerName, Map map) {
+    public void save(JahiaUser jahiaUser, String providerName, Map<Object, Object> map) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         if (jahiaUser.getId() == null) {
@@ -92,13 +91,11 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         }
         template.save(jahiaUser);
         if (map != null && map.size() > 0) {
-            Iterator iterator = map.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+            for (Map.Entry<Object, Object> entry : map.entrySet()) {
                 JahiaUserProp prop = new JahiaUserProp(new JahiaUserPropPK(jahiaUser.getId(),
-                                                                           (String) entry.getKey(),
+                                                                           (String)entry.getKey(),
                                                                            providerName, jahiaUser.getKey()),
-                                                       (String) entry.getValue());
+                                                       (String)entry.getValue());
                 template.merge(prop);
             }
         }
@@ -116,10 +113,10 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         template.setCacheQueries(true);
         JahiaUser jahiaUser = null;
         if (userKey != null) {
-            List list = template.find("from JahiaUser g where g.key=?",
+            List<JahiaUser> list = template.find("from JahiaUser g where g.key=?",
                                       new Object[]{userKey});
             if (list.size() > 0) {
-                jahiaUser = (JahiaUser) list.get(0);
+                jahiaUser = list.get(0);
             }
         }
         return jahiaUser;
@@ -130,10 +127,10 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         template.setCacheQueries(true);
         JahiaUser jahiaGrp = null;
         if (name != null) {
-            List list = template.find("from JahiaUser g where g.name=?",
+            List<JahiaUser> list = template.find("from JahiaUser g where g.name=?",
                                       new Object[]{name});
             if (list.size() > 0) {
-                jahiaGrp = (JahiaUser) list.get(0);
+                jahiaGrp = list.get(0);
             }
         }
         return jahiaGrp;
@@ -169,7 +166,7 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         List<String> list = new ArrayList<String>();
         if (criteriaNameList != null && criteriaValueList != null &&
             criteriaNameList.size() == criteriaValueList.size()) {
-            List args = new ArrayList(criteriaNameList.size() * 4 + 1);
+            List<String> args = new ArrayList<String>(criteriaNameList.size() * 4 + 1);
             args.add(providerName);
             StringBuffer hql = new StringBuffer("select distinct p.comp_id.userkey from JahiaUserProp p ");
             hql.append("where p.comp_id.provider=?");
@@ -201,9 +198,9 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         Long jahiaGrp = null;
-        List list = template.find("select count (g.id) from JahiaUser g ");
+        List<Long> list = template.find("select count (g.id) from JahiaUser g ");
         if (list.size() > 0) {
-            jahiaGrp = (Long) list.get(0);
+            jahiaGrp = list.get(0);
         }
         return jahiaGrp != null ? jahiaGrp.intValue() : null;
     }
@@ -304,9 +301,9 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
     public int getUserSiteMembershipCount(String username) {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        List list =  template.find("select count(*) from JahiaSitesUser u where u.comp_id.username=? ", new Object[]{username});
+        List<Long> list =  template.find("select count(*) from JahiaSitesUser u where u.comp_id.username=? ", new Object[]{username});
         if (list.size() > 0) {
-            return ((Long) list.get(0)).intValue();
+            return list.get(0).intValue();
         }
         return 0;
     }
@@ -321,13 +318,12 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         return null;
     }
 
-    public List deleteAllFromSite(Integer siteID) {
-        List list = getAllMembersOfSite(siteID);
-        List res = new ArrayList();
+    public List<String> deleteAllFromSite(Integer siteID) {
+        List<JahiaUser> list = getAllMembersOfSite(siteID);
+        List<String> res = new ArrayList<String>();
         removeAllMembersFromSite(siteID);
         getHibernateTemplate().flush();
-        for (int i = 0; i < list.size(); i++) {
-            JahiaUser user = (JahiaUser) list.get(i);
+        for (JahiaUser user : list) {
             if (getUserSiteMembershipCount(user.getName())==0 && user.getId()>1) {
                 res.add(user.getKey());
                 delete(user.getKey());

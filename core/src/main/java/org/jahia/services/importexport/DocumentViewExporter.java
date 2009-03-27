@@ -33,6 +33,7 @@
 
 package org.jahia.services.importexport;
 
+import org.jahia.api.Constants;
 import org.jahia.content.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.exceptions.JahiaException;
@@ -339,7 +340,7 @@ public class DocumentViewExporter extends Exporter {
                     if (view) {
                         JahiaPageDefinition definition = ((ContentPage) object).getPageTemplate(toLoadRequest);
                         if (definition.getPageType() != null) {
-                            attr.addAttribute(ImportExportService.JCR_URI, "primaryType", "jcr:primaryType", CDATA, definition.getPageType());
+                            attr.addAttribute(ImportExportService.JCR_URI, "primaryType", Constants.JCR_PRIMARYTYPE, CDATA, definition.getPageType());
                         }
 
                         attr.addAttribute(ImportExportService.JAHIA_URI, "template", "j:template", CDATA, definition.getName());
@@ -362,7 +363,7 @@ public class DocumentViewExporter extends Exporter {
 //                String[] aliases = jcd.getAliasName();
 //                if (aliases.length > 0) {
 //                    String pt = aliases[0];
-//                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", "jcr:primaryType", CDATA, "tplnt:" + pt + "List");
+//                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", Constants.JCR_PRIMARYTYPE, CDATA, "tplnt:" + pt + "List");
 //                }
 //                elementName = jcd.getName() + "List";
 
@@ -396,7 +397,7 @@ public class DocumentViewExporter extends Exporter {
                 JahiaContainerDefinition jcd = (JahiaContainerDefinition) ContentObject.getInstance(cdk);
                 currentPage = cc.getPage();
                 if (jcd.getContainerType()!=null) {
-                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", "jcr:primaryType", CDATA, jcd.getContainerType());
+                    attr.addAttribute(ImportExportService.JCR_URI, "primaryType", Constants.JCR_PRIMARYTYPE, CDATA, jcd.getContainerType());
                 }
                 elementName = jcd.getName();
             }

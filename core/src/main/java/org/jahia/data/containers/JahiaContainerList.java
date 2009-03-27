@@ -480,7 +480,7 @@ public class JahiaContainerList implements Cloneable, Serializable {
         if (ctnListProperties == null) {
             try {
                 Properties tempProperties = new Properties();
-                for (Map.Entry<String, String> entry : ServicesRegistry.getInstance()
+                for (Map.Entry<Object, Object> entry : ServicesRegistry.getInstance()
                         .getJahiaContainersService()
                         .getContainerListProperties(getID()).entrySet()) {
                     if (entry.getValue() != null)

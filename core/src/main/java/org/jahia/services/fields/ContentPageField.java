@@ -69,6 +69,8 @@ import java.util.*;
 
 public class ContentPageField extends ContentField {
 
+    private static final long serialVersionUID = 4670274094599835716L;
+
     private static org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger (ContentPageField.class);
 

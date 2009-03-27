@@ -152,15 +152,15 @@ public class JahiaTemplateManager {
         return ret;
     }
 
-    public List getAllPageTemplateIDs() {
+    public List<Integer> getAllPageTemplateIDs() {
         return dao.getAllPageTemplateIDs();
     }
 
-    public List getPageTemplateIDs(int siteId, boolean availableOnly) {
+    public List<Integer> getPageTemplateIDs(int siteId, boolean availableOnly) {
         return dao.getPageTemplateIDs(siteId, availableOnly);
     }
 
-    public List getAllAclId(int siteID) {
+    public List<Integer> getAllAclId(int siteID) {
         return dao.getAllAclId(new Integer(siteID));
     }
 }

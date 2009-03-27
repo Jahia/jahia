@@ -36,6 +36,7 @@
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
+import org.jahia.content.ContentDefinitionKey;
 import org.jahia.content.CrossReferenceManager;
 import org.jahia.content.ObjectKey;
 import org.jahia.exceptions.JahiaException;
@@ -47,6 +48,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -237,8 +239,8 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
     public void remove(Integer siteID) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        Map acls = new HashMap(1024);
-        List definitions = new ArrayList(1024);
+        Map<Serializable, Integer> acls = new HashMap<Serializable, Integer>(1024);
+        List<ContentDefinitionKey> definitions = new ArrayList<ContentDefinitionKey>(1024);
         ApplicationContext context = SpringContextSingleton.getInstance().getContext();
         JahiaAclDAO aclDAO = (JahiaAclDAO) context.getBean("jahiaAclDAO");
         JahiaAclNamesDAO aclNamesDAO = (JahiaAclNamesDAO) context.getBean("jahiaAclNamesDAO");
@@ -270,9 +272,9 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
                 .flushSiteLogs(findById(siteID).getKey());        
         
         // We delete All fields
-        Map map = fieldsDataDAO.deleteAllFieldsFromSite(siteID);
+        Map<Serializable, Integer> map = fieldsDataDAO.deleteAllFieldsFromSite(siteID);
         acls.putAll(map);
-        List list = fieldsDefinitionDAO.deleteAllDefinitionsFromSite(siteID);
+        List<? extends ContentDefinitionKey> list = fieldsDefinitionDAO.deleteAllDefinitionsFromSite(siteID);
         definitions.addAll(list);
         // We delete all containers
         map = containerDAO.deleteAllContainersFromSite(siteID);
@@ -289,8 +291,7 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         definitions.addAll(list);
         // We delete all links
         CrossReferenceManager instance = CrossReferenceManager.getInstance();
-        Iterator iterator = acls.keySet().iterator();
-        while (iterator.hasNext()) {
+        for (Iterator<?> iterator = acls.keySet().iterator(); iterator.hasNext(); ) {
             Object o = iterator.next();
             if (o instanceof ObjectKey) {
                 ObjectKey objectKey = (ObjectKey) o;
@@ -309,16 +310,11 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
                 }
             }
         }
-        iterator = definitions.iterator();
-        while (iterator.hasNext()) {
-            Object o = iterator.next();
-            if (o instanceof ObjectKey) {
-                ObjectKey definitionKey = (ObjectKey) o;
-                try {
-                    instance.removeAllObjectXRefs(definitionKey);
-                } catch (JahiaException e) {
-                    logger.error(e.getMessage(), e);
-                }
+        for (ObjectKey definitionKey : definitions) {
+            try {
+                instance.removeAllObjectXRefs(definitionKey);
+            } catch (JahiaException e) {
+                logger.error(e.getMessage(), e);
             }
         }
         // We delete all bigtext
@@ -341,10 +337,10 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         // We delete all Aclnames
         acls.putAll(aclNamesDAO.removeBySiteID(siteID));
         // We delete all Acls
-        List collection = new ArrayList(acls.values());
+        List<Integer> collection = new ArrayList<Integer>(acls.values());
         Collections.sort(collection);
         for (int i = collection.size() - 1; i >= 0; i--) {
-            Integer aclID = (Integer) collection.get(i);
+            Integer aclID = collection.get(i);
             try {
                 aclDAO.removeAcl(aclID);
             } catch (Exception e) {
@@ -352,18 +348,16 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
             }
         }
         // We delete all groups
-        for (Iterator iterator1 = groupDAO.getGroupKeys(siteID).iterator(); iterator1.hasNext();) {
-            groupAccessDAO.delete((String) iterator1.next());
+        for (String groupKey : groupDAO.getGroupKeys(siteID)) {
+            groupAccessDAO.delete(groupKey);
         }
 
-        List groups = groupDAO.deleteAllFromSite(siteID);
-        for (Iterator iterator1 = groups.iterator(); iterator1.hasNext();) {
-            aclDAO.removeGroupAclEntries((String) iterator1.next());            
+        for (String groupKey : groupDAO.deleteAllFromSite(siteID)) {
+            aclDAO.removeGroupAclEntries(groupKey);            
         }
         // We delete all users
-        List users = userDAO.deleteAllFromSite(siteID);
-        for (Iterator iterator1 = users.iterator(); iterator1.hasNext();) {
-            aclDAO.removeUserAclEntries((String) iterator1.next());
+        for (String userKey : userDAO.deleteAllFromSite(siteID)) {
+            aclDAO.removeUserAclEntries(userKey);
         }
         template.delete(findById(siteID));
     }
@@ -401,20 +395,18 @@ public class JahiaSiteDAO extends AbstractGeneratorDAO {
         JahiaSite retval = null;
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        List objects = template.find("from JahiaSite where defaultSite = ?",
+        List<JahiaSite> objects = template.find("from JahiaSite where defaultSite = ?",
                 Boolean.TRUE);
         if (objects.size() == 1) {
-            retval = (JahiaSite) objects.get(0);
+            retval = objects.get(0);
         }
         return retval;
     }
 
     public void setDefaultSite(JahiaSite site) {
-        List sites = getSites();
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        for (int i = 0; i < sites.size(); i++) {
-            JahiaSite jahiaSite = (JahiaSite) sites.get(i);
+        for (JahiaSite jahiaSite : getSites()) {
             if(site != null && jahiaSite.getId().equals(site.getId())) {
                 jahiaSite.setDefaultSite(Boolean.TRUE);
             } else {

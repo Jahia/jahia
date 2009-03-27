@@ -69,6 +69,8 @@ import java.util.*;
 
 public class ContentBigTextField extends ContentField {
 
+    private static final long serialVersionUID = 844954881445411548L;
+
     private static final org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger(ContentBigTextField.class);
 

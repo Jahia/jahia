@@ -237,7 +237,7 @@ public class CacheTag extends AbstractJahiaTag {
                                               context.getSiteURLForCurrentPageAndCurrentSite(false, true, true) +
                                               "?ctnid=0&cacheKey=" +
                                               cacheKey +
-                                              "\">");
+                                              "\" -->");
         out.print(htmlOutput);
         if (showEsiTagsForSkeleton) out.print("<!-- /cache:include -->\n");
     }

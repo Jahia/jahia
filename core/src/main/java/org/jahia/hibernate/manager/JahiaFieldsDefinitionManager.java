@@ -326,9 +326,13 @@ public class JahiaFieldsDefinitionManager {
     }
 
     public List<Integer>getAllFieldDefinitionIds() {
-        return dao.findAllFieldDefinitions();
+        return dao.findAllFieldDefinitions(0);
     }
 
+    public List<Integer>getAllFieldDefinitionIds(int siteId) {
+        return dao.findAllFieldDefinitions(siteId);
+    }    
+    
     private void flushCache(int definitionID,int siteID, String definitionName) {
         Cache<String, JahiaFieldDefinition> cache =getCache();
         if(cache!=null) {

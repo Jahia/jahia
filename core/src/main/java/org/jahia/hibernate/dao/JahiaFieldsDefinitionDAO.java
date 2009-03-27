@@ -222,9 +222,11 @@ public class JahiaFieldsDefinitionDAO extends AbstractGeneratorDAO {
         hibernateTemplate.delete(entity);
     }
 
-    public List<Integer> findAllFieldDefinitions() {
+    public List<Integer> findAllFieldDefinitions(int siteId) {
         List<Integer> retVal = null;
-        String hql = "select distinct f.id from JahiaFieldsDef f order by f.id";
+        String hql = "select distinct f.id from JahiaFieldsDef f "
+                + (siteId > 0 ? "where jahiaid_jahia_fields_def is null or jahiaid_jahia_fields_def = " + siteId : "")
+                + " order by f.id";
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         retVal = template.find(hql.toString());

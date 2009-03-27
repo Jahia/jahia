@@ -324,7 +324,8 @@ public class ServletIncludeResponseWrapper extends HttpServletResponseWrapper {
         }
         if (isPassThrough) {
             super.setContentType (this.contentType);
-            try {
+            // if un-commented, serveResources of JSR286 api will not work due to the fact that getOutputStream() is called.
+            /*try {
                 ServletOutputStream outputStream = super.getResponse ().
                         getOutputStream ();
                 if (outputStream.getClass ().getName ().equals (
@@ -338,7 +339,7 @@ public class ServletIncludeResponseWrapper extends HttpServletResponseWrapper {
                             invoke (o, new Object[]{null, null});
                 }
             } catch (Exception e) {
-            }
+            } */
         } else {
             if (logger.isDebugEnabled()) {
                 logger.debug (

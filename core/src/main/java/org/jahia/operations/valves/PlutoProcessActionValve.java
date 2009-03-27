@@ -137,7 +137,7 @@ public class PlutoProcessActionValve implements Valve {
                     copyAttribute("currentUser", jParams, request, portletWindow);
                     copyAttribute("currentJahia", jParams, request, portletWindow);
                     try {
-                        container.doAction(portletWindow, request, response);
+                        container.doAction(portletWindow, request, jParams.getResponse());
                     } catch (PortletContainerException ex) {
                         throw new ServletException(ex);
                     } catch (PortletException ex) {
@@ -163,7 +163,7 @@ public class PlutoProcessActionValve implements Valve {
                                        + portletWindow.getId().getStringId());
                     }
                     try {
-                        container.doServeResource(portletWindow, request, response);
+                        container.doServeResource(portletWindow, request, jParams.getRealResponse());
                     } catch (PortletContainerException ex) {
                         throw new ServletException(ex);
                     } catch (PortletException ex) {

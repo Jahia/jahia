@@ -52,7 +52,6 @@ import org.jahia.services.version.EntryStateable;
 import org.jahia.services.version.JahiaSaveVersion;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * Used to hold the metadata fields in different set of language.
@@ -80,7 +79,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
     // Map of JahiaContainer instances , key = ContentFieldEntryState
     private Map<EntryStateable, JahiaContainer> containers;
 
-    private Map fieldsOrder = new HashMap();
+    private Map<Integer, Integer> fieldsOrder = new HashMap<Integer, Integer>();
 
     private boolean requiredOnly = false;
 
@@ -107,9 +106,9 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
     {
         this.objectKey = objectKey;
         this.checkStructure = checkStructure;
-        this.containers = new HashMap();
-        this.fields     = new HashMap();
-        this.activeAndStagingEntryStates = new ArrayList();
+        this.containers = new HashMap<EntryStateable, JahiaContainer>();
+        this.fields     = new HashMap<Integer, JahiaContentFieldFacade>();
+        this.activeAndStagingEntryStates = new ArrayList<EntryStateable>();
         this.requiredOnly = requiredOnly;
         instanceContainers(loadFlag, jParams, jParams.getSite().getLanguageSettingsAsLocales(false),
                            createMissingLanguages);
@@ -138,9 +137,9 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
     {
         this.objectKey = objectKey;
         this.checkStructure = checkStructure;
-        this.containers = new HashMap();
-        this.fields     = new HashMap();
-        this.activeAndStagingEntryStates = new ArrayList();
+        this.containers = new HashMap<EntryStateable, JahiaContainer>();
+        this.fields     = new HashMap<Integer, JahiaContentFieldFacade>();
+        this.activeAndStagingEntryStates = new ArrayList<EntryStateable>();
         instanceContainers(loadFlag, jParams, locales, createMissingLanguages);
     }
 
@@ -159,9 +158,9 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
     throws JahiaException
     {
         this.objectKey = objectKey;
-        this.containers = new HashMap();
-        this.fields     = new HashMap();
-        this.activeAndStagingEntryStates = new ArrayList();
+        this.containers = new HashMap<EntryStateable, JahiaContainer>();
+        this.fields     = new HashMap<Integer, JahiaContentFieldFacade>();
+        this.activeAndStagingEntryStates = new ArrayList<EntryStateable>();
         createTempContainers( 0, jParams.getSiteID(), jParams.getPageID(), 0,
                               0, jParams, locales );
     }
@@ -193,7 +192,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
 
     //--------------------------------------------------------------------------
     public JahiaContentFieldFacade getContentFieldFacade(int fieldID){
-        return (JahiaContentFieldFacade)this.fields.get(new Integer(fieldID));
+        return this.fields.get(new Integer(fieldID));
     }
 
     //--------------------------------------------------------------------------
@@ -238,7 +237,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
         JahiaContainer container = null;
         if ( entryState != null ){
             container =
-            (JahiaContainer)containers.get(new PublicContentFieldEntryState(entryState));
+            containers.get(new PublicContentFieldEntryState(entryState));
             logger.debug("Returned entryState :" + entryState.toString());
         } else {
             logger.debug("Entry state is null");
@@ -262,7 +261,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
 
         for ( EntryStateable entryState : this.activeAndStagingEntryStates ){
             JahiaContainer container =
-                    (JahiaContainer)this.containers.get(entryState);
+                    this.containers.get(entryState);
             EntryLoadRequest loadRequest = new EntryLoadRequest(entryState);
             JahiaField field = (JahiaField)facade.getField(loadRequest,true);
             container.setField(field);
@@ -304,15 +303,15 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
                                      JahiaException.ERROR_SEVERITY, cnfe);
         }
         int size = metadatas.size();
-        List l = ContentDefinition.getMetadataDefinitions(objectDef);
-        Map orders = new HashMap();
+        List<? extends JahiaObject> l = ContentDefinition.getMetadataDefinitions(objectDef);
+        Map<Integer, Integer> orders = new HashMap<Integer, Integer>();
         int j = 0;
-        for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+        for (Iterator<?> iterator = l.iterator(); iterator.hasNext();) {
             JahiaFieldDefinition o = (JahiaFieldDefinition) iterator.next();
             orders.put(new Integer(o.getID()), new Integer(j++));
         }
         for (int i = 0; i < size; i++) {
-            ContentField contentField = (ContentField) metadatas.get(i);
+            ContentField contentField = metadatas.get(i);
             this.fieldsOrder.put(new Integer(contentField.getID()),orders.get(new Integer(contentField.getDefinitionID(null))));
             if (this.fields.get(new Integer(contentField.getID())) == null) {
                 JahiaContentFieldFacade contentFieldFacade =
@@ -323,12 +322,12 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
                                 contentFieldFacade);
             }
         }
-        Iterator iterator = locales.iterator();
+        Iterator<Locale> iterator = locales.iterator();
         Locale locale = null;
         List<Locale> loadLocales = null;
         while ( iterator.hasNext() )
         {
-            locale = (Locale)iterator.next();
+            locale = iterator.next();
 
             loadLocales = new ArrayList<Locale>();
             loadLocales.add(locale);
@@ -383,12 +382,12 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
          // create tempFields
 
          // create stating entry state for all languages
-         Iterator iterator = locales.iterator();
+         Iterator<Locale> iterator = locales.iterator();
          Locale locale = null;
          while ( iterator.hasNext() )
          {
-             locale = (Locale)iterator.next();
-             List entryLocales = new ArrayList();
+             locale = iterator.next();
+             List<Locale> entryLocales = new ArrayList<Locale>();
              entryLocales.add(locale);
 
              loadVersion =  new EntryLoadRequest(ContentObjectEntryState.WORKFLOW_STATE_START_STAGING,
@@ -421,7 +420,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
              // set fields
              for ( JahiaContentFieldFacade contentFieldFacade : this.fields.values() ){
                  JahiaField field = contentFieldFacade.getField(loadVersion,true);
-                 Integer fieldOrder = (Integer)this.fieldsOrder.get(new Integer(field.getID()));
+                 Integer fieldOrder = this.fieldsOrder.get(new Integer(field.getID()));
                  if ( fieldOrder != null ){
                      field.setOrder(fieldOrder.intValue());
                  }
@@ -464,7 +463,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
                 field = contentFieldFacade.getField(stagingVersion,true);
             }
             if ( field != null ){
-                Integer fieldOrder = (Integer)this.fieldsOrder.get(new Integer(field.getID()));
+                Integer fieldOrder = this.fieldsOrder.get(new Integer(field.getID()));
                 if ( fieldOrder != null ){
                     field.setOrder(fieldOrder.intValue());
                 }
@@ -536,7 +535,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
                 JahiaException.DATA_ERROR, JahiaException.CRITICAL_SEVERITY, cnfe);
         }
 
-        List assignedAttributes = contentDefinition.getMetadataDefinitions();
+        List<? extends JahiaObject> assignedAttributes = contentDefinition.getMetadataDefinitions();
         JahiaFieldDefinition fieldDef = null;
         for ( int i=0; i<assignedAttributes.size(); i++ ){
             try {
@@ -609,9 +608,9 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
         }
 
         // let's order fields as they appear in declaration!
-        List fieldOrder = new ArrayList();
-        List orderedFields = new ArrayList();
-        Map fieldDefs = new HashMap();
+        List<String> fieldOrder = new ArrayList<String>();
+        List<JahiaField> orderedFields = new ArrayList<JahiaField>();
+        Map<String, JahiaFieldDefinition> fieldDefs = new HashMap<String, JahiaFieldDefinition>();
         ContentDefinition contentDefinition = null;
         try {
             contentDefinition = ContentDefinition
@@ -622,7 +621,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
                 "Cannot retrieve content definition",
                 JahiaException.DATA_ERROR, JahiaException.CRITICAL_SEVERITY, cnfe);
         }
-        List metadataDefs = contentDefinition.getMetadataDefinitions();
+        List<? extends JahiaObject> metadataDefs = contentDefinition.getMetadataDefinitions();
         JahiaFieldDefinition fieldDef = null;
         JahiaObject jahiaObject = null;
         for (int i = 0; i < metadataDefs.size(); i++) {
@@ -662,11 +661,10 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
         }
         // We check here if the container declaration has changed and if we have to create new
         // declared field for this container.
-        Iterator enumeration = fieldDefs.values().iterator();
+        Iterator<JahiaFieldDefinition> enumeration = fieldDefs.values().iterator();
         fieldDef = null;
-        int pageDefID = 0; // global metadata are not stuck on pageDef
         while (enumeration.hasNext()) {
-            fieldDef = (JahiaFieldDefinition) enumeration.next();
+            fieldDef = enumeration.next();
             logger.debug("JahiaContainer.fieldsStructureCheck : Field " +
                          fieldDef.getName() +
                          " is missing, we have to create a new one ");
@@ -711,7 +709,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
         container.clearFields();
         int size = orderedFields.size();
         for ( int i=0 ; i<size; i++ ){
-            JahiaField jahiaField = ((JahiaField)orderedFields.get(i));
+            JahiaField jahiaField = orderedFields.get(i);
             container.addField(jahiaField);
         }
     }

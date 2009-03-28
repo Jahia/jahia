@@ -38,6 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -140,8 +141,10 @@ public class JcrSearchHandler extends SearchHandlerImpl {
                 
                 // this is Jackrabbit specific, so if other implementations
                 // throw exceptions, we have to do a check here 
-                String excerpt = row.getValue("rep:excerpt(jcr:content)").getString();
-                searchHit.setExcerpt(excerpt);
+                Value excerpt = row.getValue("rep:excerpt(jcr:content)");
+                if (excerpt != null) {
+                    searchHit.setExcerpt(excerpt.getString());
+                }
                 
                 searchResult.add(searchHit);
                 searchHit.setSearchResult(searchResult);

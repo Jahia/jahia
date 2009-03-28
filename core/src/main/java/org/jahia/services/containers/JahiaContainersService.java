@@ -85,12 +85,7 @@ public abstract class JahiaContainersService extends JahiaService {
      */
     public abstract JahiaContainerSet buildContainerStructureForPage (ProcessingContext processingContext, JahiaPage page)
         throws JahiaException;
-
-    /**
-     * builds the complete container definition structure for a specific page template
-     */
-    public abstract Map<String, Integer> buildContainerDefinitionsForTemplate(String typeName, int siteId, int pageDefID, JahiaContainerSet theSet) throws JahiaException;
-    
+   
     /**
      * gets all container definitions ids on a page
      *

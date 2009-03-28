@@ -179,7 +179,6 @@
                 <property name="containerListManager" ref="org.jahia.hibernate.manager.JahiaContainerListManager" />
                 <property name="containerStructureManager" ref="org.jahia.hibernate.manager.JahiaContainerStructureManager" />
                 <property name="fieldsDataManager" ref="org.jahia.hibernate.manager.JahiaFieldsDataManager" />
-                <property name="tplService" ref="JahiaPageTemplateService" />
             </bean>
         </property>
     </bean>
@@ -817,15 +816,40 @@
         </property>
     </bean>
 
+    <bean id="org.jahia.services.templates.TemplatePackageRegistry" class="org.jahia.services.templates.TemplatePackageRegistry" depends-on="JahiaStoreProvider">
+        <property name="settingsBean" ref="settingsBean" />
+    </bean>
+
+            <bean id="JahiaTemplateManagerService" class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate">
+                <property name="templatePackageDeployer">
+                    <bean class="org.jahia.services.templates.TemplatePackageDeployer">
+                      <property name="settingsBean" ref="settingsBean" />
+                      <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+                    </bean>
+                </property>
+                <property name="siteService" ref="JahiaSitesService" />
+                <property name="tplService" ref="JahiaPageTemplateService" />
+                <property name="pageService" ref="JahiaPageService" />
+                <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+                <property name="pageDefinitionHelper">
+                    <bean id="PageDefinitionHelper" class="org.jahia.services.templates.PageDefinitionHelper" depends-on="JahiaContainerDefinitionsRegistry">
+                      <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+                      <property name="containerDefRegistry" ref="JahiaContainerDefinitionsRegistry" />
+                      <property name="searchService" ref="JahiaSearchService" />                      
+                    </bean>
+                </property>
+            </bean>
 
     <bean id="JahiaFieldDefinitionsRegistry" class="org.jahia.registries.JahiaFieldDefinitionsRegistry" factory-method="getInstance" init-method="init">
         <property name="cacheService" ref="JahiaCacheService" />
         <property name="fieldService" ref="JahiaFieldService" />
     </bean>
 
-    <bean id="JahiaContainerDefinitionsRegistry" class="org.jahia.registries.JahiaContainerDefinitionsRegistry" factory-method="getInstance" init-method="init">
+    <bean id="JahiaContainerDefinitionsRegistry" class="org.jahia.registries.JahiaContainerDefinitionsRegistry" depends-on="JahiaTemplateManagerService" factory-method="getInstance" init-method="init">
         <property name="cacheService" ref="JahiaCacheService" />
         <property name="containersService" ref="JahiaContainersService" />
+        <property name="tplService" ref="JahiaPageTemplateService" />
+        <property name="templateManagerService" ref="JahiaTemplateManagerService" />        
     </bean>
 
     <bean id="FileListSync"  class="org.jahia.services.deamons.filewatcher.FileListSync" factory-method="getInstance">
@@ -847,34 +871,6 @@
             <bean class="org.jahia.services.pwdpolicy.JahiaPasswordPolicyService" parent="jahiaServiceTemplate" factory-method="getInstance">
                 <property name="passwordPolicyManager" ref="org.jahia.hibernate.manager.JahiaPasswordPolicyManager" />
                 <property name="defaultPasswordPolicy" ref="defaultJahiaPasswordPolicy" />
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="org.jahia.services.templates.TemplatePackageRegistry" class="org.jahia.services.templates.TemplatePackageRegistry">
-        <property name="settingsBean" ref="settingsBean" />
-    </bean>
-
-    <bean id="JahiaTemplateManagerService" parent="proxyTemplate">
-        <property name="target">
-            <bean class="org.jahia.services.templates.JahiaTemplateManagerService" parent="jahiaServiceTemplate">
-                <property name="templatePackageDeployer">
-                    <bean class="org.jahia.services.templates.TemplatePackageDeployer">
-                      <property name="settingsBean" ref="settingsBean" />
-                      <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
-                    </bean>
-                </property>
-                <property name="siteService" ref="JahiaSitesService" />
-                <property name="tplService" ref="JahiaPageTemplateService" />
-                <property name="pageService" ref="JahiaPageService" />
-                <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
-                <property name="pageDefinitionHelper">
-                    <bean class="org.jahia.services.templates.PageDefinitionHelper">
-                      <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
-                      <property name="containerService" ref="JahiaContainersService" />
-                      <property name="searchService" ref="JahiaSearchService" />                      
-                    </bean>
-                </property>
             </bean>
         </property>
     </bean>

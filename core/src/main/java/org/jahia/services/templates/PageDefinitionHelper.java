@@ -42,8 +42,8 @@ import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
+import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
@@ -56,15 +56,15 @@ import org.jahia.services.sites.JahiaSitesService;
  * 
  * @author Sergiy Shyrkov
  */
-class PageDefinitionHelper {
+public class PageDefinitionHelper {
 
     private static Logger logger = Logger.getLogger(PageDefinitionHelper.class);
 
     private TemplatePackageRegistry templatePackageRegistry;
-    
-    private JahiaContainersService containerService;
-    
+   
     private JahiaSearchService searchService;
+    
+    private JahiaContainerDefinitionsRegistry containerDefRegistry;
 
     public void setDefaultTemplate(JahiaSite site,
             JahiaTemplatesPackage templatePackage) throws JahiaException {
@@ -149,7 +149,7 @@ class PageDefinitionHelper {
                         + site.getTitle() + "'");
             }
             
-            containerService.buildContainerDefinitionsForTemplate(pageDef.getPageType(), site.getID(), pageDef.getID(), null);
+            containerDefRegistry.buildContainerDefinitionsForTemplate(pageDef.getPageType(), site.getID(), pageDef.getID(), null);
         }
         
         searchService.initSearchFieldConfiguration(site.getID());
@@ -210,12 +210,9 @@ class PageDefinitionHelper {
                     + "' is set to '" + templatePackage.getDefaultPageName()
                     + "'");
         }
-
-        
     }
     
-    public void setContainerService(JahiaContainersService containerService) {
-        this.containerService = containerService;
+    public void setContainerDefRegistry(JahiaContainerDefinitionsRegistry containerDefRegistry) {
+        this.containerDefRegistry = containerDefRegistry;
     }
-
 }

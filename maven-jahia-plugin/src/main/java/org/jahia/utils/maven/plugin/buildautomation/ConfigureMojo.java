@@ -44,7 +44,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -289,7 +288,7 @@ public class ConfigureMojo extends AbstractManagementMojo
      *
      * @parameter
      */
-    protected List clusterNodes;
+    protected List<String> clusterNodes;
 
     /**
      * Database type used
@@ -325,15 +324,7 @@ public class ConfigureMojo extends AbstractManagementMojo
      *
      * @parameter
      */
-    protected List siteImportLocation;
-
-
-    /**
-     * My Properties.
-     *
-     * @parameter
-     */
-    private Properties myProperties;
+    protected List<String> siteImportLocation;
 
     /**
      * List of nodes in the cluster.
@@ -532,7 +523,7 @@ public class ConfigureMojo extends AbstractManagementMojo
     private void importSites() {
         for (int i = 0; i < siteImportLocation.size(); i++) {
             try {
-                copy((String) siteImportLocation.get(i), webappDir + "/WEB-INF/var/imports");
+                copy(siteImportLocation.get(i), webappDir + "/WEB-INF/var/imports");
             } catch (IOException e) {
                 getLog().error("error in copying sitImport file " + e);
             }
@@ -545,11 +536,13 @@ public class ConfigureMojo extends AbstractManagementMojo
         boolean delete1 = deleteDir(new File(targetServerDirectory + "/temp"));
         boolean delete2 = deleteDir(new File(targetServerDirectory + "/work"));
         boolean delete3 = deleteDir(new File(webappDir + "/WEB-INF/var/repository"));
-        if (delete1 && delete2 && delete3) {
+        boolean delete4 = deleteDir(new File(webappDir + "/WEB-INF/var/search_indexes"));
+        if (delete1 && delete2 && delete3 && delete4) {
             getLog().info("finished deleting tomcat /temp /work and /var/repository files");
             (new File(targetServerDirectory + "/temp")).mkdir();
             (new File(targetServerDirectory + "/work")).mkdir();
             (new File(webappDir + "/WEB-INF/var/repository")).mkdir();
+            (new File(webappDir + "/WEB-INF/var/search_indexes")).mkdir();
         }
     }
 
@@ -666,8 +659,7 @@ public class ConfigureMojo extends AbstractManagementMojo
 
     private void createDBTables(File dbScript) throws Exception {
 
-        List sqlStatements;
-        String line;
+        List<String> sqlStatements;
 
         DatabaseScripts scripts = new DatabaseScripts();
 
@@ -678,9 +670,7 @@ public class ConfigureMojo extends AbstractManagementMojo
             throw e;
         }
 // drop each tables (if present) and (re-)create it after...
-        final Iterator sqlIter = sqlStatements.iterator();
-        while (sqlIter.hasNext()) {
-            line = (String) sqlIter.next();
+        for (String line : sqlStatements) {
             final String lowerCaseLine = line.toLowerCase();
             final int tableNamePos = lowerCaseLine.indexOf("create table");
             if (tableNamePos != -1) {

@@ -423,7 +423,16 @@ public class JahiaFieldBaseService extends JahiaFieldService {
         return definitionManager.getAllFieldDefinitionIds();
     } // getAllFieldDefinitionIDs
 
-
+    /**
+     * gets all the field definition ids for a site
+     * to be changed, using a fielddefinition cache instead and changing the def registry.
+     *
+     * @return a List of field definition ids for a site
+     */
+    public List<Integer> getAllFieldDefinitionIDs (int siteId)
+            throws JahiaException {
+        return definitionManager.getAllFieldDefinitionIds(siteId);
+    } // getAllFieldDefinitionIDs
 
     /**
      * loads a field from the database, no other info than what's in the database

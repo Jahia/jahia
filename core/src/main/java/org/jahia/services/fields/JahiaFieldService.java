@@ -213,6 +213,15 @@ public abstract class JahiaFieldService extends JahiaService {
      */
     public abstract List<Integer> getAllFieldDefinitionIDs ()
             throws JahiaException;
+    
+    /**
+     * gets all the field definition ids for a site
+     * to be changed, using a fielddefinition cache instead and changing the def registry.
+     *
+     * @return a List of field definition ids for a site
+     */
+    public abstract List<Integer> getAllFieldDefinitionIDs (int siteId)
+            throws JahiaException;    
 
     /***
      * loads a field from the database, no other info than what's in the database<br>

@@ -44,6 +44,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import java.io.IOException;
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 
 /**
  * @author Cédric Mailleux
@@ -54,7 +56,7 @@ public class MetadataTag extends AbstractJahiaTag {
     private ContentBean contentBean;
     private String metadataName;
     private boolean asDate = false;
-    private String valueID;
+    private String var;
 
     @Override
     public int doStartTag() throws JspException {
@@ -62,11 +64,21 @@ public class MetadataTag extends AbstractJahiaTag {
             final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
             final ProcessingContext jParams = jData.getProcessingContext();
-            if (asDate && valueID != null) {
-                final Date date = contentBean.getContentObject().getMetadataAsDate(metadataName, jParams);
-                pageContext.setAttribute(valueID, date);
+            if (var != null) {
+                if (asDate) {
+                    final Date date = contentBean.getContentObject().getMetadataAsDate(metadataName, jParams);
+                    pageContext.setAttribute(var, date);
+                }
+                else {
+                     pageContext.setAttribute(var, contentBean.getContentObject().getMetadataValue(metadataName, jParams, ""));
+                }
             } else {
-                pageContext.getOut().write(contentBean.getContentObject().getMetadataValue(metadataName, jParams, ""));
+                if (asDate) {
+                     pageContext.getOut().write(SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, jData.getProcessingContext().getLocale()).format(contentBean.getContentObject().getMetadataAsDate(metadataName, jParams)));
+                }
+                else {
+                    pageContext.getOut().write(contentBean.getContentObject().getMetadataValue(metadataName, jParams, ""));
+                }
             }
         } catch (JahiaException e) {
             logger.error("Error in MetadataTag", e);
@@ -88,8 +100,8 @@ public class MetadataTag extends AbstractJahiaTag {
         this.asDate = asDate;
     }
 
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
+    public void setVar (String var) {
+        this.var = var;
     }
 
     @Override
@@ -97,7 +109,7 @@ public class MetadataTag extends AbstractJahiaTag {
         contentBean = null;
         metadataName = null;
         asDate = false;
-        valueID = null;
+        var = null;
         return EVAL_PAGE;
     }
 }

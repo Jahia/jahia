@@ -1,6 +1,6 @@
 <%@ include file="../../common/declarations.jspf" %>
 
-<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="5">
+<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="5" actionMenuNameLabelKey="article" actionMenuNamePostFix="manage">
     <template:container cacheKey="pagination" id="blogEntry" displayExtensions="false">
         <template:field name="date" display="false" var="date"/>
 

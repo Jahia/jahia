@@ -38,14 +38,14 @@
     <package-name>Social templates</package-name>
     <root-folder>social-templates</root-folder>
     <provider>http://www.jahia.org</provider>
-    <thumbnail>images/preview.gif</thumbnail>
-    <resource-bundle>jahiatemplates.SocialTemplates</resource-bundle>
+    <thumbnail>images/preview.png</thumbnail>
+    <resource-bundle>resources.SocialTemplates</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
     <common-pages>
         <search-results>searchresult.jsp</search-results>
     </common-pages>
     <templates default="Blog" homepage="blog">
-        <template name="Blog" display-name="Blog page" filename="tpl.blog.jsp" page-type="social_templates:blog"/>
+        <template name="Blog" display-name="template.name.blog" filename="tpl.blog.jsp" page-type="social_templates:blog" description="template.description.blog"/>
     </templates>
 </template-set>
 

@@ -25,9 +25,7 @@
             </ul>
             <div class="post-content"><p><template:field name="content"/></p>
             </div>
-            <p class="read-more"><a title="#" href="#">Lire la suite ...</a></p>
-
-            <p class="post-info-links">
+             <p class="post-info-links">
                 <a class="comment_count" href="#">aucun commentaire</a>
                 <a class="ping_count" href="#">aucun rétrolien</a>
             </p>

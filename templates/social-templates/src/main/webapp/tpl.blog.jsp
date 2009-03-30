@@ -2,6 +2,8 @@
 <template:template>
 <template:templateHead>
     <template:include page="common/header.jsp"/>
+    <link rel="alternate" type="application/rss+xml" title="web templates : news"
+                  href="${currentPage.url}/template/blog.rss?definitionName=social_templates_blog_blogEntries"/>
 </template:templateHead>
 <template:templateBody>
 <div id="bodywrapper"><!--start bodywrapper-->

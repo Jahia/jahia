@@ -49,6 +49,8 @@ public class ContentIntegerField extends ContentField implements ContentSimpleFi
     private static org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger (ContentIntegerField.class);
 
+    private static final long serialVersionUID = 6634503594480335356L;
+
     protected ContentIntegerField (Integer ID,
                                    Integer jahiaID,
                                    Integer pageID,

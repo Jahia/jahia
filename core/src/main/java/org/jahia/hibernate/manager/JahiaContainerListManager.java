@@ -60,6 +60,7 @@ import org.jahia.workflow.nstep.dao.WorkflowInstanceDAO;
 import org.jahia.workflow.nstep.dao.WorkflowHistoryDAO;
 import org.springframework.orm.ObjectRetrievalFailureException;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -88,7 +89,7 @@ public class JahiaContainerListManager {
 
     private Log log = LogFactory.getLog(JahiaContainerListDAO.class);
     private CacheService cacheService = null;
-    private Cache listCache = null;
+    private Cache<Serializable, Serializable> listCache = null;
     private Cache<GroupCacheKey, Integer> idsCache;
     public static final String PAGE_ID_CACHE_PREFIX = "PageId_";
 // --------------------- GETTER / SETTER METHODS ---------------------
@@ -696,17 +697,17 @@ public class JahiaContainerListManager {
         return containerList;
     }
 
-    public Map<String, String> getProperties(int containerListID) {
+    public Map<Object, Object> getProperties(int containerListID) {
         return dao.getProperties((containerListID));
     }
 
-    public void setProperties(int containerListID, int jahiaID, Map<String, String> containerProperties) {
+    public void setProperties(int containerListID, int jahiaID, Map<Object, Object> containerProperties) {
         dao.saveProperties((containerListID), containerProperties);
         flushCache(containerListID, jahiaID, "");
     }
 
     public void flushCache(int id, int siteID, String containerName) {
-        Cache cache = listCache;
+        Cache<Serializable, Serializable> cache = listCache;
         if (cache == null) {
             try {
                 cache = cacheService.createCacheInstance(JAHIA_CONTAINER_LIST_CACHE);

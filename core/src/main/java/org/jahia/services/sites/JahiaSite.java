@@ -68,6 +68,7 @@ import org.jahia.utils.xml.XMLSerializationOptions;
 import org.jahia.utils.xml.XmlWriter;
 
 import javax.jcr.RepositoryException;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.Collator;
@@ -944,6 +945,7 @@ public class JahiaSite implements ACLResourceInterface, Serializable {
      * @throws JahiaException if an error occured while retrieving the
      *                        list of languages
      */
+    @SuppressWarnings("unchecked")
     public List<SiteLanguageSettings> getLanguageSettings (boolean activeOnly)
             throws JahiaException {
         List<SiteLanguageSettings> siteLanguageSettings = new ArrayList<SiteLanguageSettings>();

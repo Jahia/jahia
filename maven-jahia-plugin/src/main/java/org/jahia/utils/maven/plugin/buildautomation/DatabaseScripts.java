@@ -85,7 +85,7 @@ public class DatabaseScripts {
      * @return Iterator an Iterator of String objects containing the
      * schema creation SQL statements.
      */
-    public List getSchemaSQL( File fileObject )
+    public List<String> getSchemaSQL( File fileObject )
         throws IOException {
         FileInputStream scriptInputStream = new FileInputStream(fileObject.getPath());
         Properties      scriptProperties  = new Properties();
@@ -96,7 +96,7 @@ public class DatabaseScripts {
         File parentFile = fileObject.getParentFile();
         File schemaDir = new File(parentFile, scriptLocation);
 
-        List result = getSQLStatementsInDir(schemaDir, ".sql");
+        List<String> result = getSQLStatementsInDir(schemaDir, ".sql");
 
         return result;
     }
@@ -110,7 +110,7 @@ public class DatabaseScripts {
      * @return Iterator an Iterator of String objects containing the
      * schema creation SQL statements.
      */
-    public List getPopulationSQL( File fileObject)
+    public List<String> getPopulationSQL( File fileObject)
         throws IOException {
         FileInputStream scriptInputStream = new FileInputStream(fileObject.getPath());
         Properties      scriptProperties  = new Properties();
@@ -120,7 +120,7 @@ public class DatabaseScripts {
         File parentFile = fileObject.getParentFile();
         File schemaDir = new File(parentFile, scriptLocation);
 
-        List result = getSQLStatementsInDir(schemaDir, ".sql");
+        List<String> result = getSQLStatementsInDir(schemaDir, ".sql");
 
         return result;
     }
@@ -134,9 +134,9 @@ public class DatabaseScripts {
      * @throws java.io.IOException
      * @return ArrayList
      */
-    public List getSQLStatementsInDir (File sqlDir, final String extension)
+    public List<String> getSQLStatementsInDir (File sqlDir, final String extension)
         throws IOException {
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
         File[] schemaFiles = sqlDir.listFiles(new FilenameFilter() {
             public boolean accept(File dir,
                                   String name) {
@@ -150,19 +150,19 @@ public class DatabaseScripts {
         if (schemaFiles == null) {
             return result;
         }
-        List indexFiles = new ArrayList();
+        List<File> indexFiles = new ArrayList<File>();
         for (int i=0; i < schemaFiles.length; i++) {
             File sqlFile = schemaFiles[i];
             if(sqlFile.getName().endsWith("index.sql")) {
                 indexFiles.add(sqlFile);
             } else {
-                List curFileSQL = getScriptFileStatements(sqlFile);
+                List<String> curFileSQL = getScriptFileStatements(sqlFile);
                 result.addAll(curFileSQL);
             }
         }
         for (int i = 0; i < indexFiles.size(); i++) {
-            File indexFile = (File) indexFiles.get(i);
-            List curFileSQL = getScriptFileStatements(indexFile);
+            File indexFile = indexFiles.get(i);
+            List<String> curFileSQL = getScriptFileStatements(indexFile);
             result.addAll(curFileSQL);
         }
         return result;
@@ -178,10 +178,10 @@ public class DatabaseScripts {
      * @param   fileObject   File object of the database script file.
      * @return  Iterator containing all lines of the database script.
      */
-    public List getScriptFileStatements( File fileObject )
+    public List<String> getScriptFileStatements( File fileObject )
     throws IOException
     {
-        List scriptsRuntimeList  = new ArrayList();
+        List<String> scriptsRuntimeList  = new ArrayList<String>();
 
         BufferedReader  buffered     = new BufferedReader( new FileReader(fileObject.getPath()) );
         String          buffer       = "";

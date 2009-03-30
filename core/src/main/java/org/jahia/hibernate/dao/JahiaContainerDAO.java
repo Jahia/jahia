@@ -61,6 +61,7 @@ import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -85,7 +86,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return hibernateTemplate.find(hql);
     }
 
-    public List<Integer> getAllContainerIds(BitSet ids) {
+    public List<Object[]> getAllContainerIds(BitSet ids) {
         String inClause = JahiaTools.getConditionalInClauseFromBitSet(ids, "c.comp_id.id", "=", "");
         String hql = "select distinct c.comp_id.id,c.rank from JahiaContainer c where " + inClause + " order by c.rank";
         final HibernateTemplate hibernateTemplate = getHibernateTemplate();
@@ -94,7 +95,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return hibernateTemplate.find(hql);
     }
 
-    public List<Integer> getAllNonDeletedStagingContainerIds() {
+    public List<Object[]> getAllNonDeletedStagingContainerIds() {
         String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank,c.comp_id.workflowState from JahiaContainer c " +
                 "where c.comp_id.workflowState>=1 " +
                 "order by c.comp_id.id,c.comp_id.workflowState desc";
@@ -104,7 +105,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(hql);
     }
 
-    public List getAllNonDeletedStagingContainerIds(BitSet ids) {
+    public List<Object[]> getAllNonDeletedStagingContainerIds(BitSet ids) {
         String inClause = JahiaTools.getConditionalInClauseFromBitSet(ids, "c.comp_id.id", "=", "and");
         String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank,c.comp_id.workflowState from JahiaContainer c " +
                 "where " + inClause + " c.comp_id.workflowState>=1 " +
@@ -115,7 +116,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(hql);
     }
 
-    public List getAllPublishedContainerIds() {
+    public List<Object[]> getAllPublishedContainerIds() {
         String hql = "select distinct c.comp_id.id,c.rank from JahiaContainer c " +
                 "where c.comp_id.workflowState=1 " +
                 "order by c.rank,c.comp_id.id";
@@ -125,7 +126,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(hql);
     }
 
-    public List getAllPublishedContainerIds(BitSet ids) {
+    public List<Object[]> getAllPublishedContainerIds(BitSet ids) {
         String inClause = JahiaTools.getConditionalInClauseFromBitSet(ids, "c.comp_id.id", "=", "and");
         String hql = "select distinct c.comp_id.id,c.rank from JahiaContainer c where " +
                 inClause + " c.comp_id.workflowState=1 " +
@@ -136,7 +137,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(hql);
     }
 
-    public List getAllStagingContainerIds() {
+    public List<Object[]> getAllStagingContainerIds() {
         String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank,c.comp_id.workflowState from JahiaContainer c " +
                 "where c.comp_id.workflowState>=1 " +
                 "order by c.comp_id.id,c.comp_id.workflowState desc";
@@ -146,7 +147,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(hql);
     }
 
-    public List getAllStagingContainerIds(BitSet ids) {
+    public List<Object[]> getAllStagingContainerIds(BitSet ids) {
         String inClause = JahiaTools.getConditionalInClauseFromBitSet(ids, "c.comp_id.id", "=", "and");
         String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank,c.comp_id.workflowState from JahiaContainer c " +
                 "where " + inClause + " c.comp_id.workflowState>=1 " +
@@ -204,51 +205,46 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         }
     }
 
-    public void deleteContainers(List containers) {
+    public void deleteContainers(List<JahiaContainer> containers) {
         final HibernateTemplate hibernateTemplate = getHibernateTemplate();
         hibernateTemplate.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         hibernateTemplate.deleteAll(containers);
         hibernateTemplate.flush();
     }
 
-    public Map<String, String> getProperties(Integer id) {
+    public Map<Object, Object> getProperties(Integer id) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        List props = template.find("select p.comp_id.name,p.value from JahiaContainerProperty p " +
+        List<Object[]> props = template.find("select p.comp_id.name,p.value from JahiaContainerProperty p " +
                 "where p.comp_id.containerId=?", id);
         FastHashMap properties = new FastHashMap(props.size());
-        for (Object prop : props) {
-            Object[] objects = (Object[]) prop;
+        for (Object[] objects : props) {
             properties.put(objects[0], objects[1]);
         }
         properties.setFast(true);
         return properties;
     }
 
-    public Map getProperties(List jahiaContainers) {
+    public Map<Integer, Map<Object, Object>>  getProperties(List<JahiaContainer> jahiaContainers) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         StringBuffer buffer = new StringBuffer(1024);
         buffer.append("select p.comp_id.containerId,p.comp_id.name,p.value from JahiaContainerProperty p where p.comp_id.containerId in (");
-        JahiaContainer container;
-        for (Iterator it = jahiaContainers.iterator(); it.hasNext();) {
-            container = (JahiaContainer) it.next();
+        for (Iterator<JahiaContainer> it = jahiaContainers.iterator(); it.hasNext();) {
+            JahiaContainer container = (JahiaContainer) it.next();
             buffer.append(container.getCtnId());
             if (it.hasNext()) {
                 buffer.append(",");
             }
         }
         buffer.append(")");
-        List props = template.find(buffer.toString());
-        Map propertiesByContainerId = new HashMap();
-        Map properties;
-        Integer key;
-        for (Object prop : props) {
-            Object[] objects = (Object[]) prop;
-            key = (Integer) objects[0];
-            properties = (Map) propertiesByContainerId.get(key);
+        List<Object[]> props = template.find(buffer.toString());
+        Map<Integer, Map<Object, Object>> propertiesByContainerId = new HashMap<Integer, Map<Object, Object>> ();
+        for (Object[] objects : props) {
+            Integer key = (Integer) objects[0];
+            Map<Object, Object> properties = propertiesByContainerId.get(key);
             if (properties == null) {
-                properties = new HashMap();
+                properties = new HashMap<Object, Object>();
                 propertiesByContainerId.put(key, properties);
             }
             properties.put(objects[1], objects[2]);
@@ -256,21 +252,21 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return propertiesByContainerId;
     }
 
-    public Map getProperties(Integer id, int batchSize) {
+    public Map<Integer, Map<Object, Object>> getProperties(Integer id, int batchSize) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        List props = template.find("select p.comp_id.containerId,p.comp_id.name,p.value from JahiaContainerProperty p " +
+        List<Object[]> props = template.find("select p.comp_id.containerId,p.comp_id.name,p.value from JahiaContainerProperty p " +
                 "where p.comp_id.containerId between ? and ?",
                 new Object[]{(id - batchSize), (id + batchSize)});
-        Map propertiesByContainerId = new HashMap();
-        Map properties;
+        Map<Integer, Map<Object, Object>> propertiesByContainerId = new HashMap<Integer, Map<Object, Object>>();
+        Map<Object, Object> properties;
         Integer key;
         for (Object prop : props) {
             Object[] objects = (Object[]) prop;
             key = (Integer) objects[0];
-            properties = (Map) propertiesByContainerId.get(key);
+            properties = (Map<Object, Object>) propertiesByContainerId.get(key);
             if (properties == null) {
-                properties = new HashMap();
+                properties = new HashMap<Object, Object>();
                 propertiesByContainerId.put(key, properties);
             }
             properties.put(objects[1], objects[2]);
@@ -362,18 +358,18 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return retval;
     }
 
-    public List getAllContainerIdsFromList(Integer listId) {
-        List retVal = Collections.emptyList();
+    public List<Integer> getAllContainerIdsFromList(Integer listId) {
+        List<Integer> retVal = Collections.emptyList();
         String hql = "select distinct c.comp_id.id,c.rank from JahiaContainer c where c.listid=? order by c.rank";
         if (listId != null) {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(false);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql, new Object[]{listId});
+            List<Object[]> list = template.find(hql, new Object[]{listId});
             if (!list.isEmpty()) {
                 FastArrayList tmpList = new FastArrayList(list.size());
-                for (Object aList : list) {
-                    tmpList.add(((Object[]) aList)[0]);
+                for (Object[] aList : list) {
+                    tmpList.add(aList[0]);
                 }
                 tmpList.setFast(true);
                 retVal = tmpList;
@@ -399,7 +395,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        return (List) template.execute(new HibernateCallback() {
+        return (List<Integer>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws
                     HibernateException {
                 Criteria crit = session.createCriteria(JahiaContainer.class);
@@ -432,7 +428,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{listId, fieldName});
+            List<Object[]> list = template.find(hql.toString(), new Object[]{listId, fieldName});
             retVal = fillContainerIdList(list);
         }
         return retVal;
@@ -463,8 +459,8 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(queryString, new Object[]{containerId});
     }
 
-    public List getAllVersionedContainerIds(Integer version) {
-        List retVal = null;
+    public List<Object[]> getAllVersionedContainerIds(Integer version) {
+        List<Object[]> retVal = null;
         if (version != null) {
             String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank from JahiaContainer c "
                     + "where c.comp_id.workflowState<=1 and c.comp_id.versionId between 0 and ? "
@@ -477,8 +473,8 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return retVal;
     }
 
-    public List getAllVersionedContainerIds(Integer version, BitSet ids) {
-        List retVal = null;
+    public List<Object[]> getAllVersionedContainerIds(Integer version, BitSet ids) {
+        List<Object[]> retVal = null;
         if (version != null) {
             String inClause = JahiaTools.getConditionalInClauseFromBitSet(ids, "c.comp_id.id", "=", "and");
             String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank from JahiaContainer c "
@@ -508,8 +504,8 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(queryString, new Object[]{containerId});
     }
 
-    public List getNonDeletedStagingContainerIdsFromList(Integer listId) {
-        List retVal = null;
+    public List<Object[]> getNonDeletedStagingContainerIdsFromList(Integer listId) {
+        List<Object[]> retVal = null;
         String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank,c.comp_id.workflowState from JahiaContainer c " +
                 "where c.listid=? and c.comp_id.workflowState>=1 " +
                 "order by c.comp_id.id,c.comp_id.workflowState desc";
@@ -522,8 +518,8 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return retVal;
     }
 
-    public List getPublishedContainerIdsFromList(Integer listId) {
-        List retVal = null;
+    public List<Integer> getPublishedContainerIdsFromList(Integer listId) {
+        List<Integer> retVal = null;
         String hql = "select distinct c.comp_id.id,c.rank from JahiaContainer c " +
                 "where c.listid=? and c.comp_id.workflowState=1 " +
                 "order by c.rank,c.comp_id.id";
@@ -531,7 +527,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql, new Object[]{listId});
+            List<Object[]> list = template.find(hql, new Object[]{listId});
             retVal = fillContainerIdList(list);
         }
         return retVal;
@@ -565,7 +561,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-            List list = template.find(hql.toString(), new Object[]{listId, fieldName});
+            List<Object[]> list = template.find(hql.toString(), new Object[]{listId, fieldName});
             retVal = fillContainerIdList(list);
         }
         return retVal;
@@ -585,8 +581,8 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return retVal;
     }
 
-    public List getStagingContainerIdsFromList(Integer listId) {
-        List retVal = null;
+    public List<Object[]> getStagingContainerIdsFromList(Integer listId) {
+        List<Object[]> retVal = null;
         String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank,c.comp_id.workflowState from JahiaContainer c " +
                 "where c.listid=? and c.comp_id.workflowState>=1 " +
                 "order by c.comp_id.id,c.comp_id.workflowState desc";
@@ -663,8 +659,8 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
 
     }
 
-    public List getVersionedContainerIdsFromList(Integer listId, Integer version) {
-        List retVal = null;
+    public List<Object[]> getVersionedContainerIdsFromList(Integer listId, Integer version) {
+        List<Object[]> retVal = null;
         String hql = "select distinct c.comp_id.id,c.comp_id.versionId,c.rank from JahiaContainer c " +
                 "where c.listid=? and c.comp_id.workflowState<=1 and c.comp_id.versionId between 0 and ? " +
                 "order by c.comp_id.id,c.comp_id.versionId desc";
@@ -705,7 +701,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString, containerId);
+        final List<JahiaContainer> list = template.find(queryString, containerId);
         return getJahiaContainerFromList(list);
     }
 
@@ -820,15 +816,13 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return template.find(queryString, containerId);
     }
 
-    public List<JahiaContainer> loadStagingContainer(List ids, EntryLoadRequest request) {
+    public List<JahiaContainer> loadStagingContainer(List<Integer> ids, EntryLoadRequest request) {
         StringBuffer queryString = new StringBuffer(1024);
         queryString.append("select c from JahiaContainer c ");
         queryString.append(" left join fetch c.ctndef ctndef ");
         queryString.append(" where ");
-        Iterator it = ids.iterator();
-        Integer id;
-        while (it.hasNext()) {
-            id = (Integer) it.next();
+        for (Iterator<Integer> it = ids.iterator(); it.hasNext();) {
+            Integer id = it.next();
             queryString.append("c.comp_id.id=").append(String.valueOf(id));
             if (it.hasNext()) {
                 queryString.append(" or ");
@@ -838,14 +832,11 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(false);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString.toString());
-        List filteredList = new ArrayList();
-        Set alreadyAddedCtns = new HashSet();
+        final List<JahiaContainer> list = template.find(queryString.toString());
+        List<JahiaContainer> filteredList = new ArrayList<JahiaContainer>();
+        Set<Integer> alreadyAddedCtns = new HashSet<Integer>();
         if (!list.isEmpty()) {
-            it = list.iterator();
-            JahiaContainer jahiaContainer;
-            while (it.hasNext()) {
-                jahiaContainer = (JahiaContainer) it.next();
+            for (JahiaContainer jahiaContainer : list) {
                 if (!request.isWithDeleted() &&
                         ((jahiaContainer.getComp_id().getWorkflowState()
                                 == EntryLoadRequest.DELETED_WORKFLOW_STATE)
@@ -867,7 +858,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString, containerId);
+        final List<JahiaContainer> list = template.find(queryString, containerId);
         return getJahiaContainerFromList(list);
     }
 
@@ -876,7 +867,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString, containerId);
+        final List<JahiaContainer> list = template.find(queryString, containerId);
         return getJahiaContainerFromList(list);
     }
 
@@ -885,7 +876,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString, containerId);
+        final List<JahiaContainer> list = template.find(queryString, containerId);
         if (!list.isEmpty()) {
             final JahiaContainer jahiaContainer = (JahiaContainer) list.get(0);
             if (!request.isWithDeleted() &&
@@ -911,17 +902,14 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString, new Object[]{containerId, version});
+        final List<JahiaContainer> list = template.find(queryString, new Object[]{containerId, version});
         return getJahiaContainerFromList(list);
     }
 
     public List<JahiaContainer> loadVersionedContainer(List<Integer> ids, EntryLoadRequest request) {
-        List result = new ArrayList();
-        Iterator<Integer> it = ids.iterator();
-        Integer id;
+        List<JahiaContainer> result = new ArrayList<JahiaContainer>();
         JahiaContainer container;
-        while (it.hasNext()) {
-            id = (Integer) it.next();
+        for (Integer id : ids) {
             container = loadVersionedContainer(id, request);
             if (container != null) {
                 result.add(container);
@@ -936,7 +924,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        final List list = template.find(queryString, new Object[]{containerId, (request.getVersionID())});
+        final List<JahiaContainer> list = template.find(queryString, new Object[]{containerId, (request.getVersionID())});
         if (!list.isEmpty()) {
             final JahiaContainer jahiaContainer = (JahiaContainer) list.get(0);
             if ((jahiaContainer.getComp_id().getWorkflowState() == EntryLoadRequest.DELETED_WORKFLOW_STATE)
@@ -949,9 +937,9 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
 
     public int getMaxRankingValue() {
         final HibernateTemplate hibernateTemplate = getHibernateTemplate();
-        List list = hibernateTemplate.find("select max(c.rank) from JahiaContainer c");
+        List<Integer> list = hibernateTemplate.find("select max(c.rank) from JahiaContainer c");
         if (!list.isEmpty() && list.get(0) != null) {
-            return ((Integer) list.get(0));
+            return (list.get(0));
         } else {
             return 0;
         }
@@ -992,8 +980,8 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         hibernateTemplate.update(container);
     }
 
-    private JahiaContainer getJahiaContainerFromList(final List list) {
-        return (!list.isEmpty() ? (JahiaContainer) list.get(0) : null);
+    private JahiaContainer getJahiaContainerFromList(final List<JahiaContainer> list) {
+        return (!list.isEmpty() ? list.get(0) : null);
     }
 
     public void deleteProperties(Integer ctnId) {
@@ -1002,18 +990,17 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         template.deleteAll(template.find("from JahiaContainerProperty p where p.comp_id.containerId=?", ctnId));
     }
 
-    public void saveProperties(Integer ctnID, Integer siteID, Map properties) {
+    public void saveProperties(Integer ctnID, Integer siteID, Map<Object, Object> properties) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         template.setCheckWriteOperations(false);
         if (properties != null) {
-            properties = new HashMap(properties);
+            properties = new HashMap<Object, Object>(properties);
             if (!properties.isEmpty()) {
-                List list = template
+                List<JahiaContainerProperty> list = template
                         .find("from JahiaContainerProperty p where p.comp_id.containerId=?",
                                 ctnID);
-                for (Object aList : list) {
-                    JahiaContainerProperty jahiaContainerProperty = (JahiaContainerProperty) aList;
+                for (JahiaContainerProperty jahiaContainerProperty : list) {
                     String name = jahiaContainerProperty.getComp_id().getName();
                     if (!properties.containsKey(name)) {
                         template.delete(jahiaContainerProperty);
@@ -1023,8 +1010,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
                         template.save(jahiaContainerProperty);
                     }
                 }
-                for (Object o : properties.entrySet()) {
-                    Map.Entry entry = (Map.Entry) o;
+                for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                     template.saveOrUpdate(new JahiaContainerProperty(
                             new JahiaContainerPropertyPK(ctnID, (String) entry
                                     .getKey()), siteID, (String) entry
@@ -1037,16 +1023,16 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
     }
 
     public int getNBContainer(int containerId) {
-        List nbPages = getHibernateTemplate().find("select count(c.comp_id.id) from JahiaContainer c where c.comp_id.id=?", (containerId));
-        return ((Long) nbPages.get(0)).intValue();
+        List<Long> nbPages = getHibernateTemplate().find("select count(c.comp_id.id) from JahiaContainer c where c.comp_id.id=?", (containerId));
+        return nbPages.get(0).intValue();
     }
 
-    public Map deleteAllContainersFromSite(Integer siteID) {
+    public Map<Serializable, Integer> deleteAllContainersFromSite(Integer siteID) {
         String queryString = "from JahiaContainer c where c.siteId=? ";
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         List list = template.find(queryString, siteID);
-        Map map = new HashMap(list.size());
+        Map<Serializable, Integer> map = new HashMap<Serializable, Integer>(list.size());
         for (Object aList : list) {
             JahiaContainer data = (JahiaContainer) aList;
             map.put(new ContentContainerKey(data.getComp_id().getId()), data.getJahiaAclId());

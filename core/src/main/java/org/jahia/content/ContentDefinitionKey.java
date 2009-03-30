@@ -51,6 +51,8 @@
  */
 public abstract class ContentDefinitionKey extends ObjectKey{
 
+    private static final long serialVersionUID = -5061798309289612190L;
+
     /**
      * Protected constructor to use this class also as a factory by calling
      * the getChildInstance method

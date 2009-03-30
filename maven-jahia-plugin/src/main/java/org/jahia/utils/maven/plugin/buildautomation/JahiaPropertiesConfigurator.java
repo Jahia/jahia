@@ -106,7 +106,7 @@ public class JahiaPropertiesConfigurator {
         properties.storeProperties(sourceJahiaPath + "/WEB-INF/etc/config/jahia.skeleton", targetJahiaPath + "/WEB-INF/etc/config/jahia.properties");
     }
 
-    private void addClusterNodes(List clusterNodes) {
+    private void addClusterNodes(List<String> clusterNodes) {
 
         properties.setProperty("cluster.tcp.start.ip_address", jahiaPropertiesBean.getLocalIp());
         String clusterTtcpServiceNodesIp_address = "";
@@ -116,16 +116,16 @@ public class JahiaPropertiesConfigurator {
         for (int i = 0; i < clusterNodes.size(); i++) {
 
             if (i == clusterNodes.size() - 1) {
-                clusterTtcpServiceNodesIp_address = clusterTtcpServiceNodesIp_address + (String) clusterNodes.get(i) + "[7840]";
-                clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address + (String) clusterNodes.get(i) + "[7850]";
-                clustertcpesicontentidsnodesip_address = clustertcpesicontentidsnodesip_address + (String) clusterNodes.get(i) + "[7860]";
-                clustertcphibernatenodesip_address = clustertcphibernatenodesip_address + (String) clusterNodes.get(i) + "[7870]";
+                clusterTtcpServiceNodesIp_address = clusterTtcpServiceNodesIp_address + clusterNodes.get(i) + "[7840]";
+                clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address + clusterNodes.get(i) + "[7850]";
+                clustertcpesicontentidsnodesip_address = clustertcpesicontentidsnodesip_address + clusterNodes.get(i) + "[7860]";
+                clustertcphibernatenodesip_address = clustertcphibernatenodesip_address + clusterNodes.get(i) + "[7870]";
             } else {
 
-                clusterTtcpServiceNodesIp_address = clusterTtcpServiceNodesIp_address + (String) clusterNodes.get(i) + "[7840],";
-                clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address + (String) clusterNodes.get(i) + "[7850],";
-                clustertcpesicontentidsnodesip_address = clustertcpesicontentidsnodesip_address + (String) clusterNodes.get(i) + "[7860],";
-                clustertcphibernatenodesip_address = clustertcphibernatenodesip_address + (String) clusterNodes.get(i) + "[7870],";
+                clusterTtcpServiceNodesIp_address = clusterTtcpServiceNodesIp_address + clusterNodes.get(i) + "[7840],";
+                clustertcpidgeneratornodesip_address = clustertcpidgeneratornodesip_address + clusterNodes.get(i) + "[7850],";
+                clustertcpesicontentidsnodesip_address = clustertcpesicontentidsnodesip_address + clusterNodes.get(i) + "[7860],";
+                clustertcphibernatenodesip_address = clustertcphibernatenodesip_address + clusterNodes.get(i) + "[7870],";
             }
 
 

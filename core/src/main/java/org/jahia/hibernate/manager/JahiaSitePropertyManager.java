@@ -36,11 +36,10 @@
  */
 package org.jahia.hibernate.manager;
 
-import java.util.Iterator;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.jahia.hibernate.dao.JahiaSitePropertyDAO;
 import org.jahia.hibernate.model.JahiaSiteProp;
 import org.jahia.hibernate.model.JahiaSitePropPK;
@@ -68,9 +67,9 @@ public class JahiaSitePropertyManager {
     }
 
     public void save(JahiaSite site, Properties updateProps) {
-        Iterator enumeration = new EnumerationIterator(updateProps.propertyNames());
-        while (enumeration.hasNext()) {
-            String s = (String) enumeration.next();
+        Enumeration<?> enumeration = updateProps.propertyNames();
+        while (enumeration.hasMoreElements()) {
+            String s = (String)enumeration.nextElement();
             String v = updateProps.getProperty(s);
             saveProperty(site, s, v);
         }
@@ -97,9 +96,9 @@ public class JahiaSitePropertyManager {
 
     public void save(JahiaSite site) {
         Properties properties = site.getSettings();
-        Iterator enumeration = new EnumerationIterator(properties.propertyNames());
-        while (enumeration.hasNext()) {
-            String s = (String) enumeration.next();
+        Enumeration<?> enumeration = properties.propertyNames();
+        while (enumeration.hasMoreElements()) {
+            String s = (String) enumeration.nextElement();
             String v = properties.getProperty(s);
             saveProperty(site, s, v);
         }
@@ -108,9 +107,9 @@ public class JahiaSitePropertyManager {
     public void remove(JahiaSite id) {
         final org.jahia.hibernate.model.JahiaSite modelSiteById = jahiaSiteManager.getModelSiteById(id.getID());
         Properties properties = id.getSettings();
-        Iterator enumeration = new EnumerationIterator(properties.propertyNames());
-        while (enumeration.hasNext()) {
-            String s = (String) enumeration.next();
+        Enumeration<?> enumeration = properties.propertyNames();
+        while (enumeration.hasMoreElements()) {
+            String s = (String) enumeration.nextElement();
             try {
                 dao.remove(modelSiteById, s);
             } catch (ObjectRetrievalFailureException e) {
@@ -118,11 +117,9 @@ public class JahiaSitePropertyManager {
         }
     }
 
-    public void remove(JahiaSite id,List propertiesToBeRemoved) {
+    public void remove(JahiaSite id, List<String> propertiesToBeRemoved) {
         final org.jahia.hibernate.model.JahiaSite modelSiteById = jahiaSiteManager.getModelSiteById(id.getID());
-        Iterator it = propertiesToBeRemoved.iterator();
-        while (it.hasNext()) {
-            String s = (String) it.next();
+        for (String s : propertiesToBeRemoved) {
             try {
                 dao.remove(modelSiteById, s);
             } catch (ObjectRetrievalFailureException e) {
@@ -130,7 +127,7 @@ public class JahiaSitePropertyManager {
         }
     }
 
-    public List getProperties(Integer id) {
+    public List<JahiaSiteProp> getProperties(Integer id) {
         return dao.getSitePropById(id);
     }
 

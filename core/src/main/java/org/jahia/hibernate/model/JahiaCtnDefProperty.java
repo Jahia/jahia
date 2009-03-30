@@ -45,6 +45,9 @@ import java.util.HashSet;
  * @hibernate.cache usage="nonstrict-read-write"
  */
 public class JahiaCtnDefProperty implements Serializable {
+
+    private static final long serialVersionUID = -1374545799847770866L;
+
 // ------------------------------ FIELDS ------------------------------
 
     /**
@@ -65,7 +68,7 @@ public class JahiaCtnDefProperty implements Serializable {
     /**
      * persistent field
      */
-    private Set jahiaCtnStructs;
+    private Set<JahiaCtnStruct> jahiaCtnStructs;
 
 // --------------------------- CONSTRUCTORS ---------------------------
 
@@ -73,14 +76,14 @@ public class JahiaCtnDefProperty implements Serializable {
      * default constructor
      */
     public JahiaCtnDefProperty() {
-        jahiaCtnStructs = new HashSet(53);
+        jahiaCtnStructs = new HashSet<JahiaCtnStruct>(53);
     }
 
     /**
      * minimal constructor
      */
     public JahiaCtnDefProperty(Integer idJahiaCtnDefProperties, org.jahia.hibernate.model.JahiaCtnDef jahiaCtnDef,
-                               Set jahiaCtnStructs) {
+                               Set<JahiaCtnStruct> jahiaCtnStructs) {
         this.idJahiaCtnDefProperties = idJahiaCtnDefProperties;
         this.jahiaCtnDef = jahiaCtnDef;
         this.jahiaCtnStructs = jahiaCtnStructs;
@@ -91,7 +94,7 @@ public class JahiaCtnDefProperty implements Serializable {
      */
     public JahiaCtnDefProperty(Integer idJahiaCtnDefProperties, Integer pagedefidJahiaCtnDefProp,
                                org.jahia.hibernate.model.JahiaCtnDef jahiaCtnDef,
-                               Set jahiaCtnStructs) {
+                               Set<JahiaCtnStruct> jahiaCtnStructs) {
         this.idJahiaCtnDefProperties = idJahiaCtnDefProperties;
         this.pageDefinitionId = pagedefidJahiaCtnDefProp;
         this.jahiaCtnDef = jahiaCtnDef;
@@ -134,11 +137,11 @@ public class JahiaCtnDefProperty implements Serializable {
      * @hibernate.collection-one-to-many class="org.jahia.hibernate.model.JahiaCtnStruct"
      * @hibernate.collection-cache usage="nonstrict-read-write"
      */
-    public Set getJahiaCtnStructs() {
+    public Set<JahiaCtnStruct> getJahiaCtnStructs() {
         return this.jahiaCtnStructs;
     }
 
-    public void setJahiaCtnStructs(Set jahiaCtnStructs) {
+    public void setJahiaCtnStructs(Set<JahiaCtnStruct> jahiaCtnStructs) {
         this.jahiaCtnStructs = jahiaCtnStructs;
     }
 

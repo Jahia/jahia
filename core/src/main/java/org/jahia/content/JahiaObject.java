@@ -55,6 +55,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class JahiaObject implements Serializable {
 
+    private static final long serialVersionUID = -2624062108412420112L;
+
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(JahiaObject.class);
 

@@ -174,14 +174,14 @@ public class JahiaReferenceIndexableDocument extends IndexableDocumentImpl {
 
         EntryLoadRequest loadRequest = EntryLoadRequest.STAGED;
         try {
-            Map<String, String> properties = ServicesRegistry.getInstance()
+            Map<Object, Object> properties = ServicesRegistry.getInstance()
                     .getJahiaContainersService().getContainerProperties(container.getID());
             if ( properties != null ){
                 // add the container's properties
                 if (properties != null) {
-                    for (Map.Entry<String, String> key : properties.entrySet()) {
+                    for (Map.Entry<Object, Object> key : properties.entrySet()) {
                         this.setFieldValue(JahiaSearchConstant.OBJECT_PROPERTY_PREFIX
-                                + key.getKey(), key.getValue());
+                                + key.getKey(), (String)key.getValue());
                     }
                 }
             }

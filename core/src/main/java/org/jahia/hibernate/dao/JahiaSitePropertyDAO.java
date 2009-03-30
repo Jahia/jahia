@@ -58,8 +58,8 @@ public class JahiaSitePropertyDAO extends AbstractGeneratorDAO {
 
 // -------------------------- OTHER METHODS --------------------------
 
-    public List getSitePropById(Integer id) {
-        List retval = null;
+    public List<JahiaSiteProp> getSitePropById(Integer id) {
+        List<JahiaSiteProp> retval = null;
         String hql = "from JahiaSiteProp aTable WHERE aTable.comp_id.id = ?";
         if (id == null) {
             log.error("Error: Cannot use null in query");
@@ -81,9 +81,9 @@ public class JahiaSitePropertyDAO extends AbstractGeneratorDAO {
         } else {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
-            List objects = template.find(hql, new Object[]{id.getId(), name});
+            List<JahiaSiteProp> objects = template.find(hql, new Object[]{id.getId(), name});
             if (objects.size() == 1) {
-                retval = (JahiaSiteProp) objects.get(0);
+                retval = objects.get(0);
             } else if (objects.size() > 1) {
                 log.error("Error: multiple values returned for unique column:" + objects);
                 throw new RuntimeException("Error: multiple values returned for unique column:" + objects);

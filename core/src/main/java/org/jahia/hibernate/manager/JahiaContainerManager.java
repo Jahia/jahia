@@ -113,21 +113,22 @@ public class JahiaContainerManager {
         boolean compareMode = (Jahia.getThreadParamBean() != null
                 && ProcessingContext.COMPARE.equals(Jahia.getThreadParamBean().getOpMode()));
 
+        List<Object[]> tempval;
         List<Integer> retval;
 
         if (loadVersion == null || loadVersion.isVersioned() && compareMode) {
-            retval = dao.getAllContainerIds(ids);
+            tempval = dao.getAllContainerIds(ids);
         } else if (loadVersion.isStaging()) {
             if (loadVersion.isWithMarkedForDeletion()) {
-                retval = dao.getAllStagingContainerIds(ids);
+                tempval = dao.getAllStagingContainerIds(ids);
             } else {
-                retval = dao.getAllNonDeletedStagingContainerIds(ids);
+                tempval = dao.getAllNonDeletedStagingContainerIds(ids);
             }
         } else if (loadVersion.isVersioned() && !compareMode) {
-            retval = dao.getAllVersionedContainerIds((loadVersion
+            tempval = dao.getAllVersionedContainerIds((loadVersion
                     .getVersionID()), ids);
         } else {
-            retval = dao.getAllPublishedContainerIds(ids);
+            tempval = dao.getAllPublishedContainerIds(ids);
         }
 
         int dbMaxElementsForInClause = org.jahia.settings.SettingsBean.getInstance().getDBMaxElementsForInClause();
@@ -137,7 +138,7 @@ public class JahiaContainerManager {
                 && (loadVersion.isStaging() || (loadVersion.isVersioned() && !compareMode))) {
             Integer previousCtnID = (-2);
 
-            List list = retval;
+            List<Object[]> list = tempval;
             for (ListIterator<Object[]> it = list.listIterator(); it.hasNext();) {
                 Object[] objects = it.next();
                 Integer ctnID = (Integer) objects[0];
@@ -180,7 +181,7 @@ public class JahiaContainerManager {
             }
         } else {
             if (applyBitsetCheck) {
-                List list = retval;
+                List<Object[]> list = tempval;
                 retval = new ArrayList<Integer>(list.size());
 
                 for (Object aList : list) {
@@ -193,7 +194,7 @@ public class JahiaContainerManager {
                     }
                 }
             } else {
-                List list = retval;
+                List<Object[]> list = tempval;
                 retval = new ArrayList<Integer>(list.size());
                 for (Object aList : list) {
                     retval.add((Integer)((Object[]) aList)[0]);
@@ -452,6 +453,7 @@ public class JahiaContainerManager {
                 .equals(Jahia.getThreadParamBean().getOpMode()));
 
         List<Integer> retval = null;
+        List<Object[]> tempval = null;        
         GroupCacheKey cacheKey = CacheAdvice.toGroupCacheKey(new Object[]{
                 PAGE_CACHE_KEY_PREFIX + listID,
                 this.getCtnIDsByCtnListCacheKey(listID, loadVersion),
@@ -469,15 +471,15 @@ public class JahiaContainerManager {
                     retval = dao.getAllContainerIds();
                 } else if (loadVersion.isStaging()) {
                     if (loadVersion.isWithMarkedForDeletion()) {
-                        retval = dao.getAllStagingContainerIds();
+                        tempval = dao.getAllStagingContainerIds();
                     } else {
-                        retval = dao.getAllNonDeletedStagingContainerIds();
+                        tempval = dao.getAllNonDeletedStagingContainerIds();
                     }
                 } else if (loadVersion.isVersioned() && !compareMode) {
-                    retval = dao.getAllVersionedContainerIds((
+                    tempval = dao.getAllVersionedContainerIds((
                             loadVersion.getVersionID()));
                 } else {
-                    retval = dao.getAllPublishedContainerIds();
+                    tempval = dao.getAllPublishedContainerIds();
                 }
             } else {
                 Integer id = (listID);
@@ -486,13 +488,13 @@ public class JahiaContainerManager {
                     retval = dao.getAllContainerIdsFromList(id);
                 } else if (loadVersion.isStaging()) {
                     if (loadVersion.isWithMarkedForDeletion()) {
-                        retval = dao.getStagingContainerIdsFromList(id);
+                        tempval = dao.getStagingContainerIdsFromList(id);
                     } else {
-                        retval = dao
+                        tempval = dao
                                 .getNonDeletedStagingContainerIdsFromList(id);
                     }
                 } else if (loadVersion.isVersioned() && !compareMode) {
-                    retval = dao.getVersionedContainerIdsFromList(id, (
+                    tempval = dao.getVersionedContainerIdsFromList(id, (
                             loadVersion.getVersionID()));
                 } else {
                     retval = dao.getPublishedContainerIdsFromList(id);
@@ -502,7 +504,7 @@ public class JahiaContainerManager {
                     && (loadVersion.isStaging() || (loadVersion.isVersioned() && !compareMode))) {
                 Integer previousCtnID = (-2);
 
-                List list = retval;
+                List<Object[]> list = tempval;
                 for (ListIterator<Object[]> it = list.listIterator(); it.hasNext();) {
                     Object[] objects = (Object[]) it.next();
                     Integer ctnID = (Integer) objects[0];
@@ -1182,11 +1184,11 @@ public class JahiaContainerManager {
         return jahiaContainer;
     }
 
-    public Map<String, String> getProperties(int containerID) {
+    public Map<Object, Object> getProperties(int containerID) {
         return dao.getProperties((containerID));
     }
 
-    public void setProperties(int containerID, int jahiaID, Map<String, String> containerProperties) {
+    public void setProperties(int containerID, int jahiaID, Map<Object, Object> containerProperties) {
         dao.saveProperties((containerID), (jahiaID), containerProperties);
     }
 
@@ -1355,15 +1357,15 @@ public class JahiaContainerManager {
      * @param parameters
      * @return
      */
-    public <E> List<E> executeQuery(String queryString, Map parameters) {
+    public <E> List<E> executeQuery(String queryString, Map<Object, Object> parameters) {
         return dao.executeQuery(queryString, parameters);
     }
 
-    public List<Integer> getContainerIDsOnPagesHavingAcls(Set pageIDs, Set aclIDs) {
+    public List<Integer> getContainerIDsOnPagesHavingAcls(Set<Integer> pageIDs, Set<Integer> aclIDs) {
         return dao.getContainerIDsOnPagesHavingAcls(pageIDs, aclIDs);
     }
 
-    public List<Integer> getContainerIDsHavingAcls(Set aclIDs) {
+    public List<Integer> getContainerIDsHavingAcls(Set<Integer> aclIDs) {
         return dao.getContainerIDsHavingAcls(aclIDs);
     }
 

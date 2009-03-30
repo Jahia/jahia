@@ -84,6 +84,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class JahiaGroup implements Group, Serializable {
 
+    private static final long serialVersionUID = 3192050315335252786L;
+
     public static final String PROPERTY_ENFORCE_PASSWORD_POLICY = "enforcePasswordPolicy";
 
     private static org.apache.log4j.Logger logger =

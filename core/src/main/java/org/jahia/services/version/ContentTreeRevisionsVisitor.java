@@ -76,8 +76,7 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
     protected int revisionEntryType = CONTENT_REVISION_ENTRY;
 
     protected ContentTree contentTree;
-    protected List revisionsList;
-    protected Map revisionsStates;
+    protected List<RevisionEntrySet> revisionsList;
 
     /** lower revision date limit **/
     protected long fromRevisionDate;
@@ -128,8 +127,7 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
                                        EntryLoadRequest loadRequest,
                                        String operationMode){
         super(user,loadRequest,operationMode);
-        this.revisionsList = new ArrayList();
-        this.revisionsStates = new HashMap();
+        this.revisionsList = new ArrayList<RevisionEntrySet>();
         this.contentTree = new ContentTree(rootContentObject);
     }
 
@@ -188,7 +186,7 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
      * Return the internal list of revisions
      * @return
      */
-    public List getRevisions(){
+    public List<RevisionEntrySet> getRevisions(){
         return this.revisionsList;
     }
 
@@ -236,7 +234,7 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
      * @param currentPageLevel
      * @return
      */
-    public List<ContentObject> getChilds(ContentObject contentObject,
+    public List<? extends ContentObject> getChilds(ContentObject contentObject,
                                int currentPageLevel)
     throws JahiaException{
 
@@ -266,18 +264,18 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
             try {
                 rootObject = (ContentObject) JahiaObject.getInstance(rootObject.getObjectKey());
                 this.contentTree = new ContentTree(rootObject);
-                this.revisionsList = new ArrayList();
+                this.revisionsList = new ArrayList<RevisionEntrySet>();
                 getContentTree().iterate(this);
 
                 // loading stagings
                 if ( this.isWithStagingRevisions() ){
                     EntryLoadRequest versionedLoadRequest = this.getEntryLoadRequest();
-                    List locales = new ArrayList();
-                    Iterator it = versionedLoadRequest.getLocales().iterator();
+                    List<Locale> locales = new ArrayList<Locale>();
+                    Iterator<Locale> it = versionedLoadRequest.getLocales().iterator();
                     Locale loc = null;
                     while ( it.hasNext() ){
                         loc = (Locale)it.next();
-                        locales.add(loc.clone());
+                        locales.add((Locale)loc.clone());
                     }
                     EntryLoadRequest stagedEntryLoadRequest = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE,0,
                             locales);
@@ -291,8 +289,8 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
             }
 
             // filter out all revisions at which the rootObject is deleted
-            List result = new ArrayList();
-            List revisions = this.getRevisions();
+            List<RevisionEntrySet> result = new ArrayList<RevisionEntrySet>();
+            List<RevisionEntrySet> revisions = this.getRevisions();
             int size = revisions.size();
             RevisionEntrySet rs = null;
             rootObject = this.getContentTree().getRootContentObject();
@@ -514,7 +512,7 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
      */
     protected void addRevision(RevisionEntry revisionEntry,
                                RevisionEntrySet revisionEntrySet,
-                               List revisions){
+                               List<RevisionEntrySet> revisions){
 
         if ( revisionEntry.getWorkflowState()>EntryLoadRequest.ACTIVE_WORKFLOW_STATE ){
             ContentObject contentObject = null;
@@ -589,7 +587,7 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
                 res = (RevisionEntrySet)revisionsList.get(revIndex);
             }
         } else {
-            res = (RevisionEntrySet)revisions.get(revIndex);
+            res = revisions.get(revIndex);
         }
         if ( res != null ){
             res.addRevision(revisionEntry);
@@ -636,9 +634,9 @@ public abstract class ContentTreeRevisionsVisitor extends AbstractContentTreeVis
     }
 
 
-    public void sort(Comparator comparator){
-        Object[] array = this.getRevisions().toArray();
+    public void sort(Comparator<RevisionEntrySet> comparator){
+        RevisionEntrySet[] array = this.getRevisions().toArray(new RevisionEntrySet[this.getRevisions().size()]);
         Arrays.sort(array,comparator);
-        this.revisionsList = new ArrayList(Arrays.asList(array));
+        this.revisionsList = new ArrayList<RevisionEntrySet>(Arrays.asList(array));
     }
 }

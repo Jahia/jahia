@@ -44,6 +44,8 @@
  */
 public class ContainerDefinitionKey extends ContentDefinitionKey {
 
+    private static final long serialVersionUID = 749054403418530083L;
+    
     public static final String CONTAINER_TYPE = "ContainerDefinition";
 
     static {

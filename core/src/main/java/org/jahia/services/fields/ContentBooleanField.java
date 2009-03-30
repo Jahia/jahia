@@ -49,6 +49,8 @@ public class ContentBooleanField extends ContentField implements ContentSimpleFi
     private static org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger (ContentBooleanField.class);
 
+    private static final long serialVersionUID = -5628568671070258190L;
+
     //--------------------------------------------------------------------------
     protected ContentBooleanField (Integer ID,
                                    Integer jahiaID,

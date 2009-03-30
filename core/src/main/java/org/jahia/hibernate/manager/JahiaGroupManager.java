@@ -75,8 +75,8 @@ public class JahiaGroupManager {
     private JahiaSiteDAO siteDAO = null;
     private CacheService cacheService = null;
     private Logger log = Logger.getLogger(JahiaGroupManager.class);
-    private Cache cache = null;
-    private Cache membership = null;
+    private Cache<GroupCacheKey, JahiaGroup> cache = null;
+    private Cache<String, List<String>> membership = null;
 
     private JahiaUserManagerService userService;
 
@@ -210,7 +210,7 @@ public class JahiaGroupManager {
             }
         }
         if (cache != null) {
-            group = (JahiaGroup) cache.get(CacheAdvice.toGroupCacheKey(new Object[]{CACHE_KEY_GROUPPREFIX + name + ":" + siteID,
+            group = cache.get(CacheAdvice.toGroupCacheKey(new Object[]{CACHE_KEY_GROUPPREFIX + name + ":" + siteID,
                                                                                     CACHE_KEY_SITEPREFIX + siteID}));
         }
         if (group == null) {
@@ -267,7 +267,7 @@ public class JahiaGroupManager {
             }
             entryKey = CacheAdvice.toGroupCacheKey(new Object[]{CACHE_KEY_GROUPPREFIX + groupKey,
                                                                 CACHE_KEY_SITEPREFIX + groupKey.substring(keys + 1)});
-            group = (JahiaGroup) cache.get(entryKey);
+            group = cache.get(entryKey);
         }
         if (group == null) {
             JahiaGrp jahiaGrp = dao.loadJahiaGroupByGroupKey(groupKey);
@@ -335,7 +335,7 @@ public class JahiaGroupManager {
         }
         if (membership != null) {
             if (membership.containsKey(name)) {
-                List<String> result = (List<String>) membership.get(name);
+                List<String> result = membership.get(name);
                 if (result != null) {
                     return result;
                 }

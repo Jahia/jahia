@@ -48,7 +48,6 @@ import org.jahia.services.sites.JahiaSitesBaseService;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.Cache;
 import org.springframework.orm.ObjectRetrievalFailureException;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -132,15 +131,14 @@ public class JahiaSiteManager {
         }
     }
 
-    public List getSites() {
-        List list = this.dao.getSites();
-        List retList = new ArrayList(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            org.jahia.hibernate.model.JahiaSite jahiaSite = (org.jahia.hibernate.model.JahiaSite) list.get(i);
+    public List<JahiaSite> getSites() {
+        List<org.jahia.hibernate.model.JahiaSite> list = this.dao.getSites();
+        List<JahiaSite> retList = new ArrayList<JahiaSite>(list.size());
+        for (org.jahia.hibernate.model.JahiaSite jahiaSite : list) {
             JahiaSite convertedSite = null;
-            Cache cache = cacheService.getCache(JahiaSitesBaseService.SITE_CACHE_BYID);
+            Cache<Comparable<?>, JahiaSite> cache = cacheService.getCache(JahiaSitesBaseService.SITE_CACHE_BYID);
             if (cache != null) {
-                convertedSite = (JahiaSite) cache.get(jahiaSite.getId());
+                convertedSite = cache.get(jahiaSite.getId());
             }
             if (convertedSite == null) {
                 convertedSite = convertModelJahiaSiteToServiceJahiaSite(jahiaSite);
@@ -179,10 +177,11 @@ public class JahiaSiteManager {
         }
 
         Properties props = new Properties();
-        Iterator iterator = sitePropertyDAO.getSitePropById(jahiaSite.getId()).iterator();
-        JahiaSiteProp jahiaSiteProp = null;
+
+        Iterator<JahiaSiteProp> iterator = sitePropertyDAO.getSitePropById(jahiaSite.getId()).iterator();
+
         while ( iterator.hasNext() ){
-            jahiaSiteProp = (JahiaSiteProp)iterator.next();
+            JahiaSiteProp jahiaSiteProp = iterator.next();
             props.put(jahiaSiteProp.getComp_id().getName(),jahiaSiteProp.getValue() == null ? "" : jahiaSiteProp.getValue());
         }
 

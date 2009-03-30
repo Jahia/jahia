@@ -728,7 +728,6 @@ public class JahiaContainer implements Serializable, Cloneable, ACLResourceInter
 
         ContentPage sourcePage = ContentPage.getPage(this.getPageID());
         if (sourcePage != null && this.fields != null) {
-            int pageDefID = sourcePage.getPageTemplateID(jParams);
             Iterator<JahiaContainerStructure> structure = this.getDefinition().getStructure(
                     JahiaContainerStructure.JAHIA_FIELD);
             while (structure.hasNext()) {
@@ -939,7 +938,7 @@ public class JahiaContainer implements Serializable, Cloneable, ACLResourceInter
         if (ctnProperties == null) {
             try {
                 Properties tempProperties = new Properties();
-                for (Map.Entry<String, String> entry : ServicesRegistry.getInstance()
+                for (Map.Entry<Object, Object> entry : ServicesRegistry.getInstance()
                         .getJahiaContainersService().getContainerProperties(
                                 getID()).entrySet()) {
                     if (entry.getValue() != null)

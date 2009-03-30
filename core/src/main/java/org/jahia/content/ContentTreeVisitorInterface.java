@@ -130,7 +130,7 @@ public interface ContentTreeVisitorInterface {
      * @param currentPageLevel
      * @return
      */
-    public abstract List<ContentObject> getChilds(ContentObject contentObject,
+    public abstract List<? extends ContentObject> getChilds(ContentObject contentObject,
                                         int currentPageLevel)
     throws JahiaException;
 

@@ -57,7 +57,9 @@ import java.util.Set;
 
 
 public class ContentFileField extends ContentField {
-    private static org.apache.log4j.Logger logger =
+    private static final long serialVersionUID = 701288568949223178L;
+    
+        private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (ContentFileField.class);
 
     protected ContentFileField (Integer ID,

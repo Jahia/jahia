@@ -403,7 +403,7 @@ public class CacheEventListener extends JahiaEventListener {
 
             } else if (source instanceof JahiaContainerList) {
                 JahiaContainerList jahiaContainerList = (JahiaContainerList) source;
-                List<ContentObject> list = jahiaContainerList.getContentContainerList()
+                List<? extends ContentObject> list = jahiaContainerList.getContentContainerList()
                             .getChilds(JahiaAdminUser.getAdminUser(0), EntryLoadRequest.STAGED);
                     List<Locale> languageSettings = je.getProcessingContext().getSite().getLanguageSettingsAsLocales(true);
                     for (ContentObject contentObject : list) {

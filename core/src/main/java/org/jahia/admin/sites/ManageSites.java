@@ -93,6 +93,7 @@ import javax.servlet.http.HttpSession;
 import javax.jcr.RepositoryException;
 
 import java.io.*;
+import java.security.Principal;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -233,8 +234,8 @@ public class ManageSites extends AbstractAdministrationModule {
         }
 
         try {
-            Iterator siteEnum = sMgr.getSites();
-            List sortedSites = new ArrayList();
+            Iterator<JahiaSite> siteEnum = sMgr.getSites();
+            List<JahiaSite> sortedSites = new ArrayList<JahiaSite>();
             while (siteEnum.hasNext()) {
                 JahiaSite curSite = (JahiaSite) siteEnum.next();
                 sortedSites.add(curSite);
@@ -346,7 +347,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         session.setAttribute(CLASS_NAME + "adminPassword", "");
 
-        List grantedSites = new ArrayList();
+        List<JahiaSite> grantedSites = new ArrayList<JahiaSite>();
         if (theUser != null) {
             try {
                 grantedSites = ServicesRegistry.getInstance()
@@ -355,7 +356,7 @@ public class ManageSites extends AbstractAdministrationModule {
             } catch (JahiaException je) {
             }
             if (grantedSites == null) {
-                grantedSites = new ArrayList();
+                grantedSites = new ArrayList<JahiaSite>();
             } else {
                 Locale defaultLocale = (Locale) session.getAttribute(ProcessingContext.SESSION_LOCALE);
                 if (defaultLocale != null) {
@@ -701,8 +702,8 @@ public class ManageSites extends AbstractAdministrationModule {
         try {
             // get admins list...
             JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            Iterator allSites = sMgr.getSites();
-            List sitesList = new ArrayList();
+            Iterator<JahiaSite> allSites = sMgr.getSites();
+            List<JahiaSite> sitesList = new ArrayList<JahiaSite>();
             Integer siteIDInteger = new Integer(selectedSite);
 
             // clean sites...
@@ -728,16 +729,16 @@ public class ManageSites extends AbstractAdministrationModule {
 
             // get users... only if allSites is not null...
             if ((allSites != null) && (!selectedSite.equals("0"))) {
-                List allAdministrators = new ArrayList();
+                List<Map<String, String>> allAdministrators = new ArrayList<Map<String, String>>();
 
                 JahiaGroup adminGroup = groupManager.getAdministratorGroup(siteIDInteger.intValue());
-                Enumeration admins = adminGroup.members();
+                Enumeration<Principal> admins = adminGroup.members();
 
                 while (admins.hasMoreElements()) {
                     try {
                         JahiaUser user = (JahiaUser) admins.nextElement();
                         if (!user.isRoot()) {
-                            Map adminHash = new HashMap();
+                            Map<String, String> adminHash = new HashMap<String, String>();
                             adminHash.put("key", user.getUserKey());
                             adminHash.put("username", user.getUsername());
                             allAdministrators.add(adminHash);
@@ -927,8 +928,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         SortedMap<String, String> themes = new TreeMap<String, String>();
         if (selectedPackage != null) {
-            for (Iterator iterator = selectedPackage.getLookupPath().iterator(); iterator.hasNext();) {
-                String rootFolderPath = (String) iterator.next();
+            for (String rootFolderPath : selectedPackage.getLookupPath()) {
                 File f = new File(Jahia.getStaticServletConfig().getServletContext().getRealPath(rootFolderPath + "/theme"));
                 if (f.exists()) {
                     for (String s : f.list()) {
@@ -1650,13 +1650,9 @@ public class ManageSites extends AbstractAdministrationModule {
             request.setAttribute("siteID", siteID);
 
             // list of user providers
-            JahiaUserManagerProvider usrProviderBean;
             JahiaUserManagerService userServ = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            List v = userServ.getProviderList();
-            int size = v.size();
-            List usrProviders = new ArrayList();
-            for (int i = 0; i < size; i++) {
-                usrProviderBean = (JahiaUserManagerProvider) v.get(i);
+            List<JahiaUserManagerProvider> usrProviders = new ArrayList<JahiaUserManagerProvider>();
+            for (JahiaUserManagerProvider usrProviderBean : userServ.getProviderList()) {
                 if (!usrProviderBean.isReadOnly()) {
                     usrProviders.add(usrProviderBean);
                 }
@@ -1731,7 +1727,7 @@ public class ManageSites extends AbstractAdministrationModule {
             throws IOException, ServletException {
         //logger.debug(" display delete site started ");
 
-        List sites = new ArrayList();
+        List<JahiaSite> sites = new ArrayList<JahiaSite>();
         String[] sitekeys = request.getParameterValues("sitebox");
         if (sitekeys != null) {
             for (int i = 0; i < sitekeys.length; i++) {
@@ -1747,13 +1743,9 @@ public class ManageSites extends AbstractAdministrationModule {
         request.setAttribute("sites", sites);
 
         // list of user providers
-        JahiaUserManagerProvider usrProviderBean;
         JahiaUserManagerService userServ = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        List v = userServ.getProviderList();
-        int size = v.size();
-        List usrProviders = new ArrayList();
-        for (int i = 0; i < size; i++) {
-            usrProviderBean = (JahiaUserManagerProvider) v.get(i);
+        List<JahiaUserManagerProvider> usrProviders = new ArrayList<JahiaUserManagerProvider>();
+        for (JahiaUserManagerProvider usrProviderBean : userServ.getProviderList()) {
             if (!usrProviderBean.isReadOnly()) {
                 usrProviders.add(usrProviderBean);
             }
@@ -1784,7 +1776,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
         try {
             // get site...
-            List sites = new ArrayList();
+            List<JahiaSite> sites = new ArrayList<JahiaSite>();
             String[] sitekeys = request.getParameterValues("sitebox");
             for (int i = 0; i < sitekeys.length; i++) {
                 String sitekey = sitekeys[i];
@@ -1798,8 +1790,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             boolean deleteFiles = request.getParameter("deleteFileRepository") != null;
 
-            for (Iterator iterator = sites.iterator(); iterator.hasNext();) {
-                JahiaSite site = (JahiaSite) iterator.next();
+            for (JahiaSite site : sites) {
                 delete(site, theUser, deleteFiles);
                 changeSiteIfCurrent(session, site);
             }
@@ -1838,10 +1829,9 @@ public class ManageSites extends AbstractAdministrationModule {
 
         // first let's build a list of the all the sites except the
         // current one.
-        Iterator siteEnum = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
-        List otherSites = new ArrayList();
-        while (siteEnum.hasNext()) {
-            JahiaSite curSite = (JahiaSite) siteEnum.next();
+        List<JahiaSite> otherSites = new ArrayList<JahiaSite>();
+        for (Iterator<JahiaSite> siteIt = ServicesRegistry.getInstance().getJahiaSitesService().getSites(); siteIt.hasNext();) {
+            JahiaSite curSite = siteIt.next();
             if (!curSite.getSiteKey().equals(site.getSiteKey())) {
                 otherSites.add(curSite);
             }
@@ -1908,10 +1898,10 @@ public class ManageSites extends AbstractAdministrationModule {
                                        HttpSession session) throws IOException, ServletException {
         FileUpload fileUpload = ((ParamBean) jParams).getFileUpload();
         if (fileUpload != null) {
-            Set filesName = fileUpload.getFileNames();
-            Iterator iterator = filesName.iterator();
+            Set<String> filesName = fileUpload.getFileNames();
+            Iterator<String> iterator = filesName.iterator();
             if (iterator.hasNext()) {
-                String n = (String) iterator.next();
+                String n = iterator.next();
                 File f = fileUpload.getFile(n);
                 prepareFileImports(f, fileUpload.getFileSystemName(n), request);
             }
@@ -1926,7 +1916,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
         }
         if (jParams.getSessionState().getAttribute("importsInfos") != null) {
-            if (!((List) jParams.getSessionState().getAttribute("importsInfos")).isEmpty()) {
+            if (!((List<?>) jParams.getSessionState().getAttribute("importsInfos")).isEmpty()) {
                 request.setAttribute("tmplSets", ServicesRegistry.getInstance()
                         .getJahiaTemplateManagerService()
                         .getAvailableTemplatePackages());
@@ -1976,8 +1966,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     } else if (n.equals("site.properties") || ((n.startsWith("export_") && n.endsWith(".xml")))) {
                         // this is a single site import, stop everything and import
                         i.delete();
-                        for (Iterator iterator = imports.keySet().iterator(); iterator.hasNext();) {
-                            File file = (File) iterator.next();
+                        for (File file : imports.keySet()) {
                             file.delete();
                         }
                         imports.clear();
@@ -1993,14 +1982,14 @@ public class ManageSites extends AbstractAdministrationModule {
                     }
                 }
 
-                List<Map> importsInfos = new ArrayList<Map>();
-                Map importsInfosSorted = new TreeMap();
+                List<Map<Object, Object>> importsInfos = new ArrayList<Map<Object, Object>>();
+                Map<String, File> importsInfosSorted = new TreeMap<String, File>();
                 File users = null;
                 File serverPermissions = null;
                 for (Iterator<File> iterator = importList.iterator(); iterator.hasNext();) {
                     File i = iterator.next();
                     String fileName = imports.get(i);
-                    Map value = prepareSiteImport(i, imports.get(i));
+                    Map<Object, Object> value = prepareSiteImport(i, imports.get(i));
                     if (value != null) {
                         importsInfos.add(value);
                         if ("users.xml".equals(fileName)) {
@@ -2013,7 +2002,7 @@ public class ManageSites extends AbstractAdministrationModule {
                     }
                 }
 
-                List sorted = new LinkedList(importsInfosSorted.values());
+                List<File> sorted = new LinkedList<File>(importsInfosSorted.values());
                 if (serverPermissions != null) {
                     sorted.add(0, serverPermissions);
                 }
@@ -2036,8 +2025,8 @@ public class ManageSites extends AbstractAdministrationModule {
         request.setAttribute("tmplSets", Collections.emptyList());
     }
 
-    private Map prepareSiteImport(File i, String filename) throws IOException {
-        Map importInfos = new HashMap();
+    private Map<Object, Object> prepareSiteImport(File i, String filename) throws IOException {
+        Map<Object, Object> importInfos = new HashMap<Object, Object>();
         importInfos.put("importFile", i);
         importInfos.put("importFileName", filename);
         importInfos.put("selected", Boolean.TRUE);
@@ -2093,11 +2082,10 @@ public class ManageSites extends AbstractAdministrationModule {
     private void processFileImport(HttpServletRequest request,
                                    HttpServletResponse response,
                                    HttpSession session) throws IOException, ServletException {
-        List importsInfos = (List) session.getAttribute("importsInfos");
-        Map siteKeyMapping = new HashMap();
+        List<Map<Object, Object>> importsInfos = (List<Map<Object, Object>>) session.getAttribute("importsInfos");
+        Map<Object, Object> siteKeyMapping = new HashMap<Object, Object>();
         boolean stillBad = false;
-        for (Iterator iterator = importsInfos.iterator(); iterator.hasNext();) {
-            Map infos = (Map) iterator.next();
+        for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
             infos.put("sitekey", StringUtils.left(request.getParameter(file.getName() + "siteKey") == null ? null : request.getParameter(file.getName() + "siteKey").trim(), 50));
             infos.put("oldsitekey", request.getParameter(file.getName() + "oldSiteKey") == null ? null : request.getParameter(file.getName() + "oldSiteKey").trim());
@@ -2150,8 +2138,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             boolean doImportServerPermissions = false;
             if (authorizedForServerPermissions) {
-                for (Iterator iterator = importsInfos.iterator(); iterator.hasNext();) {
-                    Map infos = (Map) iterator.next();
+                for (Map<Object, Object> infos : importsInfos) {
                     File file = (File) infos.get("importFile");
                     if (request.getParameter(file.getName() + "selected") != null
                             && infos.get("importFileName").equals(
@@ -2163,8 +2150,7 @@ public class ManageSites extends AbstractAdministrationModule {
             }
             request.setAttribute("doImportServerPermissions", Boolean.valueOf(doImportServerPermissions));
 
-            for (Iterator iterator = importsInfos.iterator(); iterator.hasNext();) {
-                Map infos = (Map) iterator.next();
+            for (Map<Object, Object> infos : importsInfos) {
                 File file = (File) infos.get("importFile");
                 if (request.getParameter(file.getName() + "selected") != null
                         && infos.get("importFileName").equals("users.xml")) {
@@ -2173,8 +2159,7 @@ public class ManageSites extends AbstractAdministrationModule {
                 }
             }
 
-            for (Iterator iterator = importsInfos.iterator(); iterator.hasNext();) {
-                Map infos = (Map) iterator.next();
+            for (Map<Object, Object> infos : importsInfos) {
                 File file = (File) infos.get("importFile");
                 if (request.getParameter(file.getName() + "selected") != null) {
                     if (infos.get("type").equals("files")) {
@@ -2204,8 +2189,7 @@ public class ManageSites extends AbstractAdministrationModule {
 
             // import serverPermissions.xml
             if (doImportServerPermissions) {
-                for (Iterator iterator = importsInfos.iterator(); iterator.hasNext();) {
-                    Map infos = (Map) iterator.next();
+                for (Map<Object, Object> infos : importsInfos) {
                     File file = (File) infos.get("importFile");
                     if (request.getParameter(file.getName() + "selected") != null) {
                         if (infos.get("importFileName").equals(
@@ -2229,7 +2213,7 @@ public class ManageSites extends AbstractAdministrationModule {
             session.removeAttribute(CLASS_NAME + "redirectToJahia");
             try {
                 setAllowedDayRequestAttr(request);
-                List l = ServicesRegistry.getInstance().getSchedulerService().getAllActiveJobsDetails();
+                List<?> l = ServicesRegistry.getInstance().getSchedulerService().getAllActiveJobsDetails();
                 if (!l.isEmpty()) {
                     JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "import_wait.jsp");
                 } else {

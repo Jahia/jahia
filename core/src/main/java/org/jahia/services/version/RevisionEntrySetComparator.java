@@ -46,7 +46,7 @@ import java.util.Comparator;
  * @author Khue Nguyen
  * @version 1.0
  */
-public class RevisionEntrySetComparator implements Comparator {
+public class RevisionEntrySetComparator implements Comparator<RevisionEntrySet> {
 
     public static final int ASC_ORDER = 1;
     public static final int DESC_ORDER = 2;
@@ -78,11 +78,7 @@ public class RevisionEntrySetComparator implements Comparator {
      * @param object2
      * @return
      */
-    public int compare(Object object1, Object object2) {
-
-        RevisionEntrySet rev1 = (RevisionEntrySet)object1;
-        RevisionEntrySet rev2 = (RevisionEntrySet)object2;
-
+    public int compare(RevisionEntrySet rev1, RevisionEntrySet rev2) {
         if (this.sortAttribute == RevisionEntrySetComparator.SORT_BY_DATE) {
             if ( this.sortOrder == RevisionEntrySetComparator.ASC_ORDER ){
                 return (new Integer(rev1.getVersionID())

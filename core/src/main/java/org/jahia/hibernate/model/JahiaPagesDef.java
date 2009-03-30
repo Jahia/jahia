@@ -44,6 +44,8 @@ import java.util.Map;
  */
 public class JahiaPagesDef implements Serializable {
 
+    private static final long serialVersionUID = 1808952211890398936L;
+
     /**
      * identifier field
      */
@@ -89,14 +91,14 @@ public class JahiaPagesDef implements Serializable {
     /**
      * persistent field
      */
-    private Map properties;
+    private Map<String, String> properties;
 
     /**
      * full constructor
      */
     public JahiaPagesDef(Integer idJahiaPagesDef, JahiaSite jahiaidJahiaPagesDef, String nameJahiaPagesDef,
                          String sourcepathJahiaPagesDef, Boolean visibleJahiaPagesDef, Integer browsableJahiaPagesDef,
-                         String warningMsgJahiaPagesDef, String imgJahiaPagesDef, Map jahiaPagesDefProps) {
+                         String warningMsgJahiaPagesDef, String imgJahiaPagesDef, Map<String, String> jahiaPagesDefProps) {
         this.id = idJahiaPagesDef;
         this.site = jahiaidJahiaPagesDef;
         this.name = nameJahiaPagesDef;
@@ -117,7 +119,7 @@ public class JahiaPagesDef implements Serializable {
     /**
      * minimal constructor
      */
-    public JahiaPagesDef(Integer idJahiaPagesDef, Map jahiaPagesDefProps) {
+    public JahiaPagesDef(Integer idJahiaPagesDef, Map<String, String> jahiaPagesDefProps) {
         this.id = idJahiaPagesDef;
         this.properties = jahiaPagesDefProps;
     }
@@ -240,11 +242,11 @@ public class JahiaPagesDef implements Serializable {
      * @hibernate.collection-cache usage="nonstrict-read-write"
      * @return
      */
-    public Map getProperties() {
+    public Map<String, String> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map properties) {
+    public void setProperties(Map<String, String> properties) {
         this.properties = properties;
     }
     public String toString() {

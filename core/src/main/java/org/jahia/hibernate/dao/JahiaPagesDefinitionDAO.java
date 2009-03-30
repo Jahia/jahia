@@ -37,7 +37,6 @@
 package org.jahia.hibernate.dao;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,13 +58,12 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    public List getAllPageTemplateIDs() {
+    public List<Integer> getAllPageTemplateIDs() {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        List list = template.find("select def.id from JahiaPagesDef def order by def.name");
+        List<Object[]> list = template.find("select def.id from JahiaPagesDef def order by def.name");
         FastArrayList retList = new FastArrayList(list.size());
-        for (Iterator it = list.iterator(); it.hasNext();) {
-            Object[] objects = (Object[]) it.next();
+        for (Object[] objects : list) {
             retList.add(objects[0]);
         }
         retList.setFast(true);
@@ -77,9 +75,9 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
         String hql = "select count(def.id) from JahiaPagesDef def ";
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        List list = template.find(hql.toString());
+        List<Long> list = template.find(hql.toString());
         if (!list.isEmpty()) {
-            retInteger = (Long) list.get(0);
+            retInteger = list.get(0);
         }
         return new Integer(retInteger.intValue());
     }
@@ -99,8 +97,8 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
         return (JahiaPagesDef) template.load(JahiaPagesDef.class, definitionID);
     }
 
-    public List getAllAclId(Integer siteId) {
-        List retList = null;
+    public List<Integer> getAllAclId(Integer siteId) {
+        List<Integer> retList = null;
         String hql = "select def.value from JahiaPagesDefProp def where def.comp_id.site=? and def.comp_id.name=?";
         if (siteId != null) {
             final HibernateTemplate template = getHibernateTemplate();
@@ -116,9 +114,9 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
         if (siteId != null) {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
-            List list = template.find(hql.toString(), new Object[]{siteId});
+            List<Long> list = template.find(hql.toString(), new Object[]{siteId});
             if (!list.isEmpty()) {
-                retInteger = (Long) list.get(0);
+                retInteger = list.get(0);
             }
         }
         return new Integer(retInteger.intValue());
@@ -130,9 +128,9 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
         if (siteId != null && path != null) {
             final HibernateTemplate template = getHibernateTemplate();
             template.setCacheQueries(true);
-            List list = template.find(hql.toString(), new Object[]{siteId, path});
+            List<Integer> list = template.find(hql.toString(), new Object[]{siteId, path});
             if (!list.isEmpty()) {
-                retInteger = (Integer) list.get(0);
+                retInteger = list.get(0);
             }
         }
         return retInteger;
@@ -147,10 +145,10 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
     public JahiaPagesDef loadPageTemplate(String templateName, Integer siteId) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        List defs = template.find(
+        List<JahiaPagesDef> defs = template.find(
                 "from JahiaPagesDef d where d.name=? and d.site.id=?",
                 new Object[] { templateName, siteId });
-        return (JahiaPagesDef) (defs.size() > 0 ? defs.get(0) : null);
+        return (defs.size() > 0 ? defs.get(0) : null);
     }
 
     public void save(JahiaPagesDef def) {
@@ -171,32 +169,29 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
     }
 
     private void saveProperties(JahiaPagesDef ctnDef, final HibernateTemplate template) {
-        final Map properties = ctnDef.getProperties();
+        final Map<String, String> properties = ctnDef.getProperties();
         if (properties != null && !properties.isEmpty()) {
             template.deleteAll(template.find(
                     "from JahiaPagesDefProp p where p.comp_id.id=?", ctnDef
                             .getId()));
             template.flush();
             
-            for (Iterator iterator = properties.entrySet().iterator(); iterator
-                    .hasNext();) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
                 template.save(new JahiaPagesDefProp(new JahiaPagesDefPropPK(
                         ctnDef.getId(), ctnDef.getSite().getId(),
-                        (String) entry.getKey()), (String) entry.getValue()));
+                        entry.getKey()), entry.getValue()));
             }
             template.flush();
         }
     }
 
-    public List deleteAllTemplatesFromSite(Integer siteID) {
+    public List<PageDefinitionKey> deleteAllTemplatesFromSite(Integer siteID) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         template.deleteAll(template.find("from JahiaPagesDefProp def where def.comp_id.site=?",siteID));
-        List entities = template.find("from JahiaPagesDef def where def.site.id=?", siteID);
-        List retList = new ArrayList(entities.size());
-        for (Iterator it = entities.iterator(); it.hasNext();) {
-            JahiaPagesDef def = (JahiaPagesDef) it.next();
+        List<JahiaPagesDef> entities = template.find("from JahiaPagesDef def where def.site.id=?", siteID);
+        List<PageDefinitionKey> retList = new ArrayList<PageDefinitionKey>(entities.size());
+        for (JahiaPagesDef def : entities) {
             retList.add(new PageDefinitionKey(def.getId().intValue()));
         }
         template.deleteAll(entities);
@@ -214,7 +209,7 @@ public class JahiaPagesDefinitionDAO extends AbstractGeneratorDAO {
      * @return a list of page definition IDs for the given site, considering
      *         visibility
      */
-    public List getPageTemplateIDs(int siteId, boolean availableOnly) {
+    public List<Integer> getPageTemplateIDs(int siteId, boolean availableOnly) {
         final HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         return availableOnly ? template

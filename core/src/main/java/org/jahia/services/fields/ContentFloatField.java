@@ -47,6 +47,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class ContentFloatField extends ContentField implements ContentSimpleField {
+    private static final long serialVersionUID = 2715564354012860698L;
+
     private static org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger (ContentFloatField.class);
 

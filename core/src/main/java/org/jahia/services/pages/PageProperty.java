@@ -53,6 +53,8 @@ import java.util.Set;
 
 public class PageProperty implements Serializable {
 
+    private static final long serialVersionUID = 1017505372814119574L;
+
     private final static String SHARED_LANGUAGE_MARKER = "shared";
 
     public final static String PAGE_URL_KEY_PROPNAME = "pageURLKey";

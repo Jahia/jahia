@@ -177,7 +177,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                     .getJahiaPageService();
 
             List<Integer> pageIds = pageService.getPageIdsInSiteOrderById(siteId);
-            List<IndexableDocument> docs = null;
+
             List<RemovableDocument> toRemove = new ArrayList<RemovableDocument>();
             List<IndexableDocument> toAdd = new ArrayList<IndexableDocument>();
             int batchSize = 100;
@@ -188,20 +188,14 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
             } catch ( Exception t) {
                  batchSize = 100;
             }
-            List<Integer> ctnListIds = null;
-            List<Integer> ctnIds = null;
-            Integer ctnId = null;
             ApplicationContext ctx = SpringContextSingleton.getInstance().getContext();
             JahiaContainerDefinitionManager ctnDefManager = (JahiaContainerDefinitionManager)
                     ctx.getBean(JahiaContainerDefinitionManager.class.getName());
-            ContentPage contentPage = null;
-            RuleEvaluationContext ruleCtx = null;
-            IndexationRuleInterface rule = null;
             for (Integer id : pageIds){
                 if ( !checkInterruptStatus(jobDataMap,result,serverId) ){
                     return;
                 }
-                rule = null;
+                IndexationRuleInterface rule = null;
                 if ( lastProcessedPage != -1 ){
                     if ( id.intValue() != lastProcessedPage ) {
                         continue;
@@ -209,6 +203,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                         lastProcessedPage = -1;
                     }
                 }
+                ContentPage contentPage = null;
                 try {
                     contentPage = ContentPage.getPage(id.intValue());
                 } catch ( Exception t ){
@@ -216,7 +211,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                     continue;
                 }
                 if ( contentPage != null ){
-                    ruleCtx = new RuleEvaluationContext(contentPage.getObjectKey(), contentPage, processingContext,user);
+                    RuleEvaluationContext ruleCtx = new RuleEvaluationContext(contentPage.getObjectKey(), contentPage, processingContext,user);
                     try {
                         rule = ServicesRegistry.getInstance()
                             .getJahiaSearchIndexationService()
@@ -227,6 +222,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                     }
                 }
                 if ( rule == null || rule.getIndexationMode() != IndexationRuleInterface.DONT_INDEX ){
+                    List<IndexableDocument> docs = null;
                     try {
                         docs = ServicesRegistry.getInstance().getJahiaSearchService()
                             .getIndexableDocumentsForPage(id.intValue(), user);
@@ -263,17 +259,17 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                         continue;
                     }
                 }                    
-                ctnListIds = containerService.getContainerListIDsInPage(contentPage,loadRequest);
+                List<Integer> ctnListIds = containerService.getContainerListIDsInPage(contentPage,loadRequest);
                 ContentContainer ctn = null;
                 JahiaContainerIndexingJob  indJob = null;
                 for ( Integer listId : ctnListIds ){
                     if ( !checkInterruptStatus(jobDataMap,result,serverId) ){
                         return;
                     }
-                    ctnIds = containerService.getctnidsInList(listId.intValue(), loadRequest);
+                    List<Integer> ctnIds = containerService.getctnidsInList(listId.intValue(), loadRequest);
                     for (Integer ctnIdInt : ctnIds) {
                         rule = null;
-                        ctnId = ctnIdInt;
+                        Integer ctnId = ctnIdInt;
                         ctn = null;
                         try {
                             ctn = ContentContainer.getContainer(ctnId.intValue());
@@ -284,7 +280,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                             return;
                         }
                         if ( ctn != null ){
-                            ruleCtx = new RuleEvaluationContext(ctn.getObjectKey(), ctn, processingContext,user);
+                            RuleEvaluationContext ruleCtx = new RuleEvaluationContext(ctn.getObjectKey(), ctn, processingContext,user);
                             try {
                                 rule = ServicesRegistry.getInstance()
                                     .getJahiaSearchIndexationService()
@@ -471,6 +467,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                     + "_" + LAST_INDEXED_PAGE, String.valueOf(pageId));
             ServicesRegistry.getInstance().getJahiaSitesService().updateSiteProperties(site, settings);
         } catch ( Exception t ) {
+            logger.error("Cannot save last processed page", t);
             return false;
         }
         return true;
@@ -486,6 +483,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                     .getServerId() + "_" + LAST_INDEXED_PAGE,
                     "-1"));                       
         } catch ( Exception t ) {
+            logger.error("Cannot get last processed page", t);
         }
         return pageId;
     }

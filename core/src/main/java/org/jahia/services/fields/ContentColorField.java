@@ -51,6 +51,8 @@ import java.util.Map;
  */
 public class ContentColorField extends ContentSmallTextField {
 
+    private static final long serialVersionUID = 8796938054818487302L;
+
     protected ContentColorField(Integer ID,
                                 Integer jahiaID,
                                 Integer pageID,

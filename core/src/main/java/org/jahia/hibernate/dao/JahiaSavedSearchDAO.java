@@ -40,6 +40,7 @@ import org.hibernate.Session;
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -59,9 +60,9 @@ public class JahiaSavedSearchDAO extends AbstractGeneratorDAO {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
-        List result = template.find("from JahiaSavedSearch s where s.title=?",
+        List<JahiaSavedSearch> result = template.find("from JahiaSavedSearch s where s.title=?",
                 new Object[] { searchTitle });
-        return result.isEmpty() ? null : (JahiaSavedSearch) result.get(0);
+        return result.isEmpty() ? null : result.get(0);
     }
 
     public JahiaSavedSearch save(final JahiaSavedSearch search) {
@@ -88,15 +89,15 @@ public class JahiaSavedSearchDAO extends AbstractGeneratorDAO {
         return search;
     }
 
-    public List getSearches() {
-        List retList = null;
+    public List<JahiaSavedSearch> getSearches() {
+        List<JahiaSavedSearch> retList = null;
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         retList = template.find("from JahiaSavedSearch s order by s.title asc");
         return retList;
     }
 
-    public List getSearches(String owner) {
+    public List<JahiaSavedSearch> getSearches(String owner) {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
@@ -110,14 +111,13 @@ public class JahiaSavedSearchDAO extends AbstractGeneratorDAO {
         template.deleteAll(template.find("from JahiaSavedSearch s where s.id = ?", searchId));
     }
 
-    public Map deleteAllFromSite(Integer siteID) {
+    public Map<Serializable, Integer> deleteAllFromSite(Integer siteID) {
         String queryString = "from JahiaSavedSearch c where c.jahiaSite.id=? ";
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        List list = template.find(queryString,siteID);
-        Map map = new HashMap(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            JahiaSavedSearch data = (JahiaSavedSearch) list.get(i);
+        List<JahiaSavedSearch> list = template.find(queryString,siteID);
+        Map<Serializable, Integer> map = new HashMap<Serializable, Integer>(list.size());
+        for (JahiaSavedSearch data : list) {
             map.put(data.getJahiaAcl().getId(),data.getJahiaAcl().getId());
         }
         template.deleteAll(list);

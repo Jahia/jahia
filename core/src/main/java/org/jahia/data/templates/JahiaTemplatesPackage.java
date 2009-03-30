@@ -44,8 +44,6 @@ package org.jahia.data.templates;
 import java.io.File;
 import java.util.*;
 
-import org.apache.commons.collections.list.UnmodifiableList;
-import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
@@ -118,7 +116,7 @@ public class JahiaTemplatesPackage {
 
     private Map<String, JahiaTemplateDef> templatesReadOnly = Collections.emptyMap();
 
-    private Map<String, JahiaTemplateDef> templates = new TreeMap();
+    private Map<String, JahiaTemplateDef> templates = new TreeMap<String, JahiaTemplateDef>();
 
     private boolean changesMade = false;
 
@@ -147,18 +145,18 @@ public class JahiaTemplatesPackage {
     /**
      * Contains names of the template sets starting from this one, then the direct parent and so on.
      */
-    private List<String> hierarchy = new LinkedList();
+    private List<String> hierarchy = new LinkedList<String>();
 
     /**
      * Contains names of the resource bundles for template sets starting from this one, then the direct parent and so on.
      */
-    private List<String> resourceBundleHierarchy = new LinkedList();
+    private List<String> resourceBundleHierarchy = new LinkedList<String>();
 
     /**
      * Based on hierarchy path, contains root folder paths for each of the
      * template sets in the hierarchy path.
      */
-    private List<String> lookupPath = new LinkedList();
+    private List<String> lookupPath = new LinkedList<String>();
 
     private Map<String, String> properties = new HashMap<String, String>();
 
@@ -245,9 +243,7 @@ public class JahiaTemplatesPackage {
         }
 
         // need to recalculate paths
-        for (Iterator iterator = templates.values().iterator(); iterator
-                .hasNext();) {
-            JahiaTemplateDef tempDef = (JahiaTemplateDef) iterator.next();
+        for (JahiaTemplateDef tempDef : templates.values()) {
             if (tempDef.getParent() == this) {
                 tempDef.setFilePath(new StringBuffer(64).append(
                         getRootFolderPath()).append('/').append(
@@ -397,11 +393,10 @@ public class JahiaTemplatesPackage {
      * @param templateList               a list of template definitions
      * @param inheritedFromParentPackage if templates are inherited from parent package
      */
-    public void addTemplateDefAll(List templateList,
+    public void addTemplateDefAll(List<JahiaTemplateDef> templateList,
                                   boolean inheritedFromParentPackage) {
-        for (Iterator iterator = templateList.iterator(); iterator.hasNext();) {
-            addTemplateDef((JahiaTemplateDef) iterator.next(),
-                    inheritedFromParentPackage);
+        for (JahiaTemplateDef templateDef : templateList) {
+            addTemplateDef(templateDef, inheritedFromParentPackage);
         }
     }
 
@@ -520,14 +515,14 @@ public class JahiaTemplatesPackage {
 
     private void checkForCahnges() {
         if (changesMade) {
-            List tmpList = new LinkedList();
+            List<JahiaTemplateDef> tmpList = new LinkedList<JahiaTemplateDef>();
             tmpList.addAll(templates.values());
-            templateListReadOnly = UnmodifiableList.decorate(tmpList);
-            Map<String, JahiaTemplateDef> tmpMap = new TreeMap();
+            templateListReadOnly = Collections.unmodifiableList(tmpList);
+            Map<String, JahiaTemplateDef> tmpMap = new TreeMap<String, JahiaTemplateDef>();
             for (JahiaTemplateDef def : templateListReadOnly) {
                 tmpMap.put(def.getName(), def);
             }
-            templatesReadOnly = UnmodifiableMap.decorate(tmpMap);
+            templatesReadOnly = Collections.unmodifiableMap(tmpMap);
 
             homePageTemplate = homePageName != null ? templates
                     .get(homePageName) : null;

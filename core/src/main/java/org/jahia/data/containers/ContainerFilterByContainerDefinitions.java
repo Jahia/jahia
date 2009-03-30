@@ -358,7 +358,7 @@ public class ContainerFilterByContainerDefinitions implements Serializable,
     private BitSet doFilteringBySite(Integer[] siteIds,
             String[] containerDefinitionNames, int listId)
             throws JahiaException {
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<Object, Object> parameters = new HashMap<Object, Object>();
         StringBuffer buff = new StringBuffer(
                 "select c.comp_id from JahiaContainer c where ");
         if (siteIds != null && siteIds.length > 0) {

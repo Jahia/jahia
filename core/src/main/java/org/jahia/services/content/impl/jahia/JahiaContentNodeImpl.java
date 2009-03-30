@@ -46,7 +46,6 @@ import javax.jcr.Value;
 import org.jahia.api.Constants;
 import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentObject;
-import org.jahia.content.ContentObjectKey;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
@@ -60,8 +59,6 @@ import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
-import org.jahia.services.workflow.ExternalWorkflowInstanceCurrentInfos;
-import org.jahia.services.workflow.ExternalWorkflow;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.containers.ContentContainer;
 
@@ -109,8 +106,8 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     state = object.getLanguagesStates().get(getProcessingContext().getCurrentLocale().toString());
                 }
                 if (object instanceof ContentContainer) {
-                    List<ContentObject> l = object.getChilds(getProcessingContext().getUser(), getProcessingContext().getEntryLoadRequest());
-                    for (Iterator<ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
+                    List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getProcessingContext().getEntryLoadRequest());
+                    for (Iterator<? extends ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
                         ContentObject child = contentObjectIterator.next();
                         if (child instanceof ContentField) {
                             if (child.isShared()) {
@@ -195,9 +192,8 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
             fields = new ArrayList<Item>();
             emptyFields = new ArrayList<Item>();
             try {
-                List metadatas = object.getMetadatas();
-                for (Object metadata : metadatas) {
-                    ContentField contentField = ((ContentField)metadata);
+                List<ContentField> metadatas = object.getMetadatas();
+                for (ContentField contentField : metadatas) {
                     try {
                         initFieldItem(contentField);
                     } catch (ItemNotFoundException e) {

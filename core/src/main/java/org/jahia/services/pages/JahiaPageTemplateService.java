@@ -101,7 +101,7 @@ public abstract class JahiaPageTemplateService extends JahiaService {
      *
      * @throws JahiaException Return this exception if any failure occurred.
      */
-    public abstract List getAllPageTemplateIDs ()
+    public abstract List<Integer> getAllPageTemplateIDs ()
             throws JahiaException;
 
 
@@ -159,7 +159,7 @@ public abstract class JahiaPageTemplateService extends JahiaService {
      * @return Return an Iterator holding all the page templates matching
      *         the site ID and the visibility requirements.
      */
-    public abstract Iterator getPageTemplates (int siteID, boolean availableOnly)
+    public abstract Iterator<JahiaPageDefinition> getPageTemplates (int siteID, boolean availableOnly)
             throws JahiaException;
 
 
@@ -175,7 +175,7 @@ public abstract class JahiaPageTemplateService extends JahiaService {
      * @return Return an Iterator holding all the page templates matching
      *         the site ID and the visibility requirements.
      */
-    public abstract Iterator getPageTemplates (JahiaUser user, int siteID,
+    public abstract Iterator<JahiaPageDefinition> getPageTemplates (JahiaUser user, int siteID,
                                                   boolean availableOnly)
             throws JahiaException;
 
@@ -225,7 +225,7 @@ public abstract class JahiaPageTemplateService extends JahiaService {
      *
      * @param siteID    the site identification number
      */
-    public abstract List getAclIDs (int siteID)
+    public abstract List<Integer> getAclIDs (int siteID)
             throws JahiaException;
 
     /**

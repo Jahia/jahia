@@ -56,6 +56,7 @@ import org.jahia.services.version.EntryLoadRequest;
  */
 public abstract class ContentDefinition extends JahiaObject implements Serializable {
 
+    private static final long serialVersionUID = 6086558470748000648L;
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(ContentDefinition.class);
     private static JahiaLinkManager linkManager;
@@ -161,7 +162,7 @@ public abstract class ContentDefinition extends JahiaObject implements Serializa
      *
      * @return List of JahiaObject
      */
-    public List getMetadataDefinitions() throws JahiaException {
+    public List<? extends JahiaObject> getMetadataDefinitions() throws JahiaException {
         return getMetadataDefinitions(this);
     }
 
@@ -173,10 +174,10 @@ public abstract class ContentDefinition extends JahiaObject implements Serializa
      * @throws JahiaException
      * @return List of JahiaObject
      */
-    public static List getMetadataDefinitions(ContentDefinition objectKey) throws JahiaException {
-        List objects = new ArrayList();
-        List fields = MetadataBaseService.getInstance().getMatchingMetadatas(objectKey);
-        for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
+    public static List<? extends JahiaObject> getMetadataDefinitions(ContentDefinition objectKey) throws JahiaException {
+        List<JahiaObject> objects = new ArrayList<JahiaObject>();
+        List<ObjectKey> fields = MetadataBaseService.getInstance().getMatchingMetadatas(objectKey);
+        for (Iterator<ObjectKey> iterator = fields.iterator(); iterator.hasNext();) {
             ContentDefinitionKey contentDefinitionKey = (ContentDefinitionKey) iterator.next();
             try {
                 JahiaObject jahiaObject = ContentObject.getInstance(contentDefinitionKey);
@@ -197,7 +198,7 @@ public abstract class ContentDefinition extends JahiaObject implements Serializa
      */
     public JahiaObject getMetadataDefinition(String name) throws JahiaException {
         JahiaObject jahiaObject = null;
-        List links = getLinkManager().findByTypeAndRightObjectKey(
+        List<ObjectLink> links = getLinkManager().findByTypeAndRightObjectKey(
            StructuralRelationship.METADATADEFINITION_LINK,this.getObjectKey());
         for ( int i=0 ; i<links.size(); i++ ){
             ObjectLink link = (ObjectLink)links.get(i);
@@ -235,7 +236,7 @@ public abstract class ContentDefinition extends JahiaObject implements Serializa
     public void removeMetadataDefinition(JahiaObject object,
                                          JahiaObject metadataDefinition)
     throws JahiaException {
-       List links = getLinkManager().findByTypeAndRightObjectKey(
+       List<ObjectLink> links = getLinkManager().findByTypeAndRightObjectKey(
        StructuralRelationship.METADATADEFINITION_LINK,object.getObjectKey());
        for (int i = 0; i < links.size(); i++) {
            ObjectLink link = (ObjectLink) links.get(i);

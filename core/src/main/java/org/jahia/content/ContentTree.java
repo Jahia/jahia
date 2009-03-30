@@ -100,12 +100,12 @@ public class ContentTree {
      * @return
      * @throws JahiaException
      */
-    public List<ContentObject> getContentChilds(ContentObject contentObject,
+    public List<? extends ContentObject> getContentChilds(ContentObject contentObject,
                                       JahiaUser user,
                                       EntryLoadRequest loadRequest,
                                       String operationMode)
     throws JahiaException {
-        List<ContentObject> childs
+        List<? extends ContentObject> childs
                 = contentObject.getChilds(user, loadRequest);
         return childs;
     }
@@ -153,9 +153,9 @@ public class ContentTree {
         // processing childs object
         if ( visitor.withChildsContent()
              && contentTreeStatus.continueWithChilds() ){
-            List<ContentObject> childs = visitor.getChilds(contentObject,
+            List<? extends ContentObject> childs = visitor.getChilds(contentObject,
                                                   currentPageLevel);
-            Iterator<ContentObject> childsIterator = childs.iterator();
+            Iterator<? extends ContentObject> childsIterator = childs.iterator();
             ContentObject childContentObject;
                 while (childsIterator.hasNext()
                        && contentTreeStatus.continueWithChilds()) {

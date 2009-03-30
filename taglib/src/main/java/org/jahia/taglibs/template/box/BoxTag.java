@@ -59,6 +59,7 @@ import java.io.StringWriter;
  *
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class BoxTag extends AbstractJahiaTag {
 
     private static enum OnErrorType {

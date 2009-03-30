@@ -1407,7 +1407,7 @@ public abstract class ContentField extends ContentObject
             if (!systemMetadata.contains(d.getName())) {
                 try {
 
-                    if (hasActiveEntries() || !"".equals(getValue(null,new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,new ArrayList(Arrays.asList(LanguageCodeConverters.languageCodeToLocale(saveRequest.getLanguageCode()))))))) {
+                    if (hasActiveEntries() || !"".equals(getValue(null,new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,new ArrayList<Locale>(Arrays.asList(LanguageCodeConverters.languageCodeToLocale(saveRequest.getLanguageCode()))))))) {
                         ContentObject c = (ContentObject) ContentObject.getInstance(getMetadataOwnerObjectKey());
                         Map<String, Integer> ls = c.getLanguagesStates();
                         for (Map.Entry<String, Integer> languageState : ls.entrySet()) {
@@ -1859,13 +1859,13 @@ public abstract class ContentField extends ContentObject
         }
     }
 
-    public List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
+    public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest)
             throws JahiaException {
         // default implementation returns no children.
         return Collections.emptyList();
     }
 
-    public List<ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest,
+    public List<? extends ContentObject> getChilds(JahiaUser user, EntryLoadRequest loadRequest,
             int loadFlag) throws JahiaException {
         // default implementation returns no children.
         return Collections.emptyList();
@@ -2095,8 +2095,8 @@ public abstract class ContentField extends ContentObject
             try {
                 ContentContainer container = ContentContainer.getContainer(containerID);
                 if (container.getParentContainerListID() > 0) {
-                    Map<String, String> properties = getJahiaContainersService().getContainerListProperties(container.getParentContainerListID());
-                    String aclID = properties.get("view_field_acl_" + getJahiaFieldService().loadFieldDefinition(fieldDefID).getName());
+                    Map<Object, Object> properties = getJahiaContainersService().getContainerListProperties(container.getParentContainerListID());
+                    String aclID = (String)properties.get("view_field_acl_" + getJahiaFieldService().loadFieldDefinition(fieldDefID).getName());
                     if (aclID != null && !"".equals(aclID)) {
                         boolean result = false;
                         try {
@@ -2181,7 +2181,7 @@ public abstract class ContentField extends ContentObject
         return (String) getProperties().get(name);
     }
 
-    public void setProperty(String name, String val) throws JahiaException {
+    public void setProperty(Object name, Object val) throws JahiaException {
         getProperties().put(name, val);
         storeProperties();
     }

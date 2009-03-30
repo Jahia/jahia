@@ -34,6 +34,7 @@
 package org.jahia.services.content.impl.jahia;
 
 import org.apache.commons.collections.map.ListOrderedMap;
+import org.jahia.api.Constants;
 import org.jahia.services.content.NodeIteratorImpl;
 import org.jahia.services.content.PropertyIteratorImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
@@ -97,7 +98,7 @@ public abstract class NodeImpl extends ItemImpl implements Node {
             emptyProperties = new HashMap<String, Property>();
 
             initProperty(new PropertyImpl(session,this,
-                    NodeTypeRegistry.getInstance().getNodeType("nt:base").getPropertyDefinition("jcr:primaryType"),
+                    NodeTypeRegistry.getInstance().getNodeType("nt:base").getPropertyDefinition(Constants.JCR_PRIMARYTYPE),
                     new ValueImpl(nodetype.getName(), PropertyType.NAME)));
         }
     }

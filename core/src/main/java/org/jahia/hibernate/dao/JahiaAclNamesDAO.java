@@ -40,6 +40,7 @@ import org.jahia.hibernate.model.JahiaAclName;
 import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -61,9 +62,9 @@ public class JahiaAclNamesDAO extends AbstractGeneratorDAO {
             final HibernateTemplate template = getHibernateTemplate();
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
             template.setCacheQueries(true);
-            List objects = template.find(hql, name);
+            List<JahiaAclName> objects = template.find(hql, name);
             if (objects.size() == 1) {
-                aclName = (JahiaAclName) objects.get(0);
+                aclName = objects.get(0);
             } else {
                 throw new ObjectRetrievalFailureException(JahiaAclName.class, name);
             }
@@ -71,13 +72,13 @@ public class JahiaAclNamesDAO extends AbstractGeneratorDAO {
         return aclName;
     }
 
-    public List findAclNamesStartingWith(String startWithStr) {
+    public List<JahiaAclName> findAclNamesStartingWith(String startWithStr) {
         String hql = "from JahiaAclName a where a.aclName like ?";
         if (startWithStr != null) {
             final HibernateTemplate template = getHibernateTemplate();
             template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
             template.setCacheQueries(true);
-            List objects = template.find(hql, startWithStr + "%");
+            List<JahiaAclName> objects = template.find(hql, startWithStr + "%");
             return objects;
         }
         throw new ObjectRetrievalFailureException(JahiaAclName.class, startWithStr);
@@ -113,14 +114,13 @@ public class JahiaAclNamesDAO extends AbstractGeneratorDAO {
         hibernateTemplate.flush();
     }
 
-    public Map removeBySiteID(Integer siteID) {
+    public Map<Serializable, Integer> removeBySiteID(Integer siteID) {
         String hql = "from JahiaAclName a where a.aclName like ?";
         final HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        List entities = template.find(hql, "%." + siteID + ".%");
-        Map map = new HashMap(entities.size());
-        for (int i = 0; i < entities.size(); i++) {
-            JahiaAclName aclName = (JahiaAclName) entities.get(i);
+        List<JahiaAclName> entities = template.find(hql, "%." + siteID + ".%");
+        Map<Serializable, Integer> map = new HashMap<Serializable, Integer>(entities.size());
+        for (JahiaAclName aclName : entities) {
             Integer id = aclName.getAcl().getId();
             map.put(id,id);
         }

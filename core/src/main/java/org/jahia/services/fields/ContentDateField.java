@@ -46,7 +46,9 @@ import org.jahia.utils.xml.XmlWriter;
 import java.util.*;
 
 public class ContentDateField extends ContentField {
-    private static org.apache.log4j.Logger logger
+    private static final long serialVersionUID = -4110973150547236683L;
+    
+        private static org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger (ContentDateField.class);
 
     //--------------------------------------------------------------------------

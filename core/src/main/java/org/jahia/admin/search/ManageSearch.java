@@ -97,7 +97,7 @@ public class ManageSearch extends AbstractAdministrationModule {
 
     private JahiaSite site;
     private JahiaUser user;
-    private Map values;
+    private Map<String, Object> values;
 
     private String operation = ""; // current operation
 
@@ -170,9 +170,9 @@ public class ManageSearch extends AbstractAdministrationModule {
         }
 
         // restore data stored in session
-        values = (Map)session.getAttribute ("org.jahia.adminsearch.values." + site.getSiteKey ());
+        values = (Map<String, Object>)session.getAttribute ("org.jahia.adminsearch.values." + site.getSiteKey ());
         if (values == null) {
-            Map values = new HashMap();
+            Map<String, Object> values = new HashMap<String, Object>();
             session.setAttribute ("org.jahia.adminsearch.values." + site.getSiteKey (), values);
             this.values = values;
         }
@@ -341,8 +341,7 @@ public class ManageSearch extends AbstractAdministrationModule {
                                             HttpSession session)
             throws IOException, ServletException, JahiaException {
 
-        String val = null;
-        val = request.getParameter("go");
+        String val = request.getParameter("go");
         String jobSiteKey = request.getParameter("jobSiteKey");
         String serverId = request.getParameter("serverId");
         if ( jobSiteKey != null && serverId != null ){
@@ -566,28 +565,20 @@ public class ManageSearch extends AbstractAdministrationModule {
         JahiaSitesService siteServ = ServicesRegistry.getInstance()
                 .getJahiaSitesService();
         JahiaSite site = siteServ.getSite(siteId);
-        JobDetail jobDetail = null;
-        JobDataMap data = null;
         List<JobDetail> jobDetails = new LinkedList<JobDetail>();
-        String value = null;
-        String key = null;
-        String serverId = null;
-        Properties settings = null;
-        settings = site.getSettings();
-        Iterator it = settings.keySet().iterator();
-        int pos = 0;
-        while (it.hasNext()) {
-            key = (String) it.next();
-            pos = key.indexOf(JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME);
+        Properties settings = site.getSettings();
+        for (Iterator<?> it = settings.keySet().iterator(); it.hasNext();) {
+            String key = (String) it.next();
+            int pos = key.indexOf(JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME);
             if (pos != -1) {
-                serverId = key.substring(0, pos);
-                jobDetail = new JobDetail(settings.getProperty(key, ""),
+                String serverId = key.substring(0, pos);
+                JobDetail jobDetail = new JobDetail(settings.getProperty(key, ""),
                         JahiaSiteIndexingJob.JOB_GROUP_NAME,
                         JahiaSiteIndexingJob.class);
-                data = jobDetail.getJobDataMap();
+                JobDataMap data = jobDetail.getJobDataMap();
                 // data.setMutable(true); commented for quartz 1.6.0
                 // compatibility
-                value = settings.getProperty(serverId
+                String value = settings.getProperty(serverId
                         + BackgroundJob.JOB_STATUS, "");
                 if (activeOnly
                         && !(BackgroundJob.STATUS_POOLED.equals(value)
@@ -638,15 +629,9 @@ public class ManageSearch extends AbstractAdministrationModule {
                 data.put(BackgroundJob.JOB_USERKEY, value);
                 data.put(BackgroundJob.JOB_TYPE,
                         JahiaSiteIndexingJob.SITE_INDEXATION_JOB_TYPE);
-                data
-                        .put(
-                                JahiaSiteIndexingJob.INTERRUPT_STATUS,
-                                site
-                                        .getSettings()
-                                        .getProperty(
-                                                serverId
-                                                        + JahiaSiteIndexingJob.INTERRUPT_STATUS,
-                                                ""));
+                data.put(JahiaSiteIndexingJob.INTERRUPT_STATUS,
+                        site.getSettings().getProperty(
+                        serverId + JahiaSiteIndexingJob.INTERRUPT_STATUS, ""));
                 jobDetails.add(jobDetail);
             }
         }

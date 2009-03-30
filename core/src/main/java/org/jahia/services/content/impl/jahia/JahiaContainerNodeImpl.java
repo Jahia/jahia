@@ -39,13 +39,14 @@ import org.jahia.data.containers.JahiaContainerStructure;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.api.Constants;
 import org.jahia.content.ContentDefinition;
+import org.jahia.content.ContentObject;
 
 import javax.jcr.*;
 import java.util.*;
@@ -94,9 +95,9 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
             super.initFields();
 
             try {
-                List childs = contentContainer.getChilds(null, getProcessingContext().getEntryLoadRequest(), JahiaContainerStructure.JAHIA_FIELD);
+                List<? extends ContentObject> childs = contentContainer.getChilds(null, getProcessingContext().getEntryLoadRequest(), JahiaContainerStructure.JAHIA_FIELD);
 
-                for (Iterator iterator = childs.iterator(); iterator.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator = childs.iterator(); iterator.hasNext();) {
                     ContentField contentField = (ContentField) iterator.next();
                     if (contentField != null) {
                         initFieldItem(contentField);
@@ -111,13 +112,10 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
     protected void initNodes() throws RepositoryException {
         if (nodes == null ) {
             super.initNodes();
-
             ProcessingContext processingContext = getProcessingContext();
-            final List containerListIDs = ServicesRegistry.getInstance().getJahiaContainersService().getSubContainerListIDs(contentContainer.getID(), processingContext.getEntryLoadRequest());
-            final Iterator containerListIDIter = containerListIDs.iterator();
+            final List<Integer> containerListIDs = ServicesRegistry.getInstance().getJahiaContainersService().getSubContainerListIDs(contentContainer.getID(), processingContext.getEntryLoadRequest());
             try {
-                while (containerListIDIter.hasNext()) {
-                    final Integer curContainerListID = (Integer) containerListIDIter.next();
+                for (final Integer curContainerListID : containerListIDs) {
                     ContentContainerList l = ContentContainerList.getContainerList(curContainerListID);
                     initNode(session.getJahiaContainerListNode(l));
                 }
@@ -128,7 +126,7 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
     }
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-        try {
+        try {       
             ProcessingContext processingContext = getProcessingContext();
             return session.getJahiaContainerListNode((ContentContainerList) contentContainer.getParent(processingContext.getEntryLoadRequest()));
         } catch (JahiaException e) {
@@ -138,7 +136,7 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
     }
 
     public ExtendedNodeType getPrimaryNodeType() throws RepositoryException {
-        return NodeTypeRegistry.getInstance().getNodeType(getProperty("jcr:primaryType").getString());
+        return NodeTypeRegistry.getInstance().getNodeType(getProperty(Constants.JCR_PRIMARYTYPE).getString());
     }
 
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {

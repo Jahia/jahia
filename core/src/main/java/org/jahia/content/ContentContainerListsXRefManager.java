@@ -86,16 +86,16 @@ public class ContentContainerListsXRefManager {
      * @throws JahiaException in the case there was a problem retrieving the
      * references from the database.
      */
-    public Set getAbsoluteContainerListPageIDs(int containerListID)
+    public Set<Integer> getAbsoluteContainerListPageIDs(int containerListID)
         throws JahiaException {
         ContentContainerListKey containerListKey = new ContentContainerListKey(containerListID);
 
-        Set objectRefs = CrossReferenceManager.getInstance().getObjectXRefs(containerListKey);
-        Set pageIDs = new TreeSet();
+        Set<ObjectKey> objectRefs = CrossReferenceManager.getInstance().getObjectXRefs(containerListKey);
+        Set<Integer> pageIDs = new TreeSet<Integer>();
         if (objectRefs == null) {
             return pageIDs;
         }
-        Iterator objectRefIter = objectRefs.iterator();
+        Iterator<ObjectKey> objectRefIter = objectRefs.iterator();
         while (objectRefIter.hasNext()) {
             Object ref = objectRefIter.next();
             if (ref instanceof ObjectKey) {
@@ -123,17 +123,17 @@ public class ContentContainerListsXRefManager {
      * @throws JahiaException in case there was a problem retrieving the
      * references from the database
      */
-    public Set getAbsoluteContainerListsFromPageID(int pageID)
+    public Set<ContentContainerListKey> getAbsoluteContainerListsFromPageID(int pageID)
         throws JahiaException {
 
         ContentPageKey pageKey = new ContentPageKey(pageID);
 
-        Set objectRefs = CrossReferenceManager.getInstance().getReverseObjectXRefs(pageKey);
-        Set containerListKeys = new TreeSet();
+        Set<ObjectKey> objectRefs = CrossReferenceManager.getInstance().getReverseObjectXRefs(pageKey);
+        Set<ContentContainerListKey> containerListKeys = new TreeSet<ContentContainerListKey>();
         if (objectRefs == null) {
             return containerListKeys;
         }
-        Iterator objectRefIter = objectRefs.iterator();
+        Iterator<ObjectKey> objectRefIter = objectRefs.iterator();
         while (objectRefIter.hasNext()) {
             Object source = objectRefIter.next();
             if (source instanceof ObjectKey) {

@@ -36,11 +36,8 @@
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.content.*;
-import org.jahia.data.applications.ApplicationBean;
-import org.jahia.data.applications.EntryPointDefinition;
-import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.data.applications.WebAppContext;
 import org.jahia.data.containers.*;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.*;
@@ -57,6 +54,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaACLEntry;
 import org.jahia.services.acl.JahiaACLException;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -76,7 +74,6 @@ import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.timebasedpublishing.*;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.version.*;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
@@ -97,14 +94,13 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.RepositoryException;
-import java.io.ByteArrayInputStream;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.util.prefs.Preferences;
 import java.security.Principal;
 
 /**
@@ -121,10 +117,10 @@ public class ImportHandler extends DefaultHandler {
     protected ProcessingContext jParams;
     protected Stack<ContentObject> objects;
     protected Map<String,ContentObject> objectMap;
-    protected Map links;
-    protected List jahiaLinks;
+    protected Map<ACLResourceInterface, List<String>> links;
+    protected List<Object[]> jahiaLinks;
     protected String language;
-    protected Map containerIndex;
+    protected Map<ContentObject, Integer> containerIndex;
     protected ContentObject lastObject;
     protected ContentPage lastPage;
     protected boolean updateOnly = false;
@@ -158,9 +154,9 @@ public class ImportHandler extends DefaultHandler {
         this.objects = new Stack<ContentObject>();
         this.currentObject = root;
         objectMap = new HashMap<String,ContentObject>();
-        links = new HashMap();
-        jahiaLinks = new ArrayList();
-        containerIndex = new HashMap();
+        links = new HashMap<ACLResourceInterface, List<String>>();
+        jahiaLinks = new ArrayList<Object[]>();
+        containerIndex = new HashMap<ContentObject, Integer>();
         this.language = language;
         elr = new EntryLoadRequest(EntryLoadRequest.STAGED);
         elr.setFirstLocale(language);
@@ -182,7 +178,7 @@ public class ImportHandler extends DefaultHandler {
         Locale currentLocale = LanguageCodeConverters.languageCodeToLocale(language);
 
         try {
-            List languageSettingsAsLocales = site.getLanguageSettingsAsLocales(false);
+            List<Locale> languageSettingsAsLocales = site.getLanguageSettingsAsLocales(false);
 
             if (!languageSettingsAsLocales.contains(currentLocale) && (currentObject == null || (updateOnly && currentObject.getParent(null)==null))) {
                 // create site language
@@ -222,11 +218,11 @@ public class ImportHandler extends DefaultHandler {
             // Create links
             JahiaFieldXRefManager fieldLinkManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
 
-            for (Iterator iterator = links.keySet().iterator(); iterator.hasNext();) {
+            for (Iterator<ACLResourceInterface> iterator = links.keySet().iterator(); iterator.hasNext();) {
                 Object key = iterator.next();
-                List refs = (List) links.get(key);
-                for (Iterator iterator4 = refs.iterator(); iterator4.hasNext();) {
-                    String ref = (String) iterator4.next();
+                List<String> refs = links.get(key);
+                for (Iterator<String> iterator4 = refs.iterator(); iterator4.hasNext();) {
+                    String ref = iterator4.next();
                     String simpleRef = ref;
 
 //                    String origRef = null;
@@ -312,12 +308,12 @@ public class ImportHandler extends DefaultHandler {
             }
 
             // restoring old links
-            for (Iterator iterator = objectMap.keySet().iterator(); iterator.hasNext();) {
-                String originalUuid = (String) iterator.next();
+            for (Iterator<String> iterator = objectMap.keySet().iterator(); iterator.hasNext();) {
+                String originalUuid = iterator.next();
                 ContentObject object = objectMap.get(originalUuid);
                 if (object instanceof ContentPage) {
-                    List refs = fieldLinkManager.getReferencesForTarget(JahiaFieldXRefManager.IMPORTED_PAGE+originalUuid);
-                    for (Iterator iterator1 = refs.iterator(); iterator1.hasNext();) {
+                    List<JahiaFieldXRef> refs = fieldLinkManager.getReferencesForTarget(JahiaFieldXRefManager.IMPORTED_PAGE+originalUuid);
+                    for (Iterator<JahiaFieldXRef> iterator1 = refs.iterator(); iterator1.hasNext();) {
                         JahiaFieldXRef xref = (JahiaFieldXRef) iterator1.next();
                         ContentField field = ContentField.getField(xref.getComp_id().getFieldId());
                         if (field instanceof ContentBigTextField) {
@@ -333,8 +329,8 @@ public class ImportHandler extends DefaultHandler {
                 }
             }
 
-            for (Iterator iterator = jahiaLinks.iterator(); iterator.hasNext();) {
-                Object[] links = (Object[]) iterator.next();
+            for (Iterator<Object[]> iterator = jahiaLinks.iterator(); iterator.hasNext();) {
+                Object[] links = iterator.next();
                 ObjectKey rightKey = (ObjectKey) links[0];
                 String leftRef = (String) links[1];
                 ObjectKey leftKey = null;
@@ -345,10 +341,10 @@ public class ImportHandler extends DefaultHandler {
                     leftKey = referenceObject.getObjectKey();
                 }
                 if (leftKey != null) {
-                    List l = ObjectLink.findByTypeAndLeftAndRightObjectKeys(type, leftKey, rightKey);
+                    List<ObjectLink> l = ObjectLink.findByTypeAndLeftAndRightObjectKeys(type, leftKey, rightKey);
                     if (l.isEmpty()) {
                         ObjectLink.createLink(leftKey, rightKey, type,
-                                new HashMap());
+                                new HashMap<String, String>());
                     }
                 } else {
                     try {
@@ -388,8 +384,8 @@ public class ImportHandler extends DefaultHandler {
         logger.info("Imported "+count+ " elements");
     }
 
-    private void restoreOldJahiaLink(List pages, String type) throws ClassNotFoundException, JahiaException {
-        for (Iterator iterator = pages.iterator(); iterator.hasNext();) {
+    private void restoreOldJahiaLink(List<Object[]> pages, String type) throws ClassNotFoundException, JahiaException {
+        for (Iterator<Object[]> iterator = pages.iterator(); iterator.hasNext();) {
             Object[] o = (Object[]) iterator.next();
             int id = (Integer) o[0];
             String value = (String) o[2];
@@ -403,9 +399,9 @@ public class ImportHandler extends DefaultHandler {
                 String ref = obj.getProperty("tempLink_"+linkType);
                 if (objectMap.containsKey(ref)) {
                     ObjectKey leftKey = objectMap.get(ref).getObjectKey();
-                    List l = ObjectLink.findByTypeAndLeftAndRightObjectKeys(linkType, rightKey, leftKey);
+                    List<ObjectLink> l = ObjectLink.findByTypeAndLeftAndRightObjectKeys(linkType, rightKey, leftKey);
                     if (l.isEmpty()) {
-                        ObjectLink.createLink(leftKey, rightKey, linkType, new HashMap());
+                        ObjectLink.createLink(leftKey, rightKey, linkType, new HashMap<String, String>());
                     }
                     obj.removeProperty("tempLink_"+linkType);
                 } else {
@@ -429,18 +425,18 @@ public class ImportHandler extends DefaultHandler {
             co = objectMap.get(simpleRef);
         } else {
             JahiaPageService jahiaPageService = ServicesRegistry.getInstance().getJahiaPageService();
-            List withOriginalUuid = getObjectByPropertyNameAndValue(type, "originalUuid", simpleRef);
+            List<? extends ContentObject> withOriginalUuid = getObjectByPropertyNameAndValue(type, "originalUuid", simpleRef);
 
             if (lastPage != null) {
                 boolean ok = false;
-                for (Iterator iterator1 = withOriginalUuid.iterator(); iterator1.hasNext() && !ok;) {
-                    co = (ContentObject) iterator1.next();
+                for (Iterator<? extends ContentObject> iterator1 = withOriginalUuid.iterator(); iterator1.hasNext() && !ok;) {
+                    co = iterator1.next();
 
                     if (co.getSiteID() == site.getID()) {
                         // check if this one is in our path
-                        List path = jahiaPageService.getContentPagePath(co.getPageID(), jParams);
-                        for (Iterator iterator2 = path.iterator(); iterator2.hasNext();) {
-                            ContentPage current = (ContentPage) iterator2.next();
+                        List<ContentPage> path = jahiaPageService.getContentPagePath(co.getPageID(), jParams);
+                        for (Iterator<ContentPage> iterator2 = path.iterator(); iterator2.hasNext();) {
+                            ContentPage current = iterator2.next();
                             if (current.getID() == lastPage.getPageID()) {
                                 ok = true;
                                 break;
@@ -453,9 +449,9 @@ public class ImportHandler extends DefaultHandler {
                 }
             }
             if (co == null) {
-                List withUuid = getObjectByPropertyNameAndValue(type, "uuid", simpleRef);
+                List<? extends ContentObject> withUuid = getObjectByPropertyNameAndValue(type, "uuid", simpleRef);
 
-                for (Iterator iterator1 = withUuid.iterator(); iterator1.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator1 = withUuid.iterator(); iterator1.hasNext();) {
                     ContentObject cp = (ContentObject) iterator1.next();
                     if (cp.getSiteID() == site.getID()) {
                         co = cp;
@@ -476,8 +472,8 @@ public class ImportHandler extends DefaultHandler {
         return co;
     }
 
-    private List getObjectByPropertyNameAndValue(String type, String propertyName, String propertyValue) throws JahiaException {
-        List withOriginalUuid;
+    private List<? extends ContentObject> getObjectByPropertyNameAndValue(String type, String propertyName, String propertyValue) throws JahiaException {
+        List<? extends ContentObject> withOriginalUuid;
         if (type.equals(ContentContainerKey.CONTAINER_TYPE)) {
             JahiaContainersService containerService = ServicesRegistry.getInstance().getJahiaContainersService();
             withOriginalUuid = containerService.findContainersByPropertyNameAndValue(propertyName, propertyValue);
@@ -491,7 +487,7 @@ public class ImportHandler extends DefaultHandler {
             JahiaFieldService fieldService = ServicesRegistry.getInstance().getJahiaFieldService();
             withOriginalUuid = fieldService.findFieldsByPropertyNameAndValue(propertyName, propertyValue);
         } else {
-            withOriginalUuid = new ArrayList();
+            withOriginalUuid = new ArrayList<ContentObject>();
         }
         return withOriginalUuid;
     }
@@ -557,7 +553,7 @@ public class ImportHandler extends DefaultHandler {
                     objects.push(currentObject);
                     top = true;
                 }
-                ContentObject parent = (ContentObject) objects.peek();
+                ContentObject parent = objects.peek();
                 if (parent != null) {
                     currentObject = createObject(parent, namespaceURI, localName, qName, atts);
                 } else {
@@ -605,9 +601,9 @@ public class ImportHandler extends DefaultHandler {
                                                             
                     // transfer lock from parent to current
                     LockService lockReg = ServicesRegistry.getInstance().getLockService();
-                    List linfos = lockReg.getInfo(lock);
+                    List<Map<String, Serializable>> linfos = lockReg.getInfo(lock);
                     if (!linfos.isEmpty()) {
-                        Map infos = (Map) linfos.iterator().next();
+                        Map<String, Serializable> infos = linfos.iterator().next();
                         LockKey newlock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + currentObject.getObjectKey().getType(), currentObject.getID());
                         JahiaUser owner = (JahiaUser) infos.get(LockRegistry.OWNER);
                         String lockID = (String) infos.get(LockRegistry.ID);
@@ -630,9 +626,9 @@ public class ImportHandler extends DefaultHandler {
                         currentObject = getOrCreateContainerListOrField(localName, namespaceURI, qName, atts, parent, pageID, containerID, false);
                     } else if (parent instanceof ContentContainerList) {
                         // Container inside a list
-                        List l = parent.getChilds(jParams.getUser(), elr);
+                        List<? extends ContentObject> l = parent.getChilds(jParams.getUser(), elr);
 
-                        Integer iIndex = (Integer) containerIndex.get(parent);
+                        Integer iIndex = containerIndex.get(parent);
                         if (iIndex == null) {
                             iIndex = new Integer(0);
                             containerIndex.put(parent, iIndex);
@@ -643,9 +639,9 @@ public class ImportHandler extends DefaultHandler {
                         //System.out.println("------------------ordered------>" +l);
 
                         if (uuid != null) {
-                            for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+                            for (Iterator<? extends ContentObject> iterator = l.iterator(); iterator.hasNext();) {
                                 ContentContainer contentContainer = (ContentContainer) iterator.next();
-                                Map p = contentContainer.getProperties();
+                                Map<Object, Object> p = contentContainer.getProperties();
 //                                if (uuid.equals(p.get("originalUuid"))
 //                                        || (originalUuid != null && (originalUuid.equals(p.get("uuid")) || originalUuid.equals(p.get("originalUuid"))))) {
                                 if (uuid.equals(p.get("originalUuid"))) {
@@ -698,8 +694,8 @@ public class ImportHandler extends DefaultHandler {
                     if (op == VersioningDifferenceStatus.TO_BE_REMOVED) {
                         if (currentObject.getParent(null, EntryLoadRequest.STAGED, null) == null) {
                             // never remove home page, delete only its children
-                            List c = currentObject.getChilds(null, EntryLoadRequest.STAGED);
-                            for (Iterator iterator = c.iterator(); iterator.hasNext();) {
+                            List<? extends ContentObject> c = currentObject.getChilds(null, EntryLoadRequest.STAGED);
+                            for (Iterator<? extends ContentObject> iterator = c.iterator(); iterator.hasNext();) {
                                 ContentObject contentObject = (ContentObject) iterator.next();
                                 removeObject(contentObject);
                             }
@@ -723,7 +719,7 @@ public class ImportHandler extends DefaultHandler {
                 if (op != VersioningDifferenceStatus.TO_BE_REMOVED) {
                     ContentObjectKey key = null;
                     if (!objects.isEmpty() && objects.peek() != null) {
-                        key = new ContentPageKey(((ContentObject)objects.peek()).getPageID());
+                        key = new ContentPageKey(objects.peek().getPageID());
                     }
                     result.setStatus(TreeOperationResult.PARTIAL_OPERATION_STATUS);
                     final EngineMessage msg = new EngineMessage("org.jahia.engines.importexport.import.notimported", new Object[] {uuid, localName, language, ""+ getLineNumber()});
@@ -765,7 +761,7 @@ public class ImportHandler extends DefaultHandler {
                     ContentObject source = ContentObject.getContentObjectInstance(ContentObjectKey.getInstance(linkkey));
                     source.addPickerObject(jParams, currentObject, atts.getValue(ImportExportBaseService.JAHIA_URI,"linktype"));
 
-                    ContentObject rootPicker = objects.size() == 1 ? currentObject : ((ContentObject) objects.get(1)).getPickedObject();
+                    ContentObject rootPicker = objects.size() == 1 ? currentObject : objects.get(1).getPickedObject();
                     if (!source.isAclSameAsParent() || rootPicker == currentObject) {
                         JahiaBaseACL jAcl = new JahiaBaseACL ();
                         jAcl.create (currentObject.getAclID(), source.getAclID());
@@ -773,9 +769,9 @@ public class ImportHandler extends DefaultHandler {
                     }
 
                     if (currentObject instanceof ContentContainerList) {
-                        Map p = ((ContentContainerList)source).getProperties();
-                        for (Iterator iterator = p.keySet().iterator(); iterator.hasNext();) {
-                            String key = (String) iterator.next();
+                        Map<Object, Object> p = ((ContentContainerList)source).getProperties();
+                        for (Iterator<?> iterator = p.keySet().iterator(); iterator.hasNext();) {
+                            String key = (String)iterator.next();
                             if (key.startsWith("view_field_acl_")) {
                                 int i = Integer.parseInt((String) p.get(key));
                                 if (i != source.getAclID()) {
@@ -829,10 +825,10 @@ public class ImportHandler extends DefaultHandler {
                 try {
                     ContentContainerList theList = (ContentContainerList) lastObject.getParent(null);
                     if (theList != null) {
-                        final Set containerPageRefs = ContentContainerListsXRefManager.getInstance().
+                        final Set<Integer> containerPageRefs = ContentContainerListsXRefManager.getInstance().
                                 getAbsoluteContainerListPageIDs(theList.getID());
                         if (containerPageRefs != null) {
-                            final Iterator pageRefIDs = containerPageRefs.iterator();
+                            final Iterator<Integer> pageRefIDs = containerPageRefs.iterator();
                             while (pageRefIDs.hasNext()) {
                                 final Integer curPageID = (Integer) pageRefIDs.next();
                             }
@@ -929,7 +925,7 @@ public class ImportHandler extends DefaultHandler {
             }
 
             if ( isSingleContainer ){
-                List childIds = parent.getChilds(null,elr);
+                List<? extends ContentObject> childIds = parent.getChilds(null,elr);
                 if ( childIds.size()>0 ){
                     object = (ContentObject) childIds.iterator().next();
                 }
@@ -955,21 +951,21 @@ public class ImportHandler extends DefaultHandler {
                 }
                 JahiaContainer container = contentContainerFacade.getContainer(elr,true);
                 if (atts.getValue(ImportExportBaseService.JAHIA_URI, "diff")!=null) {
-                    Integer iIndex = (Integer) containerIndex.get(parent);
+                    Integer iIndex = containerIndex.get(parent);
 
                     // SET
                     if (iIndex == null) {
                         iIndex = 0;
                     }
 
-                    List l = parent.getChilds(jParams.getUser(), elr);
+                    List<? extends ContentObject> l = parent.getChilds(jParams.getUser(), elr);
                     ImportExportUtils.orderContainerList(l, jParams);
                     int i = -(l.size()+1);
                     int rank;
                     rank = i + iIndex.intValue();
                     containerIndex.put(parent, iIndex+ 1);
 
-                    for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+                    for (Iterator<? extends ContentObject> iterator = l.iterator(); iterator.hasNext();) {
                         ContentContainer contentObject = (ContentContainer) iterator.next();
                         JahiaContainer jc = contentObject.getJahiaContainer(jParams, elr);
                         if (i == rank) {
@@ -986,7 +982,7 @@ public class ImportHandler extends DefaultHandler {
                 ServicesRegistry.getInstance ().getJahiaContainersService ().
                         saveContainerInfo (container, parentId, parentAclID, jParams);
                 object = container.getContentContainer();
-                String type = atts.getValue("jcr:primaryType");
+                String type = atts.getValue(Constants.JCR_PRIMARYTYPE);
                 if (type != null) {
                     importedMappings.put(object.getObjectKey().toString(), type);
                 }
@@ -1006,7 +1002,7 @@ public class ImportHandler extends DefaultHandler {
 
             JahiaPage jahiaPage = null;
             ContentPage cp;
-            List l = parent.getChilds(null,null);
+            List<? extends ContentObject> l = parent.getChilds(null,null);
 
             if (l.size() == 1) {
                 cp = (ContentPage) l.iterator().next();
@@ -1049,10 +1045,10 @@ public class ImportHandler extends DefaultHandler {
                 // since we have made modifications concerning this page, let's flush
                 // the content cache for all the users and browsers as well as all
                 // pages that display this containerList...
-                Set containerPageRefs = ContentContainerListsXRefManager.
+                Set<Integer> containerPageRefs = ContentContainerListsXRefManager.
                         getInstance().getAbsoluteContainerListPageIDs(parent.getID());
                 if (containerPageRefs != null) {
-                    Iterator pageRefIDs = containerPageRefs.iterator();
+                    Iterator<Integer> pageRefIDs = containerPageRefs.iterator();
                     while (pageRefIDs.hasNext()) {
                         Integer curPageID = (Integer) pageRefIDs.next();
                     }
@@ -1098,7 +1094,7 @@ public class ImportHandler extends DefaultHandler {
                                 site.getDefaultTemplateID(),
                                 "http://", -1, jParams.getUser().getUserKey(),
                                 parentAclID, jParams, parentField);
-                List ls = new ArrayList();
+                List<String> ls = new ArrayList<String>();
                 links.put(jahiaPage, ls);
                 ls.add(atts.getValue(ImportExportBaseService.JAHIA_URI, "reference"));
             } else if (localName.equals("url")) {
@@ -1272,7 +1268,7 @@ public class ImportHandler extends DefaultHandler {
             }
             object = cc;
             containerIndex.put(cc, new Integer(0));
-            String type = atts.getValue("jcr:primaryType");
+            String type = atts.getValue(Constants.JCR_PRIMARYTYPE);
             if (type != null) {
                 importedMappings.put(cc.getObjectKey().toString(), type);
             }
@@ -1280,8 +1276,8 @@ public class ImportHandler extends DefaultHandler {
             JahiaFieldDefinition jfd = ((JahiaFieldDefinition)def);
             ContentField cf = null;
             if (parent instanceof ContentContainer) {
-                List l = parent.getChilds(jParams.getUser(),elr, JahiaContainerStructure.JAHIA_FIELD);
-                for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+                List<? extends ContentObject> l = parent.getChilds(jParams.getUser(),elr, JahiaContainerStructure.JAHIA_FIELD);
+                for (Iterator<? extends ContentObject> iterator = l.iterator(); iterator.hasNext();) {
                     ContentField contentObject = (ContentField) iterator.next();
                     if (contentObject.getDefinitionID(elr)==jfd.getID()) {
                         cf = contentObject;
@@ -1360,10 +1356,9 @@ public class ImportHandler extends DefaultHandler {
     }
 
     protected void update(ContentObject object, String localName, Attributes atts) throws JahiaException {
-        int pageID = 0;
         if (object instanceof ContentField) {
             ContentField cf = (ContentField) object;
-            List locales = new ArrayList();
+            List<Locale> locales = new ArrayList<Locale>();
             locales.add(jParams.getCurrentLocale());
             JahiaContentFieldFacade jahiaContentFieldFacade = new JahiaContentFieldFacade (cf.getID(),LoadFlags.ALL,jParams,locales,true);
             JahiaField jahiaField = jahiaContentFieldFacade.getField(elr,true);
@@ -1377,10 +1372,9 @@ public class ImportHandler extends DefaultHandler {
                 updateField(jahiaField, fieldType, value, atts, -1);
                 ServicesRegistry.getInstance ().getJahiaFieldService ().saveField (jahiaField, object.getAclID (), jParams);
             }
-            pageID = cf.getPageID();
         } else if (object instanceof ContentPage) {
             ContentPage cp = (ContentPage) object;
-            pageID = updatePage(cp, localName, atts);
+            updatePage(cp, localName, atts);
             actions.add(new ImportAction((ContentObjectKey) currentObject.getObjectKey(), language, "updated"));
         } else if (object instanceof ContentContainer) {
             actions.add(new ImportAction((ContentObjectKey) currentObject.getObjectKey(), language, "updated"));
@@ -1451,9 +1445,9 @@ public class ImportHandler extends DefaultHandler {
                     for (; i < value.length() && (Character.isLetterOrDigit(value.charAt(k)) || value.charAt(k)=='-'); k++) {
                         refb.append(value.charAt(k));
                     }
-                    List ls = (List) links.get(field);
+                    List<String> ls = links.get(field);
                     if (ls == null ){
-                        ls = new ArrayList();
+                        ls = new ArrayList<String>();
                         links.put(field, ls);
                     }
                     
@@ -1482,7 +1476,7 @@ public class ImportHandler extends DefaultHandler {
             if (value.startsWith("<jahia-expression") && value.endsWith("/>")) {
                 Pattern p = Pattern.compile("(.*)getContainerByUUID\\(\"([^\"]*)\"\\)(.*)");
                 Matcher m = p.matcher(value);
-                List ls = new ArrayList();
+                List<String> ls = new ArrayList<String>();
                 if (m.matches()) {
                     links.put(field, ls);
                     ls.add(m.group(2));
@@ -1499,7 +1493,7 @@ public class ImportHandler extends DefaultHandler {
 
         if (localName.equals("link")) {
             // Link to jahia page (do it later)
-            List ls = new ArrayList();
+            List<String> ls = new ArrayList<String>();
             links.put(cp.getPage(jParams), ls);
             ls.add(atts.getValue(ImportExportBaseService.JAHIA_URI, "reference"));
         } else if (localName.equals("url")) {
@@ -1721,8 +1715,8 @@ public class ImportHandler extends DefaultHandler {
                 String process = atts.getValue(ImportExportService.JAHIA_URI, "workflowProcess");
                 service.setWorkflowMode(object, WorkflowService.EXTERNAL, name, process, jParams);
                 ExternalWorkflow workfow = service.getExternalWorkflow(name);
-                Collection roles = workfow.getAllActionRoles(process);
-                for (Iterator iterator = roles.iterator(); iterator.hasNext();) {
+                Collection<String> roles = workfow.getAllActionRoles(process);
+                for (Iterator<String> iterator = roles.iterator(); iterator.hasNext();) {
                     String role = (String) iterator.next();
                     String v = atts.getValue(ImportExportService.JAHIA_URI, "workflowRole"+role);
                     if (v != null )  {                        
@@ -1764,17 +1758,17 @@ public class ImportHandler extends DefaultHandler {
         }
     }
 
-    private Map metadataCache = new HashMap();
+    private Map<ObjectKey, Map<String, JahiaFieldDefinition>> metadataCache = new HashMap<ObjectKey, Map<String, JahiaFieldDefinition>>();
 
     private void setMetadata(ContentObject object, Attributes attr) {
         try {
             ObjectKey definitionKey = object.getDefinitionKey(null);
-            Map fieldDefs = (Map) metadataCache.get(definitionKey);
+            Map<String, JahiaFieldDefinition> fieldDefs = metadataCache.get(definitionKey);
 
             if (fieldDefs == null) {
                 ContentDefinition contentDefinition = ContentDefinition.getContentDefinitionInstance(definitionKey);
-                List metadataDefs = contentDefinition.getMetadataDefinitions();
-                fieldDefs = new HashMap();
+                List<? extends JahiaObject> metadataDefs = contentDefinition.getMetadataDefinitions();
+                fieldDefs = new HashMap<String, JahiaFieldDefinition>();
                 for (int i = 0; i < metadataDefs.size(); i++) {
                     JahiaObject jahiaObject = (JahiaObject)metadataDefs.get(i);
                     JahiaFieldDefinition fieldDef = (JahiaFieldDefinition)JahiaFieldDefinition.getContentDefinitionInstance(jahiaObject.getObjectKey());
@@ -1783,17 +1777,17 @@ public class ImportHandler extends DefaultHandler {
                 metadataCache.put(definitionKey, fieldDefs);
             }
 
-            Collection md = fieldDefs.keySet();
+            Collection<String> md = fieldDefs.keySet();
             ObjectKey objectKey = object.getObjectKey();
-            List metadatas = object.getMetadatas();
-            Map metadataMap = new HashMap();
-            for (Iterator iterator = metadatas.iterator(); iterator.hasNext();) {
+            List<ContentField> metadatas = object.getMetadatas();
+            Map<Integer, ContentField> metadataMap = new HashMap<Integer, ContentField>();
+            for (Iterator<ContentField> iterator = metadatas.iterator(); iterator.hasNext();) {
                 ContentField contentField = (ContentField) iterator.next();
                 metadataMap.put(new Integer(contentField.getDefinitionID(null)), contentField);
             }
             JahiaSaveVersion saveVersion = new JahiaSaveVersion(false, false);
-            for (Iterator iterator = md.iterator(); iterator.hasNext();) {
-                String metadataName = (String) iterator.next();
+            for (Iterator<String> iterator = md.iterator(); iterator.hasNext();) {
+                String metadataName = iterator.next();
                 String value;
                 if (CoreMetadataConstant.CREATION_DATE.equals(metadataName)) {
                     value = attr.getValue(ImportExportBaseService.JCR_URI, "created");
@@ -1809,10 +1803,10 @@ public class ImportHandler extends DefaultHandler {
                     value = attr.getValue(ImportExportService.JAHIA_URI, metadataName);
                 }
                 if (value != null) {
-                    JahiaFieldDefinition fieldDef = (JahiaFieldDefinition) fieldDefs.get(metadataName);
+                    JahiaFieldDefinition fieldDef = fieldDefs.get(metadataName);
 
                     String fieldValue = parseValue(fieldDef.getType(), value);
-                    ContentField metadataContentField = (ContentField) metadataMap.get(new Integer(fieldDef.getID()));
+                    ContentField metadataContentField = metadataMap.get(new Integer(fieldDef.getID()));
                     if (metadataContentField == null) {
                         JahiaField field = ServicesRegistry.getInstance().getJahiaFieldService().createJahiaField(0, jParams.getSiteID(), 0,
                                 0, fieldDef.getID(),fieldDef.getType(),0, fieldValue, 0, 0,saveVersion.getVersionID(),saveVersion.getWorkflowState(),language);
@@ -1828,7 +1822,7 @@ public class ImportHandler extends DefaultHandler {
                                 saveField(field, object.getAclID(), jParams);
                         }
                     } else {
-                        List locales = new ArrayList();
+                        List<Locale> locales = new ArrayList<Locale>();
                         locales.add(jParams.getCurrentLocale());
                         JahiaContentFieldFacade jahiaContentFieldFacade = new JahiaContentFieldFacade (metadataContentField.getID(),LoadFlags.ALL,jParams,locales,true);
                         JahiaField jf = jahiaContentFieldFacade.getField(elr,true);
@@ -1844,9 +1838,9 @@ public class ImportHandler extends DefaultHandler {
                 cats = attr.getValue(ImportExportService.JAHIA_URI, "defaultCategory");
             }
             CategoryService categoryService = ServicesRegistry.getInstance().getCategoryService();
-            Set objectCats = categoryService.getObjectCategories(objectKey);
+            Set<Category> objectCats = categoryService.getObjectCategories(objectKey);
 
-            for (Iterator iterator = objectCats.iterator(); iterator.hasNext();) {
+            for (Iterator<Category> iterator = objectCats.iterator(); iterator.hasNext();) {
                 Category category = (Category) iterator.next();
                 categoryService.removeObjectKeyFromCategory(category, objectKey);
             }

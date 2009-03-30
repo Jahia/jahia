@@ -105,7 +105,7 @@ public class ContentObjectRevisions {
             return revisions;
         }
 
-        List<ContentObject> childs =
+        List<? extends ContentObject> childs =
                 contentObject.getChilds(user, loadRequest);
         for( ContentObject childObject : childs ){
             SortedSet<RevisionEntry> childRevisions = null;

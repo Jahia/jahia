@@ -49,6 +49,7 @@ import java.util.*;
 
 public class ContentSmallTextSharedLangField extends ContentField
         implements ContentSimpleField {
+    private static final long serialVersionUID = -1676141338878161382L;
     private static org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger (ContentSmallTextSharedLangField.class);
 

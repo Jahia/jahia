@@ -110,7 +110,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
                 path = nodes.peek().getPath() + "/" + decodedQName;
             }
 
-            String pt = atts.getValue("jcr:primaryType");
+            String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
             if (Constants.JAHIANT_VIRTUALSITE.equals(pt)) {
                 decodedQName = jParams.getSiteKey();
                 String newpath;

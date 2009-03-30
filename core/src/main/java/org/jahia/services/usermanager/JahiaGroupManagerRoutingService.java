@@ -67,8 +67,8 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 
     static private JahiaGroupManagerRoutingService mInstance = null;
 
-    private Map<String, ? extends JahiaGroupManagerProvider> providersTable = null;
-    private SortedSet<? extends JahiaGroupManagerProvider> sortedProviders = null;
+    private Map<String, JahiaGroupManagerProvider> providersTable = null;
+    private SortedSet<JahiaGroupManagerProvider> sortedProviders = null;
     private JahiaGroupManagerProvider defaultProviderInstance = null;
     private Map<Integer, JahiaUser> adminUser = new HashMap<Integer, JahiaUser>();
 
@@ -102,7 +102,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
-    public void setProvidersTable(Map<String, ? extends JahiaGroupManagerProvider> providersTable) {
+    public void setProvidersTable(Map<String, JahiaGroupManagerProvider> providersTable) {
         this.providersTable = providersTable;
     }
 
@@ -111,7 +111,7 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
 
     public void start() throws JahiaInitializationException {
         findDefaultProvider();
-        ((Set<JahiaGroupManagerProvider>)sortedProviders).addAll (providersTable.values ());
+        sortedProviders.addAll (providersTable.values ());
     }
 
     public void stop() throws JahiaException {

@@ -54,14 +54,8 @@ public class LuceneSearchIndexer extends AbstractLuceneSearchIndexer {
         super(localIndexing,analyzer,config);
         if ( indexDirectory != null ) {
             this.indexPath = indexDirectory.getAbsolutePath();
-            FSDirectory fsDirectory = null;
             try {
-                if ( !IndexReader.indexExists(indexDirectory) ){
-                    fsDirectory = FSDirectory.getDirectory(indexDirectory,true);
-                } else {
-                    fsDirectory = FSDirectory.getDirectory(indexDirectory,false);
-                }
-                this.setIndexDirectory(fsDirectory);
+                this.setIndexDirectory(FSDirectory.getDirectory(indexDirectory));
             } catch ( IOException ioe ) {
                 logger.debug("Error opening FSDirectory", ioe);
             }

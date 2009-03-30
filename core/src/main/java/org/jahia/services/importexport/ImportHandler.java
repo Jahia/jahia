@@ -626,7 +626,7 @@ public class ImportHandler extends DefaultHandler {
                         currentObject = getOrCreateContainerListOrField(localName, namespaceURI, qName, atts, parent, pageID, containerID, false);
                     } else if (parent instanceof ContentContainerList) {
                         // Container inside a list
-                        List<? extends ContentObject> l = parent.getChilds(jParams.getUser(), elr);
+                        List<ContentObject> l = new ArrayList<ContentObject>(parent.getChilds(jParams.getUser(), elr));
 
                         Integer iIndex = containerIndex.get(parent);
                         if (iIndex == null) {
@@ -639,7 +639,7 @@ public class ImportHandler extends DefaultHandler {
                         //System.out.println("------------------ordered------>" +l);
 
                         if (uuid != null) {
-                            for (Iterator<? extends ContentObject> iterator = l.iterator(); iterator.hasNext();) {
+                            for (Iterator<ContentObject> iterator = l.iterator(); iterator.hasNext();) {
                                 ContentContainer contentContainer = (ContentContainer) iterator.next();
                                 Map<Object, Object> p = contentContainer.getProperties();
 //                                if (uuid.equals(p.get("originalUuid"))
@@ -651,20 +651,27 @@ public class ImportHandler extends DefaultHandler {
                             }
                         } else {
                             try {
-                                currentObject = (ContentContainer) l.get(iIndex.intValue());
+                                currentObject = l.get(iIndex.intValue());
                             } catch (Exception e) {
                                 currentObject = null;
                             }
                         }
                         if (updateOnly && currentObject == null && op != VersioningDifferenceStatus.TO_BE_REMOVED) {
                             currentObject = createObject(parent, namespaceURI, localName, qName, atts);
+                            l.add(iIndex, currentObject);
+                            l = l;
                         }
 
-                        if (currentObject != null) {
-                            JahiaContainer jc = ((ContentContainer)currentObject).getJahiaContainer(jParams, elr);
-                            if (jc != null) {
-                                jc.setRank(-l.size()+iIndex);
-                                ServicesRegistry.getInstance ().getJahiaContainersService().saveContainerInfo (jc,-1,-1, jParams);
+                        if (op != VersioningDifferenceStatus.UNCHANGED && currentObject != null) {
+                            l.remove(currentObject);
+                            l.add(iIndex, currentObject);
+                            for (int i = 0 ; i < l.size() ; i++) {
+                                ContentContainer c = (ContentContainer) l.get(i);
+                                JahiaContainer jc = c.getJahiaContainer(jParams, elr);
+                                if (jc != null && jc.getRank() != -l.size()+i) {
+                                    jc.setRank(-l.size()+i);
+                                    ServicesRegistry.getInstance ().getJahiaContainersService().saveContainerInfo (jc,-1,-1, jParams);
+                                }
                             }
                         }
 

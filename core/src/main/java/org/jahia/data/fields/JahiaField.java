@@ -688,7 +688,7 @@ public abstract class JahiaField implements Cloneable, Serializable,
     }
 
     public ValidationError validate() throws JahiaException {
-        boolean required = this.getDefinition().getPropertyDefinition().isMandatory();
+        boolean required = this.getDefinition().getItemDefinition().isMandatory();
         if (required && (this.getValue() == null || "".equals(this.getValue().trim()))) {
             return new ValidationError(this, "Value required");
         }

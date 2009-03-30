@@ -96,48 +96,54 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
 
                 String v = "";
 
-                WorkflowService workflowService = ServicesRegistry.getInstance().getWorkflowService();
-//                if (workflowService.getWorkflowMode(object) != WorkflowService.LINKED) {
-                int state;
+                List<Locale> locales = getSite().getLanguageSettingsAsLocales(true);
 
-                if (object.isShared()) {
-                    state = object.getLanguagesStates().get("shared");
-                } else {
-                    state = object.getLanguagesStates().get(getProcessingContext().getCurrentLocale().toString());
-                }
-                if (object instanceof ContentContainer) {
-                    List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getProcessingContext().getEntryLoadRequest());
-                    for (Iterator<? extends ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
-                        ContentObject child = contentObjectIterator.next();
-                        if (child instanceof ContentField) {
-                            if (child.isShared()) {
-                                state = Math.max(state,child.getLanguagesStates().get("shared"));
-                            } else {
-                                state = Math.max(state,child.getLanguagesStates().get(getProcessingContext().getCurrentLocale().toString()));
+                WorkflowService workflowService = ServicesRegistry.getInstance().getWorkflowService();
+                int state;
+                List<ValueImpl> values = new ArrayList<ValueImpl>();
+                for (Locale locale : locales) {
+                    String loc = (object.isShared()) ? "shared" : locale.toString();
+                    Map<String, Integer> states = object.getLanguagesStates();
+                    if (!states.containsKey(loc)) {
+                        continue;
+                    }
+                    state = states.get(loc);
+                    if (object instanceof ContentContainer) {
+                        List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getProcessingContext().getEntryLoadRequest());
+                        for (Iterator<? extends ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
+                            ContentObject child = contentObjectIterator.next();
+                            if (child instanceof ContentField) {
+                                loc = (child.isShared()) ? "shared" : locale.toString();
+                                states = child.getLanguagesStates();
+                                if (!states.containsKey(loc)) {
+                                    continue;
+                                }
+                                state = Math.max(state,states.get(loc));
                             }
                         }
                     }
-                }
-                if (state == 1) {
-                    v = "active";
-                } else {
-                    char c = workflowService.getExtendedWorkflowState(object,  getProcessingContext().getCurrentLocale().toString()).charAt(1);
-                    switch (c) {
-                        case '0':
-                            v = "active"; break;
-                        case '1':
-                            v = "staging"; break;
-                        case '2':
-                            v = "validationStep1"; break;
-                        case '3':
-                            v = "validationStep2"; break;
-                        case '4':                            
-                            v = "validationStep3"; break;
+                    if (state == 1) {
+                        v = "active";
+                    } else {
+                        char c = workflowService.getExtendedWorkflowState(object, locale.toString()).charAt(1);
+                        switch (c) {
+                            case '1':
+                                v = "active"; break;
+                            case '2':
+                                v = "staging"; break;
+                            case '3':
+                                v = "validationStep1"; break;
+                            case '4':
+                                v = "validationStep2"; break;
+                            case '5':
+                                v = "validationStep3"; break;
+                        }
                     }
+                    values.add(new ValueImpl(locale+":"+v, PropertyType.STRING));
                 }
                 initProperty(new PropertyImpl(getSession(), this,
                         extendedNodeType.getPropertyDefinition("j:workflowState"),
-                        new ValueImpl(v, PropertyType.STRING)));
+                        values.toArray(new ValueImpl[values.size()])));
             } catch (Exception e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }

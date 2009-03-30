@@ -11,15 +11,15 @@
 [condition][]A file content has been modified=property : PropertyWrapper ( name == "jcr:data", contentnode : node ) and NodeWrapper ( name == "jcr:content" ) from contentnode and node : NodeWrapper () from contentnode.parent
 [condition][]A variable {name} has been extracted=ExtractedVariable ( node == node, name == "{name}", {name} : value )
 [condition][]The type {name} has been assigned to a node=m : PropertyWrapper ( name == "jcr:mixinTypes", stringValues contains "{name}", node : node )
-[condition][]The {node} has a property {property}=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValue ) from {node}.properties
+[condition][]The {node} has a property {property}=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues ) from {node}.properties
 [condition][]The property {property} is not defined for the {node}=not ( PropertyWrapper ( name == "{property}" ) from {node}.properties )
-[condition][]A property has been set on a node=property : PropertyWrapper ( propertyName : name, propertyValue : stringValue , node : node )
+[condition][]A property has been set on a node=property : PropertyWrapper ( propertyName : name, propertyValue : stringValues , node : node )
 [condition][]- its name is not {name}=name != "{name}"
 [condition][]- the node has the type {type}=node.types contains "{type}"
-[condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValue , node : node )
+[condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , node : node )
 [condition][]- the value is {value}=stringValue == {value}
 [condition][]The property {property} has not been modified yet on the {node}=not PropertyWrapper ( name=="{property}" , node=={node} )
-[condition][]A node has been published=property : PropertyWrapper ( name == "j:workflowState" , stringValue == "active" , node : node )
+[condition][]A node has been published=property : PropertyWrapper ( name == "j:workflowState" , node : node )
 [condition][]- the node has the type {type}=node.types contains "{type}"
 [condition][]The node has a parent=parent : NodeWrapper () from node.parent
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"

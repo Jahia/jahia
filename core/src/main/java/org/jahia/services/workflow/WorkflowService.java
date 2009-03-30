@@ -1690,10 +1690,6 @@ public class WorkflowService extends JahiaService {
      */
     public String getExtendedWorkflowState(ContentObject contentObject, String language) throws Exception {
 
-        if (contentObject.isMarkedForDelete(language)){
-            return "600";
-        }
-
         int workflowMode = getInheritedMode(contentObject);
         final Map<String, Integer> languagesStates = getLanguagesStates(contentObject);
 
@@ -1730,9 +1726,7 @@ public class WorkflowService extends JahiaService {
         Integer languageState = languagesStates.get(language);
         Integer sharedLanguageState = languagesStates.get(ContentObject.SHARED_LANGUAGE);
 
-        if (contentObject.isMarkedForDelete(language)) {
-            extendedWorkflowState = "600";
-        } else if (WorkflowService.INACTIVE == workflowMode) {
+        if (WorkflowService.INACTIVE == workflowMode) {
             if (SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages()
                     && getWorkflowMode(contentObject) == LINKED) {
                 if (languageState != null) {
@@ -1762,11 +1756,11 @@ public class WorkflowService extends JahiaService {
 
             if (WorkflowService.EXTERNAL == workflowMode) {
                 if (!languagesStates.containsKey(language)) {
-                    workflowState = 1;
+                    workflowState = 2;
                 } else if (workflowState >= EntryLoadRequest.STAGING_WORKFLOW_STATE) {
-                    workflowState = getExternalWorkflowNextStep(contentObject, language);
+                    workflowState = getExternalWorkflowNextStep(getHardLinkedMainObject(contentObject), language) + 1;
                 } else {
-                    workflowState = 0;
+                    workflowState = 1;
                 }
             }
 
@@ -1782,8 +1776,12 @@ public class WorkflowService extends JahiaService {
                 }
             }
 
-            if (SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages() && getWorkflowMode(contentObject) == LINKED) {
+            if (getWorkflowMode(contentObject) == LINKED) {
                 workflowMode = 9;
+                isEditable = false;
+            }
+            if (contentObject.isMarkedForDelete(language)) {
+                workflowMode = 6;
                 isEditable = false;
             }
 

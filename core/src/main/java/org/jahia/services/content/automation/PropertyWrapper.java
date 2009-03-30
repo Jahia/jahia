@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.lang.reflect.Array;
 
 /**
  * Created by IntelliJ IDEA.
@@ -129,48 +130,29 @@ public class PropertyWrapper implements Updateable  {
                 return;
             }
             ValueFactory factory = node.getSession().getValueFactory();
-            Value value = null;
-            if (objectValue instanceof String) {
-                if (propDef.getSelector() == SelectorType.CATEGORY) {
-                    try {
-                        value = factory.createValue(Category.getCategoryPath((String) objectValue));
-                    } catch (Exception e) {
-                        logger.warn("Can't get category "+objectValue + ", cause " + e.getMessage());
-                    }
-                } else {
-                    value = factory.createValue((String) objectValue);
+
+            Value[] values = null;
+            if (objectValue.getClass().isArray()) {
+                values = new Value[Array.getLength(objectValue)];
+                for (int i=0; i<Array.getLength(objectValue); i++) {
+                    values[i] = createValue(Array.get(objectValue, i), propDef, factory);
                 }
-            } else if (objectValue instanceof Long) {
-                value = factory.createValue((Long) objectValue);
-            } else if (objectValue instanceof Integer) {
-                value = factory.createValue(((Integer) objectValue).longValue());
-            } else if (objectValue instanceof Calendar) {
-                value = factory.createValue((Calendar) objectValue);
-            } else if (objectValue instanceof Date) {
-                Calendar c = new GregorianCalendar();
-                c.setTime((Date) objectValue);
-                value = factory.createValue(c);
-            } else if (objectValue instanceof byte[]) {
-                value = factory.createValue(new ByteArrayInputStream((byte[]) objectValue));
-            } else if (objectValue instanceof File) {
-                try {
-                    value = factory.createValue(new FileInputStream((File) objectValue));
-                } catch (FileNotFoundException e) {
-                    logger.error("File not found ",e);
-                }
+            } else {
+                values = new Value[] {createValue(objectValue, propDef, factory)};
             }
-            if (value != null) {
+
+            if (values != null && values.length>0) {
                 if (!propDef.isMultiple()) {
-                    property = node.setProperty(name, value);
+                    property = node.setProperty(name, values[0]);
                 } else {
                     if (node.hasProperty(name)) {
-                        Value[] values = property.getValues();
-                        Value[] newValues = new Value[values.length+1];
-                        System.arraycopy(values, 0, newValues, 0, values.length);
-                        newValues[values.length] = value;
+                        Value[] oldValues = property.getValues();
+                        Value[] newValues = new Value[oldValues.length+values.length];
+                        System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                        System.arraycopy(values, oldValues.length, newValues, 0, values.length);
                         property.setValue(newValues);
                     } else {
-                        property = node.setProperty(name, new Value[] {value});
+                        property = node.setProperty(name, values);
                     }
                 }
 
@@ -185,6 +167,39 @@ public class PropertyWrapper implements Updateable  {
         } catch (NoSuchNodeTypeException e) {
             logger.debug("Nodetype not supported",e);
         }
+    }
+
+    private Value createValue(Object objectValue, ExtendedPropertyDefinition propDef, ValueFactory factory) {
+        if (objectValue instanceof String) {
+            if (propDef.getSelector() == SelectorType.CATEGORY) {
+                try {
+                    return factory.createValue(Category.getCategoryPath((String) objectValue)) ;
+                } catch (Exception e) {
+                    logger.warn("Can't get category "+objectValue + ", cause " + e.getMessage());
+                }
+            } else {
+                return factory.createValue((String) objectValue) ;
+            }
+        } else if (objectValue instanceof Long) {
+            return factory.createValue((Long) objectValue) ;
+        } else if (objectValue instanceof Integer) {
+            return factory.createValue(((Integer) objectValue).longValue()) ;
+        } else if (objectValue instanceof Calendar) {
+            return factory.createValue((Calendar) objectValue) ;
+        } else if (objectValue instanceof Date) {
+            Calendar c = new GregorianCalendar();
+            c.setTime((Date) objectValue);
+            return factory.createValue(c) ;
+        } else if (objectValue instanceof byte[]) {
+            return factory.createValue(new ByteArrayInputStream((byte[]) objectValue)) ;
+        } else if (objectValue instanceof File) {
+            try {
+                return factory.createValue(new FileInputStream((File) objectValue)) ;
+            } catch (FileNotFoundException e) {
+                logger.error("File not found ",e);
+            }
+        }
+        return null;
     }
 
     public String getName() throws RepositoryException {
@@ -211,6 +226,13 @@ public class PropertyWrapper implements Updateable  {
             }
         }
         return r;
+    }
+
+    public Object getValue() throws RepositoryException {
+        if (property != null) {
+            return  property.getValues();
+        }
+        return null;
     }
 
     public int getType() throws RepositoryException {

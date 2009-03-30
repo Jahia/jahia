@@ -217,7 +217,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                     doc.setFieldValues(
                             JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
                                     + name, field.getValuesForSearch(container
-                                    .getLanguageCode(), context, true));
+                                    .getLanguageCode(), context, false));
                     doc.getField(
                             JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
                                     + name).setType(DocumentField.KEYWORD);

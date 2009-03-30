@@ -735,6 +735,8 @@ public abstract class JahiaSearchService extends JahiaService {
      */
     public abstract SyndEntry getSyndEntry(Hit hit, ParamBean jParams, String serverURL)
     throws JahiaException;
+    
+    public abstract void initSearchFieldConfiguration(int siteId);
 
 
 }

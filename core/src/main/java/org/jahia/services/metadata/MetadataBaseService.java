@@ -39,15 +39,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.aopalliance.intercept.Interceptor;
 import org.jahia.content.ContentDefinition;
 import org.jahia.content.ContentFieldKey;
-import org.jahia.data.containers.JahiaContainerSet;
+import org.jahia.content.ObjectKey;
 import org.jahia.data.events.JahiaEventListenerInterface;
 import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.data.fields.JahiaFieldSubDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.JahiaFieldsDataManager;
@@ -63,10 +63,7 @@ import org.springframework.context.ApplicationContext;
  *
  * @author Khue Nguyen
  */
-public class MetadataBaseService extends MetadataService
-{
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (MetadataBaseService.class);
+public class MetadataBaseService extends MetadataService {
 
     static private String GET_METADATA_FIELDS_BY_NAME = "SELECT DISTINCT a.comp_id.id FROM JahiaFieldsData a, JahiaFieldsDef b WHERE b.isMetadata=1 AND a.fieldDefinition.id=b.id AND b.name=(:fieldDefName)";
     static private String GET_METADATA_FIELDS_BY_NAME_AND_BY_SITEID = "SELECT DISTINCT a.comp_id.id FROM JahiaFieldsData a, JahiaFieldsDef b WHERE b.isMetadata=1 AND a.siteId=(:siteId) AND a.fieldDefinition.id=b.id AND b.name=(:fieldDefName)";
@@ -136,40 +133,24 @@ public class MetadataBaseService extends MetadataService
 
         for (ExtendedNodeType type : allTypes) {
             ExtendedPropertyDefinition[] propDefs = type.getDeclaredPropertyDefinitions();
-            for (int j = 0; j < propDefs.length; j++) {
-                try {
-                    ExtendedPropertyDefinition propDef = propDefs[j];
-                    String name = propDef.getLocalName();
-                    JahiaFieldDefinition fieldDef = fieldDefinitionsRegistry
-                               .getDefinition(0, name);
+            for (ExtendedPropertyDefinition propDef : propDefs) {
+                String name = propDef.getLocalName();
+                JahiaFieldDefinition fieldDef = fieldDefinitionsRegistry.getDefinition(0, name);
 
-                    if ( fieldDef == null ){
-                        // have to create it
-                        fieldDef = new JahiaFieldDefinition( 0, 0, name, new HashMap() );
-                    }
-                    fieldDef.setCtnType(type.getName() + " " + propDef.getName());
-                    fieldDef.setIsMetadata(true);
-
-                    Map<String, String> extProps = JahiaContainerSet.getExtendedProperties(propDef);
-                    for (String key : extProps.keySet()) {
-                        fieldDef.setProperty(key, extProps.get(key));
-                    }
-
-                    fieldDef.setProperty(FieldDefinition.ORDER,String.valueOf(j));
-                    fieldDef.setProperty(FieldDefinition.SCORE_BOOST,String.valueOf(propDef.getScoreboost()));
-                    fieldDef.setProperty(FieldDefinition.INDEXABLE_FIELD,String.valueOf(propDef.getIndex() != ExtendedPropertyDefinition.INDEXED_NO));
-                    fieldDefinitionsRegistry.setDefinition( fieldDef );
-
-                    // register content definition mappings
-                    if ( fieldDef != null ){
-                        this.contentDefinitions.put(fieldDef.getName(),fieldDef);
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
+                if (fieldDef == null) {
+                    // have to create it
+                    fieldDef = new JahiaFieldDefinition(0, 0, name, new HashMap<Integer, JahiaFieldSubDefinition>());
                 }
+                fieldDef.setCtnType(type.getName() + " " + propDef.getName());
+                fieldDef.setIsMetadata(true);
 
+                fieldDefinitionsRegistry.setDefinition(fieldDef);
+
+                // register content definition mappings
+                if (fieldDef != null) {
+                    this.contentDefinitions.put(fieldDef.getName(), fieldDef);
+                }
             }
-
         }
     }
 
@@ -205,8 +186,8 @@ public class MetadataBaseService extends MetadataService
      * @param contentDefinition ContentDefinition
      * @return boolean
      */
-    public List getMatchingMetadatas(ContentDefinition contentDefinition){
-        List result = new ArrayList();
+    public List<ObjectKey> getMatchingMetadatas(ContentDefinition contentDefinition){
+        List<ObjectKey> result = new ArrayList<ObjectKey>();
         if (contentDefinition == null) {
             return result;
         }
@@ -269,7 +250,7 @@ public class MetadataBaseService extends MetadataService
      * @throws JahiaException
      * @return ArrayList
      */
-    public List getMetadataByName(String name)
+    public List<ObjectKey> getMetadataByName(String name)
     throws JahiaException {
         return getMetadataByName(name,-1);
     }
@@ -283,9 +264,9 @@ public class MetadataBaseService extends MetadataService
      * @return ArrayList
      * @throws JahiaException
      */
-    public List getMetadataByName(String name, int siteId)
+    public List<ObjectKey> getMetadataByName(String name, int siteId)
     throws JahiaException {
-        List metadatas = new ArrayList();
+        List<ObjectKey> metadatas = new ArrayList<ObjectKey>();
 
         if ( name == null ){
             return metadatas;
@@ -295,7 +276,7 @@ public class MetadataBaseService extends MetadataService
                     .getContext();
             JahiaFieldsDataManager fieldMgr = (JahiaFieldsDataManager) context
                     .getBean(JahiaFieldsDataManager.class.getName());
-            Map parameters = new HashMap();
+            Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put("fieldDefName", name);
 
             String stmt = null;
@@ -305,7 +286,7 @@ public class MetadataBaseService extends MetadataService
             } else {
                 stmt = GET_METADATA_FIELDS_BY_NAME;
             }
-            List<Integer> queryResult = fieldMgr.executeQuery(stmt, parameters);
+            List<Integer> queryResult = fieldMgr.<Integer>executeQuery(stmt, parameters);
 
             for (int fieldId : queryResult) {
                 ContentFieldKey key = new ContentFieldKey(fieldId);

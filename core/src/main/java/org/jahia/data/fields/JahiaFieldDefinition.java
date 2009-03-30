@@ -56,7 +56,6 @@ import org.jahia.content.ContentObject;
 import org.jahia.content.FieldDefinitionKey;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.version.ContentObjectEntryState;
-import org.jahia.services.metadata.FieldDefinition;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.JahiaTools;
@@ -405,8 +404,8 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
      * @return
      */
     public boolean isIndexableField(){
-        String value = this.getProperty(FieldDefinition.INDEXABLE_FIELD);
-        return ( value == null || "true".equals(value) );
+        return getPropertyDefinition() == null
+                || getPropertyDefinition().getIndex() != ExtendedPropertyDefinition.INDEXED_NO;
     }
 
     public ExtendedItemDefinition getItemDefinition() {

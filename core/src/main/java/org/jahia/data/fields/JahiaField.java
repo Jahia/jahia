@@ -43,7 +43,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.metadata.FieldDefinition;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.JahiaTools;
@@ -689,8 +688,7 @@ public abstract class JahiaField implements Cloneable, Serializable,
     }
 
     public ValidationError validate() throws JahiaException {
-        boolean required = ("true".equals(this.getDefinition().getProperty(FieldDefinition.
-                REQUIRED)));
+        boolean required = this.getDefinition().getPropertyDefinition().isMandatory();
         if (required && (this.getValue() == null || "".equals(this.getValue().trim()))) {
             return new ValidationError(this, "Value required");
         }

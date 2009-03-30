@@ -101,7 +101,7 @@ if (theEditedContainer != null) {
 }
 if (parentListID > -1) {
   final JahiaContainerList theParentList = ServicesRegistry.getInstance().getJahiaContainersService().loadContainerList(parentListID, LoadFlags.ALL, jData.getProcessingContext());
-  final int listType = Integer.parseInt(theParentList.getDefinition().getProperty(JahiaContainerDefinition.CONTAINER_LIST_TYPE_PROPERTY));
+  final int listType = theParentList.getDefinition().getContainerListType();
   if (theEditedContainer != null && listType == 0) {
     List<Integer> ctnIds = (List<Integer>) session.getAttribute("getSorteredAndFilteredCtnIds" + parentListID);
     if (ctnIds == null) {

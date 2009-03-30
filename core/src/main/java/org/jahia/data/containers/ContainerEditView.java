@@ -55,7 +55,6 @@ import org.jahia.data.fields.JahiaSimpleField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.metadata.FieldDefinition;
 import org.jahia.utils.JahiaConsole;
 
 /**
@@ -65,6 +64,8 @@ import org.jahia.utils.JahiaConsole;
  */
 
 public class ContainerEditView implements Serializable {
+
+    private static final long serialVersionUID = 5058456682938269472L;
 
     public static final String EMPTY_STRING = "";
 
@@ -236,12 +237,12 @@ public class ContainerEditView implements Serializable {
             if (visibleFields == null
                     || visibleFields.contains(new Integer(theField.getID()))) {
                 JahiaFieldDefinition fieldDef = theField.getDefinition();
-                if ("true"
-                        .equals(fieldDef
-                                .getProperty(FieldDefinition.HIDDEN_FROM_EDITING_ENGINE))) {
-                    // Do not display field that should be hidden in Editing engine
-                    continue;
-                }
+//                if ("true"
+//                        .equals(fieldDef
+//                                .getProperty(FieldDefinition.HIDDEN_FROM_EDITING_ENGINE))) {
+//                    // Do not display field that should be hidden in Editing engine
+//                    continue;
+//                }
                 if (fieldDef.getIsMetadata()
                         && !ServicesRegistry.getInstance().getMetadataService()
                                 .isDeclaredMetadata(fieldDef.getName())) {

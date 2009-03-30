@@ -40,9 +40,9 @@
     <bean id="categoriesSelectEngine" class="org.jahia.engines.categories.CategoriesSelect_Engine" />
     <bean id="applicationEngine" class="org.jahia.engines.applications.Application_Engine" />
     <bean id="manageApplicationCategoriesEngine" class="org.jahia.engines.applications.ManageApplicationCategoriesEngine" />
-    <bean id="customizeSaveSearchViewEngine" class="org.jahia.engines.search.CustomizeSaveSearchView_Engine" >
+    <!--  bean id="customizeSaveSearchViewEngine" class="org.jahia.engines.search.CustomizeSaveSearchView_Engine" >
         <property name="searchService" ref="JahiaSearchService" />
-    </bean>
+    </bean-->
     <bean id="manageLogsEngine" class="org.jahia.engines.audit.ManageLogs_Engine" />
     <bean id="appDispatcherEngine" class="org.jahia.engines.applications.FullScreenDispatcherEngine" />
 
@@ -77,7 +77,7 @@
                 <ref bean="categoriesSelectEngine" />
                 <ref bean="applicationEngine" />
                 <ref bean="manageApplicationCategoriesEngine" />
-                <ref bean="customizeSaveSearchViewEngine" />
+                <!-- ref bean="customizeSaveSearchViewEngine" /-->
                 <ref bean="appDispatcherEngine" />
             </list>
         </property>

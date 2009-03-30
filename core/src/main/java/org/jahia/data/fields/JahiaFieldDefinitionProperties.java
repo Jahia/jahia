@@ -43,23 +43,9 @@ public class JahiaFieldDefinitionProperties {
     public static final String FIELD_UPDATE_JSP_FILE_PROP = "field_update_jsp_file_prop";
     
     /**
-     * This property can be used for SmallText and SharedSmallText fields. Set the value 
-     * to true, if you want to display a multi-line input field instead of a single-line.
-     */
-    public static final String FIELD_MULTILINE_SMALLTEXT_PROP = "field_multiline_smalltext_prop";    
-
-    /**
-     * This property can be used fnor BigText fields. You can set the ID of a stylesheet and 
-     * a style definition description configured in htmleditors_config.xml 
-     */
-    public static final String FIELD_STYLESHEET_ID_PROP = "field_stylesheet_id_prop";
-    
-    /**
      * Optional page selection filter for page fields with a filtered page view when 
      * linking or moving pages.
      */
     public static final String PAGE_SELECTION_FILTER_PROP = "page_selection_filter_prop";        
 
-
-    public static final String COLOR_PICKER_PROP = "color_picker";
 }

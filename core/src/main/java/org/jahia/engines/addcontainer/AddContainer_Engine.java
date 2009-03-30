@@ -101,8 +101,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
-import java.util.Map.Entry;
-
 
 /**
  * Display the popup that let the user add a new container.
@@ -1203,8 +1201,14 @@ public class AddContainer_Engine implements JahiaEngine {
         JahiaContentFieldFacade cff;
         JahiaField field;
         final JahiaContainerDefinition definition = theContainer.getDefinition();
-        final String containerBeanName = definition.getProperty("containerBeanName");
-        final String validatorKey = definition.getProperty("validatorKey");
+
+        String v = definition.getNodeType().getValidator();
+        String containerBeanName = null;
+        String validatorKey = null;
+        if ( v != null ) {
+            containerBeanName = v.contains(":") ? v.substring(0,v.indexOf(":")) : null;
+            validatorKey = v.contains(":") ? v.substring(v.indexOf(":")+1) : v;
+        }
 
         if (validatorKey != null
                 && validatorKey.length() > 0) {
@@ -1256,9 +1260,9 @@ public class AddContainer_Engine implements JahiaEngine {
                         ValidatorResult vr = results.getValidatorResult(name);
                         if(vr==null) {
                             // maybe this field name has an id so we can not find it directly in the map
-                            Iterator<String> iterator = results.getPropertyNames().iterator();
+                            Iterator<?> iterator = results.getPropertyNames().iterator();
                             while (iterator.hasNext() && vr == null) {
-                                String o = iterator.next();
+                                String o = (String)iterator.next();
                                 String[] aliasNames = field.getDefinition().getAliasNames();
                                 if (aliasNames == null || aliasNames.length == 0) {
                                     aliasNames = new String[]{name};
@@ -1273,8 +1277,7 @@ public class AddContainer_Engine implements JahiaEngine {
                         }
                         // Get all the actions run against the property, and iterate over their names.
                         if (vr != null) {
-                            final Map actionMap = vr.getActionMap();
-                            final Iterator keys = actionMap.keySet().iterator();
+                            final Iterator<?> keys = vr.getActions();
                             while (keys.hasNext()) {
                                 final String actName = (String) keys.next();
 

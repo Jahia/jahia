@@ -53,7 +53,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.metadata.FieldDefinition;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -61,7 +60,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * <p>Title: </p>
@@ -73,6 +71,8 @@ import java.util.Map.Entry;
  * @version 1.0
  */
 public abstract class FieldsEditHelperAbstract implements FieldsEditHelper {
+
+    private static final long serialVersionUID = 1791180400570331125L;
 
     private static final Logger logger = Logger.getLogger(FieldsEditHelperAbstract.class);
 
@@ -488,7 +488,7 @@ public abstract class FieldsEditHelperAbstract implements FieldsEditHelper {
             final Iterator<JahiaField> fEnum = cff.getFields();
             while (fEnum.hasNext()) {
                 final JahiaField field = (JahiaField) fEnum.next();
-                if (!"true".equals(field.getDefinition().getProperty(FieldDefinition.READ_ONLY))) {
+                if (!field.getDefinition().getItemDefinition().isProtected()) {
                     if (this.getContainerEditView().getFieldGroupByFieldName(field.getDefinition().getName()) != null) {
                         if (getEditedLanguages().contains(field.getLanguageCode())) {
                             final ValidationError ve = field.validate();
@@ -499,13 +499,13 @@ public abstract class FieldsEditHelperAbstract implements FieldsEditHelper {
                         }
                     }
                 }
-                String def = field.getDefinition().getProperty(FieldDefinition.DEFINITION);
-                if (def != null && def.length() > 0) {
-                    String[] s = def.split(" ");
+                String nodeTypeName = field.getDefinition().getItemDefinition().getDeclaringNodeType().getName(); 
+                String propDef = field.getDefinition().getItemDefinition().getName();
+                if (nodeTypeName != null && nodeTypeName.length() > 0 && propDef != null && propDef.length() > 0) {
                     ExtendedNodeType nt = null;
                     try {
-                        nt = NodeTypeRegistry.getInstance().getNodeType(s[0]);
-                    ExtendedPropertyDefinition pd = nt.getPropertyDefinition(s[1]);
+                        nt = NodeTypeRegistry.getInstance().getNodeType(nodeTypeName);
+                    ExtendedPropertyDefinition pd = nt.getPropertyDefinition(propDef);
                     if (pd != null) {
                         Value[] vcs = pd.getValueConstraintsAsValue();
                         if (vcs.length > 0) {

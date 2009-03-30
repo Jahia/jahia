@@ -6,7 +6,7 @@
         <property name="properties">
             <props>    
                 <!-- If set to true, no indexation is performed at all -->
-                <prop key="indexationDisabled">false</prop>	
+                <prop key="indexingDisabled">false</prop>	
                 <prop key="optimizationInterval">12h</prop><!--The format of this is ' *w *d *h *m *s ' 
                                                      (representing weeks, days, hours and minutes - where * can be any number)
                                                       Examples: 4d, 5h 30m, 60m and 3w. 
@@ -50,6 +50,7 @@
                 <!-- search score boost factor -->
                 <prop key="org.jahia.services.search.scoreBoost.metadata">2.0</prop><!-- default factor for all metadatas -->
                 <prop key="org.jahia.services.search.analyzerForNumerics">keyword</prop><!-- default analyzer for all numerics -->
+                <prop key="org.jahia.services.search.analyzerForKeywords">keyword</prop><!-- default analyzer for all keywords (sorting, faceting) -->
                 
 				<!-- lucene system property parameter -->
 				<!--

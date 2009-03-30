@@ -50,15 +50,12 @@ import java.util.TreeSet;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Literal;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.PropertyValue;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;
@@ -101,9 +98,6 @@ import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLNotFoundException;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -148,6 +142,7 @@ public class JahiaContainersBaseService extends JahiaContainersService {
     private JahiaFieldsDataManager fieldsDataManager;
 
     private JahiaObjectManager jahiaObjectManager;
+    JahiaContainerDefinitionsRegistry containerDefRegistry;
 
     public void setContainerListManager(JahiaContainerListManager containerListManager) {
         this.containerListManager = containerListManager;
@@ -180,7 +175,7 @@ public class JahiaContainersBaseService extends JahiaContainersService {
     public void setJahiaObjectManager(JahiaObjectManager jahiaObjectManager) {
         this.jahiaObjectManager = jahiaObjectManager;
     }
-
+    
     /**
      * Default constructor, creates a new <code>JahiaContainersBaseService</code> instance.
      */
@@ -232,51 +227,15 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         JahiaPageDefinition def = page.getPageTemplate();
         String typeName = def.getPageType();
         if (typeName != null) {
-            ExtendedNodeType nt = null;
-            try {
-                nt = NodeTypeRegistry.getInstance().getNodeType(typeName);
-                ExtendedNodeDefinition[] nodes = nt.getChildNodeDefinitions();
-                for (ExtendedNodeDefinition nodeDef : nodes) {
-                    if (nodeDef.getDeclaringNodeType().getName().equals(Constants.JAHIANT_PAGE) || nodeDef.getDeclaringNodeType().getName().equals(Constants.JAHIANT_JAHIACONTENT)) {
-                        continue;
-                    }
-                    String parentCtnType = nodeDef.getDeclaringNodeType().getName() + " " + nodeDef.getName();
-                    String containerName = nt.getName().replace(':','_') + "_" + nodeDef.getName();
-//                    String containerName = nodeDef.getDeclaringNodeType().getName().replace(':','_') + "_" + nodeDef.getName();
-                    if (nodeDef.getRequiredPrimaryTypes()[0].isNodeType(Constants.JAHIANT_CONTAINERLIST)) {
-                        nodeDef = nodeDef.getRequiredPrimaryTypes()[0].getDeclaredChildNodeDefinitionsAsMap().get("*");
-                    }
-
-                    int type = JahiaContainerDefinition.STANDARD_TYPE;
-                    if (!nodeDef.allowsSameNameSiblings()) type += JahiaContainerDefinition.SINGLE_TYPE;
-                    if (nodeDef.isMandatory()) type += JahiaContainerDefinition.MANDATORY_TYPE;
-
-                    StringBuffer defTypes = new StringBuffer();
-                    if (nodeDef.getRequiredPrimaryTypes().length > 0) {
-                        for (int j = 0; j < nodeDef.getRequiredPrimaryTypes().length; j++) {
-                            NodeType nodeType = nodeDef.getRequiredPrimaryTypes()[j];
-                            if (nodeType != null) {
-                                defTypes.append(nodeType.getName());
-                                defTypes.append(",");
-                            }
-                        }
-                    }
-                    if (defTypes.length() == 0) {
-                        logger.error("Definition for container " + nodeDef.getName() + " not found, skip it");
-                    } else {
-                        String defTypesStr = defTypes.substring(0, defTypes.length() - 1);
-                        theSet.declareContainer(parentCtnType, containerName, defTypesStr, -1, -1, type, new Properties(), nodeDef.getSelectorOptions());
-                        theSet.getContainerList(containerName);
-                    }
-                }
-            } catch (NoSuchNodeTypeException e) {
-                logger.error(e);
+            for (Map.Entry<String, Integer> containerNamesAndDefId : getContainerDefRegistry().buildContainerDefinitionsForTemplate(typeName, page.getSiteID(), page.getPageTemplateID(), theSet).entrySet()) {
+                theSet.addDeclaredContainer(containerNamesAndDefId.getKey(), containerNamesAndDefId.getValue());
+                theSet.getContainerList(containerNamesAndDefId.getKey());
             }
         }
 
         return theSet;
     } // end buildContainerStructureForPage
-
+    
     /**
      * gets all container definitions ids on a page
      *
@@ -893,9 +852,7 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         // end of getting parent acl id
 
         // save the container list info
-        ServicesRegistry.getInstance().getJahiaContainersService().
-                saveContainerInfo(theContainer, containerParentID, parentAclID,
-                        jParams);
+        saveContainerInfo(theContainer, containerParentID, parentAclID, jParams);
 
         // save fields, one by one
         Iterator<JahiaField> fields = theContainer.getFields();
@@ -2356,12 +2313,12 @@ public class JahiaContainersBaseService extends JahiaContainersService {
      * @throws JahiaException generated if there were problems executing the
      *                        query or communicating with the database.
      */
-    public Map<String, String> getContainerProperties(int containerID)
+    public Map<Object, Object> getContainerProperties(int containerID)
             throws JahiaException {
         return containerManager.getProperties(containerID);
     }
 
-    public Map<String, String> getContainerListProperties(int containerListID)
+    public Map<Object, Object> getContainerListProperties(int containerListID)
             throws JahiaException {
         return containerListManager.getProperties(containerListID);
     }
@@ -2382,14 +2339,14 @@ public class JahiaContainersBaseService extends JahiaContainersService {
      */
     public void setContainerProperties(int containerID,
                                        int jahiaID,
-                                       Map<String, String> containerProperties)
+                                       Map<Object, Object> containerProperties)
             throws JahiaException {
         containerManager.setProperties(containerID, jahiaID, containerProperties);
     }
 
     public void setContainerListProperties(int containerListID,
                                            int jahiaID,
-                                           Map<String, String> containerProperties)
+                                           Map<Object, Object> containerProperties)
             throws JahiaException {
         containerListManager.setProperties(containerListID, jahiaID, containerProperties);
     }
@@ -2645,6 +2602,12 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         return m;
     }
 
-
+    public void setContainerDefRegistry(JahiaContainerDefinitionsRegistry containerDefRegistry) {
+        this.containerDefRegistry = containerDefRegistry;
+    }
+    
+    public JahiaContainerDefinitionsRegistry getContainerDefRegistry() {
+      return containerDefRegistry == null ? JahiaContainerDefinitionsRegistry.getInstance() : null;
+    }
 
 } // end JahiaContainersBaseService

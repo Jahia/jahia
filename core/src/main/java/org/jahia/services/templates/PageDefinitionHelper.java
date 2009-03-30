@@ -42,10 +42,12 @@ import org.jahia.data.templates.JahiaTemplateDef;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
+import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
+import org.jahia.services.search.JahiaSearchService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 
@@ -54,11 +56,15 @@ import org.jahia.services.sites.JahiaSitesService;
  * 
  * @author Sergiy Shyrkov
  */
-class PageDefinitionHelper {
+public class PageDefinitionHelper {
 
     private static Logger logger = Logger.getLogger(PageDefinitionHelper.class);
 
     private TemplatePackageRegistry templatePackageRegistry;
+   
+    private JahiaSearchService searchService;
+    
+    private JahiaContainerDefinitionsRegistry containerDefRegistry;
 
     public void setDefaultTemplate(JahiaSite site,
             JahiaTemplatesPackage templatePackage) throws JahiaException {
@@ -77,6 +83,10 @@ class PageDefinitionHelper {
         templatePackageRegistry = tmplPackageRegistry;
     }
 
+    public void setSearchService(JahiaSearchService searchService) {
+        this.searchService = searchService;
+    }    
+    
     public void updateAllPageDefinitions(JahiaPageService pageService, JahiaSitesService siteService, JahiaPageTemplateService pageTemplateService) throws JahiaException {
         logger.info("Checking for updated page definitions...");
 
@@ -109,9 +119,7 @@ class PageDefinitionHelper {
 
         // first create new page definitions or update visibility flag for
         // existing page definitions
-        for (Iterator iterator = templatePackage.getTemplates().iterator(); iterator
-                .hasNext();) {
-            JahiaTemplateDef templateDef = (JahiaTemplateDef) iterator.next();
+        for (JahiaTemplateDef templateDef : templatePackage.getTemplates()) {
             JahiaPageDefinition pageDef = null;
             try {
                 pageDef = pageTemplateService.lookupPageTemplateByName(
@@ -121,7 +129,7 @@ class PageDefinitionHelper {
             }
             if (pageDef == null) {
                 // create new
-                pageTemplateService.createPageTemplate(site.getID(),
+                pageDef = pageTemplateService.createPageTemplate(site.getID(),
                         templateDef.getName(), null, templateDef.isVisible(),
                         templateDef.getPageType(),
                         templateDef.getDescription(), null, site.getAclID());
@@ -140,8 +148,12 @@ class PageDefinitionHelper {
                         + templateDef.getName() + "' for site '"
                         + site.getTitle() + "'");
             }
+            
+            containerDefRegistry.buildContainerDefinitionsForTemplate(pageDef.getPageType(), site.getID(), pageDef.getID(), null);
         }
-
+        
+        searchService.initSearchFieldConfiguration(site.getID());
+        
         // check for removed definitions
         Iterator<JahiaPageDefinition> pageDefs = pageTemplateService
                 .getPageTemplates(site.getID(), false);
@@ -152,9 +164,9 @@ class PageDefinitionHelper {
                 // we found a template that was removed
 
                 // check if there were already pages created with this template
-                List pages = pageService
+                List<Integer> pages = pageService
                         .getPageIDsWithTemplate(existingDefintion.getID());
-                if (pages.size() == 0) {
+                if (pages.isEmpty()) {
                     // no pages were created --> delete page definition
                     pageTemplateService.deletePageTemplate(existingDefintion
                             .getID());
@@ -198,8 +210,9 @@ class PageDefinitionHelper {
                     + "' is set to '" + templatePackage.getDefaultPageName()
                     + "'");
         }
-
-        
     }
-
+    
+    public void setContainerDefRegistry(JahiaContainerDefinitionsRegistry containerDefRegistry) {
+        this.containerDefRegistry = containerDefRegistry;
+    }
 }

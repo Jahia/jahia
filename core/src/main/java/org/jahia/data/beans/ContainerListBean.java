@@ -429,10 +429,8 @@ public class ContainerListBean extends ContentBean {
             String curURL;
             final boolean canAddContainer;
             if (jahiaContainerList.getID() != 0) {
-                final Properties listProperties = theList.getJahiaContainerList(processingContext,
-                        processingContext.getEntryLoadRequest()).getDefinition().getProperties();
-                final int containerListTypePropValue = Integer.parseInt(listProperties.getProperty(
-                        JahiaContainerDefinition.CONTAINER_LIST_TYPE_PROPERTY));
+                final int containerListTypePropValue = theList.getJahiaContainerList(processingContext,
+                        processingContext.getEntryLoadRequest()).getDefinition().getContainerListType();
                 if ((containerListTypePropValue & JahiaContainerDefinition.SINGLE_TYPE) > 0) {
                     final int listSize = theList.getJahiaContainerList(processingContext, processingContext.getEntryLoadRequest()).getFullSize();
                     canAddContainer = (listSize == 0);  

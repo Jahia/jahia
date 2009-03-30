@@ -46,6 +46,11 @@ public final class JahiaSearchConfigConstant {
      * the root directory for search indexes
      */
     public static final String SEARCH_INDEX_ROOT_DIR                    = "searchIndexRootDir";
+    
+    /**
+     * setting to disable indexing (with true) 
+     */
+    public static final String SEARCH_INDEXING_DISABLED                    = "indexingDisabled";    
 
     /**
      * 1: index, 0: do not index ,just read ( I.E when sharing a same index directory in a clustered environment )
@@ -120,4 +125,10 @@ public final class JahiaSearchConfigConstant {
      */
     public static final String SYNCHRONIZED_INDEXATION_WAIT_DELAY = "synxhronizedIndexationWaitDelay";    
 
+    
+    public static final String ENABLE_FILE_INDEXING = "enableJcrSearch";
+    
+    public static final String METADATA_SCOREBOOST = "org.jahia.services.search.scoreBoost.metadata";
+    public static final String ANALYZER_FOR_NUMERICS = "org.jahia.services.search.analyzerForNumerics";
+    public static final String ANALYZER_FOR_KEYWORDS = "org.jahia.services.search.analyzerForKeywords";
 }

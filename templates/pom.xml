@@ -64,6 +64,7 @@
         <!--<module>sandbox-templates</module>-->
         <module>test-templates</module>
         <module>web-templates</module>
+        <module>social-templates</module>
         <!--<module>sandbox-web-templates</module>-->
   </modules>
 

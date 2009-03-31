@@ -1,0 +1,23 @@
+#created on: 17 oct. 2008
+package communitytemplates
+
+#list any import classes here.
+import org.jahia.services.content.automation.*
+import org.jahia.services.content.JCRStoreProvider
+import javax.jcr.observation.Event
+import org.apache.log4j.Logger
+
+expander rules.dsl
+
+#declare any global variables here
+global User user
+global Service service
+global Logger logger
+global JCRStoreProvider provider
+
+rule "set commentable"
+    when
+        A new article is created
+    then
+        Set isCommentable to true
+end

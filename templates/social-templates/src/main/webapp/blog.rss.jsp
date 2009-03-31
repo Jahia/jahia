@@ -1,4 +1,6 @@
-<%@page language="java" contentType="text/xml;charset=UTF-8" %><?xml version="1.0" encoding="UTF-8"?><%--
+<%--
+
+
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
     Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
 
@@ -19,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have received a copy of the text
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
 
@@ -28,7 +30,8 @@
     in accordance with the terms contained in a separate written agreement
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
---%><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+
+--%><%@page language="java" contentType="text/xml;charset=UTF-8" %><?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <%@include file="common/declarations.jspf" %>
     <utility:setBundle basename="resources.SocialTemplates"/>
     <template:composePageURL fullURL="true" valueID="url"/>

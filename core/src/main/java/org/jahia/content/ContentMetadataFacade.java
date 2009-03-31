@@ -635,7 +635,7 @@ public class ContentMetadataFacade implements ContainerFacadeInterface{
                 "Cannot retrieve content definition",
                 JahiaException.DATA_ERROR, JahiaException.CRITICAL_SEVERITY, cnfe);
             }
-            boolean required = fieldDef.getPropertyDefinition().isMandatory();
+            boolean required = fieldDef.getItemDefinition().isMandatory();
 
             if ( !requiredOnly || required ) {
                 fieldOrder.add(fieldDef.getName());

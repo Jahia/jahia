@@ -960,7 +960,7 @@
             <type>org.jahia.data.beans.ContentBean</type>
         </attribute>
         <attribute>
-            <name>valueID</name>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

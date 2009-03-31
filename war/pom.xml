@@ -1,156 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <parent>
-    <groupId>org.jahia.server</groupId>
-    <artifactId>jahia-root</artifactId>
-    <version>6.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>jahia-war</artifactId>
-  <name>Jahia WAR</name>
-  <packaging>war</packaging>
+    <parent>
+        <groupId>org.jahia.server</groupId>
+        <artifactId>jahia-root</artifactId>
+        <version>6.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>jahia-war</artifactId>
+    <name>Jahia WAR</name>
+    <packaging>war</packaging>
 
-  <properties>
-      <singleModuleName>org.jahia.ajax.gwt.template.general.edit.Edit</singleModuleName>
-  </properties>
-   <pluginRepositories>
-      <pluginRepository>
-        <id>gwt-maven</id>
-        <url>http://maven.jahia.org/maven2</url>
-      </pluginRepository>
+    <properties>
+        <singleModuleName>org.jahia.ajax.gwt.template.general.edit.Edit</singleModuleName>
+    </properties>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>gwt-maven</id>
+            <url>http://maven.jahia.org/maven2</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <profiles>
-      <profile>
-        <id>jboss-deployment</id>
-        <activation>
-          <property>
-            <name>jahia.deploy.targetServerType</name>
-            <value>jboss</value>
-          </property>
-        </activation>
-        <dependencyManagement>
-          <dependencies>
-            <dependency>
-              <groupId>jboss</groupId>
-              <artifactId>jboss-cache</artifactId>
-              <version>1.4.1.GA</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jboss</groupId>
-              <artifactId>jboss-common</artifactId>
-              <version>4.2.2.GA</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jboss</groupId>
-              <artifactId>jboss-system</artifactId>
-              <version>4.2.2.GA</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jboss</groupId>
-              <artifactId>jboss-jmx</artifactId>
-              <version>4.2.2.GA</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jboss</groupId>
-              <artifactId>jboss-serialization</artifactId>
-              <version>1.0.3.GA</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jboss.jbossas.core-libs</groupId>
-              <artifactId>jboss</artifactId>
-              <version>4.2.2.GA</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>trove</groupId>
-              <artifactId>trove</artifactId>
-              <version>1.0.2</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jsf</groupId>
-              <artifactId>jsf-api</artifactId>
-              <version>1.1</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>jsf</groupId>
-              <artifactId>jsf-impl</artifactId>
-              <version>1.1</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>javax.servlet</groupId>
-              <artifactId>jstl</artifactId>
-              <version>1.1.2</version>
-              <scope>provided</scope>
-            </dependency>
-            <dependency>
-              <groupId>taglibs</groupId>
-              <artifactId>standard</artifactId>
-              <version>1.1.2</version>
-              <scope>provided</scope>
-            </dependency>
-          </dependencies>
-        </dependencyManagement>
-      </profile>
+        <profile>
+            <id>jboss-deployment</id>
+            <activation>
+                <property>
+                    <name>jahia.deploy.targetServerType</name>
+                    <value>jboss</value>
+                </property>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>jboss</groupId>
+                        <artifactId>jboss-cache</artifactId>
+                        <version>1.4.1.GA</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>jboss</groupId>
+                        <artifactId>jboss-common</artifactId>
+                        <version>4.2.2.GA</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>jboss</groupId>
+                        <artifactId>jboss-system</artifactId>
+                        <version>4.2.2.GA</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>jboss</groupId>
+                        <artifactId>jboss-jmx</artifactId>
+                        <version>4.2.2.GA</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>jboss</groupId>
+                        <artifactId>jboss-serialization</artifactId>
+                        <version>1.0.3.GA</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>jboss.jbossas.core-libs</groupId>
+                        <artifactId>jboss</artifactId>
+                        <version>4.2.2.GA</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>trove</groupId>
+                        <artifactId>trove</artifactId>
+                        <version>1.0.2</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>jsf</groupId>
+                        <artifactId>jsf-api</artifactId>
+                        <version>1.1</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>jsf</groupId>
+                        <artifactId>jsf-impl</artifactId>
+                        <version>1.1</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>jstl</artifactId>
+                        <version>1.1.2</version>
+                        <scope>provided</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>taglibs</groupId>
+                        <artifactId>standard</artifactId>
+                        <version>1.1.2</version>
+                        <scope>provided</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
 
-      <profile>
-        <id>eclipse-integration</id>
-        <build>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-eclipse-plugin</artifactId>
-              <configuration>
-                <wtpversion>1.5</wtpversion>
-                <additionalProjectnatures>
-                  <projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
-                  <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
-                  <projectnature>org.eclipse.jem.workbench.JavaEMFNature</projectnature>
-                </additionalProjectnatures>
-                <additionalBuildcommands>
-                  <buildCommand>
-                    <name>org.eclipse.wst.common.project.facet.core.builder</name>
-                    <arguments></arguments>
-                  </buildCommand>
-                  <buildCommand>
-                    <name>org.eclipse.wst.validation.validationbuilder</name>
-                    <arguments></arguments>
-                  </buildCommand>
-                </additionalBuildcommands>
-              </configuration>
-            </plugin>
-          </plugins>
-        </build>
-      </profile>
+        <profile>
+            <id>eclipse-integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-eclipse-plugin</artifactId>
+                        <configuration>
+                            <wtpversion>1.5</wtpversion>
+                            <additionalProjectnatures>
+                                <projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
+                                <projectnature>org.eclipse.wst.common.modulecore.ModuleCoreNature</projectnature>
+                                <projectnature>org.eclipse.jem.workbench.JavaEMFNature</projectnature>
+                            </additionalProjectnatures>
+                            <additionalBuildcommands>
+                                <buildCommand>
+                                    <name>org.eclipse.wst.common.project.facet.core.builder</name>
+                                    <arguments></arguments>
+                                </buildCommand>
+                                <buildCommand>
+                                    <name>org.eclipse.wst.validation.validationbuilder</name>
+                                    <arguments></arguments>
+                                </buildCommand>
+                            </additionalBuildcommands>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
-      <profile>
-          <id>full-gwt</id>
-          <activation>
-            <property>
-                <name>!singleModule</name>
-            </property>
-          </activation>
-          <build>
-              <plugins>
-                  <plugin>
-                      <groupId>com.totsp.gwt</groupId>
-                      <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
-                      <version>jahiafork-2.0.1</version>
-                      <configuration>
-                          <sourcesOnPath>true</sourcesOnPath>
-            <!--              style>PRETTY</style-->
-                          <runTarget>com.me.MyModule/MyHostPage.jsp</runTarget>
-                          <output>${project.build.directory}/${project.build.finalName}/gwt/</output>
-                          <extraJvmArgs>-Xmx1024m</extraJvmArgs>
-                          <allowedJars>
+        <profile>
+            <id>full-gwt</id>
+            <activation>
+                <property>
+                    <name>!singleModule</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.totsp.gwt</groupId>
+                        <artifactId>maven-googlewebtoolkit2-plugin</artifactId>
+                        <version>jahiafork-2.0.1</version>
+                        <configuration>
+                            <sourcesOnPath>true</sourcesOnPath>
+                            <!--              style>PRETTY</style-->
+                            <runTarget>com.me.MyModule/MyHostPage.jsp</runTarget>
+                            <output>${project.build.directory}/${project.build.finalName}/gwt/</output>
+                            <extraJvmArgs>-Xmx1024m</extraJvmArgs>
+                            <allowedJars>
                                 <jarFileName>gwt-dnd-2.0.7.jar</jarFileName>
                                 <jarFileName>bouwkamp-gwt-1.3.2.jar</jarFileName>
                                 <jarFileName>simplesortabletable-1.0.jar</jarFileName>
@@ -187,26 +187,26 @@
                                 <value>org.jahia.ajax.gwt.module.workflow.WorkflowManager</value>
                             </compileTargets>
                             <gwtVersion>1.5.3</gwtVersion>
-                       </configuration>
-                       <executions>
-                          <execution>
-                             <goals>
-                                <goal>compile</goal>
-                              </goals>
-                          </execution>
-                       </executions>
-                  </plugin>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-              </plugins>
-          </build>
-      </profile>
+                </plugins>
+            </build>
+        </profile>
 
         <profile>
             <id>editmode-gwt</id>
             <activation>
-              <property>
-                  <name>singleModule</name>
-              </property>
+                <property>
+                    <name>singleModule</name>
+                </property>
             </activation>
             <build>
                 <plugins>
@@ -216,30 +216,30 @@
                         <version>jahiafork-2.0.1</version>
                         <configuration>
                             <sourcesOnPath>true</sourcesOnPath>
-              <!--              style>PRETTY</style-->
+                            <!--              style>PRETTY</style-->
                             <runTarget>com.me.MyModule/MyHostPage.jsp</runTarget>
                             <output>${project.build.directory}/${project.build.finalName}/gwt/</output>
                             <extraJvmArgs>-Xmx1024m</extraJvmArgs>
                             <allowedJars>
-                                  <jarFileName>gwt-dnd-2.0.7.jar</jarFileName>
-                                  <jarFileName>bouwkamp-gwt-1.3.2.jar</jarFileName>
-                                  <jarFileName>simplesortabletable-1.0.jar</jarFileName>
-                                  <jarFileName>gxt-1.2.3.jar</jarFileName>
-                                  <jarFileName>gwt-log-1.5.6.jar</jarFileName>
-                                  <jarFileName>jahia-gwt-${jahia.package.version}.jar</jarFileName>
-                              </allowedJars>
-                              <compileTargets>
-                                  <value>${singleModuleName}</value>
-                              </compileTargets>
-                              <gwtVersion>1.5.3</gwtVersion>
-                         </configuration>
-                         <executions>
+                                <jarFileName>gwt-dnd-2.0.7.jar</jarFileName>
+                                <jarFileName>bouwkamp-gwt-1.3.2.jar</jarFileName>
+                                <jarFileName>simplesortabletable-1.0.jar</jarFileName>
+                                <jarFileName>gxt-1.2.3.jar</jarFileName>
+                                <jarFileName>gwt-log-1.5.6.jar</jarFileName>
+                                <jarFileName>jahia-gwt-${jahia.package.version}.jar</jarFileName>
+                            </allowedJars>
+                            <compileTargets>
+                                <value>${singleModuleName}</value>
+                            </compileTargets>
+                            <gwtVersion>1.5.3</gwtVersion>
+                        </configuration>
+                        <executions>
                             <execution>
-                               <goals>
-                                  <goal>compile</goal>
+                                <goals>
+                                    <goal>compile</goal>
                                 </goals>
                             </execution>
-                         </executions>
+                        </executions>
                     </plugin>
 
                 </plugins>
@@ -279,383 +279,409 @@
             </build>
         </profile>
 
+        <profile>
+            <id>testJahia</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>deploy</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.jahia.server</groupId>
-      <artifactId>jahia-impl</artifactId>
-      <version>${jahia.package.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jahia.server</groupId>
-      <artifactId>jahia-api</artifactId>
-      <version>${jahia.package.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jahia.server</groupId>
-      <artifactId>jahia-taglib</artifactId>
-      <version>${jahia.package.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jahia.server</groupId>
-      <artifactId>jahia-gwt</artifactId>
-      <version>${jahia.package.version}</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jahia.templates</groupId>
-      <artifactId>core-templates</artifactId>
-      <version>${jahia.package.version}</version>
-      <type>war</type>
-    </dependency>
-<!--    <dependency>
-      <groupId>org.jahia.templates</groupId>
-      <artifactId>community-templates</artifactId>
-      <version>${jahia.package.version}</version>
-      <type>war</type>
-    </dependency>-->
-<!--      <dependency>
-        <groupId>org.jahia.templates</groupId>
-        <artifactId>sandbox-templates</artifactId>
-        <version>${jahia.package.version}</version>
-        <type>war</type>
-      </dependency>-->
-<!--      <dependency>
-        <groupId>org.jahia.templates</groupId>
-        <artifactId>sandbox-web-templates</artifactId>
-        <version>${jahia.package.version}</version>
-        <type>war</type>
-      </dependency>-->
-    <dependency>
-      <groupId>org.jahia.templates</groupId>
-      <artifactId>web-templates</artifactId>
-      <version>${jahia.package.version}</version>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>org.jahia.templates</groupId>
-      <artifactId>test-templates</artifactId>
-      <version>${jahia.package.version}</version>
-      <type>war</type>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jsp-api</artifactId>
-      <version>2.0</version>
-      <scope>provided</scope>
-    </dependency>
-     <dependency>
-         <groupId>com.google.gwt</groupId>
-         <artifactId>gwt-user</artifactId>
-         <version>1.5.3</version>
-         <scope>provided</scope>
-     </dependency>
-     <dependency>
-         <groupId>com.google.gwt</groupId>
-         <artifactId>gwt-servlet</artifactId>
-         <version>1.5.3</version>
-     </dependency>
-     <!-- workaround for gwt-plugin-->
-     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <version>4.0.3</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.jdt</groupId>
-          <artifactId>core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>1.1.1</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging-api</artifactId>
-        <version>1.0.4</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.15</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.tuckey</groupId>
-        <artifactId>urlrewritefilter</artifactId>
-        <version>3.1.0</version>
-    </dependency>
-      <!-- Pluto dependencies -->
-      <dependency>
-          <groupId>org.apache.pluto</groupId>
-          <artifactId>pluto-container</artifactId>
-          <version>${pluto.version}</version>
-          <optional>true</optional>
-          <scope>provided</scope>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.pluto</groupId>
-          <artifactId>pluto-descriptor-api</artifactId>
-          <version>${pluto.version}</version>
-          <optional>true</optional>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.pluto</groupId>
-          <artifactId>pluto-descriptor-impl</artifactId>
-          <version>${pluto.version}</version>
-          <optional>true</optional>
-          <exclusions>
-              <exclusion>
-                  <groupId>cglib</groupId>
-                  <artifactId>cglib-full</artifactId>
-              </exclusion>
-            <exclusion>
-              <groupId>xerces</groupId>
-              <artifactId>xerces</artifactId>
-            </exclusion>
-          </exclusions>
-      </dependency>
-      <dependency>
-          <groupId>com.sun.xml.bind</groupId>
-          <artifactId>jaxb-impl</artifactId>
-          <version>2.1.7</version>
-          <optional>true</optional>
-      </dependency>
-      <dependency>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-          <version>2.1</version>
-          <optional>true</optional>
-          <exclusions>
-              <exclusion>
-                  <groupId>stax</groupId>
-                  <artifactId>stax-api</artifactId>
-              </exclusion>
-          </exclusions>
-      </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-impl</artifactId>
+            <version>${jahia.package.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-api</artifactId>
+            <version>${jahia.package.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-taglib</artifactId>
+            <version>${jahia.package.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-gwt</artifactId>
+            <version>${jahia.package.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.templates</groupId>
+            <artifactId>core-templates</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+        </dependency>
 
-  <build>
-    <finalName>jahia</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>tomcat-maven-plugin</artifactId>
-        <version>1.0-alpha-1</version>
-        <configuration>
-            <path>${jahia.deploy.war.contextPath}</path>
-        </configuration>
-      </plugin>
+        <!--    <dependency>
+          <groupId>org.jahia.templates</groupId>
+          <artifactId>community-templates</artifactId>
+          <version>${jahia.package.version}</version>
+          <type>war</type>
+        </dependency>-->
+        <!--      <dependency>
+          <groupId>org.jahia.templates</groupId>
+          <artifactId>sandbox-templates</artifactId>
+          <version>${jahia.package.version}</version>
+          <type>war</type>
+        </dependency>-->
+        <!--      <dependency>
+          <groupId>org.jahia.templates</groupId>
+          <artifactId>sandbox-web-templates</artifactId>
+          <version>${jahia.package.version}</version>
+          <type>war</type>
+        </dependency>-->
+        <dependency>
+            <groupId>org.jahia.templates</groupId>
+            <artifactId>web-templates</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.templates</groupId>
+            <artifactId>test-templates</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>1.5.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-servlet</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        <!-- workaround for gwt-plugin-->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>4.0.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.jdt</groupId>
+                    <artifactId>core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging-api</artifactId>
+            <version>1.0.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.15</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <!-- Pluto dependencies -->
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto-container</artifactId>
+            <version>${pluto.version}</version>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto-descriptor-api</artifactId>
+            <version>${pluto.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto-descriptor-impl</artifactId>
+            <version>${pluto.version}</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xerces</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.1.7</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>stax</groupId>
+                    <artifactId>stax-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
 
-      <!-- doesn't work yet, due to errors in JAMon JSPs, upgrading the library should solve this (hopefully !)
-      <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>jspc-maven-plugin</artifactId>
-          <version>1.4.6</version>
-          <configuration>
-              <source>1.5</source>
-              <target>1.5</target>
-          </configuration>
-          <executions>
-              <execution>
-                  <id>jspc</id>
-                  <phase>compile</phase>
-                  <goals>
-                       <goal>compile</goal>
-                  </goals>
-              </execution>
-          </executions>
-      </plugin>
+    <build>
+        <finalName>jahia</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tomcat-maven-plugin</artifactId>
+                <configuration>
+                    <path>${jahia.deploy.war.contextPath}</path>
+                </configuration>
+            </plugin>
 
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <configuration>
-              <webXml>${pom.basedir}/target/jspweb.xml</webXml>
-          </configuration>
-      </plugin>
-      -->
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <configuration>
-            <webResources>
-                    <resource>
-                        <directory>${pom.basedir}/src/main/webapp</directory>
-                        <filtering>true</filtering>
-                        <includes>
-                            <include>WEB-INF/web.xml</include>
-                            <include>WEB-INF/etc/struts/struts-config.xml</include>
-                            <include>WEB-INF/etc/spring/applicationcontext-services.xml</include>
-                            <include>html/startup/javascript_start.html</include>
-                            <include>html/startup/loadingjahia.html</include>
-                        </includes>
-                    </resource>
-            </webResources>
-          <!--packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes-->
-          <archive>
-            <manifest>
-              <addClasspath>true</addClasspath>
-              <!--classpathPrefix>lib/</classpathPrefix-->
-              <!--addExtensions>true</addExtensions-->
-            </manifest>
-          </archive>
-          </configuration>
-      </plugin>
+            <!-- doesn't work yet, due to errors in JAMon JSPs, upgrading the library should solve this (hopefully !)
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jspc-maven-plugin</artifactId>
+                <version>1.4.6</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jspc</id>
+                        <phase>compile</phase>
+                        <goals>
+                             <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-      <plugin>
-          <groupId>org.jahia.server</groupId>
-          <artifactId>maven-jahia-plugin</artifactId>
-          <version>1.0-SNAPSHOT</version>
-          <executions>
-            <execution>
-              <phase>process-resources</phase>
-              <goals>
-                <goal>copy-templates</goal>
-              </goals>
-            </execution>
-            <!-- this phase only exists in maven 2.1
-            <execution>
-              <phase>prepare-package</phase>
-              <goals>
-                <goal>configure</goal>
-              </goals>
-            </execution>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webXml>${pom.basedir}/target/jspweb.xml</webXml>
+                </configuration>
+            </plugin>
             -->
-          </executions>
-      </plugin>
-      <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <version>2.0</version>
-          <configuration>
-            <dependentWarExcludes>**</dependentWarExcludes>
-          </configuration>
-      </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${pom.basedir}/src/main/webapp</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>WEB-INF/web.xml</include>
+                                <include>WEB-INF/etc/struts/struts-config.xml</include>
+                                <include>WEB-INF/etc/spring/applicationcontext-services.xml</include>
+                                <include>html/startup/javascript_start.html</include>
+                                <include>html/startup/loadingjahia.html</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                    <!--packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes-->
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!--classpathPrefix>lib/</classpathPrefix-->
+                            <!--addExtensions>true</addExtensions-->
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
 
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.2</version>
-            <executions>
-                <execution>
-                    <id>generate-ddl</id>
-                    <phase>generate-resources</phase>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                    <configuration>
-                        <tasks if="jahia.generate.ddl">
-                            <echo message="Generating DDL schemata..."/>
-                            <taskdef name="schemaexport"
-                                classname="org.hibernate.tool.hbm2ddl.SchemaExportTask">
-                                <classpath>
-                                    <path refid="maven.dependency.classpath" />
-                                    <pathelement path="${maven.build.dest}" />
-                                    <pathelement path="${maven.test.dest}" />
-                                </classpath>
-                            </taskdef>
-                            <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jahia-impl-${jahia.package.version}.jar" dest="${project.build.directory}/xdoclet">
-                                <patternset>
-                                    <include name="**/*.hbm.xml"/>
-                                </patternset>
-                            </unzip>
-                            <schemaexport properties="${basedir}/derby.hibernate.properties"
-                                quiet="yes" text="yes" drop="no" delimiter=";"
-                                output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jahia-schema.sql">
-                                <fileset dir="${project.build.directory}/xdoclet">
-                                    <include name="**/*.hbm.xml" />
-                                </fileset>
-                            </schemaexport>
-                            <schemaexport properties="${basedir}/hypersonic.hibernate.properties"
-                                quiet="yes" text="yes" drop="no" delimiter=";"
-                                output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/hypersonic/jahia-schema.sql">
-                                <fileset dir="${project.build.directory}/xdoclet">
-                                    <include name="**/*.hbm.xml" />
-                                </fileset>
-                            </schemaexport>
-                            <schemaexport properties="${basedir}/mssql.hibernate.properties"
-                                quiet="yes" text="yes" drop="no" delimiter=";"
-                                output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mssql/jahia-schema.sql">
-                                <fileset dir="${project.build.directory}/xdoclet">
-                                    <include name="**/*.hbm.xml" />
-                                </fileset>
-                            </schemaexport>
-                            <schemaexport properties="${basedir}/mysql.hibernate.properties"
-                                quiet="yes" text="yes" drop="no" delimiter=";"
-                                output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jahia-schema.sql">
-                                <fileset dir="${project.build.directory}/xdoclet">
-                                    <include name="**/*.hbm.xml" />
-                                </fileset>
-                            </schemaexport>
-                            <schemaexport properties="${basedir}/oracle.hibernate.properties"
-                                quiet="yes" text="yes" drop="no" delimiter=";"
-                                output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/oracle/jahia-schema.sql">
-                                <fileset dir="${project.build.directory}/xdoclet">
-                                    <include name="**/*.hbm.xml" />
-                                </fileset>
-                            </schemaexport>
-                            <schemaexport properties="${basedir}/postgresql.hibernate.properties"
-                                quiet="yes" text="yes" drop="no" delimiter=";"
-                                output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jahia-schema.sql">
-                                <fileset dir="${project.build.directory}/xdoclet">
-                                    <include name="**/*.hbm.xml" />
-                                </fileset>
-                            </schemaexport>
-                            <delete dir="${project.build.directory}/xdoclet"/>
-                        </tasks>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>delete-gwt-temp</id>
-                    <phase>process-classes</phase>
-                    <goals>
-                        <goal>run</goal>
-                    </goals>
-                    <configuration>
-                        <tasks>
-                            <echo message="Deleting temporary GWT files..."/>
-                            <!-- delete temp file-->
-                            <delete dir="${project.build.directory}/${project.build.finalName}/gwt/.gwt-tmp" failonerror="false"/>
-                            <!-- in resources folder, delete GWT specific files (*.cache.*, *.nocache.*, *.rpc)-->
-                            <delete includeemptydirs="true" failonerror="false">
-                                <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/" includes="**/*.cache.*,**/*.nocache.*,**/*.rpc"/>
-                            </delete>
-                            <!-- delete duplicated resources , DO NOT delete GWT specific files (*.cache.*, *.nocache.*, *.rpc) and resources folder-->
-                            <delete includeemptydirs="true" failonerror="false">
-                                <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/" includes="**/*" excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html"/>
-                            </delete>
-                            <echo message="...done"/>
-                        </tasks>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
+            <plugin>
+                <groupId>org.jahia.server</groupId>
+                <artifactId>maven-jahia-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-templates</goal>
+                        </goals>
+                    </execution>
+                    <!-- this phase only exists in maven 2.1
+                    <execution>
+                      <phase>prepare-package</phase>
+                      <goals>
+                        <goal>configure</goal>
+                      </goals>
+                    </execution>
+                    -->
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <dependentWarExcludes>**</dependentWarExcludes>
+                </configuration>
+            </plugin>
 
-    </plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>generate-ddl</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks if="jahia.generate.ddl">
+                                <echo message="Generating DDL schemata..."/>
+                                <taskdef name="schemaexport"
+                                         classname="org.hibernate.tool.hbm2ddl.SchemaExportTask">
+                                    <classpath>
+                                        <path refid="maven.dependency.classpath"/>
+                                        <pathelement path="${maven.build.dest}"/>
+                                        <pathelement path="${maven.test.dest}"/>
+                                    </classpath>
+                                </taskdef>
+                                <unzip src="${project.build.directory}/${project.build.finalName}/WEB-INF/lib/jahia-impl-${jahia.package.version}.jar"
+                                       dest="${project.build.directory}/xdoclet">
+                                    <patternset>
+                                        <include name="**/*.hbm.xml"/>
+                                    </patternset>
+                                </unzip>
+                                <schemaexport properties="${basedir}/derby.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jahia-schema.sql">
+                                    <fileset dir="${project.build.directory}/xdoclet">
+                                        <include name="**/*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/hypersonic.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/hypersonic/jahia-schema.sql">
+                                    <fileset dir="${project.build.directory}/xdoclet">
+                                        <include name="**/*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/mssql.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mssql/jahia-schema.sql">
+                                    <fileset dir="${project.build.directory}/xdoclet">
+                                        <include name="**/*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/mysql.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jahia-schema.sql">
+                                    <fileset dir="${project.build.directory}/xdoclet">
+                                        <include name="**/*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/oracle.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/oracle/jahia-schema.sql">
+                                    <fileset dir="${project.build.directory}/xdoclet">
+                                        <include name="**/*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <schemaexport properties="${basedir}/postgresql.hibernate.properties"
+                                              quiet="yes" text="yes" drop="no" delimiter=";"
+                                              output="${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jahia-schema.sql">
+                                    <fileset dir="${project.build.directory}/xdoclet">
+                                        <include name="**/*.hbm.xml"/>
+                                    </fileset>
+                                </schemaexport>
+                                <delete dir="${project.build.directory}/xdoclet"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>delete-gwt-temp</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo message="Deleting temporary GWT files..."/>
+                                <!-- delete temp file-->
+                                <delete dir="${project.build.directory}/${project.build.finalName}/gwt/.gwt-tmp"
+                                        failonerror="false"/>
+                                <!-- in resources folder, delete GWT specific files (*.cache.*, *.nocache.*, *.rpc)-->
+                                <delete includeemptydirs="true" failonerror="false">
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/resources/"
+                                             includes="**/*.cache.*,**/*.nocache.*,**/*.rpc"/>
+                                </delete>
+                                <!-- delete duplicated resources , DO NOT delete GWT specific files (*.cache.*, *.nocache.*, *.rpc) and resources folder-->
+                                <delete includeemptydirs="true" failonerror="false">
+                                    <fileset dir="${project.build.directory}/${project.build.finalName}/gwt/"
+                                             includes="**/*"
+                                             excludes="**/*.cache.*,**/*.nocache.*,**/*.rpc,resources/**,**/hosted.html"/>
+                                </delete>
+                                <echo message="...done"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
 
-  </build>
+    </build>
 
 </project>

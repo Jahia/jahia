@@ -110,7 +110,7 @@
                                             <arg value="-force"/>
                                         </exec>
                                         <echo message="Undeploying jahia"/>
-                                        <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.contextPath}"/>
+                                        <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>
                                     </tasks>
                                 </configuration>
                                 <goals>

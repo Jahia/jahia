@@ -90,9 +90,7 @@ public class JahiaLuceneQueryParser extends QueryParser {
                 for (String value : l) {
                     ResourcePropertyMapping mapping = resourceMapping
                             .getResourcePropertyMapping(value);
-                    if (mapping != null) {
-                        boost = mapping.getBoost();
-                    }
+                    boost = mapping != null ? mapping.getBoost() : 1;
 
                     Query q = super.getFieldQuery(value, queryText);
                     if (q != null) {

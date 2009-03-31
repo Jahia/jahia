@@ -194,14 +194,10 @@ public class DeployMojo extends AbstractManagementMojo {
         File webappDir = getWebappDeploymentDir();
         File source = new File(output, project.getArtifactId()+"-"+project.getVersion());
 
-        List<Dependency> deps = project.getDependencies();
         String prefix = "templates/";
-        for (Dependency dep : deps) {
-            if (dep.getGroupId().equals("org.jahia.server") && dep.getArtifactId().equals("jahia-impl")) {
-                if (dep.getVersion().startsWith("6.0") && !dep.getVersion().equals("6.0.0-EA")) {
-                    prefix = "jsp/jahia/templates/";
-                }
-            }
+        File target = new File(getWebappDeploymentDir(),prefix);
+        if(!target.exists()) {
+            prefix = "jsp/jahia/templates/";
         }
 
         File templateXml = new File(source, "WEB-INF/templates.xml");
@@ -219,7 +215,7 @@ public class DeployMojo extends AbstractManagementMojo {
                 }
             }
 
-            File target = new File(getWebappDeploymentDir(),prefix+outputDir);
+            target = new File(getWebappDeploymentDir(),prefix+outputDir);
             getLog().info("Updated template war resources for " + targetServerType + " v" + targetServerVersion + " in directory " + target);
             int cnt = updateFiles(source, target, Collections.singleton(new File(source,"WEB-INF")));
             cnt += updateFiles(new File(source, "WEB-INF/classes"), new File(webappDir,"WEB-INF/classes"));

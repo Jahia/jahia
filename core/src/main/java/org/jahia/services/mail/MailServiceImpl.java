@@ -34,6 +34,8 @@
 package org.jahia.services.mail;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -212,6 +214,7 @@ public class MailServiceImpl extends MailService {
         int port = 0;
         String user = null;
         String pwd = null;
+        Map<String, String> options = new HashMap<String, String>();
         if (settings.getHost().contains("@")) {
             String authPart = StringUtils.substringBeforeLast(settings
                     .getHost(), "@");
@@ -224,9 +227,20 @@ public class MailServiceImpl extends MailService {
             }
         }
         if (host.contains(":")) {
-            port = Integer.parseInt(StringUtils.substringAfterLast(host,
-                    ":"));
+            String portPart = StringUtils.substringAfterLast(host, ":");
+            port = Integer.parseInt(StringUtils.substringBefore(portPart, "["));
             host = StringUtils.substringBeforeLast(host, ":");
+            // check if there are any custom options, e.g.
+            // [mail.smtp.starttls.enable=true,mail.debug=true]
+            String optionsPart = StringUtils.substringBetween(portPart, "[",
+                    "]");
+            if (optionsPart != null && optionsPart.length() > 0) {
+                String props[] = StringUtils.split(optionsPart, ",");
+                for (String theProperty : props) {
+                    String keyValue[] = StringUtils.split(theProperty, "=");
+                    options.put(keyValue[0].trim(), keyValue[1].trim());
+                }
+            }
         }
         sender.setHost(host);
         if (port > 0) {
@@ -234,10 +248,15 @@ public class MailServiceImpl extends MailService {
         }
         if (user != null) {
             sender.setUsername(user);
+            options.put("mail.smtp.auth", "true");
         }
         if (pwd != null) {
             sender.setPassword(pwd);
         }
+        if (!options.isEmpty()) {
+            sender.getJavaMailProperties().putAll(options);
+        }
+
         return sender;
     }
 

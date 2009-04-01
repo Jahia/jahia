@@ -60,13 +60,6 @@
                                 </goals>
                             </execution>
                             <execution>
-                                <id>deploy</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>deploy</goal>
-                                </goals>
-                            </execution>
-                            <execution>
                                 <id>configure</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
@@ -86,6 +79,7 @@
                                 <configuration>
                                     <tasks>
                                         <echo message="Starting tomcat"/>
+                                        <copy file="${project.build.directory}/${project.build.finalName}.jar" toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib"/>
                                         <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
                                               dir="${jahia.deploy.targetServerDirectory}/bin">
                                             <arg value="start"/>

@@ -40,8 +40,7 @@ public class ImportTest extends XMLTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        TestHelper.cleanDatabase();
-        site = TestHelper.createSite("testSite");
+        site = TestHelper.createSite("importTest");
         ctx = Jahia.getThreadParamBean();
         assertNotNull(site);
 
@@ -89,7 +88,7 @@ public class ImportTest extends XMLTestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        TestHelper.cleanDatabase();
+        TestHelper.deleteSite("importTest");
     }
 }
 

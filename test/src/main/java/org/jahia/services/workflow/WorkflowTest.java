@@ -45,8 +45,7 @@ public class WorkflowTest extends TestCase {
     private ProcessingContext ctx;
 
     protected void setUp() throws Exception {
-        TestHelper.cleanDatabase();
-        site = TestHelper.createSite("testSite");
+        site = TestHelper.createSite("workflowTest");
         ctx = Jahia.getThreadParamBean();
         assertNotNull(site);
     }
@@ -114,7 +113,7 @@ public class WorkflowTest extends TestCase {
 
     @Override
     protected void tearDown() throws Exception {
-        TestHelper.cleanDatabase();
+        TestHelper.deleteSite("workflowTest");
     }
 
 }

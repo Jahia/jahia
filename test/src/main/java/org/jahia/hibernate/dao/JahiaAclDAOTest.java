@@ -46,7 +46,10 @@ import org.jahia.services.acl.ACLInfo;
 import org.jahia.services.usermanager.JahiaDBGroup;
 import org.jahia.test.TestHelper;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.orm.ObjectRetrievalFailureException;
+import org.springframework.test.AbstractTransactionalSpringContextTests;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +63,7 @@ import java.util.Set;
  * @version 1.0
  * @since <pre>12/27/2004</pre>
  */
-public class JahiaAclDAOTest extends TestCase {
+public class JahiaAclDAOTest extends AbstractTransactionalSpringContextTests {
 // ------------------------------ FIELDS ------------------------------
 
     protected ApplicationContext ctx = null;
@@ -85,18 +88,38 @@ public class JahiaAclDAOTest extends TestCase {
     public JahiaAclDAOTest(String s) {
         super(s);
         ctx = SpringContextSingleton.getInstance().getContext();
+        applicationContext = (ConfigurableApplicationContext) ctx;
+        setTransactionManager((PlatformTransactionManager) ctx.getBean("transactionManager"));
     }
 // -------------------------- OTHER METHODS --------------------------
 
-    public void setUp() throws Exception {
+    /*public void setUp() throws Exception {
         super.setUp();
-        dao = (JahiaAclDAO) ctx.getBean("jahiaAclDAO");
+
         assertNotNull(dao);
     }
 
     public void tearDown() throws Exception {
         TestHelper.cleanDatabase();
         super.tearDown();
+    }*/
+
+    /**
+     * This implementation creates a transaction before test execution.
+     * <p/>
+     * Override {@link #onSetUpBeforeTransaction()} and/or
+     * {@link #onSetUpInTransaction()} to add custom set-up behavior for
+     * transactional execution. Alternatively, override this method for general
+     * set-up behavior, calling <code>super.onSetUp()</code> as part of your
+     * method implementation.
+     *
+     * @throws Exception simply let any exception propagate
+     * @see #onTearDown()
+     */
+    @Override
+    protected void onSetUp() throws Exception {
+        super.onSetUp();
+        dao = (JahiaAclDAO) ctx.getBean("jahiaAclDAO");
     }
 
     public void testFindAclById() throws Exception {
@@ -129,12 +152,13 @@ public class JahiaAclDAOTest extends TestCase {
     }
 
     public void testGetAllAcl() throws Exception {
+        int size = dao.getAcls().size();
         createAcl("guest:1");
         createAcl("username:1");
         createAcl("test:1");
         List acls = dao.getAcls();
         assertFalse("Acls are empty", acls.isEmpty());
-        assertEquals("Acls Size must equals 3",acls.size(),3);
+        assertEquals("Acls Size must equals 3",acls.size(),size+3);
     }
 
     public void testRemoveAcl() throws Exception {

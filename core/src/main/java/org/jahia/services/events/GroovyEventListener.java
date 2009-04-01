@@ -52,6 +52,7 @@ import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.services.workflow.WorkflowEvent;
 import org.jahia.settings.SettingsBean;
+import org.jahia.bin.Jahia;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.net.MalformedURLException;
@@ -193,7 +194,7 @@ public class GroovyEventListener extends JahiaEventListener implements Initializ
     private String checkPath(String path, ProcessingContext ctx) {
         String listenerPath = null;
         try {
-            listenerPath = ((ParamBean)ctx).getContext().getResource(ctx.settings().getTemplatesContext() + path) != null ? path : null;
+            listenerPath = Jahia.getStaticServletConfig().getServletContext().getResource(ctx.settings().getTemplatesContext() + path) != null ? path : null;
         } catch (MalformedURLException e) {
             logger.warn(e.getMessage(), e);
         }

@@ -34,6 +34,8 @@
 package org.jahia.services.notification;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -102,6 +104,8 @@ public class Subscription implements Serializable, Cloneable {
 
     private String objectKey;
 
+    private Map<String, String> properties;
+
     private int siteId;
 
     private boolean suspended;
@@ -109,6 +113,8 @@ public class Subscription implements Serializable, Cloneable {
     private Type type = DEFAULT_TYPE;
 
     private String username;
+
+    private boolean userRegistered;
 
     /**
      * Initializes an instance of this class.
@@ -135,29 +141,35 @@ public class Subscription implements Serializable, Cloneable {
      * @param includeChildren
      * @param eventType
      * @param username
+     * @param userRegistered
      * @param siteId
      * @param channel
      * @param type
      * @param enabled
      * @param suspended
      * @param confirmationKey
+     * @param properties
      */
     public Subscription(int id, String objectKey, boolean includeChildren,
-            String eventType, String username, int siteId, Channel channel,
-            Type type, boolean enabled, boolean suspended,
-            String confirmationKey) {
+            String eventType, String username, boolean userRegistered,
+            int siteId, Channel channel, Type type, boolean enabled,
+            boolean suspended, String confirmationKey,
+            Map<String, String> properties) {
         this();
         this.id = id;
         this.objectKey = objectKey;
         this.includeChildren = includeChildren;
         this.eventType = eventType;
         this.username = username;
+        this.userRegistered = userRegistered;
         this.siteId = siteId;
         this.channel = channel;
         this.type = type;
         this.enabled = enabled;
         this.suspended = suspended;
         this.confirmationKey = confirmationKey;
+        this.properties = properties != null ? properties
+                : new HashMap<String, String>();
     }
 
     /**
@@ -186,8 +198,8 @@ public class Subscription implements Serializable, Cloneable {
      */
     public Subscription(String objectKey, boolean includeChildren,
             String eventType, String username, int siteId, boolean enabled) {
-        this(0, objectKey, includeChildren, eventType, username, siteId,
-                DEFAULT_CHANNEL, DEFAULT_TYPE, enabled, false, null);
+        this(0, objectKey, includeChildren, eventType, username, true, siteId,
+                DEFAULT_CHANNEL, DEFAULT_TYPE, enabled, false, null, null);
     }
 
     public boolean equals(Object obj) {
@@ -211,8 +223,11 @@ public class Subscription implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the confirmation request timestamp, i.e. the date, when the confirmation e-mail was sent to the subscriber
-     * @return the confirmation request timestamp, i.e. the date, when the confirmation e-mail was sent to the subscriber
+     * Returns the confirmation request timestamp, i.e. the date, when the
+     * confirmation e-mail was sent to the subscriber
+     * 
+     * @return the confirmation request timestamp, i.e. the date, when the
+     *         confirmation e-mail was sent to the subscriber
      */
     public long getConfirmationRequestTimestamp() {
         return confirmationRequestTimestamp;
@@ -228,6 +243,10 @@ public class Subscription implements Serializable, Cloneable {
 
     public String getObjectKey() {
         return objectKey;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
     public int getSiteId() {
@@ -258,6 +277,17 @@ public class Subscription implements Serializable, Cloneable {
         return suspended;
     }
 
+    /**
+     * Returns <code>true</code> if the subscription user is a registered Jahia
+     * user.
+     * 
+     * @return <code>true</code> if the subscription user is a registered Jahia
+     *         user
+     */
+    public boolean isUserRegistered() {
+        return userRegistered;
+    }
+
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
@@ -266,7 +296,8 @@ public class Subscription implements Serializable, Cloneable {
         this.confirmationKey = confirmationKey;
     }
 
-    public void setConfirmationRequestTimestamp(long confirmationRequestTimestamp) {
+    public void setConfirmationRequestTimestamp(
+            long confirmationRequestTimestamp) {
         this.confirmationRequestTimestamp = confirmationRequestTimestamp;
     }
 
@@ -290,6 +321,10 @@ public class Subscription implements Serializable, Cloneable {
         this.objectKey = objectKey;
     }
 
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
+    }
+
     public void setSiteId(int siteId) {
         this.siteId = siteId;
     }
@@ -304,6 +339,10 @@ public class Subscription implements Serializable, Cloneable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setUserRegistered(boolean userRegistered) {
+        this.userRegistered = userRegistered;
     }
 
     /*

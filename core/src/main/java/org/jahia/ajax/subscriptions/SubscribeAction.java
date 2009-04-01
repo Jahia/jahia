@@ -34,11 +34,16 @@
 package org.jahia.ajax.subscriptions;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
@@ -52,15 +57,18 @@ import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.services.mail.MailHelper;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.mail.MailSettings;
 import org.jahia.services.notification.Subscription;
+import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.notification.SubscriptionService.ConfirmationResult;
 import org.jahia.services.notification.templates.TemplateUtils;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 
@@ -82,17 +90,40 @@ public class SubscribeAction extends AjaxDispatchAction {
             String pid = request.getParameter("pid");
             String key = getParameter(request, "key");
             String event = getParameter(request, "event");
-            String askForConfirmation = request
-                    .getParameter("confirmationRequired");
+            String username = request.getParameter("user");
+            boolean registered = username == null || username.length() == 0;
+
             ProcessingContext ctx = retrieveProcessingContext(request,
                     response, StringUtils.isNotEmpty(pid) ? "/op/edit/pid/"
                             + pid : null, true);
 
-            if (Boolean.valueOf(askForConfirmation)) {
+            if (registered && JahiaUserManagerService.isGuest(ctx.getUser())) {
+                throw new JahiaBadRequestException(
+                        "Subscriptions cannot be created for the user 'guest'");
+            }
+
+            username = registered ? ctx.getUser().getUsername() : username;
+
+            Map<String, String> properties = new HashMap<String, String>();
+
+            for (Map.Entry<String, String[]> param : (Set<Map.Entry<String, String[]>>) request
+                    .getParameterMap().entrySet()) {
+                if (param.getKey().startsWith("property_")) {
+                    properties.put(param.getKey().substring(
+                            "property_".length()), param.getValue()[0]);
+                }
+            }
+
+            boolean askForConfirmation = !registered
+                    || Boolean.valueOf(request
+                            .getParameter("confirmationRequired"));
+
+            if (askForConfirmation) {
                 Subscription subscription = ServicesRegistry.getInstance()
                         .getSubscriptionService()
                         .subscribeAndAskForConfirmation(key, true, event,
-                                ctx.getUser().getUsername(), ctx.getSiteID());
+                                username, registered, ctx.getSiteID(),
+                                properties);
                 if (logger.isInfoEnabled()) {
                     logger
                             .info("Subscription is created and the confirmation message is sent to the subscriber."
@@ -101,7 +132,8 @@ public class SubscribeAction extends AjaxDispatchAction {
             } else {
                 Subscription subscription = ServicesRegistry.getInstance()
                         .getSubscriptionService().subscribe(key, true, event,
-                                ctx.getUser().getUsername(), ctx.getSiteID());
+                                username, registered, ctx.getSiteID(), true,
+                                properties);
                 if (logger.isInfoEnabled()) {
                     logger.info("Subscription created: " + subscription);
                 }
@@ -137,11 +169,14 @@ public class SubscribeAction extends AjaxDispatchAction {
                                 + ex.getMessage(), ex);
             }
 
-            ConfirmationResult confirmationResult = ServicesRegistry
-                    .getInstance().getSubscriptionService().unsubscribe(
-                            subscriptionId);
+            SubscriptionService service = ServicesRegistry.getInstance()
+                    .getSubscriptionService();
+            Subscription subscription = service.getSubscription(subscriptionId);
+            ConfirmationResult confirmationResult = service
+                    .unsubscribe(subscriptionId);
 
             request.setAttribute("confirmationResult", confirmationResult);
+            setResourceBundle(subscription, siteId, request);
             resultPage = getPage(
                     "extensions/subscribable/unsubscribeConfirmation.jsp",
                     siteId);
@@ -184,6 +219,7 @@ public class SubscribeAction extends AjaxDispatchAction {
                     : ConfirmationResult.SUBSCRIPTION_NOT_FOUND;
 
             request.setAttribute("confirmationResult", confirmationResult);
+            setResourceBundle(subscription, siteId, request);
             resultPage = getPage(
                     "extensions/subscribable/unsubscribeRequest.jsp", siteId);
 
@@ -217,11 +253,14 @@ public class SubscribeAction extends AjaxDispatchAction {
                                 + ex.getMessage(), ex);
             }
 
-            ConfirmationResult confirmationResult = ServicesRegistry
-                    .getInstance().getSubscriptionService()
+            SubscriptionService service = ServicesRegistry.getInstance()
+                    .getSubscriptionService();
+            Subscription subscription = service.getSubscription(subscriptionId);
+            ConfirmationResult confirmationResult = service
                     .confirmSubscription(subscriptionId, confirmationKey);
 
             request.setAttribute("confirmationResult", confirmationResult);
+            setResourceBundle(subscription, siteId, request);
             resultPage = getPage(
                     "extensions/subscribable/subscribeConfirmation.jsp", siteId);
         } catch (Exception e) {
@@ -255,11 +294,14 @@ public class SubscribeAction extends AjaxDispatchAction {
                                 + ex.getMessage(), ex);
             }
 
-            ConfirmationResult confirmationResult = ServicesRegistry
-                    .getInstance().getSubscriptionService().cancelSubscription(
-                            subscriptionId, confirmationKey);
+            SubscriptionService service = ServicesRegistry.getInstance()
+                    .getSubscriptionService();
+            Subscription subscription = service.getSubscription(subscriptionId);
+            ConfirmationResult confirmationResult = service.cancelSubscription(
+                    subscriptionId, confirmationKey);
 
             request.setAttribute("confirmationResult", confirmationResult);
+            setResourceBundle(subscription, siteId, request);
             resultPage = getPage(
                     "extensions/subscribable/unsubscribeConfirmation.jsp",
                     siteId);
@@ -318,6 +360,24 @@ public class SubscribeAction extends AjaxDispatchAction {
                 new MailSettings(true, host, from, to, "Disabled")).send(msg);
     }
 
+    private void setResourceBundle(Subscription subscription, int siteId,
+            HttpServletRequest request) {
+        Locale locale = null;
+        JahiaSite site = TemplateUtils.getSite(siteId);
+        if (subscription != null) {
+            locale = MailHelper.getPreferredLocale(TemplateUtils
+                    .getSubscriber(subscription), site);
+        }
+        locale = locale != null ? locale : request.getLocale();
+
+        // initialize localization context
+        Config.set(request, Config.FMT_LOCALIZATION_CONTEXT,
+                new LocalizationContext(new JahiaResourceBundle(locale,
+                        site != null ? site.getTemplatePackageName() : null),
+                        locale));
+
+    }
+
     public ActionForward testEmail(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
@@ -334,7 +394,7 @@ public class SubscribeAction extends AjaxDispatchAction {
                 throw new JahiaUnauthorizedException(
                         "Action for sending test e-mail is available only for the super administator user.");
             }
-            
+
             Locale locale = (Locale) request.getSession(true).getAttribute(
                     ProcessingContext.SESSION_LOCALE);
             locale = locale != null ? locale : request.getLocale();
@@ -364,8 +424,14 @@ public class SubscribeAction extends AjaxDispatchAction {
                 return null;
             }
 
-            String subject = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.server.ManageServer.testSettings.mailSubject", locale, "[Jahia] Test message");
-            String text = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.server.ManageServer.testSettings.mailText", locale, "Test message");
+            String subject = JahiaResourceBundle
+                    .getJahiaInternalResource(
+                            "org.jahia.admin.server.ManageServer.testSettings.mailSubject",
+                            locale, "[Jahia] Test message");
+            String text = JahiaResourceBundle
+                    .getJahiaInternalResource(
+                            "org.jahia.admin.server.ManageServer.testSettings.mailText",
+                            locale, "Test message");
 
             sendEmail(host, from, to, subject, text);
 
@@ -376,7 +442,7 @@ public class SubscribeAction extends AjaxDispatchAction {
             response.getWriter().append(e.getMessage());
             logger.warn("Error sending test e-mail message. Cause: "
                     + e.getMessage(), e);
-            
+
         } catch (Exception e) {
             handleException(e, request, response);
         }

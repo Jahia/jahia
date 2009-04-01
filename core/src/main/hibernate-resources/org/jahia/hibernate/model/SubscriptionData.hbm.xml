@@ -85,6 +85,15 @@
         />
 
         <property
+            name="userRegistered"
+            type="boolean"
+            update="true"
+            insert="true"
+            column="user_registered"
+            not-null="true"
+        />
+
+        <property
             name="siteId"
             type="int"
             update="true"
@@ -130,6 +139,16 @@
             not-null="false"
         />
         
+        <property
+            name="properties"
+            type="text"
+            update="true"
+            insert="true"
+            column="properties"
+            length="1048576"
+            not-null="false"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-SubscriptionData.xml

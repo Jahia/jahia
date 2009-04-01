@@ -212,6 +212,8 @@ public class ActionMenuOutputter {
             objectKey = contentObject.getBeanType() + ObjectKey.KEY_SEPARATOR + contentObject.getID();
         }
 
+        boolean picker = false ;
+
         // various checks
         // get the content object type
         String contentType = objectKey.substring(0, objectKey.indexOf(ObjectKey.KEY_SEPARATOR));
@@ -228,12 +230,15 @@ public class ActionMenuOutputter {
                 return "";
             }
             type = ActionMenuLabelProvider.CONTAINER_LIST ;
-        } else if (contentType.equals(ContainerBean.TYPE)) {
-            type = ActionMenuLabelProvider.CONTAINER ;
-        } else if (contentType.equals(FieldBean.TYPE)) {
-            type = ActionMenuLabelProvider.FIELD ;
-        } else if (contentType.equals(PageBean.TYPE)) {
-            type = ActionMenuLabelProvider.PAGE ;
+        } else {
+            if (contentType.equals(ContainerBean.TYPE)) {
+                type = ActionMenuLabelProvider.CONTAINER ;
+            } else if (contentType.equals(FieldBean.TYPE)) {
+                type = ActionMenuLabelProvider.FIELD ;
+            } else if (contentType.equals(PageBean.TYPE)) {
+                type = ActionMenuLabelProvider.PAGE ;
+            }
+            picker = contentObject.isPicker() ;
         }
 
         try {
@@ -320,7 +325,11 @@ public class ActionMenuOutputter {
             if (actionType == ActionMenuIcon.CONTAINER_ADD) {
                 icon = "addContainer" ;
             } else if (actionType == ActionMenuIcon.CONTAINER_EDIT) {
-                icon = "editContainer" ;
+                if (picker) {
+                    icon = "editPickerContainer" ;
+                } else {
+                    icon = "editContainer" ;
+                }
             }
             if (icon != null) {
                 buf.append("iconstyle=\"").append(icon).append("\" ");

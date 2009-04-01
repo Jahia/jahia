@@ -898,6 +898,10 @@
     background-image:url(../images/actions/update12.png) ;
 }
 
+.editPickerContainer {
+    background-image:url(../images/actions/update-linked12.png) ;
+}
+
 .action-menu-icon-unavailable {
     background: url( ../images/actions/action-unavailable.gif ) center left no-repeat;
     cursor: pointer;

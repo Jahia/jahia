@@ -135,7 +135,7 @@ public abstract class AbstractManagementMojo extends AbstractMojo {
             throw new MojoFailureException("Server " + targetServerType + " v" + targetServerVersion + " not (yet) supported by this plugin.");
         }
         if (! serverDeployer.validateInstallationDirectory(targetServerDirectory)) {
-            throw new MojoFailureException("Directory " + targetServerDirectory + " is not a validation installation directory for server " + targetServerType + " v" + targetServerVersion);
+            throw new MojoFailureException("Directory " + targetServerDirectory + " is not a valid installation directory for server " + targetServerType + " v" + targetServerVersion);
         }
 
     }

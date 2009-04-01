@@ -78,7 +78,6 @@ public class JahiaFieldSubDefinition implements Serializable {
         this.ID             = ID;
         this.fieldDefID		= fieldDefID;
         this.pageDefID      = pageDefID;
-        this.type           = type;
         this.isMetadata     = isMetadata;
     } // end constructor
 

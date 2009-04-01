@@ -123,7 +123,6 @@ public class ManageTemplates extends AbstractAdministrationModule {
                          HttpServletResponse      response )
     throws Exception
     {
-        ManageTemplates.context =  context;
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         ProcessingContext jParams = null;
         if (jData != null) {

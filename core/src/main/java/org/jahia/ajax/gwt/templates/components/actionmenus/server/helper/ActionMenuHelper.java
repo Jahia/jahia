@@ -213,7 +213,6 @@ public class ActionMenuHelper {
                         logger.debug("Add action : " + url);
                     }
                 }
-
                 // Update
                 url = ActionMenuURIFormatter.drawContainerListUpdateUrl(jParams, containerList) ;
                 if (url != null) {
@@ -227,6 +226,28 @@ public class ActionMenuHelper {
                         logger.debug("Update action : " + url);
                     }
                 }
+                // Purge
+//                url = ActionMenuURIFormatter.drawContainerListPurgeUrl(jParams, containerList) ;
+//                if (url != null) {
+//                    GWTJahiaAction purgeContainerList = new GWTJahiaEngineAction(GWTJahiaAction.DELETE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.DELETE, namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), url) ;
+//                    /* Begin global lock check TODO find a better way (optimization ?) */
+//                    List<LockKey> locks = new ArrayList<LockKey>() ;
+//                    Iterator<JahiaContainer> containerIt = containerList.getJahiaContainerList(jParams, jParams.getEntryLoadRequest()).getContainers() ;
+//                    while (containerIt.hasNext()) {
+//                        locks.add(LockKey.composeLockKey(LockKey.DELETE_CONTAINER_TYPE, containerIt.next().getID())) ;
+//                    }
+//                    for (LockKey lk: locks) {
+//                        if (!lockRegistry.isAcquireable(lk, currentUser, currentUser.getUserKey())) {
+//                            purgeContainerList.setLocked(true);
+//                            break ;
+//                        }
+//                    }
+//                    /* End global lock check */
+//                    actions.add(purgeContainerList) ;
+//                    if (logger.isDebugEnabled()) {
+//                        logger.debug("Purge action : " + url);
+//                    }
+//                }
                 // Copy
                 if (objectKey != null && !containerList.isMarkedForDelete() && containerList.getJahiaContainerList(jParams, elr).getFullSize() > 0) {
                     actions.add(new GWTJahiaClipboardAction(GWTJahiaAction.COPY, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.COPY, namePostFix, ActionMenuLabelProvider.CONTAINER_LIST), objectKey)) ;
@@ -310,16 +331,19 @@ public class ActionMenuHelper {
                         logger.debug("Delete action : " + url);
                     }
                 }
-                // Picked
-                url = ActionMenuURIFormatter.drawContainerPickedUrl(jParams, container) ;
-                if (url != null) {
-                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.PICKED, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.PICKED, namePostFix, ActionMenuLabelProvider.CONTAINER), url)) ;
+                // Picked / source
+                Map<String, String> source = ActionMenuURIFormatter.drawContainerPickedUrl(jParams, container) ;
+                if (source != null && source.size() == 1) {
+                    List<GWTJahiaRedirectAction> sourceRedirect = new ArrayList<GWTJahiaRedirectAction>(1) ;
+                    String title = source.keySet().iterator().next() ;
+                    sourceRedirect.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, title, source.get(title))) ;
+                    actions.add(new GWTJahiaDisplayPickersAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.SOURCE, namePostFix, ActionMenuLabelProvider.CONTAINER), sourceRedirect)) ;
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Picked action : " + url);
+                        logger.debug("Picked action : " + source.get(title));
                     }
                 }
                 // Picker List
-                Map<String, String> pickers = ActionMenuURIFormatter.drawContainerPickerListUrl(jParams, container) ;
+                Map<String, String> pickers = ActionMenuURIFormatter.getContainerPickerList(jParams, container) ;
                 if (pickers != null && pickers.size() > 0) {
                     List<GWTJahiaRedirectAction> pickersRedirect = new ArrayList<GWTJahiaRedirectAction>(pickers.size()) ;
                     for (String title: pickers.keySet()) {
@@ -327,17 +351,17 @@ public class ActionMenuHelper {
                     }
                     actions.add(new GWTJahiaDisplayPickersAction(GWTJahiaAction.PICKER_LIST, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.PICKER_LIST, namePostFix, ActionMenuLabelProvider.CONTAINER), pickersRedirect)) ;
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Picker list action : " + url);
+                        logger.debug("Picker list action : " + pickers.size());
                     }
                 }
-                // Source
-                url = ActionMenuURIFormatter.drawContainerSourcePageReferenceUrl(jParams, container) ;
-                if (url != null) {
-                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.SOURCE, namePostFix, ActionMenuLabelProvider.CONTAINER), url)) ;
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Source action : " + url);
-                    }
-                }
+                // Source not in use any more
+//                url = ActionMenuURIFormatter.drawContainerSourcePageReferenceUrl(jParams, container) ;
+//                if (url != null) {
+//                    actions.add(new GWTJahiaRedirectAction(GWTJahiaAction.SOURCE, ActionMenuLabelProvider.getLocalizedActionLabel(bundleName, jParams, GWTJahiaAction.SOURCE, namePostFix, ActionMenuLabelProvider.CONTAINER), url)) ;
+//                    if (logger.isDebugEnabled()) {
+//                        logger.debug("Source action : " + url);
+//                    }
+//                }
 
             // GWTJahiaAction Menu for a Field
             } else if (FieldBean.TYPE.equals(objectType)) {

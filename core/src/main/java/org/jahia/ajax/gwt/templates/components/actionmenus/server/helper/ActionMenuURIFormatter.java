@@ -33,10 +33,7 @@
 
 package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.jahia.ajax.usersession.userSettings;
@@ -44,7 +41,12 @@ import org.jahia.content.ContentObject;
 import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.fields.JahiaField;
+import org.jahia.data.fields.FieldTypes;
+import org.jahia.data.fields.JahiaPageField;
+import org.jahia.data.beans.PageBean;
+import org.jahia.data.beans.ContainerBean;
 import org.jahia.engines.JahiaEngine;
+//import org.jahia.engines.purgecontainerlist.PurgeContainerList_Engine;
 import org.jahia.engines.addcontainer.AddContainer_Engine;
 import org.jahia.engines.containerlistproperties.ContainerListProperties_Engine;
 import org.jahia.engines.deletecontainer.DeleteContainer_Engine;
@@ -135,6 +137,22 @@ public class ActionMenuURIFormatter {
             return null ;
         }
     }
+
+    /**
+     * Get the url to call update container list action.
+     *
+     * @param jParams the processing context
+     * @param contentContainerList the target container list
+     * @return the link to open
+     * @throws JahiaException sthg bad happened
+     */
+//    public static String drawContainerListPurgeUrl(final ProcessingContext jParams, final ContentContainerList contentContainerList) throws JahiaException {
+//        if (contentContainerList != null) {
+//            return drawUrlCheckWriteAccess(jParams, PurgeContainerList_Engine.ENGINE_NAME, contentContainerList, false, false);
+//        } else {
+//            return null ;
+//        }
+//    }
 
     /**
      * Check if the given container list can receive containers.
@@ -250,28 +268,17 @@ public class ActionMenuURIFormatter {
      * @return the link to open
      * @throws JahiaException sthg bad happened
      */
-    public static String drawContainerPickedUrl(ProcessingContext processingContext, final ContentContainer contentContainer) throws JahiaException {
+    public static Map<String, String> drawContainerPickedUrl(ProcessingContext processingContext, final ContentContainer contentContainer) throws JahiaException {
         if (!ServicesRegistry.getInstance().getImportExportService().isPicker(contentContainer)) {
             return null ;
         }
         ContentObject pickedObject; // the source of the linked copy (the picked)
         ContentContainer pickedContainer;
-        String pickedpageID;
-        int pickedSiteID;
-        boolean pagefound = false;
         try {
             pickedObject = contentContainer.getPickedObject();
-            pickedSiteID = pickedObject.getSiteID();
             pickedContainer = ContentContainer.getContainer(pickedObject.getID());
             if (pickedContainer.getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()) != null) {
-                pickedpageID = String.valueOf(pickedContainer.getPageID());
-                if (pickedpageID != null) {
-                    logger.debug("pageID:" + pickedpageID);
-                    pagefound = true;
-                    if (pickedSiteID != contentContainer.getSiteID()) {
-                        logger.debug("cross-site");
-                    }
-                }
+                ContentPage cPage = null ;
                 final List<? extends ContentObject> children = pickedContainer.getChilds(null, EntryLoadRequest.STAGED);
                 for (final ContentObject container : children) {
                     if (!(container instanceof ContentPageField)) continue;
@@ -280,22 +287,18 @@ public class ActionMenuURIFormatter {
 
                     if (page != null) {
                         if (page.getPageType() == JahiaPage.TYPE_DIRECT) {
-                            logger.debug(page.toString());
-                            pickedpageID = String.valueOf(page.getID());
-                            logger.debug("found contentpagefield:" + pickedpageID);
-                            pagefound = true;
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("picked page: " + page.getTitle() + " (pid:" + page.getID() + ")");
+                            }
+                            cPage = page.getContentPage() ;
                             break;
                         }
                     }
                 }
-                if (pagefound) {
-                    int pickedPageID ;
-                    try {
-                        pickedPageID = Integer.parseInt(pickedpageID);
-                    } catch (NumberFormatException nfe) {
-                        pickedPageID = 0;
-                    }
-                    return processingContext.composePageUrl(pickedPageID) ;
+                if (cPage != null) {
+                    Map<String, String> source = new HashMap<String, String>(1) ;
+                    source.put(new StringBuilder("site: ").append(cPage.getSite().getSiteKey()).append(" / pid: ").append(cPage.getPageID()).toString(), cPage.getUrl(processingContext)) ;
+                    return  source;
                 }
             }
         } catch (JahiaException e) {
@@ -312,14 +315,36 @@ public class ActionMenuURIFormatter {
      * @return a map of page titles /  links
      * @throws JahiaException sthg bad happened
      */
-    public static Map<String, String> drawContainerPickerListUrl(ProcessingContext processingContext, final ContentContainer contentContainer) throws JahiaException {
+    public static Map<String, String> getContainerPickerList(ProcessingContext processingContext, final ContentContainer contentContainer) throws JahiaException {
         Set<ContentObject> pickers = contentContainer.getPickerObjects() ;
         if (pickers.size() > 0) {
             Map<String, String> pickersMap = new HashMap<String, String>() ;
             for (ContentObject co: pickers) {
+                String type = co.getObjectKey().getType() ;
                 logger.debug("picker: " + co.getObjectKey().getKey()) ;
-                ContentPage page = ContentPage.getPage(co.getPageID()) ;
-                pickersMap.put(page.getTitle(processingContext), page.getUrl(processingContext)) ;
+                ContentPage page = null ;
+                if (!PageBean.TYPE.equals(type)) {
+                    if (ContainerBean.TYPE.equals(type)) {
+                        final ContentContainer cont = (ContentContainer) co ;
+                        final Iterator en = cont.getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()).getFields();
+                        while (en.hasNext() && page == null) {
+                            final JahiaField field = (JahiaField) en.next();
+                            if (field.getType() == FieldTypes.PAGE) {
+                                final JahiaPageField pageField = (JahiaPageField) field;
+                                final JahiaPage dest = (JahiaPage) pageField.getObject();
+                                if (dest != null && dest.getID() > 0) {
+                                    page = dest.getContentPage() ;
+                                }
+                            }
+                        }
+                    }
+                    if (page == null) {
+                        page = ContentPage.getPage(co.getPageID()) ;
+                    }
+                } else {
+                    page = (ContentPage) co ;
+                }
+                pickersMap.put(new StringBuilder("site: ").append(page.getSite().getSiteKey()).append(" / pid: ").append(page.getPageID()).toString(), page.getUrl(processingContext)) ;
             }
             return pickersMap ;
         } else {

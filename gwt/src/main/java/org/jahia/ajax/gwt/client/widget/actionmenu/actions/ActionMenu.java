@@ -85,7 +85,7 @@ public class ActionMenu {
                     pickersMenu.addItem(it) ;
                 }
                 pickersMenu.setStylePrimaryName("action-menu");
-                item = new MenuItem("Content pickers", pickersMenu) ;
+                item = new MenuItem(action.getLabel(), pickersMenu) ;
             } else {
                 item = new MenuItem(action.getLabel(), new Command() {
                     public void execute() {

@@ -44,8 +44,9 @@
             insert="true"
             access="property"
             property-ref="key"
-            column="grpid_sites_grps"
-        />
+        >
+            <column name="grpid_sites_grps" length="200"/>
+        </many-to-one>
 
         <!--
             To add non XDoclet property mappings, create a file named

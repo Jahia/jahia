@@ -44,8 +44,9 @@
             insert="true"
             access="property"
             property-ref="key"
-            column="userid_sites_users"
-        />
+        >
+            <column name="userid_sites_users" length="50"/>
+        </many-to-one>
 
         <!--
             To add non XDoclet property mappings, create a file named

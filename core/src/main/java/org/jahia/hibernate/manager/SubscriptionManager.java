@@ -33,9 +33,12 @@
 
 package org.jahia.hibernate.manager;
 
+import java.io.Writer;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.jahia.hibernate.dao.SubscriptionDAO;
 import org.jahia.hibernate.model.SubscriptionData;
@@ -43,12 +46,42 @@ import org.jahia.services.notification.Subscription;
 import org.jahia.services.notification.Subscription.Channel;
 import org.jahia.services.notification.Subscription.Type;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+
 /**
  * Hibernate manager class for handling the persistence of user subscriptions.
  * 
  * @author Sergiy Shyrkov
  */
 public class SubscriptionManager {
+
+    private static final XStream PROPERTIES_SERIALIZER = new XStream(
+            new XppDriver() {
+                @Override
+                public HierarchicalStreamWriter createWriter(Writer out) {
+                    return new CompactWriter(out, xmlFriendlyReplacer());
+                }
+            });
+
+    private static Map<String, String> toProperties(String value) {
+        Map<String, String> properties = new HashMap<String, String>();
+        if (value != null && value.length() > 0) {
+            properties = (Map<String, String>) PROPERTIES_SERIALIZER
+                    .fromXML(value);
+        }
+        return properties;
+    }
+
+    private static String toValue(Map<String, String> properties) {
+        if (properties == null || properties.isEmpty()) {
+            return null;
+        }
+
+        return PROPERTIES_SERIALIZER.toXML(properties);
+    }
 
     private SubscriptionDAO subscriptionDao;
 
@@ -62,12 +95,12 @@ public class SubscriptionManager {
         return subscription != null ? toBusinessObject(subscription) : null;
     }
 
-    public void delete(Subscription subscription) {
-        subscriptionDao.delete(toDataObject(subscription));
-    }
-
     public void delete(int subscriptionId) {
         subscriptionDao.delete(subscriptionId);
+    }
+
+    public void delete(Subscription subscription) {
+        subscriptionDao.delete(toDataObject(subscription));
     }
 
     public void deleteAll(Subscription subscription) {
@@ -158,6 +191,7 @@ public class SubscriptionManager {
         businessObj.setIncludeChildren(dataObj.isIncludeChildren());
         businessObj.setEventType(dataObj.getEventType());
         businessObj.setUsername(dataObj.getUsername());
+        businessObj.setUserRegistered(dataObj.isUserRegistered());
         businessObj.setSiteId(dataObj.getSiteId());
         businessObj.setChannel(Channel.valueOf(dataObj.getChannel()));
         businessObj.setType(Type.valueOf(dataObj.getType()));
@@ -166,6 +200,7 @@ public class SubscriptionManager {
         businessObj.setConfirmationKey(dataObj.getConfirmationKey());
         businessObj.setConfirmationRequestTimestamp(dataObj
                 .getConfirmationRequestTimestamp());
+        businessObj.setProperties(toProperties(dataObj.getProperties()));
 
         return businessObj;
     }
@@ -190,12 +225,14 @@ public class SubscriptionManager {
             dataObj = new SubscriptionData(businessObj.getId(), businessObj
                     .getObjectKey(), businessObj.isIncludeChildren(),
                     businessObj.getEventType(), businessObj.getUsername(),
-                    businessObj.getSiteId(), businessObj.getChannel().toChar(),
-                    businessObj.getType().toChar(), businessObj.isEnabled(),
-                    businessObj.isSuspended());
+                    businessObj.isUserRegistered(), businessObj.getSiteId(),
+                    businessObj.getChannel().toChar(), businessObj.getType()
+                            .toChar(), businessObj.isEnabled(), businessObj
+                            .isSuspended());
             dataObj.setConfirmationKey(businessObj.getConfirmationKey());
             dataObj.setConfirmationRequestTimestamp(businessObj
                     .getConfirmationRequestTimestamp());
+            dataObj.setProperties(toValue(businessObj.getProperties()));
         }
         return dataObj;
     }

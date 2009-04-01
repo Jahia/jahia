@@ -738,11 +738,13 @@
         channel char(1 char) not null,
         notification_type char(1 char) not null,
         username varchar2(255 char) not null,
+        user_registered number(1,0) not null,
         site_id number(10,0) not null,
         enabled number(1,0) not null,
         suspended number(1,0) not null,
         confirmation_key varchar2(32 char),
         confirmation_request_timestamp number(19,0),
+        properties clob,
         primary key (id_jahia_subscriptions)
     );
 

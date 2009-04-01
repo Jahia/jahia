@@ -848,11 +848,13 @@
         channel char(1) not null,
         notification_type char(1) not null,
         username varchar(255) not null,
+        user_registered bit not null,
         site_id integer not null,
         enabled bit not null,
         suspended bit not null,
         confirmation_key varchar(32),
         confirmation_request_timestamp bigint,
+        properties longvarchar,
         primary key (id_jahia_subscriptions)
     );
 

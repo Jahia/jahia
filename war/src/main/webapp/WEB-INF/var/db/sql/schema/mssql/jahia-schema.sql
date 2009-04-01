@@ -843,11 +843,13 @@
         channel char(1) not null,
         notification_type char(1) not null,
         username nvarchar(255) not null,
+        user_registered tinyint not null,
         site_id int not null,
         enabled tinyint not null,
         suspended tinyint not null,
         confirmation_key nvarchar(32) null,
         confirmation_request_timestamp numeric(19,0) null,
+        properties ntext null,
         primary key (id_jahia_subscriptions)
     );
 

@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.notification.SubscriptionUser;
 import org.jahia.services.notification.Subscription;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
@@ -69,9 +70,10 @@ public final class TemplateUtils {
     }
 
     public static JahiaUser getSubscriber(Subscription subscription) {
-        return ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .lookupUser(
-                        subscription.getUsername());
+        return subscription.isUserRegistered() ? ServicesRegistry.getInstance()
+                .getJahiaUserManagerService().lookupUser(
+                        subscription.getUsername()) : new SubscriptionUser(
+                subscription.getUsername(), subscription.getProperties());
     }
 
     public static String getTemplatesPath() {
@@ -91,7 +93,8 @@ public final class TemplateUtils {
         return available;
     }
 
-    public static String lookupTemplate(String templatePackageName, String... filePathToTry) {
+    public static String lookupTemplate(String templatePackageName,
+            String... filePathToTry) {
         String templatePath = null;
         for (String path : filePathToTry) {
             templatePath = resolvePath(path, templatePackageName);
@@ -132,6 +135,5 @@ public final class TemplateUtils {
     private TemplateUtils() {
         super();
     }
-
 
 }

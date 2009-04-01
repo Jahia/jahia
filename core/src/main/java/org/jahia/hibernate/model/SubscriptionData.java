@@ -55,14 +55,16 @@ public class SubscriptionData implements Serializable {
     private long confirmationRequestTimestamp;
 
     private boolean enabled;
-    
-    private String eventType;    
+
+    private String eventType;
 
     private int id;
 
     private boolean includeChildren;
 
     private String objectKey;
+
+    private String properties;
 
     private int siteId;
 
@@ -71,6 +73,8 @@ public class SubscriptionData implements Serializable {
     private char type;
 
     private String username;
+
+    private boolean userRegistered;
 
     /**
      * Initializes an instance of this class.
@@ -104,13 +108,15 @@ public class SubscriptionData implements Serializable {
      * @param suspended
      */
     public SubscriptionData(int id, String objectKey, boolean includeChildren,
-            String eventType, String username, int siteId, char channel,
-            char type, boolean enabled, boolean suspended) {
+            String eventType, String username, boolean userRegistered,
+            int siteId, char channel, char type, boolean enabled,
+            boolean suspended) {
         this(id);
         this.objectKey = objectKey;
         this.includeChildren = includeChildren;
         this.eventType = eventType;
         this.username = username;
+        this.userRegistered = userRegistered;
         this.siteId = siteId;
         this.channel = channel;
         this.type = type;
@@ -152,10 +158,13 @@ public class SubscriptionData implements Serializable {
     }
 
     /**
-     * Returns the confirmation request timestamp, i.e. the date, when the confirmation e-mail was sent to the subscriber.
+     * Returns the confirmation request timestamp, i.e. the date, when the
+     * confirmation e-mail was sent to the subscriber.
      * 
-     * @hibernate.property column="confirmation_request_timestamp" not-null="false" type="long"
-     * @return the confirmation request timestamp, i.e. the date, when the confirmation e-mail was sent to the subscriber
+     * @hibernate.property column="confirmation_request_timestamp"
+     *                     not-null="false" type="long"
+     * @return the confirmation request timestamp, i.e. the date, when the
+     *         confirmation e-mail was sent to the subscriber
      */
     public long getConfirmationRequestTimestamp() {
         return confirmationRequestTimestamp;
@@ -193,6 +202,18 @@ public class SubscriptionData implements Serializable {
      */
     public String getObjectKey() {
         return objectKey;
+    }
+
+    /**
+     * Returns the subscription properties (custom field to store additional
+     * data).
+     * 
+     * @hibernate.property column="properties" not-null="false" type="text"
+     *                     length="1048576"
+     * @return the subscription properties
+     */
+    public String getProperties() {
+        return properties;
     }
 
     /**
@@ -264,6 +285,17 @@ public class SubscriptionData implements Serializable {
         return suspended;
     }
 
+    /**
+     * Returns <code>true</code> if the user is a registered Jahia user.
+     * 
+     * @hibernate.property column="user_registered" not-null="true"
+     *                     type="boolean"
+     * @return <code>true</code> if the user is a registered Jahia user
+     */
+    public boolean isUserRegistered() {
+        return userRegistered;
+    }
+
     public void setChannel(char channel) {
         this.channel = channel;
     }
@@ -272,7 +304,8 @@ public class SubscriptionData implements Serializable {
         this.confirmationKey = confirmationKey;
     }
 
-    public void setConfirmationRequestTimestamp(long confirmationRequestTimestamp) {
+    public void setConfirmationRequestTimestamp(
+            long confirmationRequestTimestamp) {
         this.confirmationRequestTimestamp = confirmationRequestTimestamp;
     }
 
@@ -296,6 +329,10 @@ public class SubscriptionData implements Serializable {
         this.objectKey = objectKey;
     }
 
+    public void setProperties(String properties) {
+        this.properties = properties;
+    }
+
     public void setSiteId(int siteId) {
         this.siteId = siteId;
     }
@@ -310,6 +347,10 @@ public class SubscriptionData implements Serializable {
 
     public void setUsername(String userKey) {
         this.username = userKey;
+    }
+
+    public void setUserRegistered(boolean userRegistered) {
+        this.userRegistered = userRegistered;
     }
 
     /*

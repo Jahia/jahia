@@ -35,6 +35,7 @@ package org.jahia.services.notification;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -218,7 +219,23 @@ public class SubscriptionService extends JahiaService {
     }
 
     /**
-     * Returns the requested user subscription or <code>null</code> if there is no such subscription available.
+     * Returns the requested user subscription by ID or <code>null</code> if there is
+     * no such subscription available.
+     * 
+     * @param subscriptionId
+     *            the ID of the subscription
+     * @return the requested user subscription by ID or <code>null</code> if there is
+     * no such subscription available
+     */
+    public Subscription getSubscription(int subscriptionId) {
+
+        return subscriptionManager
+                .getSubscription(subscriptionId);
+    }
+
+    /**
+     * Returns the requested user subscription or <code>null</code> if there is
+     * no such subscription available.
      * 
      * @param objectKey
      *            the key of the content object that is the source of events
@@ -228,17 +245,17 @@ public class SubscriptionService extends JahiaService {
      *            the user to be notified
      * @param siteId
      *            the ID of the site owning the content object in question
-     * @return the requested user subscription or <code>null</code> if there is no such subscription available
+     * @return the requested user subscription or <code>null</code> if there is
+     *         no such subscription available
      */
     public Subscription getSubscription(String objectKey, String eventType,
             String username, int siteId) {
 
         List<Subscription> subscriptions = subscriptionManager
-        .getSubscriptions(
-                new Subscription(objectKey, false, eventType, username,
-                        siteId), "includeChildren", "enabled",
-                "suspended", "confirmationKey",
-                "confirmationRequestTimestamp");
+                .getSubscriptions(new Subscription(objectKey, false, eventType,
+                        username, siteId), "includeChildren", "enabled",
+                        "suspended", "confirmationKey",
+                        "confirmationRequestTimestamp");
         return !subscriptions.isEmpty() ? subscriptions.get(0) : null;
     }
 
@@ -280,6 +297,9 @@ public class SubscriptionService extends JahiaService {
     private void sendConfirmationRequest(Subscription subscription,
             boolean subscriptionRequest) {
         if (!mailService.isEnabled()) {
+            logger
+                    .warn("Cannot send a subscription confirmation request"
+                            + " as the mail server service is either disabled or not configured yet");
             return;
         }
 
@@ -342,42 +362,28 @@ public class SubscriptionService extends JahiaService {
      *            the type of an event to be notified about
      * @param username
      *            the user to be notified
-     * @param siteId
-     *            the ID of the site owning the content object in question
-     * @return the created subscription object
-     */
-    public Subscription subscribe(String objectKey, boolean includeChildren,
-            String eventType, String username, int siteId) {
-        return subscribe(objectKey, includeChildren, eventType, username,
-                siteId, true);
-    }
-
-    /**
-     * Subscribes the current user to the events of the specified type.
-     * 
-     * @param objectKey
-     *            the key of the content object that is the source of events
-     * @param includeChildren
-     *            do we also capture event on the child objects?
-     * @param eventType
-     *            the type of an event to be notified about
-     * @param username
-     *            the user to be notified
+     * @param userRegistered
+     *            is user registered in Jahia?
      * @param siteId
      *            the ID of the site owning the content object in question
      * @param enabled
      *            if this subscription is immediately enabled
+     * @param properties
+     *            any custom user data
      * @return the created subscription object
      */
     public Subscription subscribe(String objectKey, boolean includeChildren,
-            String eventType, String username, int siteId, boolean enabled) {
+            String eventType, String username, boolean userRegistered,
+            int siteId, boolean enabled, Map<String, String> properties) {
         Subscription template = new Subscription(objectKey, includeChildren,
                 eventType, username, siteId, enabled);
+        template.setUserRegistered(userRegistered);
+        template.setProperties(properties);
 
         List<Subscription> existingSubscriptions = subscriptionManager
                 .getSubscriptions(template, "includeChildren", "enabled",
                         "suspended", "confirmationKey",
-                        "confirmationRequestTimestamp");
+                        "confirmationRequestTimestamp", "properties");
         if (!existingSubscriptions.isEmpty()) {
             // found subscription
             Subscription found = existingSubscriptions.get(0);
@@ -395,6 +401,58 @@ public class SubscriptionService extends JahiaService {
         }
 
         return template;
+    }
+
+    /**
+     * Subscribes the current user to the events of the specified type.
+     * 
+     * @param objectKey
+     *            the key of the content object that is the source of events
+     * @param includeChildren
+     *            do we also capture event on the child objects?
+     * @param eventType
+     *            the type of an event to be notified about
+     * @param username
+     *            the user to be notified
+     * @param siteId
+     *            the ID of the site owning the content object in question
+     * @return the created subscription object
+     */
+    public Subscription subscribe(String objectKey, boolean includeChildren,
+            String eventType, String username, int siteId) {
+        return subscribe(objectKey, includeChildren, eventType, username, true,
+                siteId, true, null);
+    }
+
+    /**
+     * Subscribes the current user to the events of the specified type and send
+     * an e-mail asking for confirmation.
+     * 
+     * @param objectKey
+     *            the key of the content object that is the source of events
+     * @param includeChildren
+     *            do we also capture event on the child objects?
+     * @param eventType
+     *            the type of an event to be notified about
+     * @param username
+     *            the user to be notified
+     * @param userRegistered
+     *            is user registered in Jahia?
+     * @param siteId
+     *            the ID of the site owning the content object in question
+     * @param properties
+     *            any custom user data
+     * @return the created subscription object
+     */
+    public Subscription subscribeAndAskForConfirmation(String objectKey,
+            boolean includeChildren, String eventType, String username,
+            boolean userRegistered, int siteId, Map<String, String> properties) {
+        Subscription subscription = subscribe(objectKey, includeChildren,
+                eventType, username, userRegistered, siteId, false, properties);
+
+        sendConfirmationRequest(subscription, true);
+
+        return subscription;
     }
 
     /**
@@ -416,12 +474,8 @@ public class SubscriptionService extends JahiaService {
     public Subscription subscribeAndAskForConfirmation(String objectKey,
             boolean includeChildren, String eventType, String username,
             int siteId) {
-        Subscription subscription = subscribe(objectKey, includeChildren,
-                eventType, username, siteId, false);
-
-        sendConfirmationRequest(subscription, true);
-
-        return subscription;
+        return subscribeAndAskForConfirmation(objectKey, includeChildren,
+                eventType, username, true, siteId, null);
     }
 
     /**
@@ -496,8 +550,8 @@ public class SubscriptionService extends JahiaService {
                 .getSubscription(subscriptionId);
         if (subscription != null && subscription.getSiteId() == siteId
                 && subscription.getUsername().equals(username)) {
-                generateConfirmationKey(subscription);
-                sendConfirmationRequest(subscription, false);
+            generateConfirmationKey(subscription);
+            sendConfirmationRequest(subscription, false);
         }
 
         return subscription;

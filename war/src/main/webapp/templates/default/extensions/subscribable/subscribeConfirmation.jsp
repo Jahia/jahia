@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -35,6 +35,10 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="u" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<u:setBundle basename="JahiaInternalResources"/>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title><fmt:message key="subscriptions.subscriptionConfirmation.title"/></title>
@@ -48,10 +52,10 @@
         <p>
         <c:choose>
             <c:when test="${confirmationResult == 'OK'}">
-                <fmt:message key="$1"/>
+                <fmt:message key="subscriptions.subscriptionConfirmation.result.ok"/>
             </c:when>
             <c:when test="${confirmationResult == 'CONFIRMATION_KEY_MISMATCH'}">
-                <fmt:message key="$1"/>
+                <fmt:message key="subscriptions.subscriptionConfirmation.result.keyMismatch"/>
             </c:when>
             <c:when test="${confirmationResult == 'ALREADY_CONFIRMED'}">
                 <fmt:message key="subscriptions.subscriptionConfirmation.result.alreadyConfirmed"/>

@@ -82,6 +82,8 @@ class TemplatePackageDeployer {
     private SettingsBean settingsBean;
 
     private TemplatePackageRegistry templatePackageRegistry;
+    
+    private FileListSync fileListSync;
 
     /**
      * Deploys a template package.
@@ -152,7 +154,7 @@ class TemplatePackageDeployer {
         // overwrite template deployment descriptor
         TemplateDeploymentDescriptorHelper.serialize(
                 tmplPack, tmplRootFolder);
-        FileListSync.getInstance().trigger();
+        fileListSync.trigger();
 
         logger.info("Package '" + tmplPack.getName()
                 + "' successfully deployed");
@@ -408,6 +410,10 @@ class TemplatePackageDeployer {
     private boolean templatesFolderAlreadyExists(String rootFolderName) {
         return new File(settingsBean.getJahiaTemplatesDiskPath(),
                 rootFolderName).exists();
+    }
+
+    public void setFileListSync(FileListSync fileListSync) {
+        this.fileListSync = fileListSync;
     }
 
 }

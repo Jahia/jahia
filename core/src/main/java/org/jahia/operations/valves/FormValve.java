@@ -53,8 +53,8 @@ public class FormValve implements Valve {
                 if (Boolean.TRUE.equals(action.getParams().get("checkCaptcha"))) {
                     boolean captchaOk = false;
                     try {
-                        captchaOk = CaptchaService.getInstance().validateResponseForID(token, jParams.getRequest().getParameter("captcha"));
-                    } catch (CaptchaServiceException e ) {
+                        captchaOk = CaptchaService.getInstance().validateResponseForID(jParams.getSessionID(), jParams.getRequest().getParameter("captcha"));
+                    } catch (Exception e ) {
                     }
                     if (!captchaOk) {
                         valveContext.invokeNext(context);

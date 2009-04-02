@@ -30,7 +30,7 @@ public class CaptchaTag extends AbstractJahiaTag {
             if (!s.endsWith("/")) {
                 s += "/";
             }
-            out.write("<img src=\"" + s +"jcaptcha?captchaId="+tag.getToken()+"\"/>");
+            out.write("<img src=\"" + s +"jcaptcha\"/>");
             tag.setHasCaptcha(true);
         } catch (IOException e) {
             e.printStackTrace();

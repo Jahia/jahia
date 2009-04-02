@@ -471,9 +471,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
         
         for (ExtendedItemDefinition ext : items) {
             NodeType dnt = ext.getDeclaringNodeType();
-            if (dnt.isMixin() && (dnt.isNodeType(MetadataBaseService.METADATA_TYPE) || dnt.isNodeType(Constants.MIX_CREATED)|| dnt.isNodeType(Constants.MIX_CREATED_BY) || dnt.isNodeType(Constants.MIX_LAST_MODIFIED) ||
-                    dnt.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED)|| dnt.isNodeType(Constants.JAHIAMIX_CATEGORIZED)||dnt.isNodeType(Constants.JAHIAMIX_DESCRIPTION)||dnt.isNodeType(Constants.MIX_REFERENCEABLE)) ||
-                    !dnt.isMixin() && !dnt.isNodeType(Constants.JAHIANT_CONTAINER) || dnt.getName().equals(Constants.JAHIANT_CONTAINER) || dnt.getName().equals(Constants.JAHIANT_JAHIACONTENT)) {
+            if (!isJahiaContentItem(dnt)) {
                 continue;
             }
 
@@ -493,7 +491,13 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
         return declareContainerDefinition(parentCtnType, containerName, containerFields,
                 baseType.getName(), containerDefProp, siteId, pageDefID, theSet);
     }
-    
+
+    public static boolean isJahiaContentItem(NodeType dnt) {
+        return !(dnt.isMixin() && (dnt.isNodeType(MetadataBaseService.METADATA_TYPE) || dnt.isNodeType(Constants.MIX_CREATED)|| dnt.isNodeType(Constants.MIX_CREATED_BY) || dnt.isNodeType(Constants.MIX_LAST_MODIFIED) ||
+                dnt.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED)|| dnt.isNodeType(Constants.JAHIAMIX_CATEGORIZED)||dnt.isNodeType(Constants.JAHIAMIX_DESCRIPTION)||dnt.isNodeType(Constants.MIX_REFERENCEABLE)) ||
+                !dnt.isMixin() && !dnt.isNodeType(Constants.JAHIANT_CONTAINER) || dnt.getName().equals(Constants.JAHIANT_CONTAINER) || dnt.getName().equals(Constants.JAHIANT_JAHIACONTENT));
+    }
+
     private void declareField(String containerName, String name, ExtendedItemDefinition itemDef,
             List<String> containerFields, Map<String, Properties> declaredFieldDefProps, int siteId, int pageDefId,
             JahiaContainerSet theSet) throws JahiaException {

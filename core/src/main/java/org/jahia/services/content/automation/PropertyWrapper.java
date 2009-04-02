@@ -211,6 +211,9 @@ public class PropertyWrapper implements Updateable  {
 
     public String getStringValue() throws RepositoryException {
         if (property != null) {
+            if (property.getDefinition().isMultiple()) {
+                return getStringValues().toString();
+            }
             return property.getString();
         }
         return null;

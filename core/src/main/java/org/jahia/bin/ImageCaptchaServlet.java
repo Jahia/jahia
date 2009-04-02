@@ -66,7 +66,10 @@ public class ImageCaptchaServlet extends HttpServlet {
         try {
             // Get the session id that will identify the generated captcha.
             // The same id must be used to validate the response
-            final String captchaId = request.getSession().getId();
+            String captchaId = request.getParameter("captchaId");
+            if (captchaId == null) {
+                captchaId = request.getSession().getId();
+            }
             // call the ImageCaptchaService getChallenge method
 
             final BufferedImage challenge = CaptchaService.getInstance().getImageChallengeForID(captchaId,

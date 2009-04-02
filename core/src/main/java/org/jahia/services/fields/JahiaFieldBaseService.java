@@ -1005,10 +1005,6 @@ public class JahiaFieldBaseService extends JahiaFieldService {
 
             logger.debug ("UPDATE - step2 ");
 
-            dataManager.updateField(theField,
-                    ServicesRegistry.getInstance ().getJahiaVersionService ()
-                    .getSiteSaveVersion (theField.getJahiaID ()));
-
             ContentField contentField = ContentField.getField(theField.getID());
             JahiaEvent objectCreatedEvent = new JahiaEvent(this, jParams, contentField);
             ServicesRegistry.getInstance ().getJahiaEventService ()

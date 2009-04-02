@@ -34,6 +34,7 @@
 package org.jahia.services.content.impl.jahia;
 
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ValueImpl;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -78,7 +79,7 @@ public class PropertyImpl extends ItemImpl implements Property {
     }
 
     public void setValue(String s) throws ValueFormatException, VersionException, LockException, RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        setValue(new ValueImpl(s, PropertyType.STRING));
     }
 
     public void setValue(String[] strings) throws ValueFormatException, VersionException, LockException, RepositoryException {

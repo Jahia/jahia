@@ -39,34 +39,85 @@
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 
 <template:getContainer containerID="${containerID}" valueID="container"/>
 <template:getContainerField fieldName="isCommentable" containerBean="${container}" valueID="isCommentable"/>
 <c:if test="${isCommentable.value}">
-    <div class="comments">
-        <template:containerList name="comment" id="comment" displayActionMenu="false"
-                                actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment">
-            <!-- <h4><fmt:message key="comments"/>:</h4> -->
-            <ul>
-                <template:container id="commentContainer" displayActionMenu="false">
-                    <li>
-                        <template:field name="commentTitle"/><br/>
-                        <template:field name="commentBody"/><br/>
-                        <fmt:message key="postedOn"/>
-                        <template:field name="commentDate"/>
-                        <fmt:message key="by"/>
-                        <template:field name="commentAuthor"/>
-                    </li>
-                </template:container>
-            </ul>
-        </template:containerList>
 
-        <template:getContainerField fieldName="newsTitle" containerBean="${container}" valueID="newsTitle"/>
+    <template:containerList name="comment" id="comment" displayActionMenu="false"
+                            actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment">
+        <div class="comments">
+            <h3><fmt:message key="comments"/></h3>
+            <template:container id="commentContainer" displayActionMenu="false">
+                <dl>
+                    <dt><a class="comment-number" href="#">1.</a> <template:field name="commentDate"/> <fmt:message
+                            key="by"/> <template:field name="commentAuthor"/>
+                    </dt>
+                    <dd><h4><template:field name="commentTitle"/></h4>
+                        <template:field name="commentBody"/>
+                    </dd>
+                </dl>
+            </template:container>
+        </div>
+        <!--stop comments-->
 
-        <h5><fmt:message key="postYourComment"/>:</h5>
 
-         <template:gwtJahiaModule isTemplate="true" jahiaType="form" id='<%= "form" + IdentifierUtils.nextStringNumericIdentifier() %>' nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"
-                         action="createNode" target="${comment.JCRPath}" cssClassName="comment" />
+        <template:containerForm ignoreAcl="true" var="inputs">
+
+            <input type="hidden" id="c_date" name="${inputs['commentDate'].name}"
+                   value="${inputs['commentDate'].defaultValue}" />
+
+            <div id="commentsForm"><!--start commentsForm-->
+                <h3>Ajouter un commentaire</h3>
+
+                <fieldset>
+                    <p class="field">
+                        <label for="c_name">Nom ou pseudo :</label>
+                        <input type="text" size="30" id="c_name" name="${inputs['commentAuthor'].name}"
+                               value="${inputs['commentAuthor'].defaultValue}" tabindex="11"/>
+                    </p>
+
+                    <p class="field">
+                        <label for="c_title">Titre :</label>
+                        <input type="text" size="30" id="c_title" name="${inputs['commentTitle'].name}" tabindex="12"/>
+                    </p>
+
+                    <p class="field">
+                        <label for="c_content">Commentaire :</label>
+                        <textarea rows="7" cols="35" id="c_content" name="${inputs['commentBody'].name}"
+                                  tabindex="13"></textarea>
+                    </p>
+
+
+                        <%--<template:captcha/>--%>
+                        <%--captcha = <input name="captcha" />--%>
+                </fieldset>
+
+                <p class="form-help">help aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
+                    himenaeos. Nullam erat leo, aliquet sit amet, convallis sit amet, euismod vel, urna. Aliquam
+                    pulvinar.</p>
+                <fieldset>
+
+                    <p class="c_button">
+                        <input type="submit" value="envoyer" class="button" tabindex="11"/>
+                    </p>
+
+                </fieldset>
+
+            </div>
+            <!--stop commentsForm-->
+
+        </template:containerForm>
+
+    </template:containerList>
+
+    <template:getContainerField fieldName="newsTitle" containerBean="${container}" valueID="newsTitle"/>
+
+    <h5><fmt:message key="postYourComment"/>:</h5>
+
+    <%--<template:gwtJahiaModule isTemplate="true" jahiaType="form" id='<%= "form" + IdentifierUtils.nextStringNumericIdentifier() %>' nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"--%>
+    <%--action="createNode" target="${comment.JCRPath}" cssClassName="comment" />--%>
     </div>
 </c:if>

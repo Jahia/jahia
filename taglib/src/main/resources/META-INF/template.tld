@@ -990,6 +990,35 @@
     </tag>
 
     <tag>
+         <description>Generate an html form to update/create a container</description>
+         <name>containerForm</name>
+         <tag-class>org.jahia.taglibs.template.form.ContainerFormTag</tag-class>
+         <body-content>JSP</body-content>
+         <attribute>
+             <name>name</name>
+             <required>false</required>
+             <rtexprvalue>true</rtexprvalue>
+         </attribute>
+         <attribute>
+             <name>var</name>
+             <required>false</required>
+             <rtexprvalue>true</rtexprvalue>
+         </attribute>
+         <attribute>
+             <name>ignoreAcl</name>
+             <required>false</required>
+             <rtexprvalue>true</rtexprvalue>
+         </attribute>
+     </tag>
+
+    <tag>
+         <description>Generate a captcha</description>
+         <name>captcha</name>
+         <tag-class>org.jahia.taglibs.template.form.CaptchaTag</tag-class>
+         <body-content>empty</body-content>
+     </tag>
+
+    <tag>
         <description>Generate an html form defined by a specific CND node type</description>
         <name>formFromDefinition</name>
         <tag-class>org.jahia.taglibs.template.form.FormFromDefinition</tag-class>

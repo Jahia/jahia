@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
  * 
@@ -34,11 +34,10 @@
 package org.jahia.testtemplate.sorter;
 
 import java.util.Comparator;
-import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.jahia.data.templates.JahiaTemplateDef;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 public class LocalizedTemplateNameSorter implements Comparator<JahiaTemplateDef> {
     private ResourceBundle res;
@@ -49,11 +48,21 @@ public class LocalizedTemplateNameSorter implements Comparator<JahiaTemplateDef>
     }
 
     public int compare(JahiaTemplateDef o1, JahiaTemplateDef o2) {
-        String resValue1 = res.getString(o1.getDisplayName());
+        String resValue1 = null;
+        try {
+            resValue1 = res.getString(o1.getDisplayName());
+        } catch (MissingResourceException e) {
+            // do nothing
+        }
         if (resValue1 == null) {
             resValue1 = o1.getDisplayName();
         }
-        String resValue2 = res.getString(o2.getDisplayName());
+        String resValue2 = null;
+        try {
+            resValue2 = res.getString(o2.getDisplayName());            
+        } catch (MissingResourceException e) {
+            // do nothing
+        }
         if (resValue2 == null) {
             resValue2 = o2.getDisplayName();
         }        

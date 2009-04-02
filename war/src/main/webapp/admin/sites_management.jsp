@@ -275,11 +275,7 @@
         </div>
     </div>
     <div  class="content-item">
-        <% if (warningMsg != "" && sub.equals("prepareimport")) { %>
-        <p class="errorbold">
-            <%=warningMsg %>
-        </p>
-        <% } %>
+
         <form name="siteImportPrepackaged"
               action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
               method="post"
@@ -420,11 +416,7 @@ else { %>
         </div>
     </div>
     <div  class="content-item">
-        <% if (warningMsg != "" && sub.equals("prepareimport")) { %>
-        <p class="errorbold">
-            <%=warningMsg %>
-        </p>
-        <% } %>
+
         <form name="siteImportPrepackaged"
               action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
               method="post"
@@ -519,11 +511,7 @@ else { %>
 </div>
         </div>
         <div  class="content-item">
-            <% if (warningMsg != "" && sub.equals("prepareimport")) { %>
-            <p class="errorbold">
-                <%=warningMsg %>
-            </p>
-            <% } %>
+
             <form name="siteImportPrepackaged"
                   action='<%=JahiaAdministration.composeActionURL(request,response,"sites","&sub=prepareimport")%>'
                   method="post"

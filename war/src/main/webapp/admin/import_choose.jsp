@@ -199,21 +199,28 @@ function sendForm(){
                                                                 <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;
                                                             </td>
                                                             <td>
-                                                               <select name="<%=siteKey + "templates"%>">
-                                                                    <option value="">
-                                                                        ---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
-                                                                    <% if (tpls != null)
-                                                                        for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
-                                                                            JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next(); %>
-                                                                    <option value="<%=pack.getName()%>"
-                                                                            <% if (pack.getName().equals(infos.get("templates"))) { %>
-                                                                            selected<% } %>
-                                                                            >
-                                                                        <%=pack.getName() %>
-                                                                    </option>
-                                                                    <%
-                                                                            } %>
-                                                                </select>
+                                                                <select name="<%=siteKey + "templates"%>">
+																
+																                                <option value="">---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
+																                                <% if (tpls != null)
+																                                for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
+																                                JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next();
+																                                
+																                                String displayName="";
+																                                List invertedHierarchyList =pack.getInvertedHierarchy();
+																                                for (int i =0; i<invertedHierarchyList.size();i++ ) {
+																                                String parent= (String)invertedHierarchyList.get(i);
+																                                
+																                                displayName= displayName+" / "+parent;
+																																}
+																																displayName= displayName.substring(3);
+																
+																																%>
+																                                <option value="<%=pack.getName()%>"<% if (pack.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=displayName %></option>
+																																
+																                                <%
+																                                } %>
+																                              </select>
                                                             </td>
                                                         </tr>
 

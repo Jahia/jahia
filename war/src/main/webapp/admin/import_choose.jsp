@@ -203,20 +203,26 @@ stretcherToOpen   = 0; %>
                               </td>
                               <td>
                                 <select name="<%=siteKey + "templates"%>">
-                                	<option value="">
-                                                                ---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
-                                                            <c:forEach items="${tmplSets}" var="tmplPack">
-                                                                <c:set var="displayName" value="" scope="request"/>
-                                                                <c:forEach items="${tmplPack.invertedHierarchy}"
-                                                                           var="parent">
-                                                                    <c:set var="displayName"
-                                                                           value="${functions:stringConcatenation(displayName, ' / ', parent)}"
-                                                                           scope="request"/>
-                                                                </c:forEach>
-                                                                <option value="<c:out value='${tmplPack.name}'/>"
-                                                                        <c:if test="${tmplPack.name == selectedTmplSet}">selected="selected"</c:if>>
-                                                                    <c:out value="${fn:substring(displayName, 3, -1)}"/></option>
-                                                            </c:forEach>
+
+                                <option value="">---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
+                                <% if (tpls != null)
+                                for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
+                                JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next();
+                                
+                                String displayName="";
+                                List invertedHierarchyList =pack.getInvertedHierarchy();
+                                for (int i =0; i<invertedHierarchyList.size();i++ ) {
+                                String parent= (String)invertedHierarchyList.get(i);
+                                
+                                displayName= displayName+" / "+parent;
+																}
+																displayName= displayName.substring(3);
+
+																%>
+                                <option value="<%=pack.getName()%>"<% if (pack.getName().equals(infos.get("templates"))) { %>selected<% } %>><%=displayName %></option>
+																
+                                <%
+                                } %>
                               </select>
                               </td>
                             </tr>

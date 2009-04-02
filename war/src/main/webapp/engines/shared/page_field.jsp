@@ -249,6 +249,12 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
 <script type="text/javascript">
     var operation = "link";
 
+    function disableUrlKey(doDisable) {
+        if (typeof document.mainForm.pageURLKey != 'undefined') {
+        	document.mainForm.pageURLKey.disabled = doDisable;
+        }
+    }
+
     function setPid(pid) {
         handleActionChanges("edit&operation=" + operation + "&shouldSetPageLinkID=true&pageSelected=" + pid, pid);
     }
@@ -263,7 +269,7 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
 
     function callSelectPageMove() {
         // Inhibate the engine pop up close
-        document.mainForm.pageURLKey.disabled = false;
+        disableUrlKey(false);
         operation = "<%=SelectPage_Engine.MOVE_OPERATION%>";
     <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.MOVE_OPERATION,
 pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
@@ -271,9 +277,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 
     function callSelectPageLink() {
         // Inhibate the engine pop up close
-        if (typeof document.mainForm.pageURLKey != 'undefined') {
-            document.mainForm.pageURLKey.disabled = "disabled";
-        }
+        disableUrlKey(true);
         operation = "<%=SelectPage_Engine.LINK_OPERATION%>";
     <%=jData.gui().html().drawSelectPageLauncher(SelectPage_Engine.LINK_OPERATION, pageBean.getParentID(), pageBean.getID(), "setPid", -1, -1)%>
     }
@@ -287,7 +291,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     }
 
     function setPageURL() {
-        document.mainForm.pageURLKey.disabled = "disabled";
+    	disableUrlKey(true);
         var token = "?";
         if (document.mainForm.action.indexOf("?") > -1) {
             token = "&";
@@ -570,11 +574,11 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <!-- Create a new page -->
         <input id="directPageRadio" type="radio" name="operation"
                value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false;">&nbsp;
+               checked="checked"<% } %> onfocus="disableUrlKey(false);">&nbsp;
         <% } else { %>
         <input id="directPageRadio" type="radio" name="operation"
                value="<%=Page_Field.UPDATE_PAGE%>"<% if (Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> onfocus="document.mainForm.pageURLKey.disabled = false;">&nbsp;
+               checked="checked"<% } %> onfocus="disableUrlKey(false);">&nbsp;
         <% } %>
     </td>
     <td>
@@ -681,7 +685,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <input id="remoteURLRadio" type="radio" name="operation"
                value="<%=Page_Field.LINK_URL%>" <% if (Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>
                checked="checked"<% } %> <% if (!isNewPage) { %> onfocus="setPageURL();" <% } %>
-               onclick="document.mainForm.pageURLKey.disabled = 'disabled';">&nbsp;
+               onclick="disableUrlKey(true);">&nbsp;
     </td>
     <td>
         <label for="remoteURLRadio"><fmt:message key="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/></label>
@@ -698,7 +702,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <tr>
     <td valign="top">
         <input id="noValueRadio" type="radio" name="operation"
-               onfocus="document.mainForm.page_title.value = '';document.mainForm.pageURLKey.disabled = 'disabled';"
+               onfocus="document.mainForm.page_title.value = '';disableUrlKey(true);"
                value="<%=Page_Field.RESET_LINK%>"<%if (Page_Field.RESET_LINK.equals(pageBean.getOperation())) {%>
                checked="checked"<% } %>>
     </td>
@@ -728,7 +732,9 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <script type="text/javascript">
     function setfocus() {
     <% if (engineMap.containsKey("focus")) { %>
-        document.mainForm.elements["pageURLKey"].select();
+        if (typeof document.mainForm.pageURLKey != 'undefined') {
+            document.mainForm.elements["pageURLKey"].select();
+        }
     <% } else { %>
         document.mainForm.elements["page_title"].select();
     <% } %>

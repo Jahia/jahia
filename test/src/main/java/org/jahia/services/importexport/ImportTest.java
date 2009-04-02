@@ -55,7 +55,7 @@ public class ImportTest extends XMLTestCase {
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
                 importResult, new HashMap<String,String>(), null,null, importedMapping);
 
-        assertEquals("Invalid status code : "+importResult.getStatus(), importResult.getStatus(),ImportResult.COMPLETED_OPERATION_STATUS);
+        assertEquals("Invalid status code : "+importResult.getStatus(), ImportResult.COMPLETED_OPERATION_STATUS, importResult.getStatus());
         assertEquals(importResult.getWarnings().size() + " warnings",importResult.getWarnings().size(), 0);
         assertEquals(importResult.getErrors().size() + " errors", importResult.getErrors().size(), 0);
 
@@ -68,6 +68,7 @@ public class ImportTest extends XMLTestCase {
         DifferenceListener myDifferenceListener = new DifferenceListener() {
             public int differenceFound(Difference difference) {
                 switch (difference.getId()) {
+                    case DifferenceConstants.CHILD_NODELIST_SEQUENCE_ID:
                     case DifferenceConstants.ATTR_NAME_NOT_FOUND_ID:
                     case DifferenceConstants.ATTR_SEQUENCE_ID:
                     case DifferenceConstants.ELEMENT_NUM_ATTRIBUTES_ID:

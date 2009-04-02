@@ -2947,21 +2947,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
         String numericAnalyzer = getIndexationConfig()
                 .getProperty(JahiaSearchConfigConstant.ANALYZER_FOR_NUMERICS);
         String keywordAnalyzer = getIndexationConfig()
-                .getProperty(JahiaSearchConfigConstant.ANALYZER_FOR_KEYWORDS);        
-
-        Map<String, Set<String>> newFieldsGrouping = siteId > 0 && fieldsGrouping != null ? new HashMap<String, Set<String>>(fieldsGrouping) : new HashMap<String, Set<String>>();
-        if (newFieldsGrouping.isEmpty()) {
-            addDefaultGroups(newFieldsGrouping, 0);                    
-        } 
-        if (siteId > 0 && fieldsGrouping != null) {
-            for (String key : fieldsGrouping.keySet()) {
-                if (key.startsWith(siteId + "_")) {
-                    newFieldsGrouping.remove(key);
-                }
-            }
-            addDefaultGroups(newFieldsGrouping, siteId);
-        }
-        
+                .getProperty(JahiaSearchConfigConstant.ANALYZER_FOR_KEYWORDS);
         CompassConfiguration compassConfig = getCompass().getConfig();
         LuceneSearchEngineFactory searchEngineFactory = (LuceneSearchEngineFactory) ((InternalCompass) getCompass())
                 .getSearchEngineFactory();
@@ -2969,8 +2955,29 @@ public class JahiaSearchBaseService extends JahiaSearchService
         ResourceMapping[] compassMappings = compassMapping.getRootMappings();
         NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
         boolean compassConfigChanged = false;
-
+        
+        Map<String, Set<String>> newFieldsGrouping = siteId > 0 && fieldsGrouping != null ? new HashMap<String, Set<String>>(fieldsGrouping) : new HashMap<String, Set<String>>();
+        
         try {
+            if (newFieldsGrouping.isEmpty()) {
+                addDefaultGroups(newFieldsGrouping, 0);
+                if (siteId == 0) {
+                    for (int currentSiteId : sitesService.getSiteIds()) {
+                        addDefaultGroups(newFieldsGrouping, currentSiteId);
+                    }
+                }
+            }
+            if (siteId > 0) {
+                if (fieldsGrouping != null) {
+                    for (String key : fieldsGrouping.keySet()) {
+                        if (key.startsWith(siteId + "_")) {
+                            newFieldsGrouping.remove(key);
+                        }
+                    }
+                }
+                addDefaultGroups(newFieldsGrouping, siteId);
+            } 
+
             for (Integer currentID : siteId > 0 ? fieldService.getAllFieldDefinitionIDs(siteId) : fieldService.getAllFieldDefinitionIDs()) {
                 JahiaFieldDefinition def = fieldService
                         .loadFieldDefinition(currentID.intValue());
@@ -3136,16 +3143,16 @@ public class JahiaSearchBaseService extends JahiaSearchService
         Set<String> l = new HashSet<String>();
         l.add(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
         l.add(JahiaSearchConstant.TITLE);                    
-        newFieldGrouping.put(siteId + "_" + JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, l);
+        newFieldGrouping.put((siteId > 0 ? siteId + "_" : "") + JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, l);
         
         l = new HashSet<String>();
         l.add(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
         l.add(JahiaSearchConstant.TITLE);
-        newFieldGrouping.put(siteId + "_" + JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, l);
+        newFieldGrouping.put((siteId > 0 ? siteId + "_" : "") + JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, l);
         
         l = new HashSet<String>();
         l.add(JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-        newFieldGrouping.put(siteId + "_" + JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD, l);
+        newFieldGrouping.put((siteId > 0 ? siteId + "_" : "") + JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD, l);
     }
 
     private boolean updateCompassMappings(ResourceMapping[] compassMappings,

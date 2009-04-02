@@ -220,6 +220,18 @@
         <% } %>
     </td>
 </tr>
+<tr>
+    <td headers="t5" class="t3">
+        <fmt:message key="org.jahia.useExistingDb.label"/>
+    </td>
+    <td headers="t6" class="t4">
+        <% if (Boolean.parseBoolean((String)values.get("useExistingDb"))) { %>
+        <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.values.true.label"/>
+        <% } else { %>
+        <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.values.false.label"/>
+        <% } %>
+    </td>
+</tr>
 </table>
 <table summary="<fmt:message key="org.jahia.utfCompliance.label"/>">
 <caption><fmt:message key="org.jahia.utfCompliance.label"/>:</caption>

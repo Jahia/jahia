@@ -1,3 +1,0 @@
-<${artifactId} = '${providerUrl}/jahia/${artifactId}/nt/1.0'>
-
-[${artifactId}:home] > jnt:page

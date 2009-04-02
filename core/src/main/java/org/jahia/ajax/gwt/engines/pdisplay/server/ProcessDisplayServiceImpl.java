@@ -351,7 +351,7 @@ public class ProcessDisplayServiceImpl extends AbstractJahiaGWTServiceImpl imple
 
 
     public static List<JobDetail> getAllJobsDetails() throws JahiaException {
-        List<JobDetail> jobs = SCHEDULER_SERVICE.getAllActiveJobsDetails();
+        List<JobDetail> jobs = SCHEDULER_SERVICE.getAllJobsDetails();
         return jobs;
     }
 

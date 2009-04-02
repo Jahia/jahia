@@ -199,7 +199,7 @@ function sendForm(){
                                                                 <fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;
                                                             </td>
                                                             <td>
-                                                                <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
+                                                               <select name="<%=siteKey + "templates"%>">
                                                                     <option value="">
                                                                         ---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                                                                     <% if (tpls != null)

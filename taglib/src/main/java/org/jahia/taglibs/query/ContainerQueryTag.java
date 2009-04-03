@@ -187,6 +187,11 @@ public class ContainerQueryTag extends QueryDefinitionTag  {
             logger.warn("Exception occured when creating the ContainerQueryBean",t);
             throw new JspException(t);
         }
+        GetHitsPerFacetTag facetTag = (GetHitsPerFacetTag)findAncestorWithClass(this, GetHitsPerFacetTag.class);
+        if (facetTag != null) {
+            facetTag.setFacetQueryBean(this.queryBean);            
+        }
+        
         if ( this.targetContainerList != null ){
             this.targetContainerList.setQueryBean(this.queryBean);
         }

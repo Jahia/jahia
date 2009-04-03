@@ -263,19 +263,11 @@ public class ContainerFilters implements Serializable {
         OrderedBitSet result = new OrderedBitSet();
 
         BitSet bits = null;
-        ContainerFilterInterface containerFilter = null;
-        List<ContainerFilterInterface> v = getContainerFilters();
-        int size = v.size();
-        for (int i = 0; i < size; i++) {
-            containerFilter = (ContainerFilterInterface) v.get(i);
+        int i = 0;
+        for (ContainerFilterInterface containerFilter : getContainerFilters()) {
             if (this.isSiteModeFiltering()) {
-                if (oldMode) {
-                    bits = containerFilter.doFilterBySite(getSiteId(), this
-                            .getContainerDefinitionName(), getCtnListID());
-                } else {
-                    bits = containerFilter.doFilterBySite(getSiteIds(), this
-                            .getContainerDefinitionNames(), getCtnListID());
-                }
+                bits = containerFilter.doFilterBySite(getSiteIds(), this
+                        .getContainerDefinitionNames(), getCtnListID());
             } else {
                 bits = containerFilter.doFilter(getCtnListID());
             }
@@ -286,9 +278,10 @@ public class ContainerFilters implements Serializable {
                     result.and(bits);
                 }
             }
+            i++;
         }
 
-        if (size == 1 && bits instanceof OrderedBitSet) {
+        if (i == 1 && bits instanceof OrderedBitSet) {
             OrderedBitSet orderedBitSet = (OrderedBitSet) bits;
             if (orderedBitSet.isOrdered()) {
                 result.setOrdered(true);

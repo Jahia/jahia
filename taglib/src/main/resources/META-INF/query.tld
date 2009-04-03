@@ -752,4 +752,37 @@
             <type>boolean</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Returns the number of hits for a search/query per facet</description>
+        <name>getHitsPerFacet</name>
+        <tag-class>org.jahia.taglibs.query.GetHitsPerFacetTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>The ID of a query bean to compare its results with the results of the facet.</description>
+            <name>compareQueryBeanID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
+            <description>The property name for checking the facets.</description>
+            <name>facetPropertyName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The facet title for single queries.</description>
+            <name>facetTitle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>        
+        <attribute>
+            <description>The facet query bean ID if the query is not nested in the body.</description>
+            <name>facetQueryBeanID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>        
+    </tag>
 </taglib>

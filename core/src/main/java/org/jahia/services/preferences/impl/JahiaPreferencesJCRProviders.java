@@ -377,7 +377,7 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
     private NodeIterator findPreferenceNodeByJahiaPreferenceXPath(Principal p, String partialXPath) {
         // create XPath value by JahiaPreferenceKey
         String xpathNode = getPreferenceProviderNodePath(p);
-        StringBuffer prefPath = new StringBuffer(xpathNode);
+        StringBuffer prefPath = new StringBuffer(encodeXPath(xpathNode));
         prefPath.append(PREFERENCE);
         if (partialXPath != null) {
             prefPath.append(partialXPath);
@@ -403,7 +403,7 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
         try {
             QueryManager queryManager = getJCRStoreService().getQueryManager((JahiaUser) p);
             if (queryManager != null) {
-                Query q = queryManager.createQuery(path.toString(), Query.XPATH);
+                Query q = queryManager.createQuery(path, Query.XPATH);
                 // execute query
                 QueryResult queryResult = q.execute();
 
@@ -427,5 +427,19 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
             logger.error(e, e);
         }
         return null;
+    }
+
+    /**
+     * To Do: encode corretly all escaped charater.
+     * @param xpath
+     * @return
+     */
+    private String encodeXPath(String xpath) {
+        if (xpath != null) {
+            // To Do: to it for all escaped charater
+            return xpath.replaceAll("@", "_0040_");
+        }
+        return null;
+
     }
 }

@@ -45,7 +45,7 @@
             <div id="container"><!--start container-->
                 <div id="page"><!--start page-->
                     <template:include page="common/top.jsp"/>
-                    <div id="containerdata"><!--start containerdata-->
+                    <div id="containerdata" class="containerDataContent2"><!--start containerdata-->
                         <div id="wrapper"><!--start wrapper-->
 
                             <div id="content2">
@@ -73,6 +73,7 @@
 
                             <div class="spacer"><!--start spacer areaB -->
 
+                                <template:include page="modules/filtersDisplay.jsp"/>
 
                                 <template:include page="modules/searchForm.jsp"/>
 

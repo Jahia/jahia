@@ -34,7 +34,7 @@
 --%>
 <%@ include file="../common/declarations.jspf" %>
 
-<template:containerList name="owner" id="ownerContainer" actionMenuNamePostFix="owner" actionMenuNameLabelKey="owner">
+<template:containerList name="owner" id="ownerContainer" actionMenuNamePostFix="postfix.aboutMe" actionMenuNameLabelKey="aboutMe">
     <template:container id="ownerContent">
 <h3><fmt:message key="aboutMe"/> </h3>
 

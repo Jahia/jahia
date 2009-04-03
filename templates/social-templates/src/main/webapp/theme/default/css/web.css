@@ -55,15 +55,16 @@ body {
 #bodywrapper a:visited {
 	color:#0074d4;
 	text-decoration:none;
-	background:none;
 }
 #bodywrapper a:hover,
 #bodywrapper a:active {
 	color:#0074d4;
 	text-decoration:underline;
-	background:none;
 }
-
+#bodywrapper p  {
+	margin:0.5em 0;
+	padding:0;
+}
 #bodywrapper ul  {
 	margin:1em 0 1em 2em;
 	padding:0;
@@ -272,6 +273,47 @@ overflow:hidden;
 }
 
 
+/******************************************************************************
+* Menu
+******************************************************************************/
+#bodywrapper #menu {
+	list-style: none;
+	margin: 0px;
+	position: absolute;
+	right: 10px;
+	bottom: 0px;
+}
+#bodywrapper #menu h3{
+	display:none	
+}
+#bodywrapper #menu li {
+	float: left;
+	margin-left: 5px;
+	list-style: none;
+}
+
+#bodywrapper #menu .current a,
+#bodywrapper #menu .current a:visited{
+	color: #19507b;
+	text-decoration: none;
+	background: #9acd34 url(../img/bgmenuitem-on.png) repeat-x top left;
+}
+#bodywrapper #menu a,
+#bodywrapper #menu a:link,
+#bodywrapper #menu a:visited  {
+	color: #fff;
+	text-decoration: none;
+	background: #0295d4 url(../img/bgmenuitem.png) repeat-x top left;
+	padding: 3px 10px;
+	border: 1px solid #19507b;
+	border-bottom: none;
+	display: block;
+}
+#bodywrapper #menu a:hover,
+#bodywrapper #menu a:active  {
+	color: #19507b;
+	background: #9acd34 url(../img/bgmenuitem-on.png) repeat-x top left;
+}
 
 /******************************************************************************
 * LAYOUT CONTENEUR  
@@ -281,8 +323,20 @@ overflow:hidden;
 	height:1%;
 	float:left;
 	width:820px;
-	background:transparent url(../img/shadow.png) repeat-y top left;
 	padding:0 15px;
+}
+
+#bodywrapper .containerDataContent {
+	background:transparent url(../img/containerDataContent.png) repeat-y top left;
+}
+#bodywrapper .containerDataContent2 {
+	background:transparent url(../img/containerDataContent2.png) repeat-y top left;
+}
+#bodywrapper .containerDataContent3 {
+	background:transparent url(../img/containerDataContent3.png) repeat-y top left;
+}
+#bodywrapper .containerDataContent4 {
+	background:transparent url(../img/containerDataContent4.png) repeat-y top left;
 }
 /******************************************************************************
 * LAYOUT WRAPPER
@@ -505,6 +559,7 @@ color:#fff;
 	font-weight: bold;
 	clear: left;
 	text-align:right;
+	margin:0
 }
 /******************************************************************************
 * Search
@@ -515,7 +570,9 @@ color:#fff;
 	background-color:#fff;
 	overflow:hidden;
 	border: 1px solid #ccc;
-	margin-bottom:1em
+	margin-bottom:1em;
+	height:1%;
+	clear:both
 }
 #bodywrapper #search fieldset {
 padding:0 ;
@@ -543,14 +600,33 @@ padding:0 ;
 	padding:0;
 }
 /******************************************************************************
+* Categories
+******************************************************************************/
+#bodywrapper div.categories {
+	margin-bottom:1em;
+}
+#bodywrapper .categories h4 {	}
+#bodywrapper .categories ul {
+	margin:0.2em 0.5em;
+}
+#bodywrapper .categories li{
+	list-style-type:none;
+	background: url(../img/arrow.png) no-repeat 0.5em 0.6em;
+	padding:0.2em;
+	padding-left:18px;
+}
+#bodywrapper .categories li:hover{
+	background-color:#eaeaea
+}
+/******************************************************************************
 * Archives
 ******************************************************************************/
 #bodywrapper div.archives {
-margin-bottom:1em;
+	margin-bottom:1em;
 }
 #bodywrapper .archives h4 {	}
 #bodywrapper .archives ul {
-margin:0.2em 0.5em;
+	margin:0.2em 0.5em;
 }
 #bodywrapper .archives li{
 	list-style-type:none;
@@ -586,8 +662,8 @@ margin:0.2em 0.5em;
 	margin:0;
 }
 #bodywrapper .aboutMeAction{
-text-align:right;
-font-weight:bold
+	text-align:right;
+	font-weight:bold
 }
 #bodywrapper .aboutMeAction a,
 #bodywrapper .aboutMeAction a:link,
@@ -643,8 +719,9 @@ font-weight:bold
 	line-height: 1.8em;
 }
 #bodywrapper .moreTags{
-text-align:right;
-font-weight:bold
+	text-align:right;
+	font-weight:bold;
+	margin:0
 }
 
 /******************************************************************************
@@ -800,5 +877,111 @@ font-weight:bold
 }
 
 #bodywrapper .credits {
-margin:1em 0;
+	margin:1em 0;
+}
+/******************************************************************************
+*  Preferences
+******************************************************************************/
+#bodywrapper div.preferences{
+	background-color:#E0E4E5;
+	margin:0;
+	padding:1em 1em 0.5em;
+	border: 1px solid #00A0DD;
+	line-height:normal;
+	margin-bottom:1em;
+}
+#bodywrapper .preferences p{
+	margin:0;
+	padding:0
+}
+#bodywrapper .preferences h3{
+	margin:0;
+	padding:0
+}
+#bodywrapper .preferences .preference-label{
+	font-weight:bold;
+}
+/******************************************************************************
+*  AddThis
+******************************************************************************/
+#bodywrapper div.AddThis{
+	margin-bottom:1em;
+	padding: 0.5em 1em;
+}
+/******************************************************************************
+*  Bookmarks 
+******************************************************************************/
+#bodywrapper div.bookmarksList {
+	margin:0;
+	margin-bottom:1em;
+	display: block;
+	background-color:#eaeaea;
+	padding:1em 1em 0.5em;
+	border: 1px solid #ccc;
+
+}
+#bodywrapper .bookmarksList ul {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+	font-weight: bold;
+	font-size:0.85em;
+	line-height:normal;
+}
+#bodywrapper .bookmarksList ul li {
+	background: url(../img/bookmark.png) no-repeat;
+	padding: 0px 0px 10px 20px;
+}
+#bodywrapper .bookmarksListDes{
+	font-weight: normal;
+}
+
+#bodywrapper .post div.bookmarksList {
+	background:none;
+	border:none;
+}
+/******************************************************************************
+*  error 
+******************************************************************************/
+.error {
+	margin: 1em 0;
+	padding: 10px 5px;
+	background: #ffcccc;
+	border: 2px solid red;
+	font-weight: bold;
+	color: red
+}
+/******************************************************************************
+* filterList
+******************************************************************************/
+#bodywrapper div.filterList{
+	background-color:#eaeaea ;
+	margin:0;
+	padding:1em 1em 0.5em;
+	border: 1px solid #00A0DD;
+	line-height:normal;
+	margin-bottom:1em;
+}
+#bodywrapper .filterList h4 {	}
+#bodywrapper .filterList ul {
+	margin:0.2em 0.5em;
+}
+#bodywrapper .filterList li{
+	list-style-type:none;
+	padding:0.4em;
+	float:left;
+	font-size:0.85em;
+	line-height:normal;
+}
+
+#bodywrapper .filterList img{
+	vertical-align: middle;
+	padding:0 0.4em;
+}
+
+#bodywrapper .filterListDeleteAll {
+	font-weight: bold;
+	clear: left;
+	text-align:right;
+	margin:0
 }

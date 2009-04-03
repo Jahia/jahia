@@ -46,19 +46,21 @@
         </template:containerList>
         <div class="post"><!--start post-->
             <div class="post-date"><span><fmt:formatDate pattern="MM" value="${date.date}"/></span><fmt:formatDate pattern="dd" value="${date.date}"/></div>
-            <h2 class="post-title"><a href="#"><template:field name="title"/></a></h2>
+            <h2 class="post-tit:deplle"><a href="#"><template:field name="title"/></a></h2>
 
             <p class="post-info">Par <a href="#"><template:metadata metadataName="author" contentBean="${blogEntry}"/>.</a> <fmt:formatDate pattern="dd MMMM aaaa h:m" value="${date.date}"/>-
             <c:if test="${!empty blogEntryCatKeys }">
                 <c:forEach var="blogEntryCatKey" items="${fn:split(blogEntryCatKeys, '$$$')}">
-                    &nbsp;<a href="#"><ui:displayCategoryTitle categoryKeys="${blogEntryCatKey}"/></a>
+                    &nbsp;<a href="${currentPage.url}?addCategory=${blogEntryCatKey}"><ui:displayCategoryTitle categoryKeys="${blogEntryCatKey}"/></a>
                 </c:forEach>
              </c:if>
             </p>
             <template:metadata metadataName="keywords" contentBean="${blogEntry}" var="keywords"/>
             <ul class="post-tags">
                 <c:forEach var="keyword" items="${fn:split(keywords, ',')}">
-                    <li><a href="#"><c:out value="${keyword}"/></a></li>
+                    <c:if test="${!keywork eq ''}">
+                        <li><a href="#"><c:out value="${keyword}"/></a></li>
+                    </c:if>
                 </c:forEach>
             </ul>
             <div class="post-content"><p><template:field name="content"/></p>

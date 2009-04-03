@@ -32,48 +32,24 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-<%@ include file="declarations.jspf" %>
+<%@ include file="../common/declarations.jspf" %>
+<c:if test="${!empty categoryFilter}">
+<div class="filterList">
+<h3><fmt:message key="currentFilters"/> </h3>
+<h4><fmt:message key="currentFilters.categories"/> </h4>
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>${currentSite.title}</title>
-<template:themeDisplay defaultTheme="default"/>
-<!--[if lte IE 6]>
-<link href="misc/ie6.css" rel="stylesheet" type="text/css" />
-<![endif]-->
-<style type="text/css">
-<!--
-body { behavior: url(<utility:resolvePath value="scripts/csshover.htc"/>); }
-img { behavior: url(<utility:resolvePath value="scripts/iepngfix.htc"/>); }
--->
-</style>
+<c:set var="categoriesMap" value="${fn:split(categoryFilter, '$$$')}"/>
 
-<%--Filters Settings--%>
-<%--add category Filter--%>
-<c:if test="${! empty param.addCategory}">
-    <c:choose>
-    <c:when test="${empty categoryFilter}">
-        <c:set scope="session" var="categoryFilter" value="${param.addCategory}"/>
-    </c:when>
-    <c:otherwise>
-        <c:set scope="session" var="categoryFilter" value="${categoryFilter}$$$${param.addCategory}"/>
-    </c:otherwise>
-    </c:choose>
-</c:if>
-<%--remove category Filter--%>
-<c:if test="${!empty param.removeCategory}">
-    <c:set var="categoriesMap" value="${fn:split(categoryFilter, '$$$')}"/>
-    <c:set var="categoriestmp" value=""/>
+<ul>
     <c:forEach var="category" items="${categoriesMap}">
-        <c:if test="${!category eq param.removeCategory}">
-            <c:choose>
-            <c:when test="${empty categoriestmp}">
-                <c:set var="categoriestmp" value="${category}"/>
-            </c:when>
-            <c:otherwise>
-                <c:set var="categoriestmp" value="${categoriestmp}$$$${category}"/>
-            </c:otherwise>
-            </c:choose>
-        </c:if>
+	<li><a href="${currentPage.url}?removeCategory=${category}" title="delete"><ui:displayCategoryTitle categoryKeys="${category}"/>
+        <img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/delete.png'/>" alt="delete" />
+    </a></li>
     </c:forEach>
-    <c:set var="categoryFilter" value="${categoriestmp}" scope="session"/>
+</ul>
+
+    <div class="clear"></div>
+<p class="filterListDeleteAll"><a title="#" href="#"><fmt:message key="currentFilters.deleteAll"/></a></p>
+<div class="clear"></div>
+</div>
 </c:if>

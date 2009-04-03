@@ -34,7 +34,7 @@
 --%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ page import="org.apache.commons.id.IdentifierUtils" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://www.jahia.org/tags/templateLib" prefix="template" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -43,29 +43,32 @@
 <template:getContainer containerID="${containerID}" valueID="container"/>
 <template:getContainerField fieldName="isCommentable" containerBean="${container}" valueID="isCommentable"/>
 <c:if test="${isCommentable.value}">
-    <div class="comments">
+    <c:set var="countComment" value="0"/>
+    <div id="comments">
         <template:containerList name="comment" id="comment" displayActionMenu="false"
                                 actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment">
-            <!-- <h4><fmt:message key="comments"/>:</h4> -->
-            <ul>
+            <h3><fmt:message key="comments"/></h3>
+            <dl>
                 <template:container id="commentContainer" displayActionMenu="false">
-                    <li>
-                        <template:field name="commentTitle"/><br/>
-                        <template:field name="commentBody"/><br/>
-                        <fmt:message key="postedOn"/>
-                        <template:field name="commentDate"/>
-                        <fmt:message key="by"/>
-                        <template:field name="commentAuthor"/>
-                    </li>
+                    <c:set var="countComment" value="${countComment + 1}"/>
+                    <dt>
+                        <dt><a href="#" class="comment-number">${countComment}.</a> <template:field name="commentDate" inlineEditingActivated="false"/>&nbsp;<fmt:message key="by"/>&nbsp;<template:field name="commentAuthor" inlineEditingActivated="false"/>
+                    </dt>
+                    <dd>
+                        <h4><template:field name="commentTitle"/></h4>
+                        <template:field name="commentBody"/>
+                    </dd>
                 </template:container>
-            </ul>
+            </dl>
         </template:containerList>
-
+        </div>
         <template:getContainerField fieldName="newsTitle" containerBean="${container}" valueID="newsTitle"/>
 
-        <h5><fmt:message key="postYourComment"/>:</h5>
+        <div id="commentsForm">
+            <h3><fmt:message key="postYourComment"/></h3>
 
          <template:gwtJahiaModule isTemplate="true" jahiaType="form" id='<%= "form" + IdentifierUtils.nextStringNumericIdentifier() %>' nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"
                          action="createNode" target="${comment.JCRPath}" cssClassName="comment"/>
-    </div>
+         </div>
+
 </c:if>

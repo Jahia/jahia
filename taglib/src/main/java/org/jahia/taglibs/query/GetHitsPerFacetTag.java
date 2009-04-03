@@ -61,7 +61,7 @@ public class GetHitsPerFacetTag extends QueryDefinitionTag {
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
             .getLogger(GetHitsPerFacetTag.class);
 
-    private String queryBeanID;
+    private String compareQueryBeanID;
     private String facetQueryBeanID;    
     private String facetPropertyName;
     private String facetTitle;    
@@ -69,20 +69,20 @@ public class GetHitsPerFacetTag extends QueryDefinitionTag {
     private ContainerQueryBean facetQueryBean;    
     private JahiaFieldDefinition fieldDef;
 
-    public String getQueryBeanID() {
-        return queryBeanID;
+    public String getCompareQueryBeanID() {
+        return compareQueryBeanID;
     }
 
     public void setQueryBeanID(String queryBeanID) {
-        this.queryBeanID = queryBeanID;
+        this.compareQueryBeanID = queryBeanID;
     }
 
     public int doStartTag() throws JspException {
         int eval = super.doStartTag();
 
-        if (getQueryBeanID() != null && getQueryBeanID().length() > 0) {
+        if (getCompareQueryBeanID() != null && getCompareQueryBeanID().length() > 0) {
             queryBean = (ContainerQueryBean) pageContext
-                    .findAttribute(getQueryBeanID());
+                    .findAttribute(getCompareQueryBeanID());
         }
 
         return eval;
@@ -126,7 +126,7 @@ public class GetHitsPerFacetTag extends QueryDefinitionTag {
         processFaceting();
         // let's reinitialize the tag variables to allow tag object reuse in
         // pooling.
-        queryBeanID = null;
+        compareQueryBeanID = null;
         queryBean = null;
         facetPropertyName = null;
         facetTitle = null;

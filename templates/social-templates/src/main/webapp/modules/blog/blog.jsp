@@ -40,7 +40,6 @@
     <query:sortBy propertyName="date" order="${queryConstants.ORDER_ASCENDING}"/>
 </query:definition>--%>
 <%@ include file="../../common/declarations.jspf" %>
-
-<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="5" actionMenuNameLabelKey="article" actionMenuNamePostFix="manage">
+<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="${blogMaxEntries.integer}" actionMenuNameLabelKey="article" actionMenuNamePostFix="manage">
 <%@ include file="blog.jspf"%>
 </template:containerList>

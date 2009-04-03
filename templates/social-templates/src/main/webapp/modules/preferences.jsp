@@ -41,39 +41,19 @@
 <div class="column-item"><!--start column-item -->
     <div class="columnspace"><!--start columnspace -->
         <div class="mapshortcuts"><!--start bottomshortcuts-->
-            <h4><fmt:message key="social_templates_lastEntries.recent"/></h4>
-            <template:containerList name="lastEntries" id="lastEntries"
-                                    actionMenuNamePostFix="lastentriess" actionMenuNameLabelKey="lastentriess">
-                <template:container id="lastEntry" cache="off" actionMenuNamePostFix="lastentries"
-                                    actionMenuNameLabelKey="lastentries.update">
+            <template:containerList name="blogPrefs" id="preferences"
+                                    actionMenuNamePostFix="preferencess" actionMenuNameLabelKey="preferencess">
+                <template:container id="preference" cache="off" actionMenuNamePostFix="preferences"
+                                    actionMenuNameLabelKey="preferences.update">
                     <template:field name="maxEntries" var="maxEntries" defaultValue="10" display="false"/>
-                    <c:if test="${requestScope.currentRequest.editMode}">
                         <div class="preferences">
-                            <h5><fmt:message key="social_templates_lastEntries.preferences"/></h5>
+                            <h5><fmt:message key="social_templates.preferences"/></h5>
 
                             <p class="preference-item"><span class="preference-label"><fmt:message
-                                    key="social_templates_lastEntries.rowsDisplay"/>: </span><span
+                                    key="social_templates.rowsDisplay"/>: </span><span
                                     class="preference-value">${maxEntries.integer}</span></p>
                         </div>
-                    </c:if>
-                    <c:set var="maxEntries" value="${maxEntries}"/>
                 </template:container>
-            </template:containerList>
-            <template:containerList maxSize="${maxEntries.integer}" id="newsList" displayActionMenu="false">
-                <query:containerQuery>
-                    <query:selector nodeTypeName="social_templates:blogEntry" selectorName="blogEntry"/>
-                    <query:descendantNode selectorName="blogEntry" path="${currentSite.JCRPath}"/>
-                    <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxEntries.integer}"/>
-                    <query:sortBy propertyName="date" order="${queryConstants.ORDER_DESCENDING}"/>
-                </query:containerQuery>
-                <ul class="footer-recent-posts">
-                    <template:container id="blogLastEntry" cacheKey="lastEntry" displayExtensions="false" displayActionMenu="false">
-                        <li class="">
-                            <a href="?article=${blogLastEntry.ID}"><template:field name='title'/></a>
-                            <p class="small"><template:field name='date'/></p>
-                        </li>
-                    </template:container>
-                </ul>
             </template:containerList>
         </div>
     </div>

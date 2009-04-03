@@ -12,6 +12,10 @@ integer     maxEntries
 [social_templates:lastComments] > jnt:container
 integer     maxEntries
 
+[social_templates:blogPrefs] > jnt:container
+integer     maxEntries
+
+
 [social_templates:bookmark] > jnt:container
 page        bookmark (page[type="internal,external"])
 smallText   note
@@ -36,3 +40,5 @@ singleContainer intro (social_templates:intro)
 singleContainer footer (social_templates:footer)
 singleContainer lastEntries (social_templates:lastEntries)
 singleContainer lastComments (social_templates:lastComments)
+singleContainer blogPrefs (social_templates:blogPrefs)
+

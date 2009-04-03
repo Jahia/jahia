@@ -65,10 +65,10 @@
                     <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxEntries.integer}"/>
                     <query:sortBy propertyName="commentDate" order="${queryConstants.ORDER_DESCENDING}"/>
                 </query:containerQuery>
-                <ul>
+                <ul class="footer-recent-comments">
                     <template:container id="comment" cacheKey="lastcomment" displayExtensions="false" displayActionMenu="false">
-                        <li class="footer-recent-posts">
-                            <a href="nav?article=${comment.parent.pageID}"><template:field name='commentTitle'/></a>
+                        <li class="">
+                            <a href="?article=${comment.parent.pageID}"><template:field name='commentTitle'/></a>
                         </li>
                     </template:container>
                 </ul>

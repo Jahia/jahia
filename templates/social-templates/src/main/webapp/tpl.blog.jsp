@@ -52,6 +52,16 @@
                                 <!--start content  #content2=areaB/content #content3=content/InsetA   content4=alone #content5=50%areaB/50%content-->
                                 <div class="spacer"><!--start spacer -->
                                     <!--stop post-->
+                                    <template:containerList name="preferences" id="preferences"
+                                                            actionMenuNamePostFix="preferencess"
+                                                            actionMenuNameLabelKey="preferencess">
+                                        <template:container id="preference" cache="off"
+                                                            actionMenuNamePostFix="preferences"
+                                                            actionMenuNameLabelKey="preferences.update">
+                                            <template:field name="maxEntries" var="blogMaxEntries" defaultValue="10" display="false"/>
+                                            <c:set var="blogMaxEntries" value="${blogMaxEntries}"/>
+                                        </template:container>
+                                    </template:containerList>
                                     <c:if test="${!empty param.article}">
                                         <template:include page="modules/blog/blogComment.jsp">
                                             <template:param name="article" value="${param.article}"/>
@@ -72,18 +82,14 @@
                         <div id="areaB"><!--start areaB-->
 
                             <div class="spacer"><!--start spacer areaB -->
-
+                                <c:if test="${requestScope.currentRequest.editMode}">
+                                    <template:include page="modules/preferences.jsp"/>
+                                </c:if>
                                 <template:include page="modules/filtersDisplay.jsp"/>
-
                                 <template:include page="modules/searchForm.jsp"/>
-
                                 <template:include page="modules/aboutMe.jsp"/>
-
                                 <template:include page="modules/nav/navDate.jsp"/>
-
                                 <template:include page="modules/bookmark.jsp"/>
-
-
                             </div>
                             <!--stop space areaB-->
                         </div>

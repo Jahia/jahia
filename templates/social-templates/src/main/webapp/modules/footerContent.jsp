@@ -33,14 +33,24 @@
 
 --%>
 <%@ include file="../common/declarations.jspf" %>
-<div id="footer"><!--start footer-->
-               <div id="footerContent"><!--footerContent-->
 
-               <div class="columns3"><!--start 3columns -->
-                             <template:include page="modules/lastEntries.jsp"/>
-                             <template:include page="modules/lastComments.jsp"/>
-                            <template:include page="modules/footerContent.jsp"/>
-                 <div class="clear"></div></div>
+<div class="column-item"><!--start column-item -->
+    <div class="columnspace"><!--start columnspace -->
+        <div class="mapshortcuts"><!--start bottomshortcuts-->
+            <h4><fmt:message key="about"/></h4>
 
-               <div class="clear"></div></div><!--stop footerContent-->
-                <div class="clear"></div></div><!--stop footer-->
+            <p>
+                <template:absoluteContainerList name="footer" id="footerList" pageLevel="1"
+                                                actionMenuNamePostFix="footers" actionMenuNameLabelKey="footers">
+                    <template:container id="footerContainer" actionMenuNamePostFix="footer"
+                                        actionMenuNameLabelKey="footer.update">
+                        <template:field name="footer"/>
+                    </template:container>
+                </template:absoluteContainerList>
+            </p>
+        </div>
+    </div>
+    <!--stop columnspace -->
+    <div class="clear"></div>
+</div>
+<!--stop column-item -->

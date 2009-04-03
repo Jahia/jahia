@@ -1,5 +1,17 @@
 <social_templates = 'http://www.jahia.org/jahia/social-templates/nt/1.0'>
 
+[social_templates:intro] > jnt:container
+bigText     intro
+
+[social_templates:footer] > jnt:container
+bigText     footer
+
+[social_templates:lastEntries] > jnt:container
+integer     maxEntries
+
+[social_templates:lastComments] > jnt:container
+integer     maxEntries
+
 
 [social_templates:owner] > jnt:container
 smallText   lastname primary
@@ -14,5 +26,9 @@ smallText   title primary
 bigText     content
 
 [social_templates:blog] > jnt:page
-containerList   blogEntries (social_templates:blogEntry [addMixin="jmix:commentable"])
 singleContainer owner (social_templates:owner)
+containerList   blogEntries (social_templates:blogEntry [addMixin="jmix:commentable"])
+singleContainer intro (social_templates:intro)
+singleContainer footer (social_templates:footer)
+singleContainer lastEntries (social_templates:lastEntries)
+singleContainer lastComments (social_templates:lastComments)

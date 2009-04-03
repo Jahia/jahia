@@ -41,8 +41,7 @@
                 <h1><span>${currentPage.title}</span></h1>
             </a>
         </div>
-        <div class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce auctor dapibus nibh. Proin viverra arcu eget lorem.Maecenas ligula ligula, tristique in, venenatis posuere.
-        </div>
+        <template:include page="modules/introContent.jsp"/>
         <blockquote>&nbsp;</blockquote>
     </div>
 </div><!--stop top-->

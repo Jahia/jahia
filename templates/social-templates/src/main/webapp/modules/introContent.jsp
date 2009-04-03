@@ -33,14 +33,11 @@
 
 --%>
 <%@ include file="../common/declarations.jspf" %>
-<div id="footer"><!--start footer-->
-               <div id="footerContent"><!--footerContent-->
-
-               <div class="columns3"><!--start 3columns -->
-                             <template:include page="modules/lastEntries.jsp"/>
-                             <template:include page="modules/lastComments.jsp"/>
-                            <template:include page="modules/footerContent.jsp"/>
-                 <div class="clear"></div></div>
-
-               <div class="clear"></div></div><!--stop footerContent-->
-                <div class="clear"></div></div><!--stop footer-->
+<div class="desc">
+    <template:absoluteContainerList name="intro" id="introList" pageLevel="1"
+                                actionMenuNamePostFix="intros" actionMenuNameLabelKey="intros">
+    <template:container id="footerContainer" actionMenuNamePostFix="footer" actionMenuNameLabelKey="intro.update">
+        <template:field name="intro"/>
+    </template:container>
+</template:absoluteContainerList>
+</div>

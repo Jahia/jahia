@@ -81,6 +81,8 @@
 
                                 <template:include page="modules/nav/navDate.jsp"/>
 
+                                <template:include page="modules/bookmark.jsp"/>
+
 
                             </div>
                             <!--stop space areaB-->

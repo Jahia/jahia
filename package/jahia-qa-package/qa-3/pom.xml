@@ -228,9 +228,11 @@
                         <configuration>
                             <tasks>
                               <scp file="${project.build.directory}/jahia-qa3-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.243:/home/jahia/install"  password="jahia123"/>
-																	<exec executable="./src/main/assembly/runall.sh" dir="./src/main/assembly">
-                                  	<arg value="10.8.37.243"/>
-                                  </exec>
+                              <sshexec host="10.8.37.243" username="jahia" password="jahia123" command="killall -9 java" trust="true" />
+                              <sshexec host="10.8.37.243" username="jahia" password="jahia123" command="tar xfz /home/jahia/install/*.tar.gz --directory /home/jahia/install" trust="true" />
+															<sshexec host="10.8.37.243" username="jahia" password="jahia123" command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true" />                           
+															<sshexec host="10.8.37.243" username="jahia" password="jahia123" command="export JAVA_HOME=/usr/java/latest" trust="true" />                          
+															<sshexec host="10.8.37.243" username="jahia" password="jahia123" command="/home/jahia/install/jahia/bin/startup.sh" trust="true" />                           
                             </tasks>
                         </configuration>
                         <goals>

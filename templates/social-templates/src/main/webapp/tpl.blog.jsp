@@ -52,14 +52,10 @@
                                 <!--start content  #content2=areaB/content #content3=content/InsetA   content4=alone #content5=50%areaB/50%content-->
                                 <div class="spacer"><!--start spacer -->
                                     <!--stop post-->
-                                    <template:containerList name="preferences" id="preferences"
-                                                            actionMenuNamePostFix="preferencess"
-                                                            actionMenuNameLabelKey="preferencess">
-                                        <template:container id="preference" cache="off"
-                                                            actionMenuNamePostFix="preferences"
-                                                            actionMenuNameLabelKey="preferences.update">
+                                    <template:containerList name="blogPrefs"  displayActionMenu="false">
+                                        <template:container id="preference" cache="off" displayActionMenu="false">
                                             <template:field name="maxEntries" var="blogMaxEntries" defaultValue="10" display="false"/>
-                                            <c:set var="blogMaxEntries" value="${blogMaxEntries}"/>
+                                            <c:set var="blogMaxEntries" value="${blogMaxEntries}" scope="page"/>
                                         </template:container>
                                     </template:containerList>
                                     <c:if test="${!empty param.article}">
@@ -68,7 +64,9 @@
                                         </template:include>
                                     </c:if>
                                     <c:if test="${empty param.article}">
-                                        <template:include page="modules/blog/blog.jsp"/>
+                                        <template:include page="modules/blog/blog.jsp">
+                                            <template:param name="numBlogEntries" value="${blogMaxEntries}"/>
+                                        </template:include>
                                     </c:if>
                                     <!--stop post-->
                                 </div>

@@ -12,81 +12,8 @@
     <modules>
         <module>qa-1</module>
         <module>qa-2</module>
+        <module>qa-3</module>
         <module>qa-4</module>
-
+        <module>qa-5</module>
     </modules>
-
-    <profiles>
-        <profile>
-            <id>deploy-and-test</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <configuration>
-                                    <tasks>
-                                        <exec executable="/home/bamboo/bin/runall.sh" dir="/home/bamboo/bin">
-                                             <arg value="${jahia.package.version}"/>
-                                        </exec>
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>maven-jahia-plugin</artifactId>
-                        <version>1.0-SNAPSHOT</version>
-                        <executions>
-                            <execution>
-                                <phase>integration-test</phase>
-                                <configuration>
-                                    <startupWait>true</startupWait>
-                                </configuration>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-report-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>report-only</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>                
-            </build>
-        </profile>
-    </profiles>
-
-    <build>
-    </build>
-
-    <!--<reporting>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-report-plugin</artifactId>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-    <!--</reporting>-->
-
-
 </project>

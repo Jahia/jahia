@@ -6,8 +6,8 @@
         <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jahia-qa2</artifactId>
-    <name>Jahia QA-2 Package</name>
+    <artifactId>jahia-qa5</artifactId>
+    <name>Jahia QA-5 Package</name>
     <packaging>pom</packaging>
     <dependencies>
         <dependency>
@@ -34,13 +34,16 @@
             <version>${jahia.package.version}</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.server</groupId>
+            <artifactId>jahia-test</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
-
-
     <profiles>
         <profile>
-            <id>qa-2</id>
-
+            <id>qa-5</id>
     <build>
         <plugins>
             <!-- first QA server processing -->
@@ -154,12 +157,12 @@
                     </siteImportLocation>
                     <cluster_activated>false</cluster_activated>
                     <processingServer>true</processingServer>
-                    <databaseUrl>jdbc:mysql://10.8.37.246/qa_242?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                    <databaseUrl>jdbc:mysql://10.8.37.246/qa_245?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>
                     <overwritedb>true</overwritedb>
                     <storeFilesInDB>true</storeFilesInDB>
-                    <localIp>10.8.37.242</localIp>
+                    <localIp>10.8.37.245</localIp>
                 </configuration>
                 <executions>
                     <execution>
@@ -195,9 +198,9 @@
                         <phase>install</phase>
                         <configuration>
                             <tasks>
-                              <scp file="${project.build.directory}/jahia-qa2-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.242:/home/jahia/install"  password="jahia123"/>
+                              <scp file="${project.build.directory}/jahia-qa5-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.245:/home/jahia/install"  password="jahia123"/>
 																	<exec executable="./src/main/assembly/runall.sh" dir="./src/main/assembly">
-                                  	<arg value="10.8.37.242"/>
+                                  	<arg value="10.8.37.245"/>
                                   </exec>
                             </tasks>
                         </configuration>
@@ -220,7 +223,7 @@
                         <id>make-assembly</id> 
                         <phase>package</phase> 
                         <goals>
-                            <goal>attached</goal>
+                            <goal>attached</goal> 
                         </goals>
                     </execution>
                 </executions>

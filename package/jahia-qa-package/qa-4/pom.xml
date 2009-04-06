@@ -37,6 +37,10 @@
     </dependencies>
 
 
+    <profiles>
+        <profile>
+            <id>qa-4</id>
+
     <build>
         <plugins>
 
@@ -134,7 +138,7 @@
                     <!-- As it is not the processing node, we are not going to feed it any imports -->
                     </siteImportLocation>
             		    <processingServer>false</processingServer>
-                    <databaseUrl>jdbc:mysql://10.8.37.246/jahia_qa243?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                    <databaseUrl>jdbc:mysql://10.8.37.246/qa_cluster?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
                     <databaseUsername>jahia</databaseUsername>
                     <databasePassword>jahia</databasePassword>
                     <overwritedb>false</overwritedb>
@@ -162,13 +166,12 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                    		<id>packaging</id>
                         <phase>package</phase>
                         <configuration>
                             <tasks>
                                 <copy file="./src/resources/catalina.bat" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat" overwrite="true"/>
                                 <copy file="./src/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
-                                <copy file="./src/resources/ehcache-hibernate.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/webapps/ROOT/WEB-INF/classes/ehcache-hibernate.xml" overwrite="true"/>
-                                <copy file="./src/resources/ehcache-jahia.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/webapps/ROOT/WEB-INF/classes/ehcache-jahia.xml" overwrite="true"/>
                                 <copy file="./src/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
                                 <copy file="./src/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
                             </tasks>
@@ -177,8 +180,22 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-                </executions>
-            </plugin>
+                    <execution>
+												<id>deploying</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                              <scp file="${project.build.directory}/jahia-qa4-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.244:/home/jahia/install"  password="jahia123"/>
+																	<exec executable="./src/main/assembly/runall.sh" dir="./src/main/assembly">
+                                  	<arg value="10.8.37.244"/>
+                                  </exec>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>            </plugin>
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -200,4 +217,6 @@
             </plugin>
         </plugins>
     </build>
+            </profile>
+    </profiles>
 </project>

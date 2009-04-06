@@ -132,6 +132,8 @@
                   page-type="test_templates:samelistviews" description="description.template.samelistviews"/>                             
         <template name="Form" display-name="template.name.form" filename="form/form.jsp"
                   page-type="test_templates:form" description="description.template.form"/>
+        <template name="Subscriptions" display-name="template.name.subscriptions" filename="miscellaneous/subscriptions.jsp"
+                  page-type="test_templates:generic" description="description.template.subscriptions"/>
                           
         <!-- remove inherited -->
         <template name="FAQ" display-name="template.name.faq" filename="faq.jsp" visible="false"

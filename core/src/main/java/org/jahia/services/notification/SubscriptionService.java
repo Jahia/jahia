@@ -219,18 +219,16 @@ public class SubscriptionService extends JahiaService {
     }
 
     /**
-     * Returns the requested user subscription by ID or <code>null</code> if there is
-     * no such subscription available.
+     * Returns the requested user subscription by ID or <code>null</code> if
+     * there is no such subscription available.
      * 
      * @param subscriptionId
      *            the ID of the subscription
-     * @return the requested user subscription by ID or <code>null</code> if there is
-     * no such subscription available
+     * @return the requested user subscription by ID or <code>null</code> if
+     *         there is no such subscription available
      */
     public Subscription getSubscription(int subscriptionId) {
-
-        return subscriptionManager
-                .getSubscription(subscriptionId);
+        return subscriptionManager.getSubscription(subscriptionId);
     }
 
     /**
@@ -257,6 +255,23 @@ public class SubscriptionService extends JahiaService {
                         "suspended", "confirmationKey",
                         "confirmationRequestTimestamp");
         return !subscriptions.isEmpty() ? subscriptions.get(0) : null;
+    }
+
+    /**
+     * Find subscriptions "by example".
+     * 
+     * @param criteria
+     *            the {@link Subscription} object template with the available
+     *            search criteria
+     * @param excludedProperties
+     *            properties to ignore in the criteria
+     * @return list of {@link Subscription} objects matching the criteria
+     */
+    public List<Subscription> getSubscriptionsByCriteria(Subscription criteria,
+            String... excludedProperties) {
+
+        return subscriptionManager.getSubscriptions(criteria,
+                excludedProperties);
     }
 
     /**
@@ -486,10 +501,27 @@ public class SubscriptionService extends JahiaService {
      * @return the updated subscription object
      */
     public Subscription suspendSubscription(int subscriptionId) {
-        Subscription subscription = subscriptionManager.suspend(subscriptionId);
+        Subscription subscription = subscriptionManager.suspend(subscriptionId, true);
         if (null == subscription) {
             logger
                     .warn("Unable to suspend a subscription. The subscription is not found for ID: "
+                            + subscriptionId);
+        }
+        return subscription;
+    }
+
+    /**
+     * Resumes the specified subscription.
+     * 
+     * @param subscriptionId
+     *            the id of the subscription to resume
+     * @return the updated subscription object
+     */
+    public Subscription resumeSubscription(int subscriptionId) {
+        Subscription subscription = subscriptionManager.suspend(subscriptionId, false);
+        if (null == subscription) {
+            logger
+                    .warn("Unable to resume a subscription. The subscription is not found for ID: "
                             + subscriptionId);
         }
         return subscription;

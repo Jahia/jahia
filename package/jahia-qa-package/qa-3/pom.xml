@@ -40,6 +40,16 @@
             <version>${jahia.package.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+								<groupId>ant</groupId>
+								<artifactId>ant-jsch</artifactId>
+								<version>1.6.5</version>
+								</dependency>
+								<dependency>
+								<groupId>jsch</groupId>
+								<artifactId>jsch</artifactId>
+								<version>0.1.25</version>
+								</dependency>
     </dependencies>
 
     <profiles>

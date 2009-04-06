@@ -191,31 +191,27 @@ public class FileManagerWorker {
         String[] filtersToApply = getFiltersToApply(filters);
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         for (JCRNodeWrapper f : list) {
-            try {
-                if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (f.isNodeType(Constants.JAHIANT_FOLDER) || f.isNodeType(Constants.JAHIANT_VFSMOUNTPOINT)))) {
-                    if ((f.isNodeType(Constants.JAHIANT_FOLDER) || f.isNodeType(Constants.JAHIANT_VFSMOUNTPOINT)) && noFolders) {
-                        continue;
-                    }
-                    try {
-                        if (f.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
-                            if (!f.getProperty("j:name").getString().equals(context.getSiteKey())) {
-                                continue;
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        logger.debug("cannot get site name " + f.getPath());
-                    }
-                    if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
-                        GWTJahiaNode theNode = getGWTJahiaNode(f);
-                        if (openPaths != null && openPaths.length() > 0) {
-                            logger.debug("trying to append children");
-                            appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
-                        }
-                        result.add(theNode);
-                    }
+            if (f.isVisible() && (matchesNodeType(f, nodeTypesToApply) || (f.isCollection()))) {
+                if (f.isCollection() && noFolders) {
+                    continue;
                 }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                try {
+                    if (f.isNodeType(Constants.JAHIANT_VIRTUALSITE)) {
+                        if (!f.getProperty("j:name").getString().equals(context.getSiteKey())) {
+                            continue;
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.debug("cannot get site name " + f.getPath());
+                }
+                if (f.isCollection() || (matchesFilters(f.getFileContent().getContentType(), mimeTypesToMatch) && matchesFilters(f.getName(), filtersToApply))) {
+                    GWTJahiaNode theNode = getGWTJahiaNode(f);
+                    if (openPaths != null && openPaths.length() > 0) {
+                        logger.debug("trying to append children");
+                        appendChildren(theNode, splitOpenPathList(openPaths), context, nodeTypes, mimeTypes, filters, noFolders);
+                    }
+                    result.add(theNode);
+                }
             }
         }
         Collections.sort(result);

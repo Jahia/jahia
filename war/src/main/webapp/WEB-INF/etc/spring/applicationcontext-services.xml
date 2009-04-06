@@ -725,6 +725,7 @@ FRAG2(frag_size=60000)</value>
     <bean id="JahiaStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">
         <property name="key" value="jahia"/>
         <property name="rmibind" value="jahia"/>
+        <property name="workspace" value="staging"/>
         <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
         <property name="listeners">
             <list>
@@ -736,6 +737,36 @@ FRAG2(frag_size=60000)</value>
         </property>
         <property name="mountPoint" value="/content/jahia"/>
     </bean>
+
+    <bean id="JahiaLiveStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">
+        <property name="key" value="jahia"/>
+        <property name="rmibind" value="jahia"/>
+        <property name="workspace" value="live"/>
+        <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
+        <property name="listeners">
+            <list>
+                <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                    <property name="ruleFiles" value="/repository/rules/jahialive-rules.drl" />
+                    <property name="serverId" value="${cluster.node.serverId}" />
+                </bean>
+            </list>
+        </property>
+        <property name="mountPoint" value="/content/jahialive"/>
+    </bean>
+
+    <!--
+    <bean id="EntropyProvider" class="org.jahia.services.content.impl.entropy.EntropyStoreProvider" parent="AbstractJCRStoreProvider">
+        <property name="key" value="entropy"/>
+        <property name="repository">
+            <bean class="org.jahia.services.content.impl.entropy.EntropyRepository" init-method="start" destroy-method="stop">
+                <property name="serverName" value="localhost"/>
+                <property name="repositoryName" value="alfresco"/>
+            </bean>
+        </property>
+        <property name="mountPoint" value="/content/entropy"/>
+        <property name="rmibind" value="entropy"/>
+    </bean>
+    -->
 
     <!--
     <bean id="AlfrescoStoreProvider" class="org.jahia.services.content.impl.alfresco.AlfrescoStoreProvider"  parent="JCRStoreProvider" >

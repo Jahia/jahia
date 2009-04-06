@@ -94,7 +94,7 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
                 // containers
                 final Set<Integer> containerListIDs = jahiaContainersService.
                         getAllPageTopLevelContainerListIDs(
-                                contentPage.getID(), processingContext.getEntryLoadRequest());
+                                contentPage.getID(), getEntryLoadRequest());
                 for (final Integer curContainerListID : containerListIDs) {
                     try {
                         ContentContainerList l = ContentContainerList.getContainerList(curContainerListID);
@@ -108,7 +108,9 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
                 for (ContentPage p : ServicesRegistry.getInstance().getJahiaPageService().getContentPageChilds(
                         contentPage.getID(), processingContext.getUser(), LoadFlags.ALL, null, true)) {
                     try {
-                        initNode(session.getJahiaPageNode(p));
+                        if (!p.isDeleted(Integer.MAX_VALUE) && (session.getWorkspace().getWorkflowState() >1  || p.hasActiveEntries())) {
+                            initNode(session.getJahiaPageNode(p));
+                        }
                     } catch (RepositoryException e) {
                         logger.error("Cannot get page",e);
                     }
@@ -156,7 +158,7 @@ public class JahiaPageNodeImpl extends JahiaContentNodeImpl {
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         try {
             ProcessingContext processingContext = getProcessingContext();
-            int i = contentPage.getParentID(processingContext.getEntryLoadRequest());
+            int i = contentPage.getParentID(getEntryLoadRequest());
             if (i>0) {
                 ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(i, true);
                 return session.getJahiaPageNode(page);

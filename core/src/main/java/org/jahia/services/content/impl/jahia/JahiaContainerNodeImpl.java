@@ -79,6 +79,10 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
     }
 
     public String getName() throws RepositoryException {
+        return getName(contentContainer);
+    }
+
+    public static String getName(ContentContainer contentContainer) {
         try {
             String s = contentContainer.getProperty("containerKey");
             if (s != null) {
@@ -95,7 +99,7 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
             super.initFields();
 
             try {
-                List<? extends ContentObject> childs = contentContainer.getChilds(null, getProcessingContext().getEntryLoadRequest(), JahiaContainerStructure.JAHIA_FIELD);
+                List<? extends ContentObject> childs = contentContainer.getChilds(null, getEntryLoadRequest(), JahiaContainerStructure.JAHIA_FIELD);
 
                 for (Iterator<? extends ContentObject> iterator = childs.iterator(); iterator.hasNext();) {
                     ContentField contentField = (ContentField) iterator.next();
@@ -113,7 +117,7 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
         if (nodes == null ) {
             super.initNodes();
             ProcessingContext processingContext = getProcessingContext();
-            final List<Integer> containerListIDs = ServicesRegistry.getInstance().getJahiaContainersService().getSubContainerListIDs(contentContainer.getID(), processingContext.getEntryLoadRequest());
+            final List<Integer> containerListIDs = ServicesRegistry.getInstance().getJahiaContainersService().getSubContainerListIDs(contentContainer.getID(), getEntryLoadRequest());
             try {
                 for (final Integer curContainerListID : containerListIDs) {
                     ContentContainerList l = ContentContainerList.getContainerList(curContainerListID);
@@ -128,7 +132,7 @@ public class JahiaContainerNodeImpl extends JahiaContentNodeImpl {
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         try {       
             ProcessingContext processingContext = getProcessingContext();
-            return session.getJahiaContainerListNode((ContentContainerList) contentContainer.getParent(processingContext.getEntryLoadRequest()));
+            return session.getJahiaContainerListNode((ContentContainerList) contentContainer.getParent(getEntryLoadRequest()));
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);
         }

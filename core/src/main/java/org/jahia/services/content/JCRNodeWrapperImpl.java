@@ -619,7 +619,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         try {
             return objectNode.isNodeType(Constants.NT_FOLDER) || objectNode.getPath().equals("/") ||
-                    objectNode.isNodeType(Constants.JAHIANT_VIRTUALSITE) ||
+                    objectNode.isNodeType(Constants.JAHIANT_VIRTUALSITE) || objectNode.isNodeType(Constants.JAHIANT_MOUNTPOINT) || 
                     objectNode.isNodeType(Constants.JAHIANT_SYSTEM_ROOT) || objectNode.isNodeType(Constants.JAHIANT_JAHIA_VIRTUALSITE) || objectNode.isNodeType(Constants.JAHIANT_JAHIACONTENT);
         } catch (RepositoryException e) {
             return false;

@@ -100,6 +100,7 @@ public class JCRStoreProvider {
     private String repositoryName;
     private String factory;
     private String url;
+    private String workspace;
     protected String user;
     protected String password;
     protected String rmibind;
@@ -135,6 +136,14 @@ public class JCRStoreProvider {
 
     public void setMountPoint(String mountPoint) {
         this.mountPoint = mountPoint;
+    }
+
+    public String getWorkspace() {
+        return workspace;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
     public String getWebdavPath() {
@@ -433,14 +442,14 @@ public class JCRStoreProvider {
         if (s == null || !s.isLive()) {
             if (loginModuleActivated) {
                 if (!JahiaLoginModule.GUEST.equals(username)) {
-                    s = repo.login(org.jahia.jaas.JahiaLoginModule.getCredentials(username));
+                    s = repo.login(org.jahia.jaas.JahiaLoginModule.getCredentials(username), workspace);
                     // should be done somewhere else, call can be quite expensive
                     deployNewUser(username);
                 } else {
-                    s = repo.login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials());
+                    s = repo.login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials(), workspace);
                 }
             } else {
-                s = repo.login(new SimpleCredentials(this.user, password.toCharArray()));
+                s = repo.login(new SimpleCredentials(this.user, password.toCharArray()), workspace);
             }
             registerNamespaces(s.getWorkspace());
             smap.put(username, s);
@@ -463,9 +472,9 @@ public class JCRStoreProvider {
     public Session getSystemSession() throws RepositoryException {
         Session s;
         if (loginModuleActivated) {
-            s = repo.login(JahiaLoginModule.getSystemCredentials());
+            s = repo.login(JahiaLoginModule.getSystemCredentials(),workspace);
         } else {
-            s = repo.login(new SimpleCredentials(user, password.toCharArray()));
+            s = repo.login(new SimpleCredentials(user, password.toCharArray()),workspace);
         }
         registerNamespaces(s.getWorkspace());
         return s;
@@ -474,9 +483,9 @@ public class JCRStoreProvider {
     public Session getSystemSession(String username) throws RepositoryException {
         Session s;
         if (loginModuleActivated) {
-            s = repo.login(JahiaLoginModule.getSystemCredentials(username));
+            s = repo.login(JahiaLoginModule.getSystemCredentials(username),workspace);
         } else {
-            s = repo.login(new SimpleCredentials(user, password.toCharArray()));
+            s = repo.login(new SimpleCredentials(user, password.toCharArray()),workspace);
         }
         registerNamespaces(s.getWorkspace());
         return s;

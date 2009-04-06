@@ -539,17 +539,32 @@ public abstract class ContentField extends ContentObject
 
         boolean versioningEnabled = getJahiaVersionService ().isVersioningEnabled (jahiaID);
         List<ContentObjectEntryState> stagedEntries = new ArrayList<ContentObjectEntryState> ();
-
+                          
         boolean stateModified = false;
-        if (willBeCompletelyDeleted (null, languageCodes)) {
+        if (isMarkedForDelete()) {
             stateModified = true;
             stateModifContext.pushAllLanguages (true);
         }
 
         Set<String> activateLanguageCodes = new HashSet<String> (languageCodes);
         if (stateModifContext.isAllLanguages ()) {
-            activateLanguageCodes.addAll (getStagingLanguages (true));
+            activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguageSettingsAsLocales(true)));
         }
+
+        if (isShared())  {
+            if (getStagingLanguages(false,true).isEmpty()) {
+                return activationResults;
+            } else {
+                activateLanguageCodes = new HashSet<String>(LanguageCodeConverters.localesToLanguageCodes(jParams.getSite().getLanguageSettingsAsLocales(true)));
+            }
+        } else {
+            activateLanguageCodes.retainAll(getStagingLanguages(false,true));
+            if (activateLanguageCodes.isEmpty()) {
+                return activationResults;
+            }
+        }
+
+
 
         activationResults.merge (
                 isValidForActivation (activateLanguageCodes, jParams, stateModifContext));
@@ -727,7 +742,7 @@ public abstract class ContentField extends ContentObject
                 versioningEnabled, newVersionID);
 
         if (!isMetadata()) {
-            fireContentActivationEvent(languageCodes,
+            fireContentActivationEvent(activateLanguageCodes,
                     versioningEnabled,
                     saveVersion,
                     jParams,

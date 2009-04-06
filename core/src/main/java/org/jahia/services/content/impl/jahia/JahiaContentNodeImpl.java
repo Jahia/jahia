@@ -109,7 +109,7 @@ public abstract class JahiaContentNodeImpl extends NodeImpl {
                     }
                     state = states.get(loc);
                     if (object instanceof ContentContainer) {
-                        List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getProcessingContext().getEntryLoadRequest());
+                        List<? extends ContentObject> l = object.getChilds(getProcessingContext().getUser(), getEntryLoadRequest());
                         for (Iterator<? extends ContentObject> contentObjectIterator = l.iterator(); contentObjectIterator.hasNext();) {
                             ContentObject child = contentObjectIterator.next();
                             if (child instanceof ContentField) {

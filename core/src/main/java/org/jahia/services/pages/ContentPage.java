@@ -2785,7 +2785,7 @@ public class ContentPage extends ContentObject implements
             throws JahiaException {
 
         boolean stateModified = false;
-        if (willBeCompletelyDeleted(null, languageCodes)) {
+        if (isMarkedForDelete()) {
             stateModified = true;
             stateModifContext.pushAllLanguages(true);
             this.removeProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
@@ -2797,6 +2797,11 @@ public class ContentPage extends ContentObject implements
         }
 
         ActivationTestResults activationResults = new ActivationTestResults();
+
+        activateLanguageCodes.retainAll(getStagingPageInfos().keySet());
+        if (activateLanguageCodes.isEmpty()) {
+            return activationResults;
+        }
 
         activationResults.merge(
                 isValidForActivation(activateLanguageCodes,
@@ -2833,37 +2838,6 @@ public class ContentPage extends ContentObject implements
                 logger.debug("Activating link page object (id=" +
                         curPageInfo.getID() + ") to page ID : " +
                         curPageInfo.getPageLinkID());
-            } else if (pageType == JahiaPage.TYPE_DIRECT) {
-//                if (!stateModifContext.isDescendingInSubPages () &&
-//                        !stateModifContext.getStartObject ().equals (pageKey)) {
-//                    // found a recursive call, let's abort now !
-//                    logger.debug ("Activation stopped here " + pageKey.toString () +
-//                            " because recursive activation is not activated ! ");
-//                    activationResults.setStatus (ActivationTestResults.FAILED_OPERATION_STATUS);
-//                    activationResults.appendError (
-//                            "Activation stopped here " + pageKey.toString () +
-//                            " because recursive activation is not activated ! ");
-//                    if (stateModified) {
-//                        stateModifContext.popAllLanguages ();
-//                    }
-//                    return activationResults;
-//                }
-//                stateModifContext.pushObjectID (new ContentPageKey (getID ()));
-//                stacked = true;
-//                logger.debug ("Current stateModifContext :" + stateModifContext.toString ());
-//                int siteID = getJahiaID ();
-//                ServicesRegistry sr = ServicesRegistry.getInstance ();
-//                activationResults.merge (
-//                        sr.getJahiaFieldService ().activateStagedFields (languageCodes,
-//                                getID (), user, saveVersion, jParams, stateModifContext));
-//                activationResults.merge (
-//                        sr.getJahiaContainersService ().activateStagedContainers (
-//                                languageCodes, getID (), user, saveVersion, jParams,
-//                                stateModifContext));
-//                activationResults.merge (
-//                        sr.getJahiaContainersService ().activateStagedContainerLists (
-//                                languageCodes, getID (), user, saveVersion, stateModifContext));
-
             }
         }
 
@@ -2908,7 +2882,7 @@ public class ContentPage extends ContentObject implements
         // todo : create a singleton for all pageInfo !!
         this.commitChanges(true, false, user);
 
-        fireContentActivationEvent(languageCodes,
+        fireContentActivationEvent(activateLanguageCodes,
                 versioningActive,
                 saveVersion,
                 jParams,

@@ -66,7 +66,11 @@ public class JahiaSiteNodeImpl extends NodeImpl {
 
             ContentPage jahiaPage = jahiaSite.getHomeContentPage();
 
-            initNode(session.getJahiaPageNode(jahiaPage));
+            try {
+                initNode(session.getJahiaPageNode(jahiaPage));
+            } catch (ItemNotFoundException e) {
+                // no home page
+            }
         }
     }
 

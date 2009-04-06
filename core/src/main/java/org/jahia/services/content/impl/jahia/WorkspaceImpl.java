@@ -35,6 +35,7 @@ package org.jahia.services.content.impl.jahia;
 
 import org.xml.sax.ContentHandler;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.version.EntryLoadRequest;
 
 import javax.jcr.*;
 import javax.jcr.observation.ObservationManager;
@@ -62,9 +63,21 @@ public class WorkspaceImpl implements Workspace {
     private String name;
     private NamespaceRegistry reg = new NamespaceRegistryImpl();
 
-    public WorkspaceImpl(SessionImpl session, String name) {
+    private int workflowState;
+
+    public WorkspaceImpl(SessionImpl session, String name) throws NoSuchWorkspaceException {
         this.session = session;
+        if (name == null) {
+            name = "staging";
+        }
         this.name = name;
+        if ("staging".equals(name)) {
+            workflowState = 2;
+        } else if ("live".equals(name)) {
+            workflowState = 1;
+        } else {
+            throw new NoSuchWorkspaceException(name);
+        }
     }
 
     public SessionImpl getSession() {
@@ -116,7 +129,7 @@ public class WorkspaceImpl implements Workspace {
     }
 
     public String[] getAccessibleWorkspaceNames() throws RepositoryException {
-        return new String[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new String[] { "staging" , "live" };
     }
 
     public ContentHandler getImportContentHandler(String s, int i) throws PathNotFoundException, ConstraintViolationException, VersionException, LockException, RepositoryException {
@@ -132,5 +145,9 @@ public class WorkspaceImpl implements Workspace {
             ObservationManagerImpl.removeObservationManager(obs);
             obs = null;
         }
+    }
+
+    public int getWorkflowState() {
+        return workflowState;
     }
 }

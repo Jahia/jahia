@@ -66,6 +66,15 @@ public class EventImpl implements Event {
         return userID;
     }
 
+    @Override
+    public String toString() {
+        return "EventImpl{" +
+                "type=" + type +
+                ", path='" + path + '\'' +
+                ", userID='" + userID + '\'' +
+                '}';
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

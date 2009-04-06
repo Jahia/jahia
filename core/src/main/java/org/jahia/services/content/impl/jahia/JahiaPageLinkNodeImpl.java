@@ -63,7 +63,7 @@ public class JahiaPageLinkNodeImpl extends NodeImpl {
 
         setDefinition(def);
 
-        switch (page.getPageType(getProcessingContext().getEntryLoadRequest())) {
+        switch (page.getPageType(getEntryLoadRequest())) {
             case JahiaPage.TYPE_DIRECT:
                 setNodetype(NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_DIRECT_PAGE_LINK));
                 break;
@@ -86,7 +86,7 @@ public class JahiaPageLinkNodeImpl extends NodeImpl {
             super.initProperties();
 
             try {
-                switch (page.getPageType(getProcessingContext().getEntryLoadRequest())) {
+                switch (page.getPageType(getEntryLoadRequest())) {
                     case JahiaPage.TYPE_DIRECT:
                         initProperty(new PropertyImpl(getSession(),this,
                                 nodetype.getPropertyDefinition("j:link"),

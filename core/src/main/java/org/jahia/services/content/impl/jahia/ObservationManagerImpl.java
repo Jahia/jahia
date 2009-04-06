@@ -36,7 +36,6 @@ package org.jahia.services.content.impl.jahia;
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.log4j.Logger;
 import org.jahia.services.workflow.WorkflowEvent;
-import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.pages.ContentPage;
@@ -45,12 +44,12 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.fields.ContentApplicationField;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.content.*;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
-import org.jahia.registries.ServicesRegistry;
 
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.observation.EventListener;
@@ -111,6 +110,10 @@ public class ObservationManagerImpl implements ObservationManager {
         List<Event> jcrEvents = new ArrayList<Event>();
 
         Set objectKeys = new HashSet();
+
+        if (workspace.getWorkflowState() == 1) {
+            return;
+        }
 
         for (Iterator eventIterator = events.iterator(); eventIterator.hasNext();) {
             WorkflowEvent event = (WorkflowEvent) eventIterator.next();
@@ -219,11 +222,119 @@ public class ObservationManagerImpl implements ObservationManager {
     public static void fireActivationEvents(List events) {
         for (ObservationManagerImpl observationManager : (Iterable<ObservationManagerImpl>) observationManagers) {
             observationManager.fireActivation(events);
+            observationManager.fireWorkflowStatus(events);
         }
     }
 
     private void fireActivation(List events) {
         Set<Event> jcrEvents = new ListOrderedSet();
+
+        if (workspace.getWorkflowState() == 2) {
+            return;
+        }
+
+        for (Iterator iterator = events.iterator(); iterator.hasNext();) {
+            ContentActivationEvent event = (ContentActivationEvent) iterator.next();
+            ObjectKey key = (ObjectKey) event.getObject();
+            try {
+                String path = null;
+                int type = 0;
+                if (key instanceof ContentContainerKey)  {
+                    ContentContainer object = (ContentContainer) ContentContainer.getContentObjectInstance(key);
+                    if (object.getLanguagesStates().isEmpty()) {
+                        try {
+                            ContentObject list = object.getParent(null);
+                            if (!list.getLanguagesStates().isEmpty()) {
+                                type = Event.NODE_REMOVED;
+                                path = workspace.getSession().getJahiaContainerListNode((ContentContainerList) list).getPath() + "/" + JahiaContainerNodeImpl.getName(object);
+                            }
+                        } catch (JahiaException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (isNewlyPublished(object)) {
+                        type = Event.NODE_ADDED;
+                        path = workspace.getSession().getJahiaContainerNode(object).getPath();
+                    } else {
+                        // container update ---> what event to send .. ?
+                        path = null;
+                    }
+                } else if (key instanceof ContentPageKey) {
+                    ContentPage object = (ContentPage) ContentPage.getContentObjectInstance(key);
+                    if (object.getPageType(null) == JahiaPage.TYPE_DIRECT) {
+                        try {
+                            if (object.isDeletedOrDoesNotExist(Integer.MAX_VALUE)) {
+                                int parentId = ((ContentPage) object).getParentID(workspace.getSession().getEntryLoadRequest(object.getSite()));
+                                ContentPage parentPage = ContentPage.getPage(parentId);
+                                if (!parentPage.isDeletedOrDoesNotExist(Integer.MAX_VALUE)) {
+                                    // can't get path of page .. ?
+//                                    path = workspace.getSession().getJahiaPageNode(parentPage).getPath()+ "/";
+                                    type = Event.NODE_REMOVED;
+                                }
+                            } else if (isNewlyPublished(object)) {
+                                path = workspace.getSession().getJahiaPageNode(object).getPath();
+                                type = Event.NODE_ADDED;
+                            } else {
+                                path = workspace.getSession().getJahiaPageNode(object).getPath();
+                                type = Event.PROPERTY_CHANGED;
+                                path += "/j:pageTitle";
+                            }
+                        } catch (JahiaException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (key instanceof ContentFieldKey) {
+                    ContentContainer container = (ContentContainer) ContentContainer.getContentObjectInstance(((ContentFieldKey)key).getParent(EntryLoadRequest.STAGED));
+                    if (!container.getLanguagesStates().isEmpty() && !isNewlyPublished(container)) {
+                        path = workspace.getSession().getJahiaContainerNode(container).getPath();
+                        ContentField field = (ContentField) ContentField.getInstance(key);
+                        JahiaFieldDefinition def = (JahiaFieldDefinition) ContentDefinition.getContentDefinitionInstance(field.getDefinitionKey(null));
+                        path += "/" + def.getCtnType().split(" ")[1];
+                        type = Event.PROPERTY_CHANGED;
+                    }
+                }
+                if (path != null && type > 0) {
+                    Event e = new EventImpl(type, path, event.getUser().getUsername());
+                    jcrEvents.add(e);
+                }
+
+            } catch (ClassNotFoundException e) {
+                logger.warn(e.getMessage(), e);
+            } catch (RepositoryException e) {
+                logger.warn(e.getMessage(), e);
+            }
+        }
+
+        callListeners(new LinkedList(jcrEvents));
+    }
+
+    private boolean isNewlyPublished(ContentObject object) {
+        try {
+            Set<ContentObjectEntryState> entryStates = object.getEntryStates();
+            for (ContentObjectEntryState curEntryState : entryStates) {
+                if ( curEntryState.getWorkflowState()<ContentObjectEntryState.WORKFLOW_STATE_ACTIVE) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (JahiaException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    public static void fireWorkflowStatusEvents(List events) {
+        for (ObservationManagerImpl observationManager : (Iterable<ObservationManagerImpl>) observationManagers) {
+            observationManager.fireWorkflowStatus(events);
+        }
+    }
+
+    private void fireWorkflowStatus(List events) {
+        Set<Event> jcrEvents = new ListOrderedSet();
+
+        if (workspace.getWorkflowState() == 1) {
+            return;
+        }
 
         for (Iterator iterator = events.iterator(); iterator.hasNext();) {
             ContentActivationEvent event = (ContentActivationEvent) iterator.next();
@@ -234,11 +345,13 @@ public class ObservationManagerImpl implements ObservationManager {
                 if (key instanceof ContentContainerKey)  {
                     ContentContainer object = (ContentContainer) ContentContainer.getContentObjectInstance(key);
                     deleted = object.getLanguagesStates().isEmpty();
+
                     path = workspace.getSession().getJahiaContainerNode(object).getPath();
 
                 } else if (key instanceof ContentPageKey) {
                     ContentPage object = (ContentPage) ContentPage.getContentObjectInstance(key);
                     deleted = object.getLanguagesStates().isEmpty();
+
                     if (object.getPageType(null) == JahiaPage.TYPE_DIRECT) {
                         path = workspace.getSession().getJahiaPageNode(object).getPath();
                     }

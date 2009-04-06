@@ -200,7 +200,7 @@
                                             <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="killall -9 java" trust="true" failonerror="false"/>
                                             <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="rm /home/jahia/install/jahia-qa4-6.0-SNAPSHOT-jahia.tar.gz " trust="true" failonerror="false"/>
                                             <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="rm -rf /home/jahia/install/jahia" trust="true" failonerror="false"/>
-                                            <scp file="${project.build.directory}/jahia-qa1-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.244:/home/jahia/install"  password="jahia123"/>
+                                            <scp file="${project.build.directory}/jahia-qa4-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.244:/home/jahia/install"  password="jahia123"/>
                                             <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="tar xfz /home/jahia/install/jahia-qa4-6.0-SNAPSHOT-jahia.tar.gz --directory /home/jahia/install" trust="true" failonerror="false"/>
                                             <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true" failonerror="false"/>
                                             <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="export JAVA_HOME=/usr/java/latest" trust="true" failonerror="false"/>

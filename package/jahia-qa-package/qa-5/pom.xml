@@ -224,7 +224,8 @@
                                     <goal>run</goal>
                                 </goals>
                             </execution>
-                        </executions>            </plugin>
+                        </executions>
+                    </plugin>
 
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>

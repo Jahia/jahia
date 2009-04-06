@@ -34,16 +34,6 @@
             <version>${jahia.package.version}</version>
             <type>pom</type>
         </dependency>
-        <dependency>
-								<groupId>ant</groupId>
-								<artifactId>ant-jsch</artifactId>
-								<version>1.6.5</version>
-								</dependency>
-								<dependency>
-								<groupId>jsch</groupId>
-								<artifactId>jsch</artifactId>
-								<version>0.1.25</version>
-								</dependency>
     </dependencies>
 
 
@@ -51,208 +41,210 @@
         <profile>
             <id>qa-2</id>
 
-    <build>
-        <plugins>
-            <!-- first QA server processing -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>lambdaprobe</groupId>
-                                    <artifactId>lambdaprobe</artifactId>
-                                    <version>jahia-version</version>
-                                    <type>war</type>
-                                    <overWrite>true</overWrite>
+            <build>
+                <plugins>
+                    <!-- first QA server processing -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>lambdaprobe</groupId>
+                                            <artifactId>lambdaprobe</artifactId>
+                                            <version>jahia-version</version>
+                                            <type>war</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
+                                            <destFileName>probe.war</destFileName>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>testsuite-jahia</groupId>
+                                            <artifactId>testsuite-jahia</artifactId>
+                                            <version>1.0</version>
+                                            <type>war</type>
+                                            <overWrite>true</overWrite>
+                                            <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
+                                            <destFileName>testsuite-jahia.war</destFileName>
+                                        </artifactItem>
+
+                                    </artifactItems>
                                     <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
-                                    <destFileName>probe.war</destFileName>
-                                </artifactItem>
-								<artifactItem>
-                                    <groupId>testsuite-jahia</groupId>
-                                    <artifactId>testsuite-jahia</artifactId>
-                                    <version>1.0</version>
-                                    <type>war</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
-                                    <destFileName>testsuite-jahia.war</destFileName>
-                                </artifactItem>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-testjar</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.jahia.server</groupId>
+                                            <artifactId>jahia-test</artifactId>
+                                            <version>${jahia.package.version}</version>
+                                            <type>jar</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
+                                    <overWriteReleases>true</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.tomcat</groupId>
+                                            <artifactId>apache-tomcat</artifactId>
+                                            <version>6.0.18-jahia</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}</outputDirectory>
+                                            <excludes>**/webapps/examples/**,**/webapps/docs/**,**/webapps/ROOT/**</excludes>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps</outputDirectory>
-                            <overWriteReleases>true</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-testjar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jahia.server</groupId>
-                                    <artifactId>jahia-test</artifactId>
-                                    <version>${jahia.package.version}</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/apache-tomcat-6.0.18/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib</outputDirectory>
-                            <overWriteReleases>true</overWriteReleases>
-                            <overWriteSnapshots>true</overWriteSnapshots>
+                            <targetServerType>tomcat</targetServerType>
+                            <targetServerVersion>6</targetServerVersion>
+                            <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>unpack</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.jahia.server</groupId>
+                        <artifactId>maven-jahia-plugin</artifactId>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.tomcat</groupId>
-                                    <artifactId>apache-tomcat</artifactId>
-                                    <version>6.0.18-jahia</version>
-                                    <type>zip</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <excludes>**/webapps/examples/**,**/webapps/docs/**,**/webapps/ROOT/**</excludes>
-                                </artifactItem>
-                            </artifactItems>
+                            <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
+                            <siteImportLocation>
+                                <param>/home/bamboo/bin/siteImport_testSite.zip</param>
+                            </siteImportLocation>
+                            <cluster_activated>false</cluster_activated>
+                            <processingServer>true</processingServer>
+                            <databaseUrl>jdbc:mysql://10.8.37.246/qa_242?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
+                            <databaseUsername>jahia</databaseUsername>
+                            <databasePassword>jahia</databasePassword>
+                            <overwritedb>true</overwritedb>
+                            <storeFilesInDB>true</storeFilesInDB>
+                            <localIp>10.8.37.242</localIp>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>configure</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-            <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <configuration>
-                    <targetServerType>tomcat</targetServerType>
-                    <targetServerVersion>6</targetServerVersion>
-                    <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>1.7.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.jcraft</groupId>
+                                <artifactId>jsch</artifactId>
+                                <version>0.1.38</version>
+                            </dependency>
+                        </dependencies>
 
-            <plugin>
-                <groupId>org.jahia.server</groupId>
-                <artifactId>maven-jahia-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <configuration>
-                    <targetServerDirectory>${project.build.directory}/apache-tomcat-6.0.18</targetServerDirectory>
-                    <siteImportLocation>
-	                    <param>/home/bamboo/bin/siteImport_testSite.zip</param>
-                    </siteImportLocation>
-                    <cluster_activated>false</cluster_activated>
-                    <processingServer>true</processingServer>
-                    <databaseUrl>jdbc:mysql://10.8.37.246/qa_242?useUnicode=true&amp;characterEncoding=UTF-8&amp;useServerPrepStmts=false</databaseUrl>
-                    <databaseUsername>jahia</databaseUsername>
-                    <databasePassword>jahia</databasePassword>
-                    <overwritedb>true</overwritedb>
-                    <storeFilesInDB>true</storeFilesInDB>
-                    <localIp>10.8.37.242</localIp>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>configure</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                        <executions>
+                            <execution>
+                                <id>packaging</id>
+                                <phase>package</phase>
+                                <configuration>
+                                    <tasks>
+                                        <copy file="./src/resources/catalina.bat" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat" overwrite="true"/>
+                                        <copy file="./src/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
+                                        <copy file="./src/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
+                                        <copy file="./src/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>deploying</id>
+                                <phase>install</phase>
+                                <configuration>
+                                    <tasks>
+                                        <tasks>
+                                            <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="killall -9 java" trust="true" failonerror="false"/>
+                                            <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="rm /home/jahia/install/jahia-qa2-6.0-SNAPSHOT-jahia.tar.gz " trust="true" failonerror="false"/>
+                                            <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="rm -rf /home/jahia/install/jahia" trust="true" failonerror="false"/>
+                                            <scp file="${project.build.directory}/jahia-qa1-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.242:/home/jahia/install"  password="jahia123"/>
+                                            <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="tar xfz /home/jahia/install/jahia-qa2-6.0-SNAPSHOT-jahia.tar.gz --directory /home/jahia/install" trust="true" failonerror="false"/>
+                                            <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true" failonerror="false"/>
+                                            <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="export JAVA_HOME=/usr/java/latest" trust="true" failonerror="false"/>
+                                            <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="./install/jahia/bin/startup.sh" trust="true" failonerror="false"/>
+                                        </tasks>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>            </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-								<dependencies>
-								<dependency>
-								<groupId>ant</groupId>
-								<artifactId>ant-jsch</artifactId>
-								<version>1.6.5</version>
-								</dependency>
-								<dependency>
-								<groupId>jsch</groupId>
-								<artifactId>jsch</artifactId>
-								<version>0.1.25</version>
-								</dependency>
-								</dependencies>
-
-                <executions>
-                    <execution>
-                    		<id>packaging</id>
-                        <phase>package</phase>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
                         <configuration>
-                            <tasks>
-                                <copy file="./src/resources/catalina.bat" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat" overwrite="true"/>
-                                <copy file="./src/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
-                                <copy file="./src/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
-                                <copy file="./src/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
-                            </tasks>
+                            <descriptors>
+                                <descriptor>src/main/assembly/src.xml</descriptor>
+                            </descriptors>
                         </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-												<id>deploying</id>
-                        <phase>install</phase>
-                        <configuration>
-                            <tasks>
-                              <scp file="${project.build.directory}/jahia-qa2-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.242:/home/jahia/install"  password="jahia123"/>
-                              <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="killall -9 java" trust="true" />
-                              <sshexec host="10.8.37.242" username="jahia" password="jahia123" command="tar xfz /home/jahia/install/*.tar.gz --directory /home/jahia/install" trust="true" />
-															<sshexec host="10.8.37.242" username="jahia" password="jahia123" command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true" />                           
-															<sshexec host="10.8.37.242" username="jahia" password="jahia123" command="export JAVA_HOME=/usr/java/latest" trust="true" />                          
-															<sshexec host="10.8.37.242" username="jahia" password="jahia123" command="/home/jahia/install/jahia/bin/startup.sh" trust="true" />                           
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>            </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/src.xml</descriptor>
-                    </descriptors>
-                </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>attached</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
 
-                <executions>
-                    <execution>
-                        <id>make-assembly</id> 
-                        <phase>package</phase> 
-                        <goals>
-                            <goal>attached</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-    </build>
-            </profile>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

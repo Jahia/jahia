@@ -31,35 +31,35 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.ajax.gwt.client.core;
+package org.jahia.ajax.gwt.client.module;
+
+import java.util.List;
+
+import org.jahia.ajax.gwt.client.core.JahiaModule;
+import org.jahia.ajax.gwt.client.core.JahiaType;
+import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
+import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelectButton;
+
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * GWT module types. 
- *
- * @author rfelden
- * @version 22 janv. 2008 - 15:22:14
+ * GWT module for user/group picker.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class JahiaType {
+public class UserGroupJahiaModule extends JahiaModule {
 
-    public final static String ACTION_MENU = "actionmenu";
-    public final static String CALENDAR = "calendar";
-    public final static String DATE_FIELD = "dateField";
-    public final static String FORM = "form";
-    public final static String INLINE_EDITING = "inlineediting";
-    public final static String JAHIA_TYPE = "jahiatype";
-    public final static String JOBREPORT = "jobreport";
-    public final static String LAYOUT_MANAGER = "layoutmanager";
-    public final static String LAYOUT_MANAGER_BOX = "layoutmanagerbox";
-    public final static String MEDIA_GALLERY = "mediaGallery";
-    public final static String MY_SETTINGS = "mySettings";
-    public final static String OPENSEARCH = "opensearch";
-    public final static String PDISPLAY = "pdisplay";
-    public final static String PORTLET_RENDER = "portletrender";
-    public final static String QUERY = "query";
-    public final static String RSS = "rss";
-    public final static String SITEMAP = "sitemap";
-    public final static String SUBSCRIPTION = "subscription";
-    public final static String TOOLBARS_MANAGER = "toolsbars";
-    public final static String USER_GROUP = "usergroup";
-    public final static String VERSION_COMPARISON = "versioncomparison";
+    @Override
+    public String getJahiaModuleType() {
+        return JahiaType.USER_GROUP;
+    }
+
+    @Override
+    public void onModuleLoad(GWTJahiaPageContext page,
+            List<RootPanel> rootPanels) {
+        for (RootPanel rootPanel : rootPanels) {
+            rootPanel.add(new UserGroupSelectButton(rootPanel.getElement()));
+        }
+    }
+
 }

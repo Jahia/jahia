@@ -530,7 +530,22 @@
 .subscription-unknown {
     display: none;
 }
- /* syntac highlighter */
+
+/* user-group selector */
+.usergroup-button {
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+}
+.usergroup-mode-users {
+    background: url(../images/user/user1.png) center left no-repeat;
+}
+
+.usergroup-mode-groups, .usergroup-mode-both {
+    background: url(../images/user/users2.png) center left no-repeat;
+}
+
+/* syntac highlighter */
 .dp-highlighter
 {
 	font-family: Courier, "Courier New" , mono;

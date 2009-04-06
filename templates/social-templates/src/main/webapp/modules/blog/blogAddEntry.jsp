@@ -1,4 +1,3 @@
-
 <%--
 
 
@@ -22,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have received a copy of the text
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
 
@@ -33,35 +32,32 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
-<%@ page language="java" contentType="text/html;charset=UTF-8" %>
-
-<%@ include file="../common/declarations.jspf" %>
-
-<div class="column-item"><!--start column-item -->
-    <div class="columnspace"><!--start columnspace -->
-        <div class="mapshortcuts"><!--start bottomshortcuts-->
-            <template:containerList name="blogPrefs" id="preferences"
-                                    actionMenuNamePostFix="preferencess" actionMenuNameLabelKey="preferencess">
-                <template:container id="preference" cache="off" actionMenuNamePostFix="preferences"
-                                    actionMenuNameLabelKey="preferences.update">
-                    <template:field name="maxEntries" var="maxEntries" defaultValue="10" display="false"/>
-                        <div class="preferences">
-                            <h5><fmt:message key="social_templates.preferences"/></h5>
-
-                            <p class="preference-item"><span class="preference-label"><fmt:message
-                                    key="social_templates.rowsDisplay"/>: </span><span
-                                    class="preference-value">${maxEntries.integer}</span></p>
-                        </div>
-                </template:container>
-            </template:containerList>
-            <div class="preferences">
-                <h5><a href="?addArticle=true"><fmt:message key="article.add"/></a></h5>
+<%@ include file="../../common/declarations.jspf" %>
+<template:containerList name="blogEntries" id="blogEntriesPagination" displayActionMenu="false">
+<template:containerForm ignoreAcl="true" var="inputs" action="${currentPage.url}">
+    <div id="comment-form">
+            <div id="commentsForm">
+             <fieldset>
+                 <p class="field">
+                     <label for="c_name"><fmt:message key="article.date"/> :</label>
+                     <input type="text" size="30" id="c_date" name="${inputs['date'].name}"
+                            value="${inputs['date'].defaultValue}" tabindex="20"/>
+                 </p>
+                    <p class="field">
+                        <label for="c_name"><fmt:message key="article.title"/> :</label>
+                        <input type="text" size="30" id="c_name" name="${inputs['title'].name}"
+                               value="${inputs['title'].defaultValue}" tabindex="20"/>
+                    </p>
+                 <p class="field">
+                     <label for="c_name"><fmt:message key="article.content"/> :</label>
+                     <input type="text" size="30" id="c_content" name="${inputs['content'].name}"
+                            value="${inputs['content'].defaultValue}" tabindex="20"/>
+                 </p>
+                 <p class="c_button">
+                     <input type="submit" value="envoyer" class="button" tabindex="11"/>
+                 </p>
+             </fieldset>
             </div>
-        </div>
     </div>
-    <!--stop columnspace -->
-    <div class="clear"></div>
-</div>
-<!--stop column-item -->
-
+</template:containerForm>
+</template:containerList>

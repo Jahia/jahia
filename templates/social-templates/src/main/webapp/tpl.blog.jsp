@@ -63,7 +63,12 @@
                                             <template:param name="article" value="${param.article}"/>
                                         </template:include>
                                     </c:if>
-                                    <c:if test="${empty param.article}">
+                                    <c:if test="${!empty param.addArticle}">
+                                        <template:include page="modules/blog/blogAddEntry.jsp">
+                                            <template:param name="article" value="${param.article}"/>
+                                        </template:include>
+                                    </c:if>
+                                    <c:if test="${empty param.article && empty param.addArticle}">
                                         <template:include page="modules/blog/blog.jsp">
                                             <template:param name="numBlogEntries" value="${blogMaxEntries}"/>
                                         </template:include>

@@ -33,6 +33,32 @@
 
 --%>
 <%@ include file="../../common/declarations.jspf" %>
+<c:set var="fckUrl" value="${pageContext.request.contextPath}/htmleditors/fckeditor"/>
+<script type="text/javascript" src="${fckUrl}/fckeditor.js"></script>
+<script type="text/javascript">
+    var oFCKeditor = null;
+
+    window.onload = function() {
+        oFCKeditor = new FCKeditor('mainContentBody', '100%', '150');
+        oFCKeditor.BasePath = "${fckUrl}/";
+        oFCKeditor.Config.basePath = "${fckUrl}/";
+
+        oFCKeditor.Config.EditorAreaCSS = "${fckUrl}/editor/css/fck_editorarea.css";
+        oFCKeditor.Config.StylesXmlPath = "${fckUrl}/fckstyles.xml";
+
+        oFCKeditor.Config.ImageBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'><c:param name='filters' value='*.bmp,*.gif,*.jpe,*.jpeg,*.jpg,*.png,*.tif,*.tiff'/></c:url>";
+        oFCKeditor.Config.FileBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url'/>";
+        oFCKeditor.Config.FlashBrowserURL = "<c:url value='/engines/webdav/filePicker.jsp?callback=SetUrl&callbackType=url&filters=*.swf'/>";
+        oFCKeditor.Config.LinkBrowserURL = "${currentPage.url}";
+
+        oFCKeditor.Config["AutoDetectLanguage"] = false;
+        oFCKeditor.Config["DefaultLanguage"] = "${currentRequest.paramBean.locale}";
+        oFCKeditor.Config["CustomConfigurationsPath"] = "${fckUrl}/fckconfig_jahia.js"
+        oFCKeditor.ToolbarSet = "Basic";
+        oFCKeditor.ReplaceTextarea();
+    }
+</script>
+
 <template:containerList name="blogEntries" id="blogEntriesPagination" displayActionMenu="false">
 <template:containerForm ignoreAcl="true" var="inputs" action="${currentPage.url}">
     <div id="comment-form">
@@ -46,15 +72,14 @@
                     <p class="field">
                         <label for="c_name"><fmt:message key="article.title"/> :</label>
                         <input type="text" size="30" id="c_name" name="${inputs['title'].name}"
-                               value="${inputs['title'].defaultValue}" tabindex="20"/>
+                               value="${inputs['title'].defaultValue}" tabindex="21"/>
                     </p>
                  <p class="field">
                      <label for="c_name"><fmt:message key="article.content"/> :</label>
-                     <input type="text" size="30" id="c_content" name="${inputs['content'].name}"
-                            value="${inputs['content'].defaultValue}" tabindex="20"/>
+                      <textarea name="${inputs['content'].name}" id="mainContentBody" tabindex="22">${inputs['content'].defaultValue}</textarea>
                  </p>
                  <p class="c_button">
-                     <input type="submit" value="envoyer" class="button" tabindex="11"/>
+                     <input type="submit" value="envoyer" class="button" tabindex="23"/>
                  </p>
              </fieldset>
             </div>

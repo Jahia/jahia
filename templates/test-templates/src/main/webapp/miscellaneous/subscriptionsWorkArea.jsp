@@ -42,6 +42,9 @@
 <%@page import="org.jahia.services.notification.templates.TemplateUtils"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
+<%@page import="org.jahia.services.notification.NotificationService"%>
+<%@page import="org.jahia.services.notification.NotificationEvent"%>
+<%@page import="org.jahia.services.mail.MailHelper"%>
 
 <div class="expectedResultTitle">
   <fmt:message key="label.expected.result"/>:
@@ -75,6 +78,7 @@
               //properties.put("email", request.getParameter("username"));
               properties.put("firstname", request.getParameter("firstname"));
               properties.put("lastname", request.getParameter("lastname"));
+              properties.put("preferredLanguage", request.getParameter("preferredLanguage"));
               properties.put("comment", request.getParameter("comment"));
               service.subscribe(objectKey, true, event, request.getParameter("username"), false, jBean.getSite().getId(), true, properties);
           }
@@ -90,6 +94,14 @@
           // delete
           String subscriptionId = request.getParameter("subscription");
           service.unsubscribe(Integer.valueOf(subscriptionId));
+      } else if ("notify".equals(action)) {
+          // fire an event
+            NotificationEvent evt = new NotificationEvent();
+            evt.setObjectKey(jBean.getSite().getHomeContentPage().getObjectKey().getKey());
+            evt.setEventType(event);
+            evt.setSiteId(jBean.getSite().getId());
+            evt.setPageId(jBean.getSite().getHomepageID());
+            NotificationService.getInstance().fireEvent(evt);
       }
   }
   
@@ -158,8 +170,20 @@ function doIt(action, subscription) {
     <legend>Add subscription for an unregistered user:</legend>
     E-mail: <input name="username" value=""/><br/> 
     Firstname: <input name="firstname" value=""/><br/> 
-    Lastname: <input name="lastname" value=""/><br/> 
-    Comment: <input name="comment" value=""/><br/> 
+    Lastname: <input name="lastname" value=""/><br/>
+    <% pageContext.setAttribute("locales", MailHelper.getAvailableBundleLocalesSorted(jBean.getProcessingContext().getLocale())); %>    
+    Preferred language:
+    <select name="preferredLanguage">
+        <c:forEach items="${locales}" var="locale">
+            <option value="${locale}">${locale.displayName}</option>
+        </c:forEach>
+    </select><br/> 
+    Comment: <input name="comment" value=""/><br/>
     <button type="button" onclick="doIt('add')">Subscribe</button>
+</fieldset>
+
+<fieldset>
+    <legend>Trigger notification:</legend>
+    <button type="button" onclick="doIt('notify')">Fire an event and notify subscribers</button>
 </fieldset>
 </template:jahiaPageForm>

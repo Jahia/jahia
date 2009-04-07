@@ -478,6 +478,13 @@ FRAG2(frag_size=60000)</value>
             </bean>
         </property>
     </bean>
+    <bean id="JahiaFacetingService" parent="proxyTemplate">
+        <property name="target">
+            <bean class="org.jahia.services.search.facets.JahiaFacetingBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="cacheService" ref="JahiaCacheService" />            
+            </bean>
+        </property>
+    </bean>                
     <bean id="JahiaFetcherService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.fetchers.JahiaFetcherBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">

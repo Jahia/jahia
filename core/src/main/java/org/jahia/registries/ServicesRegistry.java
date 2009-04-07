@@ -67,6 +67,7 @@ import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.JahiaSearchService;
+import org.jahia.services.search.facets.JahiaFacetingService;
 import org.jahia.services.search.indexingscheduler.JahiaSearchIndexationService;
 import org.jahia.services.shares.AppsShareService;
 import org.jahia.services.sitemap.JahiaSiteMapService;
@@ -85,7 +86,6 @@ import org.jahia.services.version.JahiaVersionService;
 import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.settings.SettingsBean;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 import java.util.*;
@@ -100,10 +100,6 @@ import java.util.*;
  * @author Fulco Houkes
  */
 public class ServicesRegistry {
-
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ServicesRegistry.class);
-
     /**
      * It's a Singleton *
      */
@@ -156,6 +152,9 @@ public class ServicesRegistry {
 
     // Jahia SearchManager
     private static final String JAHIA_SEARCH_SERVICE = "JahiaSearchService";
+    
+    // Jahia SearchManager
+    private static final String JAHIA_FACETING_SERVICE = "JahiaFacetingService";    
 
     // Jahia SearchIndexation Service
     private static final String JAHIA_SEARCH_INDEXATION_SERVICE = "JahiaSearchIndexationService";
@@ -195,10 +194,6 @@ public class ServicesRegistry {
 
     // Jahia Html Editors Service
     private static final String JAHIA_HTMLEDITORS_SERVICE = "JahiaHtmlEditorsService";
-
-    // Jahia ResourceBundles Service
-    private static final String JAHIA_RESOURCEBUNDLE_SERVICE =
-            "JahiaResourceBundleService";
 
     // Jahia Cache factory for every cache except the HTML one
     private static final String JAHIA_CACHE_SERVICE = "JahiaCacheService";
@@ -376,6 +371,13 @@ public class ServicesRegistry {
     public JahiaSearchService getJahiaSearchService() {
         return (JahiaSearchService) getService(JAHIA_SEARCH_SERVICE);
     }
+    
+    /**
+     * DJ 03.01.2001
+     */
+    public JahiaFacetingService getJahiaFacetingService() {
+        return (JahiaFacetingService) getService(JAHIA_FACETING_SERVICE);
+    }    
 
     /**
      * DJ 03.01.2001

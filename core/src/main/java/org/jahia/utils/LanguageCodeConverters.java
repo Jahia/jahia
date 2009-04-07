@@ -213,9 +213,9 @@ public class LanguageCodeConverters {
         }
     }
 
-    public static List getSortedLocaleList(Locale currentLocale) {
+    public static List<Locale> getSortedLocaleList(Locale currentLocale) {
         Locale[] availableLocales = Locale.getAvailableLocales();
-        List sortedLocaleList = new ArrayList();
+        List<Locale> sortedLocaleList = new ArrayList<Locale>();
         for (int i=0; i < availableLocales.length; i++) {
           Locale curLocale = availableLocales[i];
           sortedLocaleList.add(curLocale);
@@ -228,7 +228,7 @@ public class LanguageCodeConverters {
      * Comparator implementation that compares locale display names in a certain
      * current locale.
      */
-    public static class LocaleDisplayNameComparator implements Comparator {
+    public static class LocaleDisplayNameComparator implements Comparator<Locale> {
 
         private Collator collator = Collator.getInstance();
         private Locale currentLocale;
@@ -240,10 +240,8 @@ public class LanguageCodeConverters {
             }
         }
 
-        public int compare(Object o1,
-                   Object o2) {
-            Locale locale1 = (Locale) o1;
-            Locale locale2 = (Locale) o2;
+        public int compare(Locale locale1,
+                Locale locale2) {
             return collator.compare(locale1.getDisplayName(currentLocale), locale2.getDisplayName(currentLocale));
         }
 

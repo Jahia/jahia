@@ -338,7 +338,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         return FileManagerWorker.createPortletInstance(path, wiz, retrieveParamBean());
     }
 
-    public GWTJahiaNode createRSSPortletInstance(String path, String url, String name) throws GWTJahiaServiceException {
+    public GWTJahiaNode createRSSPortletInstance(String path,String name,String url) throws GWTJahiaServiceException {
         return FileManagerWorker.createRSSPortletInstance(path, name, url, retrieveParamBean());
     }
 

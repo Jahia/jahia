@@ -53,15 +53,11 @@ import com.allen_sauer.gwt.log.client.Log;
  * Time: 16:20:39
  * To change this template use File | Settings | File Templates.
  */
-public class FormQuickRSS extends FormPanel {
-    private String folderPath;
+public abstract class FormQuickRSS extends FormQuickMashup {
 
-    public FormQuickRSS() {
-        createUI();
-    }
 
     public FormQuickRSS(String folderPath) {
-        this.folderPath = folderPath;
+        super(folderPath);
         createUI();
     }
 
@@ -93,9 +89,8 @@ public class FormQuickRSS extends FormPanel {
         Button saveButton = new Button(Messages.getResource("fm_save"));
         saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent componentEvent) {
-                JahiaNodeService.App.getInstance().createRSSPortletInstance(folderPath, (String) urlField.getValue(), (String) nameField.getValue(), new AsyncCallback<GWTJahiaNode>() {
+                JahiaNodeService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                        Info.display("MessageBox", "You entered '{0}'", gwtJahiaNode.getDisplayName());
                         if(getParent() instanceof Window){
                             ((Window)getParent()).close();
                         }

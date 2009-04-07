@@ -22,15 +22,10 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
  * Time: 16:43:07
  * To change this template use File | Settings | File Templates.
  */
-public class FormQuickGoogleGadget extends FormPanel {
-    private String folderPath;
-
-    public FormQuickGoogleGadget() {
-        createUI();
-    }
+public abstract class FormQuickGoogleGadget extends FormQuickMashup {
 
     public FormQuickGoogleGadget(String folderPath) {
-        this.folderPath = folderPath;
+        super(folderPath);
         createUI();
     }
 
@@ -61,9 +56,9 @@ public class FormQuickGoogleGadget extends FormPanel {
         Button saveButton = new Button(Messages.getResource("fm_save"));
         saveButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent componentEvent) {
-                JahiaNodeService.App.getInstance().createRSSPortletInstance(folderPath, (String) scriptField.getValue(), (String) nameField.getValue(), new AsyncCallback<GWTJahiaNode>() {
+                JahiaNodeService.App.getInstance().createGoogleGadgetPortletInstance(getFolderPath(), (String) nameField.getValue(), (String) scriptField.getValue(),new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
-                        Info.display("MessageBox", "You entered '{0}'", gwtJahiaNode.getDisplayName());
+                        onMashupCreated();
                         if (getParent() instanceof Window) {
                             ((Window) getParent()).close();
                         }
@@ -85,5 +80,6 @@ public class FormQuickGoogleGadget extends FormPanel {
 
         layout();
     }
+
 }
 

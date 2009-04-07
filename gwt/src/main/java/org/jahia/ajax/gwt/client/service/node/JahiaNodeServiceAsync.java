@@ -118,7 +118,7 @@ public interface JahiaNodeServiceAsync {
 
     void createPortletInstance(String path, GWTJahiaNewPortletInstance wiz, AsyncCallback<GWTJahiaNode> async);
 
-    void createRSSPortletInstance(String path, String url, String name, AsyncCallback<GWTJahiaNode> async);
+    void createRSSPortletInstance(String path,String name, String url, AsyncCallback<GWTJahiaNode> async);
 
     void createGoogleGadgetPortletInstance(String path, String name, String script, AsyncCallback<GWTJahiaNode> async);
 

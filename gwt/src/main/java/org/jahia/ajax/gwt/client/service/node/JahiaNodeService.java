@@ -137,7 +137,7 @@ public interface JahiaNodeService extends RemoteService {
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz) throws GWTJahiaServiceException;
 
-    public GWTJahiaNode createRSSPortletInstance(String path, String url, String name) throws GWTJahiaServiceException;
+    public GWTJahiaNode createRSSPortletInstance(String path,String name, String url) throws GWTJahiaServiceException;
 
     public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script) throws GWTJahiaServiceException;
 

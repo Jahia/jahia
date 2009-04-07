@@ -1512,7 +1512,7 @@ public class FileManagerWorker {
         // get RSS GWTJahiaPortletDefinition
         GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName("googlegadget", "JahiaGoogleGadget", context);
         if (gwtJahiaPortletDefinition == null) {
-            logger.error("RSS portlet defintion not found --> Aboard creating Google Gadget portlet instance");
+            logger.error("Google gadget portlet defintion not found --> Aboard creating Google Gadget portlet instance");
         }
         gwtJahiaNewPortletInstance.setGwtJahiaPortletDefinition(gwtJahiaPortletDefinition);
 

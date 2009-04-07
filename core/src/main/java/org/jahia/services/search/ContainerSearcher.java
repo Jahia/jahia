@@ -370,6 +370,11 @@ public class ContainerSearcher extends JahiaSearcher {
         return this.loadRequest;
     }
 
+    public JahiaSearchResult search (String query, ProcessingContext jParams)
+    throws JahiaException {
+        return search(new String[]{query}, jParams);
+    }
+    
     /**
      * Return a List of matching containers.
      *
@@ -378,11 +383,11 @@ public class ContainerSearcher extends JahiaSearcher {
      * @return
      * @throws JahiaException
      */
-    public JahiaSearchResult search (String query, ProcessingContext jParams)
+    public JahiaSearchResult search (String[] queries, ProcessingContext jParams)
     throws JahiaException {
         JahiaSearchResult result = new JahiaSearchResult (this.getSearchResultBuilder());
         // Must set the query first.
-        setQuery (query);
+        setQuery (queries[0]);
 
         if (getQuery () == null || "".equals(getQuery().trim()) || "()".equals(getQuery().trim()))
             return result;
@@ -392,7 +397,9 @@ public class ContainerSearcher extends JahiaSearcher {
         if (isCacheQueryResultsInBackend()) {
             queryList.add("");
         }
-        queryList.add(query);
+        for (String query : queries) {
+            queryList.add(query);
+        }
         
         StringBuffer buff = new StringBuffer (1024);
         try {
@@ -439,7 +446,7 @@ public class ContainerSearcher extends JahiaSearcher {
             String filterQuery = buff.toString();
             queryList.add(filterQuery);
             if (logger.isDebugEnabled()) {
-                logger.debug("Query is : " + query + " AND " + filterQuery);
+                logger.debug("Query is : " + queries + " AND " + filterQuery);
             }
 
             List<String> searchAr = new ArrayList<String>();
@@ -476,19 +483,19 @@ public class ContainerSearcher extends JahiaSearcher {
             searchAr.toArray(searchHandlers);
 
             SearchResult searchResult = null;
-            String[] queries = (String[]) queryList.toArray(new String[queryList.size()]);
+            String[] actualQueries = (String[]) queryList.toArray(new String[queryList.size()]);
             if (this.getSearchResultBuilder().getSorter() != null
                     || this.getSearchResultBuilder().getHitCollector() == null) {
                 if (this.getSearchResultBuilder().getSorter() == null) {
                     this.getSearchResultBuilder().setSorter(
                             new JahiaLuceneSort(new SortField(JahiaSearchConstant.ID)));
                 }
-                searchResult = sReg.getJahiaSearchService().search(queries, searchHandlers,
+                searchResult = sReg.getJahiaSearchService().search(actualQueries, searchHandlers,
                         this.getLanguageCodes(), jParams,
                         this.getSearchResultBuilder(),
                         this.getSearchResultBuilder().getSorter());
             } else {
-                searchResult = sReg.getJahiaSearchService().search(queries, searchHandlers,
+                searchResult = sReg.getJahiaSearchService().search(actualQueries, searchHandlers,
                         this.getLanguageCodes(), jParams,
                         this.getSearchResultBuilder().getHitCollector());
             }
@@ -497,7 +504,7 @@ public class ContainerSearcher extends JahiaSearcher {
             if ( parsedObjects == null ){
                 parsedObjects = new LinkedList<ParsedObject>();
             }
-            result = this.searchResultBuilder.buildResult(parsedObjects, jParams, queries);
+            result = this.searchResultBuilder.buildResult(parsedObjects, jParams, actualQueries);
             if (logger.isDebugEnabled()) {
                 logger.debug("jahia result : " + result.getHitCount());
             }

@@ -746,7 +746,7 @@ FRAG2(frag_size=60000)</value>
     </bean>
 
     <bean id="JahiaLiveStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">
-        <property name="key" value="jahia"/>
+        <property name="key" value="jahialive"/>
         <property name="rmibind" value="jahia"/>
         <property name="workspace" value="live"/>
         <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>

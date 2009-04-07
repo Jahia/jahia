@@ -568,6 +568,7 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
         boolean isSystemJob = true;
         boolean isCurrentPageValided = false;
         String lastExecutedJobLabel = "";
+        String lastExecutionJobTitle = "" ;
         String link = null;
         JobDetail lastExecutedJobDetail = getSchedulerService().getLastCompletedJobDetail();
         if (lastExecutedJobDetail != null) {
@@ -580,6 +581,9 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
                 if (lastExecutedJobUserKey != null) {
                     isCurrentUser = lastExecutedJobUserKey.equalsIgnoreCase(getRemoteUser());
                 }
+
+                // set title if any
+                lastExecutionJobTitle = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TITLE) ;
 
                 // set 'is System Job'
                 String lastExecutedJobType = lastExecutedJobDataMap.getString(BackgroundJob.JOB_TYPE);
@@ -695,7 +699,11 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
             gwtProcessJobInfo.setCurrentPageValidated(isCurrentPageValided);
             gwtProcessJobInfo.setSystemJob(isSystemJob);
             gwtProcessJobInfo.setJobReportUrl(link);
+            if (lastExecutionJobTitle == null) {
+                lastExecutionJobTitle = "" ;
+            }
             gwtProcessJobInfo.setJobType(lastExecutedJobLabel);
+            gwtProcessJobInfo.setLastTitle(lastExecutionJobTitle);
             gwtProcessJobInfo.setAutoRefresh(pageRefresh);
             gwtProcessJobInfo.setLastViewTime(lastExecutedJob);
             gwtProcessJobInfo.setNumberWaitingJobs(waitingJobNumber);

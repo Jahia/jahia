@@ -46,6 +46,7 @@ public class GWTJahiaProcessJobInfo implements Serializable {
     private int nextJobCurrentUserIndex;
     private String nextJobCurrentUserType;
     private long lastViewTime;
+    private String lastTitle ;
     private boolean jobExecuting;
     private boolean jobFinished;
     private boolean autoRefresh;
@@ -160,4 +161,11 @@ public class GWTJahiaProcessJobInfo implements Serializable {
         this.jobReportUrl = jobReportUrl;
     }
 
+    public String getLastTitle() {
+        return lastTitle;
+    }
+
+    public void setLastTitle(String lastTitle) {
+        this.lastTitle = lastTitle;
+    }
 }

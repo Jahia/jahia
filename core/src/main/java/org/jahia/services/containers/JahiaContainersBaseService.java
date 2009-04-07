@@ -50,6 +50,7 @@ import java.util.TreeSet;
 
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Literal;
@@ -98,6 +99,8 @@ import org.jahia.registries.JahiaListenersRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.ACLNotFoundException;
 import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -2466,7 +2469,22 @@ public class JahiaContainersBaseService extends JahiaContainersService {
     public List<String> getContainerDefinitionNamesWithType(String type){
         Set<String> types = new HashSet<String>(1);
         types.add(type);
+        types.addAll(getAllSubTypeNames(type));        
         return this.containerDefinitionManager.getContainerDefinitionNamesWithType(types);
+    }
+    
+    private Set<String> getAllSubTypeNames(String typeName) {
+        Set<String> subTypeNames = new HashSet<String>();
+        try {
+            for (ExtendedNodeType nodeType : NodeTypeRegistry.getInstance()
+                    .getNodeType(typeName).getSubtypes()) {
+                subTypeNames.add(nodeType.getName());
+                subTypeNames.addAll(getAllSubTypeNames(nodeType.getName()));
+            }
+        } catch (NoSuchNodeTypeException e) {
+            logger.warn("Node type not found", e); 
+        }
+        return subTypeNames;
     }
     
     /**
@@ -2500,6 +2518,7 @@ public class JahiaContainersBaseService extends JahiaContainersService {
         ContainerQueryBuilder builder = new ContainerQueryBuilder(jParams,new HashMap<String, Value>());
         ContainerQueryContext queryContext = ContainerQueryContext.getQueryContext(queryModel,
                 queryContextCtnID,parameters,jParams);
+
         ContainerQueryBean queryBean = builder.getContainerQueryBean(queryModel,queryContext);
         if (queryBean != null
                 && queryBean.getQueryContext().isSiteLevelQuery()

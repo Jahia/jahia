@@ -34,17 +34,13 @@
 package org.jahia.services.containers;
 
 import org.jahia.params.ProcessingContext;
+import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,6 +55,7 @@ public class ContainerQueryContext {
     private List<String> containerDefinitionNames;
     private List<Integer> siteIDs;
     private boolean siteLevelQuery;
+    private String facetFilterQueryParamName;    
     
     private List<String> containerDefinitionNamesIncludingType;
     
@@ -77,12 +74,14 @@ public class ContainerQueryContext {
     public static ContainerQueryContext getQueryContext(QueryObjectModelImpl queryModel,
                                                         int containerListID,
                                                         Properties parameters, ProcessingContext context) {
-
-        return new ContainerQueryContext(containerListID,
-                null,null,false);
+        ContainerQueryContext newContext = new ContainerQueryContext(containerListID,
+                null,null,false);        
+        newContext.setFacetFilterQueryParamName((String) queryModel.getProperties().get(
+                JahiaQueryObjectModelConstants.FACET_FILTER_QUERY_PARAM_NAME));
+        return newContext;
     }
 
-    public ContainerQueryContext(int containerListID,
+    protected ContainerQueryContext(int containerListID,
                                  List<String> containerDefinitionNames,
                                  List<Integer> siteIDs,
                                  boolean siteLevelQuery) {
@@ -154,11 +153,7 @@ public class ContainerQueryContext {
         }
 
         if (containerDefinitionType != null) {
-            Set<String> nodeTypeNames = new HashSet<String>();
-            nodeTypeNames.add(containerDefinitionType);
-            nodeTypeNames.addAll(getAllSubTypeNames(containerDefinitionType));
-            
-            List<String> definitionNamesFromType = ServicesRegistry.getInstance().getJahiaContainersService().getContainerDefinitionNamesWithType(nodeTypeNames);
+            List<String> definitionNamesFromType = ServicesRegistry.getInstance().getJahiaContainersService().getContainerDefinitionNamesWithType(containerDefinitionType);
             if (definitionNamesFromType != null){
                 for (String definitionName : definitionNamesFromType) {
                     if (!definitionNames.contains(definitionName)){
@@ -178,18 +173,12 @@ public class ContainerQueryContext {
         
         return containerDefinitionNamesIncludingType;
     }
-    
-    private Set<String> getAllSubTypeNames(String typeName) {
-        Set<String> subTypeNames = new HashSet<String>();
-        try {
-            for (ExtendedNodeType nodeType : NodeTypeRegistry.getInstance()
-                    .getNodeType(typeName).getSubtypes()) {
-                subTypeNames.add(nodeType.getName());
-                subTypeNames.addAll(getAllSubTypeNames(nodeType.getName()));
-            }
-        } catch (NoSuchNodeTypeException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return subTypeNames;
+
+    public void setFacetFilterQueryParamName(String facetFilterQueryParamName) {
+        this.facetFilterQueryParamName = facetFilterQueryParamName;
     }
+
+    public String getFacetFilterQueryParamName() {
+        return facetFilterQueryParamName;
+    }    
 }

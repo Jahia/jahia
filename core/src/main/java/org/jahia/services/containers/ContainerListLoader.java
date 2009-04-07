@@ -167,16 +167,16 @@ public class ContainerListLoader implements Serializable {
                     }
                 }
             }
-                if (resultBitSet != null) {
-                    if (filterBitSet != null) {
-                        resultBitSet.and(filterBitSet);
-                        if ( resultBitSet instanceof OrderedBitSet){
-                            ((OrderedBitSet)resultBitSet).setOrdered(false);
-                        }
+            if (resultBitSet != null) {
+                if (filterBitSet != null) {
+                    resultBitSet.and(filterBitSet);
+                    if (resultBitSet instanceof OrderedBitSet) {
+                        ((OrderedBitSet) resultBitSet).setOrdered(false);
                     }
-                } else if (filterBitSet != null) {
-                    resultBitSet = filterBitSet;
                 }
+            } else if (filterBitSet != null) {
+                resultBitSet = filterBitSet;
+            }
 
             if (resultBitSet != null && resultBitSet.length() == 0) {
                 return Collections.emptyList();
@@ -366,16 +366,12 @@ public class ContainerListLoader implements Serializable {
 
         int clistID = cList.getID();
 
-        String containerListName = "truc";
-        if (cList.getID() != -1) {
-            containerListName = cList.getDefinition().getName();
-        }
+        String containerListName = cList.getID() != -1 ? cList.getDefinition().getName() : "truc";
 
         if (logger.isDebugEnabled()) {
             logger.debug("Started for container list : " + containerListName + "[" + clistID + "]");
         }
 
-        ContainerFilters cachedContainerFilters = null;
         ContainerFilters cFilters = cList.getQueryBean() != null ? cList.getQueryBean().getFilter() : null;
 
         String key = clistID + "_"
@@ -394,12 +390,11 @@ public class ContainerListLoader implements Serializable {
             cFilters.setUpdateStatus();
             fakeFilter = true;
         } else {
-
             if ( cFilters.getContextID() != null
                 && !"".equals(cFilters.getContextID())){
                 key += "_" + cFilters.getContextID();
             }
-            cachedContainerFilters = (ContainerFilters) this.containerFiltersMap.get(key);
+            ContainerFilters cachedContainerFilters = (ContainerFilters) this.containerFiltersMap.get(key);
             boolean doNewFiltering = true;
 
             // We need to create a container filter handler with the correct container list ID!
@@ -499,7 +494,7 @@ public class ContainerListLoader implements Serializable {
                                 JahiaFieldDefinition.getChildInstance(String.valueOf(fieldDefIDs.get(0).intValue()));
                         fieldName = definition.getCtnType();
                     } catch ( Throwable t ){
-                        logger.debug(t);
+                        logger.debug(t, t);
                         return null;
                     }
                 }
@@ -580,37 +575,17 @@ public class ContainerListLoader implements Serializable {
     private boolean isLoadingUseSingleSearchQuery(ContainerListLoaderContext loaderContext) throws JahiaException {
 
         JahiaContainerList cList = loaderContext.getCList();
-//        ProcessingContext context = loaderContext.getContext();
-//        String containerListName = cList.getDefinition().getName();
-//
-//        ContainerSearcher cSearcher = null;
-//        if ( cList.getQueryBean() != null ){
-//            cSearcher = cList.getQueryBean().getSearcher();
-//        } else {
-//            // keep for backward compatibility. Should be deprecated
-//            cSearcher = (ContainerSearcher) context.getAttribute(containerListName
-//                    + "_search_handler");
-//        }
-//
-//        ContainerFilters cFilters = null;
-//        if ( cList.getQueryBean() != null ){
-//            cFilters = cList.getQueryBean().getFilter();
-//        } else {
-//            // keep for backward compatibility. Should be deprecated
-//            cFilters = (ContainerFilters) context.getAttribute(containerListName + "_filter_handler");
-//        }
-//
-//        ContainerSorterInterface sorter = null;
-//        if ( cList.getQueryBean() != null ){
-//            sorter = cList.getQueryBean().getSorter();
-//        } else {
-//            sorter = (ContainerSorterInterface) context.getAttribute(containerListName +
-//                    "_sort_handler");
-//        }
-//
+
         ContainerSearcher cSearcher = null;
         ContainerFilters cFilters = null;
         ContainerSorterInterface sorter = null;
+        final BitSet facetedFilter = cList.getQueryBean() != null
+                && cList.getQueryBean().getQueryContext().getFacetFilterQueryParamName() != null ? ServicesRegistry
+                .getInstance().getJahiaFacetingService().applyFacetFilters(
+                        null,
+                        (String) loaderContext.getContext().getParameter(
+                                cList.getQueryBean().getQueryContext().getFacetFilterQueryParamName()),
+                        cList.getQueryBean().getQueryContext(), loaderContext.getContext()) : null;
 
         if ( cList.getQueryBean() != null ){
             cSearcher = cList.getQueryBean().getSearcher();
@@ -632,7 +607,7 @@ public class ContainerListLoader implements Serializable {
                             .getSearchResultBuilder().setSearchResult(
                                 new SearchResultImpl(false){
                                     public boolean add(SearchHit hit){
-                                        return processHit(finalLoaderContext, containerList, hit, maxHits, this);
+                                        return processHit(finalLoaderContext, containerList, hit, maxHits, this, facetedFilter);
                                     }
                                 }
                     );
@@ -656,7 +631,7 @@ public class ContainerListLoader implements Serializable {
                                     .getSearchResultBuilder().setSearchResult(
                                         new SearchResultImpl(false){
                                             public boolean add(SearchHit hit){
-                                                return processHit(finalLoaderContext, containerList, hit, maxHits, this);
+                                                return processHit(finalLoaderContext, containerList, hit, maxHits, this, facetedFilter);
                                             }
                                         }
                             );
@@ -682,7 +657,7 @@ public class ContainerListLoader implements Serializable {
                             .getSearchResultBuilder().setSearchResult(
                                 new SearchResultImpl(false){
                                     public boolean add(SearchHit hit){
-                                        return processHit(finalLoaderContext, containerList, hit, maxHits, this);
+                                        return processHit(finalLoaderContext, containerList, hit, maxHits, this, facetedFilter);
                                     }
                                 }
                     );
@@ -698,28 +673,25 @@ public class ContainerListLoader implements Serializable {
         return false;
     }
 
-    private static boolean processHit(ContainerListLoaderContext loaderContext,
-                        JahiaContainerList containerList,
-                        SearchHit hit,
-                        int maxHits, SearchResult searchResult)
-    {
+    private static boolean processHit(ContainerListLoaderContext loaderContext, JahiaContainerList containerList,
+            SearchHit hit, int maxHits, SearchResult searchResult, BitSet facetedFilter) {
         boolean result = true;
 
         int nbContainers = searchResult.results().size();
         // init the container list pagination
         JahiaContainerListPagination cListPagination = null;
         try {
-            Integer lastEditedItemIntId = (Integer)loaderContext.getContext()
-                .getAttribute("ContextualContainerList_"+String.valueOf(containerList.getID()));
+            Integer lastEditedItemIntId = (Integer) loaderContext.getContext().getAttribute(
+                    "ContextualContainerList_" + String.valueOf(containerList.getID()));
             int lastEditedItemId = 0;
-            if(lastEditedItemIntId!=null){
+            if (lastEditedItemIntId != null) {
                 lastEditedItemId = lastEditedItemIntId.intValue();
             }
             List<Integer> ctnIds = new ArrayList<Integer>();
-            if (lastEditedItemId>0){
+            if (lastEditedItemId > 0) {
                 List<JahiaContainer> ctns = containerList.getContainersList();
-                if (ctns != null && !ctns.isEmpty()){
-                    for (JahiaContainer ctn : ctns){
+                if (ctns != null && !ctns.isEmpty()) {
+                    for (JahiaContainer ctn : ctns) {
                         ctnIds.add(new Integer(ctn.getID()));
                     }
                 }
@@ -727,16 +699,16 @@ public class ContainerListLoader implements Serializable {
 
             // init the container list pagination
             cListPagination = containerList.getCtnListPagination(false);
-            if (cListPagination !=null){
+            if (cListPagination != null) {
                 cListPagination = new JahiaContainerListPagination(containerList, loaderContext.getContext(),
-                        cListPagination.getWindowSize(),ctnIds,lastEditedItemId, loaderContext.getListViewId());
+                        cListPagination.getWindowSize(), ctnIds, lastEditedItemId, loaderContext.getListViewId());
             } else {
                 cListPagination = new JahiaContainerListPagination(containerList, loaderContext.getContext(), -1,
-                        ctnIds,lastEditedItemId, loaderContext.getListViewId());
+                        ctnIds, lastEditedItemId, loaderContext.getListViewId());
             }
             containerList.setCtnListPagination(cListPagination);
-        } catch ( Exception t ){
-            logger.debug("Error checking container list pagination",t);
+        } catch (Exception t) {
+            logger.debug("Error checking container list pagination", t);
             return false;
         }
         int endPos = cListPagination.getSize();
@@ -745,13 +717,13 @@ public class ContainerListLoader implements Serializable {
             endPos = cListPagination.getLastItemIndex();
         }
 
-        if ( (nbContainers >= containerList.getMaxSize()) ||
-                (nbContainers > endPos + org.jahia.settings.SettingsBean.getInstance().getPreloadedItemsForPagination()) ){
+        if ((nbContainers >= containerList.getMaxSize())
+                || (nbContainers > endPos
+                        + org.jahia.settings.SettingsBean.getInstance().getPreloadedItemsForPagination())) {
             return false;
         }
 
-        if (nbContainers==maxHits || (nbContainers>0
-                && nbContainers==containerList.getMaxSize())){
+        if (nbContainers == maxHits || (nbContainers > 0 && nbContainers == containerList.getMaxSize())) {
             return false;
         }
         try {
@@ -761,34 +733,36 @@ public class ContainerListLoader implements Serializable {
             ObjectKey objectKey = null;
             if (ctnKeyVal != null) {
                 objectKey = ObjectKey.getInstance(ctnKeyVal);
-                if(objectKey instanceof ContentFieldKey) {
-                   objectKey = new ContentContainerKey(Integer.parseInt(parentID));
+                if (objectKey instanceof ContentFieldKey) {
+                    objectKey = new ContentContainerKey(Integer.parseInt(parentID));
                 }
+                if (facetedFilter == null || facetedFilter.get(objectKey.getIdInType())) {
+                    JahiaContainer jahiaContainer = loadContainer(objectKey.getIdInType(), Integer.parseInt(aclID),
+                            loaderContext);
+                    if (jahiaContainer != null && jahiaContainer.getID() > 0) {
+                        containerList.addContainer(jahiaContainer);
+                        containerList.setFullSize(containerList.getFullSize() + 1);
+                        searchResult.results().add(hit);
+                        nbContainers++;
+                        endPos = cListPagination.getSize();
 
-                JahiaContainer jahiaContainer = loadContainer(objectKey.getIdInType(),Integer.parseInt(aclID),
-                        loaderContext);
-                if (jahiaContainer!=null && jahiaContainer.getID()>0){
-                    containerList.addContainer(jahiaContainer);
-                    containerList.setFullSize(containerList.getFullSize()+1);
-                    searchResult.results().add(hit);
-                    nbContainers++;
-                    endPos = cListPagination.getSize();
-
-                    if (cListPagination.isValid()) {
-                        endPos = cListPagination.getLastItemIndex();
-                    }
-                    if ( (nbContainers >= containerList.getMaxSize()) ||
-                            (nbContainers > endPos + org.jahia.settings.SettingsBean.getInstance().getPreloadedItemsForPagination()) ){
-                        return false;
-                    }
-                    if (nbContainers==maxHits || (nbContainers>0
-                            && nbContainers==containerList.getMaxSize())){
-                        return false;
+                        if (cListPagination.isValid()) {
+                            endPos = cListPagination.getLastItemIndex();
+                        }
+                        if ((nbContainers >= containerList.getMaxSize())
+                                || (nbContainers > endPos
+                                        + org.jahia.settings.SettingsBean.getInstance()
+                                                .getPreloadedItemsForPagination())) {
+                            return false;
+                        }
+                        if (nbContainers == maxHits || (nbContainers > 0 && nbContainers == containerList.getMaxSize())) {
+                            return false;
+                        }
                     }
                 }
             }
-        } catch ( Exception t ){
-            logger.debug(t);
+        } catch (Exception t) {
+            logger.debug(t, t);
         }
         return result;
     }
@@ -868,12 +842,12 @@ public class ContainerListLoader implements Serializable {
                         if (loadVersion != null) {
                             errorMsg += " loadVersion=" + loadVersion.toString();
                         }
-                        logger.debug(errorMsg);
+                        logger.debug(errorMsg, t);
 
                     }
                 }
             } catch (Exception t) {
-                logger.error(t);
+                logger.error(t, t);
             }
         }
         return container;

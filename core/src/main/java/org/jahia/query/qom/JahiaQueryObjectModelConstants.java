@@ -130,6 +130,12 @@ public class JahiaQueryObjectModelConstants extends CoreMetadataConstant impleme
      * be cached (set this only if the query constraints represent an often used query) 
      */
     public static final String USE_BACKEND_CACHE = "USE_BACKEND_CACHE";    
+    
+    /**
+     * If facet filters should be applied to query, set the name of the facet filter 
+     * query parameter in the URL as property value 
+     */    
+    public static final String FACET_FILTER_QUERY_PARAM_NAME = "FACET_FILTER_QUERY_PARAM_NAME";
 
     /**
      * Map containings human readable operator label for each query operator.

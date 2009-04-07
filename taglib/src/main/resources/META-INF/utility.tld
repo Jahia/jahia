@@ -78,6 +78,67 @@
     </tag>
 
     <tag>
+        <description>Utility date tag in order to add/subtract days, hours, etc. to an existing date
+        </description>
+        <name>dateCalc</name>
+        <tag-class>org.jahia.taglibs.utility.DateCalcTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Date</type>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>days</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>months</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>years</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>hours</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>minutes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>seconds</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>milliseconds</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>        
+    </tag>
+
+    <tag>
         <description>Utility date tag in order to convert dates and add days, hours, etc. to an existing date
         </description>
         <name>dateUtil</name>

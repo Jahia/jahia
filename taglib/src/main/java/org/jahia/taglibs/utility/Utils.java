@@ -66,7 +66,10 @@ import org.jahia.utils.JahiaConsole;
  */
 public class Utils {
 
-    private static String SEPARATOR = "_";
+    public final static int TO_MIN = Integer.MIN_VALUE;
+    public final static int TO_MAX = Integer.MAX_VALUE;    
+    
+    private final static String SEPARATOR = "_";
 
     /**
      * Method buildUniqueName :  builds a unique name for a field, thanks to the name
@@ -91,7 +94,7 @@ public class Utils {
      * @param enumeration
      * @return its size
      */
-    public static int enumSize(final Iterator enumeration) {
+    public static int enumSize(final Iterator<?> enumeration) {
         int i = 0;
         while (enumeration.hasNext()) {
             i++;
@@ -246,7 +249,7 @@ public class Utils {
      * @param theClass the class whose name is wanted
      * @return the short name
      */
-    public static String getShortClassName(final Class theClass) {
+    public static String getShortClassName(final Class<?> theClass) {
 
         final String fullName = theClass.getName();
         final int lastDot = fullName.lastIndexOf(".");

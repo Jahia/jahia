@@ -78,8 +78,20 @@
                      <label for="c_name"><fmt:message key="article.content"/> :</label>
                       <textarea name="${inputs['content'].name}" id="mainContentBody" tabindex="22">${inputs['content'].defaultValue}</textarea>
                  </p>
+                 <p class="field">
+                     <label for="c_name"><fmt:message key="article.keywords"/> :</label>
+                      <input type="text" size="30" id="c_keywords" name="${inputs['keywords'].name}"
+                               value="${inputs['keywords'].defaultValue}" tabindex="23"/>
+                 </p>
+                 <p class="field">
+                                      <label for="c_name"><fmt:message key="article.categrories"/> :</label>
+                                      <input type="text" name="${inputs['defaultCategory'].name}" id="category" value=""/>
+                                      <ui:categorySelector fieldId="category" displayIncludeChildren="false" />
+                                       
+                                  </p>
+
                  <p class="c_button">
-                     <input type="submit" value="envoyer" class="button" tabindex="23"/>
+                     <input type="submit" value="envoyer" class="button" tabindex="24"/>
                  </p>
              </fieldset>
             </div>

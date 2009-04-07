@@ -12,8 +12,9 @@
         <template:field name="date" display="false" var="date"/>
         <fmt:formatDate pattern="yyyy" value="${date.date}" var="currentYear"/>
         <fmt:formatDate pattern="MMMMM" value="${date.date}" var="currentMonth"/>
+        <fmt:formatDate pattern="MM" value="${date.date}" var="currentMonthShort"/>
         <c:if test="${((previousMonth != currentMonth) || (previousYear != currentYear)) && (previousMonth !='00') }">
-                <li>${previousMonth} (${counter})</li>
+                <li><a href="${currentPage.url}?year=${currentYear}&month=${previousMonthShort}">${previousMonth}</a> (${counter})</li>
                 <c:set var="counter" value="1"/>
         </c:if>
         <c:if test="${previousMonth == currentMonth && previousYear == currentYear}">
@@ -29,9 +30,10 @@
         </c:if>
         <c:set var="previousYear" value="${currentYear}"/>
         <c:set var="previousMonth" value="${currentMonth}"/>
+        <c:set var="previousMonthShort" value="${currentMonthShort}"/>
     </template:container>
 </template:containerList>
-    <li><fmt:formatDate pattern="MMMMM" value="${date.date}"/> (${counter})</li>
+    <li><a href="${currentPage.url}?year=${currentYear}&month=${previousMonthShort}">${previousMonth}</a> (${counter})</li>
     </ul>
 </div>
 </template:cache>

@@ -58,7 +58,7 @@
             <template:metadata metadataName="keywords" contentBean="${blogEntry}" var="keywords"/>
             <ul class="post-tags">
                 <c:forEach var="keyword" items="${fn:split(keywords, ',')}">
-                    <c:if test="${!keywork eq ''}">
+                    <c:if test="${fn:length(keyword) > 0}">
                         <li><a href="#"><c:out value="${keyword}"/></a></li>
                     </c:if>
                 </c:forEach>
@@ -73,7 +73,6 @@
                         <a class="comment_count" href="?article=${blogEntry.ID}"><fmt:message key="number.comment">
                             <fmt:param value="${nbComment}"/>
                         </fmt:message></a>
-                    </a>
                 </c:if>
                 <c:if test="${nbComment == 0}">
                     <a class="comment_count" href="?article=${blogEntry.ID}"><fmt:message key="no.comment"/></a>

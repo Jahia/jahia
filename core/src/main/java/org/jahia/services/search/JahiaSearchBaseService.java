@@ -50,13 +50,9 @@ import org.compass.core.Compass;
 import org.compass.core.Resource;
 import org.compass.core.Property.Index;
 import org.compass.core.config.CompassConfiguration;
-import org.compass.core.config.CompassSettings;
 import org.compass.core.engine.SearchEngineHighlighter;
 import org.compass.core.engine.naming.StaticPropertyPath;
-import org.compass.core.lucene.LuceneEnvironment;
 import org.compass.core.lucene.engine.LuceneSearchEngineFactory;
-import org.compass.core.lucene.engine.analyzer.LuceneAnalyzerTokenFilterProvider;
-import org.compass.core.lucene.engine.analyzer.synonym.SynonymAnalyzerTokenFilterProvider;
 import org.compass.core.mapping.CompassMapping;
 import org.compass.core.mapping.Mapping;
 import org.compass.core.mapping.ResourceMapping;
@@ -140,7 +136,6 @@ import org.quartz.SimpleTrigger;
 import java.io.File;
 import java.security.Principal;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 import javax.jcr.PropertyType;
 
@@ -245,8 +240,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
     private JahiaContainersService containersService;
     private JahiaGroupManagerService groupManagerService;
     private JahiaFieldService fieldService;
-
-    private Map<String, LuceneAnalyzerTokenFilterProvider> analyzersFilters = new HashMap<String, LuceneAnalyzerTokenFilterProvider>();
 
     private List<Integer> loadedSiteSearchHandlers = new ArrayList<Integer>();
 
@@ -363,13 +356,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
         val = getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_MULTIPLE_INDEXING_SERVER);
         this.multipleIndexingServer = (val != null && "1".equals(val.trim()));
-
-        try {
-            buildAnalyzersFilters();
-        } catch (Exception e) {
-            logger.error("Exception creating compass analyzer filters", e);
-            throw new JahiaInitializationException("Exception creating compass analyzer filters", e);
-        }
 
         try {
             Properties props = (Properties) this.config.clone();
@@ -2894,40 +2880,6 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     private boolean isEmtyOrNullString(String str){
         return str == null || "".equals(str.trim());
-    }
-
-    private void buildAnalyzersFilters() throws JahiaException {
-        Compass compass = getCompass();
-        InternalCompass internalCompass = null;
-        if (compass != null && compass instanceof InternalCompass) {
-            internalCompass = (InternalCompass) compass;
-            CompassSettings settings = internalCompass.getSettings();
-            for (Iterator<?> it = settings.getSettingGroups(LuceneEnvironment.AnalyzerFilter.PREFIX).entrySet().iterator(); it.hasNext();) {
-                Entry<?, ?> entry = (Entry<?, ?>) it.next();
-                String analyzerFilterName = (String)entry.getKey();
-                CompassSettings analyzerFilterSettings = (CompassSettings)entry.getValue();
-                String analyzerFilterType = analyzerFilterSettings.getSetting(LuceneEnvironment.AnalyzerFilter.TYPE);
-                if (analyzerFilterType == null) {
-                    String err = "Failed to locate analyzer filter [" + analyzerFilterName + "] type, it must be set";
-                    throw new JahiaException(err,err,JahiaException.SERVICE_ERROR,JahiaException.CRITICAL_SEVERITY);
-                }
-                try {
-                    if (analyzerFilterType.equals(LuceneEnvironment.AnalyzerFilter.SYNONYM_TYPE)) {
-                        analyzerFilterType = SynonymAnalyzerTokenFilterProvider.class.getName();
-                    }
-                    LuceneAnalyzerTokenFilterProvider provider =
-                            (LuceneAnalyzerTokenFilterProvider) Class.forName(analyzerFilterType).newInstance();
-                    provider.configure(analyzerFilterSettings);
-                    analyzersFilters.put(analyzerFilterName, provider);
-                } catch (Exception e) {
-                    String err = "Failed to create analyzer filter [" + analyzerFilterName + "]";
-                    throw new JahiaException(err,err,JahiaException.SERVICE_ERROR,JahiaException.CRITICAL_SEVERITY,e);
-                }
-            }
-        } else {
-            String err = "Compass is not available or not of InternalCompass instance";
-            throw new JahiaException(err,err,JahiaException.SERVICE_ERROR,JahiaException.CRITICAL_SEVERITY);
-        }
     }
 
     private JahiaUser getAdminUser(int siteId){

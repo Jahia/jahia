@@ -106,8 +106,7 @@ public class LuceneCoreSearcher {
 
         if ( !searchHandler.getReadOnly() ){
             File f = new File(indexDirectory);
-            this.setIndexer(new LuceneSearchIndexer(f, true, null,
-                    properties));
+            this.setIndexer(new LuceneSearchIndexer(f, true, properties));
             this.getIndexer().setSearchHandler(searchHandler);
             this.getIndexer().start();
         }        

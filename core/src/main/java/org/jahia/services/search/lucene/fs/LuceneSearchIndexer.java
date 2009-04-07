@@ -49,9 +49,8 @@ public class LuceneSearchIndexer extends AbstractLuceneSearchIndexer {
 
     public LuceneSearchIndexer(File indexDirectory,
                                boolean localIndexing,
-                               Analyzer analyzer,
                                Properties config) throws JahiaException {
-        super(localIndexing,analyzer,config);
+        super(localIndexing,config);
         if ( indexDirectory != null ) {
             this.indexPath = indexDirectory.getAbsolutePath();
             try {

@@ -240,6 +240,10 @@
     background-image: url( ../images/home.png ) !important;
 }
 
+.fm-myMashupRepository {
+    background-image: url( ../images/home.png ) !important;
+}
+
 .fm-savedSearch {
     background-image: url( ../images/search.png ) !important;
 }
@@ -252,7 +256,15 @@
     background-image: url( ../images/shared-repository.png ) !important;
 }
 
+.fm-sharedMashupRepository {
+    background-image: url( ../images/shared-repository.png ) !important;
+}
+
 .fm-websiteRepository {
+    background-image: url( ../images/site-repository.png ) !important;
+}
+
+.fm-websiteMashupRepository {
     background-image: url( ../images/site-repository.png ) !important;
 }
 
@@ -261,6 +273,10 @@
 }
 
 .fm-globalRepository {
+    background-image: url( ../images/repository.png ) !important;
+}
+
+fm-globalMashupRepository {
     background-image: url( ../images/repository.png ) !important;
 }
 

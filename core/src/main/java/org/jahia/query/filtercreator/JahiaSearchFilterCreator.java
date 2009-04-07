@@ -227,7 +227,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
                 !propertyName.equals(JahiaQueryObjectModelConstants.CATEGORY_LINKS)){
                 JahiaFieldDefinition fieldDef = QueryModelTools
                         .getFieldDefinitionForPropertyName(propertyName,
-                                queryContext, context);
+                                queryContext.getContainerDefinitionNames(), context);
                 if ( fieldDef == null ){
                     return null;
                 }

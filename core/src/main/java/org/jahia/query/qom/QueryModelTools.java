@@ -45,7 +45,6 @@ import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.JahiaTools;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
 import java.util.*;
 
@@ -100,7 +99,7 @@ public class QueryModelTools {
             }
             propertyName = QueryModelTools
                     .getFieldNameForSearchEngine(propertyName, operand.isMetadata(),
-                            queryContext, context, QueryModelTools.SORTING_TYPE);
+                            queryContext.getContainerDefinitionNames(), context, QueryModelTools.SORTING_TYPE);
             if (propertyName == null) {
                 return null;
             }
@@ -151,7 +150,7 @@ public class QueryModelTools {
     }
 
     public static JahiaFieldDefinition getFieldDefinitionForPropertyName(
-            String propertyName, ContainerQueryContext queryContext,
+            String propertyName, List<String> containerDefinitionNames,
             ProcessingContext jParams) throws JahiaException {
         // if (def.getDeclaringNodeType().isMixin() && (def.getDeclaringNodeType().isNodeType("jmix:contentmetadata") ||
         // def.getDeclaringNodeType().isNodeType("mix:created") ||
@@ -165,14 +164,12 @@ public class QueryModelTools {
                 .getInstance().getDefinition(jParams.getSiteID(), propertyName);
 
         if (fieldDef == null) {
-            for (Iterator<String> iterator = queryContext
-                    .getContainerDefinitionNames().iterator(); iterator
-                    .hasNext()
-                    && fieldDef == null;) {
-                String s = (String) iterator.next();
+            for (String containerDefName : containerDefinitionNames) {
                 fieldDef = JahiaFieldDefinitionsRegistry.getInstance()
                         .getDefinition(jParams.getSiteID(),
-                                s + "_" + propertyName);
+                                containerDefName + "_" + propertyName);
+                if (fieldDef != null)
+                    break;
             }
         }
         if (fieldDef == null) {
@@ -185,7 +182,7 @@ public class QueryModelTools {
     }
     
     public static String getFieldNameForSearchEngine(String propertyName,
-            boolean isMetadata, ContainerQueryContext queryContext,
+            boolean isMetadata, List<String> containerDefinitionNames,
             ProcessingContext jParams, int type) throws JahiaException {
         String fieldName = null;
         if (propertyName != null && propertyName.length() > 0) {
@@ -198,7 +195,7 @@ public class QueryModelTools {
                 fieldName = JahiaSearchConstant.CATEGORY_ID;
             } else {
                 JahiaFieldDefinition fieldDef = getFieldDefinitionForPropertyName(
-                        propertyName, queryContext, jParams);
+                        propertyName, containerDefinitionNames, jParams);
                 fieldName = propertyName.toLowerCase();
                 if (fieldDef != null && fieldDef.getCtnType() != null) {
                     fieldName = fieldDef.getCtnType().replaceAll("[ :]", "_")

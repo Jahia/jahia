@@ -138,7 +138,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         } else {
             JahiaFieldDefinition fieldDef = QueryModelTools
                     .getFieldDefinitionForPropertyName(propertyName,
-                            queryContext, context);
+                            queryContext.getContainerDefinitionNames(), context);
             if ( fieldDef == null ){
                 return null;
             }
@@ -372,7 +372,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
 
         String propertyName = operand.getPropertyName();
         JahiaFieldDefinition fieldDef = QueryModelTools
-                .getFieldDefinitionForPropertyName(propertyName, queryContext,
+                .getFieldDefinitionForPropertyName(propertyName, queryContext.getContainerDefinitionNames(),
                         context);
         if ( fieldDef == null ){
             return null;
@@ -439,7 +439,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         String propertyName = c.getPropertyName();
         
         String fieldName = QueryModelTools.getFieldNameForSearchEngine(propertyName,
-                ((FullTextSearchImpl) c).isMetadata(), queryContext, context, QueryModelTools.NO_TYPE);
+                ((FullTextSearchImpl) c).isMetadata(), queryContext.getContainerDefinitionNames(), context, QueryModelTools.NO_TYPE);
 
         if (fieldName != null) {
             searchExpression = fieldName + ":" + openParenthesis
@@ -572,7 +572,7 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
             return sorter;
         }
         JahiaFieldDefinition fieldDef = QueryModelTools
-                .getFieldDefinitionForPropertyName(propertyName, queryContext,
+                .getFieldDefinitionForPropertyName(propertyName, queryContext.getContainerDefinitionNames(),
                         context);
         if (fieldDef == null) {
             return null;

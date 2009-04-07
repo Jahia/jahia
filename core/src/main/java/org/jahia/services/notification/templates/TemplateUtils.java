@@ -97,6 +97,9 @@ public final class TemplateUtils {
             String... filePathToTry) {
         String templatePath = null;
         for (String path : filePathToTry) {
+            if (path == null) {
+                continue;
+            }
             templatePath = resolvePath(path, templatePackageName);
             if (templatePath != null) {
                 break;

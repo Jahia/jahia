@@ -76,29 +76,31 @@ public class NotificationMessageBuilder extends
 
     @Override
     protected String getTemplateHtmlPart() {
-        return lookupTemplate("notifications/events/"
-                + subscription.getEventType() + "/" + getObjectType()
-                + "/body.html", "notifications/events/"
+        String objectType = getObjectType();
+        return lookupTemplate(objectType != null ? "notifications/events/"
+                + subscription.getEventType() + "/" + objectType + "/body.html"
+                : objectType, "notifications/events/"
                 + subscription.getEventType() + "/body.html",
                 "notifications/events/body.html");
     }
 
     @Override
     protected String getTemplateMailScript() {
-        return lookupTemplate("notifications/events/"
-                + subscription.getEventType() + "/" + getObjectType()
-                + "/email.groovy", "notifications/events/"
+        String objectType = getObjectType();
+        return lookupTemplate(objectType != null ? "notifications/events/"
+                + subscription.getEventType() + "/" + objectType
+                + "/email.groovy" : null, "notifications/events/"
                 + subscription.getEventType() + "/email.groovy",
                 "notifications/events/email.groovy");
     }
 
     @Override
     protected String getTemplateTextPart() {
-        return lookupTemplate("notifications/events/"
-                + subscription.getEventType() + "/" + getObjectType()
-                + "/body.txt", "notifications/events/"
-                + subscription.getEventType() + "/body.txt",
-                "notifications/events/body.txt");
+        String objectType = getObjectType();
+        return lookupTemplate(objectType != null ? "notifications/events/"
+                + subscription.getEventType() + "/" + objectType + "/body.txt"
+                : null, "notifications/events/" + subscription.getEventType()
+                + "/body.txt", "notifications/events/body.txt");
     }
 
     protected List<Link> getUpdatedPages() {

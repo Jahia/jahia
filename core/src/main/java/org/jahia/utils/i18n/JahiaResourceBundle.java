@@ -37,6 +37,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -189,6 +190,11 @@ public class JahiaResourceBundle extends ResourceBundle {
     
     public String get(String key, String defaultValue) {
         return getString(key, defaultValue);
+    }
+
+    public String getFormatted(String key, String defaultValue,
+            Object... arguments) {
+        return MessageFormat.format(get(key, defaultValue), arguments);
     }
 
     public String getString(String key, String defaultValue) {

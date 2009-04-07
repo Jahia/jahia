@@ -191,6 +191,7 @@ public class ContainerFormTag extends AbstractJahiaTag {
         var = "inputs";
         ignoreAcl = false;
         token = null;
+        action = null;
 
         return super.doEndTag();
     }

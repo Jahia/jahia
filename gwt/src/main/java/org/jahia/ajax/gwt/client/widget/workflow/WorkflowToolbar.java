@@ -308,7 +308,7 @@ public class WorkflowToolbar extends TopBar {
         for (String availableAction : availableActions) {
             s.add(actionsLabel.get(availableAction));
         }
-        CheckMenuItem enabledItem = null;
+        boolean selectionDone = false ;
         for (Item item : l) {
             if (item instanceof CheckMenuItem) {
                 if (!s.contains(((CheckMenuItem)item).getText())) {
@@ -317,14 +317,15 @@ public class WorkflowToolbar extends TopBar {
                 } else {
                     Log.debug("enable " + ((CheckMenuItem)item).getText()) ;
                     item.setEnabled(true) ;
-                    enabledItem = (CheckMenuItem) item;
+                    if (!selectionDone) {
+                        ((CheckMenuItem) item).setChecked(true);
+                        item.fireEvent(Events.Select) ;
+                        selectionDone = true ;
+                    }
                 }
             }
         }
-        if (enabledItem != null) {
-            enabledItem.setChecked(true);
-            enabledItem.fireEvent(Events.Select) ;
-        } else {
+        if (!selectionDone) {
             chooseAction.setText(WorkflowManager.getResource("wf_chooseAction"));
             chooseAction.setIconStyle("wf-action");
         }

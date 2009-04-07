@@ -57,7 +57,7 @@
                 --%>
                 <script type="text/javascript">
                     jQuery(document).ready(function(jQuery) {
-                        jQuery("#datepicker").datepicker({onSelect: function(dateText){setDate(dateText)},showButtonPanel: true, altField: '#startDate', altFormat: 'd/M/yy'},jQuery.datepicker.regional['${requestScope.currentRequest.locale}']);
+                        jQuery("#datepicker").datepicker({onSelect: function(dateText){setDate(dateText)},showButtonPanel: true, altField: '#startDate'},jQuery.datepicker.regional['${requestScope.currentRequest.locale}']);
                     });
                 </script>
                 <div id="datepicker"></div>

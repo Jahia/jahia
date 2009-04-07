@@ -45,6 +45,15 @@ public class ContainerFormTag extends AbstractJahiaTag {
     private boolean ignoreAcl = false;
     private String token;
     private Map<String,Object> params;
+    private String action=null;
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
 
     public String getName() {
         return name;
@@ -151,9 +160,11 @@ public class ContainerFormTag extends AbstractJahiaTag {
             JspWriter out = pageContext.getOut();
             StringBuffer buff = new StringBuffer("<form name=\"");
             buff.append(this.name);
-//            buff.append("\"" );
-//            buff.append(" action=\"");
-//            buff.append(pageUrl);
+            if (action != null) {
+              buff.append("\"" );
+              buff.append(" action=\"");
+              buff.append(action);                
+            }
             buff.append("\" method=\"post");
             buff.append("\">");
             buff.append("<input type=\"hidden\" name=\"formToken\" value=\"");

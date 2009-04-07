@@ -21,6 +21,17 @@
             <version>0.1.38</version>
         </dependency>
     </dependencies>
+		<repositories>
+		    <repository>
+		      <id>jahia</id>
+		      <name>Jahia Repository</name>
+		      <layout>default</layout>
+		      <url>http://maven.jahia.org/maven2</url>
+		      <snapshots>
+		        <enabled>false</enabled>
+		      </snapshots>
+		    </repository>
+		  </repositories>
 
     <modules>
         <module>qa-1</module>

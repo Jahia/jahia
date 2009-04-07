@@ -47,6 +47,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerFactory;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
@@ -54,6 +55,8 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.content.PageDefinitionKey;
 
 import java.util.*;
+
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 
 /**
  * @version $Rev$
@@ -165,6 +168,50 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
         }
     } // end constructor
 
+    
+    public static String resolveNodeType(String containerName, int pageTemplateID, int pageID, 
+            ProcessingContext processingContext) throws NoSuchNodeTypeException {
+        String n = null;
+        try {
+            if (pageTemplateID > 0) {
+                n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(pageTemplateID))
+                        .getNodeType().getName();
+            } else if (pageID > 0) {
+                n = JahiaPageDefinition.getContentDefinitionInstance(
+                        new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(
+                                processingContext.getEntryLoadRequest()))).getNodeType().getName();
+            }  
+            n = NodeTypeRegistry.getInstance().getNodeType(n).getNodeDefinition(containerName)
+                    .getRequiredPrimaryTypes()[0].getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0]
+                    .getName();
+        } catch (Exception e) {
+            logger.warn("Error retrieving page definitions", e);
+        }
+        return n;
+    }
+    
+    public static String resolveContainerName(String containerName, int pageTemplateID, int pageID, 
+            ProcessingContext processingContext) {
+        String n = null;
+        try {
+            if (pageTemplateID > 0) {
+                n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(pageTemplateID))
+                        .getNodeType().getName();
+            } else if (pageID > 0) {
+                n = JahiaPageDefinition.getContentDefinitionInstance(
+                        new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(
+                                processingContext.getEntryLoadRequest()))).getNodeType().getName();
+            }
+            n = n.replace(':', '_') + "_";
+            if (!containerName.startsWith(n)) {
+                containerName = n + containerName;
+            }
+        } catch (Exception e) {
+            logger.warn("Error retrieving page definitions", e);
+        }
+
+        return containerName;
+    }
 
     //-------------------------------------------------------------------------
     /***
@@ -438,28 +485,7 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
      */
     public JahiaContainerList getContainerList(String containerName, String listViewId)
             throws JahiaException {
-        String n = null;
-        try {
-            n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(page.getPageTemplateID())).getNodeType().getName();
-        } catch (Exception e) {
-            // fsd
-        }
-        n = n.replace(':','_')+"_";
-        if (!containerName.startsWith(n)) {
-            containerName = n + containerName;
-        }
-
-//        try {
-//            ExtendedNodeType type = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(page.getPageTemplateID())).getNodeType();
-//            n = type.getChildNodeDefinitionsAsMap().get(containerName).getDeclaringNodeType().getName();
-////            n = .getName();
-//            n = n.replace(':','_')+"_";
-//            if (!containerName.startsWith(n)) {
-//                containerName = n + containerName;
-//            }
-//        } catch (Exception e) {
-//            // fsd
-//        }
+        containerName = resolveContainerName(containerName, page.getPageTemplateID(), 0, processingContext);
 
         if (checkDeclared(containerName)) {
             JahiaContainerList theContainerList = (JahiaContainerList)
@@ -638,30 +664,7 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
                     JahiaException.ERROR_SEVERITY);
 
         }
-
-        String n = null;
-        try {
-            n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(processingContext.getEntryLoadRequest()))).getNodeType().getName();
-        } catch (Exception e) {
-            // fsd
-        }
-        n = n.replace(':','_')+"_";
-        if (!containerName.startsWith(n)) {
-            containerName = n + containerName;
-        }
-
-//        try {
-//            ExtendedNodeType type = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(processingContext.getEntryLoadRequest()))).getNodeType();
-//            n = type.getChildNodeDefinitionsAsMap().get(containerName).getDeclaringNodeType().getName();
-////            n = type.getName();
-//            n = n.replace(':','_')+"_";
-//            if (!containerName.startsWith(n)) {
-//                containerName = n + containerName;
-//            }
-//        } catch (Exception e) {
-//            // fsd
-//        }
-
+        containerName = resolveContainerName(containerName, 0, pageID, processingContext);
 
         // now let's check if we are accessing a top level container list or
         // not using only the definitions (as the container lists might not

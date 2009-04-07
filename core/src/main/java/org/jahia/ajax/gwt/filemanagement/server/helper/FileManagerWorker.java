@@ -532,7 +532,16 @@ public class FileManagerWorker {
         if (f.isFile() || f.isPortlet()) {
             n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, f.getFileContent().getContentLength(), new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
             if (f.isPortlet()) {
-                n.setExt("mashup");
+                try {
+                    JCRPortletNode portletNode = new JCRPortletNode(f);
+                    if (portletNode.getContextName().equalsIgnoreCase("/rss")) {
+                        n.setExt("icon-rss");
+                    } else {
+                        n.setExt("icon-portlet");
+                    }
+                } catch (RepositoryException e) {
+                     n.setExt("icon-portlet");
+                }
             }
         } else {
             n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
@@ -565,10 +574,10 @@ public class FileManagerWorker {
             n.setDisplayable(true);
         } else {
             StringBuilder buffer = new StringBuilder();
-            ProcessingContext pBean = Jahia.getThreadParamBean() ;
+            ProcessingContext pBean = Jahia.getThreadParamBean();
             buffer.append(pBean.getScheme()).append("://").append(pBean.getServerName()).append(":").append(pBean.getServerPort()).append(Jahia.getContextPath());
-            buffer.append("/engines/images/types/gwt/large/") ;
-            buffer.append(n.getExt()).append(".png") ;
+            buffer.append("/engines/images/types/gwt/large/");
+            buffer.append(n.getExt()).append(".png");
             n.setPreview(buffer.toString());
         }
         for (String name : names) {
@@ -1506,7 +1515,7 @@ public class FileManagerWorker {
         return createPortletInstance(parentPath, name, "rss", "JahiaRSSPortlet", gwtJahiaNodeProperties, context);
     }
 
-     public static GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name,String script, ProcessingContext context) throws GWTJahiaServiceException {
+    public static GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, ProcessingContext context) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
 
         // get RSS GWTJahiaPortletDefinition
@@ -1523,12 +1532,11 @@ public class FileManagerWorker {
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("code", new GWTJahiaNodePropertyValue(script, GWTJahiaNodePropertyType.STRING)));
 
-        return createPortletInstance(parentPath, name,"googlegadget", "JahiaGoogleGadget", gwtJahiaNodeProperties, context);
+        return createPortletInstance(parentPath, name, "googlegadget", "JahiaGoogleGadget", gwtJahiaNodeProperties, context);
     }
 
 
     /**
-     * 
      * @param appName
      * @param entryPointName
      * @param context

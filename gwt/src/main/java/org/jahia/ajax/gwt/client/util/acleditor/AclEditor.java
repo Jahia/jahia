@@ -611,6 +611,14 @@ public class AclEditor {
     }
 
     /**
+     * return true if ACL permissions are empty
+     * @return
+     */
+    public boolean isEmpty(){
+       return getAcl() == null || getAcl().getAvailablePermissions() == null || getAcl().getAvailablePermissions().isEmpty();
+    }
+
+    /**
      * Save button, takes care of sending modified properties to server.
      */
     private class SaveButton extends TextToolItem {

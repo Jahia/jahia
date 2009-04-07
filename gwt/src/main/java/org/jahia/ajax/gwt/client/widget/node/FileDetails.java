@@ -450,7 +450,12 @@ public class FileDetails extends BottomRightComponent {
 
     // ACL TAB
     private void renderRoles() {
-        rolesTabItem.add(roleAclEditor.renderNewAclPanel());
+        if (!roleAclEditor.isEmpty()) {
+            rolesTabItem.setEnabled(true);
+            rolesTabItem.add(roleAclEditor.renderNewAclPanel());
+        } else {
+            rolesTabItem.setEnabled(false);
+        }
         rolesTabItem.layout();
     }
 
@@ -462,7 +467,12 @@ public class FileDetails extends BottomRightComponent {
     }
 
     private void renderModes() {
-        modesTabItem.add(modeAclEditor.renderNewAclPanel());
+        if (!modeAclEditor.isEmpty()) {
+            modesTabItem.setEnabled(true);
+            modesTabItem.add(modeAclEditor.renderNewAclPanel());
+        } else {
+            modesTabItem.setEnabled(false);
+        }
         modesTabItem.layout();
     }
 
@@ -501,8 +511,8 @@ public class FileDetails extends BottomRightComponent {
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
                         roleAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
-                        roleAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_roles","Add group-role mapping"));
-                        roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles","Add user-role mapping"));                                                                        
+                        roleAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_roles", "Add group-role mapping"));
+                        roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles", "Add user-role mapping"));
                         roleAclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
                         roleAclEditor.setCanBreakInheritance(false);
                         roleAclEditor.setReadOnly(!selectedNode.isWriteable());
@@ -544,8 +554,8 @@ public class FileDetails extends BottomRightComponent {
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
                         modeAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
-                        modeAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_modes","Add group-mode mapping"));
-                        modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes","Add user-mode mapping"));
+                        modeAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_modes", "Add group-mode mapping"));
+                        modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes", "Add user-mode mapping"));
                         modeAclEditor.setAclGroup(JCRClientUtils.MODES_ACL);
                         modeAclEditor.setCanBreakInheritance(false);
                         modeAclEditor.setReadOnly(!selectedNode.isWriteable());

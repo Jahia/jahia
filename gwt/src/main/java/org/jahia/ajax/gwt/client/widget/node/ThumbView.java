@@ -36,10 +36,7 @@ package org.jahia.ajax.gwt.client.widget.node;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.FieldEvent;
-import com.extjs.gxt.ui.client.event.ListViewEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionEvent;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.util.Util;
@@ -157,8 +154,8 @@ public class ThumbView extends TopRightComponent {
         view.setStore(store);
         view.setItemSelector("div.thumb-wrap");
         view.setOverStyle("x-view-over");
-        view.getSelectionModel().addListener(Events.SelectionChange, new Listener<SelectionEvent<GWTJahiaNode>>() {
-            public void handleEvent(SelectionEvent<GWTJahiaNode> be) {
+        view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
+            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 getLinker().onTableItemSelected();
             }
         });

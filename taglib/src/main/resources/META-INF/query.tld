@@ -52,7 +52,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Trully create a ContainerQueryBean instance</description>
+        <description>Truly create a ContainerQueryBean instance</description>
         <name>createContainerQueryBean</name>
         <tag-class>org.jahia.taglibs.query.CreateContainerQueryBeanTag</tag-class>
         <body-content>JSP</body-content>
@@ -753,36 +753,93 @@
         </attribute>
     </tag>
     <tag>
-        <description>Returns the number of hits for a search/query per facet</description>
-        <name>getHitsPerFacet</name>
-        <tag-class>org.jahia.taglibs.query.GetHitsPerFacetTag</tag-class>
+        <description>Creates facet filters to be held in cache</description>
+        <name>createFacetFilter</name>
+        <tag-class>org.jahia.taglibs.query.CreateFacetFilterTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>The ID of a query bean to compare its results with the results of the facet.</description>
-            <name>compareQueryBeanID</name>
+            <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <description>The facet name to identify the facet group</description>
+            <name>facetName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>                
         <attribute>
             <description>The property name for checking the facets.</description>
-            <name>facetPropertyName</name>
+            <name>propertyName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
         <attribute>
-            <description>The facet title for single queries.</description>
-            <name>facetTitle</name>
+            <description>The value title which is required if propertyName is not set and the facet value is the result of a query.</description>
+            <name>valueTitle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBean will be set</description>
+            <name>facetBeanId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>        
         <attribute>
-            <description>The facet query bean ID if the query is not nested in the body.</description>
-            <name>facetQueryBeanID</name>
+            <name>queryObjectModelBeanName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <name>targetContainerListName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>targetContainerListID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>queryBeanID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>        
-    </tag>
+    </tag>    
+    <tag>
+        <description>Returns the number of hits for a search/query per facet</description>
+        <name>getHitsPerFacetValue</name>
+        <tag-class>org.jahia.taglibs.query.GetHitsPerFacetValueTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBean is set</description>
+            <name>facetBeanId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>          
+        <attribute>
+            <description>The ID of a query bean to compare its results with the results of the facet.</description>
+            <name>mainQueryBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>The name of the facet value to print the hits.</description>
+            <name>facetValueName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>   
+        <attribute>
+            <description>The query parameter name for the filter to be created in the URL for drilldown.</description>
+            <name>filterQueryParamName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+    </tag>    
 </taglib>

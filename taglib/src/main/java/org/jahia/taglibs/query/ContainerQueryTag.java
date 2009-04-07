@@ -42,7 +42,9 @@ import javax.servlet.jsp.PageContext;
 
 import org.jahia.data.JahiaData;
 import org.jahia.data.containers.JahiaContainerList;
+import org.jahia.data.containers.JahiaContainerSet;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerQueryBean;
@@ -110,17 +112,18 @@ public class ContainerQueryTag extends QueryDefinitionTag  {
             return this.queryBean;
         }
         int targetCtnListID = 0;
+        ProcessingContext jParams = jData.getProcessingContext();
         try {
             if ( this.targetContainerList != null ){
                 targetCtnListID = this.targetContainerList.getID();
             }
             if ( this.targetContainerListID != null && !"".equals(this.targetContainerListID.trim()) ){
                 targetCtnListID = Integer.parseInt(this.targetContainerListID);
-            } else if ( this.targetContainerListName != null && !"".equals(this.targetContainerListName.trim()) ){
-                targetCtnListID = ServicesRegistry.getInstance().getJahiaContainersService()
-                    .getContainerListID(this.targetContainerListName,this.getJData()
-                            .getProcessingContext().getPageID());
-                if ( targetCtnListID == 0 ){
+            } else if (this.targetContainerListName != null && !"".equals(this.targetContainerListName.trim())) {
+                targetCtnListID = ServicesRegistry.getInstance().getJahiaContainersService().getContainerListID(
+                        JahiaContainerSet.resolveContainerName(targetContainerListName, jParams.getPage()
+                                .getPageTemplateID(), 0, jParams), jParams.getPageID());
+                if (targetCtnListID == 0) {
                     return null;
                 }
             }
@@ -144,7 +147,7 @@ public class ContainerQueryTag extends QueryDefinitionTag  {
 
         queryBean = ServicesRegistry.getInstance().getJahiaContainersService()
                 .createContainerQueryBean((QueryObjectModelImpl)queryModel,queryContextCtnID,
-                        new Properties(),jData.getProcessingContext());
+                        new Properties(),jParams);
         return queryBean;
     }
 
@@ -187,20 +190,12 @@ public class ContainerQueryTag extends QueryDefinitionTag  {
             logger.warn("Exception occured when creating the ContainerQueryBean",t);
             throw new JspException(t);
         }
-        GetHitsPerFacetTag facetTag = (GetHitsPerFacetTag)findAncestorWithClass(this, GetHitsPerFacetTag.class);
-        if (facetTag != null) {
-            facetTag.setFacetQueryBean(this.queryBean);            
-        }
-        
+
         if ( this.targetContainerList != null ){
             this.targetContainerList.setQueryBean(this.queryBean);
         }
         if (getQueryBeanID() != null) {
-            if (this.queryBean != null) {
-                pageContext.setAttribute(getQueryBeanID(), this.queryBean, PageContext.REQUEST_SCOPE);
-            } else {
-                pageContext.removeAttribute(getQueryBeanID(), PageContext.REQUEST_SCOPE);
-            }
+            pageContext.setAttribute(getQueryBeanID(), this.queryBean, PageContext.REQUEST_SCOPE);
         }
 
         int result = super.doEndTag();

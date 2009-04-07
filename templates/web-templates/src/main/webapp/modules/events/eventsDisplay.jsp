@@ -70,27 +70,75 @@
     </div>
     <div class="clear"> </div>
 
-<c:set var="sortBy" value="startDate"/>
-<c:set var="order" value="desc"/>
+<c:choose>
+    <c:when test="${!empty param.eventsSort}">
+        <c:set var="sortBy" value="${param.eventsSort}"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="sortBy" value="startDate"/>
+    </c:otherwise>
+</c:choose>
+<c:choose>
+    <c:when test="${sortBy == 'location'}">
+        <c:set var="order" value="${queryConstants.ORDER_ASCENDING}"/>
+    </c:when>
+    <c:otherwise>
+        <c:set var="order" value="${queryConstants.ORDER_DESCENDING}"/>
+    </c:otherwise>        
+</c:choose>
 
-<c:if test="${!empty param.eventsSort}">
-    <c:set var="sortBy" value="${param.eventsSort}"/>
-</c:if>
-<c:if test="${sortBy == 'location'}">
-   <c:set var="order" value="asc}"/>
-</c:if>
+<query:createFacetFilter facetName="categoryFacet" 
+    propertyName="defaultCategory" facetBeanId="categoryFacet"/>
+<query:createFacetFilter facetName="eventTypeFacet" targetContainerListName="events" 
+    propertyName="eventsType" facetBeanId="eventTypeFacet"/>
+
+<c:choose>
+<c:when test="${!empty param.startDate}">
+    <fmt:parseDate var="startDate" pattern="dd/MM/yyyy" value="${param.startDate}"/>
+</c:when>
+<c:otherwise>
+    <jsp:useBean id="startDate" class="java.util.Date" />
+</c:otherwise>
+</c:choose>
+<c:forTokens var="count" items="0,1,2,3" delims=",">
+    <utility:dateCalc value="${startDate}" var="beginMonth" 
+        months="${count}" days="${utilConstants.TO_MIN}" hours="${utilConstants.TO_MIN}" 
+        minutes="${utilConstants.TO_MIN}" seconds="${utilConstants.TO_MIN}" milliseconds="${utilConstants.TO_MIN}"/>                       
+    <utility:dateCalc value="${startDate}" var="endMonth" 
+        months="${count}" days="${utilConstants.TO_MAX}" hours="${utilConstants.TO_MAX}" 
+        minutes="${utilConstants.TO_MAX}" seconds="${utilConstants.TO_MAX}" milliseconds="${utilConstants.TO_MAX}"/>
+    <fmt:formatDate value="${beginMonth}" pattern="MMM yyyy" var="dateFacetValueTitle"/>
+    <c:set var="facetValues" value="${facetValues},${dateFacetValueTitle}"/>
+    <query:createFacetFilter facetName="eventDateFacet" targetContainerListName="events"
+        valueTitle="${dateFacetValueTitle}" facetBeanId="eventDateFacet">
+        <query:selector nodeTypeName="web_templates:eventContainer" selectorName="eventsSelector"/>
+        <query:childNode selectorName="eventsSelector" path="${eventsContainer.JCRPath}"/>
+
+        <query:greaterThanOrEqualTo numberValue="false" propertyName="endDate" value="${beginMonth.time}"/>
+        <query:lessThanOrEqualTo numberValue="false" propertyName="startDate" value="${endMonth.time}"/>        
+    </query:createFacetFilter>
+</c:forTokens>  
+   
 
 <template:containerList name="events" id="eventsContainer" actionMenuNamePostFix="events"
-                        actionMenuNameLabelKey="events" sortByField="${sortBy}" enforceDefinedSort="true" sortOrder="${order}">
-    <c:if test="${!empty param.startDate}">
-    <query:containerQuery>
-         <query:selector nodeTypeName="web_templates:eventContainer" selectorName="eventsSelector"/>
+                        actionMenuNameLabelKey="events">
+    <query:containerQuery queryBeanID="eventsQuery">
+        <query:selector nodeTypeName="web_templates:eventContainer" selectorName="eventsSelector"/>
         <query:childNode selectorName="eventsSelector" path="${eventsContainer.JCRPath}"/>
+        <query:sortBy propertyName="${sortBy}" order="${order}"/>
+        <query:setProperty name="${queryConstants.FACET_FILTER_QUERY_PARAM_NAME}" value="filter"/>
+        <c:if test="${!empty param.startDate}">
             <utility:dateUtil currentDate="${param.startDate}" datePattern="dd/MM/yyyy" valueID="today" hours="0"
                               minutes="0"
                               seconds="0"/>
-            <query:greaterThanOrEqualTo numberValue="true" propertyName="startDate" value="${today.time}"/>
+            <query:greaterThanOrEqualTo numberValue="false" propertyName="startDate" value="${today.time}"/>
+        </c:if>    
     </query:containerQuery>
-    </c:if>
     <%@ include file="eventsDisplay.jspf" %>
 </template:containerList>
+
+<query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="categoryFacet" filterQueryParamName="filter"/>
+<query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventTypeFacet" filterQueryParamName="filter"/>
+<c:forTokens var="facetValue" items="${facetValues}" delims=",">
+    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueName="${facetValue}" filterQueryParamName="filter"/>
+</c:forTokens>

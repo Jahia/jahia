@@ -50,6 +50,7 @@ import java.text.ParseException;
  *  If conversion has been successful executed, the timestamp retrieved from this Date object is stored in a scoped variable defined
  *  in the 'valueId' attribute. If not, -1 is stored.
  */
+@SuppressWarnings("serial")
 public class DateUtilTag extends AbstractDateTag {
 
     private static transient final Logger logger = Logger.getLogger(DateUtilTag.class);
@@ -107,7 +108,7 @@ public class DateUtilTag extends AbstractDateTag {
     public int doStartTag() {
         try {
             if (datePattern == null || datePattern.length() == 0) {
-                datePattern = DATE_PATTERNE_NO_TIME;
+                datePattern = DATE_PATTERN_NO_TIME;
             }
             final SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
             try {

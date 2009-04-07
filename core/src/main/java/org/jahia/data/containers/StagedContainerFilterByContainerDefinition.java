@@ -34,7 +34,6 @@
 package org.jahia.data.containers;
 
 import java.util.BitSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -52,7 +51,10 @@ import org.springframework.context.ApplicationContext;
  */
 public class StagedContainerFilterByContainerDefinition extends
         ContainerFilterByContainerDefinition {
-    private Set pagesID;
+
+    private static final long serialVersionUID = 7957722146415763436L;
+    
+    private Set<Integer> pagesID;
 
     /**
      * Initializes an instance of this class.
@@ -82,20 +84,11 @@ public class StagedContainerFilterByContainerDefinition extends
      * @param pagesID set of Integer referrring to pages id
      * @param containerDefinitionName the container definition to look at in the pages
      */
-    public StagedContainerFilterByContainerDefinition(int siteId, Set pagesID, String containerDefinitionName) {
+    public StagedContainerFilterByContainerDefinition(int siteId, Set<Integer> pagesID, String containerDefinitionName) {
         super(containerDefinitionName,EntryLoadRequest.STAGED);
         this.pagesID = pagesID;
     }
-    /**
-     * The expected result is a bit set of matching container ids.
-     *
-     * @param ctnListID, the container list id
-     * @return BitSet bits, the expected result as a bit set of matching ctn ids,each bit position set to true correspond to matching ctn ids.
-     */
-    private BitSet doFiltering(int ctnListID) throws JahiaException {
-        return doFilteringBySite(null, null, ctnListID);
-    }
-
+   
     //--------------------------------------------------------------------------
     /**
      * Perform filtering on a given site or all sites
@@ -166,15 +159,14 @@ public class StagedContainerFilterByContainerDefinition extends
                 .getContext();
         JahiaContainerManager containerMgr = (JahiaContainerManager) context
                 .getBean(JahiaContainerManager.class.getName());
-        List ctnIds = containerMgr.getContainerIds(new Integer(listId),
+        List<Object[]> ctnIds = containerMgr.getContainerIds(new Integer(listId),
                 siteIds, new Boolean((siteIds != null && siteIds.length>0)),
                 containerDefinitionNames, this.entryLoadRequest, true, true,
                 true, (siteIds != null && siteIds.length>0),pagesID);
 
         BitSet bits = new BitSet();
 
-        for (Iterator it = ctnIds.iterator(); it.hasNext();) {
-            Object[] row = (Object[]) it.next();
+        for (Object[] row : ctnIds) {
             int ctnID = ((Integer) row[0]).intValue();
             bits.set(ctnID);
 

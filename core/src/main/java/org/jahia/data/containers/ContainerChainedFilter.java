@@ -87,6 +87,8 @@ import java.io.Serializable;
 public class ContainerChainedFilter implements Serializable,
         ContainerFilterInterface {
 
+    private static final long serialVersionUID = -1123817010093670641L;
+
     /**
      * {@link BitSet#or}.
      */
@@ -173,7 +175,8 @@ public class ContainerChainedFilter implements Serializable,
     /**
      * Return the select statement, build with the clauses for all container list of the site.
      * 
-     * @ param int ctnListID, the container list id @ return String , the sql statement. Null on error
+     * @ param int ctnListID, the container list id 
+     * @ return String , the sql statement. Null on error
      */
     public String getSelect(int ctnListID, int filterId,
             Map<String, Object> parameters) {
@@ -181,11 +184,9 @@ public class ContainerChainedFilter implements Serializable,
             return "";
         }
         StringBuffer buff = new StringBuffer();
-        ContainerFilterInterface filter = null;
-        String val = "";
         for (int i = 0; i < chain.length; i++) {
-            filter = chain[i];
-            val = filter.getSelect(ctnListID, filterId == 0 ? i : filterId
+            ContainerFilterInterface filter = chain[i];
+            String val = filter.getSelect(ctnListID, filterId == 0 ? i : filterId
                     * 100 + i, parameters);
             if (val != null) {
                 if (i > 0) {

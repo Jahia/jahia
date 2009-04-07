@@ -79,7 +79,7 @@ public interface ContainerSorterInterface {
      * @param BitSet bits
      */
 
-    public abstract List doSort(BitSet bits);
+    public abstract List<Integer> doSort(BitSet bits);
 
     //--------------------------------------------------------------------------
     /**

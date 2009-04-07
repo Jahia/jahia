@@ -45,6 +45,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class LoggerTag extends AbstractJahiaTag {
 
     public static final String LOGGER_NAME = "jsp.jahia.templates.Logger";

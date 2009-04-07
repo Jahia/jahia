@@ -45,7 +45,6 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.fields.JahiaFieldService;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class JahiaFieldDefinitionsRegistry implements CacheListener {
@@ -60,8 +59,8 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
     public static final String FIELD_DEFINITION_BY_ID_CACHE = "FieldDefinitionsByID";
     public static final String FIELD_DEFINITION_BY_SITE_AND_NAME_CACHE =
             "FieldDefinitionsBySiteAndName";
-    private Cache fieldDefTable;
-    private Cache fieldDefSiteAndNameTable;
+    private Cache<Integer, JahiaFieldDefinition> fieldDefTable;
+    private Cache<String, JahiaFieldDefinition> fieldDefSiteAndNameTable;
     private CacheService cacheService;
     private JahiaFieldService fieldService;
 
@@ -107,10 +106,8 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
 
     private void loadAllDefinitions ()
         throws JahiaException {
-        List ids = fieldService.getAllFieldDefinitionIDs();
-        Iterator fieldDefIDEnum = ids.iterator();
-        while (fieldDefIDEnum.hasNext()) {
-            Integer currentID = ( (Integer) fieldDefIDEnum.next());
+        List<Integer> ids = fieldService.getAllFieldDefinitionIDs();
+        for (Integer currentID : ids) {
             JahiaFieldDefinition curDefinition = fieldService.loadFieldDefinition(currentID.
                 intValue());
             if (curDefinition != null) {            
@@ -145,7 +142,7 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
     
     public JahiaFieldDefinition getDefinition (int defID)
         throws JahiaException {
-        JahiaFieldDefinition result = (JahiaFieldDefinition) fieldDefTable.get(new
+        JahiaFieldDefinition result = fieldDefTable.get(new
             Integer(defID));
         if (result == null) {
             result = loadDefinitionByID(defID);
@@ -161,13 +158,13 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
                                  JahiaException.CRITICAL_SEVERITY);
     } // end getDefinition
 
-    public List getAllDefinitions () throws JahiaException {
+    public List<JahiaFieldDefinition> getAllDefinitions () throws JahiaException {
         /** @todo FIXME this will not work if the cache is limited */
-        List ids = fieldService.getAllFieldDefinitionIDs();
-        List definitions = new ArrayList();
+        List<Integer> ids = fieldService.getAllFieldDefinitionIDs();
+        List<JahiaFieldDefinition> definitions = new ArrayList<JahiaFieldDefinition>();
         JahiaFieldDefinition fieldDef = null;
         for ( int i=0 ; i<ids.size() ; i++ ){
-            fieldDef = (JahiaFieldDefinition)this.fieldDefTable.get(ids.get(i));
+            fieldDef = this.fieldDefTable.get(ids.get(i));
             definitions.add(fieldDef);
         }
         return definitions;
@@ -187,9 +184,8 @@ public class JahiaFieldDefinitionsRegistry implements CacheListener {
             siteID = 0;
         }
 
-        JahiaFieldDefinition result = (JahiaFieldDefinition)
-                                      fieldDefSiteAndNameTable.get(
-            buildCacheKey(fieldName, siteID));
+        JahiaFieldDefinition result = fieldDefSiteAndNameTable.get(
+         buildCacheKey(fieldName, siteID));
         if (result == null) {
             result = loadDefinitionBySiteIDAndName(siteID, fieldName);
         }

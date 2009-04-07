@@ -39,7 +39,8 @@ import org.jahia.engines.calendar.CalendarHandler;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public abstract class AbstractDateTag extends AbstractJahiaTag {
-    protected static final String DATE_PATTERNE_NO_TIME = "dd.MM.yyyy";
-    protected static final String DATE_PATTERNE_TIME = CalendarHandler.DEFAULT_DATE_FORMAT;
+    protected static final String DATE_PATTERN_NO_TIME = CalendarHandler.DEFAULT_DATEONLY_FORMAT;
+    protected static final String DATE_PATTERN_TIME = CalendarHandler.DEFAULT_DATE_FORMAT;
 }

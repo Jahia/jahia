@@ -46,6 +46,7 @@ import java.util.Random;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class GWTDateTimePickerTag extends AbstractDateTag {
     private static transient final Logger logger = Logger.getLogger(GWTDateTimePickerTag.class);
 
@@ -96,9 +97,9 @@ public class GWTDateTimePickerTag extends AbstractDateTag {
         final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         if (datePattern == null || datePattern.length() == 0) {
             if (displayTime) {
-                datePattern = DATE_PATTERNE_TIME;
+                datePattern = DATE_PATTERN_TIME;
             } else {
-                datePattern = DATE_PATTERNE_NO_TIME;
+                datePattern = DATE_PATTERN_NO_TIME;
             }
         }
         /*if (jData.gui().isLogged()) {*/

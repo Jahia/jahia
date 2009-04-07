@@ -59,6 +59,8 @@ import java.util.*;
  */
 public class ContainerFilterByCategories implements Serializable, ContainerFilterInterface {
 
+    private static final long serialVersionUID = 2964673693707730611L;
+
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(ContainerFilterByCategories.class);
 
@@ -136,9 +138,8 @@ public class ContainerFilterByCategories implements Serializable, ContainerFilte
             int ctnListId = this.containerFilters.getCtnListID();
             List<Integer> ids = ServicesRegistry.getInstance().getJahiaContainersService()
                     .getctnidsInList(ctnListId, this.entryLoadRequest);
-            for (Integer I : ids) {
-                int index = I.intValue();
-                Set objectCategories =
+            for (int index : ids) {
+                Set<Category> objectCategories =
                         Category.getObjectCategories(ContentContainer.getContainer(index).getObjectKey());
                 if(objectCategories==null || objectCategories.size()==0)
                     result.set(index);
@@ -260,9 +261,8 @@ public class ContainerFilterByCategories implements Serializable, ContainerFilte
 
         if (this.withAllContainersOfCompoundContainerList) {
             List<Integer> ids = ServicesRegistry.getInstance().getJahiaContainersService().getctnidsInList(listId, this.entryLoadRequest);
-            for (Integer I : ids) {
-                int index = I.intValue();
-                Set objectCategories =
+            for (int index : ids) {
+                Set<Category> objectCategories =
                         Category.getObjectCategories(ContentContainer.getContainer(index).getObjectKey());
                 if(objectCategories==null || objectCategories.size()==0)
                     result.set(index);

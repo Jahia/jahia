@@ -44,7 +44,6 @@ import org.jahia.query.filtercreator.FilterCreator;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerQueryBean;
 import org.jahia.services.containers.ContainerQueryContext;
-import org.jahia.services.search.ContainerSearcher;
 import org.jahia.utils.JahiaTools;
 
 import javax.jcr.Value;
@@ -90,7 +89,6 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
         this.extractChildOrDescendantNodeConstraint(this.queryModel);
         this.queryModel.accept(this);
         ContainerQueryBean queryBean = new ContainerQueryBean(queryContext);
-        queryBean.setSearcher(buildSearcher());
         queryBean.setFilter(buildContainerFilter());
         ContainerFilters filters = queryBean.getFilter();
         if (filters == null || filters.getContainerFilters().isEmpty() || !filters.isSingleSearchFilter()){
@@ -110,9 +108,6 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
         if ( !nodeType.equals(JahiaQueryObjectModelConstants.JAHIA_CONTAINER_NODE_TYPE)
                 && !nodeType.equals(JahiaQueryObjectModelConstants.JAHIA_CONTENT_NODE_TYPE)
                 && !nodeType.equals(JahiaQueryObjectModelConstants.JAHIA_PAGE_NODE_TYPE) ){
-            List<String> contentDefinitionNames = new ArrayList<String>();
-            contentDefinitionNames.add(nodeType);
-//            this.queryContext.setContainerDefinitionNames(contentDefinitionNames);
             this.queryContext.setContainerDefinitionType(nodeType);
         }
     }
@@ -129,15 +124,9 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                         ",")));
     }
 
-    private ContainerSearcher buildSearcher()
-    throws JahiaException {
-        // searcher are wrapped in ContainerSearcherToFilterAdapter
-        return null;
-    }
-
     private ContainerFilters buildContainerFilter()
     throws JahiaException {
-            ContainerFilters filters = null;
+        ContainerFilters filters = null;
         ConstraintItem constraintItem = getRootConstraint();
         List<ContainerFilterInterface> filtersV = new ArrayList<ContainerFilterInterface>();
         if ( constraintItem != null ){

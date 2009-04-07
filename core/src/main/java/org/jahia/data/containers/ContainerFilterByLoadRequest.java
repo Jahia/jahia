@@ -64,6 +64,8 @@ import java.io.Serializable;
  */
 public class ContainerFilterByLoadRequest implements Serializable, ContainerFilterInterface {
 
+    private static final long serialVersionUID = 4638771906688061211L;
+    
     private EntryLoadRequest entryLoadRequest = EntryLoadRequest.CURRENT;
 
     //--------------------------------------------------------------------------

@@ -620,27 +620,18 @@ public class ContainerFilters implements Serializable {
         }
         this.queryParameters = new HashMap<String, Object>();
         StringBuffer buff = new StringBuffer();
-        String fieldFilterQuery;
-        ContainerFilterInterface containerFilter;
-        int size = containerFilters.size();
-        for (int i = 0; i < size; i++) {
-            containerFilter = (ContainerFilterInterface) containerFilters
-                    .get(i);
+
+        for (ContainerFilterInterface containerFilter : containerFilters) {
             if (containerFilter == null)
                 return;
-            if (this.isSiteModeFiltering()) {
-                fieldFilterQuery = containerFilter.getSelect(this.getSiteId(), 0, 
-                        queryParameters);
-            } else {
-                fieldFilterQuery = containerFilter.getSelect(this
-                        .getCtnListID(), 0, queryParameters);
-            }
+            String fieldFilterQuery = containerFilter.getSelect(this.isSiteModeFiltering() ? this.getSiteId() : this
+                    .getCtnListID(), 0, queryParameters);
 
             if (fieldFilterQuery != null && !fieldFilterQuery.trim().equals("")) {
+                if (buff.length() > 0) {
+                    buff.append(" INTERSECT ");
+                }
                 buff.append(fieldFilterQuery);
-            }
-            if (i < size - 1) {
-                buff.append(" INTERSECT ");
             }
         }
 

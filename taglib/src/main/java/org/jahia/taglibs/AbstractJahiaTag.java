@@ -142,7 +142,7 @@ public class AbstractJahiaTag extends BodyTagSupport {
     }
 
     protected final Tag findAncestorWithClass(final Tag tag,
-                                              final Class aClass,
+                                              final Class<?> aClass,
                                               final ServletRequest request) {
         if (tag == null || aClass == null ||
                 (!Tag.class.isAssignableFrom(aClass) && !(aClass.isInterface()))) {
@@ -285,11 +285,11 @@ public class AbstractJahiaTag extends BodyTagSupport {
      * @return
      */
     protected String generateJahiaGwtDictionary() {
-        Map dictionaryMap = getJahiaGwtDictionary();
+        Map<String, String> dictionaryMap = getJahiaGwtDictionary();
         StringBuffer s = new StringBuffer();
         s.append("var " + Messages.DICTIONARY_NAME + " = {\n");
         if (dictionaryMap != null) {
-            Iterator keys = dictionaryMap.keySet().iterator();
+            Iterator<String> keys = dictionaryMap.keySet().iterator();
             while (keys.hasNext()) {
                 String name = keys.next().toString();
                 Object value = dictionaryMap.get(name);

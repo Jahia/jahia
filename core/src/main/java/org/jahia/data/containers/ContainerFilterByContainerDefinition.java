@@ -63,9 +63,8 @@ import org.springframework.context.ApplicationContext;
 public class ContainerFilterByContainerDefinition implements Serializable,
         ContainerFilterInterface {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
-            .getLogger(ContainerFilterByContainerDefinition.class);
-
+    private static final long serialVersionUID = 3150009410760802706L;
+    
     public static final String VERSION_ID = "comp_id.versionId";
     public static final String WORKFLOW_STATE = "comp_id.workflowState";
     public static final String LANGUAGE_CODE = "comp_id.languageCode";

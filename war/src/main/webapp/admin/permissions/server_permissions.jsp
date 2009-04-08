@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -83,6 +83,13 @@ stretcherToOpen   = 0; %>
                 <p>
                   &nbsp;&nbsp;<fmt:message key="org.jahia.admin.serverpermissions.introduction.label"/>
                 </p>
+                <div class="buttonList" style="text-align:right; padding:10px">
+                    <span class="dex-PushButton">
+                        <span class="first-child">
+                            <a class="ico-ok" href="#ok" onclick="document.jahiaAdmin.submit(); return false;"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
+                        </span>
+                    </span>
+                </div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="permissions">
                 <c:forEach items="${aclNameList}" var="curAclName" varStatus="status">
                   <tr>

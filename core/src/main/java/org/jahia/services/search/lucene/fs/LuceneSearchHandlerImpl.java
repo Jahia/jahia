@@ -274,15 +274,17 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
                     Map<Analyzer, Set<String>> analyzersToUse = new HashMap<Analyzer, Set<String>>();
                     for (String languageCode : languageCodes) {
                         Analyzer languageAnalyzer = ContentObject.SHARED_LANGUAGE.equals(languageCode) ? null : getAnalyzerForLanguage(languageCode);
-                        if (languageAnalyzer != null) {
-                            Set<String> languages = analyzersToUse
-                                    .get(languageAnalyzer);
-                            if (languages == null) {
-                                languages = new HashSet<String>();
-                            }
-                            languages.add(languageCode);
-                            analyzersToUse.put(languageAnalyzer, languages);
+                        if (languageAnalyzer == null) {
+                            languageAnalyzer = analyzer;
                         }
+
+                        Set<String> languages = analyzersToUse
+                                .get(languageAnalyzer);
+                        if (languages == null) {
+                            languages = new HashSet<String>();
+                        }
+                        languages.add(languageCode);
+                        analyzersToUse.put(languageAnalyzer, languages);
                     }
                     if (analyzersToUse.size() == 1 && analyzersToUse.keySet().iterator().next().equals(analyzer)) {
                         q = queryParser.parse(query);

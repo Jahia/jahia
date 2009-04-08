@@ -361,6 +361,12 @@
             <type>war</type>
         </dependency>
         <dependency>
+            <groupId>org.jahia.templates</groupId>
+            <artifactId>social-templates</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.4</version>

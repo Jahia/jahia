@@ -1415,11 +1415,11 @@ tr.oddLine {
   background-position: 4px -526px;
 }
 
-.ico-server-pedia, ico-server-docs {
+.ico-server-pedia, .ico-server-docs {
   background-position: 4px -576px;
 }
 
-.ico-server-community-jira, ico-server-enterprise-jira {
+.ico-server-community-jira, .ico-server-enterprise-jira {
   background-position: 4px -628px;
 }
 

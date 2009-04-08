@@ -163,6 +163,9 @@ public class JahiaContainerIndexableDocument extends IndexableDocumentImpl {
         // add the container's definition properties
         try {
             properties = container.getDefinition().getProperties();
+            this.setFieldValue(
+                    JahiaSearchConstant.CONTAINER_DEFINITION_PRIMARYTYPE,
+                    container.getDefinition().getPrimaryType());
             if (properties != null) {
                 for (Iterator<Entry<Object, Object>> entries = properties.entrySet().iterator(); entries.hasNext();) {
                     Entry<Object, Object> entry = entries.next();

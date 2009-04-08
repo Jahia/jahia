@@ -54,7 +54,6 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
@@ -119,7 +118,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                 String pagePath = SearchIndexProcessValveUtils
                     .buildContentPagePath(ContentContainer.getContainer(container.getID()),container.getWorkflowState());
                 if ( pagePath != null ){
-                    doc.setFieldValue(JahiaSearchConstant.PAGE_PATH,pagePath);
+                    doc.setFieldValue(JahiaSearchConstant.METADATA_PAGE_PATH,pagePath);
                 }
             } catch ( Exception t ){
                 logger.warn("Error building page path for container " + container.getID(),t);

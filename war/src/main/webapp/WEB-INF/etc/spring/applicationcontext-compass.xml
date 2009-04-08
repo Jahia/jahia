@@ -164,12 +164,12 @@
                 <prop key="compass.engine.analyzer.keyword.factory">org.compass.core.lucene.engine.analyzer.DefaultLuceneAnalyzerFactory</prop>
                 <prop key="compass.engine.analyzer.keyword.type">org.apache.lucene.analysis.KeywordAnalyzer</prop>
                 
-                <prop key="compass.engine.analyzer.simple.factory">org.compass.core.lucene.engine.analyzer.DefaultLuceneAnalyzerFactory</prop>
-                <prop key="compass.engine.analyzer.simple.type">org.apache.lucene.analysis.SimpleAnalyzer</prop>
-                
                 <prop key="compass.engine.analyzer.lowercasekeyword.factory">org.compass.core.lucene.engine.analyzer.DefaultLuceneAnalyzerFactory</prop>
                 <prop key="compass.engine.analyzer.lowercasekeyword.type">org.apache.lucene.analysis.KeywordAnalyzer</prop>
                 <prop key="compass.engine.analyzer.lowercasekeyword.filters">lowercase</prop>
+                
+                <prop key="compass.engine.analyzer.simple.type">simple</prop>
+                <prop key="compass.engine.analyzer.whitespace.type">whitespace</prop>                                
                 
                 <prop key="compass.engine.analyzerfilter.jahiaquote.type">org.jahia.services.search.analyzer.JahiaLuceneAnalyzerTokenFilterProvider</prop>
                 <prop key="compass.engine.analyzerfilter.jahiaquote.name">quote</prop>                

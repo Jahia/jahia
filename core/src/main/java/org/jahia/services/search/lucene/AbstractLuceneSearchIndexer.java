@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.IndexDeletionPolicy;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -600,55 +601,46 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                         }
                     }
                     if (docField.isKeyword() || docField.isText()) {
-                        Field field = new Field(name, paddedValue, docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
-                                store == null ? Field.Store.YES : LuceneUtils
-                                        .getFieldStore(store),
-                                index == null ? docField.isText() ? Field.Index.TOKENIZED : Field.Index.UN_TOKENIZED
-                                        : LuceneUtils.getFieldIndex(index));
-                        field.setBoost(boost);
-                        doc.add(field);
+                        Store fieldStore = docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
+                            store == null ? Field.Store.YES : LuceneUtils.getFieldStore(store);
+                        Field.Index fieldIndex = index == null ? docField.isText() ? Field.Index.TOKENIZED : Field.Index.UN_TOKENIZED
+                                : LuceneUtils
+                                .getFieldIndex(index);
+                        if (!(fieldIndex.equals(Field.Index.NO) && fieldStore
+                                .equals(Store.NO))) {
+                            Field field = new Field(name, paddedValue,
+                                    fieldStore, fieldIndex);
+                            field.setBoost(boost);
+                            doc.add(field);
 
-                        if (docField.isText() && paddedValue != originalValue
-                                && (index == null || !index.equals(Index.NO))) {
-                            field = new Field(
-                                    name
-                                            + JahiaSearchConstant.NO_PADDED_FIELD_POSTFIX,
-                                    originalValue, Field.Store.NO,
-                                    index == null ? Field.Index.TOKENIZED
-                                            : LuceneUtils.getFieldIndex(index));
+                            if (docField.isText() && !docField.isUnstored()
+                                    && paddedValue != originalValue
+                                    && (index == null || !index
+                                            .equals(Index.NO))) {
+                                field = new Field(
+                                        name + JahiaSearchConstant.NO_PADDED_FIELD_POSTFIX,
+                                        originalValue, Field.Store.NO,
+                                        index == null ? Field.Index.TOKENIZED
+                                                : LuceneUtils
+                                                        .getFieldIndex(index));
+                                field.setBoost(boost);
+                                doc.add(field);
+                            }
+                        }
+                    } else if (docField.isUnindexed()) {
+                        Store fieldStore = docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
+                            store == null ? Field.Store.YES : LuceneUtils
+                                    .getFieldStore(store);
+                        if (!fieldStore.equals(Store.NO)) {
+                            Field field = new Field(name, paddedValue,
+                                    fieldStore, Field.Index.NO);
                             field.setBoost(boost);
                             doc.add(field);
                         }
-                    } else if (docField.isUnindexed()) {
-                        Field field = new Field(name, paddedValue, docField.isUnstored() && (index == null || !index.equals(Index.NO)) ? Field.Store.NO : 
-                                store == null ? Field.Store.YES : LuceneUtils
-                                        .getFieldStore(store), Field.Index.NO);
-                        field.setBoost(boost);
-                        doc.add(field);
                     }
                 }
             }
         }
-        String name = indObj.getKeyFieldName().toLowerCase();
-        Index index = null;
-        float boost = 1;
-        Property.Store store = null;
-        if (resourceMapping != null) {
-            ResourcePropertyMapping propertyMapping = resourceMapping
-                    .getResourcePropertyMapping(name);
-            if (propertyMapping != null) {
-                index = propertyMapping.getIndex();
-                boost = propertyMapping.getBoost();
-                store = propertyMapping.getStore();
-            }
-        }
-        Field field = new Field(name, NumberPadding.pad(indObj.getKey()),
-                store == null ? Field.Store.YES : LuceneUtils
-                        .getFieldStore(store),
-                index == null ? Field.Index.UN_TOKENIZED : LuceneUtils
-                        .getFieldIndex(index));
-        field.setBoost(boost);
-        doc.add(field);
         return doc;
     }
 

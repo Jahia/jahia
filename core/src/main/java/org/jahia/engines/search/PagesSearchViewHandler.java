@@ -40,7 +40,7 @@ import static org.jahia.services.search.JahiaSearchConstant.METADATA_CREATOR;
 import static org.jahia.services.search.JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD;
 import static org.jahia.services.search.JahiaSearchConstant.METADATA_LAST_CONTRIBUTOR;
 import static org.jahia.services.search.JahiaSearchConstant.METADATA_LAST_MODIFICATION_DATE;
-import static org.jahia.services.search.JahiaSearchConstant.PAGE_PATH;
+import static org.jahia.services.search.JahiaSearchConstant.METADATA_PAGE_PATH;
 
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -208,7 +208,7 @@ public class PagesSearchViewHandler extends AbstractSearchViewHandler {
                 }
             }
             if (path != null) {
-                query = new StringBuilder(64).append(PAGE_PATH + ":").append(
+                query = new StringBuilder(64).append(METADATA_PAGE_PATH + ":").append(
                         path).append(
                         criteria.getPagePath().isIncludeChildren() ? "*" : "")
                         .toString();

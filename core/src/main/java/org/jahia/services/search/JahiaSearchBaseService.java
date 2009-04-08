@@ -49,6 +49,7 @@ import org.apache.lucene.search.Sort;
 import org.compass.core.Compass;
 import org.compass.core.Resource;
 import org.compass.core.Property.Index;
+import org.compass.core.Property.Store;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.engine.SearchEngineHighlighter;
 import org.compass.core.engine.naming.StaticPropertyPath;
@@ -2933,9 +2934,9 @@ public class JahiaSearchBaseService extends JahiaSearchService
             for (Integer currentID : siteId > 0 ? fieldService.getAllFieldDefinitionIDs(siteId) : fieldService.getAllFieldDefinitionIDs()) {
                 JahiaFieldDefinition def = fieldService
                         .loadFieldDefinition(currentID.intValue());
-                float scoreBoost = 0;
+                float scoreBoost = 1;
                 String analyzer = null;
-                int indexMode = ExtendedPropertyDefinition.INDEXED_NO;
+                int indexMode = ExtendedPropertyDefinition.INDEXED_TOKENIZED;
                 if (def != null) {
                     String ntDefinition = def.getCtnType();
                     boolean isDefault = true;
@@ -2999,15 +3000,19 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             || scoreBoost != 1
                             || indexMode != ExtendedPropertyDefinition.INDEXED_TOKENIZED) {
                         if (updateCompassMappings(compassMappings, name,
-                                isDefault, scoreBoost, analyzer, indexMode)) {
+                                isDefault, scoreBoost, analyzer, indexMode,
+                                ExtendedPropertyDefinition.STORE_YES, false)) {
                             if (!compassConfigChanged) {
                                 compassConfigChanged = true;
                             }
                         }
                         for (String aliasName : def.getAliasNames()){
-                            if (updateCompassMappings(compassMappings, JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
-                                    + aliasName.toLowerCase(),
-                                    isDefault, scoreBoost, analyzer, indexMode)) {
+                            if (updateCompassMappings(
+                                    compassMappings,
+                                    JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
+                                            + aliasName.toLowerCase(),
+                                    isDefault, scoreBoost, analyzer, indexMode,
+                                    ExtendedPropertyDefinition.STORE_NO, true)) {
                                 if (!compassConfigChanged) {
                                     compassConfigChanged = true;
                                 }
@@ -3024,7 +3029,8 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                     isDefault,
                                     scoreBoost,
                                     keywordAnalyzer,
-                                    ExtendedPropertyDefinition.INDEXED_UNTOKENIZED)) {
+                                    ExtendedPropertyDefinition.INDEXED_UNTOKENIZED,
+                                    ExtendedPropertyDefinition.STORE_YES, true)) {
                                 if (!compassConfigChanged) {
                                     compassConfigChanged = true;
                                 }
@@ -3038,7 +3044,8 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                     isDefault,
                                     scoreBoost,
                                     keywordAnalyzer,
-                                    ExtendedPropertyDefinition.INDEXED_UNTOKENIZED)) {
+                                    ExtendedPropertyDefinition.INDEXED_UNTOKENIZED,
+                                    ExtendedPropertyDefinition.STORE_NO, true)) {
                                 if (!compassConfigChanged) {
                                     compassConfigChanged = true;
                                 }
@@ -3109,7 +3116,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     private boolean updateCompassMappings(ResourceMapping[] compassMappings,
             String fieldName, boolean isDefault, float scoreBoost,
-            String analyzer, int indexMode) {
+            String analyzer, int indexMode, int storeMode, boolean omitNorms) {
         boolean mappingChanged = false;
         for (ResourceMapping compassMapping : compassMappings) {
             Mapping propertyMapping = compassMapping.getMapping(fieldName);
@@ -3131,6 +3138,8 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     rawMapping.setAnalyzer(analyzer);
                     rawMapping.setBoost(scoreBoost);
                     rawMapping.setIndex(getIndexMode(indexMode));
+                    rawMapping.setStore(getStoreMode(storeMode));
+                    rawMapping.setOmitNorms(omitNorms);                    
                     mappingChanged = true;
                 }
                 if (newMapping) {
@@ -3156,6 +3165,23 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
         }
         return index;
+    }
+    
+    private Store getStoreMode(int storeMode) {
+        Store store = null;
+        switch (storeMode) {
+        case ExtendedPropertyDefinition.STORE_NO:
+            store = Store.NO;
+            break;
+        case ExtendedPropertyDefinition.STORE_COMPRESS:
+            store = Store.COMPRESS;
+            break;
+        default:
+            store = Store.YES;
+            break;
+
+        }
+        return store;
     }
 
     private void addToFieldsGroup(Map<String, Set<String>> fieldGroups, String groupName,

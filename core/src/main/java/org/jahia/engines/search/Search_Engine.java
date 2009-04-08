@@ -606,7 +606,7 @@ public class Search_Engine implements JahiaEngine {
                     String pagePath = page.getPagePathString(context);
                     if (pagePath!=null && !"".equals(pagePath.trim())){
                         pagePath +="*";
-                        buffer.append(JahiaSearchConstant.PAGE_PATH).append(":").append(pagePath);
+                        buffer.append(JahiaSearchConstant.METADATA_PAGE_PATH).append(":").append(pagePath);
                     }
                 }
             } catch ( Exception t){

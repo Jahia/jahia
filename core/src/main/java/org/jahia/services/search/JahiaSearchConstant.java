@@ -70,11 +70,11 @@ public final class JahiaSearchConstant {
     public static final String OBJECT_PROPERTY_PREFIX       = JAHIA_PREFIX + "object_property_";
     public static final String DEFINITION_PROPERTY_PREFIX   = JAHIA_PREFIX + "definition_property_";
     public static final String CONTAINER_FIELD_PREFIX       = JAHIA_PREFIX + "containerfield_";
-    public static final String CONTAINER_FIELD_SORT_PREFIX  = CONTAINER_FIELD_PREFIX + "sort_";
-    public static final String CONTAINER_FIELD_FACET_PREFIX = CONTAINER_FIELD_PREFIX + "facet_";
+    public static final String CONTAINER_FIELD_SORT_PREFIX  = JAHIA_PREFIX + "containerfieldsort_";
+    public static final String CONTAINER_FIELD_FACET_PREFIX = JAHIA_PREFIX + "containerfieldfacet_";
     public static final String CONTAINER_FIELD_ALIAS_PREFIX = JAHIA_PREFIX + "containerfieldalias_";
     
-    public static final String CONTAINER_DEFINITION_PRIMARYTYPE  = DEFINITION_PROPERTY_PREFIX + "jcr:primarytype";;    
+    public static final String CONTAINER_DEFINITION_PRIMARYTYPE  = JAHIA_PREFIX + "definition_primarytype";    
 
     /**
      * Metadata prefix
@@ -135,7 +135,6 @@ public final class JahiaSearchConstant {
     public static final String LANGUAGE_CODE                = JAHIA_PREFIX + "language_code";
     public static final String PAGE_ID                      = JAHIA_PREFIX + "page_id";
     public static final String PARENT_ID                    = JAHIA_PREFIX + "parent_id";
-    public static final String PARENT_DEFINITION_NAME       = JAHIA_PREFIX + "parent_definition_name";
     public static final String VERSION                      = JAHIA_PREFIX + "version";
     public static final String WORKFLOW_STATE               = JAHIA_PREFIX + "workflow_state";
 
@@ -168,36 +167,12 @@ public final class JahiaSearchConstant {
     public static final String FILE_SIZE                    = JAHIA_PREFIX + "file_size";
 
 
-    public static final String FIELD_FIELDTYPE              = JAHIA_PREFIX + "field_type";
-    public static final String FIELD_VALUE                  = JAHIA_PREFIX + "field_value";
     public static final String FIELD_FIELDID                = JAHIA_PREFIX + "field_id";
-    public static final String FIELD_JAHIAID                = JAHIA_PREFIX + "field_jahiaid";
-    public static final String FIELD_PAGEID                 = JAHIA_PREFIX + "field_pageid";
-    public static final String FIELD_FIELDNAME              = JAHIA_PREFIX + "field_fieldname";
-    public static final String FIELD_CTNID                  = JAHIA_PREFIX + "field_ctnid";
-    public static final String FIELD_CTNLISTID              = JAHIA_PREFIX + "field_ctnlistid";
-    public static final String FIELD_RIGHT                  = JAHIA_PREFIX + "field_right";
-    public static final String FIELD_VERSION                = JAHIA_PREFIX + "field_version";
-    public static final String FIELD_WORKFLOW_STATE         = JAHIA_PREFIX + "field_workflow_state";
-    public static final String FIELD_LANGUAGE_CODE          = JAHIA_PREFIX + "field_language_code";
-    public static final String FIELD_KEY                    = JAHIA_PREFIX + "field_key";
-
     public static final String FIELD_DEFINITION_ID          = JAHIA_PREFIX + "field_definition_id";
     public static final String FIELD_DEFINITION_NAME        = JAHIA_PREFIX + "field_definition_name";
 
 
-    public static final String CONTAINER_CATEGORY_KEY       = JAHIA_PREFIX + "container_category_key";
-    public static final String PAGE_CATEGORY_KEY            = JAHIA_PREFIX + "page_category_key";
-
-    // the source object key for which the metadata is assigned
-    public static final String METADATA_SOURCE_OBJECTKEY        = JAHIA_PREFIX + "metadata_source_object";
-
-    // the source objectid for which the metadata is assigned
-    public static final String METADATA_SOURCE_OBJECTID         = JAHIA_PREFIX + "metadata_source_objectid";
-
-    public static final String IS_METADATA                      = JAHIA_PREFIX + "is_metadata";
-
-    public static final String TITLE                            = JAHIA_PREFIX + "title";
+    public static final String TITLE                        = JAHIA_PREFIX + "title";
 
     public static final String PAGE_URL_KEY                 = JAHIA_PREFIX + "page_url_key";
 
@@ -207,18 +182,12 @@ public final class JahiaSearchConstant {
      */
     public static final String CONTENT_PICKING                  = JAHIA_PREFIX + "content_picking";
     
-    public static final String METADATA_CREATION_DATE = METADATA_PREFIX
-            + CoreMetadataConstant.CREATION_DATE.toLowerCase();
-
+    public static final String METADATA_CREATION_DATE = METADATA_PREFIX + CoreMetadataConstant.CREATION_DATE.toLowerCase();
     public static final String METADATA_CREATOR = METADATA_PREFIX + CoreMetadataConstant.CREATOR.toLowerCase();
-
-    public static final String METADATA_LAST_CONTRIBUTOR = METADATA_PREFIX
-            + CoreMetadataConstant.LAST_CONTRIBUTOR.toLowerCase();
-
-    public static final String METADATA_LAST_MODIFICATION_DATE = METADATA_PREFIX
-            + CoreMetadataConstant.LAST_MODIFICATION_DATE.toLowerCase();
-    
-    public static final String PAGE_PATH                    = METADATA_PREFIX + CoreMetadataConstant.PAGE_PATH.toLowerCase();    
+    public static final String METADATA_LAST_CONTRIBUTOR = METADATA_PREFIX + CoreMetadataConstant.LAST_CONTRIBUTOR.toLowerCase();
+    public static final String METADATA_LAST_MODIFICATION_DATE = METADATA_PREFIX + CoreMetadataConstant.LAST_MODIFICATION_DATE.toLowerCase();
+    public static final String METADATA_KEYWORDS = METADATA_PREFIX + CoreMetadataConstant.KEYWORDS.toLowerCase();    
+    public static final String METADATA_PAGE_PATH = METADATA_PREFIX + CoreMetadataConstant.PAGE_PATH.toLowerCase();    
 
     //--------------------------------------------------------------------------
     /**

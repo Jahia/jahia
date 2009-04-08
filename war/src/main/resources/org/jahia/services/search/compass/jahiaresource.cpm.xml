@@ -4,46 +4,47 @@
 <compass-core-mapping>
     <resource-contract alias="jahiaFields">
       <resource-id name="jahia.comp_id" analyzer="lowercasekeyword"/>
-      <resource-property name="jahia.acl_id" index="un_tokenized" analyzer="keyword"/>
-      <resource-property name="jahia.category_id" analyzer="lowercasekeyword"/>      
-      <resource-property name="jahia.container_alias" analyzer="simple"/>
-      <resource-property name="jahia.content_picking" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.acl_id" index="no"/>
+      <resource-property name="jahia.category_id" index="un_tokenized" analyzer="lowercasekeyword"/>      
+      <resource-property name="jahia.container_alias" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.content_picking" index="un_tokenized" analyzer="keyword" store="no"/>
       <resource-property name="jahia.content_type" index="un_tokenized" analyzer="keyword"/>
-      <resource-property name="jahia.definition_id" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.definition_id" index="un_tokenized" analyzer="keyword" store="no"/>      
       <resource-property name="jahia.definition_name" index="un_tokenized" analyzer="keyword"/>      
-      <resource-property name="jahia.definition_property_acl_id" index="un_tokenized" analyzer="keyword"/>      
-      <resource-property name="jahia.definition_property_alias_name" analyzer="simple"/>      
-      <resource-property name="jahia.definition_property_alias_name0" analyzer="simple"/>      
-      <resource-property name="jahia.definition_property_container_list_type" index="un_tokenized" analyzer="keyword"/>      
-      <resource-property name="jahia.definition_property_containerbeanname" analyzer="simple"/>            
-      <resource-property name="jahia.definition_property_jcr:primarytype" analyzer="simple"/>                  
-      <resource-property name="jahia.definition_property_validatorkey" analyzer="simple"/>
+      <resource-property name="jahia.definition_primarytype" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.definition_property_acl_id" index="no"/>      
+      <resource-property name="jahia.definition_property_alias_name" index="un_tokenized" analyzer="keyword" store="no"/>      
+      <resource-property name="jahia.definition_property_alias_name0" index="un_tokenized" analyzer="keyword" store="no"/>      
+      <resource-property name="jahia.field_definition_id" index="un_tokenized" analyzer="keyword" store="no"/>
+      <resource-property name="jahia.field_definition_name" index="un_tokenized" analyzer="keyword" store="no"/>      
       <resource-property name="jahia.field_id" index="un_tokenized" analyzer="keyword"/>
-      <resource-property name="jahia.filecontent"/>
+      <resource-property name="jahia.filecontent" store="no"/>
       <resource-property name="jahia.file_content_type" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.file_filename" analyzer="simple"/>
       <resource-property name="jahia.file_realname" analyzer="simple"/>
-      <resource-property name="jahia.file_size" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.file_size" index="un_tokenized" analyzer="keyword" store="no"/>
       <resource-property name="jahia.id" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.jahia_id" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.language_code" index="un_tokenized" analyzer="lowercasekeyword"/>
       <resource-property name="jahia.metadata_created" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.metadata_createdby" analyzer="simple"/>
-      <resource-property name="jahia.metadata_defaultcategory" analyzer="lowercasekeyword"/>
+      <resource-property name="jahia.metadata_defaultcategory" index="un_tokenized" analyzer="lowercasekeyword"/>
+      <resource-property name="jahia.metadata_description" store="no"/>      
+      <resource-property name="jahia.metadata_keywords" analyzer="whitespace" omit-norms="true" />      
       <resource-property name="jahia.metadata_lastmodified" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.metadata_lastmodifiedby" analyzer="simple"/>
       <resource-property name="jahia.metadata_lastpublisher" analyzer="simple"/>      
       <resource-property name="jahia.metadata_lastpublishingdate" index="un_tokenized" analyzer="keyword"/>              
-      <resource-property name="jahia.metadata_pagepath" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.metadata_pagepath" index="un_tokenized" analyzer="keyword" store="no"/>
       <resource-property name="jahia.object_key" index="un_tokenized" analyzer="lowercasekeyword"/>
-      <resource-property name="jahia.object_property_originaluuid" index="un_tokenized" analyzer="keyword"/>      
+      <resource-property name="jahia.object_property_originaluuid" index="un_tokenized" analyzer="keyword" store="no"/>      
+      <resource-property name="jahia.object_property_uuid" index="un_tokenized" analyzer="keyword" store="no"/>      
       <resource-property name="jahia.page_id" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.page_url_key" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.parent_id" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.title" boost="1.5"/>      
       <resource-property name="jahia.version" index="un_tokenized" analyzer="keyword"/>                        
       <resource-property name="jahia.workflow_state" index="un_tokenized" analyzer="keyword"/>
-      
-      <resource-property name="jahia.containerfield_date" index="un_tokenized" analyzer="keyword"/> 
     </resource-contract>
     
     <resource alias="jahiaSearcher" extends="jahiaFields" sub-index="jahia" analyzer="search"/>

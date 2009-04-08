@@ -189,7 +189,7 @@ public class QueryModelTools {
             if (FilterCreator.CONTENT_DEFINITION_NAME.equals(propertyName)) {
                 fieldName = JahiaSearchConstant.DEFINITION_NAME;
             } else if (FilterCreator.PAGE_PATH.equals(propertyName)) {
-                fieldName = JahiaSearchConstant.PAGE_PATH;
+                fieldName = JahiaSearchConstant.METADATA_PAGE_PATH;
             } else if (JahiaQueryObjectModelConstants.CATEGORY_LINKS
                     .equals(propertyName)) {
                 fieldName = JahiaSearchConstant.CATEGORY_ID;

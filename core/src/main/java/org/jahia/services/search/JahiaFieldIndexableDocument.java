@@ -182,6 +182,9 @@ public class JahiaFieldIndexableDocument extends IndexableDocumentImpl {
             try {
                 JahiaContainerDefinition def = (JahiaContainerDefinition) ContentDefinition
                         .getContentDefinitionInstance(container.getDefinitionKey(loadRequest));
+                this.setFieldValue(
+                        JahiaSearchConstant.CONTAINER_DEFINITION_PRIMARYTYPE,
+                        def.getPrimaryType());
                 Properties props = def.getProperties();
                 if (props != null) {
                     for (Map.Entry<?, ?> key : props.entrySet()) {

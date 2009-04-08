@@ -81,9 +81,7 @@ public class DocumentField implements Serializable {
                 || JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD.equals(fieldName)
                 || JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE.equals(fieldName)
                 || JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE.equals(fieldName)
-                || JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD.equals(fieldName) 
-                || fieldName.startsWith(JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX)
-                || fieldName.startsWith(JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX)){
+                || JahiaSearchConstant.METADATA_FULLTEXT_SEARCH_FIELD.equals(fieldName)){
             return true;
         }
         return false;

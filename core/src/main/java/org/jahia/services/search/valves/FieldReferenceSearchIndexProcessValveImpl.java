@@ -163,7 +163,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
                                 .buildContentPagePath(contentContainer, field
                                         .getWorkflowState());
                         if (pagePath != null) {
-                            doc.setFieldValue(JahiaSearchConstant.PAGE_PATH,
+                            doc.setFieldValue(JahiaSearchConstant.METADATA_PAGE_PATH,
                                     pagePath);
                         }
                         if (contentContainer.getPickedObject() != null) {

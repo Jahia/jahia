@@ -333,7 +333,7 @@ public class WebSiteSearchDelegate extends AdvSearchDelegate {
                         } else {
                             advOptions.append(" ");
                         }
-                        advOptions.append(JahiaSearchConstant.PAGE_PATH).append(":")
+                        advOptions.append(JahiaSearchConstant.METADATA_PAGE_PATH).append(":")
                                 .append(pagePath).append(" ");
                     }
                 }

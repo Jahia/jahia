@@ -102,7 +102,7 @@ public class PageSearchIndexProcessValveImpl implements SearchIndexationPipeline
                     String pagePath = SearchIndexProcessValveUtils
                         .buildContentPagePath(ContentPage.getPage(page.getID()),loadRequest.getWorkflowState());
                     if ( pagePath != null ){
-                        doc.setFieldValue(JahiaSearchConstant.PAGE_PATH,pagePath);
+                        doc.setFieldValue(JahiaSearchConstant.METADATA_PAGE_PATH,pagePath);
                     }
                 }
             } catch ( Exception t ){

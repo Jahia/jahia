@@ -130,7 +130,7 @@
                 <value>jahia.acl_id</value>
                 <value>jahia.parent_id</value>
                 <value>jahia.file_realname</value>
-                <value>jahia.definition_property_jcr:primarytype</value>
+                <value>jahia.definition_primarytype</value>
             </list>
         </property>
     </bean>

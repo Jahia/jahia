@@ -125,8 +125,7 @@ public class SubscriptionUser implements JahiaUser {
      * org.jahia.services.usermanager.JahiaUser#getProperty(java.lang.String)
      */
     public String getProperty(String key) {
-        return "email".equals(key) ? getUsername() : properties
-                .getProperty(key);
+        return properties.getProperty(key);
     }
 
     /*

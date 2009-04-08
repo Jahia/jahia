@@ -163,11 +163,13 @@ public class SubscriptionManager {
         this.subscriptionDao = subscriptionDao;
     }
 
-    public Subscription suspend(int subscriptionId) {
+    public Subscription suspend(int subscriptionId, boolean doSuspend) {
         SubscriptionData subscription = subscriptionDao
                 .findById(subscriptionId);
-        if (subscription != null && !subscription.isSuspended()) {
-            subscription.setSuspended(true);
+        if (subscription != null
+                && (doSuspend && !subscription.isSuspended() || !doSuspend
+                        && subscription.isSuspended())) {
+            subscription.setSuspended(doSuspend);
             subscriptionDao.update(subscription);
         }
         return subscription != null ? toBusinessObject(subscription) : null;

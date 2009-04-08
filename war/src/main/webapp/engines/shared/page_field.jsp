@@ -578,7 +578,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <% } %>
     </td>
     <td>
-        <label>
+        <label for="directPageRadio">
             <% if (isNewPage) { %>
             <fmt:message key="org.jahia.engines.shared.Page_Field.createPageTemplate.label"/>
             <% } else { %>
@@ -617,7 +617,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                checked="checked"<% } %>>&nbsp;
     </td>
     <td>
-        <label><fmt:message key="org.jahia.engines.shared.Page_Field.moveExistingPage.label"/></label>
+        <label for="movePageRadio"><fmt:message key="org.jahia.engines.shared.Page_Field.moveExistingPage.label"/></label>
         <br/>
         <a href="javascript:callSelectPageMove()"><fmt:message key="org.jahia.engines.shared.Page_Field.selectPageToMove.label"/></a>
         <input type="hidden" name="moveSourcePageID" value="<%=sourcePageID%>"/>
@@ -653,7 +653,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                checked="checked"<% } %>>&nbsp;
     </td>
     <td>
-        <label><fmt:message key="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/></label>
+        <label for="linkPageRadio"><fmt:message key="org.jahia.engines.shared.Page_Field.linkExistingPage.label"/></label>
         <br/>
         <a href="javascript:callSelectPageLink()"><fmt:message key="org.jahia.engines.shared.Page_Field.selectPageToLink.label"/></a>
         <input type="hidden" name="linkSourcePageID" value="<%=sourcePageID%>"/>
@@ -684,7 +684,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                onclick="document.mainForm.pageURLKey.disabled = 'disabled';">&nbsp;
     </td>
     <td>
-        <label><fmt:message key="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/></label>
+        <label for="remoteURLRadio"><fmt:message key="org.jahia.engines.shared.Page_Field.createLinkToExternalSite.label"/></label>
         <br/>
         <!-- option 1 if linkonly page, 3 if page does not exist. -->
         <input <% if (isNewPage) { %>
@@ -703,7 +703,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
                checked="checked"<% } %>>
     </td>
     <td>
-        <label>
+        <label for="noValueRadio">
             <% if (isNewPage) { %>
             <fmt:message key="org.jahia.engines.shared.Page_Field.differPageCreation.label"/>
             <% } else { %>

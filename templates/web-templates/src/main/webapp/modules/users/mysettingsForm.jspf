@@ -1,24 +1,24 @@
 <template:gwtJahiaModule id="mysettings" jahiaType="mySettings">
-             <internal:gwtResourceBundle resourceName="mySettings.password"
+            <utility:gwtResourceBundle resourceName="mySettings.password"
                                        aliasResourceName="pwd"/>
-             <internal:gwtResourceBundle resourceName="mySettings.confirm.password"
+            <utility:gwtResourceBundle resourceName="mySettings.confirm.password"
                                        aliasResourceName="c_pwd"/>
-             <internal:gwtResourceBundle resourceName="mySettings.button.add.prop"
+            <utility:gwtResourceBundle resourceName="mySettings.button.add.prop"
                                        aliasResourceName="button_add_personal_property"/>
-             <internal:gwtResourceBundle resourceName="mySettings.button.remove.prop"
+            <utility:gwtResourceBundle resourceName="mySettings.button.remove.prop"
                                        aliasResourceName="button_remove_personal_property"/>
-             <internal:gwtResourceBundle resourceName="mySettings.button.save"
+            <utility:gwtResourceBundle resourceName="mySettings.button.save"
                                        aliasResourceName="button_save"/>
-             <internal:gwtResourceBundle resourceName="mySettings.title"
+            <utility:gwtResourceBundle resourceName="mySettings.title"
                                        aliasResourceName="title_mysettings"/>
-             <internal:gwtResourceBundle resourceName="mySettings.title.remove.prop"
+            <utility:gwtResourceBundle resourceName="mySettings.title.remove.prop"
                                        aliasResourceName="title_remove_properties"/>
-             <internal:gwtResourceBundle resourceName="mySettings.button.remove"
+            <utility:gwtResourceBundle resourceName="mySettings.button.remove"
                                        aliasResourceName="button_remove"/>
-             <internal:gwtResourceBundle resourceName="mySettings.title.new.prop"
+            <utility:gwtResourceBundle resourceName="mySettings.title.new.prop"
                                        aliasResourceName="title_new_property"/>
-             <internal:gwtResourceBundle resourceName="mySettings.label.newprop.fieldname"
+            <utility:gwtResourceBundle resourceName="mySettings.label.newprop.fieldname"
                                        aliasResourceName="label_fieldname_new_property"/>
-             <internal:gwtResourceBundle resourceName="mySettings.label.newprop.fieldvalue"
+            <utility:gwtResourceBundle resourceName="mySettings.label.newprop.fieldvalue"
                                        aliasResourceName="label_fieldvalue_new_property"/>
         </template:gwtJahiaModule>

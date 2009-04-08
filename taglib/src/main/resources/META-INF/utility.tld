@@ -48,6 +48,30 @@
     </tag>
 
     <tag>
+        <description>Generate resource bundle to be used by JahiaModule.</description>
+        <name>gwtResourceBundle</name>
+        <tag-class>org.jahia.taglibs.utility.i18n.GWTMessageTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>resourceBundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>resourceName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>aliasResourceName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+   
+
+
+    <tag>
         <description>Displays the content of the current session</description>
         <name>sessionViewer</name>
         <tag-class>org.jahia.taglibs.utility.session.SessionViewerTag</tag-class>

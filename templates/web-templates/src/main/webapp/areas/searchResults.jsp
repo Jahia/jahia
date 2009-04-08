@@ -71,6 +71,7 @@ return false;
                                 <pg:item>
                                     <li>
                                         <h4><a class=<c:choose><c:when test="${hit.typeFile}">"${hit.iconType}"</c:when><c:otherwise>"jahiapage"</c:otherwise></c:choose> href="${hit.link}">${fn:escapeXml(hit.title)}</a></h4>
+                                        <c:if test="${!empty hit.referencedHit}"><div class="resultslistReference">(&nbsp;<fmt:message key="search.results.referenced.on"/>&nbsp;<a class="jahiapage" href="${hit.referencedHit.link}">${fn:escapeXml(hit.referencedHit.title)}</a>&nbsp;)</div></c:if>
 
                                         <div class="resultslistDesc">${hit.summary}</div>
                                         <div class="resultsListFileType">${hit.contentType}</div>

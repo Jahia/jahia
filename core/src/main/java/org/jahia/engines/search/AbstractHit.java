@@ -59,6 +59,10 @@ public abstract class AbstractHit implements Hit {
         return searchHit.getObject();
     }
 
+    public Hit getReferencedHit() {
+        return null;
+    }    
+    
     public float getScore() {
         return searchHit.getScore();
     }

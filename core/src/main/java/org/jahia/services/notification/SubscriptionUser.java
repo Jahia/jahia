@@ -74,6 +74,9 @@ public class SubscriptionUser implements JahiaUser {
     public SubscriptionUser(String username, Properties properties) {
         this.username = username;
         this.properties = properties != null ? properties : new Properties();
+        if (!this.properties.containsKey("email")) {
+            this.properties.put("email", username);
+        }
     }
 
     /*

@@ -197,7 +197,7 @@ public class SubscriptionService extends JahiaService {
 
         List<Subscription> subscriptions = new LinkedList<Subscription>();
         subscriptions.addAll(subscriptionManager.getSubscriptions(criteria,
-                "includeChildren"));
+                "includeChildren", "userRegistered"));
 
         ContentObjectKey contentObjectKey = null;
         try {

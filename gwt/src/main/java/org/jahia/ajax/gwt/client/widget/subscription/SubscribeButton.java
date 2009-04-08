@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * SRenders subscribe/unsubscribe button, depending on the user subscription
+ * Renders subscribe/unsubscribe button, depending on the user subscription
  * status.
  * 
  * @author Sergiy Shyrkov

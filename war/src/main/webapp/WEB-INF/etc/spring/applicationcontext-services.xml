@@ -898,6 +898,7 @@ FRAG2(frag_size=60000)</value>
                     <bean class="org.jahia.services.templates.TemplatePackageDeployer" depends-on="FileListSync">
                       <property name="settingsBean" ref="settingsBean" />
                       <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry" />
+                      <property name="fileListSync" ref="FileListSync" />
                     </bean>
                 </property>
                 <property name="siteService" ref="JahiaSitesService" />

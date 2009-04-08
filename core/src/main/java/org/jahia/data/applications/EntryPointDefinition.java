@@ -59,6 +59,8 @@ public interface EntryPointDefinition {
 
     public String getName ();
 
+    public String getDisplayName();
+
     public String getDescription();
 
     public int getApplicationID();

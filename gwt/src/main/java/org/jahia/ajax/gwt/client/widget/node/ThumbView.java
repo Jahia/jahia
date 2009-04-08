@@ -117,8 +117,12 @@ public class ThumbView extends TopRightComponent {
         // please keep same order as in sort() method
         List<String> sorts = new ArrayList<String>();
         sorts.add(Messages.getResource("fm_thumbSortName"));
-        sorts.add(Messages.getResource("fm_thumbSortSize"));
-        sorts.add(Messages.getResource("fm_thumbSortLastModif"));
+        if (config.isDisplaySize()) {
+            sorts.add(Messages.getResource("fm_thumbSortSize"));
+        }
+        if (config.isDisplayDate()) {
+            sorts.add(Messages.getResource("fm_thumbSortLastModif"));
+        }
 
         sort = new SimpleComboBox<String>();
         sort.setTriggerAction(ComboBox.TriggerAction.ALL);

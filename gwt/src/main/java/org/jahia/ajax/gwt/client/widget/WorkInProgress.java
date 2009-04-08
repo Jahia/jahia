@@ -91,7 +91,7 @@ public class WorkInProgress {
     }-*/;
 
     private static native boolean needToStartImmediatelly() /*-{
-        return ($wnd.jahia && $wnd.jahia.config && $wnd.jahia.config.startWorkInProgressOnLoad);
+        return ($wnd.jahia!=undefined  && $wnd.jahia.config!=undefined  && $wnd.jahia.config.startWorkInProgressOnLoad!=undefined && $wnd.jahia.config.startWorkInProgressOnLoad);
     }-*/;
 
     public static void init() {

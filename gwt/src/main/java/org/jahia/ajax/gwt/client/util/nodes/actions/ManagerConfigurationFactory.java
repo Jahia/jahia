@@ -37,6 +37,7 @@ import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import com.extjs.gxt.ui.client.GXT;
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * User: rfelden
@@ -395,6 +396,12 @@ public class ManagerConfigurationFactory {
         file.addItem(newMashup);
         mashupPickerConfig.addItem(newMashup);
         mashupPickerConfig.addItem(new FileActionItemSeparator());
+        FileActionItem newRSS = ItemCreator.createNewRSSItem(linker);
+        file.addItem(newRSS);
+        mashupPickerConfig.addItem(newRSS);
+        FileActionItem newGadget = ItemCreator.createNewGadgetItem(linker);
+        file.addItem(newGadget);
+        mashupPickerConfig.addItem(newGadget);
 
         FileActionItemGroup edit = new FileActionItemGroup(Messages.getResource("fm_editMenu"));
         FileActionItem rename = ItemCreator.createRenameItem(linker);

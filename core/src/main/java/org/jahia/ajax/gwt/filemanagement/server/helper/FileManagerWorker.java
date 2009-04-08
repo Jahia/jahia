@@ -1357,7 +1357,7 @@ public class FileManagerWorker {
         }
         GWTJahiaNodeACL gwtJahiaNodeACL = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
         gwtJahiaNodeACL.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
-        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(), expTime, cacheScope);
+        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(),entryPointDefinition.getDisplayName(), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(), expTime, cacheScope);
     }
 
     /**
@@ -1382,6 +1382,7 @@ public class FileManagerWorker {
             }
             JCRNodeWrapper parentNode = jcr.getFileNode(parentPath, context.getUser());
             JCRPortletNode node = (JCRPortletNode) addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), gwtJahiaNewPortletInstance.getProperties());
+
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getContextName(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllPermissions();
             for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getModes().getAce()) {

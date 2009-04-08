@@ -61,7 +61,7 @@ public class FilePickerEntryPoint implements EntryPoint {
                         DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
                         DOM.getElementAttribute(panel.getElement(), "filters"),
                         DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
-                        DOM.getElementAttribute(panel.getElement(), "conf"),
+                        DOM.getElementAttribute(panel.getElement(), "config"),
                         Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs")),
                         callback));
             } else {
@@ -71,7 +71,7 @@ public class FilePickerEntryPoint implements EntryPoint {
                         DOM.getElementAttribute(panel.getElement(), "nodeTypes"),
                         DOM.getElementAttribute(panel.getElement(), "filters"),
                         DOM.getElementAttribute(panel.getElement(), "mimeTypes"),
-                        DOM.getElementAttribute(panel.getElement(), "conf"),
+                        DOM.getElementAttribute(panel.getElement(), "config"),
                         Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "allowThumbs")),
                         callback));
             }

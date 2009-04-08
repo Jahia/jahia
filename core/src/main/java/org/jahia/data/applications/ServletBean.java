@@ -97,6 +97,11 @@ public class ServletBean implements Serializable, EntryPointDefinition {
     public String getName () {return name;
     }
 
+    public String getDisplayName() {
+        // name and displayName are same
+        return getName();
+    }
+
     public String getDescription() {
         return desc;
     }

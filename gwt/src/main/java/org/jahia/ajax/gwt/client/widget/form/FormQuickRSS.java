@@ -91,6 +91,7 @@ public abstract class FormQuickRSS extends FormQuickMashup {
             public void componentSelected(ComponentEvent componentEvent) {
                 JahiaNodeService.App.getInstance().createRSSPortletInstance(getFolderPath(),(String) nameField.getValue(), (String) urlField.getValue(), new AsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode gwtJahiaNode) {
+                        onMashupCreated();                        
                         if(getParent() instanceof Window){
                             ((Window)getParent()).close();
                         }

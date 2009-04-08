@@ -91,3 +91,19 @@
         <p>Date and time picker with dd-MM-yyyy/hh.mm format: <ui:dateSelector datePattern="dd-MM-yyyy/hh.mm" displayTime="true"/></p>
         <p>Date and time picker with initial value: <ui:dateSelector datePattern="dd-MM-yyyy/hh.mm" displayTime="true" value="09-05-1979/07.30"/></p>
     </fieldset>
+    <fieldset>
+        <legend>User/group picker</legend>
+        <p>User (single selection): <input type="text" name="userGroup1" id="userGroup1" value=""/><ui:userGroupSelector mode="users" fieldId="userGroup1"/></p>
+        <p>Group (single selection): <input type="text" name="userGroup2" id="userGroup2" value=""/><ui:userGroupSelector mode="groups" fieldId="userGroup2"/></p>
+        <p>User or group (single selection): <input type="text" name="userGroup3" id="userGroup3" value=""/><ui:userGroupSelector mode="both" fieldId="userGroup3"/></p>
+        <p>Users (multiple selection): <select name="userGroup4" id="userGroup4" multiple="multiple" size="3" style="width: 200px"></select><ui:userGroupSelector mode="users" fieldId="userGroup4" multiple="true"/></p>
+        <p>Groups (multiple selection): <select name="userGroup5" id="userGroup5" multiple="multiple" size="3" style="width: 200px"></select><ui:userGroupSelector mode="groups" fieldId="userGroup5" multiple="true"/></p>
+        <p>Users and groups (multiple selection): <select name="userGroup6" id="userGroup6" multiple="multiple" size="3" style="width: 200px"></select><ui:userGroupSelector mode="both" fieldId="userGroup6" multiple="true"/></p>
+<script type="text/javascript">
+function userGroupCallback(principalType, principalKey, principalName) {
+    alert((principalType == 'u' ? 'User' : 'Group') + " '" + principalName + "' is selected. Key: '" + principalKey + "'.");
+    return true;
+} 
+</script>        
+        <p>Users and groups (multiple selection) with custom callback: <select name="userGroup7" id="userGroup7" multiple="multiple" size="3" style="width: 200px"></select><ui:userGroupSelector mode="both" fieldId="userGroup7" onSelect="userGroupCallback" multiple="true"/></p>
+    </fieldset>

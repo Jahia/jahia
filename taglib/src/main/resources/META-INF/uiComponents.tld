@@ -1074,4 +1074,8 @@
         <name>subscribeButton</name>
         <path>/META-INF/tags/subscribeButton.tag</path>
     </tag-file>
+    <tag-file>
+        <name>userGroupSelector</name>
+        <path>/META-INF/tags/userGroupSelector.tag</path>
+    </tag-file>
 </taglib>

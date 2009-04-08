@@ -56,7 +56,7 @@ public class CoreMetadataConstant {
     public static final String DEFAULT_CATEGORY = "defaultCategory";
     public static final String PAGE_PATH = "pagePath";
 
-    public static Set notRestorableMetadatas  = new HashSet();
+    public static Set<String> notRestorableMetadatas  = new HashSet<String>();
 
     static {
         notRestorableMetadatas.add(CoreMetadataConstant.CREATION_DATE);

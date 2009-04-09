@@ -1516,10 +1516,13 @@ public class JahiaSearchBaseService extends JahiaSearchService
             JahiaSite site = sitesService.getSite(contentContainer.getSiteID());
 
             // init the JahiaContentContainer
-            ProcessingContext jParams = new ProcessingContext(SettingsBean.getInstance(),
-                    System.currentTimeMillis(), site, user,
-                    ContentPage.getPage(contentContainer.getPageID()), ProcessingContext.EDIT);
-            jParams.setUrlGenerator(new BasicURLGeneratorImpl());
+            ProcessingContext jParams = Jahia.getThreadParamBean();
+            if (jParams == null) {
+                jParams = new ProcessingContext(SettingsBean.getInstance(),
+                        System.currentTimeMillis(), site, user,
+                        ContentPage.getPage(contentContainer.getPageID()), ProcessingContext.EDIT);
+                jParams.setUrlGenerator(new BasicURLGeneratorImpl());
+            }
             JahiaContentContainerFacade containerFacade =
                     new JahiaContentContainerFacade(ctnId, LoadFlags.ALL, jParams,
                             site.getLanguageSettingsAsLocales(true), false, false);
@@ -1788,10 +1791,13 @@ public class JahiaSearchBaseService extends JahiaSearchService
             boolean isMarkedForDelete = false;
             JahiaSite site = sitesService.getSite(contentField.getSiteID());
 
-            ProcessingContext jParams = new ProcessingContext(SettingsBean.getInstance(),
+            ProcessingContext jParams = Jahia.getThreadParamBean();
+            if ( jParams == null ){
+                jParams = new ProcessingContext(SettingsBean.getInstance(),
                     System.currentTimeMillis(), site, user,
                     ContentPage.getPage(contentField.getPageID()), ProcessingContext.EDIT);
-            jParams.setUrlGenerator(new BasicURLGeneratorImpl());            
+            }
+            jParams.setUrlGenerator(new BasicURLGeneratorImpl());
             List<Locale> localeList = site.getLanguageSettingsAsLocales(true);
 
             JahiaContentFieldFacade jahiaContentFieldFacade =

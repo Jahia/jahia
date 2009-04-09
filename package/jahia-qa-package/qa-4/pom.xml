@@ -162,6 +162,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.3</version>
                         <dependencies>
                             <dependency>
                                 <groupId>org.apache.ant</groupId>
@@ -181,10 +182,9 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <tasks>
-                                        <copy file="./src/resources/catalina.bat" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat" overwrite="true"/>
-                                        <copy file="./src/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
-                                        <copy file="./src/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
-                                        <copy file="./src/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
+                                        <copy file="./src/main/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
+                                        <copy file="./src/main/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
+                                        <copy file="./src/main/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
                                     </tasks>
                                 </configuration>
                                 <goals>
@@ -196,15 +196,30 @@
                                 <phase>install</phase>
                                 <configuration>
                                     <tasks>
-
-                                        <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="killall -9 java" trust="true" failonerror="false"/>
-                                        <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="rm /home/jahia/install/jahia-qa4-6.0-SNAPSHOT-jahia.tar.gz " trust="true" failonerror="false"/>
-                                        <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="rm -rf /home/jahia/install/jahia" trust="true" failonerror="false"/>
-                                        <scp file="${project.build.directory}/jahia-qa4-6.0-SNAPSHOT-jahia.tar.gz" todir="jahia@10.8.37.244:/home/jahia/install"  password="jahia123"/>
-                                        <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="tar xfz /home/jahia/install/jahia-qa4-6.0-SNAPSHOT-jahia.tar.gz --directory /home/jahia/install" trust="true" failonerror="false"/>
-                                        <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true" failonerror="false"/>
-                                        <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="export JAVA_HOME=/usr/java/latest" trust="true" failonerror="false"/>
-                                        <sshexec host="10.8.37.244" username="jahia" password="jahia123" command="./install/jahia/bin/startup.sh" trust="true" failonerror="false"/>
+                                        <property name="distant.hosts.ip" value="10.8.37.244"/>
+                                        <property name="distant.hosts.username" value="jahia"/>
+                                        <property name="distant.hosts.password" value="jahia123"/>
+                                        <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                                 command="export JAVA_HOME=/usr/java/latest;/home/jahia/install/jahia/bin/catalina.sh stop -force"
+                                                 trust="true" failonerror="false"/>
+                                        <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                                 command="rm -Rf /home/jahia/install/jahia" trust="true"
+                                                 failonerror="false"/>
+                                        <scp file="${project.build.directory}/${project.build.finalName}-jahia.tar.gz"
+                                             todir="${distant.hosts.username}@${distant.hosts.ip}:/home/jahia/install" password="${distant.hosts.password}"
+                                             trust="true"/>
+                                        <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                                 command="tar xfz /home/jahia/install/${project.build.finalName}-jahia.tar.gz --directory /home/jahia/install"
+                                                 trust="true" failonerror="false"/>
+                                        <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                                 command="rm /home/jahia/install/${project.build.finalName}-jahia.tar.gz "
+                                                 trust="true" failonerror="false"/>
+                                        <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                                 command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true"
+                                                 failonerror="false"/>
+                                        <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
+                                                 command="export JAVA_HOME=/usr/java/latest;/home/jahia/install/jahia/bin/catalina.sh start"
+                                                 trust="true" failonerror="false"/>
                                     </tasks>
                                 </configuration>
                                 <goals>

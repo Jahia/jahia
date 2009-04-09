@@ -53,13 +53,13 @@
 #
 # $Id: catalina.sh 498126 2007-01-20 15:38:39Z markt $
 # -----------------------------------------------------------------------------
-
-export LD_LIBRARY_PATH=/home/jahia/yourkit/yjp-8.0/bin/linux-x86-64:$LD_LIBRARY_PATH
-export JAVA_TOOL_OPTIONS=-agentlib:yjpagent=sessionname=QA_244  $JAVA_TOOL_OPTIONS
+#export LD_LIBRARY_PATH=/home/jahia/yourkit/yjp-8.0/bin/linux-x86-64:$LD_LIBRARY_PATH
+#export JAVA_TOOL_OPTIONS=-agentlib:yjpagent=sessionname=QA_242  $JAVA_TOOL_OPTIONS
 
 CATALINA_OPTS="$CATALINA_OPTS -Xms1024m -Xmx1024m -Djava.awt.headless=true -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc"
+CATALINA_OPTS="$CATALINA_OPTS -XX:+ScavengeBeforeFullGC -XX:-UseParallelOldGC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp"
 export CATALINA_OPTS
-
+export CATALINA_PID=/tmp/jahia-6.0-SNAPSHOT.pid
 # OS specific support.  $var _must_ be set to either true or false.
 cygwin=false
 os400=false

@@ -9,35 +9,48 @@
     <artifactId>jahia-qa-package</artifactId>
     <name>Jahia QA Package</name>
     <packaging>pom</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-jsch</artifactId>
-            <version>1.7.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.38</version>
-        </dependency>
-    </dependencies>
-		<repositories>
-		    <repository>
-		      <id>jahia</id>
-		      <name>Jahia Repository</name>
-		      <layout>default</layout>
-		      <url>http://maven.jahia.org/maven2</url>
-		      <snapshots>
-		        <enabled>false</enabled>
-		      </snapshots>
-		    </repository>
-		  </repositories>
+    <repositories>
+        <repository>
+            <id>jahia</id>
+            <name>Jahia Repository</name>
+            <layout>default</layout>
+            <url>http://maven.jahia.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <profiles>
+        <profile>
+            <id>qa-1</id>
+            <modules>
+                <module>qa-1</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-2</id>
+            <modules>
+                <module>qa-2</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-3</id>
+            <modules>
+                <module>qa-3</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-4</id>
+            <modules>
+                <module>qa-4</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>qa-5</id>
+            <modules>
+                <module>qa-5</module>
+            </modules>
+        </profile>
+    </profiles>
 
-    <modules>
-        <module>qa-1</module>
-        <module>qa-2</module>
-        <module>qa-3</module>
-        <module>qa-4</module>
-        <module>qa-5</module>
-    </modules>
 </project>

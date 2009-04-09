@@ -51,7 +51,9 @@
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
-                                    <excludes>**/webapps/examples/**,**/webapps/docs/**,**/webapps/ROOT/**,*/LICENSE,*/NOTICE,*/RELEASE-NOTES,*/RUNNING.txt</excludes>
+                                    <excludes>
+                                        **/webapps/examples/**,**/webapps/docs/**,**/webapps/ROOT/**,*/LICENSE,*/NOTICE,*/RELEASE-NOTES,*/RUNNING.txt
+                                    </excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -99,23 +101,46 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.3</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-jsch</artifactId>
+                        <version>1.7.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.jcraft</groupId>
+                        <artifactId>jsch</artifactId>
+                        <version>0.1.38</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <copy file="./src/resources/catalina.bat" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat" overwrite="true"/>
-                                <copy file="./src/resources/catalina.sh" tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh" overwrite="true"/>
+                                <copy file="./src/resources/catalina.bat"
+                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat"
+                                      overwrite="true"/>
+                                <copy file="./src/resources/catalina.sh"
+                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.sh"
+                                      overwrite="true"/>
                                 <copy todir="${project.build.directory}/apache-tomcat-6.0.18/" overwrite="true">
-    															<fileset dir="./src/resources/startJahia/"/>
-  															</copy>
-  															<copy todir="${project.build.directory}/apache-tomcat-6.0.18/licenses" overwrite="true">
-    															<fileset dir="./src/resources/licenses/"/>
-  															</copy>
-                                <copy file="./src/resources/README.txt" todir="${project.build.directory}/apache-tomcat-6.0.18"/>
-                                <copy file="./src/resources/LICENSE" todir="${project.build.directory}/apache-tomcat-6.0.18"/>
-                                <copy file="./src/resources/conf/server.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml" overwrite="true"/>
-                                <copy file="./src/resources/conf/web.xml" tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml" overwrite="true"/>
+                                    <fileset dir="./src/resources/startJahia/"/>
+                                </copy>
+                                <copy todir="${project.build.directory}/apache-tomcat-6.0.18/licenses" overwrite="true">
+                                    <fileset dir="./src/resources/licenses/"/>
+                                </copy>
+                                <copy file="./src/resources/README.txt"
+                                      todir="${project.build.directory}/apache-tomcat-6.0.18"/>
+                                <copy file="./src/resources/LICENSE"
+                                      todir="${project.build.directory}/apache-tomcat-6.0.18"/>
+                                <copy file="./src/resources/conf/server.xml"
+                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/server.xml"
+                                      overwrite="true"/>
+                                <copy file="./src/resources/conf/web.xml"
+                                      tofile="${project.build.directory}/apache-tomcat-6.0.18/conf/web.xml"
+                                      overwrite="true"/>
                             </tasks>
                         </configuration>
                         <goals>

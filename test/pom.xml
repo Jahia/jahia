@@ -71,7 +71,19 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.2</version>
+                        <version>1.3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant-jsch</artifactId>
+                                <version>1.7.1</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.jcraft</groupId>
+                                <artifactId>jsch</artifactId>
+                                <version>0.1.38</version>
+                            </dependency>
+                        </dependencies>
                         <executions>
                             <execution>
                                 <id>start-tomcat</id>
@@ -80,6 +92,9 @@
                                     <tasks>
                                         <echo message="Starting tomcat"/>
                                         <copy file="${project.build.directory}/${project.build.finalName}.jar" toDir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}/WEB-INF/lib"/>
+                                        <delete>
+                                            <fileset dir="${jahia.deploy.targetServerDirectory}/logs" includes="**/*"/>
+                                        </delete>
                                         <exec executable="${jahia.deploy.targetServerDirectory}/bin/catalina.sh"
                                               dir="${jahia.deploy.targetServerDirectory}/bin">
                                             <arg value="start"/>
@@ -105,6 +120,8 @@
                                         </exec>
                                         <echo message="Undeploying jahia"/>
                                         <delete dir="${jahia.deploy.targetServerDirectory}/webapps/${jahia.deploy.war.dirName}"/>
+                                        <mkdir dir="${project.build.directory}/tomcatLogs"/>
+                                        <copy file="${jahia.deploy.targetServerDirectory}/logs/catalina.out" toDir="${project.build.directory}/tomcatLogs"/>
                                     </tasks>
                                 </configuration>
                                 <goals>

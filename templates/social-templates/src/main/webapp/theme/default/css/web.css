@@ -99,11 +99,11 @@ body {
 }
 #bodywrapper h1 {
 	color:#0074d4;
-	font-weight:normal;
-	font-size:2.6em;
+	font-size:1.8em;
 	margin:0;
 	padding:0;
 	font-weight:bold;
+	line-height:normal
 }
 #bodywrapper h2 {
 	color:#0074d4;
@@ -111,6 +111,7 @@ body {
 	font-size:2em;
 	margin:0.5em 0 0.5em 0 ;
 	padding:0;
+	line-height:normal
 }
 
 #bodywrapper h3 {
@@ -119,6 +120,7 @@ body {
 	font-weight:bold;
 	margin:0.5em 0 0.5em 0 ;
 	padding:0;
+	line-height:normal
 }
 
 #bodywrapper h4 {
@@ -127,7 +129,8 @@ body {
 	font-weight:bold;
 	margin:0.5em 0 0.5em 0 ;
 	padding:0 0 5px 0;
-	border-bottom:1px dotted #ccc
+	border-bottom:1px dotted #ccc;
+	line-height:normal
 }
 
 #bodywrapper h5 {
@@ -136,7 +139,7 @@ body {
 	color:#586B7A;
 	margin:0;
 	padding:0;
-
+	line-height:normal
 }
 
 #bodywrapper fieldset {
@@ -254,7 +257,18 @@ overflow:hidden;
 }
 #bodywrapper #pageTop #logotop h1{
 color:#fff;
-display:none
+}
+#bodywrapper #pageTop #logotop h1 a,
+#bodywrapper #pageTop #logotop h1 a:link,
+#bodywrapper #pageTop #logotop h1 a:visited  {
+	color:#fff;
+	text-decoration:none
+}
+#bodywrapper #pageTop #logotop h1 a:hover ,
+#bodywrapper #pageTop #logotop h1 a:active  {
+	cursor: pointer;
+	color:#fff;
+	text-decoration:none
 }
 #bodywrapper #pageTop .desc{
 width:450px;

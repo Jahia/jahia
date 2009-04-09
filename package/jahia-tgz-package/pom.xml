@@ -153,7 +153,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <buildNumber>${buildNumber}</buildNumber>
+                    <!--<buildNumber>${buildNumber}</buildNumber>-->
                     <descriptors>
                         <descriptor>src/main/assembly/src.xml</descriptor>
                     </descriptors>
@@ -162,9 +162,9 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
-                            <goal>attached</goal>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>

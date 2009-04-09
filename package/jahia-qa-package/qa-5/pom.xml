@@ -255,9 +255,9 @@
                         <executions>
                             <execution>
                                 <id>make-assembly</id>
-                                <phase>package</phase>
+                                <phase>install</phase>
                                 <goals>
-                                    <goal>attached</goal>
+                                    <goal>single</goal>
                                 </goals>
                             </execution>
                         </executions>

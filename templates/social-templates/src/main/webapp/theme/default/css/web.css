@@ -1094,3 +1094,55 @@ padding-bottom:1em;
 	padding:2px 0;
 	padding-left:24px;
 }
+/******************************************************************************
+* bookmarks Form 
+******************************************************************************/
+
+#bodywrapper .bookmarksForm {
+	border-top:1px dotted #ccc;
+	font-size:0.9em;
+	margin-top:0.5em;
+	padding-top:0.5em;
+}
+#bodywrapper .bookmarksForm fieldset {
+	border: none
+}
+#bodywrapper .bookmarksForm fieldset p {
+	padding: 0;
+	margin: 0px;
+}
+#bodywrapper .bookmarksForm fieldset p.field {
+	padding:0;
+	margin: 0px;
+	width: auto; 
+	clear: left; 
+}
+
+#bodywrapper .bookmarksForm p label {
+	display:block;
+	font-weight:bold;
+}
+
+#bodywrapper .bookmarksForm input {
+	border: #ccc 1px solid;
+	padding:3px;
+	background: #ffffff;
+	width:206px;
+}
+#bodywrapper .bookmarksForm textarea {
+	border: #ccc 1px solid;
+	padding:2px;
+	background: #ffffff;
+	height: 100px;
+	width:207px;
+}
+#bodywrapper .bookmarksForm textarea:focus {
+	background: #eaeaea
+}
+#bodywrapper .bookmarksForm input[type='text']:focus {
+	background: #eaeaea
+}
+
+#bodywrapper .bookmarksForm .bookmarks_button {
+	text-align:right
+}

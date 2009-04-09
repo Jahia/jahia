@@ -46,13 +46,13 @@
 <template:getContainerField fieldName="isCommentable" containerBean="${container}" valueID="isCommentable"/>
 <c:if test="${isCommentable.value}">
 
-    <template:containerList name="comment" id="comment" displayActionMenu="false"
-                            actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment">
+    <template:containerList name="comment" id="comment"
+                            actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment" sortByMetaData="created" sortOrder="desc" enforceDefinedSort="true">
         <div class="comments">
             <h3><fmt:message key="comments"/></h3>
             <c:set var="answerCounter" scope="page" value="1"/>
             <dl>
-            <template:container id="commentContainer" displayActionMenu="false">
+            <template:container id="commentContainer">
 
                     <dt><a class="comment-number" href="#">${answerCounter}.</a> <template:field name="commentDate" inlineEditingActivated="false"/> <fmt:message
                             key="by"/> <template:field name="commentAuthor" inlineEditingActivated="false"/>
@@ -65,9 +65,8 @@
             </dl>
         </div>
         <!--stop comments-->
-
-
-        <template:containerForm ignoreAcl="true" var="inputs">
+        <a name="comment"/>
+        <template:containerForm ignoreAcl="true" var="inputs" action="${currentPage.url}?article=${containerID}">
 
             <input type="hidden" id="c_date" name="${inputs['commentDate'].name}"
                    value="${inputs['commentDate'].defaultValue}" />
@@ -109,13 +108,9 @@
 
             </div>
             <!--stop commentsForm-->
-
+           </div>  
         </template:containerForm>
-
     </template:containerList>
 
-    <%--<template:gwtJahiaModule isTemplate="true" jahiaType="form" id='<%= "form" + IdentifierUtils.nextStringNumericIdentifier() %>' nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"--%>
-    <%--action="createNode" target="${comment.JCRPath}" cssClassName="comment" />--%>
-    </div>
-    </div>
+
 </c:if>

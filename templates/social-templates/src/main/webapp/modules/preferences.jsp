@@ -55,9 +55,6 @@
                         </div>
                 </template:container>
             </template:containerList>
-            <div class="preferences">
-                <h5><a href="?addArticle=true"><fmt:message key="article.add"/></a></h5>
-            </div>
         </div>
     </div>
     <!--stop columnspace -->

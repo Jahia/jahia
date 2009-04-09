@@ -58,21 +58,24 @@
                     <c:set var="maxEntries" value="${maxEntries}"/>
                 </template:container>
             </template:containerList>
+            <ul class="footer-recent-comments">
             <template:containerList maxSize="${maxEntries.integer}" id="newsList" displayActionMenu="false">
                 <query:containerQuery>
                     <query:selector nodeTypeName="jnt:comment" selectorName="comments"/>
-                    <query:descendantNode selectorName="comments" path="${currentSite.JCRPath}"/>
+                    <query:descendantNode selectorName="comments" path="${currentPage.JCRPath}"/>
                     <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxEntries.integer}"/>
                     <query:sortBy propertyName="commentDate" order="${queryConstants.ORDER_DESCENDING}"/>
                 </query:containerQuery>
-                <ul class="footer-recent-comments">
                     <template:container id="comment" cacheKey="lastcomment" displayExtensions="false" displayActionMenu="false">
                         <li class="">
                             <a href="?article=${comment.parent.pageID}"><template:field name='commentTitle'/></a>
                         </li>
                     </template:container>
-                </ul>
             </template:containerList>
+                <c:if test="${empty newsList}">
+                    <li class=""><fmt:message key="no.comment"/></li>
+                </c:if>
+                </ul>
         </div>
     </div>
     <!--stop columnspace -->

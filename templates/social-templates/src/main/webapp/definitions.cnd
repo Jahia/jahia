@@ -23,9 +23,10 @@ smallText   note
 [social_templates:owner] > jnt:container
 smallText   lastname primary
 smallText   firstname
+date        birthdate
 bigText     description
 file        picture (file[mime='image/*'])
-date        birthdate
+
 
 [social_templates:blogEntry] > jnt:container
 date        date = now() sortable 

@@ -39,7 +39,7 @@
     var oFCKeditor = null;
 
     window.onload = function() {
-        oFCKeditor = new FCKeditor('mainContentBody', '100%', '150');
+        oFCKeditor = new FCKeditor('mainContentBody', '100%', '800');
         oFCKeditor.BasePath = "${fckUrl}/";
         oFCKeditor.Config.basePath = "${fckUrl}/";
 
@@ -84,7 +84,7 @@
                                value="${inputs['keywords'].defaultValue}" tabindex="23"/>
                  </p>
                  <p class="field">
-                                      <label for="c_name"><fmt:message key="article.categrories"/> :</label>
+                                      <label for="c_name"><fmt:message key="article.categories"/> :</label>
                                       <input type="text" name="${inputs['defaultCategory'].name}" id="category" value=""/>
                                       <ui:categorySelector fieldId="category" displayIncludeChildren="false" />
                                        

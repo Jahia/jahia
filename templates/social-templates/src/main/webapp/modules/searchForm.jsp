@@ -35,7 +35,7 @@
 <div id="search">
                             <h3><label for="search">Rechercher</label></h3>
 
-                            <form method="get" action="#">
+                            <form method="get" action="">
                                 <fieldset>
                                     <p>
                                         <input type="text" value="" name="search" class="search" tabindex="4"/>

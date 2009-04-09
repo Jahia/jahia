@@ -88,6 +88,7 @@
                                 <c:if test="${requestScope.currentRequest.editMode}">
                                     <template:include page="modules/preferences.jsp"/>
                                 </c:if>
+                                <template:include page="modules/nav/addEntry.jsp"/>
                                 <template:include page="modules/filtersDisplay.jsp"/>
                                 <template:include page="modules/searchForm.jsp"/>
                                 <template:include page="modules/aboutMe.jsp"/>

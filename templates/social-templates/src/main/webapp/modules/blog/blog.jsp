@@ -42,28 +42,39 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 
-
-<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="${param.numBlogEntries}" actionMenuNameLabelKey="article" actionMenuNamePostFix="manage">
+<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="${param.numBlogEntries}"
+                        actionMenuNameLabelKey="article" actionMenuNamePostFix="manage">
     <%--query search --%>
     <query:containerQuery queryBeanID="blogQuery">
         <query:selector nodeTypeName="social_templates:blogEntry" selectorName="blogSelector"/>
         <query:childNode selectorName="blogSelector" path="${blogEntriesPagination.JCRPath}"/>
-        <query:sortBy propertyName="${sortBy}" order="${order}"/>
+        <query:sortBy propertyName="date" order="${queryConstants.ORDER_DESCENDING}"/>
         <c:if test="${!(empty param.year || empty param.month)}">
             <fmt:parseDate var="startDate" pattern="dd/MM/yyyy" value="01/${param.month}/${param.year}"/>
 
             <utility:dateCalc value="${startDate}" var="beginMonth"
-                days="${utilConstants.TO_MIN}" hours="${utilConstants.TO_MIN}"
-                minutes="${utilConstants.TO_MIN}" seconds="${utilConstants.TO_MIN}" milliseconds="${utilConstants.TO_MIN}"/>
+                              days="${utilConstants.TO_MIN}" hours="${utilConstants.TO_MIN}"
+                              minutes="${utilConstants.TO_MIN}" seconds="${utilConstants.TO_MIN}"
+                              milliseconds="${utilConstants.TO_MIN}"/>
             <utility:dateCalc value="${startDate}" var="endMonth"
-                days="${utilConstants.TO_MAX}" hours="${utilConstants.TO_MAX}"
-                minutes="${utilConstants.TO_MAX}" seconds="${utilConstants.TO_MAX}" milliseconds="${utilConstants.TO_MAX}"/>
+                              days="${utilConstants.TO_MAX}" hours="${utilConstants.TO_MAX}"
+                              minutes="${utilConstants.TO_MAX}" seconds="${utilConstants.TO_MAX}"
+                              milliseconds="${utilConstants.TO_MAX}"/>
             <query:greaterThanOrEqualTo numberValue="false" propertyName="date" value="${beginMonth.time}"/>
             <query:lessThanOrEqualTo numberValue="false" propertyName="date" value="${endMonth.time}"/>
+        </c:if>
+        <c:if test="${!empty param.search}">
+            <query:fullTextSearch searchExpression="${param.search}"/>
+        </c:if>
+        <c:if test="${!empty param.category}">
+            <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${param.category}"/>
+        </c:if>
+        <c:if test="${!empty param.keyword}">
+            <query:equalTo propertyName="${queryConstants.KEYWORDS}" metadata="true" value="${param.keyword}"/>
         </c:if>
     </query:containerQuery>
 
 
-
-    <%@ include file="blog.jspf"%>
+    <c:set var="blogType" value="full"/>
+    <%@ include file="blog.jspf" %>
 </template:containerList>

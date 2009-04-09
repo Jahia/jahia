@@ -35,5 +35,6 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 <template:getContainer containerID="${param.article}">
+    <c:set var="blogType" value="detail"/>
     <%@ include file="blog.jspf"%>
 </template:getContainer>

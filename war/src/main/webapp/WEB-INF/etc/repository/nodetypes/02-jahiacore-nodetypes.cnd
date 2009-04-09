@@ -34,3 +34,5 @@
 [jmix:lockable] > mix:lockable mixin
  - j:locktoken (string) protected indexed=no
 
+[jnt:workflowState] > nt:base
+ - * (string) 

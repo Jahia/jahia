@@ -363,8 +363,12 @@ public class ObservationManagerImpl implements ObservationManager {
                 if (path != null) {
                     if (!deleted) {
                         int type = Event.PROPERTY_CHANGED;
-                        Event e = new EventImpl(type, path+"/j:workflowState", event.getUser().getUsername());
-                        jcrEvents.add(e);
+                        for (String s : event.getLanguageCodes()) {
+                            if (!"shared".equals(s)) {
+                                Event e = new EventImpl(type, path+"/j:workflowState/"+s, event.getUser().getUsername());
+                                jcrEvents.add(e);
+                            }
+                        }
                     } else {
                         int type = Event.NODE_REMOVED;
                         Event e = new EventImpl(type, path, event.getUser().getUsername());

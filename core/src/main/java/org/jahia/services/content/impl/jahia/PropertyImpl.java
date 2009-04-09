@@ -55,6 +55,7 @@ public class PropertyImpl extends ItemImpl implements Property {
     protected Node node;
     protected Value[] values;
     protected ExtendedPropertyDefinition def;
+    protected String name;
 
     public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Value value) {
         super(session);
@@ -63,10 +64,26 @@ public class PropertyImpl extends ItemImpl implements Property {
         this.def = def;
     }
 
+    public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Value value) {
+        super(session);
+        this.node = node;
+        this.values = new Value[] {value};
+        this.name = name;
+        this.def = def;
+    }
+
     public PropertyImpl(SessionImpl session, Node node, ExtendedPropertyDefinition def, Value[] values) {
         super(session);
         this.node = node;
         this.values = values;
+        this.def = def;
+    }
+
+    public PropertyImpl(SessionImpl session, Node node, String name, ExtendedPropertyDefinition def, Value[] values) {
+        super(session);
+        this.node = node;
+        this.values = values;
+        this.name = name;
         this.def = def;
     }
 
@@ -180,6 +197,9 @@ public class PropertyImpl extends ItemImpl implements Property {
     }
 
     public String getName() throws RepositoryException {
+        if (name != null) {
+            return name;
+        }
         if (def != null) {
             return def.getName();
         }

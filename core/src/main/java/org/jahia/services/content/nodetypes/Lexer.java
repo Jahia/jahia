@@ -105,6 +105,7 @@ public class Lexer {
     public static final String[] REFERENCE = {"reference", "Reference", "REFERENCE"};
     public static final String[] WEAKREFERENCE = {"WEAKREFERENCE", "WeakReference", "weakreference"};
     public static final String[] URI = {"URI", "Uri", "uri"};
+    public static final String[] DECIMAL = {"DECIMAL", "Decimal", "decimal"};
 
     public static final String[] SMALLTEXT = {"text", "Text", "TEXT"};
     public static final String[] RICHTEXT = {"richtext", "RichText", "RICHTEXT"};

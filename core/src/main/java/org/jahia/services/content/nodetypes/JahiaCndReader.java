@@ -573,9 +573,11 @@ public class JahiaCndReader {
             } else if (currentTokenEquals(Lexer.REFERENCE)) {
                 pdi.setRequiredType(PropertyType.REFERENCE);
             } else if (currentTokenEquals(Lexer.WEAKREFERENCE)) {
-                pdi.setRequiredType(PropertyType.UNDEFINED);
+                pdi.setRequiredType(ExtendedPropertyType.WEAKREFERENCE);
             } else if (currentTokenEquals(Lexer.URI)) {
-                pdi.setRequiredType(PropertyType.UNDEFINED);
+                pdi.setRequiredType(ExtendedPropertyType.URI);
+            } else if (currentTokenEquals(Lexer.DECIMAL)) {
+                pdi.setRequiredType(ExtendedPropertyType.DECIMAL);
             } else if (currentTokenEquals(Lexer.UNDEFINED)) {
                 pdi.setRequiredType(PropertyType.UNDEFINED);
             } else {

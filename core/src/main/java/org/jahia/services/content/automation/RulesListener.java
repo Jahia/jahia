@@ -269,13 +269,17 @@ public class RulesListener extends DefaultEventListener {
                                     Property p = (Property) s.getItem(path);
 
                                     Node parent = p.getParent();
-                                    if (parent.isNodeType(Constants.NT_HIERARCHYNODE) || parent.isNodeType(Constants.JAHIANT_JAHIACONTENT) || parent.isNodeType(Constants.NT_RESOURCE)) {
-                                        NodeWrapper rn = eventsMap.get(parent.getUUID());
-                                        if (rn == null) {
+                                    if (parent.isNodeType(Constants.NT_HIERARCHYNODE) || parent.isNodeType(Constants.JAHIANT_JAHIACONTENT) || parent.isNodeType(Constants.NT_RESOURCE) || parent.isNodeType("jnt:workflowState")) {
+                                        NodeWrapper rn;
+                                        if (parent .isNodeType(Constants.MIX_REFERENCEABLE)) {
+                                            rn = eventsMap.get(parent.getUUID());
+                                            if (rn == null) {
+                                                rn = new NodeWrapper(parent);
+                                                eventsMap.put(parent.getUUID(), rn);
+                                            }
+                                        } else {
                                             rn = new NodeWrapper(parent);
-                                            eventsMap.put(parent.getUUID(), rn);
                                         }
-
                                         list.add(new PropertyWrapper(rn, p));
                                     }
                                 }

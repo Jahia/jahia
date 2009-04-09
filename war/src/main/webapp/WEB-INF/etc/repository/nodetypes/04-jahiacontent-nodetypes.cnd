@@ -19,9 +19,9 @@
 [jnt:jahiacontent] > nt:base, jmix:contentmetadata, mix:referenceable
  + j:acl (jnt:acl)
  + j:workflow (jnt:workflow)
+ + j:workflowState (jnt:workflowState)
  + j:jahialink (jnt:jahialink) *
  - j:diff (string)
- - j:workflowState (string) multiple
 
 [jnt:page] > jnt:jahiacontent
  - j:pageTitle (string) primary mandatory i15d sortable

@@ -198,7 +198,12 @@ public class JRCndWriter {
         out.write("\n" + INDENT + "- ");
         out.write(pd.getName());
         out.write(" (");
-        out.write(PropertyType.nameFromValue(pd.getRequiredType()).toLowerCase());
+        int i = pd.getRequiredType();
+        if (i == ExtendedPropertyType.WEAKREFERENCE) { i = PropertyType.STRING; }
+        if (i == ExtendedPropertyType.URI) { i = PropertyType.STRING; }
+        if (i == ExtendedPropertyType.DECIMAL) { i = PropertyType.STRING; }
+
+        out.write(PropertyType.nameFromValue(i).toLowerCase());
         out.write(")");
         writeDefaultValues(pd.getDefaultValues());
         out.write(ntd.getPrimaryItemName() != null && ntd.getPrimaryItemName().equals(pd.getName()) ? " primary" : "");

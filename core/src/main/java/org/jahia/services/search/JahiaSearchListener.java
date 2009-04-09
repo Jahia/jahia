@@ -50,6 +50,7 @@ import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.events.JahiaEventListener;
 import org.jahia.engines.addcontainer.AddContainer_Engine;
+import org.jahia.engines.deletecontainer.DeleteContainer_Engine;
 import org.jahia.engines.updatecontainer.UpdateContainer_Engine;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.SerializableParamBean;
@@ -454,6 +455,10 @@ public class JahiaSearchListener extends JahiaEventListener {
             actionPerformed = ActionRuleCondition.UPDATE_ENGINE;
         } else if (je.getSource().getClass().getName().equals(AddContainer_Engine.class.getName())){
             actionPerformed = ActionRuleCondition.ADD_ENGINE;
+        }  else if (je.getSource().getClass().getName().equals(DeleteContainer_Engine.class.getName())){
+            actionPerformed = ActionRuleCondition.DELETE_ENGINE;
+        } else if (je.getSource().getClass().getName().toLowerCase().indexOf("form") > -1){
+            actionPerformed = ActionRuleCondition.STORE_FORM_IN_TEMPLATE;
         }
         return actionPerformed;
     }

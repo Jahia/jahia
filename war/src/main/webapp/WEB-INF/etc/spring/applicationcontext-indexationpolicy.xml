@@ -253,16 +253,11 @@
                 </bean>
                 <bean class="org.jahia.services.search.indexingscheduler.impl.condition.ActionRuleCondition">
                     <property name="allowAll" value="false"/>
-                    <!-- In case allowAll is set to false, more precise content type pattern can be defined
-                         "ContentPage" : match all pages
-                         "ContentContainer" : match all containers
-                         "ContentContainer[|]name_blogContainer" : match all containers with the definition name "blogContainer"
-                         "ContentContainer[|]id_43" : match all containers using the definition with the given ID=43
-                    -->
                     <property name="allowedActions">
                         <list>
                             <value>ADD_ENGINE</value>
                             <value>UPDATE_ENGINE</value>
+                            <value>STORE_FORM_IN_TEMPLATE</value>
                         </list>
                     </property>
                 </bean>

@@ -37,7 +37,7 @@
     <div id="logotop">
         <div class="name">
             <a href='<template:composePageURL pageID="${requestScope.currentSite.homepageID}"/>'>
-                <img class="logotop" src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/logo-top.png'/>" alt="logo" />
+                <%--<img class="logotop" src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/logo-top.png'/>" alt="logo" />--%>
                 <h1><span>${currentPage.title}</span></h1>
             </a>
         </div>

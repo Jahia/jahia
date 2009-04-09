@@ -47,8 +47,8 @@
         <div class="post"><!--start post-->
             <div class="post-date"><span><fmt:formatDate pattern="MMMM" value="${date.date}"/></span><fmt:formatDate pattern="dd" value="${date.date}"/></div>
             <h2 class="post-tit:deplle"> <a href="?article=${blogEntry.ID}"><template:field name="title"/></a></h2>
-
-            <p class="post-info">Par <a href="#"><template:metadata metadataName="createdBy" contentBean="${blogEntry}"/>.</a> <fmt:formatDate pattern="dd MMMM aaaa h:m" value="${date.date}"/>-
+            <template:metadata metadataName="createdBy" contentBean="${blogEntry}" var="createdBy"/>
+            <p class="post-info">Par <a href="?user=${createdBy}">${createdBy}.</a> <fmt:formatDate pattern="dd MMMM aaaa h:m" value="${date.date}"/>-
             <c:if test="${!empty blogEntryCatKeys }">
                 <c:forEach var="blogEntryCatKey" items="${fn:split(blogEntryCatKeys, '$$$')}">
                     &nbsp;<a href="${currentPage.url}?category=${blogEntryCatKey}"><ui:displayCategoryTitle categoryKeys="${blogEntryCatKey}"/></a>

@@ -59,6 +59,7 @@
                 </template:container>
             </template:containerList>
             <ul class="footer-recent-comments">
+            <c:set var="isComment" value="false"/>
             <template:containerList maxSize="${maxEntries.integer}" id="newsList" displayActionMenu="false">
                 <query:containerQuery>
                     <query:selector nodeTypeName="jnt:comment" selectorName="comments"/>
@@ -67,12 +68,13 @@
                     <query:sortBy propertyName="commentDate" order="${queryConstants.ORDER_DESCENDING}"/>
                 </query:containerQuery>
                     <template:container id="comment" cacheKey="lastcomment" displayExtensions="false" displayActionMenu="false">
+                        <c:set var="isComment" value="true"/>
                         <li class="">
                             <a href="?article=${comment.parent.pageID}"><template:field name='commentTitle'/></a>
                         </li>
                     </template:container>
             </template:containerList>
-                <c:if test="${empty newsList}">
+                <c:if test="${isComment eq 'false'}">
                     <li class=""><fmt:message key="no.comment"/></li>
                 </c:if>
                 </ul>

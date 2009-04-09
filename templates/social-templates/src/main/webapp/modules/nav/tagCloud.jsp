@@ -13,16 +13,12 @@
         <template:metadata metadataName="keywords" contentBean="${tagCloud}" var="keywords"/>
         <c:set var="tagCloudsString" value="${tagCloudsString},${keywords}"/>
         </template:container>
-        ${tagCloudsString}
-        <c:forTokens items="${tagCloudsString}" delims="," var="tag">
-            <c:set var="count" value="0"/>${tag}:
-            ${(fn:split(tagCloudsString,tag ))}
-            <c:set var="replaceTag" value=",${tag},"/>
-            <c:set var="tagCloudsString" value="${fn:replace(tagCloudsString,replaceTag,',')}"/>
-            <li><a class="tag${count}0" href="${currentPage.url}?keyword=${tag}">${tag}</a></li><br/>
-            ${tagCloudsString}<br/>
+        <c:set var="listAllTags" value="${tagCloudsString}"/>
+        <c:set var="listTags" value="${functions:removeDupilcates(tagCloudsString, ',')}"/>
+        <c:forTokens items="${listTags}" delims="," var="tag">
+            <li><a class="tag${functions:countOccurences(tagCloudsString, tag)}0" href="${currentPage.url}?keyword=${tag}">${tag}</a></li>
         </c:forTokens>
-</ul>
+ </ul>
 </div>
     </template:containerList>
     </template:cache>

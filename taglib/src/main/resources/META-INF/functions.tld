@@ -148,5 +148,27 @@
         <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
         <function-signature>java.lang.String unescapeJavaScript(java.lang.String)</function-signature>
     </function>
-    
+
+    <function>
+        <description>remove duplicate occurences in a string</description>
+        <name>removeDupilcates</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>java.lang.String removeDuplicates(java.lang.String, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;c:out value="${functions:removeDuplicates('aaa,bbb,ccc,ddd,eee,aaa', ',')}"&gt;
+        </example>
+    </function>
+
+    <function>
+        <description>count occurences of a string in a string</description>
+        <name>countOccurences</name>
+        <function-class>org.jahia.taglibs.functions.Functions</function-class>
+        <function-signature>int countOccurences(java.lang.String, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;c:out value="${functions:countOccurences('aaa,bbb,ccc,ddd,eee,aaa', 'aaa')}"&gt;
+        </example>
+    </function>
+
 </taglib>

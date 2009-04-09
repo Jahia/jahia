@@ -1,4 +1,3 @@
-
 <%--
 
 
@@ -38,21 +37,31 @@
 
 <%@ include file="../common/declarations.jspf" %>
 <div class="bookmarksList">
-<h3><fmt:message key="social_templates.bookmark"/></h3>
-<ul>
+    <h3><fmt:message key="social_templates.bookmark"/></h3>
+    <ul>
+        <template:containerList name="bookmarks" id="bookmarks"
+                                actionMenuNamePostFix="bookmarkss" actionMenuNameLabelKey="bookmarkss">
+            <template:container id="lastEntry" cache="off" actionMenuNamePostFix="bookmarks"
+                                actionMenuNameLabelKey="bookmarks.update">
+                <template:field name="url" var="urlBookmark" display="false"/>
+                <template:field name="name" var="nameBookmark" display="false"/>
 
-<template:containerList name="bookmarks" id="bookmarks"
-                                    actionMenuNamePostFix="bookmarkss" actionMenuNameLabelKey="bookmarkss">
-                <template:container id="lastEntry" cache="off" actionMenuNamePostFix="bookmarks"
-                                    actionMenuNameLabelKey="bookmarks.update">
-                    <template:field name="bookmark" var="bookmark" display="false"/>
-                    <li><a class="bookmarksListTitle" title="${bookmark.page.title}" href="${bookmark.page.url}">${bookmark.page.title}</a>
-                        <div class="bookmarksListDes">
-                            <template:field name="note"/>
-                        </div>
-                    </li>
-                </template:container>
-            </template:containerList>
+                <li><a class="bookmarksListTitle" title="${nameBookmark}"
+                       href="${urlBookmark}">${nameBookmark}</a>
+                    <div class="bookmarksListDes">
+                        <template:field name="note"/>
+                    </div>
+                </li>
+            </template:container>
+            <template:containerForm var="bookmarkform">
+                <li>
+                    <label><fmt:message key="bookmark.url"/></label><input type="text" name="${bookmarkform['url'].name}">
+                    <label><fmt:message key="bookmark.name"/></label><input type="text" name="${bookmarkform['name'].name}">
+                    <label><fmt:message key="bookmark.note"/></label><input type="text" name="${bookmarkform['note'].name}">
+                    <input type="submit"/>
+                </li>
+            </template:containerForm>
 
-</ul>
+        </template:containerList>
+    </ul>
 </div>

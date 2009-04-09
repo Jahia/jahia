@@ -17,7 +17,8 @@ integer     maxEntries
 
 
 [social_templates:bookmark] > jnt:container
-page        bookmark (page[type="internal,external"])
+sharedSmallText   url
+smallText   name
 smallText   note
 
 [social_templates:owner] > jnt:container
@@ -35,8 +36,8 @@ bigText     content
 
 [social_templates:blog] > jnt:page
 singleContainer owner (social_templates:owner)
-containerList   blogEntries (social_templates:blogEntry [addMixin="jmix:commentable"])
-containerList   bookmarks (social_templates:bookmark)
+containerList   blogEntries (social_templates:blogEntry [addMixin="jmix:commentable"]) workflow='none'
+containerList   bookmarks (social_templates:bookmark) workflow='none'
 singleContainer intro (social_templates:intro)
 singleContainer footer (social_templates:footer)
 singleContainer lastEntries (social_templates:lastEntries)

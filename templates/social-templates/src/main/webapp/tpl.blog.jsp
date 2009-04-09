@@ -93,6 +93,7 @@
                                 <template:include page="modules/searchForm.jsp"/>
                                 <template:include page="modules/aboutMe.jsp"/>
                                 <template:include page="modules/nav/navDate.jsp"/>
+                                <template:include page="modules/nav/tagCloud.jsp"/>
                                 <template:include page="modules/bookmark.jsp"/>
                             </div>
                             <!--stop space areaB-->

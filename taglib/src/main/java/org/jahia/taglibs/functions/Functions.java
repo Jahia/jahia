@@ -191,4 +191,25 @@ public class Functions {
         return !SubscriptionService.getInstance().isSubscribed(objectKey,
                 eventType, username, siteId);
     }
+
+    public static String removeDuplicates(String initString, String separator) {
+        final String[] fullString = initString.split(separator);
+        StringBuilder finalString = new StringBuilder();
+        String tmpString = initString;
+        for (String s:fullString) {
+            if (tmpString.contains(s)) {
+                finalString.append(s);
+                if (finalString.length() > 0) {
+                    finalString.append(separator);
+                }
+                tmpString = tmpString.replaceAll(s,"");
+            }
+        }
+        return finalString.toString();
+    }
+
+    public static int countOccurences(String initString, String searchString) {
+        final String[] fullString = ("||||" + initString + "||||").split(searchString);
+        return fullString.length - 1;
+    }
 }

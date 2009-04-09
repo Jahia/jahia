@@ -91,15 +91,8 @@
                         <textarea rows="7" cols="35" id="c_content" name="${inputs['commentBody'].name}"
                                   tabindex="13"></textarea>
                     </p>
-
-
                         <%--<template:captcha/>--%>
                         <%--captcha = <input name="captcha" />--%>
-                </fieldset>
-
-                <p class="form-help"><fmt:message key="comments.help"/></p>
-                <fieldset>
-
                     <p class="c_button">
                         <input type="submit" value="envoyer" class="button" tabindex="11"/>
                     </p>

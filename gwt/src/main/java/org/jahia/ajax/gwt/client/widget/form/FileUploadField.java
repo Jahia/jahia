@@ -63,11 +63,20 @@ public class FileUploadField extends AdapterField {
         setName(name);
         ((Uploader)getWidget()).addListener( new Listener() {
             public void onChange(Event event) {
-                setValue(((Uploader)getWidget()).getKey());
+                setUploadedValue(((Uploader)getWidget()).getKey());
 //                setRawValue();
                 // set the value ...
             }
         });
+    }
+
+    @Override
+    public void setValue(Object o) {
+        ((Uploader)getWidget()).setValue((String)o,(String)o);
+    }
+
+    public void setUploadedValue(String o) {
+        super.setValue(o);
     }
 
     public String getRawValue() {
@@ -92,7 +101,7 @@ public class FileUploadField extends AdapterField {
             super();
 
             status = new Text();
-
+            status.setStyleName("x-form-field");
             target = new NamedFrame("target"+defname) {
                 public void onBrowserEvent(Event event) {
                     Log.debug("LOADED");
@@ -101,13 +110,7 @@ public class FileUploadField extends AdapterField {
                     Log.error(document.getClass().toString());
                     Element elem = document.getElementById("uploaded");
                     if (elem != null) {
-                        name = (elem.getAttribute("name"));
-                        key = (elem.getAttribute("key"));
-                        status.setText(name);
-                        clear.setText("Clear");
-                        for (Listener listener : listeners) {
-                            listener.onChange(event);
-                        }
+                        setValue(elem.getAttribute("name"), elem.getAttribute("key"));
                     }
                     super.onBrowserEvent(event);    //To change body of overridden methods use File | Settings | File Templates.
                 }
@@ -125,17 +128,40 @@ public class FileUploadField extends AdapterField {
 
             clear = new Button("Stop", new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
-                    init();
+                    setValue(null,"clear");
                 }
 
             });
 
-            init();
+            name = null;
+            key = null;
+
+            initForm();
+            status.setText("");
+            clear.setVisible(false);
 
             add(status);
             add(form);
             add(clear);
             add(target);
+        }
+
+        public void setValue(String name, String key) {
+            this.name = name;
+            this.key = key;
+            if (name == null) {
+                initForm();
+                status.setText("");
+                clear.setVisible(false);
+            } else {
+                status.setText(name);
+                clear.setText("Clear");
+                clear.setVisible(true);
+                form.setVisible(false);
+            }
+            for (Listener listener : listeners) {
+                listener.onChange(null);
+            }
         }
 
         public void addListener(Listener list) {
@@ -150,12 +176,9 @@ public class FileUploadField extends AdapterField {
             return key;
         }
 
-        private void init() {
-            name = null;
-            key = null;
 
+        private void initForm() {
             final FileUpload upload = new FileUpload() {
-
                 public final void onBrowserEvent(Event event) {
                     status.setText("Uploading ...");
                     form.submit();
@@ -170,10 +193,7 @@ public class FileUploadField extends AdapterField {
             form.clear();
             form.add(upload);
             form.setVisible(true);
-            status.setText("");
-            clear.setVisible(false);
         }
-
 
     }
 

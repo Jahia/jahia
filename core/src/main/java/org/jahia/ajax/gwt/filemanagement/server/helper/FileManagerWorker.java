@@ -80,6 +80,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeDefinition;
 import java.util.*;
 
 /**
@@ -904,6 +905,21 @@ public class FileManagerWorker {
                 nodeProp.setValues(gwtValues);
                 props.put(nodeProp.getName(), nodeProp);
             }
+            NodeIterator ni = objectNode.getNodes();
+            while (ni.hasNext()) {
+                Node node = ni.nextNode();
+                if (node.isNodeType(Constants.NT_RESOURCE)) {
+                    NodeDefinition def = node.getDefinition();
+                    propName = def.getName();
+                    // create the corresponding GWT bean
+                    GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
+                    nodeProp.setName(propName);
+                    List<GWTJahiaNodePropertyValue> gwtValues = new ArrayList<GWTJahiaNodePropertyValue>();
+                    gwtValues.add(new GWTJahiaNodePropertyValue(node.getProperty(Constants.JCR_MIMETYPE).getString(), GWTJahiaNodePropertyType.ASYNC_UPLOAD));
+                    nodeProp.setValues(gwtValues);
+                    props.put(nodeProp.getName(), nodeProp);
+                }
+            }
         } catch (RepositoryException e) {
             logger.error("Cannot access property " + propName + " of node " + objectNode.getName(), e);
         }
@@ -958,20 +974,26 @@ public class FileManagerWorker {
                             GWTJahiaNodePropertyValue propValue = prop.getValues().get(0);
                             if (propValue.getType() == GWTJahiaNodePropertyType.ASYNC_UPLOAD) {
                                 GWTFileManagerUploadServlet.Item i = GWTFileManagerUploadServlet.getItem(propValue.getString());
+                                boolean clear = propValue.getString().equals("clear");
+                                if (!clear && i == null) {
+                                    continue;
+                                }
                                 ExtendedNodeDefinition end = ((ExtendedNodeType) objectNode.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(prop.getName());
-
 
                                 if (end != null) {
                                     try {
                                         if (objectNode.hasNode(prop.getName())) {
                                             objectNode.getNode(prop.getName()).remove();
                                         }
-                                        String s = end.getRequiredPrimaryTypesNames()[0];
-                                        Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
+                                        
+                                        if (!clear) {
+                                            String s = end.getRequiredPrimaryTypesNames()[0];
+                                            Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
 
-                                        content.setProperty(Constants.JCR_MIMETYPE, i.contentType);
-                                        content.setProperty(Constants.JCR_DATA, i.file);
-                                        content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
+                                            content.setProperty(Constants.JCR_MIMETYPE, i.contentType);
+                                            content.setProperty(Constants.JCR_DATA, i.file);
+                                            content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
+                                        }
                                     } catch (Throwable e) {
                                         logger.error(e.getMessage(), e);
                                     }

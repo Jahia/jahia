@@ -258,6 +258,11 @@ public class FormFieldCreator {
                     break;
                 default:
             }
+        } else {
+            GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
+            if (nodeDefinition.getName().equals("jcr:content") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:resource") || nodeDefinition.getRequiredPrimaryTypes()[0].equals("jnt:extraResource")) {
+                field.setValue(values.get(0).getString());
+            }
         }
     }
 

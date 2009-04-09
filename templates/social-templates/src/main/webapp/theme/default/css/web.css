@@ -66,6 +66,7 @@ body {
 #bodywrapper a:active {
 	color:#0074d4;
 	text-decoration:underline;
+	cursor: pointer; 
 }
 #bodywrapper p  {
 	margin:0.5em 0;
@@ -596,7 +597,6 @@ padding:0 ;
 	margin:0;
 	padding:0;
 	border:0px;
-	color:#ccc;
 	height:22px;
 	width:200px;
 	float:left
@@ -861,8 +861,8 @@ padding:0 ;
 /******************************************************************************
 * Footer list
 ******************************************************************************/
-#bodywrapper .footer-recent-comments small,
-#bodywrapper .footer-recent-posts small{
+#bodywrapper .footer-recent-comments .small,
+#bodywrapper .footer-recent-posts .small{
 	display: block;
 	color: #c8e1fa
 }
@@ -1080,4 +1080,17 @@ padding-bottom:1em;
 }
 #bodywrapper #prev p.prev-button {
 text-align: center
+}
+
+/******************************************************************************
+* Add article
+******************************************************************************/
+
+div.addArticle{
+padding-bottom:1em;
+}
+#bodywrapper a.addArticle {
+	background: url(../img/addarticle.png) no-repeat;
+	padding:2px 0;
+	padding-left:24px;
 }

@@ -37,12 +37,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemExistsException;
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -54,6 +49,7 @@ import org.jahia.content.ContentObject;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.containers.JahiaContentContainerFacade;
+import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
@@ -154,6 +150,9 @@ public class JahiaContainerListNodeImpl extends JahiaContentNodeImpl {
             //todo : delay saveContainerInfo to save method
             ServicesRegistry.getInstance ().getJahiaContainersService ().
                     saveContainerInfo (container, 0, parentAclID, getProcessingContext());
+
+            JahiaEvent theEvent = new JahiaEvent(this, getProcessingContext(), container);
+            ServicesRegistry.getInstance().getJahiaEventService().fireAddContainer(theEvent);
 
             ContentContainer cc = container.getContentContainer();
             cc.setProperty("containerKey", name);

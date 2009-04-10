@@ -107,10 +107,12 @@ public class FormValve implements Valve {
         Map<String,Object> parameters = r.getFileUpload().getParameterMap();
         for (String key : parameters.keySet()) {
             String hash = Integer.toString(tok.hashCode());
-            if (key.endsWith(hash) && parameters.get(key) instanceof String[]) {
-                String[] values = (String[]) parameters.get(key);
-                String name = key.substring(0,key.length() - hash.length());
-                n.setProperty(name, values[0]);
+            if (key.endsWith(hash) && parameters.get(key) instanceof List) {
+                List values = (List) parameters.get(key);
+                if (values.size()>0) {
+                    String name = key.substring(0,key.length() - hash.length());
+                    n.setProperty(name, (String) values.get(0));
+                }
             }
         }
         Map<String, DiskFileItem> files = r.getFileUpload().getFileItems();
@@ -126,6 +128,8 @@ public class FormValve implements Valve {
                         List<JCRNodeWrapper> f = JCRStoreService.getInstance().getUserFolders(r.getSiteKey(),r.getUser());
                         if (f.size()>0) {
                             path = path.replace("$home",f.iterator().next().getPath()+"/files");
+                        } else {
+                            continue;
                         }
                     }
                     JCRNodeWrapper folder = JCRStoreService.getInstance().getFileNode(path,r.getUser());

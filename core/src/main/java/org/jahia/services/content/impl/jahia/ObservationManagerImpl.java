@@ -342,23 +342,27 @@ public class ObservationManagerImpl implements ObservationManager {
             try {
                 String path = null;
                 boolean deleted = false;
-                if (key instanceof ContentContainerKey)  {
-                    ContentContainer object = (ContentContainer) ContentContainer.getContentObjectInstance(key);
-                    deleted = object.getLanguagesStates().isEmpty();
+                try {
+                    if (key instanceof ContentContainerKey)  {
+                        ContentContainer object = (ContentContainer) ContentContainer.getContentObjectInstance(key);
+                        deleted = object.isDeleted(Integer.MAX_VALUE);
 
-                    path = workspace.getSession().getJahiaContainerNode(object).getPath();
+                        path = workspace.getSession().getJahiaContainerNode(object).getPath();
 
-                } else if (key instanceof ContentPageKey) {
-                    ContentPage object = (ContentPage) ContentPage.getContentObjectInstance(key);
-                    deleted = object.getLanguagesStates().isEmpty();
+                    } else if (key instanceof ContentPageKey) {
+                        ContentPage object = (ContentPage) ContentPage.getContentObjectInstance(key);
+                        deleted = object.isDeleted(Integer.MAX_VALUE);
 
-                    if (object.getPageType(null) == JahiaPage.TYPE_DIRECT) {
-                        path = workspace.getSession().getJahiaPageNode(object).getPath();
+                        if (object.getPageType(null) == JahiaPage.TYPE_DIRECT) {
+                            path = workspace.getSession().getJahiaPageNode(object).getPath();
+                        }
+                    } else if (key instanceof ContentFieldKey) {
+                        ContentContainer object = (ContentContainer) ContentContainer.getContentObjectInstance(((ContentFieldKey)key).getParent(EntryLoadRequest.STAGED));
+                        deleted = object.isDeleted(Integer.MAX_VALUE);
+                        path = workspace.getSession().getJahiaContainerNode(object).getPath();
                     }
-                } else if (key instanceof ContentFieldKey) {
-                    ContentContainer object = (ContentContainer) ContentContainer.getContentObjectInstance(((ContentFieldKey)key).getParent(EntryLoadRequest.STAGED));
-                    deleted = object.getLanguagesStates().isEmpty();
-                    path = workspace.getSession().getJahiaContainerNode(object).getPath();
+                } catch (JahiaException e) {
+                    e.printStackTrace();
                 }
                 if (path != null) {
                     if (!deleted) {

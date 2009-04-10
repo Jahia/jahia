@@ -49,7 +49,8 @@ public class SelectorType {
     public static final int RICHTEXT = 2;
     public static final int DATETIMEPICKER = 3;
     public static final int DATEPICKER = 4;
-    public static final int FILE = 9;
+    public static final int FILEPICKER = 9;
+    public static final int FILEUPLOAD = 10;
     public static final int CHECKBOX = 11;
     public static final int COLOR = 12;
     public static final int CATEGORY = 13;
@@ -64,7 +65,8 @@ public class SelectorType {
     public static final String SELECTORNAME_RICHTEXT = "RichText";
     public static final String SELECTORNAME_DATETIMEPICKER = "DateTimePicker";
     public static final String SELECTORNAME_DATEPICKER = "DatePicker";
-    public static final String SELECTORNAME_FILE = "File";
+    public static final String SELECTORNAME_FILEPICKER = "File";
+    public static final String SELECTORNAME_FILEUPLOAD = "FileUpload";
     public static final String SELECTORNAME_CHECKBOX = "Checkbox";
     public static final String SELECTORNAME_COLOR = "Color";
     public static final String SELECTORNAME_CATEGORY = "Category";
@@ -83,7 +85,8 @@ public class SelectorType {
         nameToValue.put(SELECTORNAME_RICHTEXT, RICHTEXT);
         nameToValue.put(SELECTORNAME_DATETIMEPICKER, DATETIMEPICKER);
         nameToValue.put(SELECTORNAME_DATEPICKER, DATEPICKER);
-        nameToValue.put(SELECTORNAME_FILE, FILE);
+        nameToValue.put(SELECTORNAME_FILEPICKER, FILEPICKER);
+        nameToValue.put(SELECTORNAME_FILEUPLOAD, FILEUPLOAD);
         nameToValue.put(SELECTORNAME_CHECKBOX, CHECKBOX);
         nameToValue.put(SELECTORNAME_COLOR, COLOR);
         nameToValue.put(SELECTORNAME_CATEGORY, CATEGORY);
@@ -97,7 +100,8 @@ public class SelectorType {
         valueToName.put(RICHTEXT, SELECTORNAME_RICHTEXT);
         valueToName.put(DATETIMEPICKER, SELECTORNAME_DATETIMEPICKER);
         valueToName.put(DATEPICKER, SELECTORNAME_DATEPICKER);
-        valueToName.put(FILE, SELECTORNAME_FILE);
+        valueToName.put(FILEPICKER, SELECTORNAME_FILEPICKER);
+        valueToName.put(FILEUPLOAD, SELECTORNAME_FILEUPLOAD);
         valueToName.put(CHECKBOX, SELECTORNAME_CHECKBOX);
         valueToName.put(COLOR, SELECTORNAME_COLOR);
         valueToName.put(CATEGORY, SELECTORNAME_CATEGORY);

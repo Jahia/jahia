@@ -271,7 +271,8 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
                     switch (propDef.getSelector()) {
                         case SelectorType.RICHTEXT:
                             return FieldTypes.BIGTEXT;
-                        case SelectorType.FILE:
+                        case SelectorType.FILEPICKER:
+                        case SelectorType.FILEUPLOAD:
                             return FieldTypes.FILE;
                         case SelectorType.CATEGORY:
                             return FieldTypes.CATEGORY;

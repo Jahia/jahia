@@ -9,6 +9,7 @@ import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.metadata.MetadataBaseService;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.exceptions.JahiaException;
@@ -16,6 +17,7 @@ import org.jahia.api.Constants;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.content.ContentObject;
 import org.jahia.operations.valves.FormValve;
+import org.jahia.engines.selectdatasource.SelectDataSource_Engine;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -46,6 +48,7 @@ public class ContainerFormTag extends AbstractJahiaTag {
     private String token;
     private Map<String,Object> params;
     private String action=null;
+    private boolean multipart = false;
 
     public String getAction() {
         return action;
@@ -149,6 +152,9 @@ public class ContainerFormTag extends AbstractJahiaTag {
                         }
                         inputs.put(itemDefinition.getLocalName(), new FormInputBean(propertyDefinition.getName()+token.hashCode(), defaultVal, propertyDefinition.isMandatory(),
                                 Arrays.asList(propertyDefinition.getValueConstraints())));
+                        if (itemDefinition.getSelector() == SelectorType.FILEUPLOAD) {
+                            multipart = true;
+                        }
                     } else {
                         // node
                     }
@@ -158,16 +164,18 @@ public class ContainerFormTag extends AbstractJahiaTag {
 
             String pageUrl = page.getURL(jData.getProcessingContext());
             JspWriter out = pageContext.getOut();
-            StringBuffer buff = new StringBuffer("<form name=\"");
+            StringBuilder buff = new StringBuilder("<form name=\"");
             buff.append(this.name);
             if (action != null) {
               buff.append("\"" );
               buff.append(" action=\"");
               buff.append(action);                
             }
-            buff.append("\" method=\"post");
-            buff.append("\">");
-            buff.append("<input type=\"hidden\" name=\"formToken\" value=\"");
+            buff.append("\" method=\"post\"");
+            if (multipart) {
+                buff.append(" enctype=\"multipart/form-data\"");
+            }
+            buff.append("><input type=\"hidden\" name=\"formToken\" value=\"");
             buff.append(token);
             buff.append("\">");
             out.print(buff.toString());
@@ -192,6 +200,7 @@ public class ContainerFormTag extends AbstractJahiaTag {
         ignoreAcl = false;
         token = null;
         action = null;
+        multipart = false;
 
         return super.doEndTag();
     }

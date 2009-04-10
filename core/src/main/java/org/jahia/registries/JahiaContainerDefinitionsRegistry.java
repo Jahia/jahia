@@ -723,7 +723,8 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                     switch (propDef.getSelector()) {
                         case SelectorType.RICHTEXT:
                             return FieldTypes.BIGTEXT;
-                        case SelectorType.FILE:
+                        case SelectorType.FILEPICKER:
+                        case SelectorType.FILEUPLOAD:
                             return FieldTypes.FILE;
                         case SelectorType.CATEGORY:
                             return FieldTypes.CATEGORY;

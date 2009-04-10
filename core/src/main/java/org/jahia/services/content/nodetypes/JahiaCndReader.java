@@ -470,7 +470,7 @@ public class JahiaCndReader {
             } else if (currentTokenEquals(Lexer.JAHIA_FILEFIELD)) {
                 ExtendedPropertyDefinition pdi = new ExtendedPropertyDefinition(registry);
                 pdi.setRequiredType(PropertyType.STRING);
-                pdi.setSelector(SelectorType.FILE);
+                pdi.setSelector(SelectorType.FILEPICKER);
                 pdi.setInternationalized(true);
                 nextToken();
                 doPropertyDefinition(pdi, ntd);
@@ -610,8 +610,10 @@ public class JahiaCndReader {
             pdi.setSelector(SelectorType.DATETIMEPICKER);
         } else if (currentTokenEquals(Lexer.CATEGORY)) {
             pdi.setSelector(SelectorType.CATEGORY);
-        } else if (currentTokenEquals(Lexer.FILE)) {
-            pdi.setSelector(SelectorType.FILE);
+        } else if (currentTokenEquals(Lexer.FILEPICKER)) {
+            pdi.setSelector(SelectorType.FILEPICKER);
+        } else if (currentTokenEquals(Lexer.FILEUPLOAD)) {
+            pdi.setSelector(SelectorType.FILEUPLOAD);
         } else if (currentTokenEquals(Lexer.COLOR)) {
             pdi.setSelector(SelectorType.COLOR);
         } else if (currentTokenEquals(Lexer.CHECKBOX)) {

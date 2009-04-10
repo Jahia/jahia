@@ -113,7 +113,8 @@ public class Lexer {
     public static final String[] DATETIMEPICKER = {"datetimepicker", "DateTimePicker", "DATETIMEPICKER"};
     public static final String[] DATEPICKER = {"datepicker", "DatePicker", "DATEPICKER"};
     public static final String[] CATEGORY = {"category", "Category", "CATEGORY"};
-    public static final String[] FILE = {"file", "File", "FILE"};
+    public static final String[] FILEPICKER = {"file", "File", "FILE"};
+    public static final String[] FILEUPLOAD = {"fileupload", "FileUpload", "FILEUPLOAD"};
     public static final String[] PORTLET = {"portlet", "Portlet", "PORTLET"};
     public static final String[] PORTLETDEFINITION = {"portletdefinition", "PortletDefinition", "PORTLETDEFINITION"};
     public static final String[] PAGE = {"page", "Page", "PAGE"};

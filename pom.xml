@@ -64,11 +64,9 @@
                       <configuration>
                           <generateHistorical>true</generateHistorical>
                           <targetPercentage>7%</targetPercentage>
-                          <!--
-                          <historyDir>${user.home}/history/${project.artifact}</historyDir>
-                          <snapshot>${user.home}/.clover/atlassian-plugins-clover.snapshot</snapshot>
-                          <singleCloverDatabase>true</singleCloverDatabase>
-                          -->
+                          <!--<generateXml>true</generateXml>-->
+                          <generatePdf>true</generatePdf>                          
+                          <historyDir>${user.home}/history</historyDir>
                           <!--
                           <cloverDatabase>/foo/bar</cloverDatabase>
                           <cloverMergeDatabase>/foo/bar</cloverMergeDatabase>
@@ -87,6 +85,7 @@
                               <phase>verify</phase>
                               <goals>
                                   <goal>aggregate</goal>
+                                  <goal>save-history</goal>
                                   <goal>clover</goal>
                               </goals>
                           </execution>
@@ -107,7 +106,7 @@
     <module>gwt</module>
     <module>templates</module>
     <module>war</module>
-    <module>ear</module>
+    <!--<module>ear</module>-->
   </modules>
 
     <distributionManagement>

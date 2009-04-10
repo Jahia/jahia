@@ -20,9 +20,9 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
+ * http://www.jahia.com/license
  * 
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
@@ -31,40 +31,38 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-
 package org.jahia.services.search.facets;
 
-
-import java.util.BitSet;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.jahia.data.containers.ContainerFilters;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ProcessingContext;
-import org.jahia.services.JahiaService;
-import org.jahia.services.containers.ContainerQueryContext;
+public class AppliedFacetFilters implements Serializable {
 
+    private static final long serialVersionUID = -8809327269707046435L;
+    
+    private FacetBean facetBean;
+    private List<FacetValueBean> facetValueBeans = new ArrayList<FacetValueBean>();
 
-/**
- * Faceting Service.
- */
-public abstract class JahiaFacetingService extends JahiaService {
-    public abstract FacetBean createFacetFilter(String facetName, String propertyName, String facetNameForNoValue,
-            ContainerQueryContext queryContext, ProcessingContext jParams) throws JahiaException;
+    public AppliedFacetFilters(FacetBean facetBean) {
+        super();
+        this.facetBean = facetBean;
+    }
 
-    public abstract FacetBean createFacetFilter(String facetName, String facetValueName,
-            ContainerFilters containerFilters, ContainerQueryContext queryContext, ProcessingContext jParams)
-            throws JahiaException;    
+    public FacetBean getFacetBean() {
+        return facetBean;
+    }
+
+    public boolean addFacetValueBean(FacetValueBean facetValueBean) {
+        return facetValueBeans.add(facetValueBean);
+    }
+
+    public List<FacetValueBean> getFacetValueBeans() {
+        return facetValueBeans;
+    }
     
-    public abstract BitSet applyFacetFilters(BitSet mainQueryBits, String filtersToApply,
-            ContainerQueryContext queryContext, ProcessingContext jParams) throws JahiaException;
-    
-    public abstract Map<FacetValueBean, Integer> getHitsPerFacetValue(FacetBean facetBean,
-            String facetValueName, BitSet mainQueryBits, ContainerQueryContext queryContext, ProcessingContext jParams) throws JahiaException;
-    
-    public abstract String[] getFacetFilterQueries(String filtersToApply) throws JahiaException;
-    
-    public abstract List<AppliedFacetFilters> getAppliedFacetFilters(String filtersToApply) throws JahiaException;
-    
+    @Override
+    public int hashCode() {
+        return facetBean.hashCode();
+    }        
 }

@@ -841,5 +841,17 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
+    </tag>
+    <tag>
+        <description>Returns the applied facet filters</description>
+        <name>getAppliedFacetFilters</name>
+        <tag-class>org.jahia.taglibs.query.GetAppliedFacetFiltersTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The query parameter name for the filter to be created in the URL for drilldown.</description>
+            <name>filterQueryParamName</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>             
     </tag>    
 </taglib>

@@ -33,6 +33,7 @@
 
 package org.jahia.services.search.facets;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.services.search.ContainerSearcher;
+import org.jahia.services.search.JahiaSearchConstant;
 
 public class JahiaFacetingBaseService extends JahiaFacetingService {
 
@@ -129,7 +131,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
     }
 
     @Override
-    public FacetBean createFacetFilter(String facetName, String propertyName, ContainerQueryContext queryContext,
+    public FacetBean createFacetFilter(String facetName, String propertyName, String facetNameForNoValue, ContainerQueryContext queryContext,
             ProcessingContext jParams) throws JahiaException {
         FacetBean facetBean = getFacetBeanByName(facetName, propertyName);
 
@@ -156,6 +158,13 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             for (String value : fieldDef.getPropertyDefinition().getValueConstraints()) {
                 String filterQuery = fieldName + ":(\"" + QueryParser.escape(value) + "\")";
                 facetBean.addFacetValueBean(new FacetValueBean(value, filterQuery));
+            }
+            if (facetNameForNoValue != null && facetNameForNoValue.trim().length() > 0) {
+                String filterQuery = fieldName.replace(
+                        JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX,
+                        JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX)
+                        + ":(no)";
+                facetBean.addFacetValueBean(new FacetValueBean(facetNameForNoValue, filterQuery));                
             }
         }
         return facetBean;
@@ -216,8 +225,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
     }
 
     @Override
-    public String[] getFacetFilterQueries(String filtersToApply, ContainerQueryContext queryContext,
-            ProcessingContext jParams) throws JahiaException {
+    public String[] getFacetFilterQueries(String filtersToApply) throws JahiaException {
         String[] queries = null;
         if (filtersToApply != null) {
             String[] filterIds = filtersToApply.split("_");
@@ -240,6 +248,38 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
 
         return queries;
     }    
+    
+    @Override
+    public List<AppliedFacetFilters> getAppliedFacetFilters(String filtersToApply) throws JahiaException {
+        List<AppliedFacetFilters> appliedFacetFilters = new ArrayList<AppliedFacetFilters>();
+        if (filtersToApply != null) {
+            String[] filterIds = filtersToApply.split("_");
+            AppliedFacetFilters currentFacetFilters = null;
+            for (String filter : filterIds) {
+                if (currentFacetFilters == null) {
+                    FacetBean facetBean = getFacetBean(filter);
+                    for (AppliedFacetFilters facetFilters : appliedFacetFilters) {
+                        if (facetFilters.getFacetBean().equals(facetBean)) {
+                            currentFacetFilters = facetFilters;
+                            break;
+                        }
+                    }
+                    if (currentFacetFilters == null) {
+                        currentFacetFilters = new AppliedFacetFilters(facetBean);
+                        appliedFacetFilters.add(currentFacetFilters);
+                    }
+                } else {
+                    FacetValueBean facetValueBean = currentFacetFilters.getFacetBean().getFacetValueBean(filter);
+                    if (facetValueBean != null) {
+                        currentFacetFilters.addFacetValueBean(facetValueBean);
+                    }
+                    currentFacetFilters = null;
+                }
+            }
+        }
+
+        return appliedFacetFilters;
+    } 
     
     @Override
     public Map<FacetValueBean, Integer> getHitsPerFacetValue(FacetBean facetBean, String facetValueName,

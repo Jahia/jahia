@@ -90,7 +90,7 @@
 <query:createFacetFilter facetName="categoryFacet" 
     propertyName="defaultCategory" facetBeanId="categoryFacet"/>
 <query:createFacetFilter facetName="eventTypeFacet" targetContainerListName="events" 
-    propertyName="eventsType" facetBeanId="eventTypeFacet"/>
+    propertyName="eventsType" facetBeanId="eventTypeFacet" valueTitle="Unknown"/>
 
 <c:choose>
 <c:when test="${!empty param.startDate}">
@@ -137,8 +137,11 @@
     <%@ include file="eventsDisplay.jspf" %>
 </template:containerList>
 
+<query:getAppliedFacetFilters filterQueryParamName="filter"/>
 <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="categoryFacet" filterQueryParamName="filter"/>
+<br/>Event types:<br/>
 <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventTypeFacet" filterQueryParamName="filter"/>
+<br/>Next 4 months:<br/>
 <c:forTokens var="facetValue" items="${facetValues}" delims=",">
     <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueName="${facetValue}" filterQueryParamName="filter"/>
 </c:forTokens>

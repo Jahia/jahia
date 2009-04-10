@@ -38,7 +38,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class FacetBean implements Serializable {
 
     private static final long serialVersionUID = 827940036254584574L;

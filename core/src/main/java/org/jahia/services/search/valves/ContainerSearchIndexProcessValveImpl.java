@@ -212,14 +212,25 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                             JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX
                                     + name).setType(DocumentField.KEYWORD);
                 }                
-                if (propDef != null && propDef.isFacetable() && values.length > 0) {
-                    doc.setFieldValues(
+                if (propDef != null && propDef.isFacetable()) {
+                    if (values.length > 0) {
+                        doc.setFieldValues(
                             JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
-                                    + name, field.getValuesForSearch(container
-                                    .getLanguageCode(), context, false));
-                    doc.getField(
+                            + name, field.getValuesForSearch(container
+                                .getLanguageCode(), context, false));
+                        doc.getField(
                             JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
-                                    + name).setType(DocumentField.KEYWORD);
+                                + name).setType(DocumentField.KEYWORD);
+                    } else {
+                        doc.setFieldValues(
+                            JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX
+                                + name, new String[] { "no" });
+                        DocumentField docField = doc.getField(
+                            JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX
+                                + name);
+                        docField.setType(DocumentField.KEYWORD);
+                        docField.setUnstored(true);
+                    }
                 }
                 if ( field instanceof JahiaFileFieldWrapper ){
                     doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE, values);

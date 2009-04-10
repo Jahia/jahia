@@ -85,7 +85,7 @@ public class CreateFacetFilterTag extends ContainerQueryTag {
                             .getPageTemplateID(), 0, jParams));
                     context.getContainerDefinitionsIncludingType(true);
                 }
-                facetBean = facetingService.createFacetFilter(getFacetName(), getPropertyName(), context, jParams);
+                facetBean = facetingService.createFacetFilter(getFacetName(), getPropertyName(), getValueTitle(), context, jParams);
             } else if (getQueryBean(jData) != null && getQueryBean(jData).getFilter() != null) {
                 facetBean = facetingService.createFacetFilter(getFacetName(), getValueTitle(), getQueryBean(jData).getFilter(), getQueryBean(jData)
                         .getQueryContext(), jParams);

@@ -72,6 +72,7 @@ public final class JahiaSearchConstant {
     public static final String CONTAINER_FIELD_PREFIX       = JAHIA_PREFIX + "containerfield_";
     public static final String CONTAINER_FIELD_SORT_PREFIX  = JAHIA_PREFIX + "containerfieldsort_";
     public static final String CONTAINER_FIELD_FACET_PREFIX = JAHIA_PREFIX + "containerfieldfacet_";
+    public static final String CONTAINER_EMPTY_FIELD_FACET_PREFIX = JAHIA_PREFIX + "no_containerfieldfacet_";    
     public static final String CONTAINER_FIELD_ALIAS_PREFIX = JAHIA_PREFIX + "containerfieldalias_";
     
     public static final String CONTAINER_DEFINITION_PRIMARYTYPE  = JAHIA_PREFIX + "definition_primarytype";    

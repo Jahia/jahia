@@ -3041,11 +3041,24 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                     compassConfigChanged = true;
                                 }
                             }
+                            if (updateCompassMappings(
+                                    compassMappings,
+                                    JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX
+                                            + lowerCaseName,
+                                    isDefault,
+                                    scoreBoost,
+                                    keywordAnalyzer,
+                                    ExtendedPropertyDefinition.INDEXED_UNTOKENIZED,
+                                    ExtendedPropertyDefinition.STORE_NO, true)) {
+                                if (!compassConfigChanged) {
+                                    compassConfigChanged = true;
+                                }
+                            }                            
                         }
                         if (propertyDef.isSortable()) {
                             if (updateCompassMappings(
                                     compassMappings,
-                                    JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
+                                    JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX
                                             + lowerCaseName,
                                     isDefault,
                                     scoreBoost,

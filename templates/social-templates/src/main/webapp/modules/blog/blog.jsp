@@ -70,7 +70,7 @@
             <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${param.category}"/>
         </c:if>
         <c:if test="${!empty param.keyword}">
-            <query:like propertyName="${queryConstants.KEYWORDS}" metadata="true" value="${param.keyword}"/>
+            <query:equalTo propertyName="${queryConstants.KEYWORDS}" metadata="true" value="${param.keyword}"/>
         </c:if>
         <c:if test="${!empty param.user}">
             <query:equalTo propertyName="${queryConstants.CREATOR}" metadata="true" value="${param.user}"/>

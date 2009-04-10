@@ -60,6 +60,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.ComparisonImpl;
 import org.jahia.query.qom.FullTextSearchImpl;
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
+import org.jahia.query.qom.LiteralImpl;
 import org.jahia.query.qom.OrderingImpl;
 import org.jahia.query.qom.PropertyValueImpl;
 import org.jahia.query.qom.QueryModelTools;
@@ -419,10 +420,11 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
             QueryObjectModelFactory queryFactory = ((QueryObjectModelImpl)queryModel).getQueryFactory();
             if (definitions != null && !definitions.isEmpty()){
                 String[] definitionsAr = (String[])definitions.toArray(new String[]{});
-                String definitionNamesStr = JahiaTools.getStringArrayToString(definitionsAr,",");
+                String definitionNamesStr = JahiaTools.getStringArrayToString(definitionsAr,JahiaQueryObjectModelConstants.MULTI_VALUE_SEP);
                 Value val = valueFactory.createValue(definitionNamesStr);
                 try {
                     Literal literal = queryFactory.literal(val);
+                    ((LiteralImpl)literal).setMultiValueANDLogic(false);
                     PropertyValue prop = queryFactory.propertyValue(FilterCreator.CONTENT_DEFINITION_NAME);
                     Comparison compConstraint = queryFactory.comparison(prop,
                             JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO,literal);

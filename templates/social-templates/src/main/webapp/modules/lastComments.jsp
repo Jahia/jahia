@@ -63,7 +63,7 @@
             <template:containerList maxSize="${maxEntries.integer}" id="newsList" displayActionMenu="false">
                 <query:containerQuery>
                     <query:selector nodeTypeName="jnt:comment" selectorName="comments"/>
-                    <query:descendantNode selectorName="comments" path="${currentPage.JCRPath}"/>
+                    <query:descendantNode selectorName="comments" path="${currentSite.JCRPath}"/>
                     <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxEntries.integer}"/>
                     <query:sortBy propertyName="commentDate" order="${queryConstants.ORDER_DESCENDING}"/>
                 </query:containerQuery>

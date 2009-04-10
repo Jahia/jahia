@@ -935,9 +935,9 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
         return getJahiaContainerFromList(list);
     }
 
-    public int getMaxRankingValue() {
+    public int getMaxRankingValue(int listId) {
         final HibernateTemplate hibernateTemplate = getHibernateTemplate();
-        List<Integer> list = hibernateTemplate.find("select max(c.rank) from JahiaContainer c");
+        List<Integer> list = hibernateTemplate.find("select max(c.rank) from JahiaContainer c where c.listId=?", listId);
         if (!list.isEmpty() && list.get(0) != null) {
             return (list.get(0));
         } else {

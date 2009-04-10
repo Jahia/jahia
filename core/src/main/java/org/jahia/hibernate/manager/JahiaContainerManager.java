@@ -172,11 +172,7 @@ public class JahiaContainerManager {
                 if (loadVersion.isWithMarkedForDeletion() || ((Integer) objects[1])
                         != -1) {
                     Integer rank = ((Integer) objects[2]);
-                    if (rank != 0) {
-                        retval.add(index++, ctnID);
-                    } else {
-                        retval.add(ctnID);
-                    }
+                    retval.add(index++, ctnID);
                 }
             }
         } else {
@@ -529,11 +525,7 @@ public class JahiaContainerManager {
                     if (loadVersion.isWithMarkedForDeletion()
                             || ((Integer) objects[1]) != -1) {
                         Integer rank = (Integer) objects[2];
-                        if (rank != 0) {
-                            retval.add(index++, ctnID);
-                        } else {
-                            retval.add(ctnID);
-                        }
+                        retval.add(index++, ctnID);
                     }
                 }
             }
@@ -1018,7 +1010,7 @@ public class JahiaContainerManager {
         container.setSiteId((jahiaContainer.getSiteID()));
         container.setPageid((jahiaContainer.getPageID()));
         if (jahiaContainer.getRank() == 0) {
-            container.setRank((dao.getMaxRankingValue() + 1));
+            container.setRank((dao.getMaxRankingValue(jahiaContainer.getListID()) + 1));
         } else {
             container.setRank((jahiaContainer.getRank()));
         }

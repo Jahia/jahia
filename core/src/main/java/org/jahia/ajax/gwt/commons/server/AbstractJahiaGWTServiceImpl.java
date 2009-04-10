@@ -48,6 +48,7 @@ import org.jahia.services.preferences.generic.GenericJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.engines.EngineMessage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
@@ -140,8 +141,11 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         }
     }
 
-    protected String createExtraParam(String mode, int pid) {
+    protected String createExtraParam(String mode, int pid, String siteKey) {
         String urlParams = "?params=/" + ProcessingContext.OPERATION_MODE_PARAMETER + "/" + mode + "/" + ProcessingContext.PAGE_ID_PARAMETER + "/" + pid;
+        if (siteKey != null) {
+            urlParams += "/" + ProcessingContext.SITE_KEY_PARAMETER + "/" + siteKey;
+        }
         return urlParams;
     }
 
@@ -303,7 +307,8 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
             final ProcessingContextFactory pcf = (ProcessingContextFactory) bf.getBean(ProcessingContextFactory.class.getName());
             try {
                 // build jParam
-                jParams = pcf.getContext(request, response, context, createExtraParam(mode != null ? mode : ProcessingContext.NORMAL, pid));
+                JahiaSite site = (JahiaSite) request.getSession().getAttribute(ProcessingContext.SESSION_SITE);
+                jParams = pcf.getContext(request, response, context, createExtraParam(mode != null ? mode : ProcessingContext.NORMAL, pid, site != null ? site.getSiteKey() : null));
                 request.setAttribute(ORG_JAHIA_PARAMS_PARAM_BEAN, jParams);
                 return jParams;
             } catch (org.jahia.exceptions.JahiaSiteNotFoundException e) {

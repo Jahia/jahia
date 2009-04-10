@@ -639,7 +639,9 @@ public class ImportHandler extends DefaultHandler {
                         //System.out.println("------------------ordered------>" +l);
 
                         if (uuid != null) {
-                            for (Iterator<ContentObject> iterator = l.iterator(); iterator.hasNext();) {
+                            List rl = new ArrayList(l);
+                            Collections.reverse(rl);
+                            for (Iterator<ContentObject> iterator = rl.iterator(); iterator.hasNext();) {
                                 ContentContainer contentContainer = (ContentContainer) iterator.next();
                                 Map<Object, Object> p = contentContainer.getProperties();
 //                                if (uuid.equals(p.get("originalUuid"))
@@ -659,7 +661,6 @@ public class ImportHandler extends DefaultHandler {
                         if (updateOnly && currentObject == null && op != VersioningDifferenceStatus.TO_BE_REMOVED) {
                             currentObject = createObject(parent, namespaceURI, localName, qName, atts);
                             l.add(iIndex, currentObject);
-                            l = l;
                         }
 
                         if (op != VersioningDifferenceStatus.UNCHANGED && currentObject != null) {
@@ -903,7 +904,21 @@ public class ImportHandler extends DefaultHandler {
                 if (importedPt != null) {
                     localName = getMappedProperty(importedMappings.get(parent.getParent(null).getObjectKey().toString()), localName);
 
-                    ExtendedNodeType importedListNodeType = NodeTypeRegistry.getInstance().getNodeType(importedPt);
+                    ExtendedNodeType importedListNodeType = null;
+                    try {
+                        importedListNodeType = NodeTypeRegistry.getInstance().getNodeType(importedPt);
+                    } catch (NoSuchNodeTypeException e) {
+                        if (localName.endsWith("List")) {
+                            ExtendedNodeType listNt = jcd.getContainerListNodeDefinition().getRequiredPrimaryTypes()[0];
+                            ExtendedNodeType ctnNt = listNt.getChildNodeDefinitionsAsMap().get("*").getRequiredPrimaryTypes()[0];
+                            ExtendedNodeType importedNt = NodeTypeRegistry.getInstance().getNodeType(importedPt.substring(0, importedPt.length()-4));
+                            if (ctnNt.isNodeType(importedNt.getName()) || importedNt.isNodeType(ctnNt.getName())) {
+                                return parent;
+                            }
+                        } else {
+                            throw e;
+                        }
+                    }
 
                     if (!ImportExportBaseService.getInstance().isCompatible(jcd, importedListNodeType, jParams)) {
                         if (importedListNodeType.isNodeType("jnt:containerList")) {

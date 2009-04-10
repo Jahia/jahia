@@ -113,12 +113,24 @@ public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
                     .findAttribute(getMainQueryBeanId()) : null;
             if (mainQueryBean != null) {
                 StringBuffer buff = new StringBuffer();
+                String queryString = jParams.getQueryString();
+                if (queryString != null) {
+                    int index = queryString.indexOf(getFilterQueryParamName());
+                    if (index > -1) {
+                        queryString = queryString.substring(0, index);
+                        index = jParams.getQueryString().indexOf("&", index);
+                        if (index > -1) {
+                            queryString += jParams.getQueryString().substring(
+                                    index);
+                        }
+                    }
+                }
                 for (Map.Entry<FacetValueBean, Integer> hitsForFacetValue : ServicesRegistry.getInstance()
                         .getJahiaFacetingService().getHitsPerFacetValue(facetBean, getFacetValueName(),
                                 (mainQueryBean.getFilter() != null ? mainQueryBean.getFilter().bits() : null), mainQueryBean.getQueryContext(), jParams).entrySet()) {
                     int matchingHits = hitsForFacetValue.getValue();
                     if (getFilterQueryParamName() != null) {
-                        buff.append("<a href=\"").append(jParams.getPage().getURL(jParams)).append("?").append(
+                        buff.append("<a href=\"").append(jParams.getPage().getURL(jParams)).append("?").append(queryString != null ? queryString + "&": "").append(
                                 getFilterQueryParamName()).append("=");
                         Object forwardedFilter = jParams.getParameter(getFilterQueryParamName());
                         if (forwardedFilter != null) {

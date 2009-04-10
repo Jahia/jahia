@@ -203,18 +203,20 @@ public class QueryModelTools {
                     if (fieldDef.getIsMetadata()) {
                         fieldName = JahiaSearchConstant.METADATA_PREFIX
                                 + propertyName;
-                    } else if (type > 0
-                            && fieldDef.getPropertyDefinition() != null) {
+                    } else {
                         fieldName = fieldDef.getCtnType().replaceAll("[ :]",
                                 "_").toLowerCase();
                         String prefix = JahiaSearchConstant.CONTAINER_FIELD_PREFIX;
-                        ExtendedPropertyDefinition propDef = fieldDef
-                                .getPropertyDefinition();
-                        if (type == SORTING_TYPE && propDef.isSortable()) {
-                            prefix = JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX;
-                        } else if (type == FACETING_TYPE
-                                && propDef.isFacetable()) {
-                            prefix = JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX;
+                        if (type > 0
+                                && fieldDef.getPropertyDefinition() != null) {
+                            ExtendedPropertyDefinition propDef = fieldDef
+                                    .getPropertyDefinition();
+                            if (type == SORTING_TYPE && propDef.isSortable()) {
+                                prefix = JahiaSearchConstant.CONTAINER_FIELD_SORT_PREFIX;
+                            } else if (type == FACETING_TYPE
+                                    && propDef.isFacetable()) {
+                                prefix = JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX;
+                            }
                         }
                         fieldName = prefix + fieldName;
                     }

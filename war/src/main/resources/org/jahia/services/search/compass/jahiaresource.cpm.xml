@@ -30,7 +30,7 @@
       <resource-property name="jahia.metadata_createdby" analyzer="simple"/>
       <resource-property name="jahia.metadata_defaultcategory" index="un_tokenized" analyzer="lowercasekeyword"/>
       <resource-property name="jahia.metadata_description" store="no"/>      
-      <resource-property name="jahia.metadata_keywords" analyzer="whitespace" omit-norms="true" />      
+      <resource-property name="jahia.metadata_keywords" index="un_tokenized" analyzer="lowercasekeyword" omit-norms="true" />      
       <resource-property name="jahia.metadata_lastmodified" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.metadata_lastmodifiedby" analyzer="simple"/>
       <resource-property name="jahia.metadata_lastpublisher" analyzer="simple"/>      

@@ -120,7 +120,7 @@ public class SearchIndexProcessValveUtils {
                         String[] values = jahiaField.getValuesForSearch(locale.toString(),context);
                         if (CoreMetadataConstant.KEYWORDS.equals(definitionName)) {
                             if (values.length > 0 && values[0].length() > 0) {
-                                values = values[0].split(", ");
+                                values = values[0].split(" *+, *+");
                             }
                         }
                         if ( definitionName != null ){

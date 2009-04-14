@@ -435,14 +435,20 @@ public class FileManagerWorker {
             }
             JCRNodeWrapper user = users.iterator().next();
             JCRNodeWrapper queryStore;
+            boolean createdSearchFolder = false ;
             if (!user.hasNode("savedSearch")) {
                 queryStore = user.createCollection("savedSearch");
-                user.save();
+                createdSearchFolder = true ;
             } else {
                 queryStore = jcr.getFileNode(user.getPath() + "/savedSearch", context.getUser());
             }
             String path = queryStore.getPath() + "/" + name;
-            q.storeAsNode(path).getParent().save();
+            q.storeAsNode(path);
+            if (createdSearchFolder) {
+                user.save() ;
+            } else {
+                queryStore.save();
+            }
             return getGWTJahiaNode(jcr.getFileNode(path, context.getUser()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

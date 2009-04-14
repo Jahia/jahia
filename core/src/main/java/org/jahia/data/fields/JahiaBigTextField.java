@@ -671,6 +671,9 @@ public class JahiaBigTextField extends JahiaField implements
     }
 
     private static void restoreURL (ProcessingContext processingContext, OutputDocument document, Attribute href) throws JahiaException {
+        if (href == null) {
+            return;
+        }
         String hrefValue = href.getValue();
         if (hrefValue.contains(URL_MARKER)) {
             if (hrefValue.startsWith(URL_MARKER + JahiaFieldXRefManager.PAGE)) {

@@ -1,7 +1,7 @@
 <editors>
 	<editor>
-		<id>FCKEditor</id>
-		<name>FCK Editor</name>
+		<id>FCKeditor</id>
+		<name>FCKeditor</name>
 		<base-directory>fckeditor</base-directory>
 		<include-file>fckeditor_htmleditor.jsp</include-file>
 		<enable-css>true</enable-css>
@@ -28,8 +28,8 @@
 			</allowed-sites>			
 		</css>					
         <css>
-			<id>FCKEditor</id>
-			<name>FCKEditor default styles</name>
+			<id>FCKeditor</id>
+			<name>FCKeditor default styles</name>
 			<url>/htmleditors/fckeditor/editor/css/fck_editorarea.css</url>
 			<stylesdef>/htmleditors/fckeditor/fckstyles.xml</stylesdef>
 			<shared>true</shared>

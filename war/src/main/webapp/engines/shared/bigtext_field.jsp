@@ -94,15 +94,6 @@ while (editorsEnum.hasNext()) {
       defaultEditor = editor;
   }
 
-        // do not show FCKeditor on Safari and Opera
-/*
-        if (isSafariOrOpera && "FCKEditor".equals(editor.getId())) {
-            if ("FCKEditor".equals(defaultEditor.getId())) {
-                defaultEditor = null;
-                }
-            continue;
-        }
-*/
   editors.add(editor);
 }
 

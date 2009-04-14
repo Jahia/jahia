@@ -2172,22 +2172,33 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         }
     }
     
-    private static void sendEmail(String host, String from, String to, String subject,
-            String text) throws AddressException, MessagingException {
+    private static void sendEmail(String host, String from, String to,
+            String subject, String text) throws AddressException,
+            MessagingException {
+        MailSettings cfg = new MailSettings(false, host, from, to, "Disabled");
         Properties props = new Properties();
-        props.put("mail.smtp.host", host);
-        Session session = Session.getInstance(props, null);
+        props.putAll(cfg.getOptions());
+        Session session = Session.getInstance(props);
         MimeMessage msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(from));
         String[] recipients = StringUtils.split(to, ",");
         for (String rcp : recipients) {
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(rcp.trim()));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(rcp
+                    .trim()));
         }
         msg.setSubject(subject);
         msg.setText(text);
-        Transport.send(msg);
+        int port = cfg.getPort();
+        Transport transport = session.getTransport("smtp");
+        transport.connect(cfg.getSmtpHost(), port > 0 ? port : -1, cfg
+                .getUser(), cfg.getPassword());
+        try {
+            msg.saveChanges();
+            transport.sendMessage(msg, msg.getAllRecipients());
+        } finally {
+            transport.close();
+        }
     }
-
 
     private static String getParameter(final HttpServletRequest request,
             final String name) throws IllegalArgumentException {

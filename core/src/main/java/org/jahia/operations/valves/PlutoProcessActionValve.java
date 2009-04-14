@@ -129,7 +129,6 @@ public class PlutoProcessActionValve implements Valve {
                     } else {
                         logger.warn("Couldn't find related entryPointInstance, roles might not work properly !");
                     }
-
                     copyAttribute("org.jahia.data.JahiaData", jParams, request, portletWindow);
                     copyAttribute("currentRequest", jParams, request, portletWindow);
                     copyAttribute("currentSite", jParams, request, portletWindow);

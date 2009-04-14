@@ -124,16 +124,14 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
         ServletContext servletContext = jParams.getContext();
 
         final String defName = entryPointInstance.getDefName();
-        PortletWindowConfig windowConfig =
-                PortletWindowConfig.fromId((defName.startsWith(".") ? "/" : "") + defName + "!" + windowID);
+        PortletWindowConfig windowConfig =  PortletWindowConfig.fromId((defName.startsWith(".") ? "/" : "") + defName + "!" + windowID);
         windowConfig.setContextPath(entryPointInstance.getContextName());
         if (logger.isDebugEnabled()) {
             logger.debug("Rendering Portlet Window: " + windowConfig);
         }
 
         // Retrieve the current portal URL.
-        PortalRequestContext portalEnv = PortalRequestContext.getContext(
-                (HttpServletRequest) jahiaContextRequest);
+        PortalRequestContext portalEnv = PortalRequestContext.getContext(jahiaContextRequest);
         PortalURL portalURL = portalEnv.getRequestedPortalURL();
 
         // Create the portlet window to render.

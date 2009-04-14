@@ -79,13 +79,7 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
         </span>
       </span>
     <% } else if (!engineMap.containsKey("errorMessage") || (engineMap.get("errorMessage") == Boolean.FALSE)) { %>
-      <% if (results != null) { %>
-        <span class="dex-PushButton">
-          <span class="first-child">
-            <a href="#" onclick="return false;" class="ico-ok"><fmt:message key="org.jahia.button.ok"/></a>
-          </span>
-        </span>
-      <% } else { %>
+      <% if (results == null) { %>
         <span class="dex-PushButton">
           <span class="first-child">
             <a href="javascript:sendFormSave();" class="ico-ok" title="<fmt:message key="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">

@@ -51,6 +51,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaFieldDefinitionsRegistry;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
@@ -829,9 +830,11 @@ public abstract class ContentField extends ContentObject
                             final boolean isAdminMember = jParams.getUser().isAdminMember(jParams.getSiteID());
                             activationTestResults.mergeStatus(!isAdminMember ? ActivationTestResults.FAILED_OPERATION_STATUS : ActivationTestResults.PARTIAL_OPERATION_STATUS);
                             try {
+                                String containerName = JahiaContainerDefinitionsRegistry.getInstance().getDefinition(getParent(null).getDefinitionID(null)).getTitle(jParams.getLocale());
+
                                 final EngineMessage msg = new EngineMessage(
                                         "org.jahia.services.fields.ContentField.mandatoryLangMissingError",
-                                        getFieldTitle(jParams), curSettings.getCode());
+                                        getFieldTitle(jParams), curSettings.getCode(), containerName, getContainerID());
                                 for (String code : languageCodes) {
                                     if (!code.equals(curSettings.getCode())) {
                                         IsValidForActivationResults activationResults = new IsValidForActivationResults(

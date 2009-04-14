@@ -60,34 +60,11 @@ public class EngineMessage implements Serializable {
         this (key, null);
     }
 
-    public EngineMessage (String key, Object value) {
+    public EngineMessage (String key, Object... value1) {
         this.key = key;
-        Object[] objectArray = new Object[1];
-        objectArray[0] = value;
-        this.values = objectArray;
+        this.values = value1;
     }
 
-    public EngineMessage (String key, Object value1, Object value2) {
-        this.key = key;
-        final Object[] objectArray = new Object[2];
-        objectArray[0] = value1;
-        objectArray[1] = value2;
-        this.values = objectArray;
-    }
-
-    public EngineMessage (String key, Object value1, Object value2, Object value3) {
-        this.key = key;
-        final Object[] objectArray = new Object[3];
-        objectArray[0] = value1;
-        objectArray[1] = value2;
-        objectArray[2] = value3;
-        this.values = objectArray;
-    }
-
-    public EngineMessage (String key, Object[] values) {
-        this.key = key;
-        this.values = values;
-    }
 
     public String getKey () {
         return key;

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>Jahia functions 6.0 library</description>
+    <display-name>Jahia functions</display-name>
+    <tlib-version>6.0</tlib-version>
+    <short-name>functions</short-name>
+    <uri>http://www.jahia.org/tags/functions</uri>
+
+    <function>
+        <description>
+            Escapes the characters in a String using JavaScript String rules.
+            Escapes any values it finds into their JavaScript String form.
+            Deals correctly with quotes and control-chars (tab, backslash, cr, ff, etc.)         
+        </description>
+        <name>escapeJavaScript</name>
+        <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String escapeJavaScript(java.lang.String)</function-signature>
+        <example>
+            &lt;c:set var="msg"&gt;He didn't say, "Stop!"&lt;/c:set&gt;
+            ${functions:escapeJavaScript(msg) will result in: He didn\'t say, \"Stop!\"
+        </example>
+    </function>
+    
+</taglib>

@@ -36,18 +36,22 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ include file="header.inc" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.jahia.org/tags/functions" prefix="functions" %>
 <jsp:useBean id="input" class="java.lang.String" scope="request"/>
 <script type="text/javascript">
 <!--
 function testSettings() {
     if (document.mainForm.host.value.length == 0) {
-        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label'/>");
+        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailServer_mustSet.label" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
         document.mainForm.host.focus();
     } else if (document.mainForm.to.value.length == 0) {
-        alert("<fmt:message key='org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label'/>");
+        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailAdmin_mustSet.label" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
         document.mainForm.to.focus();
     } else if (document.mainForm.from.value.length == 0) {
-        alert('<fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label"/>');
+        <fmt:message key="org.jahia.admin.JahiaDisplayMessage.mailFrom_mustSet.label" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
         document.mainForm.from.focus();
     } else {
         if (typeof workInProgressOverlay != 'undefined') {
@@ -67,18 +71,21 @@ function testSettingsSuccess(text, code, statusText) {
         workInProgressOverlay.stop();
     }
     if (code == 200) {
-        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.success'/>");
+        <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.success" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}");
     } else if (code == 400) {
         alert(text);
     } else {
-        alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n" + code + " " + statusText + "\n" + text);
+        <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+        alert("${functions:escapeJavaScript(msg)}" + "\n" + code + " " + statusText + "\n" + text);
     }
 }
 function testSettingsFailure(text, code, statusText) {
     if (workInProgressOverlay) {
         workInProgressOverlay.stop();
     }
-    alert("<fmt:message key='org.jahia.admin.server.ManageServer.testSettings.failure'/> " + "\n'" + code + " " + statusText + "\n" + text);
+    <fmt:message key="org.jahia.admin.server.ManageServer.testSettings.failure" var="msg"/>
+    alert("${functions:escapeJavaScript(msg)}" + "\n'" + code + " " + statusText + "\n" + text);
 }
 //-->
 </script>

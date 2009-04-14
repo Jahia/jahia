@@ -8,13 +8,13 @@
         <fileSet>
             <directory>${project.build.directory}/apache-tomcat-6.0.18</directory>
             <excludes><exclude>**/*.sh</exclude></excludes>
-            <outputDirectory>jahia_ANDROMEDA</outputDirectory>
+            <outputDirectory>jahia_ANDROMEDA_r${buildNumber}</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>${project.build.directory}/apache-tomcat-6.0.18</directory>
             <includes><include>**/*.sh</include></includes>
             <fileMode>755</fileMode>
-            <outputDirectory>jahia_ANDROMEDA</outputDirectory>
+            <outputDirectory>jahia_ANDROMEDA_r${buildNumber}</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

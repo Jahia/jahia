@@ -61,8 +61,7 @@ import java.util.List;
  * @version 1.0
  */
 public class LockKey implements Serializable {
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(LockKey.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LockKey.class);
 
     static final long serialVersionUID = 1701832103044285757L;
     
@@ -80,6 +79,8 @@ public class LockKey implements Serializable {
     public static final String RESTORE_LIVE_CONTENT_ACTION = "RestoreLiveContent";
 
     public static final String UPDATE_CONTAINERLIST_TYPE = UPDATE_ACTION + "_" +
+            ContentContainerListKey.CONTAINERLIST_TYPE;
+    public static final String DELETE_CONTAINERLIST_TYPE = DELETE_ACTION + "_" +
             ContentContainerListKey.CONTAINERLIST_TYPE;
     public static final String ADD_CONTAINER_TYPE = ADD_ACTION + "_" +
             ContentContainerListKey.CONTAINERLIST_TYPE;

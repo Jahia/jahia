@@ -54,8 +54,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
 
 public class JahiaListenersRegistry {
 
-    private static Logger logger =
-        Logger.getLogger(JahiaListenersRegistry.class);
+    private static Logger logger = Logger.getLogger(JahiaListenersRegistry.class);
 
     private static final Logger monitorLogger = Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
 
@@ -115,7 +114,7 @@ public class JahiaListenersRegistry {
      *
      */
     public JahiaEventListenerInterface getListenerByClassName (String listenerClassName) {
-        return (JahiaEventListenerInterface) classNameToInstance.get(listenerClassName);
+        return classNameToInstance.get(listenerClassName);
     } // end getListener
 
     /***
@@ -175,33 +174,24 @@ public class JahiaListenersRegistry {
             try {
                 Class theClass = theListener.getClass();
                 Class eventClass = theEvent.getClass();
-                Method theMethod = theClass.getMethod(methodName,
-                        new Class[] { eventClass });
+                Method theMethod = theClass.getMethod(methodName, new Class[] { eventClass });
                 if (theMethod != null) {
                     Monitor listenerMonitor = null;
-                    if (monitorLogger.isDebugEnabled())
-                        listenerMonitor = MonitorFactory.start(theMethod
-                                .toString());
-                    theMethod.invoke(theListener,
-                            new Object[] { (JahiaEvent) theEvent });
-                    if (monitorLogger.isDebugEnabled())
+                    if (monitorLogger.isDebugEnabled()) {
+                        listenerMonitor = MonitorFactory.start(theMethod.toString());
+                    }
+                    //logger.error("Calling " + theMethod.toString() + " using " + theListener.toString() + " for " + theEvent.toString());
+                    theMethod.invoke(theListener, theEvent);
+                    if (monitorLogger.isDebugEnabled() && listenerMonitor != null) {
                         listenerMonitor.stop();
+                    }
                 }
             } catch (NoSuchMethodException nsme) {
-                logger.error(
-                        "NoSuchMethodException when trying to execute method "
-                                + methodName + ". Cause: " + nsme.getMessage(),
-                        nsme);
+                logger.error( "NoSuchMethodException when trying to execute method " + methodName + ". Cause: " + nsme.getMessage(), nsme);
             } catch (InvocationTargetException ite) {
-                logger.error(
-                        "InvocationTargetException when trying to execute method "
-                                + methodName + ". Cause: " + ite.getMessage(),
-                        ite.getTargetException());
+                logger.error("InvocationTargetException when trying to execute method " + methodName + ". Cause: " + ite.getMessage(), ite.getTargetException());
             } catch (IllegalAccessException iae) {
-                logger.error(
-                        "IllegalAccessException when trying to execute method "
-                                + methodName + ". Cause: " + iae.getMessage(),
-                        iae);
+                logger.error("IllegalAccessException when trying to execute method " + methodName + ". Cause: " + iae.getMessage(), iae);
             }
         }
     } // end wakeupListener

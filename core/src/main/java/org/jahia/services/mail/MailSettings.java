@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -34,8 +34,11 @@
 package org.jahia.services.mail;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jahia.exceptions.JahiaException;
 
@@ -233,4 +236,88 @@ public class MailSettings implements Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+    public String getUser() {
+        String host = getHost();
+        String user = null;
+        if (host.contains("@")) {
+            String authPart = StringUtils.substringBeforeLast(host, "@");
+            host = StringUtils.substringAfterLast(host, "@");
+            if (authPart.contains(":")) {
+                user = StringUtils.substringBefore(authPart, ":");
+            } else {
+                user = authPart;
+            }
+        }
+
+        return user;
+    }
+
+    public String getPassword() {
+        String host = getHost();
+        String pwd = null;
+        if (host.contains("@")) {
+            String authPart = StringUtils.substringBeforeLast(host, "@");
+            host = StringUtils.substringAfterLast(host, "@");
+            if (authPart.contains(":")) {
+                pwd = StringUtils.substringAfter(authPart, ":");
+            }
+        }
+
+        return pwd;
+    }
+
+    public int getPort() {
+        String host = getHost();
+        int port = 0;
+        if (host.contains("@")) {
+            host = StringUtils.substringAfterLast(host, "@");
+        }
+        if (host.contains(":")) {
+            String portPart = StringUtils.substringAfterLast(host, ":");
+            port = Integer.parseInt(StringUtils.substringBefore(portPart, "["));
+        }
+
+        return port;
+    }
+
+    public String getSmtpHost() {
+        String host = getHost();
+        if (host.contains("@")) {
+            host = StringUtils.substringAfterLast(host, "@");
+        }
+        if (host.contains(":")) {
+            host = StringUtils.substringBeforeLast(host, ":");
+        }
+
+        return host;
+    }
+
+    public Map<String, String> getOptions() {
+        String host = getHost();
+        Map<String, String> options = new HashMap<String, String>();
+        if (host.contains("@")) {
+            host = StringUtils.substringAfterLast(host, "@");
+        }
+        if (host.contains(":")) {
+            String portPart = StringUtils.substringAfterLast(host, ":");
+            // check if there are any custom options, e.g.
+            // [mail.smtp.starttls.enable=true,mail.debug=true]
+            String optionsPart = StringUtils.substringBetween(portPart, "[",
+                    "]");
+            if (optionsPart != null && optionsPart.length() > 0) {
+                String props[] = StringUtils.split(optionsPart, ",");
+                for (String theProperty : props) {
+                    String keyValue[] = StringUtils.split(theProperty, "=");
+                    options.put(keyValue[0].trim(), keyValue[1].trim());
+                }
+            }
+        }
+        if (getUser() != null) {
+            options.put("mail.smtp.auth", "true");
+        }
+
+        return options;
+    }
+
 }

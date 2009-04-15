@@ -57,8 +57,8 @@ import org.jahia.content.FieldDefinitionKey;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.content.nodetypes.*;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.JahiaTools;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.api.Constants;
 
@@ -396,7 +396,7 @@ public class JahiaFieldDefinition extends ContentDefinition implements Serializa
         if ( strVal == null || "".equals(strVal.trim()) ){
             return new String[]{};
         }
-        return JahiaTools.getTokens(strVal,",");
+        return JahiaTools.getTokens(strVal, " *+, *+");
     }
 
 

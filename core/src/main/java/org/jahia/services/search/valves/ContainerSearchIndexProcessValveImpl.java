@@ -213,7 +213,7 @@ public class ContainerSearchIndexProcessValveImpl implements SearchIndexationPip
                                     + name).setType(DocumentField.KEYWORD);
                 }                
                 if (propDef != null && propDef.isFacetable()) {
-                    if (values.length > 0) {
+                    if (values.length > 0 && !(values.length == 1 && values[0].length() == 0)) {
                         doc.setFieldValues(
                             JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX
                             + name, field.getValuesForSearch(container

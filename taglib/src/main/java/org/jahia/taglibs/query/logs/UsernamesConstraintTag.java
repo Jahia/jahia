@@ -77,7 +77,7 @@ public class UsernamesConstraintTag extends TagSupport {
         if ( logsQuery == null ){
             return SKIP_BODY;
         }
-        List<String> names = JahiaTools.getTokensList(this.usernames,",");
+        List<String> names = JahiaTools.getTokensList(this.usernames," *+, *+");
         if ( names != null && !names.isEmpty() ){
             logsQuery.setUsernames(names);
         }

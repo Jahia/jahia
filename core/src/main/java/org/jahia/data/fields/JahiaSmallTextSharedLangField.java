@@ -50,6 +50,7 @@ import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
+import org.jahia.utils.JahiaTools;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.TextHtml;
 
@@ -286,34 +287,11 @@ public class JahiaSmallTextSharedLangField extends JahiaField implements JahiaSi
             context.setSubstituteEntryLoadRequest(loadRequest);
             Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
             for (String val : this.getValues()) {
-                ResourceBundleMarker resMarker = expand ? ResourceBundleMarker
-                        .parseMarkerValue(val) : null;
-                if (resMarker == null) {
-                    // expression marker
-                    ExpressionMarker exprMarker = expand ? ExpressionMarker
-                            .parseMarkerValue(val, context) : null;
-                    if (exprMarker != null) {
-                        try {
-                            val = exprMarker.getValue();
-                        } catch (Exception t) {
-                        }
-                    }
-
-                    if (val == null) {
-                        val = "";
-                    }
-                    values.add(val);
-                } else {
-                    String value = resMarker.getValue(tempLocale);
-
-                    if (value == null) {
-                        value = "";
-                    }
-                    values.add(value);
-                }
+                values.add(expand ? JahiaTools.getExpandedValue(val, null,
+                        context, tempLocale) : val == null ? "" : val);
             }
         } catch (Exception t) {
-            logger.debug(t);
+            logger.debug("Error getting value for search", t);
         } finally {
             context.setSubstituteEntryLoadRequest(savedEntryLoadRequest);
         }

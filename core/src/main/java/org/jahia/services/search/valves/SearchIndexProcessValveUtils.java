@@ -45,6 +45,7 @@ import org.jahia.services.metadata.CoreMetadataConstant;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.usermanager.JahiaAdminUser;
+import org.jahia.utils.JahiaTools;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 
@@ -120,7 +121,7 @@ public class SearchIndexProcessValveUtils {
                         String[] values = jahiaField.getValuesForSearch(locale.toString(),context);
                         if (CoreMetadataConstant.KEYWORDS.equals(definitionName)) {
                             if (values.length > 0 && values[0].length() > 0) {
-                                values = values[0].split(" *+, *+");
+                                values = JahiaTools.getTokens(values[0], " *+, *+");
                             }
                         }
                         if ( definitionName != null ){

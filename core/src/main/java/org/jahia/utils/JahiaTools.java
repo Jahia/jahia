@@ -58,7 +58,10 @@ import org.apache.commons.jexl.JexlContext;
 import org.apache.commons.jexl.JexlHelper;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.jahia.bin.Jahia;
+import org.jahia.data.fields.ExpressionMarker;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.TokenAuthValveImpl;
 import org.jahia.utils.i18n.ResourceBundleMarker;
@@ -71,6 +74,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.*;
 
 
@@ -324,18 +328,12 @@ public class JahiaTools {
      * @author NK
      */
     static public String[] getTokens(String str, String sep) {
+        String[] result;
         if (str == null) {
-            return new String[]{};
+            result = new String[]{};
+        } else {
+            result = str.split(sep);
         }
-
-        StringTokenizer st = new StringTokenizer(str, sep);
-        String[] result = new String[st.countTokens()];
-        int count = 0;
-        while (st.hasMoreTokens()) {
-            result[count] = st.nextToken();
-            count++;
-        }
-
         return result;
     }
 
@@ -349,16 +347,7 @@ public class JahiaTools {
      * @author NK
      */
     static public List<String> getTokensList(String str, String sep) {
-        String[] tokens = getTokens(str, sep);
-        if (str == null) {
-            return null;
-        }
-        List<String> result = new ArrayList<String>();
-        for (int i = 0; i < tokens.length; i++) {
-            result.add(tokens[i].trim());
-        }
-
-        return result;
+        return Arrays.asList(getTokens(str, sep));
     }
 
     //-------------------------------------------------------------------------
@@ -1477,6 +1466,45 @@ public class JahiaTools {
         }
         return sb.toString();
     } // getMultivalues
+    
+    public static String getExpandedValue(String val, Object args, ProcessingContext context, Locale locale) {
+        ResourceBundleMarker resMarker = ResourceBundleMarker
+                .parseMarkerValue(val);
+        if (resMarker == null) {
+            // expression marker
+            ExpressionMarker exprMarker = ExpressionMarker.parseMarkerValue(
+                    val, context);
+            if (exprMarker != null) {
+                try {
+                    val = exprMarker.getValue();
+                } catch (Exception t) {
+                }
+            }
+
+            if (val == null) {
+                val = "";
+            }
+        } else {
+            try {
+                val = resMarker.getValue(locale);
+            } catch (JahiaException e) {
+                val = resMarker.getDefaultValue();
+            }
+
+            if (val == null) {
+                val = "";
+            }
+        }
+        if (args != null) {
+            MessageFormat formatter = new MessageFormat(""); // empty pattern, default Locale
+            if (locale != null) {
+                formatter.setLocale(locale);
+            } 
+            formatter.applyPattern(val);
+            val = formatter.format(args);
+        }
+        return val;        
+    }
 
     /**
      * Remove all html tags

@@ -121,7 +121,7 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                 || filterCreatorNames.trim().length() == 0 ? queryService
                 .getDefaultFilterCreators() : queryService
                 .getFilterCreators(JahiaTools.getTokensList(filterCreatorNames,
-                        ",")));
+                        " *+, *+")));
     }
 
     private ContainerFilters buildContainerFilter()
@@ -172,7 +172,7 @@ public class ContainerQueryBuilder extends JahiaBaseQueryModelInterpreter {
                 || filterCreatorNames.trim().length() == 0 ? queryService
                 .getDefaultFilterCreators() : queryService
                 .getFilterCreators(JahiaTools.getTokensList(filterCreatorNames,
-                        ",")));
+                        " *+, *+")));
     }
 
     private ContainerFilterInterface getContainerFilter(ConstraintItem cItem) throws JahiaException {

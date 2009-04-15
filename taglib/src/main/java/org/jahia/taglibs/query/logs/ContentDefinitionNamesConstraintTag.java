@@ -77,7 +77,7 @@ public class ContentDefinitionNamesConstraintTag extends TagSupport {
         if ( logsQuery == null ){
             return SKIP_BODY;
         }
-        List<String> names = JahiaTools.getTokensList(this.definitionNames,",");
+        List<String> names = JahiaTools.getTokensList(this.definitionNames, " *+, *+");
         if ( names != null && !names.isEmpty() ){
             logsQuery.setContentDefinitionNames(names);
         }

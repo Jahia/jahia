@@ -142,7 +142,7 @@ public class QueryModelTools {
             return new ArrayList<String>();
         }
         List<String> result = JahiaTools.getTokensList(
-                properties.getProperty(JahiaQueryObjectModelConstants.LANGUAGE_CODES),",");
+                properties.getProperty(JahiaQueryObjectModelConstants.LANGUAGE_CODES)," *+, *+");
         if (result ==null){
             result = new ArrayList<String>();
         }

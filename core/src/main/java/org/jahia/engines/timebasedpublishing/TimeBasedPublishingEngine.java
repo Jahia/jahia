@@ -239,9 +239,7 @@ public class TimeBasedPublishingEngine {
                     Boolean.valueOf(enableImmediatePublication));
         }
 
-        if ( RetentionRule.RULE_NONE.equals(oldRecurrenceType) ){
-            throw new UnsupportedOperationException("Not implemented yet!");
-        } else if ( RetentionRule.RULE_START_AND_END_DATE.equals(oldRecurrenceType) ){
+        if ( RetentionRule.RULE_START_AND_END_DATE.equals(oldRecurrenceType) ){
             long oldFrom = rule.getValidFromDate();
             long oldTo = rule.getValidToDate();
 
@@ -489,7 +487,7 @@ public class TimeBasedPublishingEngine {
             final RangeRetentionRule rule = (RangeRetentionRule) subEngineMap.get(ENGINE_NAME + ".currentRule");
             if (logger.isDebugEnabled()) {
                 logger.debug("old: " + oldRule);
-                logger.warn("new: " + rule);
+                logger.debug("new: " + rule);
             }
             if (isSame(oldRule,rule)) {
                 boolean applyParentState = false;

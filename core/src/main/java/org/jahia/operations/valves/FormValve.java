@@ -104,46 +104,60 @@ public class FormValve implements Valve {
     }
 
     private void setProperties(Node n, ParamBean r, String tok) throws RepositoryException {
-        Map<String,Object> parameters = r.getFileUpload().getParameterMap();
-        for (String key : parameters.keySet()) {
-            String hash = Integer.toString(tok.hashCode());
-            if (key.endsWith(hash) && parameters.get(key) instanceof List) {
-                List values = (List) parameters.get(key);
-                if (values.size()>0) {
-                    String name = key.substring(0,key.length() - hash.length());
-                    n.setProperty(name, (String) values.get(0));
-                }
-            }
-        }
-        Map<String, DiskFileItem> files = r.getFileUpload().getFileItems();
-        for (String key : files.keySet()) {
-            String hash = Integer.toString(tok.hashCode());
-            if (key.endsWith(hash)) {
-                DiskFileItem file = files.get(key);
-                String name = key.substring(0,key.length() - hash.length());
-                ExtendedPropertyDefinition epd = ((ExtendedNodeType)n.getPrimaryNodeType()).getPropertyDefinitionsAsMap().get(name);
-                String path = epd.getSelectorOptions().get("path");
-                try {
-                    if (path.contains("$home")) {
-                        List<JCRNodeWrapper> f = JCRStoreService.getInstance().getUserFolders(r.getSiteKey(),r.getUser());
-                        if (f.size()>0) {
-                            path = path.replace("$home",f.iterator().next().getPath()+"/files");
-                        } else {
-                            continue;
-                        }
+        if (r.getFileUpload() != null) {
+            Map<String,Object> parameters = r.getFileUpload().getParameterMap();
+            for (String key : parameters.keySet()) {
+                String hash = Integer.toString(tok.hashCode());
+                if (key.endsWith(hash) && parameters.get(key) instanceof List) {
+                    List values = (List) parameters.get(key);
+                    if (values.size()>0) {
+                        String name = key.substring(0,key.length() - hash.length());
+                        n.setProperty(name, (String) values.get(0));
                     }
-                    JCRNodeWrapper folder = JCRStoreService.getInstance().getFileNode(path,r.getUser());
-                    JCRNodeWrapper uploadedFile = folder.uploadFile(file.getName(), file.getInputStream(), file.getContentType());
-                    folder.save();
-                    n.setProperty(name, uploadedFile.getStorageName());
-                } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-
             }
+            Map<String, DiskFileItem> files = r.getFileUpload().getFileItems();
+            for (String key : files.keySet()) {
+                String hash = Integer.toString(tok.hashCode());
+                if (key.endsWith(hash)) {
+                    DiskFileItem file = files.get(key);
+                    String name = key.substring(0,key.length() - hash.length());
+                    ExtendedPropertyDefinition epd = ((ExtendedNodeType)n.getPrimaryNodeType()).getPropertyDefinitionsAsMap().get(name);
+                    String path = epd.getSelectorOptions().get("path");
+                    try {
+                        if (path.contains("$home")) {
+                            List<JCRNodeWrapper> f = JCRStoreService.getInstance().getUserFolders(r.getSiteKey(),r.getUser());
+                            if (f.size()>0) {
+                                path = path.replace("$home",f.iterator().next().getPath()+"/files");
+                            } else {
+                                continue;
+                            }
+                        }
+                        JCRNodeWrapper folder = JCRStoreService.getInstance().getFileNode(path,r.getUser());
+                        JCRNodeWrapper uploadedFile = folder.uploadFile(file.getName(), file.getInputStream(), file.getContentType());
+                        folder.save();
+                        n.setProperty(name, uploadedFile.getStorageName());
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+
+                }
+            }
+        } else {
+            Map<String,Object> parameters = r.getParameterMap();
+            for (String key : parameters.keySet()) {
+                String hash = Integer.toString(tok.hashCode());
+                if (key.endsWith(hash)) {
+                    String[] values = (String[]) parameters.get(key);
+                    if (values.length>0) {
+                        String name = key.substring(0,key.length() - hash.length());
+                        n.setProperty(name, (String) values[0]);
+                    }
+                }
+            }
+
         }
     }
-
 
     public static class FormAction {
         private String actionType;

@@ -48,6 +48,11 @@
   </div>
 </div>
 <div id="pagebody">
+    <% if (Boolean.parseBoolean((String)values.get("jahiaconfigured"))) { %>
+    <font size="3" color="red">
+        <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.welcome.jahiaAlreayInstalled"/>
+    </font>
+    <% }%>
     <table cellspacing="0" cellpadding="2" border="0" summary="<fmt:message key="org.jahia.bin.JahiaConfigurationWizard.welcome.detectedIntro.label"/>">
         <caption>
             <fmt:message key="org.jahia.bin.JahiaConfigurationWizard.welcome.detectedIntro.label"/>

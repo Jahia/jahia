@@ -217,6 +217,11 @@ public class JahiaConfigurationWizard extends HttpServlet {
             defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
             setPaths();
             fillDefaultValues();
+        }else{
+
+            values.put("jahiaconfigured", "true");
+          
+
         }
     }
 
@@ -224,7 +229,9 @@ public class JahiaConfigurationWizard extends HttpServlet {
     private boolean jahiaExists(){
 
         //jahia is installed if the properties file exists 
-        boolean exists = (new File((String)values.get("server_home")+"webapps/jahia/WEB-INF/etc/config/jahia.properties")).exists();
+        String deployToDir = this.config.getInitParameter("dirName");
+        boolean exists = (new File((String) serverInfos.get("home")+"webapps/"+deployToDir+"/WEB-INF/etc/config/jahia.properties")).exists();
+        logger.debug("looking for the jahia properties file in:"+new File((String)serverInfos.get("home")+"webapps/"+deployToDir+"/WEB-INF/etc/config/jahia.properties"));
         if (exists) {
 
             logger.info("Jahia is already installed");

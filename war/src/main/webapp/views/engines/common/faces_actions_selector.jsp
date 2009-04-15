@@ -34,6 +34,7 @@
 --%>
 
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page language = "java"%>
 <%@page import = "java.util.*"%>
 <%@page import = "org.jahia.params.*"%>

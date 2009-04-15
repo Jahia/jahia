@@ -190,7 +190,7 @@ int stretcherToOpen   = 1;
                         <select ondblclick="javascript:handleKey(event);"
                                 <%if (resultSet.size() == 0) {%>disabled<%}%>
                                 onkeydown="javascript:handleKeyCode(event.keyCode);"
-                                style="width:435px;" name="selectedUsers" size="25" multiple="multiple">
+                                style="width:435px;" name="selectedUsers" size="25" class="fontfix" multiple="multiple">
                             <%
                             if (resultSet.size() == 0) {
                                 %><option value="null" selected>

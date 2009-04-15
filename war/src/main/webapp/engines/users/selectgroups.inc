@@ -251,7 +251,7 @@ public boolean isInParam(HttpServletRequest request,String name, String value){
           </tr>
           <tr>
             <td colspan="4">
-              <select style="width: 500px;" name="selectedUG" size="10" multiple="multiple" ondblclick="javascript:pasteSelection()">
+              <select style="width: 500px;" name="selectedUG" size="10" class="fontfix" multiple="multiple" ondblclick="javascript:pasteSelection()">
                 <% if (resultList == null || resultList.size() == 0) { %>
                   <option value="null" selected="selected">
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

@@ -91,9 +91,11 @@ select
 {
 	 font-size: 11px;
 }
-select[multiple] {
-font-family:"Courier New", Courier, monospace
+select[multiple],
+.fontfix {
+font-family:"Courier New",Courier,monospace;
 }
+
 #adminLogin label, #adminLogin th, #adminLogin td
 {
 	 font-size: 11px;

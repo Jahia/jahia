@@ -415,7 +415,7 @@
 %>
 <select name="listSelection_<%=contextID%>"
         onchange="handleListSelectionChange(document.mainForm.listSelection_<%=contextID%>,document.mainForm.elements['_<%=theField.getID()%>']);"  <% if (multipleChoice) {%>
-        multiple="multiple" size="15"<% } %> >
+        multiple="multiple" class="fontfix" size="15"<% } %> >
     <%
         int size = markers.size();
         ExpressionMarker marker;

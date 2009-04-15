@@ -308,7 +308,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                           </th>
                           <td>
                             <div class="selectContainer">
-                              <select name="manRank" size="10" multiple="multiple" disabled="disabled">
+                              <select name="manRank" size="10" class="fontfix" multiple="multiple" disabled="disabled">
                                 <%
                                 for (int i = 0; i < containers.size(); i++) {
                                   String value = (String) fieldInfoToDisplay.get(i);
@@ -413,7 +413,7 @@ Boolean useOptimizedMode = (Boolean)engineMap.get("automatic_sort_useOptimizedMo
                               <tr>
                                 <td>
                                   <div class="selectContainer">
-                                    <select name="manRank" size="10" multiple="multiple">
+                                    <select name="manRank" class="fontfix" size="10" multiple="multiple">
                                       <%
                                       for (int i = 0; i < containers.size(); i++) {
                                         String value = (String) fieldInfoToDisplay.get(i);

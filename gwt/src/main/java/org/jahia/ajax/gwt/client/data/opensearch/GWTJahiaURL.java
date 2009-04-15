@@ -45,6 +45,7 @@ import java.io.Serializable;
  */
 public class GWTJahiaURL implements Serializable {
 
+    private static final long serialVersionUID = -490258542682246910L;
     public static final String TEMPLATE_ATTRIBUTE = "template";
     public static final String TYPE_ATTRIBUE = "type";
     public static final String INDEX_OFFSET_ATTRIBUTE = "indexOffset";
@@ -59,7 +60,7 @@ public class GWTJahiaURL implements Serializable {
     public GWTJahiaURL() {
     }
 
-    public GWTJahiaURL(GWTJahiaURLTemplate template, String type, int indexOffset, int pageOffset, List parameters) {
+    public GWTJahiaURL(GWTJahiaURLTemplate template, String type, int indexOffset, int pageOffset, List<GWTJahiaParameter> parameters) {
         this.template = template;
         this.type = type;
         this.indexOffset = indexOffset;
@@ -99,11 +100,11 @@ public class GWTJahiaURL implements Serializable {
         this.pageOffset = pageOffset;
     }
 
-    public List getParameters() {
+    public List<GWTJahiaParameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List parameters) {
+    public void setParameters(List<GWTJahiaParameter> parameters) {
         this.parameters = parameters;
     }
 }

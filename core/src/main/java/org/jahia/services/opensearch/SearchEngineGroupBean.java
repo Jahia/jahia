@@ -45,9 +45,6 @@ import java.util.List;
  */
 public class SearchEngineGroupBean {
 
-    private static final org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger (SearchEngineGroupBean.class);
-
     private String name;
 
     private List<String> engineNames = new ArrayList<String>();

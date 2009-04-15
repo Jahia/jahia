@@ -36,7 +36,6 @@ package org.jahia.ajax.gwt.definitions.server;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaPropertyDefinition;
 import org.jahia.ajax.gwt.filemanagement.server.helper.Utils;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.content.nodetypes.*;
@@ -106,7 +105,7 @@ public class ContentDefinitionHelper {
                     boolean constrained = constr != null && constr.length > 0 ;
                     prop.setConstrained(constrained);
                     if (constrained) {
-                        List l = new ArrayList();
+                        List<String> l = new ArrayList<String>();
                         for (String s : constr) {
                             try {
                                 ResourceBundleMarker resourceBundleMarker = ResourceBundleMarker.parseMarkerValue(s);

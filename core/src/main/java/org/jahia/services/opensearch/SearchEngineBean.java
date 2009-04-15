@@ -42,9 +42,6 @@ package org.jahia.services.opensearch;
  */
 public class SearchEngineBean {
 
-    private static final org.apache.log4j.Logger logger =
-        org.apache.log4j.Logger.getLogger (SearchEngineBean.class);
-
     private String name;
     private String urlType;
     private String descriptorType;

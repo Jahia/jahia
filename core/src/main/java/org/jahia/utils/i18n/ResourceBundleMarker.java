@@ -321,12 +321,12 @@ public class ResourceBundleMarker {
      * @return
      * @throws JahiaException
      */
-    public static List buildResourceBundleMarkers(String enumValues,
+    public static List<ResourceBundleMarker> buildResourceBundleMarkers(String enumValues,
                                                     Locale processingLocale, boolean sorted)
             throws JahiaException {
 
         String[] tokens = JahiaTools.getTokens(enumValues, ":");
-        List markers = new ArrayList();
+        List<ResourceBundleMarker> markers = new ArrayList<ResourceBundleMarker>();
         for (int i = 0; i < tokens.length; i++) {
             //System.out.println("smalltext_field.buildResourceBundlemarker : token=" + tokens[i]);
             ResourceBundleMarker marker =
@@ -345,7 +345,7 @@ public class ResourceBundleMarker {
         }
         // sorts the markers
         if (sorted)  {
-            Collections.sort(markers,new NumericStringComparator());
+            Collections.sort(markers,new NumericStringComparator<ResourceBundleMarker>());
         }
         return markers;
     }

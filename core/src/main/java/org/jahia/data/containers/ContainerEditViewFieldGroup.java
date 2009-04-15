@@ -60,7 +60,8 @@ import org.jahia.utils.i18n.ResourceBundleMarker;
 
 public class ContainerEditViewFieldGroup implements Serializable, Comparator<ContainerEditViewFieldGroup> {
 
-	private int pos;
+    private static final long serialVersionUID = -8309759158817569039L;
+    private int pos;
 	private String name;
 	private String title;
 	private String descr;

@@ -126,9 +126,9 @@ class SearchEngineDigester {
                 searchEngineBean.setName(sEl.getName());
                 searchEngineBean.setUrlType(sEl.getUrlType());
                 DescriptorElement descriptor = sEl.getDescriptorElement();
-                if (sEl.getDescriptorElement() != null){
-                    searchEngineBean.setDescriptorType(sEl.getDescriptorElement().getType());
-                    searchEngineBean.setDescriptorFile(sEl.getDescriptorElement().getFilename());
+                if (descriptor != null){
+                    searchEngineBean.setDescriptorType(descriptor.getType());
+                    searchEngineBean.setDescriptorFile(descriptor.getFilename());
                 }
                 this.searchEngineBeans.add(searchEngineBean);
             }
@@ -141,7 +141,7 @@ class SearchEngineDigester {
                 searchEngineGroupBean = new SearchEngineGroupBean();
                 searchEngineGroupBean.setName(sgEl.getName());
                 String engineNames = sgEl.getEngineNames();
-                String[] tokens = JahiaTools.getTokens(engineNames,",");
+                String[] tokens = JahiaTools.getTokens(engineNames, " *+, *+");
                 for (String name : tokens) {
                     searchEngineGroupBean.addEngineName(name.trim());
                 }
@@ -158,7 +158,7 @@ class SearchEngineDigester {
 
     final class AddSearchEngineElementRule extends Rule {
         private OpenSearchElement openSearchElement;
-        private Map params = new HashMap();
+        private Map<String, String> params = new HashMap<String, String>();
         private Properties properties;
         SetParamRule setParamRule = new SetParamRule();
 
@@ -181,11 +181,11 @@ class SearchEngineDigester {
 
         public void end(String namespace, String name)
                 throws Exception {
-            SearchEngineElement searchEngineElement = (SearchEngineElement)openSearchElement.getSearchEngineElements()
+            SearchEngineElement searchEngineElement = openSearchElement.getSearchEngineElements()
                     .get(openSearchElement.getSearchEngineElements().size()-1);
             searchEngineElement.setName(properties.getProperty ("name",""));
             searchEngineElement.setUrlType(properties.getProperty ("urlType",""));
-            searchEngineElement.getDescriptorElement().setFilename((String) params.get("descriptor"));
+            searchEngineElement.getDescriptorElement().setFilename(params.get("descriptor"));
             params.clear();
         }
 
@@ -199,7 +199,7 @@ class SearchEngineDigester {
 
     final class AddSearchEngineGroupElementRule extends Rule {
         private OpenSearchElement openSearchElement;
-        private Map params = new HashMap();
+        private Map<String, String> params = new HashMap<String, String>();
         private Properties properties;
         SetParamRule setParamRule = new SetParamRule();
 
@@ -239,7 +239,7 @@ class SearchEngineDigester {
 
     final class AddDescriptorElementRule extends Rule {
         private OpenSearchElement openSearchElement;
-        private Map params = new HashMap();
+        private Map<String, String> params = new HashMap<String, String>();
         private Properties properties;
         SetParamRule setParamRule = new SetParamRule();
 
@@ -280,27 +280,27 @@ class SearchEngineDigester {
 
     public class OpenSearchElement {
 
-        private List searchEngineElements;
-        private List searchEngineGroupElements;
+        private List<SearchEngineElement> searchEngineElements;
+        private List<SearchEngineGroupElement> searchEngineGroupElements;
 
         public OpenSearchElement() {
-            searchEngineElements = new ArrayList();
-            searchEngineGroupElements = new ArrayList();
+            searchEngineElements = new ArrayList<SearchEngineElement>();
+            searchEngineGroupElements = new ArrayList<SearchEngineGroupElement>();
         }
 
-        public List getSearchEngineElements() {
+        public List<SearchEngineElement> getSearchEngineElements() {
             return searchEngineElements;
         }
 
-        public void setSearchEngineElements(List searchEngineElements) {
+        public void setSearchEngineElements(List<SearchEngineElement> searchEngineElements) {
             this.searchEngineElements = searchEngineElements;
         }
 
-        public List getSearchEngineGroupElements() {
+        public List<SearchEngineGroupElement> getSearchEngineGroupElements() {
             return searchEngineGroupElements;
         }
 
-        public void setSearchEngineGroupElements(List searchEngineGroupElements) {
+        public void setSearchEngineGroupElements(List<SearchEngineGroupElement> searchEngineGroupElements) {
             this.searchEngineGroupElements = searchEngineGroupElements;
         }
 

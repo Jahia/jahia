@@ -52,6 +52,8 @@ import java.io.Serializable;
  */
 public class NumericStringComparator<T> implements Comparator<T>, Serializable {
 
+    private static final long serialVersionUID = 5685606235122904838L;
+
     /**
      * Compare between two objects, sort by their value
      *

@@ -62,31 +62,41 @@ window.onresize = function() {
     <td><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.pix.image" />" width="5" height="24"></td>
     <td width="100%" align="right" valign="bottom" class="text">
     	<logic:iterate id="button" name="jahiaEngineButtonsHelper" property="buttons" type="java.lang.String">
-	        <logic:equal name="button" value="OK_BUTTON">
-		        <internal:jahiaButton img="ok"
-		            href="javascript:sendFormSave();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyAndClose.label" />
-			</logic:equal>
-			<logic:equal name="button" value="SAVE_ADD_NEW_BUTTON">
-		        <internal:jahiaButton img="saveAddNew"
-		            href="javascript:sendFormSaveAndAddNew();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyAndAddContainer.label" />
-			</logic:equal>
-			<logic:equal name="button" value="APPLY_BUTTON">
-		        <internal:jahiaButton img="apply"
-		            href="javascript:sendFormApply();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyWithoutClose.label" />
-	        </logic:equal>
-	        <logic:equal name="button" value="CANCEL_BUTTON">
-		        <internal:jahiaButton img="cancel"
-		            href="javascript:sendFormCancel();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altCloseWithoutSave.label" />
-	        </logic:equal>
-	        <logic:equal name="button" value="CLOSE_BUTTON">
-		        <internal:jahiaButton img="close"
-		            href="javascript:sendFormClose();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altClose.label" />
-	        </logic:equal>
+            <logic:equal name="button" value="OK_BUTTON">
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-ok" href="javascript:sendFormSave();"><fmt:message key="org.jahia.altApplyAndClose.label"/></a>
+                    </span>
+                </span>
+            </logic:equal>
+            <logic:equal name="button" value="SAVE_ADD_NEW_BUTTON">
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-add" href="javascript:sendFormSaveAndAddNew();"><fmt:message key="org.jahia.altApplyAndAddContainer.label"/></a>
+                    </span>
+                </span>
+            </logic:equal>
+            <logic:equal name="button" value="APPLY_BUTTON">
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-apply" href="javascript:sendFormApply();"><fmt:message key="org.jahia.altApplyWithoutClose.label"/></a>
+                    </span>
+                </span>
+            </logic:equal>
+            <logic:equal name="button" value="CANCEL_BUTTON">
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-cancel" href="javascript:sendFormCancel();"><fmt:message key="org.jahia.altCloseWithoutSave.label"/></a>
+                    </span>
+                </span>
+            </logic:equal>
+            <logic:equal name="button" value="CLOSE_BUTTON">
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-cancel" href="javascript:sendFormClose();"><fmt:message key="org.jahia.altClose.label"/></a>
+                    </span>
+                </span>
+            </logic:equal>
 	    </logic:iterate>
     </td>
     <td><img src="${pageContext.request.contextPath}<fmt:message key="org.jahia.pix.image" />" width="5" height="24"></td>

@@ -169,43 +169,6 @@
     </tag>
 
     <tag>
-        <description>Displays a rollover button</description>
-        <name>jahiaButton</name>
-        <tag-class>org.jahia.taglibs.internal.uicomponents.JahiaButton</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <name>img</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>href</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>onclick</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>alt</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>altKey</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>altBundle</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
         <description>Init javascript object that contains some jahia parameters as pid required to use Google Web
             Toolkit.
         </description>

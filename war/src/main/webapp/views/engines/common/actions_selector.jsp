@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -34,6 +34,7 @@
 --%>
 
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@page language = "java"%>
 <%@page import = "java.util.*"%>
 <%@page import = "org.jahia.params.*"%>
@@ -63,29 +64,39 @@ window.onresize = function() {
     <td width="100%" align="right" valign="bottom" class="text">
     	<logic:iterate id="button" name="jahiaEngineButtonsHelper" property="buttons" type="java.lang.String">
 	        <logic:equal name="button" value="OK_BUTTON">
-		        <internal:jahiaButton img="ok"
-		            href="javascript:sendFormSave();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyAndClose.label" />
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-ok" href="javascript:sendFormSave();"><fmt:message key="org.jahia.altApplyAndClose.label"/></a>
+                    </span>
+                </span>
 			</logic:equal>
 			<logic:equal name="button" value="SAVE_ADD_NEW_BUTTON">
-		        <internal:jahiaButton img="saveAddNew"
-		            href="javascript:sendFormSaveAndAddNew();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyAndAddContainer.label" />
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-add" href="javascript:sendFormSaveAndAddNew();"><fmt:message key="org.jahia.altApplyAndAddContainer.label"/></a>
+                    </span>
+                </span>
 			</logic:equal>
 			<logic:equal name="button" value="APPLY_BUTTON">
-		        <internal:jahiaButton img="apply"
-		            href="javascript:sendFormApply();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altApplyWithoutClose.label" />
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-apply" href="javascript:sendFormApply();"><fmt:message key="org.jahia.altApplyWithoutClose.label"/></a>
+                    </span>
+                </span>
 	        </logic:equal>
 	        <logic:equal name="button" value="CANCEL_BUTTON">
-		        <internal:jahiaButton img="cancel"
-		            href="javascript:sendFormCancel();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altCloseWithoutSave.label" />
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-cancel" href="javascript:sendFormCancel();"><fmt:message key="org.jahia.altCloseWithoutSave.label"/></a>
+                    </span>
+                </span>
 	        </logic:equal>
 	        <logic:equal name="button" value="CLOSE_BUTTON">
-		        <internal:jahiaButton img="close"
-		            href="javascript:sendFormClose();"
-		            altBundle="JahiaInternalResources" altKey="org.jahia.altClose.label" />
+                <span class="dex-PushButton">
+                    <span class="first-child">
+                        <a class="ico-cancel" href="javascript:sendFormClose();"><fmt:message key="org.jahia.altClose.label"/></a>
+                    </span>
+                </span>
 	        </logic:equal>
 	    </logic:iterate>
     </td>

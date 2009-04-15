@@ -58,7 +58,7 @@
  sharedSmallText selectBoxMultiLang (choicelist) = 'option1', resourceKey(resourceOption2) multiple internationalized < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
  sharedSmallText dropDownSorted (choicelist[sort='alpha']) = 'option2' < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
  sharedSmallText selectBoxSorted (choicelist[sort='alpha']) = resourceKey(resourceOption1),option2 multiple < 'option1', 'option2', 'option3', resourceKey(resourceOption1), resourceKey(resourceOption2)
- category category multiple
+ category category
  category categoryWithDefault = cat1,cat2 multiple
  category categoryWithRoot (category[root='cat1']) multiple
  color color

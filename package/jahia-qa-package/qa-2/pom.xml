@@ -246,7 +246,7 @@
                                                  command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true"
                                                  failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="export JAVA_HOME=/usr/java/latest;/home/jahia/install/jahia/bin/catalina.sh start"
+                                                 command="export JAVA_HOME=/usr/java/latest;/home/jahia/install/jahia/bin/catalina.sh jpda start"
                                                  trust="true" failonerror="false"/>
                                     </tasks>
                                 </configuration>

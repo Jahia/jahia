@@ -43,6 +43,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.data.containers.ContainerFilterInterface;
 import org.jahia.data.containers.ContainerFilters;
 import org.jahia.data.containers.ContainerSearcherToFilterAdapter;
+import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.exceptions.JahiaException;
@@ -51,6 +52,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.query.qom.QueryModelTools;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.categories.Category;
 import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.services.search.ContainerSearcher;
 import org.jahia.services.search.JahiaSearchConstant;
@@ -108,7 +110,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
     private FacetBean getFacetBean(String facetNameId) {
         return getFacetBeanFromCache(facetNameId);
     }
-    
+
     private FacetBean getFacetBeanByName(String facetName) {
         FacetBean facetBean = getFacetBeanFromCache(String.valueOf(Math.abs(facetName.hashCode())));
         if (facetBean == null) {
@@ -131,40 +133,37 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
     }
 
     @Override
-    public FacetBean createFacetFilter(String facetName, String propertyName, String facetNameForNoValue, ContainerQueryContext queryContext,
-            ProcessingContext jParams) throws JahiaException {
+    public FacetBean createFacetFilter(String facetName, String propertyName, String facetNameForNoValue,
+            ContainerQueryContext queryContext, ProcessingContext jParams) throws JahiaException {
         FacetBean facetBean = getFacetBeanByName(facetName, propertyName);
 
         JahiaFieldDefinition fieldDef = QueryModelTools.getFieldDefinitionForPropertyName(propertyName, queryContext
                 .getContainerDefinitionNames(), jParams);
         if (fieldDef != null) {
-            List<String> definitions = queryContext.getContainerDefinitionsIncludingType(false);
-            String[] definitionNames = new String[] {};
-            if (definitions != null) {
-                definitionNames = definitions.toArray(definitionNames);
-            }
-
-            Integer[] siteIds = new Integer[] {};
-            if (queryContext.getSiteIDs() != null) {
-                siteIds = queryContext.getSiteIDs().toArray(siteIds);
-            }
-            ContainerSearcher searcher = new ContainerSearcher(siteIds, definitionNames, "", jParams
-                    .getEntryLoadRequest());
-
-            searcher.setCacheQueryResultsInBackend(true);
             String fieldName = QueryModelTools.getFieldNameForSearchEngine(propertyName, false, queryContext
                     .getContainerDefinitionNames(), jParams, QueryModelTools.FACETING_TYPE);
 
-            for (String value : fieldDef.getPropertyDefinition().getValueConstraints()) {
-                String filterQuery = fieldName + ":(\"" + QueryParser.escape(value) + "\")";
-                facetBean.addFacetValueBean(new FacetValueBean(value, filterQuery));
+            if (fieldDef.getType() == FieldTypes.CATEGORY) {
+                String rootCategory = fieldDef.getPropertyDefinition().getSelectorOptions().get("root");
+                Category startCategory = rootCategory == null ? Category.getRootCategory(jParams.getUser()) : Category
+                        .getCategory(rootCategory, jParams.getUser());
+                if (startCategory != null) {
+                    for (Category category : startCategory.getChildCategories(jParams.getUser())) {
+                        String filterQuery = fieldName + ":(\"" + QueryParser.escape(category.getKey()) + "\")";
+                        facetBean.addFacetValueBean(new FacetValueBean(category.getKey(), filterQuery));
+                    }
+                }
+            } else {
+                for (String value : fieldDef.getPropertyDefinition().getValueConstraints()) {
+                    String filterQuery = fieldName + ":(\"" + QueryParser.escape(value) + "\")";
+                    facetBean.addFacetValueBean(new FacetValueBean(value, filterQuery));
+                }
             }
             if (facetNameForNoValue != null && facetNameForNoValue.trim().length() > 0) {
-                String filterQuery = fieldName.replace(
-                        JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX,
+                String filterQuery = fieldName.replace(JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX,
                         JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX)
                         + ":(no)";
-                facetBean.addFacetValueBean(new FacetValueBean(facetNameForNoValue, filterQuery));                
+                facetBean.addFacetValueBean(new FacetValueBean(facetNameForNoValue, filterQuery));
             }
         }
         return facetBean;
@@ -196,9 +195,9 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             ProcessingContext jParams) throws JahiaException {
         if (filtersToApply != null) {
             String[] filterIds = filtersToApply.split("_");
-            String[] queries = new String[filterIds.length/2];
+            String[] queries = new String[filterIds.length / 2];
             FacetBean facetBean = null;
-            int i=0;
+            int i = 0;
             for (String filter : filterIds) {
                 if (facetBean == null) {
                     facetBean = getFacetBean(filter);
@@ -212,13 +211,13 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
                 }
             }
             JahiaSearchResult sr = getSearcher(queryContext, jParams).search(queries, jParams);
-            
+
             if (mainQueryBits == null) {
                 mainQueryBits = (BitSet) sr.bits().clone();
             } else {
                 mainQueryBits = (BitSet) mainQueryBits.clone();
                 mainQueryBits.and(sr.bits());
-            }                
+            }
         }
 
         return mainQueryBits;
@@ -229,9 +228,9 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
         String[] queries = null;
         if (filtersToApply != null) {
             String[] filterIds = filtersToApply.split("_");
-            queries = new String[filterIds.length/2];
+            queries = new String[filterIds.length / 2];
             FacetBean facetBean = null;
-            int i=0;
+            int i = 0;
             for (String filter : filterIds) {
                 if (facetBean == null) {
                     facetBean = getFacetBean(filter);
@@ -247,8 +246,8 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
         }
 
         return queries;
-    }    
-    
+    }
+
     @Override
     public List<AppliedFacetFilters> getAppliedFacetFilters(String filtersToApply) throws JahiaException {
         List<AppliedFacetFilters> appliedFacetFilters = new ArrayList<AppliedFacetFilters>();
@@ -279,15 +278,15 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
         }
 
         return appliedFacetFilters;
-    } 
-    
+    }
+
     @Override
     public Map<FacetValueBean, Integer> getHitsPerFacetValue(FacetBean facetBean, String facetValueName,
             BitSet mainQueryBits, ContainerQueryContext queryContext, ProcessingContext jParams) throws JahiaException {
         Map<FacetValueBean, Integer> result = new HashMap<FacetValueBean, Integer>();
 
         ContainerSearcher searcher = getSearcher(queryContext, jParams);
-        
+
         for (FacetValueBean facetValue : facetBean.getFacetValueBeans()) {
             if (facetValueName == null || facetValueName.equals(facetValue.getValue())) {
                 JahiaSearchResult sr = searcher.search(facetValue.getFilterQuery(), jParams);
@@ -296,13 +295,13 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
                     BitSet queryBitSet = (BitSet) mainQueryBits.clone();
                     queryBitSet.and(sr.bits());
                     matchingHits = queryBitSet.cardinality();
-                }                
+                }
                 result.put(facetValue, matchingHits);
             }
         }
         return result;
     }
-    
+
     private ContainerSearcher getSearcher(ContainerQueryContext queryContext, ProcessingContext jParams) {
         List<String> definitions = queryContext.getContainerDefinitionsIncludingType(false);
         String[] definitionNames = new String[] {};
@@ -310,17 +309,17 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             definitionNames = definitions.toArray(definitionNames);
         }
 
-        Integer[] siteIds = new Integer[] {};
-        if (queryContext.getSiteIDs() != null) {
-            siteIds = queryContext.getSiteIDs().toArray(siteIds);
+        Integer[] siteIds = null;
+        if (queryContext.getSiteIDs() != null && queryContext.getSiteIDs().size() > 0) {
+            siteIds = queryContext.getSiteIDs().toArray(new Integer[queryContext.getSiteIDs().size()]);
+        } else {
+            siteIds = new Integer[]{jParams.getSiteID()};
         }
-        
-        ContainerSearcher searcher = new ContainerSearcher(siteIds, definitionNames, "", jParams
-                .getEntryLoadRequest());
+
+        ContainerSearcher searcher = new ContainerSearcher(siteIds, definitionNames, "", jParams.getEntryLoadRequest());
         searcher.setCacheQueryResultsInBackend(true);
-        
+
         return searcher;
     }
-    
 
 }

@@ -848,10 +848,28 @@
         <tag-class>org.jahia.taglibs.query.GetAppliedFacetFiltersTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>The query parameter name for the filter to be created in the URL for drilldown.</description>
+            <description>The query parameter name for the filter created in the URL for drilldown.</description>
             <name>filterQueryParamName</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>             
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the List of AppliedFacetFilters beans will be set</description>
+            <name>appliedFacetsId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
     </tag>    
+    
+    <function>
+        <description>Check whether a facet is currently applied to the query</description>
+        <name>isFacetApplied</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>boolean isFacetApplied(org.jahia.services.search.facets.FacetBean, java.util.List)
+        </function-signature>
+        <example>
+            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/"&gt;        
+            &lt;c:if test="${query:isFacetApplied(eventDateFacet, appliedFacets}"&gt;
+        </example>
+    </function>    
 </taglib>

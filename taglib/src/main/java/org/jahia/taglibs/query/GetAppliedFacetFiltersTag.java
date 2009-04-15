@@ -33,9 +33,12 @@
 
 package org.jahia.taglibs.query;
 
+import java.util.List;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 
 import org.jahia.data.JahiaData;
 import org.jahia.data.fields.ExpressionMarker;
@@ -54,7 +57,8 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
             .getLogger(GetHitsPerFacetValueTag.class);
 
     private String filterQueryParamName;
-
+    private String appliedFacetsId;
+    
     public int doStartTag() throws JspException {
         int eval = super.doStartTag();
         getFacetFilters();
@@ -118,9 +122,9 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
                     }
                 }
             }
-            for (AppliedFacetFilters appliedFacetFilters : ServicesRegistry
-                    .getInstance().getJahiaFacetingService()
-                    .getAppliedFacetFilters(jParams.getParameter(getFilterQueryParamName()))) {
+            List<AppliedFacetFilters> allAppliedFacetFilters = ServicesRegistry.getInstance().getJahiaFacetingService()
+                    .getAppliedFacetFilters(jParams.getParameter(getFilterQueryParamName()));
+            for (AppliedFacetFilters appliedFacetFilters : allAppliedFacetFilters) {
                 for (FacetValueBean facetValueBean : appliedFacetFilters
                         .getFacetValueBeans()) {
                     buff.append(getExpandedValue(facetValueBean.getValue(),
@@ -139,7 +143,9 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
                 }
             }
             out.print(buff.toString());
-
+            if (getAppliedFacetsId() != null) {
+                pageContext.setAttribute(getAppliedFacetsId(), allAppliedFacetFilters, PageContext.REQUEST_SCOPE);
+            }
             if (getBodyContent() != null) {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             }
@@ -155,5 +161,13 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
 
     public String getFilterQueryParamName() {
         return filterQueryParamName;
+    }
+
+    public void setAppliedFacetsId(String appliedFacetsId) {
+        this.appliedFacetsId = appliedFacetsId;
+    }
+
+    public String getAppliedFacetsId() {
+        return appliedFacetsId;
     }
 }

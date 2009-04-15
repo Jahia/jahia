@@ -87,8 +87,8 @@
     </c:otherwise>        
 </c:choose>
 
-<query:createFacetFilter facetName="categoryFacet" 
-    propertyName="defaultCategory" facetBeanId="categoryFacet"/>
+<query:createFacetFilter facetName="defaultCategoryFacet" 
+    propertyName="defaultCategory" facetBeanId="defaultCategoryFacet"/>
 <query:createFacetFilter facetName="eventTypeFacet" targetContainerListName="events" 
     propertyName="eventsType" facetBeanId="eventTypeFacet" valueTitle="Unknown"/>
 
@@ -137,11 +137,18 @@
     <%@ include file="eventsDisplay.jspf" %>
 </template:containerList>
 
-<query:getAppliedFacetFilters filterQueryParamName="filter"/>
-<query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="categoryFacet" filterQueryParamName="filter"/>
-<br/>Event types:<br/>
-<query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventTypeFacet" filterQueryParamName="filter"/>
-<br/>Next 4 months:<br/>
-<c:forTokens var="facetValue" items="${facetValues}" delims=",">
-    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueName="${facetValue}" filterQueryParamName="filter"/>
-</c:forTokens>
+<query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/>
+<c:if test='${!query:isFacetApplied(defaultCategoryFacet, appliedFacets)}'>
+    <br/>Categories:<br/>
+    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="defaultCategoryFacet" filterQueryParamName="filter"/>
+</c:if>
+<c:if test='${!query:isFacetApplied(eventTypeFacet, appliedFacets)}'>
+    <br/>Event types:<br/>
+    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventTypeFacet" filterQueryParamName="filter"/>
+</c:if>
+<c:if test='${!query:isFacetApplied(eventDateFacet, appliedFacets)}'>
+    <br/>Next 4 months:<br/>
+    <c:forTokens var="facetValue" items="${facetValues}" delims=",">
+        <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueName="${facetValue}" filterQueryParamName="filter"/>
+    </c:forTokens>
+</c:if>    

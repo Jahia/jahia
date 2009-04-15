@@ -56,6 +56,8 @@ import java.io.Serializable;
  */
 public class JahiaContentFieldFacade implements Serializable {
 
+    private static final long serialVersionUID = 2903039268539880868L;
+
     private static org.apache.log4j.Logger logger =
                 org.apache.log4j.Logger.getLogger(JahiaContentFieldFacade.class);
 
@@ -308,17 +310,26 @@ public class JahiaContentFieldFacade implements Serializable {
                                           .getJahiaVersionService()
                                           .resolveEntry(activeAndStagingEntryStates,
                                                          entryLoadRequest);
-             if ( entryState == null ){
+             if ( ( entryState == null ) ||
+                     ((!entryState.getLanguageCode().equals("shared")) &&
+                      (!entryState.getLanguageCode().equals(locale.toString()))) ) {
+                    // second case can happen because we might have resolved to "simpler" language
+                    // in case of "composed" language code. For exemple we resolved "en" from "en_US".
+                    // in the case of resolving to a shared language, we ignore the check of a simpler
+                    // language.
 
                  entryLoadRequest = new EntryLoadRequest(
                                  ContentObjectEntryState.WORKFLOW_STATE_START_STAGING,
                                  0, entryLocales);
-                 entryState = (ContentObjectEntryState)ServicesRegistry.getInstance()
-                                              .getJahiaVersionService()
-                                              .resolveEntry(activeAndStagingEntryStates,
-                                                             entryLoadRequest);
-             }
-             if ( entryState == null ){
+                 ContentObjectEntryState entryStateStaging = (ContentObjectEntryState) ServicesRegistry
+                        .getInstance().getJahiaVersionService().resolveEntry(
+                                activeAndStagingEntryStates, entryLoadRequest);
+                if (entryStateStaging != null)
+                    entryState = entryStateStaging;
+            }
+            if ((entryState == null)
+                    || ((!entryState.getLanguageCode().equals("shared")) && (!entryState
+                            .getLanguageCode().equals(locale.toString())))) {
                  // have to create a staged
                  JahiaField field =
                      ServicesRegistry.getInstance()

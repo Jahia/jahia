@@ -392,6 +392,10 @@ li.section {
   border-bottom: 1px solid #b7cbd8;
 }
 
+li.section div.transparentLock {
+    display: none;
+}
+
 .leftMenu ul li.first {
   margin-top: 0;
 }

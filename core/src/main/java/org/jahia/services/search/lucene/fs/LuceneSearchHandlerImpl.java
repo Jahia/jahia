@@ -43,6 +43,7 @@ import org.jahia.services.cluster.ClusterService;
 import org.jahia.services.search.*;
 import org.jahia.services.search.lucene.*;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -346,6 +347,16 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
             }
         } catch (Exception t) {
             logger.warn("Exception occured when performing search", t);
+            // If there is a network outage, we should close the searcher and get
+            // a new one instead of caching the reader as Lucene seems to not recover
+            // from network outage
+            if (t instanceof IOException) {
+                try {
+                    coreSearcher.getSearcher(true, false, null);
+                } catch (Exception e) {
+                    logger.warn("Failed to reopen index searcher/reader", e);
+                }                
+            }              
         } finally {
             // Removed as releasing references to opened lucene query request will be done
             // in finally clause of Jahia.service() method

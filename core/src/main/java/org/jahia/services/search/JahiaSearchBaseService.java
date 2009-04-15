@@ -2377,7 +2377,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 try {
                     indexReadersList.add(searcher.getReader());
                 } catch (Exception t) {
-                    logger.debug(t);
+                    logger.debug("Error getting reader", t);
                 }
             }
 
@@ -2400,7 +2400,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                         .toArray(new String[queryList.size()]), null, sort, reader, hitCollector);
             }
         } catch (Exception t) {
-            logger.warn(t);
+            logger.warn("Error executing search on multiple readers", t);
         } finally {
 // Removed as closing the multi-reader also closes the underlying readers, which should not
 // be closed as they are shared by all threads. Closing the request will simply decrement 

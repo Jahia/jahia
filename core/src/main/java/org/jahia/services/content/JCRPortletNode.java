@@ -38,6 +38,7 @@ import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.WebAppContext;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.bin.Jahia;
 
 import javax.jcr.RepositoryException;
 import javax.portlet.PortletMode;
@@ -59,7 +60,15 @@ public class JCRPortletNode extends JCRNodeDecorator {
     }
 
     public String getContextName() throws RepositoryException {
-        return getProperty("j:application").getString().split("!")[0];
+        String s = getProperty("j:application").getString().split("!")[0];
+        if (s.startsWith("$context")) {
+            String prefix = Jahia.getContextPath();
+            if (prefix.equals("/")) {
+                prefix = "";
+            }
+            s = prefix + s.substring("$context".length());
+        }
+        return s;
     }
 
     public String getDefinitionName() throws RepositoryException {
@@ -67,6 +76,13 @@ public class JCRPortletNode extends JCRNodeDecorator {
     }
 
     public void setApplication(String contextName, String defName) throws RepositoryException {
+        String prefix = Jahia.getContextPath();
+        if (prefix.equals("/")) {
+            prefix = "";
+        }
+        if (contextName.startsWith(prefix)) {
+            contextName = "$context" + contextName.substring(prefix.length());
+        }
         String app = contextName + "!" + defName;
         setProperty("j:application", app);
     }

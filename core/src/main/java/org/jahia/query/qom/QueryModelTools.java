@@ -194,19 +194,18 @@ public class QueryModelTools {
                     .equals(propertyName)) {
                 fieldName = JahiaSearchConstant.CATEGORY_ID;
             } else if (isMetadata){                
-                fieldName = JahiaSearchConstant.METADATA_PREFIX + propertyName;                
+                fieldName = JahiaSearchConstant.METADATA_PREFIX + propertyName.toLowerCase();                
             } else {
                 JahiaFieldDefinition fieldDef = getFieldDefinitionForPropertyName(
                         propertyName, containerDefinitionNames, jParams);
                 fieldName = propertyName.toLowerCase();
                 if (fieldDef != null && fieldDef.getCtnType() != null) {
+                    String prefix = JahiaSearchConstant.CONTAINER_FIELD_PREFIX;                    
                     if (fieldDef.getIsMetadata()) {
-                        fieldName = JahiaSearchConstant.METADATA_PREFIX
-                                + propertyName;
+                        prefix = JahiaSearchConstant.METADATA_PREFIX;
                     } else {
                         fieldName = fieldDef.getCtnType().replaceAll("[ :]",
                                 "_").toLowerCase();
-                        String prefix = JahiaSearchConstant.CONTAINER_FIELD_PREFIX;
                         if (type > 0
                                 && fieldDef.getPropertyDefinition() != null) {
                             ExtendedPropertyDefinition propDef = fieldDef
@@ -218,8 +217,8 @@ public class QueryModelTools {
                                 prefix = JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX;
                             }
                         }
-                        fieldName = prefix + fieldName;
                     }
+                    fieldName = prefix + fieldName;                    
                 }
             }
         }

@@ -245,10 +245,9 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
                             logger.warn("Couldn't find category " + curFieldRawValue + " when indexing field, ignoring entry...");
                             continue;
                         }
-                        String curLangTitle = curCategory.getTitle(tempLocale);
-                        String value = curLangTitle;
-                        if (value == null) {
-                            value = "";
+                        String value = curCategory.getTitle(tempLocale);
+                        if (value == null || value.length() == 0) {
+                            value = curCategory.getKey();
                         }
                         List<String> vals = tempValues.get(tempLocale.toString());
                         if (vals == null) {
@@ -293,8 +292,8 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
                 continue;
             }
             val = curCategory.getTitle(tempLocale);
-            if (val == null) {
-                val = "";
+            if (val == null || val.length() == 0) {
+                val = curCategory.getKey();
             }
             vals.add(val);
         }

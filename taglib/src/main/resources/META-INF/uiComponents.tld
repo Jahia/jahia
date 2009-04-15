@@ -554,6 +554,31 @@
         <name>loginArea</name>
         <tag-class>org.jahia.taglibs.uicomponents.loginform.LogAreaTag</tag-class>
         <body-content>JSP</body-content>
+        <attribute>
+            <description>
+                Do we need to perform a client-side redirect after the login?
+                Setting it to true, will will prevent browser built-in warning message
+                if the page needs to be reloaded (after POST method). [true]
+            </description>
+            <name>doRedirect</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The HTML form's ID attribute value. If not specified the ID attribute will be omitted.</description>
+            <name>id</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The HTML form's name attribute value. [loginForm]</description>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
     </tag>
     <tag>
         <description>Display a username field for the logArea</description>

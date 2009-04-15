@@ -72,6 +72,7 @@ public class LoginEngineAuthValveImpl implements Valve {
     public static final String OK = "ok";
     public static final String USE_COOKIE = "useCookie";
     public static final String LOGIN_TAG_PARAMETER = "loginFromTag";
+    public static final String DO_REDIRECT = "loginDoRedirect";
 
     public void initialize() {
     }
@@ -84,11 +85,12 @@ public class LoginEngineAuthValveImpl implements Valve {
             JahiaUser theUser = null;
             boolean ok = false;
 
-            final String username = jParams.getParameter("username");
-            final String password = jParams.getParameter("password");
-
             if ("1".equals(jParams.getParameter(LOGIN_TAG_PARAMETER)) ||
                     (Login_Engine.ENGINE_NAME.equals(jParams.getEngine()) && "save".equals(theScreen))) {
+
+                final String username = jParams.getParameter("username");
+                final String password = jParams.getParameter("password");
+
                 if ((username != null) && (password != null)) {
                     final ServicesRegistry theRegistry = ServicesRegistry.getInstance();
                     if (theRegistry != null) {
@@ -113,7 +115,9 @@ public class LoginEngineAuthValveImpl implements Valve {
                 }
             }
             if (ok) {
-                logger.debug("User " + theUser + " logged in.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("User " + theUser + " logged in.");
+                }
                 ParamBean paramBean = null;
                 if (jParams instanceof ParamBean) {
                     paramBean = (ParamBean) jParams;
@@ -153,7 +157,7 @@ public class LoginEngineAuthValveImpl implements Valve {
 
                 String useCookie = jParams.getParameter(USE_COOKIE);
                 if ((useCookie != null) && ("on".equals(useCookie))) {
-                    // the user has indicated he wants to use cookie authentification
+                    // the user has indicated he wants to use cookie authentication
                     // now let's create a random identifier to store in the cookie.
                     String cookieUserKey = null;
                     // now let's look for a free random cookie value key.
@@ -181,11 +185,29 @@ public class LoginEngineAuthValveImpl implements Valve {
 
                 enforcePasswordPolicy(theUser, paramBean);
                 theUser.setProperty(JahiaDBUser.PROP_LAST_LOGIN_DATE, String.valueOf(System.currentTimeMillis()));
+                checkRedirect(paramBean);
             } else {
                 valveContext.invokeNext(context);
             }
         } catch (JahiaException e) {
             throw new PipelineException(e);
+        }
+    }
+
+    private void checkRedirect(ParamBean ctx) {
+        if ("POST".equals(ctx.getRequest().getMethod())) {
+            String doRedirect = ctx.getRequest().getParameter(DO_REDIRECT);
+            if (doRedirect != null
+                    && (Boolean.valueOf(doRedirect) || "1".equals(doRedirect))) {
+                try {
+                    ctx.getResponse().sendRedirect(ctx.composePageUrl());
+                } catch (Exception ex) {
+                    logger.error(
+                            "Unable to perform client-side redirect after login. Cause: "
+                                    + ex.getMessage(), ex);
+                }
+
+            }
         }
     }
 

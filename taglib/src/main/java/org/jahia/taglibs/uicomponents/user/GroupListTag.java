@@ -46,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 
 /**
@@ -58,6 +59,7 @@ import java.util.*;
  * @author dominique (joe) pillot
  * @version $Id: $
  */
+@SuppressWarnings("serial")
 public class GroupListTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger = Logger.getLogger(GroupListTag.class);
     private static final JahiaGroupManagerService GroupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
@@ -87,8 +89,8 @@ public class GroupListTag extends AbstractJahiaTag {
         }
 
         //the list of providers
-        List thelist = GroupService.getProviderList();//the list of all available providers
-        final Set searchResults = new HashSet();
+        List<? extends JahiaGroupManagerProvider> thelist = GroupService.getProviderList();//the list of all available providers
+        final Set<JahiaGroup> searchResults = new HashSet<JahiaGroup>();
         Properties searchParameters = new Properties();
         StringBuffer sb = new StringBuffer();
         int siteID = jParams.getSiteID();
@@ -158,7 +160,7 @@ public class GroupListTag extends AbstractJahiaTag {
                     sb.append("<a href=\"javascript:toggleVisibility('");
                     sb.append(thename).append("')\">");
                 }
-                Set mbrs = group.getRecursiveUserMembers();
+                Set<Principal> mbrs = group.getRecursiveUserMembers();
                 sb.append(mbrs.size()).append(")");
                 if (!membersvisibility) sb.append("</a>");
                 sb.append("&nbsp;");
@@ -166,7 +168,7 @@ public class GroupListTag extends AbstractJahiaTag {
                 if (!membersvisibility) sb.append(" style=\"display: none;\"");
                 sb.append(">");
                 int mbrcount = 0;
-                for (Object mbr : mbrs) {
+                for (Principal mbr : mbrs) {
                     mbrcount++;
                     if (mbrcount > memberslimit) {
                         sb.append(" ...").append(separator);

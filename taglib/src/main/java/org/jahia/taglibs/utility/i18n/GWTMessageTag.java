@@ -40,6 +40,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * Date: 9 sept. 2008
  * Time: 17:23:57
  */
+@SuppressWarnings("serial")
 public class GWTMessageTag extends AbstractJahiaTag {
 
     private String resourceName;

@@ -80,6 +80,7 @@ import org.jahia.utils.JahiaConsole;
  *
  * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class IfCListPaginationCurrentPageTag extends AbstractJahiaTag {
 
     private boolean doEvaluateBody = false;

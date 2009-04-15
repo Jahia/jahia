@@ -63,6 +63,7 @@ import org.jahia.settings.SettingsBean;
  *         <p/>
  *         </attriInfo></p>"
  */
+@SuppressWarnings("serial")
 public class CurrentPagePathTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(CurrentPagePathTag.class);

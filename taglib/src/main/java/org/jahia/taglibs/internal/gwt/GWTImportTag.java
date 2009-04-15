@@ -45,6 +45,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Khaled Tlili
  */
+@SuppressWarnings("serial")
 public class GWTImportTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(GWTInitTag.class);

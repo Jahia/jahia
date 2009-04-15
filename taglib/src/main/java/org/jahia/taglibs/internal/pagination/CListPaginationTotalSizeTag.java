@@ -79,6 +79,7 @@ import org.jahia.taglibs.template.containerlist.ContainerListTag;
  *
  * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class CListPaginationTotalSizeTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =

@@ -50,6 +50,7 @@ import java.io.IOException;
 /**
  * @author David Griffon
  */
+@SuppressWarnings("serial")
 public class ThemeDisplayTag extends AbstractJahiaTag {
     private static transient final Category logger = Logger.getLogger(ThemeSelectorTag.class);
     private String defaultTheme = "default";

@@ -99,11 +99,12 @@ import java.util.*;
  * href='actionMenu.html' target='tagFrame'>jahiaHtml:actionMenu</a> tag for example. </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
     private static transient final Category logger = org.apache.log4j.Logger.getLogger(ContainerTag.class);
     public static final String CACHETAG = "cachetag";
 
-    private Iterator containers;
+    private Iterator<JahiaContainer> containers;
 
     private boolean first = true;
     private boolean last = true;
@@ -651,7 +652,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                                        JahiaData jahiaData,
                                        String bodyContent) throws JahiaInitializationException {
         if (bodyContent.contains("<!-- cache:include src=")) return;
-        ContainerHTMLCache containerHTMLCache =
+        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> containerHTMLCache =
                 ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
         ProcessingContext processingContext = jahiaData.getProcessingContext();
         String mode = jahiaData.getProcessingContext().getOperationMode();
@@ -691,7 +692,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
     private String getFromContainerCache(JahiaContainer jahiaContainer,
                                          JahiaData jahiaData
     ) throws JahiaInitializationException, JspTagException {
-        ContainerHTMLCache containerHTMLCache =
+        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> containerHTMLCache =
                 ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
         ProcessingContext processingContext = jahiaData.getProcessingContext();
         if (processingContext.getEntryLoadRequest() != null && processingContext.getEntryLoadRequest().isVersioned()) {
@@ -709,7 +710,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                         curLanguageCode,
                         mode,
                         processingContext.getScheme());
-        CacheEntry cacheEntry = containerHTMLCache.getCacheEntry(containerKey);
+        CacheEntry<ContainerHTMLCacheEntry> cacheEntry = containerHTMLCache.getCacheEntry(containerKey);
         if (cacheEntry == null)
             return null;
         expirDate = cacheEntry.getExpirationDate();

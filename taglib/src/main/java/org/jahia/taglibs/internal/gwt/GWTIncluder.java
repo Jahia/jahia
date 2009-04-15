@@ -33,17 +33,9 @@
 
 package org.jahia.taglibs.internal.gwt;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
-
-import org.jahia.params.ProcessingContext;
-import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.taglibs.utility.Utils;
 
 /**
  * Helper class for generating script element with the GWT module.

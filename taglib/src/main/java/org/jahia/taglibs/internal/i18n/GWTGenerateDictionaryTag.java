@@ -34,23 +34,19 @@
 package org.jahia.taglibs.internal.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.utility.Utils;
 import org.jahia.data.JahiaData;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.http.HttpSession;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * Create a resource bundle dictionary
  */
+@SuppressWarnings("serial")
 public class GWTGenerateDictionaryTag extends AbstractJahiaTag {
     private static final transient Logger logger = Logger.getLogger(GWTGenerateDictionaryTag.class);
 

@@ -81,7 +81,7 @@ public class Functions {
 
     public static Integer getPidFromUrlKey(final String urlKey, final String siteKey) {
         try {
-            final List pageProperties;
+            final List<PageProperty> pageProperties;
             if (siteKey != null && siteKey.length() > 0) {
                 final JahiaSite siteByKey = registry.getJahiaSitesService().getSiteByKey(siteKey);
                 final int siteID;
@@ -96,7 +96,7 @@ public class Functions {
             }
 
             if (pageProperties.size() == 1) {
-                final PageProperty pageProperty = (PageProperty) pageProperties.get(0);
+                final PageProperty pageProperty = pageProperties.get(0);
                 if (pageProperty.getName().equals(PageProperty.PAGE_URL_KEY_PROPNAME)) {
                     return pageProperty.getPageID();
                 }

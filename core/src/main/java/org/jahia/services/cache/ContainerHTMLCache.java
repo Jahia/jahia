@@ -51,7 +51,7 @@ import java.util.*;
  * Time: 12:09:55
  * To change this template use File | Settings | File Templates.
  */
-public class ContainerHTMLCache extends Cache {
+public class ContainerHTMLCache<K, V> extends Cache<GroupCacheKey, ContainerHTMLCacheEntry>  {
 
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (ContainerHTMLCache.class);
@@ -65,7 +65,7 @@ public class ContainerHTMLCache extends Cache {
      * <p>Creates a new <code>ContainerHTMLCache</code> instance.</p>
      *
      */
-    protected ContainerHTMLCache(CacheImplementation cacheImplementation) {
+    protected ContainerHTMLCache(CacheImplementation<GroupCacheKey, CacheEntry<ContainerHTMLCacheEntry>> cacheImplementation) {
         super(CONTAINER_HTML_CACHE, cacheImplementation);
         cacheKeyGeneratorService = ServicesRegistry.getInstance().getCacheKeyGeneratorService();
     }
@@ -123,7 +123,7 @@ public class ContainerHTMLCache extends Cache {
         // Get the language code
         String curLanguageCode = processingContext.getLocale().toString();
         GroupCacheKey containerKey = cacheKeyGeneratorService.computeContainerEntryKeyWithGroups(jahiaContainer, cacheKey, processingContext.getUser(), curLanguageCode, mode, processingContext.getScheme(), dependencies);
-        put(containerKey, entry);
+        this.put(containerKey, entry);
         if(expiration >= 0) {
             try {
                 getCacheEntry(containerKey).setExpirationDate(new Date(System.currentTimeMillis()+(expiration*1000)));
@@ -199,7 +199,7 @@ public class ContainerHTMLCache extends Cache {
      * @param aclGroupFinalKey @return
      * @throws JahiaInitializationException
      */
-    public CacheEntry getCacheEntryFromContainerCache(JahiaContainer jahiaContainer, ProcessingContext processingContext,
+    public CacheEntry<ContainerHTMLCacheEntry> getCacheEntryFromContainerCache(JahiaContainer jahiaContainer, ProcessingContext processingContext,
                                                          String cacheKey, boolean esi, int requestedFragment, String currentURL, String aclGroupFinalKey) throws JahiaInitializationException {
         String mode = processingContext.getOperationMode();
         if (processingContext.getEntryLoadRequest() != null && processingContext.getEntryLoadRequest().isVersioned()){
@@ -213,7 +213,7 @@ public class ContainerHTMLCache extends Cache {
                 curLanguageCode,
                 mode,
                 processingContext.getScheme());
-        return (CacheEntry) getCacheEntry(containerKey);
+        return getCacheEntry(containerKey);
     }
 
     /**
@@ -298,7 +298,7 @@ public class ContainerHTMLCache extends Cache {
                 curLanguageCode,
                 mode,
                 processingContext.getScheme());
-        CacheEntry cacheEntry = getCacheEntry(containerKey);
+        CacheEntry<ContainerHTMLCacheEntry> cacheEntry = getCacheEntry(containerKey);
         if(cacheEntry!= null) return cacheEntry.getExpirationDate();
         return null;
     }

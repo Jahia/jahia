@@ -40,16 +40,9 @@ import java.util.Comparator;
 /**
  * @author Xavier Lawrence
  */
-public class LanguageSettingsComparator implements Comparator {
+public class LanguageSettingsComparator implements Comparator<SiteLanguageSettings> {
 
-    public int compare(final Object o1, final Object o2) {
-        if (o1.getClass() != SiteLanguageSettings.class ||
-                o2.getClass() != SiteLanguageSettings.class) {
-            return 0;
-        }
-
-        final SiteLanguageSettings settings1 = (SiteLanguageSettings) o1;
-        final SiteLanguageSettings settings2 = (SiteLanguageSettings) o2;
+    public int compare(final SiteLanguageSettings settings1, final SiteLanguageSettings settings2) {
         final int rank1 = settings1.getRank();
         final int rank2 = settings2.getRank();
 

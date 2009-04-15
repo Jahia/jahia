@@ -49,6 +49,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
  * Time: 18:19:55
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class PropertyTag extends TagSupport {
 
     private String ntname;

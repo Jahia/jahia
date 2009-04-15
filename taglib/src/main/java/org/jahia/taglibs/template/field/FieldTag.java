@@ -431,7 +431,7 @@ public class FieldTag extends AbstractFieldTag {
                     break;
             }
 
-            FieldValueBean valueBean = new FieldValueBean(fieldBean, fieldValue, rawValue);
+            FieldValueBean<?> valueBean = new FieldValueBean(fieldBean, fieldValue, rawValue);
             if (valueBeanID != null) {
                 pageContext.setAttribute(valueBeanID, valueBean);
             }

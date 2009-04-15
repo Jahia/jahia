@@ -61,6 +61,7 @@ import java.util.TreeSet;
  *         Time: 12:55:28
  *         To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class ThemeSelectorTag extends AbstractJahiaTag {
     private static transient final Category logger = Logger.getLogger(ThemeSelectorTag.class);
     private String scope = "";

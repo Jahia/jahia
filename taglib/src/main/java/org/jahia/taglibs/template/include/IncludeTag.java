@@ -95,6 +95,7 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
  * @author Sergiy Shyrkov
  * @see JahiaTemplateManagerService
  */
+@SuppressWarnings("serial")
 public class IncludeTag extends ImportSupport {
 
     /**

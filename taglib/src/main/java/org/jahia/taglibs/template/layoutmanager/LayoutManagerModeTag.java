@@ -45,6 +45,7 @@ import org.apache.log4j.Logger;
  * Date: 19 nov. 2008
  * Time: 16:42:42
  */
+@SuppressWarnings("serial")
 public class LayoutManagerModeTag extends AbstractJahiaTag {
     private static final Logger logger = Logger.getLogger(LayoutManagerModeTag.class);
     private String value;

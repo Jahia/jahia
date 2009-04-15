@@ -274,7 +274,7 @@ public class ActionMenuOutputter {
                 final ContentContainer cont = (ContentContainer) contentObject.getContentObject();
                 try {
                     int jahiaPageID = -1;
-                    final Iterator en = cont.getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()).getFields();
+                    final Iterator<JahiaField> en = cont.getJahiaContainer(processingContext, processingContext.getEntryLoadRequest()).getFields();
                     while (en.hasNext()) {
                         final JahiaField field = (JahiaField) en.next();
                         if (field.getType() == FieldTypes.PAGE) {

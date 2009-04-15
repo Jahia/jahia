@@ -48,6 +48,7 @@ import java.util.Map;
  * Date: 2 avr. 2008
  * Time: 14:43:29
  */
+@SuppressWarnings("serial")
 public class GWTJahiaModuleTag extends AbstractJahiaTag implements DynamicAttributes {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(GWTJahiaModuleTag.class);
     private transient Map<String, Object> attributes = new HashMap<String, Object>();

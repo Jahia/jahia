@@ -43,6 +43,7 @@ import java.util.HashMap;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DeclareLanguageLinkDisplayTag extends AbstractJahiaTag {
     private String name;
     private String displayFile;

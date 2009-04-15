@@ -130,6 +130,7 @@ import java.util.Iterator;
  * &nbsp;&nbsp;&nbsp;&nbsp; &lt;/template:template&gt;
  * </attriInfo>
  */
+@SuppressWarnings("serial")
 public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttributes {
 
     private final static transient Logger logger = Logger.getLogger(TemplateBodyTag.class);
@@ -248,7 +249,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
                 buf.append(gaTrackingCode(((JahiaData) request.getAttribute("org.jahia.data.JahiaData"))));
             }
             // Generate jahia_gwt_dictionnary
-            Map dictionaryMap = getJahiaGwtDictionary();
+            Map<String, String> dictionaryMap = getJahiaGwtDictionary();
             if (dictionaryMap != null) {
                 buf.append("<script type='text/javascript'>\n");
                 buf.append(generateJahiaGwtDictionary());
@@ -290,7 +291,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         JahiaSite currentSite = jData.getProcessingContext().getSite();
         // get enabled profiles
         //Map<String, String> enabledProfiles = new HashMap<String, String>();
-        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
+        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();
@@ -326,7 +327,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         boolean atLeast1TPon = false;
         JahiaSite currentSite = jData.getProcessingContext().getSite();
         // google analytics
-        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
+        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();
@@ -345,7 +346,7 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
         boolean atLeast1TPconf = false;
         JahiaSite currentSite = jData.getProcessingContext().getSite();
         // google analytics
-        Iterator it = ((currentSite.getSettings()).keySet()).iterator();
+        Iterator<?> it = ((currentSite.getSettings()).keySet()).iterator();
         // check if at list one profile is enabled
         while (it.hasNext()) {
             String key = (String) it.next();

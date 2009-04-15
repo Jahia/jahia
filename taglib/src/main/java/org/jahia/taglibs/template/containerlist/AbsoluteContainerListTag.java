@@ -63,6 +63,7 @@ import org.jahia.exceptions.JahiaException;
  * &lt;/content:absoluteContainerList&gt;</p>
 * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class AbsoluteContainerListTag extends ContainerListTag {
 
     private int pageId = -1;

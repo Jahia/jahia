@@ -35,8 +35,7 @@ package org.jahia.taglibs.template.category;
 
 import java.security.Principal;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Enumeration;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -47,7 +46,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.CategoryBean;
 import org.jahia.exceptions.JahiaException;
@@ -124,6 +122,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class CategoryTag extends AbstractJahiaTag {
 
     private static final String TREEID_DATE_POSTFIX = "_gentime";
@@ -365,10 +364,10 @@ public class CategoryTag extends AbstractJahiaTag {
             tree.setSelectionPath(selectionPath);
             return;
         }
-        Iterator childNodeEnum = new EnumerationIterator(curNode.children());
-        while (childNodeEnum.hasNext()) {
+        Enumeration<?> childNodeEnum = curNode.children();
+        while (childNodeEnum.hasMoreElements()) {
             DefaultMutableTreeNode curChildNode = (DefaultMutableTreeNode)
-                                                  childNodeEnum.next();
+                                                  childNodeEnum.nextElement();
             selectCategoryInTree(tree, selectedCategoryKey, curChildNode);
         }
     }
@@ -412,10 +411,7 @@ public class CategoryTag extends AbstractJahiaTag {
                                     Principal p)
         throws JahiaException {
         if ( currentCategory != null ){
-            List childCategories = currentCategory.getChildCategories(p);
-            Iterator childIter = childCategories.iterator();
-            while (childIter.hasNext()) {
-                Category curChildCategory = (Category) childIter.next();
+            for (Category curChildCategory : currentCategory.getChildCategories(p)) {
                 DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(
                         curChildCategory);
                 curNode.insert(newNode, 0);

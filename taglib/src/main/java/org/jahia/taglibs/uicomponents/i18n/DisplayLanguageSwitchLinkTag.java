@@ -48,6 +48,7 @@ import java.util.Locale;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplayLanguageSwitchLinkTag extends AbstractJahiaTag {
 
     private static final transient org.apache.log4j.Logger logger =

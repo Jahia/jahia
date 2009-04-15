@@ -56,6 +56,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Sergiy Shyrkov
  */
+@SuppressWarnings("serial")
 public class ExecuteSuperTag extends IncludeTag {
 
     private boolean found;

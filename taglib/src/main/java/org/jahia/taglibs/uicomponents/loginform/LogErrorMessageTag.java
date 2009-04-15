@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class LogErrorMessageTag extends AbstractJahiaTag {
     private static final transient Logger logger = Logger.getLogger(LogErrorMessageTag.class);
 

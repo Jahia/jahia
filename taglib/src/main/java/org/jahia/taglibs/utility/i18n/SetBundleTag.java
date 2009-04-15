@@ -53,6 +53,7 @@ import java.util.ResourceBundle;
  * Time: 16:34:03
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class SetBundleTag extends TagSupport {
     
     private static final transient Logger logger = Logger.getLogger(SetBundleTag.class);

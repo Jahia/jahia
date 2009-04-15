@@ -96,6 +96,7 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
  *      see SetAdminResourceBundleTag
  *      see JahiaInternalResources.properties
  */
+@SuppressWarnings("serial")
 public class MessageTag extends TagSupport {
 
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(MessageTag.class);
@@ -156,7 +157,7 @@ public class MessageTag extends TagSupport {
         final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
         Locale currentLocale = null;
         if (jParams != null) {
-            final Map engineMap = !Core_Engine.ENGINE_NAME.equals(jParams.getEngineName()) ? (Map) jParams.getSessionState().getAttribute("jahia_session_engineMap") : null;
+            final Map<?, ?> engineMap = !Core_Engine.ENGINE_NAME.equals(jParams.getEngineName()) ? (Map<?, ?>) jParams.getSessionState().getAttribute("jahia_session_engineMap") : null;
             if (engineMap != null) {
                 final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
                 if (elh != null) {

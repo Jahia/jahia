@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * @author Xavier Lawrence
  */
-public class LanguageCodesComparator implements Comparator {
+public class LanguageCodesComparator implements Comparator<String> {
 
     private List<String> pattern;
 
@@ -54,10 +54,7 @@ public class LanguageCodesComparator implements Comparator {
         this.pattern = pattern;
     }
 
-    public int compare(final Object o1, final Object o2) {
-        final String lang1 = o1.toString();
-        final String lang2 = o2.toString();
-
+    public int compare(final String lang1, final String lang2) {
         final int rank1 = pattern.indexOf(lang1);
         final int rank2 = pattern.indexOf(lang2);
 

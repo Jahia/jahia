@@ -34,6 +34,7 @@
 package org.jahia.taglibs.utility.session;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -41,7 +42,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.JahiaTools;
 
@@ -329,6 +329,7 @@ import org.jahia.utils.JahiaTools;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class SessionViewerTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
@@ -345,8 +346,8 @@ public class SessionViewerTag extends AbstractJahiaTag {
                                          getRequest();
             HttpSession session = request.getSession();
             out.println("<div class=\"session\">");
-            Iterator attrNameEnum = new EnumerationIterator(session.getAttributeNames());
-            if (attrNameEnum.hasNext()) {
+            Enumeration<?> attrNameEnum = session.getAttributeNames();
+            if (attrNameEnum.hasMoreElements()) {
                 out.print(getPadding(2));
                 out.println("<ol class=\"attribute\">");
                 out.print(getPadding(4));
@@ -357,8 +358,8 @@ public class SessionViewerTag extends AbstractJahiaTag {
                 out.println("<li>Value</li>");
                 out.print(getPadding(2));
                 out.println("</ol>");
-            } while (attrNameEnum.hasNext()) {
-                String curAttrName = (String) attrNameEnum.next();
+            } while (attrNameEnum.hasMoreElements()) {
+                String curAttrName = (String) attrNameEnum.nextElement();
                 Object curAttrObject = session.getAttribute(curAttrName);
                 handleAttrDisplay(out, curAttrName, curAttrObject);
             }
@@ -387,7 +388,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
         out.println("</li>");
         out.print("  <li class=\"value\">");
         if (curAttrObject instanceof Map) {
-            handleMapDisplay(out, (Map) curAttrObject, 4);
+            handleMapDisplay(out, (Map<Object, Object>) curAttrObject, 4);
         } else {
             out.print(curAttrObject.toString());
         }
@@ -395,9 +396,9 @@ public class SessionViewerTag extends AbstractJahiaTag {
         out.println("</ol>");
     }
 
-    private void handleMapDisplay (JspWriter out, Map map, int indent)
+    private void handleMapDisplay (JspWriter out, Map<Object, Object> map, int indent)
         throws IOException {
-        Iterator entryIter = map.entrySet().iterator();
+        Iterator<Map.Entry<Object, Object>> entryIter = map.entrySet().iterator();
         out.print(getPadding(indent));
         out.println("<div class=\"map\">");
         if (entryIter.hasNext()) {
@@ -422,7 +423,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
             out.print(getPadding(indent + 2));
             out.println("</ol>");
         } while (entryIter.hasNext()) {
-            Map.Entry curEntry = (Map.Entry) entryIter.next();
+            Map.Entry<Object, Object> curEntry = entryIter.next();
             Object key = curEntry.getKey();
             Object value = curEntry.getValue();
             out.print(getPadding(indent + 2));
@@ -442,7 +443,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
             out.print(getPadding(indent + 4));
             out.print("<li class=\"value\">");
             if (value instanceof Map) {
-                handleMapDisplay(out, (Map) value, indent + 4);
+                handleMapDisplay(out, (Map<Object, Object>) value, indent + 4);
             } else {
                 out.print(JahiaTools.text2XMLEntityRef(value.toString(), 0));
             }

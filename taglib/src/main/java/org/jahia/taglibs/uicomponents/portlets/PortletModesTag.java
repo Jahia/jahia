@@ -76,6 +76,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  *
  */
 
+@SuppressWarnings("serial")
 public class PortletModesTag extends TagSupport {
 
     private static org.apache.log4j.Logger logger =
@@ -175,7 +176,7 @@ public class PortletModesTag extends TagSupport {
     public int doStartTag () {
 
         requestBean = (RequestBean) pageContext.findAttribute("currentRequest");
-        processingContext = requestBean.getParamBean();
+        processingContext = requestBean.getProcessingContext();
         guiBean = new GuiBean(processingContext);
         htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         PortletWindowBean portletWindowBean = (PortletWindowBean) pageContext.

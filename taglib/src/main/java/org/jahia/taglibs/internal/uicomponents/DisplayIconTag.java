@@ -73,6 +73,7 @@ import java.io.IOException;
  *     altBundle=\"mybundle\" altKey=\"com.acme.hugh.label\" /&gt;
  * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class DisplayIconTag extends AbstractJahiaTag {
     public DisplayIconTag () {
         try {

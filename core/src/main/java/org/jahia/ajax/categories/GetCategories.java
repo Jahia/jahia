@@ -80,7 +80,7 @@ public class GetCategories extends AbstractCategoryAction {
             final Document resp = getNewDocument(request);
             final Element root = resp.createElement("GetCategoriesResp");
 
-            final List categories;
+            final List<Category> categories;
             if (TITLE.equals(searchBy)) {
                 categories = Category.getCategoriesContainingStringInTitle(userInput, null,
                         jParams.getLocale().toString(), currentUser);

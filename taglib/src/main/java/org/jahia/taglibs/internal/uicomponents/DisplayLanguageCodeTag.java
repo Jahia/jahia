@@ -122,6 +122,7 @@ import java.util.Locale;
  * &lt;content:displayLanguageCode  code=\"&lt;%=jParams.getLocale().getLanguage()%&gt;\" href=\"&lt;%=jData.gui().drawPageLanguageSwitch(languageCode)%&gt;\"/&gt;
  * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class DisplayLanguageCodeTag extends AbstractJahiaTag {
 
     /**

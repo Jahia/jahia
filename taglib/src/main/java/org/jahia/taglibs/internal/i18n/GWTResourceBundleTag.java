@@ -42,7 +42,6 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
 /**
@@ -50,6 +49,7 @@ import java.util.MissingResourceException;
  * Date: 1 oct. 2008
  * Time: 17:13:28
  */
+@SuppressWarnings("serial")
 public class GWTResourceBundleTag extends GWTMessageTag {
     private static final transient Logger logger = Logger.getLogger(GWTResourceBundleTag.class);
 

@@ -43,6 +43,7 @@ import javax.servlet.jsp.JspWriter;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplayImageTag extends AbstractFieldTag {
     private static final transient org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(DisplayImageTag.class);
@@ -78,7 +79,7 @@ public class DisplayImageTag extends AbstractFieldTag {
             final Object bean = pageContext.getAttribute(file);
             JahiaFileField theFile = null;
             if (bean instanceof FieldValueBean) {
-                theFile = ((FieldValueBean) bean).getFile();
+                theFile = ((FieldValueBean<?>) bean).getFile();
             } else if (bean instanceof JahiaFileField) {
                 theFile = (JahiaFileField) bean;     
             }

@@ -47,6 +47,7 @@ import org.jahia.taglibs.utility.Utils;
  *
  * @author  Jerome Tamiotti
  */
+@SuppressWarnings("serial")
 public abstract class AbstractButtonTag extends TagSupport {
 
     /** logging */

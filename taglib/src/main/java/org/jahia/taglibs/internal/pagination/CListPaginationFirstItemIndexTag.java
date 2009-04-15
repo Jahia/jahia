@@ -60,6 +60,7 @@ import java.io.IOException;
 * <p>
 * </attriInfo>"
 */
+@SuppressWarnings("serial")
 public class CListPaginationFirstItemIndexTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =

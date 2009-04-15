@@ -51,6 +51,7 @@ import java.util.ResourceBundle;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplayPagePropertiesTag extends AbstractJahiaTag {
 
     private static final transient org.apache.log4j.Logger logger =

@@ -103,7 +103,7 @@ public abstract class CacheService extends JahiaService {
      * @exception org.jahia.exceptions.JahiaInitializationException
      *      when the Container HTML cache could not be instanciated and properly initialized
      */
-    public abstract ContainerHTMLCache getContainerHTMLCacheInstance() throws JahiaInitializationException;
+    public abstract ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> getContainerHTMLCacheInstance() throws JahiaInitializationException;
 
     public abstract SkeletonCache getSkeletonCacheInstance() throws JahiaInitializationException;
     public abstract Map<String, CacheProvider> getCacheProviders();

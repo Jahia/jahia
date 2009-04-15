@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplayLinkTag extends AbstractFieldTag {
     private static final transient org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(DisplayLinkTag.class);
@@ -98,7 +99,7 @@ public class DisplayLinkTag extends AbstractFieldTag {
             final Object bean = pageContext.getAttribute(page);
             PageBean thePageBean = null;
             if (bean instanceof FieldValueBean) {
-                thePageBean = ((FieldValueBean) bean).getPage();
+                thePageBean = ((FieldValueBean<?>) bean).getPage();
             } else if (bean instanceof PageBean) {
                 thePageBean = (PageBean) bean;
 

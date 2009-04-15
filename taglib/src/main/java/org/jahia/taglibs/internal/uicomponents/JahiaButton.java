@@ -73,6 +73,7 @@ import java.util.MissingResourceException;
  *
  * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class JahiaButton extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =

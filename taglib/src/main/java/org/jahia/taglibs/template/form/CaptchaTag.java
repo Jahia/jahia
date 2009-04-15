@@ -15,6 +15,7 @@ import java.io.IOException;
  * Time: 6:29:11 PM
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class CaptchaTag extends AbstractJahiaTag {
 
     @Override

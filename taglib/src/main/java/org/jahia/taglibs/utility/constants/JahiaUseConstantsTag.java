@@ -53,6 +53,7 @@ import org.apache.taglibs.unstandard.UseConstantsTag;
  * Time: 10:38:16
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class JahiaUseConstantsTag extends UseConstantsTag {
     
     @Override

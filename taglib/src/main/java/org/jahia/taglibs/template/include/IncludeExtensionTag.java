@@ -45,6 +45,7 @@ import java.io.IOException;
 /**
  * @author Thomas Draier
  */
+@SuppressWarnings("serial")
 public class IncludeExtensionTag extends TagSupport {
 
     private static transient final Logger logger = Logger.getLogger(IncludeExtensionTag.class);

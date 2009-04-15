@@ -69,7 +69,7 @@ public class CacheKeyGeneratorService extends JahiaService {
     private JahiaGroupManagerService groupManagerService;
     private static CacheKeyGeneratorService instance;
     private CacheService cacheService;
-    private Cache userKeyCache;
+    private Cache<String, String> userKeyCache;
 
     public void setJahiaACLManagerService(JahiaACLManagerService jahiaACLManagerService) {
         this.jahiaACLManagerService = jahiaACLManagerService;
@@ -101,7 +101,7 @@ public class CacheKeyGeneratorService extends JahiaService {
     public void rightsUpdated() throws JahiaInitializationException {
         SortedSet<String> newusers = new TreeSet<String>(jahiaACLManagerService.getAllUsersInAcl());
         final CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
-        ContainerHTMLCache containerHTMLCache = cacheService.getContainerHTMLCacheInstance();
+        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> containerHTMLCache = cacheService.getContainerHTMLCacheInstance();
         SkeletonCache skeletonCache = cacheService.getSkeletonCacheInstance();
         if (!newusers.equals(users)) {
             Set<String> removedUsers = new HashSet<String>(users);
@@ -137,7 +137,7 @@ public class CacheKeyGeneratorService extends JahiaService {
         String usercachekey;
         final String s = user.getUserKey() + SITE_PREFIX + siteID;
         if (!AdvPreviewSettings.isInUserAliasingMode() && userKeyCache.containsKey(s)) {
-            return (String) userKeyCache.get(s);
+            return userKeyCache.get(s);
         }
         Collection<String> users = getAllUsers();
 
@@ -162,7 +162,7 @@ public class CacheKeyGeneratorService extends JahiaService {
         if (AdvPreviewSettings.isInUserAliasingMode()) {
             usercachekey += "_" + AdvPreviewSettings.getThreadLocaleInstance().getAliasedUser().getUserKey();
         } else {
-            CacheEntry cacheEntry = new CacheEntry(usercachekey);
+            CacheEntry<String> cacheEntry = new CacheEntry<String>(usercachekey);
             cacheEntry.setExpirationDate(new Date(System.currentTimeMillis() + (300 * 1000)));
             userKeyCache.putCacheEntry(s,cacheEntry, true);
         }
@@ -340,6 +340,6 @@ public class CacheKeyGeneratorService extends JahiaService {
 
         Object key = getKey(ctnid, operationMode, languageCode, usercachekey, group, scheme);
 
-        return new GroupCacheKey(key, new HashSet());
+        return new GroupCacheKey(key, new HashSet<String>());
     }
 }

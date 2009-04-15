@@ -46,6 +46,7 @@ import javax.servlet.jsp.JspTagException;
 /**
  * Allow to get any field from its ID
  */
+@SuppressWarnings("serial")
 public class GetFieldTag extends AbstractJahiaTag {
     private static transient final Logger logger = Logger.getLogger(GetFieldTag.class);
 

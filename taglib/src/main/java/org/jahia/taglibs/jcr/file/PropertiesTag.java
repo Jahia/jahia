@@ -49,6 +49,7 @@ import java.util.List;
  * Time: 18:19:44
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class PropertiesTag extends AbstractJahiaTag {
     private String name = "type";
     private String property;
@@ -56,12 +57,12 @@ public class PropertiesTag extends AbstractJahiaTag {
 
     private String id = "propertyDefinition";
 
-    private Iterator it;
+    private Iterator<?> it;
 
     public int doStartTag() throws JspException {
         ExtendedNodeType nodetype = (ExtendedNodeType) TagUtils.getInstance().lookup(pageContext, name, property, scope);
 
-        List l = nodetype.getDeclaredItems();
+        List<ExtendedItemDefinition> l = nodetype.getDeclaredItems();
 
         it = l.iterator();
 

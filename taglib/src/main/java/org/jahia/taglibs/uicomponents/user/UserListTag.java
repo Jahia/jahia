@@ -34,6 +34,7 @@
 package org.jahia.taglibs.uicomponents.user;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -62,6 +63,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * @author dominique (joe) pillot
  * @version $Id: $
  */
+@SuppressWarnings("serial")
 public class UserListTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger = Logger.getLogger(UserListTag.class);
     private static JahiaUserManagerService userservice = ServicesRegistry.getInstance().getJahiaUserManagerService();
@@ -85,8 +87,8 @@ public class UserListTag extends AbstractJahiaTag {
         }
 
         //the list of providers
-        List thelist = userservice.getProviderList();//the list of all available providers
-        final Set searchResults = new HashSet();
+        List<? extends JahiaUserManagerProvider> thelist = userservice.getProviderList();//the list of all available providers
+        final Set<Principal> searchResults = new HashSet<Principal>();
         Properties searchParameters = new Properties();
         StringBuffer sb = new StringBuffer();
         int siteID = jParams.getSiteID();
@@ -119,8 +121,7 @@ public class UserListTag extends AbstractJahiaTag {
         } else {
             String delimitor = " ";
             if (getScope().indexOf(",") != -1) delimitor = ",";
-            for (Iterator it = thelist.iterator(); it.hasNext();) {
-                JahiaUserManagerProvider curProvider = (JahiaUserManagerProvider) it.next();
+            for (JahiaUserManagerProvider curProvider : thelist) {
                 StringTokenizer tk = new StringTokenizer(scope.trim(), delimitor);
                 while (tk.hasMoreTokens()) {
                     String token = tk.nextToken();
@@ -133,7 +134,7 @@ public class UserListTag extends AbstractJahiaTag {
         }
 
         int count = 0;
-        for (Iterator it = searchResults.iterator(); it.hasNext();) {
+        for (Iterator<?> it = searchResults.iterator(); it.hasNext();) {
 
             if (count > displaylimit) break;
             JahiaUser user = (JahiaUser) it.next();

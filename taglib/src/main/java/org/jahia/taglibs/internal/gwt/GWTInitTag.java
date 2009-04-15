@@ -48,6 +48,7 @@ import java.io.IOException;
  *
  * @author Khaled Tlili
  */
+@SuppressWarnings("serial")
 public class GWTInitTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(GWTInitTag.class);

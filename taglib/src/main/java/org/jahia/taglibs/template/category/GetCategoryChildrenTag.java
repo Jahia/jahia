@@ -49,6 +49,7 @@ import java.util.*;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class GetCategoryChildrenTag extends AbstractJahiaTag {
 
     private static transient final Logger logger = Logger.getLogger(GetCategoryChildrenTag.class);
@@ -109,11 +110,11 @@ public class GetCategoryChildrenTag extends AbstractJahiaTag {
                 logger.warn("getCategoryChildrenTag: startingCategory is null");
                 return SKIP_BODY;
             }
-            final List children = startingCategory.getChildCategories(jParams.getUser());
+            final List<Category> children = startingCategory.getChildCategories(jParams.getUser());
             final JspWriter out = pageContext.getOut();
             final Locale locale = jParams.getCurrentLocale();
             if (children != null && children.size() > 0) {
-                final TreeSet<Category> orderedCategories = new TreeSet<Category>(new NumericStringComparator());
+                final TreeSet<Category> orderedCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
                 getCategoryChildren(startingCategory, 0, level, orderedCategories, jParams);
 
                 final StringBuffer buff = new StringBuffer();
@@ -193,7 +194,7 @@ public class GetCategoryChildrenTag extends AbstractJahiaTag {
             result.add(cat);
         }
         if (currentLevel < maxLevel) {
-            final List children = cat.getChildCategories(jParams.getUser());
+            final List<Category> children = cat.getChildCategories(jParams.getUser());
             if (children != null && children.size() > 0) {
                 for (Object aChildren : children) {
                     getCategoryChildren((Category) aChildren, currentLevel + 1, maxLevel, result, jParams);
@@ -278,7 +279,7 @@ public class GetCategoryChildrenTag extends AbstractJahiaTag {
         return buff.toString();
     }
 
-    protected String printSelectMultipleCategories(final TreeSet<Category> orderedCategories, final List selected,
+    protected String printSelectMultipleCategories(final TreeSet<Category> orderedCategories, final List<String> selected,
                                                    final Locale languageCode) {
         final StringBuffer buff = new StringBuffer();
         for (Category ordererCategory : orderedCategories) {

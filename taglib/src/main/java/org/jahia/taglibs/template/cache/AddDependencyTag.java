@@ -33,6 +33,7 @@
 
 package org.jahia.taglibs.template.cache;
 
+import org.jahia.content.ContentObjectKey;
 import org.jahia.data.beans.ContentBean;
 
 import javax.servlet.jsp.tagext.TagSupport;
@@ -46,15 +47,16 @@ import java.util.Set;
  * Time: 15:08:10
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class AddDependencyTag extends TagSupport {
     private ContentBean bean = null;
-    private Set set = null;
+    private Set<ContentObjectKey> set = null;
 
     public void setBean(ContentBean bean) {
         this.bean = bean;
     }
 
-    public void setSet(Set set) {
+    public void setSet(Set<ContentObjectKey> set) {
         this.set = set;
     }
 
@@ -63,10 +65,10 @@ public class AddDependencyTag extends TagSupport {
         if (set == null) {
             final CacheTag tag = (CacheTag) findAncestorWithClass(this, CacheTag.class);
             if (tag != null)
-                set = tag.getDependencies();
+                set = (Set<ContentObjectKey>)tag.getDependencies();
         }
         if (set != null) {
-            set.add(bean.getContentObject().getObjectKey());
+            set.add((ContentObjectKey)bean.getContentObject().getObjectKey());
         }
         return SKIP_BODY;
     }

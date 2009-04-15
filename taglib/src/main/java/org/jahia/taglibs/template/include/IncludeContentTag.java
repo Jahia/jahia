@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Thomas Draier
  */
+@SuppressWarnings("serial")
 public class IncludeContentTag extends TagSupport {
 
     private static transient final Logger logger = Logger.getLogger(IncludeContentTag.class);

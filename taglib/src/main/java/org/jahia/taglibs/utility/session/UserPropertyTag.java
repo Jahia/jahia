@@ -48,6 +48,7 @@ import java.io.IOException;
  *
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class UserPropertyTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(UserPropertyTag.class);

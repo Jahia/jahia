@@ -35,7 +35,6 @@ package org.jahia.taglibs.uicomponents.loginform;
 
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspWriter;
@@ -44,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class LogRememberMeTag extends AbstractJahiaTag {
     private static final transient Logger logger = Logger.getLogger(LogRememberMeTag.class);
 
@@ -72,7 +72,6 @@ public class LogRememberMeTag extends AbstractJahiaTag {
         final JspWriter out = pageContext.getOut();
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        final ProcessingContext jParams = jData.getProcessingContext();
         if (!jData.gui().isLogged()) {
             try {
                 final String label = getMessage(labelKey, "Remember me");

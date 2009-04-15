@@ -52,6 +52,7 @@ import java.util.List;
  * Time: 5:52:04 PM
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class FileNodeTypesTag extends AbstractJahiaTag {
 
     private String id = "type";

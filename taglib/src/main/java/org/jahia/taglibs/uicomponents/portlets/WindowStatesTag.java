@@ -96,6 +96,7 @@ resourceBundle=\"jahiatemplates.Corporate_portal_templates\" <br>
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class WindowStatesTag extends TagSupport {
 
     private static org.apache.log4j.Logger logger =

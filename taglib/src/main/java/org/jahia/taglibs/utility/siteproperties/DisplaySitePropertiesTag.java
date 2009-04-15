@@ -49,6 +49,7 @@ import java.util.ResourceBundle;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplaySitePropertiesTag extends AbstractJahiaTag {
 
     public String dateFormat;

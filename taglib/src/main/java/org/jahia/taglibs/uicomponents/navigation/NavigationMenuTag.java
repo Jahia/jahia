@@ -56,6 +56,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
+import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageProperty;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -72,6 +73,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@SuppressWarnings("serial")
 public class NavigationMenuTag extends AbstractJahiaTag {
 
     private static transient final Category logger = Logger.getLogger(NavigationMenuTag.class);
@@ -237,7 +239,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
          }**/
 
         try {
-            final ContainerHTMLCache cacheInstance =
+            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance =
                     ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context = jData.getProcessingContext();
             String cacheKey = "siteId_" + context.getSiteID() + ((usePageIdForCacheKey) ? "_pageId_" + context.getPageID() : "") + "_ctnListName_"
@@ -250,7 +252,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             boolean debug = "debug".equals(context.getParameter(ProcessingContext.CONTAINERCACHE_MODE_PARAMETER));
             if (debug && !(cacheKey.indexOf("___debug___") > 0)) cacheKey = cacheKey + "___debug___";
             boolean currentCache = true;
-            final CacheEntry htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
+            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
             String htmlOutput;
             Date expireDate = new Date();
             boolean cacheParam2 = (!ProcessingContext.NORMAL.equals(context.getOperationMode()) && Jahia.getSettings().isContainerCacheLiveModeOnly())
@@ -528,7 +530,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         ContainerListBean containerListBean = new ContainerListBean(linkContainerList, jParams);
         pageContext.setAttribute(containerListName, containerListBean);
 
-        Iterator linkContainerEnum = linkContainerList.getContainers();
+        Iterator<JahiaContainer> linkContainerEnum = linkContainerList.getContainers();
         boolean begin = true;
 
         // don't display the links if they are supposed to be hidden (live mode)
@@ -666,7 +668,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         boolean debug = "debug".equals(jData.getProcessingContext().getParameter(ProcessingContext.CONTAINERCACHE_MODE_PARAMETER));
         final ProcessingContext context = jData.getProcessingContext();
         final JspWriter writer = getPreviousOut();
-        final ContainerHTMLCache cacheInstance;
+        final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance;
         try {
             String htmlOutput="";
             if (bodyContent != null && bodyContent.getString().length()>0) {
@@ -680,7 +682,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 advPreviewMode.append(AdvPreviewSettings.getThreadLocaleInstance());
             }
             cacheKey += advPreviewMode.toString();
-            final CacheEntry htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
+            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry = cacheInstance.getCacheEntryFromContainerCache(null, context, cacheKey, false, 0, null, null);
             final boolean outputContainerCacheActivated = org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated();
             boolean currentCache = true;
             Date expireDate = new Date();
@@ -754,7 +756,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         return EVAL_PAGE;
     }
 
-    public class NavMenuItemBean implements Comparable {
+    public class NavMenuItemBean implements Comparable<NavMenuItemBean> {
         private String title="";
         private String url="";
         private String actionMenu="";
@@ -914,8 +916,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             return result;
         }
 
-        public int compareTo(Object t) throws ClassCastException {
-           NavMenuItemBean navMenuB = (NavMenuItemBean) t;
+        public int compareTo(NavMenuItemBean navMenuB) throws ClassCastException {
            return getTitle().compareTo(navMenuB.getTitle());
         };
     }

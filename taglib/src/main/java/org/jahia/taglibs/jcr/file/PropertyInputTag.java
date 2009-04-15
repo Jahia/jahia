@@ -55,6 +55,7 @@ import java.util.*;
  * Time: 18:26:37
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class PropertyInputTag extends PropertyValueTag {
     private String name = "propertyDefinition";
     private String property;
@@ -167,7 +168,7 @@ public class PropertyInputTag extends PropertyValueTag {
 
 
         String name = propDef.getName();
-        List selected = new ArrayList();
+        List<String> selected = new ArrayList<String>();
         if (objectNode != null && objectNode.hasProperty(name)) {
             if (propDef.isMultiple()) {
                 Value[] values = objectNode.getProperty(name).getValues();
@@ -192,15 +193,15 @@ public class PropertyInputTag extends PropertyValueTag {
         String contextId = name + "@" + root;
         HttpSession s = pageContext.getSession();
 
-        Map categoryDataMap = (Map) s.getAttribute(CategoriesSelect_Engine.ENGINE_NAME + ".categoriesDataMap." + contextId);
+        Map<String, Object> categoryDataMap = (Map<String, Object>) s.getAttribute(CategoriesSelect_Engine.ENGINE_NAME + ".categoriesDataMap." + contextId);
         if (categoryDataMap == null) {
-            categoryDataMap = new HashMap();
+            categoryDataMap = new HashMap<String, Object>();
             s.setAttribute(CategoriesSelect_Engine.ENGINE_NAME + ".categoriesDataMap." + contextId, categoryDataMap);
         }
 
         String selectedIds = "";
-        for (Iterator iterator = selected.iterator(); iterator.hasNext();) {
-            String key = (String) iterator.next();
+        for (Iterator<String> iterator = selected.iterator(); iterator.hasNext();) {
+            String key = iterator.next();
             Category c = Category.getCategory(key);
             selectedIds += (new Integer(c.getObjectKey().getIdInType()));
             if (iterator.hasNext()) {

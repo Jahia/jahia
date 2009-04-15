@@ -51,6 +51,7 @@ import java.io.IOException;
  * Time: 18:22:36
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class NodeTypeLabelTag extends TagSupport {
     
     private static final transient Logger logger = Logger

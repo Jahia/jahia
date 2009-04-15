@@ -35,7 +35,6 @@ package org.jahia.taglibs.uicomponents.image;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
@@ -152,10 +151,8 @@ public class RandomImageTag extends TagSupport {
     if (!node.isCollection()) throw new NullPointerException("this path [" + webdavpath + "] is not a folder");
     // our treeset to order by name
 
-    List all = node.getChildren();
     List<JCRNodeWrapper> images = new ArrayList<JCRNodeWrapper>();
-    for (Iterator it = all.iterator(); it.hasNext();) {
-    	JCRNodeWrapper thefile = (JCRNodeWrapper) it.next();
+    for (JCRNodeWrapper thefile : node.getChildren()) {
         //we dont list binaries files not image and not valid (with access denied)
         if (thefile.getName().toLowerCase().endsWith("jpg") || thefile.getName().toLowerCase().endsWith("gif")
         		 || thefile.getName().toLowerCase().endsWith("png")  || thefile.getName().toLowerCase().endsWith("bmp")) {

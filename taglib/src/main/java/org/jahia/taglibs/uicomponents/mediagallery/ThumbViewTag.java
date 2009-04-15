@@ -42,6 +42,7 @@ import java.util.Random;
 /**
  * a simple iterating body tag to display a list of image files in a webdav path
  */
+@SuppressWarnings("serial")
 public class ThumbViewTag extends AbstractJahiaTag {
 
     private static final transient org.apache.log4j.Logger logger =

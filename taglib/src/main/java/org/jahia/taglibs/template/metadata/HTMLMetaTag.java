@@ -61,6 +61,7 @@ import java.io.IOException;
  * &lt;meta name="description" lang="en" content="my page"/&gt;
  * <p/>
  */
+@SuppressWarnings("serial")
 public class HTMLMetaTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(HTMLMetaTag.class);

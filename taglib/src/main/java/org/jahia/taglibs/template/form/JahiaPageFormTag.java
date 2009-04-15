@@ -51,6 +51,7 @@ import org.jahia.utils.JahiaConsole;
  *
  * @author Khue Nguyen <a href="mailto:knguyen@jahia.org">knguyen@jahia.org</a>
  */
+@SuppressWarnings("serial")
 public class JahiaPageFormTag extends TagSupport {
 
     private static final String CLASS_NAME = JahiaPageFormTag.class.getName();

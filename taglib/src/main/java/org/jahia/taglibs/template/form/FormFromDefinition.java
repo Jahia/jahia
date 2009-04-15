@@ -47,6 +47,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class FormFromDefinition extends GWTJahiaModuleTag {
 
     private String nodeType;

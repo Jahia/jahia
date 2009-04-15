@@ -60,6 +60,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * @author rfelden
  * @version 2 march 2009
  */
+@SuppressWarnings("serial")
 public class SitemapTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(SitemapTag.class);

@@ -46,6 +46,7 @@ import java.util.StringTokenizer;
  *
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplayCategoryTitleTag extends AbstractJahiaTag {
 
     private static transient final Logger logger = Logger.getLogger(DisplayCategoryTitleTag.class);

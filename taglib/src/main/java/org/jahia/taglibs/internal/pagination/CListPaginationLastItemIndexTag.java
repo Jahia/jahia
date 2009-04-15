@@ -60,6 +60,7 @@ import org.jahia.taglibs.template.containerlist.ContainerListTag;
  *
 * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class CListPaginationLastItemIndexTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =

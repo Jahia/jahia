@@ -116,6 +116,7 @@ import javax.servlet.jsp.JspTagException;
  * </attriInfo>
  */
 
+@SuppressWarnings("serial")
 public class TemplateTag extends AbstractJahiaTag {
 
     private boolean gwtForGuest = false;

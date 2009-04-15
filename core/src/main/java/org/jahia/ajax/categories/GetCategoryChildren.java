@@ -123,7 +123,7 @@ public class GetCategoryChildren extends AbstractCategoryAction {
             Category startingCategory = null;
 
             final SessionState session = jParams.getSessionState();
-            final Map engineMap = (Map) session.getAttribute("jahia_session_engineMap");
+            final Map<Object, Object> engineMap = (Map<Object, Object>) session.getAttribute("jahia_session_engineMap");
             if (engineMap != null) {
                 final String startCategoryKey = (String) engineMap.get("startCategory");
                 if (startCategoryKey != null) {
@@ -151,19 +151,19 @@ public class GetCategoryChildren extends AbstractCategoryAction {
                     } else if (isPortletCategoriesContext) {
                         // we are dealing with portlet
                         logger.debug("deal with portlets category");
-                        final List selectedCategories = getSelectedPortletsCategories(jParams);
-                        final List categoriesIsMultipleSrcList = getSelectedPortletsAllsourcesCategories(jParams);
+                        final List<String> selectedCategories = getSelectedPortletsCategories(jParams);
+                        final List<String> categoriesIsMultipleSrcList = getSelectedPortletsAllsourcesCategories(jParams);
                         attachCategoryForPortletToResp(startingCategory, resp, root, jParams, selectedCategories,
                                 categoriesIsMultipleSrcList);
                     } else {
                         if (objectKey.startsWith("/")) {
                             // we are dealing with a DAV resource
-                            final List selectedCategories = (List) request.getSession().getAttribute(
+                            final List<String> selectedCategories = (List<String>) request.getSession().getAttribute(
                                     TableEntry.javascriptDecode(objectKey) + Category_Field.SELECTEDCATEGORIES_ENGINEMAPKEY);
                             attachCategoryToResp(startingCategory, resp, root, jParams, selectedCategories);
                         } else {
                             // we are dealing with a JahiaObject
-                            final List selectedCategories = getSelectedCategories(jParams);
+                            final List<String> selectedCategories = getSelectedCategories(jParams);
                             attachCategoryToResp(startingCategory, resp, root, jParams, selectedCategories);
                         }
                     }
@@ -182,22 +182,22 @@ public class GetCategoryChildren extends AbstractCategoryAction {
                 }
             }
 
-            final List children = startingCategory.getChildCategories(currentUser);
+            final List<Category> children = startingCategory.getChildCategories(currentUser);
 
             // Let us sort the categories in ascending order comparing their title in the current language
-            final TreeSet allCategories = new TreeSet(new NumericStringComparator());
+            final TreeSet<Category> allCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
             allCategories.addAll(children);
 
-            final Iterator ite = allCategories.iterator();
+            final Iterator<Category> ite = allCategories.iterator();
             if (isAdmincontext) {
                 while (ite.hasNext()) {
-                    attachCategoryforAdminToResp((Category) ite.next(), resp, root, currentUser, jParams,
+                    attachCategoryforAdminToResp(ite.next(), resp, root, currentUser, jParams,
                             request, response);
                 }
 
             } else if (isMovecontext) {
                 while (ite.hasNext()) {
-                    final Category cat = (Category) ite.next();
+                    final Category cat = ite.next();
                     attachCategoryToResp(cat, resp, root, jParams,
                             !cat.getACL().getPermission(cat, cat, currentUser, JahiaBaseACL.WRITE_RIGHTS));
                 }
@@ -206,31 +206,31 @@ public class GetCategoryChildren extends AbstractCategoryAction {
                 // we are dealing with portlet
                 logger.debug("Dealing with a portlet.");
                 while (ite.hasNext()) {
-                    final List selectedCategories = getSelectedPortletsCategories(jParams);
-                    final List categoriesIsMultipleSrcList = getSelectedPortletsAllsourcesCategories(jParams);
-                    attachCategoryForPortletToResp((Category) ite.next(), resp, root, jParams, selectedCategories, categoriesIsMultipleSrcList);
+                    final List<String> selectedCategories = getSelectedPortletsCategories(jParams);
+                    final List<String> categoriesIsMultipleSrcList = getSelectedPortletsAllsourcesCategories(jParams);
+                    attachCategoryForPortletToResp(ite.next(), resp, root, jParams, selectedCategories, categoriesIsMultipleSrcList);
                 }
 
             } else if (isSelectEngine) {
-                Map datamap = (Map) request.getSession().getAttribute(CategoriesSelect_Engine.ENGINE_NAME + ".categoriesDataMap." + contextId);
-                final List selectedCategories = (List) datamap.get("defaultSelectedCategories");
+                Map<String, List<String>> datamap = (Map<String, List<String>>) request.getSession().getAttribute(CategoriesSelect_Engine.ENGINE_NAME + ".categoriesDataMap." + contextId);
+                final List<String> selectedCategories = datamap.get("defaultSelectedCategories");
 
                 while (ite.hasNext()) {
-                    attachCategoryForSelectEngineToResp((Category) ite.next(), resp, root, jParams, selectedCategories, contextId);
+                    attachCategoryForSelectEngineToResp(ite.next(), resp, root, jParams, selectedCategories, contextId);
                 }
             } else {
                 if (objectKey.startsWith("/")) {
                     // we are dealing with a DAV resource
                     while (ite.hasNext()) {
-                        final List selectedCategories = (List) request.getSession().getAttribute(
+                        final List<String> selectedCategories = (List<String>) request.getSession().getAttribute(
                                 TableEntry.javascriptDecode(objectKey) + Category_Field.SELECTEDCATEGORIES_ENGINEMAPKEY);
-                        attachCategoryToResp((Category) ite.next(), resp, root, jParams, selectedCategories);
+                        attachCategoryToResp(ite.next(), resp, root, jParams, selectedCategories);
                     }
                 } else {
                     // we are dealing with a JahiaObject
                     logger.debug("Dealing with a JahiaObject");
                     while (ite.hasNext()) {
-                        attachCategoryToResp((Category) ite.next(), resp, root, jParams,
+                        attachCategoryToResp(ite.next(), resp, root, jParams,
                                 getSelectedCategories(jParams));
                     }
 
@@ -245,30 +245,30 @@ public class GetCategoryChildren extends AbstractCategoryAction {
         return null;
     }
 
-    protected List getSelectedCategories(final ProcessingContext jParams) throws JahiaException, ClassNotFoundException {
+    protected List<String> getSelectedCategories(final ProcessingContext jParams) throws JahiaException, ClassNotFoundException {
         final SessionState session = jParams.getSessionState();
-        final Map engineMap = (Map) session.getAttribute("jahia_session_engineMap");
+        final Map<Object, Object> engineMap = (Map<Object, Object>) session.getAttribute("jahia_session_engineMap");
         if (engineMap != null) {
             final JahiaField theField = (JahiaField) engineMap.get("theField");
             if (theField != null) {
-                return (List) engineMap.get(theField.getDefinition().getName() + Category_Field.SELECTEDCATEGORIES_ENGINEMAPKEY);
+                return (List<String>) engineMap.get(theField.getDefinition().getName() + Category_Field.SELECTEDCATEGORIES_ENGINEMAPKEY);
             }
         }
-        return new ArrayList();
+        return new ArrayList<String>();
     }
 
-    protected List getSelectedPortletsCategories(final ProcessingContext jParams) {
-        List result = (List) jParams.getSessionState().getAttribute("org.jahia.engines.applications.ManageApplicationCategoriesEngine.categoriesKeyList");
+    protected List<String> getSelectedPortletsCategories(final ProcessingContext jParams) {
+        List<String> result = (List<String>) jParams.getSessionState().getAttribute("org.jahia.engines.applications.ManageApplicationCategoriesEngine.categoriesKeyList");
         if (result == null) {
-            return new ArrayList();
+            return new ArrayList<String>();
         }
         return result;
     }
 
-    protected List getSelectedPortletsAllsourcesCategories(final ProcessingContext jParams) {
-        List result = (List) jParams.getSessionState().getAttribute("org.jahia.engines.applications.ManageApplicationCategoriesEngine.allSourcesCategoriesKeyList");
+    protected List<String> getSelectedPortletsAllsourcesCategories(final ProcessingContext jParams) {
+        List<String> result = (List<String>) jParams.getSessionState().getAttribute("org.jahia.engines.applications.ManageApplicationCategoriesEngine.allSourcesCategoriesKeyList");
         if (result == null) {
-            return new ArrayList();
+            return new ArrayList<String>();
         }
         return result;
     }

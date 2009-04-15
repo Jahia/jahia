@@ -43,6 +43,7 @@ import javax.servlet.jsp.JspException;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class BoxListTag extends ContainerListTag {
     protected int pageLevel = -1;
     protected int pageID = -1;

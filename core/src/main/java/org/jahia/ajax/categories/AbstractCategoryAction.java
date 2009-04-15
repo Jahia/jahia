@@ -113,7 +113,7 @@ public abstract class AbstractCategoryAction extends AjaxAction {
                                         final Document resp,
                                         final Element root,
                                         final ProcessingContext jParams,
-                                        final List selectedCategories) {
+                                        final List<String> selectedCategories) {
 
         logger.debug("attachCategoryToResp - selectedCategories: " + selectedCategories);
         final String id = cat.getObjectKey().getIDInType();
@@ -141,7 +141,7 @@ public abstract class AbstractCategoryAction extends AjaxAction {
                                         final Document resp,
                                         final Element root,
                                         final ProcessingContext jParams,
-                                        final List selectedCategories,
+                                        final List<String> selectedCategories,
                                         String contextId
     ) {
 
@@ -171,8 +171,8 @@ public abstract class AbstractCategoryAction extends AjaxAction {
                                                   final Document resp,
                                                   final Element root,
                                                   final ProcessingContext jParams,
-                                                  final List selectedCategories,
-                                                  final List categoriesIsMultipleSrcList) {
+                                                  final List<String> selectedCategories,
+                                                  final List<String> categoriesIsMultipleSrcList) {
 
         logger.debug("attachCategoryForPortletToResp - selectedCategories: " + selectedCategories);
         final String id = cat.getObjectKey().getIDInType();

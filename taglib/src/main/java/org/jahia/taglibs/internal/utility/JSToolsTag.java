@@ -62,6 +62,7 @@ import org.jahia.utils.JahiaConsole;
  *         <p/>
  *         </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class JSToolsTag extends AbstractJahiaTag {
 
     public int doStartTag() {

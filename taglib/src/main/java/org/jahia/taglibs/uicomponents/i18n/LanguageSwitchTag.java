@@ -53,6 +53,7 @@ import java.util.*;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class LanguageSwitchTag extends AbstractJahiaTag {
 
     private static final transient org.apache.log4j.Logger logger =
@@ -162,14 +163,11 @@ public class LanguageSwitchTag extends AbstractJahiaTag {
             }
 
             final List<String> currentCodes = new ArrayList<String>(languageSettings.size());
-            final TreeSet orderedLangs;
             final JahiaPage currentPage = jData.page();
             if (order == null || order.length() == 0 || JAHIA_ADMIN_RANKING.equals(order)) {
-                orderedLangs = new TreeSet<SiteLanguageSettings>(languageSettingsComparator);
+                final TreeSet<SiteLanguageSettings> orderedLangs = new TreeSet<SiteLanguageSettings>(languageSettingsComparator);
                 orderedLangs.addAll(languageSettings);
-                final Iterator iterator = orderedLangs.iterator();
-                while (iterator.hasNext()) {
-                    final SiteLanguageSettings settings = (SiteLanguageSettings) iterator.next();
+                for (final SiteLanguageSettings settings : orderedLangs) {
                     final String languageCode = settings.getCode();
                      if (jData.gui().isNormalMode() && ! currentPage.hasEntry(ContentPage.ACTIVE_PAGE_INFOS, languageCode)) {
                         // Only add the language in Live mode if the current page has an active verison in live mode for that language
@@ -181,7 +179,7 @@ public class LanguageSwitchTag extends AbstractJahiaTag {
             } else {
                 final List<String> languageCodes = toListOfTokens(order, ",");
                 languageCodesComparator.setPattern(languageCodes);
-                orderedLangs = new TreeSet<String>(languageCodesComparator);
+                final TreeSet<String> orderedLangs = new TreeSet<String>(languageCodesComparator);
                 final Set<String> codes = new HashSet<String>(languageSettings.size());
                 for (final Object lang : languageSettings) {
                     final SiteLanguageSettings settings = (SiteLanguageSettings) lang;
@@ -194,9 +192,8 @@ public class LanguageSwitchTag extends AbstractJahiaTag {
                     codes.add(languageCode);
                 }
                 orderedLangs.addAll(codes);
-                final Iterator iterator = orderedLangs.iterator();
-                while (iterator.hasNext()) {
-                    currentCodes.add((String) iterator.next());
+                for (String code : orderedLangs) {
+                    currentCodes.add(code);
                 }
             }
 

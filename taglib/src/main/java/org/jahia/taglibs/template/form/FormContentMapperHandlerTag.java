@@ -140,6 +140,7 @@ import java.util.Set;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class FormContentMapperHandlerTag extends AbstractJahiaTag {
 
     private static final org.apache.log4j.Logger logger =
@@ -281,7 +282,7 @@ public class FormContentMapperHandlerTag extends AbstractJahiaTag {
         container.setLanguageCode(jData.getProcessingContext().getLocale().toString());
         container.fieldsStructureCheck(jData.getProcessingContext());
 
-        final Iterator fieldDefEnum = containerDef.getStructure(
+        final Iterator<JahiaContainerStructure> fieldDefEnum = containerDef.getStructure(
                 JahiaContainerStructure.JAHIA_FIELD);
         while (fieldDefEnum.hasNext()) {
             final JahiaContainerStructure curStructureElem = (JahiaContainerStructure) fieldDefEnum.next();

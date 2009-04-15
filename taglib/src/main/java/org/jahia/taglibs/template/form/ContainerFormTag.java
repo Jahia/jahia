@@ -10,14 +10,9 @@ import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.SelectorType;
-import org.jahia.services.metadata.MetadataBaseService;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.api.Constants;
-import org.jahia.registries.JahiaContainerDefinitionsRegistry;
-import org.jahia.content.ContentObject;
 import org.jahia.operations.valves.FormValve;
-import org.jahia.engines.selectdatasource.SelectDataSource_Engine;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -27,9 +22,6 @@ import javax.jcr.Value;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.util.*;
-import java.lang.reflect.Array;
-
-import com.google.gwt.user.client.ui.HasAlignment;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,6 +30,7 @@ import com.google.gwt.user.client.ui.HasAlignment;
  * Time: 5:44:48 PM
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class ContainerFormTag extends AbstractJahiaTag {
 
     private static Logger logger = Logger.getLogger(JahiaConsole.class);

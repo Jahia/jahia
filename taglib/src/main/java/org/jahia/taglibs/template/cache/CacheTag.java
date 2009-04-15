@@ -46,6 +46,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.cache.ContainerHTMLCache;
 import org.jahia.services.cache.ContainerHTMLCacheEntry;
+import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -63,6 +64,7 @@ import java.util.Set;
  * Created by IntelliJ IDEA. User: rincevent Date: 12 juin 2008 Time: 09:01:00 To change this template use File |
  * Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class CacheTag extends AbstractJahiaTag {
     private static transient Category logger = Logger.getLogger(CacheTag.class);
     private String cacheKey;
@@ -87,13 +89,13 @@ public class CacheTag extends AbstractJahiaTag {
             if(cacheKey== null || "".equals(cacheKey.trim())) throw new JspException("None of cacheKey or cacheKeyName, cacheKeyProperty, cacheKeyScope is filled");
             ServletRequest request = pageContext.getRequest();
             jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ContainerHTMLCache cacheInstance2 =
+            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
                     ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context2 = jData.getProcessingContext();
             // Let's build the cache key
             String cacheKey2 = buildCacheKey(context2);
             // Try to find the entry in cache
-            final CacheEntry htmlCacheEntry2 =
+            final CacheEntry<ContainerHTMLCacheEntry> htmlCacheEntry2 =
                     cacheInstance2.getCacheEntryFromContainerCache(null, context2, cacheKey2, false, 0, null, null);
             // This will containes the html to output in the skeleton (HTML Page)
             String htmlOutput2;
@@ -152,7 +154,7 @@ public class CacheTag extends AbstractJahiaTag {
         try {
             ServletRequest request = pageContext.getRequest();
             jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ContainerHTMLCache cacheInstance2 =
+            final ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cacheInstance2 =
                     ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
             final ProcessingContext context2 = jData.getProcessingContext();
             // Let's build the cache key

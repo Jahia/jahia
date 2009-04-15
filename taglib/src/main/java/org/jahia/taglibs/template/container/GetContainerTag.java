@@ -34,7 +34,6 @@
 package org.jahia.taglibs.template.container;
 
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.template.containerlist.ContainerListTag;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRJahiaContentNode;
 import org.jahia.services.content.JCRStoreService;
@@ -45,13 +44,13 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Allows to retreive a specific container displayed on the current page, knowing its container id
  *
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class GetContainerTag extends AbstractJahiaTag implements ContainerSupport {
 
     private static transient final Logger logger = Logger.getLogger(GetContainerTag.class);

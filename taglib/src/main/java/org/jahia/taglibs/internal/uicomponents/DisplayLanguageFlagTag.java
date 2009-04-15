@@ -71,8 +71,6 @@
 
 package org.jahia.taglibs.internal.uicomponents;
 
-import org.jahia.data.JahiaData;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -139,6 +137,7 @@ import java.util.Locale;
    &nbsp;&nbsp;                             alt=\"&lt;%=languageName%>\"/&gt;
  * </attriInfo>"
  */
+@SuppressWarnings("serial")
 public class DisplayLanguageFlagTag extends AbstractJahiaTag {
 
     /**
@@ -213,8 +212,6 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
         // @todo FIXME : This code is repeated in a lot of button taglibs
         HttpServletRequest request = (HttpServletRequest) pageContext.
                                      getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute(
-            "org.jahia.data.JahiaData");
 
         // Produce the HTML code
         try {

@@ -123,6 +123,7 @@ import java.io.IOException;
  * &nbsp;&nbsp;&nbsp;&nbsp; &lt;/template:template&gt;
  * </attriInfo>
  */
+@SuppressWarnings("serial")
 public class TemplateHeaderTag extends AbstractJahiaTag {
 
     private final static Logger logger = Logger.getLogger(TemplateHeaderTag.class);

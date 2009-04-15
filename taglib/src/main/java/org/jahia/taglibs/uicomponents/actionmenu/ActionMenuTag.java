@@ -47,6 +47,7 @@ import java.io.IOException;
  * @author rfelden
  * @version 22 janv. 2008 - 15:40:51
  */
+@SuppressWarnings("serial")
 public class ActionMenuTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(ActionMenuTag.class);

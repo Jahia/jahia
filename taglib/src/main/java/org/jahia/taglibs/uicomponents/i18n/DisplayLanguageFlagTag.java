@@ -47,6 +47,7 @@ import java.io.IOException;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class DisplayLanguageFlagTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(DisplayLanguageFlagTag.class);

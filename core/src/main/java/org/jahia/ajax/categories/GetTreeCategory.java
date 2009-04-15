@@ -85,7 +85,7 @@ public class GetTreeCategory extends AbstractCategoryAction {
             final Element root = resp.createElement("GetCategoryTreeResp");
             if (category != null) {
                 attachCategoryToResp(category, resp, root, jParams, !category.getACL().getPermission(category, category, currentUser, JahiaBaseACL.WRITE_RIGHTS));
-                final List result = new ArrayList();
+                final List<Category> result = new ArrayList<Category>();
                 Category.getAllChildrenCategoriesFrom(category, currentUser, result);
                 for (int i = 0; i < result.size(); i++) {
                     final Category cat = (Category) result.get(i);

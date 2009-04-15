@@ -47,11 +47,12 @@ import java.util.Iterator;
  * 
  * @author Sergiy Shyrkov
  */
+@SuppressWarnings("serial")
 public class NodeTypesTag extends AbstractJahiaTag {
 
     private String id = "type";
 
-    private Iterator<ExtendedNodeType> typeIterator;
+    private Iterator<?> typeIterator;
 
     private String baseType = null;
 

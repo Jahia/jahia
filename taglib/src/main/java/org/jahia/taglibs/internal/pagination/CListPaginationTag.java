@@ -170,12 +170,13 @@ import java.util.Iterator;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class CListPaginationTag extends AbstractJahiaTag {
 
     private JahiaContainerListPagination cPagination = null;
     private int pageNumber = 0;
     private boolean isCurrentPage = false;
-    private Iterator iterator;
+    private Iterator<?> iterator;
 
     private int nbStepPerPage = -1; // by default, display all page step.
     private boolean skipOnePageOnly = true; // by default skip displaying pagination if there is only one page

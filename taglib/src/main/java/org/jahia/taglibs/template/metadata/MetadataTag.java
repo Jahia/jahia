@@ -49,6 +49,7 @@ import java.text.SimpleDateFormat;
 /**
  * @author Cédric Mailleux
  */
+@SuppressWarnings("serial")
 public class MetadataTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(MetadataTag.class);

@@ -50,6 +50,7 @@ import java.io.IOException;
  * Time: 17:46:51
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class DropDownFromBundleFileTag extends AbstractJahiaTag {
     private String bundleName;
 

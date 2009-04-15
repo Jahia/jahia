@@ -46,6 +46,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 /**
  * @author Werner Assek
  */
+@SuppressWarnings("serial")
 public class LogButtonTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(LogButtonTag.class);

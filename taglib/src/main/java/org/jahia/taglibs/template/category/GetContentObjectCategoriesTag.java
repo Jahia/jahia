@@ -39,12 +39,12 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.data.beans.CategoryBean;
 
 import javax.servlet.jsp.PageContext;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class GetContentObjectCategoriesTag extends AbstractJahiaTag {
 
     private static final transient org.apache.log4j.Logger logger =
@@ -75,18 +75,16 @@ public class GetContentObjectCategoriesTag extends AbstractJahiaTag {
             final Set<Category> categories = Category.getObjectCategories(key);
             if (asSet) {
                 if (valueID != null && valueID.length() > 0 && categories != null) {
-                    final Set categoryBeans = CategoryBean.getCategoryBeans(categories);
+                    final Set<CategoryBean> categoryBeans = CategoryBean.getCategoryBeans(categories);
                     pageContext.setAttribute(valueID, categoryBeans);
                 }
             } else {
                 final StringBuffer objectCategories = new StringBuffer();
-                final Iterator ite = categories.iterator();
-                while (ite.hasNext()) {
-                    final Category curCategory = (Category) ite.next();
-                    objectCategories.append(curCategory.getKey());
-                    if (ite.hasNext()) {
+                for (final Category curCategory : categories) {
+                    if (objectCategories.length() > 0) {
                         objectCategories.append("$$$");
-                    }
+                    }                    
+                    objectCategories.append(curCategory.getKey());
                 }
                 if (valueID != null && valueID.length() > 0) {
                     if (objectCategories.length() > 0) {

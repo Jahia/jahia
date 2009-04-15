@@ -44,7 +44,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
 
 /**
@@ -54,6 +53,7 @@ import java.util.MissingResourceException;
  * Time: 11:43:22
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class LayoutManagerAreaTag extends AbstractJahiaTag {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LayoutManagerAreaTag.class);
     private String width;

@@ -67,6 +67,7 @@ import com.sun.syndication.io.SyndFeedOutput;
  * 
  * @author Sergiy Shyrkov
  */
+@SuppressWarnings("serial")
 public class RssFeedViewTag extends AbstractJahiaTag {
 
     private static final String DEF_TYPE = "rss_2.0";

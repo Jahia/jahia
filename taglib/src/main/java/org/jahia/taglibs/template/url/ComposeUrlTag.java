@@ -45,6 +45,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class ComposeUrlTag extends AbstractJahiaTag {
 
     private static final transient org.apache.log4j.Logger logger =

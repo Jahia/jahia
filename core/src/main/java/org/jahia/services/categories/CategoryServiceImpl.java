@@ -89,7 +89,7 @@ public class CategoryServiceImpl extends CategoryService {
     // messages we use the flush() event.
     // Cache that holds the last modification information on all categories
     public static final String CATEGORY_LASTMODIF_STATUS_CACHE = "CategoryLastModifStatusCache";
-    private Cache lastModifCache = null;
+    private Cache<?, ?> lastModifCache = null;
     private Date lastModifDate = null;
 
     private static final String ROOT_CATEGORY_KEY = "root";
@@ -199,7 +199,7 @@ public class CategoryServiceImpl extends CategoryService {
 
         List<ObjectKey> returnList = new ArrayList<ObjectKey>();
         for (int i = 0; i < list.size(); i++) {
-            Object[] jahiaFieldsData = (Object[]) list.get(i);
+            Object[] jahiaFieldsData = list.get(i);
             ContentObjectKey objectKey = null;
             final int metadataOwnerId = ((Integer) jahiaFieldsData[0]).intValue();
             final String metadataOwnerType = (String) jahiaFieldsData[1];
@@ -457,7 +457,7 @@ public class CategoryServiceImpl extends CategoryService {
             categories.add(cat);
         }
         final TreeSet<Category> tmp = new TreeSet<Category>(
-                new NumericStringComparator());
+                new NumericStringComparator<Category>());
         tmp.addAll(categories);
         final List<Category> result = new ArrayList<Category>(values.size());
         final Iterator<Category> tmpIterator = tmp.iterator();
@@ -482,7 +482,7 @@ public class CategoryServiceImpl extends CategoryService {
             categories.add(cat);
         }
         final TreeSet<Category> tmp = new TreeSet<Category>(
-                new NumericStringComparator());
+                new NumericStringComparator<Category>());
         tmp.addAll(categories);
         final List<Category> result = new ArrayList<Category>(values.size());
         final Iterator<Category> tmpIterator = tmp.iterator();

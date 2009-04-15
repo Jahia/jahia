@@ -127,17 +127,18 @@ import java.util.List;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class TreeTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(TreeTag.class);
 
     private String treeName = null;
-    private Iterator listIterator = null;
+    private Iterator<DefaultMutableTreeNode> listIterator = null;
     private Object userObject = null;
     private boolean initialized = false;
     private JTree tree = null;
-    private List flatTree = null;
+    private List<DefaultMutableTreeNode> flatTree = null;
     private String userObjectID = null;
     private int nodeCounter = 0;
     private String actionURL = null;
@@ -437,7 +438,7 @@ public class TreeTag extends AbstractJahiaTag {
 
                 TreePath selectedNodePath = tree.getSelectionPath();
                 if (selectedNodeIndexStr != null) {
-                    List nodeList =
+                    List<DefaultMutableTreeNode> nodeList =
                             GUITreeTools.getFlatTree(tree, rootNode);
                     if (selectedNodeIndex > (nodeList.size() - 1)) {
                         selectedNodeIndex = 0;
@@ -600,14 +601,13 @@ public class TreeTag extends AbstractJahiaTag {
 
     private void startNextNode(JspWriter out, String actionURL)
             throws IOException {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) listIterator.
-                next();
+        DefaultMutableTreeNode node = listIterator.next();
 
         out.println("<tr class=\"sitemap1\">");
         out.println("  <td>&nbsp;</td>");
         out.print("  <td class=\"text\" nowrap>");
 
-        List verticalLineCells = GUITreeTools.
+        List<Integer> verticalLineCells = GUITreeTools.
                 getLevelsWithVerticalLine(node);
         int nodeLevel = node.getLevel();
         for (int level = 0; level < nodeLevel; level++) {

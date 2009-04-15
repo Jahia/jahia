@@ -35,7 +35,6 @@ package org.jahia.taglibs.template.category;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
@@ -78,6 +77,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
  * </attriInfo>"
  */
 
+@SuppressWarnings("serial")
 public class CategoriesByPropertiesTag extends AbstractJahiaTag {
 
     private String propertyName = null;
@@ -155,8 +155,8 @@ public class CategoriesByPropertiesTag extends AbstractJahiaTag {
             p = jData.getProcessingContext().getUser();
         }
 
-        List foundCategories = new ArrayList();
-        List foundCategoryBeans = new ArrayList();
+        List<Category> foundCategories = new ArrayList<Category>();
+        List<CategoryBean> foundCategoryBeans = new ArrayList<CategoryBean>();
 
         if (propertyNameRef != null) {
             propertyName = (String) pageContext.findAttribute(propertyNameRef);
@@ -173,9 +173,7 @@ public class CategoriesByPropertiesTag extends AbstractJahiaTag {
         foundCategories = Category.findCategoriesByPropNameAndValue(
             propertyName, propertyValue, p);
 
-        Iterator foundCategoriesIter = foundCategories.iterator();
-        while (foundCategoriesIter.hasNext()) {
-            Category curCategory = (Category) foundCategoriesIter.next();
+        for (Category curCategory : foundCategories) {
             CategoryBean curCategoryBean = new CategoryBean(curCategory,
                 jData.getProcessingContext());
             foundCategoryBeans.add(curCategoryBean);

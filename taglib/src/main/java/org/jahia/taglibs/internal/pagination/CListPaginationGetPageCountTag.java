@@ -39,6 +39,7 @@ import org.jahia.utils.JahiaConsole;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class CListPaginationGetPageCountTag extends AbstractJahiaTag {
 
     private static final org.apache.log4j.Logger logger =

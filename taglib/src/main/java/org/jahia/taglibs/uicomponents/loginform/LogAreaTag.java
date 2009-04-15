@@ -47,6 +47,7 @@ import java.io.IOException;
 /**
  * @author Werner Assek
  */
+@SuppressWarnings("serial")
 public class LogAreaTag extends AbstractJahiaTag {
     private static final transient Logger logger = Logger.getLogger(LogAreaTag.class);
     public static final String LOGIN_TAG_PARAMETER = "loginFromTag";

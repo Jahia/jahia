@@ -34,7 +34,7 @@
 package org.jahia.utils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +43,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.jahia.params.ProcessingContext;
 
 
@@ -68,16 +67,16 @@ public class GUITreeTools {
      * @return an List containing DefaultMutableTreeNode objects that
      * represent a flat view of the tree in it's current visible state
      */
-    public static List getFlatTree(JTree tree, DefaultMutableTreeNode node){
-       List values = new ArrayList();
+    public static List<DefaultMutableTreeNode> getFlatTree(JTree tree, DefaultMutableTreeNode node){
+       List<DefaultMutableTreeNode> values = new ArrayList<DefaultMutableTreeNode>();
        if ( node != null ){
            values.add(node);
            if ( tree.isExpanded(new TreePath(node.getPath())) ){
-               Iterator childrens = new EnumerationIterator(node.children());
-               while( childrens.hasNext() ){
+               Enumeration<?> childrens = node.children();
+               while( childrens.hasMoreElements() ){
                    DefaultMutableTreeNode childNode =
-                           (DefaultMutableTreeNode)childrens.next();
-                   List childDescendants = getFlatTree(tree,childNode);
+                           (DefaultMutableTreeNode)childrens.nextElement();
+                   List<DefaultMutableTreeNode> childDescendants = getFlatTree(tree,childNode);
                    values.addAll(childDescendants);
                }
            }
@@ -91,8 +90,8 @@ public class GUITreeTools {
      * which we should render a vertical line to connect a child node to its
      * parent.
      */
-    public static List getLevelsWithVerticalLine(DefaultMutableTreeNode node){
-        List values = new ArrayList();
+    public static List<Integer> getLevelsWithVerticalLine(DefaultMutableTreeNode node){
+        List<Integer> values = new ArrayList<Integer>();
         TreeNode[] treeNodes = node.getPath();
         for( int i=0; i<treeNodes.length; i++ ){
             DefaultMutableTreeNode n = (DefaultMutableTreeNode)treeNodes[i];
@@ -161,7 +160,7 @@ public class GUITreeTools {
             DefaultMutableTreeNode rootNode =
                     (DefaultMutableTreeNode)tree.getModel().getRoot();
             if ( rootNode != null ){
-                List nodeList =
+                List<DefaultMutableTreeNode> nodeList =
                         GUITreeTools.getFlatTree(tree,rootNode);
                 DefaultMutableTreeNode node = null;
                 if ((treeOperation != null) && (nodeIndex != null)) {
@@ -195,10 +194,10 @@ public class GUITreeTools {
         if ( !node.isLeaf() || node.children().hasMoreElements() ){
             tree.expandPath(new TreePath(node.getPath()));
         }
-        Iterator children = new EnumerationIterator(node.children());
+        Enumeration<?> children = node.children();
         DefaultMutableTreeNode childNode = null;
-        while( children.hasNext() ){
-            childNode = (DefaultMutableTreeNode)children.next();
+        while( children.hasMoreElements() ){
+            childNode = (DefaultMutableTreeNode)children.nextElement();
             expandAllPath(tree,childNode);
         }
     }

@@ -35,7 +35,6 @@ package org.jahia.taglibs.uicomponents.loginform;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
-import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +56,7 @@ import java.io.IOException;
  * &nbsp;&nbsp; styleClass=\"cssClass\" /&gt; <br>
  * <br>
  */
+@SuppressWarnings("serial")
 public class LogUserNameInputTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(LogUserNameInputTag.class);
@@ -101,7 +101,6 @@ public class LogUserNameInputTag extends AbstractJahiaTag {
         final JspWriter out = pageContext.getOut();
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        final ProcessingContext jParams = jData.getProcessingContext();
         if (!jData.gui().isLogged()) {
             try {
                 final String label = getMessage(labelKey, "Username");

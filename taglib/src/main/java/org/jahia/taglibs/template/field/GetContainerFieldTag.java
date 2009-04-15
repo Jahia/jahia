@@ -40,6 +40,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class GetContainerFieldTag extends AbstractJahiaTag {
 
     private String valueID;

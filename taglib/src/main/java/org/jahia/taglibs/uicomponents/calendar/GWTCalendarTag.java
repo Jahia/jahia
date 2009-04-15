@@ -34,7 +34,6 @@
 package org.jahia.taglibs.uicomponents.calendar;
 
 import org.apache.log4j.Logger;
-import org.jahia.data.JahiaData;
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
 
@@ -48,6 +47,7 @@ import java.util.Random;
  * Time: 4:08:40 PM
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class GWTCalendarTag extends AbstractJahiaTag {
     private static transient final Logger logger = Logger.getLogger(GWTCalendarTag.class);
 
@@ -75,7 +75,6 @@ public class GWTCalendarTag extends AbstractJahiaTag {
     public int doStartTag() {
         final StringBuffer buf = new StringBuffer();
         final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
 
         buf.append("<div ");
         buf.append("class=\"");

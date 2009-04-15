@@ -47,6 +47,7 @@ import javax.servlet.jsp.JspException;
  * Time: 10:58:43
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class NodeTypeTag extends AbstractJahiaTag {
     private String ntname = "file";
 

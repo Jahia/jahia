@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Xavier Lawrence
  */
+@SuppressWarnings("serial")
 public class AbstractFieldTag extends AbstractJahiaTag {
 
     private static final transient Logger logger = Logger.getLogger(AbstractFieldTag.class);

@@ -63,6 +63,7 @@ import org.jahia.exceptions.JahiaException;
  * </attriInfo>"
  *
  */
+@SuppressWarnings("serial")
 public class RelativeContainerListTag extends ContainerListTag {
 
     private int levelNb = 0;

@@ -61,6 +61,7 @@ import java.util.Calendar;
  * Time: 18:26:25
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class PropertyValueTag extends TagSupport {
     
     private static final transient Logger logger = Logger

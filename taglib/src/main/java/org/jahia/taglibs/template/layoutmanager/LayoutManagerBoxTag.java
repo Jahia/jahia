@@ -47,6 +47,7 @@ import java.io.IOException;
  * Time: 11:44:40
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("serial")
 public class LayoutManagerBoxTag extends AbstractJahiaTag {
     private static final transient Logger logger = Logger.getLogger(LayoutManagerBoxTag.class);
     

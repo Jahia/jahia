@@ -151,7 +151,7 @@
 
     <function>
         <description>remove duplicate occurences in a string</description>
-        <name>removeDupilcates</name>
+        <name>removeDuplicates</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
         <function-signature>java.lang.String removeDuplicates(java.lang.String, java.lang.String)
         </function-signature>

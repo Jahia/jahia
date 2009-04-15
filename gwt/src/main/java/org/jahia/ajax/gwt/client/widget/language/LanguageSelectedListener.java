@@ -42,6 +42,4 @@ package org.jahia.ajax.gwt.client.widget.language;
  */
 public interface LanguageSelectedListener {
     public void onLanguageSelected(String languageSelected);
-
-    public void onWorkflowSelected (String text);
 }

@@ -38,8 +38,8 @@ import com.extjs.gxt.ui.client.widget.DataListItem;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.menu.Item;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.service.JahiaService;
@@ -59,38 +59,36 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
  */
 public class LanguageSwitcherProvider extends JahiaToolItemProvider {
     public Widget createWidget (GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public ToolItem createToolItem (GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
-        return new AdapterToolItem(new LanguageSwitcher(true, true, false,true, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
+        TextToolItem item = new TextToolItem("loading...") ;
+        item.setEnabled(false);
+        new LanguageSwitcher(true, true, false,true, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
             private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
             public void onLanguageSelected (String languageSelected) {
-//                Info.display("Language Selected Event", "The '{0}' button was clicked.", languageSelected);
                 jahiaServiceAsync.getLanguageURL(languageSelected,new AsyncCallback<String>() {
-                    public void onFailure (Throwable throwable) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
+                    public void onFailure (Throwable throwable) {}
 
                     public void onSuccess (String s) {
                         com.google.gwt.user.client.Window.Location.assign(s);
                     }
                 });
             }
-
-            public void onWorkflowSelected (String text) {}
-        }));
+        }).init(item);
+        return item ;
     }
 
     public Item createMenuItem (GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public DataListItem createDataListItem (DataList itemsList, GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public TabItem createTabItem (TabPanel tabPanel, GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup, GWTJahiaToolbarItem gwtToolbarItem) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 }

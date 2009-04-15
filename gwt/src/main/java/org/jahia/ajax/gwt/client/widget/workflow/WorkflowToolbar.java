@@ -48,7 +48,6 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLabel;
@@ -57,7 +56,6 @@ import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowServiceAsync;
 import org.jahia.ajax.gwt.client.widget.ReportGrid;
 import org.jahia.ajax.gwt.client.widget.WorkflowBatchViewer;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManager;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
@@ -88,7 +86,6 @@ public class WorkflowToolbar extends TopBar {
     private boolean actionsInitialized = false ;
 
     private String action = "";
-    private LanguageSwitcher languageSwitcher;
 
     public WorkflowToolbar() {
         m_component = new ToolBar() ;
@@ -119,40 +116,42 @@ public class WorkflowToolbar extends TopBar {
             }
         });
         m_component.add(addToBatch) ;
-        languageSwitcher = new LanguageSwitcher(true, true, false,false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
+        LanguageSwitcher languageSwitcher = new LanguageSwitcher(true, true, false, false, JahiaGWTParameters.getLanguage(), false, new LanguageSelectedListener() {
             private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
-            public void onLanguageSelected (String languageSelected) {                
-                jahiaServiceAsync.changeLocaleForAllPagesAndEngines(languageSelected,new AsyncCallback() {
-                    public void onFailure (Throwable throwable) {
-                        //To change body of implemented methods use File | Settings | File Templates.
+
+            public void onLanguageSelected(String languageSelected) {
+                jahiaServiceAsync.changeLocaleForAllPagesAndEngines(languageSelected, new AsyncCallback() {
+                    public void onFailure(Throwable throwable) {
                     }
 
-                    public void onSuccess (Object o) { // TODO chained rpc calls are ugly
+                    public void onSuccess(Object o) { // TODO chained rpc calls are ugly... well, not so bad after all
                         service.saveWorkflowManagerState(new GWTJahiaWorkflowManagerState(((WorkflowTable) getLinker().getTopRightObject()).getChecked(),
-                                                                                          ((WorkflowTable) getLinker().getTopRightObject()).getDisabledChecks(),
-                                                                                          ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(),
-                                                                                          batch),
-                                                         new AsyncCallback() {
-                                                             public void onFailure(Throwable throwable) {
-                                                                 Log.error(throwable.toString()) ;
-                                                             }
-                                                             public void onSuccess(Object o) {
-                                                                 GWTJahiaWorkflowElement selectedPage = (GWTJahiaWorkflowElement) getLinker().getTreeSelection() ;
-                                                                 if (selectedPage == null) {
-                                                                     Window.Location.reload();
-                                                                 } else {
-                                                                     String rawUrl = Window.Location.getHref().replace(Window.Location.getQueryString(), "") ;
-                                                                     Window.Location.replace(rawUrl + "?startpage=" + selectedPage.getObjectKey());
-                                                                 }
-                                                             }
-                                                         });
+                                ((WorkflowTable) getLinker().getTopRightObject()).getDisabledChecks(),
+                                ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(),
+                                batch),
+                                new AsyncCallback() {
+                                    public void onFailure(Throwable throwable) {
+                                        Log.error(throwable.toString());
+                                    }
+
+                                    public void onSuccess(Object o) {
+                                        GWTJahiaWorkflowElement selectedPage = (GWTJahiaWorkflowElement) getLinker().getTreeSelection();
+                                        if (selectedPage == null) {
+                                            Window.Location.reload();
+                                        } else {
+                                            String rawUrl = Window.Location.getHref().replace(Window.Location.getQueryString(), "");
+                                            Window.Location.replace(rawUrl + "?startpage=" + selectedPage.getObjectKey());
+                                        }
+                                    }
+                                });
                     }
                 });
             }
-
-            public void onWorkflowSelected (String text) {}
         });
-        m_component.add(new AdapterToolItem(languageSwitcher));
+        TextToolItem item = new TextToolItem("loading...") ;
+        item.setEnabled(false);
+        languageSwitcher.init(item);
+        m_component.add(item);
     }
 
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {

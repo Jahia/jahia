@@ -586,131 +586,6 @@ fm-globalMashupRepository {
     background-image: url( ../../../css/images/andromeda/icons/briefcase_view.png ) !important;
 }
 
-/* Flags */
-
-.flag_ar {
-    background-image: url( ../../../css/images/flags/ar_on.png ) !important;
-}
-.flag_be {
-    background-image: url( ../../../css/images/flags/be_on.png ) !important;
-}
-.flag_bg {
-    background-image: url( ../../../css/images/flags/bg_on.png ) !important;
-}
-.flag_ca {
-    background-image: url( ../../../css/images/flags/ca_on.png ) !important;
-}
-.flag_ch {
-    background-image: url( ../../../css/images/flags/ch_on.png ) !important;
-}
-.flag_cs {
-    background-image: url( ../../../css/images/flags/cs_on.png ) !important;
-}
-.flag_da {
-    background-image: url( ../../../css/images/flags/da_on.png ) !important;
-}
-.flag_de {
-    background-image: url( ../../../css/images/flags/de_on.png ) !important;
-}
-.flag_el {
-    background-image: url( ../../../css/images/flags/el_on.png ) !important;
-}
-.flag_en {
-    background-image: url( ../../../css/images/flags/en_on.png ) !important;
-}
-.flag_es {
-    background-image: url( ../../../css/images/flags/es_on.png ) !important;
-}
-.flag_et {
-    background-image: url( ../../../css/images/flags/et_on.png ) !important;
-}
-.flag_fi {
-    background-image: url( ../../../css/images/flags/fi_on.png ) !important;
-}
-.flag_fr {
-    background-image: url( ../../../css/images/flags/fr_on.png ) !important;
-}
-.flag_hi {
-    background-image: url( ../../../css/images/flags/hi_on.png ) !important;
-}
-.flag_hr {
-    background-image: url( ../../../css/images/flags/hr_on.png ) !important;
-}
-.flag_hu {
-    background-image: url( ../../../css/images/flags/hu_on.png ) !important;
-}
-.flag_is {
-    background-image: url( ../../../css/images/flags/is_on.png ) !important;
-}
-.flag_it {
-    background-image: url( ../../../css/images/flags/it_on.png ) !important;
-}
-.flag_iw {
-    background-image: url( ../../../css/images/flags/iw_on.png ) !important;
-}
-.flag_ja {
-    background-image: url( ../../../css/images/flags/ja_on.png ) !important;
-}
-.flag_ko {
-    background-image: url( ../../../css/images/flags/ko_on.png ) !important;
-}
-.flag_lt {
-    background-image: url( ../../../css/images/flags/lt_on.png ) !important;
-}
-.flag_lv {
-    background-image: url( ../../../css/images/flags/lv_on.png ) !important;
-}
-.flag_mk {
-    background-image: url( ../../../css/images/flags/mk_on.png ) !important;
-}
-.flag_nl {
-    background-image: url( ../../../css/images/flags/nl_on.png ) !important;
-}
-.flag_no {
-    background-image: url( ../../../css/images/flags/no_on.png ) !important;
-}
-.flag_pl {
-    background-image: url( ../../../css/images/flags/pl_on.png ) !important;
-}
-.flag_pt {
-    background-image: url( ../../../css/images/flags/pt_on.png ) !important;
-}
-.flag_ro {
-    background-image: url( ../../../css/images/flags/ro_on.png ) !important;
-}
-.flag_ru {
-    background-image: url( ../../../css/images/flags/ru_on.png ) !important;
-}
-.flag_sk {
-    background-image: url( ../../../css/images/flags/sk_on.png ) !important;
-}
-.flag_sl {
-    background-image: url( ../../../css/images/flags/sl_on.png ) !important;
-}
-.flag_sq {
-    background-image: url( ../../../css/images/flags/sq_on.png ) !important;
-}
-.flag_sr {
-    background-image: url( ../../../css/images/flags/sr_on.png ) !important;
-}
-.flag_sv {
-    background-image: url( ../../../css/images/flags/sv_on.png ) !important;
-}
-.flag_th {
-    background-image: url( ../../../css/images/flags/th_on.png ) !important;
-}
-.flag_tr {
-    background-image: url( ../../../css/images/flags/tr_on.png ) !important;
-}
-.flag_uk {
-    background-image: url( ../../../css/images/flags/uk_on.png ) !important;
-}
-.flag_us {
-    background-image: url( ../../../css/images/flags/us_on.png ) !important;
-}
-.flag_zh {
-    background-image: url( ../../../css/images/flags/zh_on.png ) !important;
-}
 
 /* content object icons */
 .icon-ContentPage {
@@ -1183,7 +1058,137 @@ html>body .gwt-versionComparison-versionsPanel {
 .gadget a img {
     margin-bottom: 5px;
 }
-
+/* Flags */
+.language-code-display {
+    margin:0.2em;
+    background-color:#eaeaea;
+    border: 1px solid #ccc;
+    padding:0 0.2em;
+    text-transform:uppercase
+}
+.flag_ar {
+    background-image: url( ../../../css/images/flags/ar_on.png ) !important;
+}
+.flag_be {
+    background-image: url( ../../../css/images/flags/be_on.png ) !important;
+}
+.flag_bg {
+    background-image: url( ../../../css/images/flags/bg_on.png ) !important;
+}
+.flag_ca {
+    background-image: url( ../../../css/images/flags/ca_on.png ) !important;
+}
+.flag_ch {
+    background-image: url( ../../../css/images/flags/ch_on.png ) !important;
+}
+.flag_cs {
+    background-image: url( ../../../css/images/flags/cs_on.png ) !important;
+}
+.flag_da {
+    background-image: url( ../../../css/images/flags/da_on.png ) !important;
+}
+.flag_de {
+    background-image: url( ../../../css/images/flags/de_on.png ) !important;
+}
+.flag_el {
+    background-image: url( ../../../css/images/flags/el_on.png ) !important;
+}
+.flag_en {
+    background-image: url( ../../../css/images/flags/en_on.png ) !important;
+}
+.flag_es {
+    background-image: url( ../../../css/images/flags/es_on.png ) !important;
+}
+.flag_et {
+    background-image: url( ../../../css/images/flags/et_on.png ) !important;
+}
+.flag_fi {
+    background-image: url( ../../../css/images/flags/fi_on.png ) !important;
+}
+.flag_fr {
+    background-image: url( ../../../css/images/flags/fr_on.png ) !important;
+}
+.flag_hi {
+    background-image: url( ../../../css/images/flags/hi_on.png ) !important;
+}
+.flag_hr {
+    background-image: url( ../../../css/images/flags/hr_on.png ) !important;
+}
+.flag_hu {
+    background-image: url( ../../../css/images/flags/hu_on.png ) !important;
+}
+.flag_is {
+    background-image: url( ../../../css/images/flags/is_on.png ) !important;
+}
+.flag_it {
+    background-image: url( ../../../css/images/flags/it_on.png ) !important;
+}
+.flag_iw {
+    background-image: url( ../../../css/images/flags/iw_on.png ) !important;
+}
+.flag_ja {
+    background-image: url( ../../../css/images/flags/ja_on.png ) !important;
+}
+.flag_ko {
+    background-image: url( ../../../css/images/flags/ko_on.png ) !important;
+}
+.flag_lt {
+    background-image: url( ../../../css/images/flags/lt_on.png ) !important;
+}
+.flag_lv {
+    background-image: url( ../../../css/images/flags/lv_on.png ) !important;
+}
+.flag_mk {
+    background-image: url( ../../../css/images/flags/mk_on.png ) !important;
+}
+.flag_nl {
+    background-image: url( ../../../css/images/flags/nl_on.png ) !important;
+}
+.flag_no {
+    background-image: url( ../../../css/images/flags/no_on.png ) !important;
+}
+.flag_pl {
+    background-image: url( ../../../css/images/flags/pl_on.png ) !important;
+}
+.flag_pt {
+    background-image: url( ../../../css/images/flags/pt_on.png ) !important;
+}
+.flag_ro {
+    background-image: url( ../../../css/images/flags/ro_on.png ) !important;
+}
+.flag_ru {
+    background-image: url( ../../../css/images/flags/ru_on.png ) !important;
+}
+.flag_sk {
+    background-image: url( ../../../css/images/flags/sk_on.png ) !important;
+}
+.flag_sl {
+    background-image: url( ../../../css/images/flags/sl_on.png ) !important;
+}
+.flag_sq {
+    background-image: url( ../../../css/images/flags/sq_on.png ) !important;
+}
+.flag_sr {
+    background-image: url( ../../../css/images/flags/sr_on.png ) !important;
+}
+.flag_sv {
+    background-image: url( ../../../css/images/flags/sv_on.png ) !important;
+}
+.flag_th {
+    background-image: url( ../../../css/images/flags/th_on.png ) !important;
+}
+.flag_tr {
+    background-image: url( ../../../css/images/flags/tr_on.png ) !important;
+}
+.flag_uk {
+    background-image: url( ../../../css/images/flags/uk_on.png ) !important;
+}
+.flag_us {
+    background-image: url( ../../../css/images/flags/us_on.png ) !important;
+}
+.flag_zh {
+    background-image: url( ../../../css/images/flags/zh_on.png ) !important;
+}
 .flag_japan {
 background-image: url(../../../css/images/flags/plain/flag_japan.png) !important;
 }

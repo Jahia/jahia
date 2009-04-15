@@ -34,15 +34,9 @@
 package org.jahia.ajax.gwt.client.widget.language;
 
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.menu.AdapterMenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguageSwitcherBean;
@@ -60,7 +54,7 @@ import java.util.Map;
  * Time: 15:46:46
  * To change this template use File | Settings | File Templates.
  */
-public class LanguageSwitcher extends HorizontalPanel {
+public class LanguageSwitcher {
     private JahiaServiceAsync service = JahiaService.App.getInstance();
     private boolean displayFlag;
     private boolean displayIsoCode;
@@ -70,10 +64,7 @@ public class LanguageSwitcher extends HorizontalPanel {
     private final boolean inEngine;
     private LanguageSelectedListener languageSelectedListener;
 
-    public LanguageSwitcher (final boolean displayFlag, final boolean displayLanguage, final boolean displayIsoCode,
-                             final boolean displayWorkflowStates, final String currentLanguage,
-                             boolean inEngine, final LanguageSelectedListener languageSelectedListener) {
-        super();
+    public LanguageSwitcher(final boolean displayFlag, final boolean displayLanguage, final boolean displayIsoCode, final boolean displayWorkflowStates, final String currentLanguage, boolean inEngine, final LanguageSelectedListener languageSelectedListener) {
         this.displayFlag = displayFlag;
         this.displayIsoCode = displayIsoCode;
         this.displayLanguage = displayLanguage;
@@ -83,131 +74,39 @@ public class LanguageSwitcher extends HorizontalPanel {
         this.languageSelectedListener = languageSelectedListener;
     }
 
-    @Override
-    protected void beforeRender () {
-        init();
-        super.beforeRender();
-    }
-
-    public void init () {
-        final SelectionListener languageListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected (ComponentEvent ce) {
-                Component component = ce.component;
-                String text;
-                if (component instanceof Button) {
-                    Button btn = (Button) component;
-                    text = btn.getData(btn.getText());
-                } else {
-                    MenuItem menuItem = (MenuItem) ((MenuEvent) ce).item;
-                    text = menuItem.getData(menuItem.getText());
-                }
-                languageSelectedListener.onLanguageSelected(text);
-            }
-        };
-        final SelectionListener workflowListener = new SelectionListener<ComponentEvent>() {
-            public void componentSelected (ComponentEvent ce) {
-                Component component = ce.component;
-                String text="";
-                if (component instanceof IconButton) {
-                    IconButton btn = (IconButton) component;
-                    text = btn.getData("language");
-                }
-                languageSelectedListener.onWorkflowSelected(text);
-            }
-        };
+    public void init(final TextToolItem parentItem) {
         service.getAvailableLanguagesAndWorkflowStates(displayIsoCode, displayLanguage, inEngine, new AsyncCallback<GWTJahiaLanguageSwitcherBean>() {
-            public void onFailure (Throwable throwable) {
-            }
+            public void onFailure (Throwable throwable) {}
 
             public void onSuccess (GWTJahiaLanguageSwitcherBean bean) {
                 Map<String, GWTLanguageSwitcherLocaleBean> locales = bean.getAvailableLanguages();
-                generateMenu(locales, languageListener, workflowListener, bean.getWorkflowStates());
-                //To change body of implemented methods use File | Settings | File Templates.
+                generateMenu(parentItem, locales, bean.getWorkflowStates());
+                //parentItem.recalculate();
             }
         });
     }
 
-    private void generateMenu (Map<String, GWTLanguageSwitcherLocaleBean> locales, SelectionListener listener, SelectionListener workflowListener, Map<String, String> workflowStates) {
+    private void generateMenu (final TextToolItem parentItem, final Map<String, GWTLanguageSwitcherLocaleBean> locales, final Map<String, String> workflowStates) {
         final GWTLanguageSwitcherLocaleBean localeBean = locales.get(currentLanguage);
+        LanguageCodeDisplay.formatToolItem(parentItem, localeBean, displayFlag, workflowStates.get(currentLanguage), displayWorkflowStates);
         if (locales.size() > 1) {
             Menu menu = new Menu();
-            TextToolItem textToolItem = new TextToolItem(localeBean.getDisplayName());
-            if (displayFlag && !"".equals(localeBean.getCountryIsoCode())) {
-                textToolItem.setIconStyle("flag_" + localeBean.getCountryIsoCode());
-            } else {
-                textToolItem.setText("<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">"+localeBean.getLanguage()+"</span> "+localeBean.getDisplayName());
-            }
-
-            for (String locale : locales.keySet()) {
+            for (final String locale : locales.keySet()) {
                 if (!locale.equals(currentLanguage)) {
-                    final GWTLanguageSwitcherLocaleBean s1 = locales.get(locale);
-                    HorizontalPanel horizontalPanel = new HorizontalPanel();
-                    String text = s1.getDisplayName();
-                    Button menuItem = new Button(text);
-                    if (displayFlag && !"".equals(s1.getCountryIsoCode())) {
-                        menuItem.setIconStyle("flag_" + s1.getCountryIsoCode());
-                    } else {
-                        text = "<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">" + s1.getLanguage() + "</span> " + text;
-                        menuItem.setText(text);
-                    }
-                    menuItem.setData(text, locale);
-                    menuItem.addSelectionListener(listener);
-                    horizontalPanel.add(menuItem);
-                    if (displayWorkflowStates) {
-                        IconButton iconButton = new IconButton("&nbsp;&nbsp;&nbsp;");
-                        String s = workflowStates.get(locale);
-                        iconButton.setData("language",locale);
-                        if (s == null) {
-                            s = "000";
+                    MenuItem item = new MenuItem() ;
+                    LanguageCodeDisplay.formatMenuItem(item, locales.get(locale), displayFlag, workflowStates.get(locale), displayWorkflowStates);
+                    item.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                        public void componentSelected(ComponentEvent componentEvent) {
+                            languageSelectedListener.onLanguageSelected(locale);
                         }
-                        iconButton.setStyleName("workflow-" + s);
-                        iconButton.setStylePrimaryName("workflow-" + s);
-
-                        iconButton.addSelectionListener(workflowListener);
-                        horizontalPanel.add(iconButton);
-                    }
-                    menu.add(new AdapterMenuItem(horizontalPanel));
+                    });
+                    menu.add(item);
                 }
             }
-            textToolItem.setMenu(menu);
-            add(textToolItem);
-            if (displayWorkflowStates) {
-                IconButton iconButton = new IconButton("&nbsp;&nbsp;&nbsp;");
-                iconButton.setData("language",currentLanguage);
-                String s = workflowStates.get(currentLanguage);
-                if (s == null) {
-                    s = "000";
-                }
-                iconButton.setStyleName("workflow-" + s);
-                iconButton.setStylePrimaryName("workflow-" + s);
-
-                iconButton.addSelectionListener(workflowListener);
-                add(iconButton);
-            }
+            parentItem.setMenu(menu);
+            parentItem.setEnabled(true);
         } else {
-            TextToolItem textToolItem = new TextToolItem(localeBean.getDisplayName());
-            if (displayFlag&& !"".equals(localeBean.getCountryIsoCode())) {
-                textToolItem.setIconStyle("flag_" + localeBean.getCountryIsoCode());
-            } else {
-                textToolItem.setText("<span style=\"margin:0.2em; background-color:#eaeaea; border: 1px solid #ccc; padding:0em 0.2em; text-transform:uppercase\">"+localeBean.getLanguage()+"</span> "+localeBean.getDisplayName());
-            }
-            this.setEnabled(false);
-            add(textToolItem);
-            if (displayWorkflowStates) {
-                IconButton iconButton = new IconButton("&nbsp;&nbsp;&nbsp;");
-                iconButton.setData("language",currentLanguage);
-                String s = workflowStates.get(currentLanguage);
-                if (s == null) {
-                    s = "000";
-                }
-                iconButton.setStyleName("workflow-" + s);
-                iconButton.setStylePrimaryName("workflow-" + s);
-
-                iconButton.addSelectionListener(workflowListener);
-                add(iconButton);
-            }
+            parentItem.setEnabled(false);
         }
-        doAttachChildren();
-        doLayout();
     }
 }

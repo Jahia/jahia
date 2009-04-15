@@ -216,7 +216,7 @@ public class PageTreeTable extends TopRightComponent {
 
     private static TreeTableColumnModel getHeaders() {
         List<TreeTableColumn> headerList = new ArrayList<TreeTableColumn>();
-        TreeTableColumn col = new TreeTableColumn("title", "Title", .7f) ;
+        TreeTableColumn col = new TreeTableColumn("title", "Title", .75f) ;
         headerList.add(col) ;
 
 

@@ -39,6 +39,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -78,20 +79,18 @@ public class PagePathBar extends TopBar {
 
             public void onLanguageSelected (String languageSelected) {
                 jahiaServiceAsync.changeLocaleForCurrentEngine(languageSelected, new AsyncCallback() {
-                    public void onFailure (Throwable throwable) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
+                    public void onFailure (Throwable throwable) { }
 
                     public void onSuccess (Object o) {
                         com.google.gwt.user.client.Window.Location.reload();
                     }
                 });
             }
-
-            public void onWorkflowSelected (String text) {
-            }
         });
-        m_component.add(new AdapterToolItem(languageSwitcher));
+        TextToolItem item = new TextToolItem("loading...") ;
+        item.setEnabled(false);
+        languageSwitcher.init(item);
+        m_component.add(item);
         this.callback = callback;
         this.parentPath = parentPath;
         this.operation = operation;

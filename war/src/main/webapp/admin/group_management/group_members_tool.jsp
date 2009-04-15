@@ -108,14 +108,20 @@ function pasteSelectionClose()
             <jsp:include page="<%= userSearch%>" flush="true"/>
         </td>
         <td valign="top">
-            <br><br><br>
-            <internal:jahiaButton img="select_all"
-                href="javascript:selectAllOptionsSelectBox(document.mainForm.selectedUsers);"
-                altBundle="JahiaInternalResources" altKey="org.jahia.admin.users.GroupMembersTool.altSelectAllCandidates.label" />
-            <br>
-            <internal:jahiaButton img="invert_selection"
-                href="javascript:invertSelectionSelectBox(document.mainForm.selectedUsers);"
-                altBundle="JahiaInternalResources" altKey="org.jahia.admin.users.GroupMembersTool.altInvertCandidatesSelection.label" />
+            <br/><br/><br/><br/>
+            <span class="dex-PushButton">
+                <span class="first-child">
+                    <a class="ico-selection-all"
+                       href="#select-all" onclick="selectAllOptionsSelectBox(document.mainForm.selectMember); return false;"><fmt:message key="org.jahia.admin.users.ManageGroups.altSelectAllGroupMembers.label"/></a>
+                </span>
+            </span>
+            <br/>
+            <span class="dex-PushButton">
+                <span class="first-child">
+                    <a class="ico-selection-invert"
+                       href="#select-all" onclick="invertSelectionSelectBox(document.mainForm.selectMember); return false;"><fmt:message key="org.jahia.admin.users.ManageGroups.altInvertGroupMembersSelection.label"/></a>
+                </span>
+            </span>
         </td>
     </tr>
 </table>

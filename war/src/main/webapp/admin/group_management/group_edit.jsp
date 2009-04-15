@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -206,7 +206,7 @@
                                                 <span class="dex-PushButton">
                                                     <span class="first-child">
                                                         <c:set var="label"><fmt:message key='org.jahia.admin.users.ManageGroups.altSetHomePageForThisGroup.label'/></c:set>
-                                                        <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" label="${label}"/>
+                                                        <ui:pageSelector fieldId="homePageID" displayIncludeChildren="false" onSelect="homePageSelected" label="${label}" title="${label}" class="ico-home-add"/>
                                                     </span>
                                                 </span>
                                                 <span class="dex-PushButton">
@@ -299,21 +299,20 @@
                                                 </select>
                                             </td>
                                             <td valign="top" align="left">
-                                                <br>
-                                                <br>
-                                                <br>
-
-                                                <div style="background-color:white;">
-                                                    <internal:jahiaButton img="select_all"
-                                                                          href="javascript:selectAllOptionsSelectBox(document.mainForm.selectMember);"
-                                                                          altBundle="JahiaInternalResources"
-                                                                          altKey="org.jahia.admin.users.ManageGroups.altSelectAllGroupMembers.label"/>
-                                                    <br/>
-                                                    <internal:jahiaButton img="invert_selection"
-                                                                          href="javascript:invertSelectionSelectBox(document.mainForm.selectMember);"
-                                                                          altBundle="JahiaInternalResources"
-                                                                          altKey="org.jahia.admin.users.ManageGroups.altInvertGroupMembersSelection.label"/>
-                                                </div>
+                                                <br/><br/><br/><br/>
+                                                <span class="dex-PushButton">
+                                                    <span class="first-child">
+                                                        <a class="ico-selection-all"
+                                                           href="#select-all" onclick="selectAllOptionsSelectBox(document.mainForm.selectMember); return false;"><fmt:message key="org.jahia.admin.users.ManageGroups.altSelectAllGroupMembers.label"/></a>
+                                                    </span>
+                                                </span>
+                                                <br/>
+                                                <span class="dex-PushButton">
+                                                    <span class="first-child">
+                                                        <a class="ico-selection-invert"
+                                                           href="#select-all" onclick="invertSelectionSelectBox(document.mainForm.selectMember); return false;"><fmt:message key="org.jahia.admin.users.ManageGroups.altInvertGroupMembersSelection.label"/></a>
+                                                    </span>
+                                                </span>
                                             </td>
                                         </tr>
                                     </table>

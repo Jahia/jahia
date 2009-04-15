@@ -1237,6 +1237,13 @@ li.section a:hover {
     background: url(images/andromeda/icons/navigate_down2.png) no-repeat 4px 5px;
 }
 
+.ico-selection-all {
+    background: url(images/andromeda/icons/selection_recycle.png) no-repeat 4px 5px;
+}
+
+.ico-selection-invert {
+    background: url(images/andromeda/icons/selection_replace.png) no-repeat 4px 5px;
+}
 
 /*
 * Form

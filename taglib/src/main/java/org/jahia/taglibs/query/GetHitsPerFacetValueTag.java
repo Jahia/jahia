@@ -33,6 +33,7 @@
 
 package org.jahia.taglibs.query;
 
+import java.util.BitSet;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -125,12 +126,35 @@ public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
                         }
                     }
                 }
+                BitSet facetedFilter = null;
+                if (mainQueryBean.getQueryContext().getFacetedFilterResult() != null) {
+                    facetedFilter = mainQueryBean.getQueryContext()
+                            .getFacetedFilterResult();
+                } else {
+                    facetedFilter = mainQueryBean.getQueryContext()
+                            .getFacetFilterQueryParamName() != null ? ServicesRegistry
+                            .getInstance().getJahiaFacetingService()
+                            .applyFacetFilters(
+                                    null,
+                                    jParams.getParameter(mainQueryBean
+                                            .getQueryContext()
+                                            .getFacetFilterQueryParamName()),
+                                    mainQueryBean.getQueryContext(), jParams)
+                            : null;
+                }
+                if (facetedFilter != null) {
+                    if (mainQueryBean.getFilter() != null) {
+                        facetedFilter = (BitSet)facetedFilter.clone();
+                        facetedFilter.and(mainQueryBean.getFilter().bits());
+                    }
+                }
+                
                 for (Map.Entry<FacetValueBean, Integer> hitsForFacetValue : ServicesRegistry.getInstance()
                         .getJahiaFacetingService().getHitsPerFacetValue(facetBean, getFacetValueName(),
-                                (mainQueryBean.getFilter() != null ? mainQueryBean.getFilter().bits() : null), mainQueryBean.getQueryContext(), jParams).entrySet()) {
+                                facetedFilter, mainQueryBean.getQueryContext(), jParams).entrySet()) {
                     int matchingHits = hitsForFacetValue.getValue();
                     if (getFilterQueryParamName() != null) {
-                        buff.append("<a href=\"").append(jParams.getPage().getURL(jParams)).append("?").append(queryString != null ? queryString + "&": "").append(
+                        buff.append("<a href=\"").append(jParams.getPage().getURL(jParams)).append("?").append(queryString != null && queryString.length() > 0 ? queryString + "&": "").append(
                                 getFilterQueryParamName()).append("=");
                         Object forwardedFilter = jParams.getParameter(getFilterQueryParamName());
                         if (forwardedFilter != null) {

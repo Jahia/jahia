@@ -195,28 +195,32 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             ProcessingContext jParams) throws JahiaException {
         if (filtersToApply != null) {
             String[] filterIds = filtersToApply.split("_");
-            String[] queries = new String[filterIds.length / 2];
-            FacetBean facetBean = null;
-            int i = 0;
-            for (String filter : filterIds) {
-                if (facetBean == null) {
-                    facetBean = getFacetBean(filter);
-                } else {
-                    FacetValueBean facetValueBean = facetBean.getFacetValueBean(filter);
-                    if (facetValueBean != null) {
-                        queries[i] = facetValueBean.getFilterQuery();
-                        i++;
+            if (filterIds.length >= 2) {
+                String[] queries = new String[filterIds.length / 2];
+                FacetBean facetBean = null;
+                int i = 0;
+                for (String filter : filterIds) {
+                    if (facetBean == null) {
+                        facetBean = getFacetBean(filter);
+                    } else {
+                        FacetValueBean facetValueBean = facetBean
+                                .getFacetValueBean(filter);
+                        if (facetValueBean != null) {
+                            queries[i] = facetValueBean.getFilterQuery();
+                            i++;
+                        }
+                        facetBean = null;
                     }
-                    facetBean = null;
                 }
-            }
-            JahiaSearchResult sr = getSearcher(queryContext, jParams).search(queries, jParams);
+                JahiaSearchResult sr = getSearcher(queryContext, jParams)
+                        .search(queries, jParams);
 
-            if (mainQueryBits == null) {
-                mainQueryBits = (BitSet) sr.bits().clone();
-            } else {
-                mainQueryBits = (BitSet) mainQueryBits.clone();
-                mainQueryBits.and(sr.bits());
+                if (mainQueryBits == null) {
+                    mainQueryBits = (BitSet) sr.bits().clone();
+                } else {
+                    mainQueryBits = (BitSet) mainQueryBits.clone();
+                    mainQueryBits.and(sr.bits());
+                }
             }
         }
 

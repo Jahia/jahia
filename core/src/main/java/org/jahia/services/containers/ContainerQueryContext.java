@@ -39,6 +39,7 @@ import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -55,7 +56,9 @@ public class ContainerQueryContext {
     private List<String> containerDefinitionNames;
     private List<Integer> siteIDs;
     private boolean siteLevelQuery;
-    private String facetFilterQueryParamName;    
+    
+    private String facetFilterQueryParamName;
+    private BitSet facetedFilterResult;
     
     private List<String> containerDefinitionNamesIncludingType;
     
@@ -180,5 +183,13 @@ public class ContainerQueryContext {
 
     public String getFacetFilterQueryParamName() {
         return facetFilterQueryParamName;
-    }    
+    }
+
+    public void setFacetedFilterResult(BitSet facetedFilterResult) {
+        this.facetedFilterResult = facetedFilterResult;
+    }
+
+    public BitSet getFacetedFilterResult() {
+        return facetedFilterResult;
+    }   
 }

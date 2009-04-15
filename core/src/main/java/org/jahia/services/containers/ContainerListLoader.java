@@ -582,12 +582,12 @@ public class ContainerListLoader implements Serializable {
         final BitSet facetedFilter = cList.getQueryBean() != null
                 && cList.getQueryBean().getQueryContext().getFacetFilterQueryParamName() != null ? ServicesRegistry
                 .getInstance().getJahiaFacetingService().applyFacetFilters(
-                        null,
-                        (String) loaderContext.getContext().getParameter(
+                        null, loaderContext.getContext().getParameter(
                                 cList.getQueryBean().getQueryContext().getFacetFilterQueryParamName()),
                         cList.getQueryBean().getQueryContext(), loaderContext.getContext()) : null;
-
+                        
         if ( cList.getQueryBean() != null ){
+            cList.getQueryBean().getQueryContext().setFacetedFilterResult(facetedFilter);
             cSearcher = cList.getQueryBean().getSearcher();
             cFilters = cList.getQueryBean().getFilter();
             sorter = cList.getQueryBean().getSorter();

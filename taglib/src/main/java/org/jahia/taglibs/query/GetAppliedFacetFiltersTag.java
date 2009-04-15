@@ -130,14 +130,25 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
                     buff.append(getExpandedValue(facetValueBean.getValue(),
                             jParams));
                     buff.append("&nbsp;<a href=\"").append(
-                            jParams.getPage().getURL(jParams)).append("?").append(queryString != null ? queryString + "&": "")
-                            .append(getFilterQueryParamName()).append("=");
+                            jParams.getPage().getURL(jParams));
                     String forwardedFilter = jParams
                             .getParameter(getFilterQueryParamName());
                     if (forwardedFilter != null) {
-                        buff.append(forwardedFilter.replace(appliedFacetFilters
-                                .getFacetBean().hashCode()
-                                + "_" + facetValueBean.hashCode() + "_", ""));
+                        String remainingFilter = forwardedFilter
+                                .replace(
+                                        appliedFacetFilters.getFacetBean()
+                                                .hashCode()
+                                                + "_"
+                                                + facetValueBean.hashCode()
+                                                + "_", "");
+                        if (queryString != null && queryString.length() > 0 || remainingFilter.length() > 0) {
+                            buff.append("?");    
+                        }
+                        buff.append(queryString != null && queryString.length() > 0 ? queryString + "&": "");                        
+                        if (remainingFilter.length() > 0) {
+                            buff.append(getFilterQueryParamName()).append("=")
+                                    .append(remainingFilter);
+                        }
                     }
                     buff.append("\">(remove)</a>&nbsp;");
                 }

@@ -33,9 +33,9 @@
 
 package org.jahia.taglibs.query;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.utility.ParamSupport;
 
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,35 +45,13 @@ import javax.servlet.jsp.JspException;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class PropertyValueTag extends AbstractJahiaTag {
+public class PropertyValueTag extends ParamSupport {
+    //*********************************************************************
+    // Accessor methods
 
-    private SetPropertyTag queryParameterTag = null;
-
-    private String value;
-
-    public int doStartTag() throws JspException {
-        queryParameterTag = (SetPropertyTag) findAncestorWithClass(this, SetPropertyTag.class);
-        if (queryParameterTag == null) {
-            return SKIP_BODY;
-        }
-        if ( value != null ){
-            queryParameterTag.setProperty(value);
-        }
-        return EVAL_BODY_BUFFERED;
-    }
-
-    public int doEndTag() throws JspException {
-        queryParameterTag = null;
-        value = null;
-        return EVAL_PAGE;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
+    // for tag attribute
+    public void setValue(Object value) throws JspTagException {
         this.value = value;
+        this.valueSpecified = true;
     }
-
 }

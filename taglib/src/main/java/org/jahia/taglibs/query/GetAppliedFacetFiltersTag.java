@@ -41,14 +41,12 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.jahia.data.JahiaData;
-import org.jahia.data.fields.ExpressionMarker;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.search.facets.AppliedFacetFilters;
 import org.jahia.services.search.facets.FacetValueBean;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.jahia.utils.JahiaTools;
 
 @SuppressWarnings("serial")
 public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
@@ -63,34 +61,6 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
         int eval = super.doStartTag();
         getFacetFilters();
         return eval;
-    }
-
-    private String getExpandedValue(String val, ProcessingContext context)
-            throws JahiaException {
-        ResourceBundleMarker resMarker = ResourceBundleMarker
-                .parseMarkerValue(val);
-        if (resMarker == null) {
-            // expression marker
-            ExpressionMarker exprMarker = ExpressionMarker.parseMarkerValue(
-                    val, context);
-            if (exprMarker != null) {
-                try {
-                    val = exprMarker.getValue();
-                } catch (Exception t) {
-                }
-            }
-
-            if (val == null) {
-                val = "";
-            }
-        } else {
-            val = resMarker.getValue(context.getLocale());
-
-            if (val == null) {
-                val = "";
-            }
-        }
-        return val;
     }
 
     public int doEndTag() throws JspException {
@@ -127,8 +97,8 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
             for (AppliedFacetFilters appliedFacetFilters : allAppliedFacetFilters) {
                 for (FacetValueBean facetValueBean : appliedFacetFilters
                         .getFacetValueBeans()) {
-                    buff.append(getExpandedValue(facetValueBean.getValue(),
-                            jParams));
+                    buff.append(JahiaTools.getExpandedValue(facetValueBean.getValue(),
+                            facetValueBean.getValueArguments(), jParams, jParams.getLocale()));
                     buff.append("&nbsp;<a href=\"").append(
                             jParams.getPage().getURL(jParams));
                     String forwardedFilter = jParams
@@ -150,7 +120,7 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
                                     .append(remainingFilter);
                         }
                     }
-                    buff.append("\">(remove)</a>&nbsp;");
+                    buff.append("\">remove</a>&nbsp;");
                 }
             }
             out.print(buff.toString());

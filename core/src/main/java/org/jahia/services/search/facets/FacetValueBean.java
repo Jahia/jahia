@@ -39,20 +39,20 @@ public class FacetValueBean implements Serializable {
 
     private static final long serialVersionUID = 7376877535833721067L;
     
-    private String title;
     private String value;
+    private Object[] valueArguments;    
     private String filterQuery;    
+    private String languageCode;    
     
-    public FacetValueBean(String value, String filterQuery) {
+    public FacetValueBean(String value, Object[] valueArguments, String filterQuery, String languageCode) {
         super();
         this.value = value;
+        this.setValueArguments(valueArguments);
         this.filterQuery = filterQuery;        
+        this.languageCode = languageCode;        
     }
-    public String getTitle() {
-        return title;
-    }
-    public void setTitle(String title) {
-        this.title = title;
+    public String getId() {
+        return String.valueOf(hashCode());
     }
     public String getValue() {
         return value;
@@ -69,6 +69,18 @@ public class FacetValueBean implements Serializable {
     @Override
     public int hashCode() {
         return Math.abs(getFilterQuery().hashCode());
+    }
+    public void setValueArguments(Object[] valueArguments) {
+        this.valueArguments = valueArguments;
+    }
+    public Object[] getValueArguments() {
+        return valueArguments;
+    }
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
+    }
+    public String getLanguageCode() {
+        return languageCode;
     }
     
 }

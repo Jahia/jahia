@@ -107,16 +107,16 @@
     <utility:dateCalc value="${startDate}" var="endMonth" 
         months="${count}" days="${utilConstants.TO_MAX}" hours="${utilConstants.TO_MAX}" 
         minutes="${utilConstants.TO_MAX}" seconds="${utilConstants.TO_MAX}" milliseconds="${utilConstants.TO_MAX}"/>
-    <fmt:formatDate value="${beginMonth}" pattern="MMM yyyy" var="dateFacetValueTitle"/>
-    <c:set var="facetValues" value="${facetValues},${dateFacetValueTitle}"/>
     <query:createFacetFilter facetName="eventDateFacet" targetContainerListName="events"
-        valueTitle="${dateFacetValueTitle}" facetBeanId="eventDateFacet">
+        valueTitle="{0,date,MMM yyyy}" facetBeanId="eventDateFacet" facetValueBeanId="eventDateFacetValue">
+        <query:propertyValue value="${beginMonth}"/>
         <query:selector nodeTypeName="web_templates:eventContainer" selectorName="eventsSelector"/>
         <query:childNode selectorName="eventsSelector" path="${eventsContainer.JCRPath}"/>
 
         <query:greaterThanOrEqualTo numberValue="false" propertyName="endDate" value="${beginMonth.time}"/>
         <query:lessThanOrEqualTo numberValue="false" propertyName="startDate" value="${endMonth.time}"/>        
     </query:createFacetFilter>
+    <c:set var="facetValueIds" value="${facetValueIds},${eventDateFacetValue.id}"/>    
 </c:forTokens>  
    
 
@@ -148,7 +148,7 @@
 </c:if>
 <c:if test='${!query:isFacetApplied(eventDateFacet, appliedFacets)}'>
     <br/>Next 4 months:<br/>
-    <c:forTokens var="facetValue" items="${facetValues}" delims=",">
-        <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueName="${facetValue}" filterQueryParamName="filter"/>
+    <c:forTokens var="facetValueId" items="${facetValueIds}" delims=",">
+        <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueId="${facetValueId}" filterQueryParamName="filter"/>
     </c:forTokens>
 </c:if>    

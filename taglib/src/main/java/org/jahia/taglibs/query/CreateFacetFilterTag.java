@@ -33,28 +33,37 @@
 
 package org.jahia.taglibs.query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.taglibs.standard.tag.common.fmt.ParamSupport;
 import org.jahia.data.JahiaData;
 import org.jahia.data.containers.JahiaContainerSet;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerQueryContext;
 import org.jahia.services.search.facets.FacetBean;
+import org.jahia.services.search.facets.FacetValueBean;
 import org.jahia.services.search.facets.JahiaFacetingService;
+import org.jahia.taglibs.utility.ParamParent;
+import org.jahia.utils.i18n.ResourceBundleMarker;
 
 @SuppressWarnings("serial")
-public class CreateFacetFilterTag extends ContainerQueryTag {
+public class CreateFacetFilterTag extends ContainerQueryTag implements ParamParent {
 
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
             .getLogger(CreateFacetFilterTag.class);
 
     private String facetName;
     private String facetBeanId;    
+    private String facetValueBeanId;    
     private String propertyName;
     private String valueTitle;    
+    private List<Object> params = new ArrayList<Object>();    
     
     public int doEndTag() throws JspException {
         processFaceting();
@@ -66,7 +75,9 @@ public class CreateFacetFilterTag extends ContainerQueryTag {
         propertyName = null;
         facetName = null;
         facetBeanId = null;        
+        facetValueBeanId = null;        
         valueTitle = null;
+        params = new ArrayList<Object>();
         return result;
     }
     
@@ -85,10 +96,21 @@ public class CreateFacetFilterTag extends ContainerQueryTag {
                             .getPageTemplateID(), 0, jParams));
                     context.getContainerDefinitionsIncludingType(true);
                 }
-                facetBean = facetingService.createFacetFilter(getFacetName(), getPropertyName(), getValueTitle(), context, jParams);
+                facetBean = facetingService.createFacetFilter(getFacetName(), getPropertyName(), getValueTitle(), context, jParams, null);
             } else if (getQueryBean(jData) != null && getQueryBean(jData).getFilter() != null) {
-                facetBean = facetingService.createFacetFilter(getFacetName(), getValueTitle(), getQueryBean(jData).getFilter(), getQueryBean(jData)
-                        .getQueryContext(), jParams);
+                if (getValueTitle().indexOf(" ") == -1) {
+                    setValueTitle(ResourceBundleMarker.drawMarker(
+                            getResourceBundle(), getValueTitle(),
+                            getValueTitle()));
+                }
+                List<FacetValueBean> createdFacetValue = new ArrayList<FacetValueBean>();
+                facetBean = facetingService.createFacetFilter(getFacetName(),
+                        getValueTitle(), params.toArray(),
+                        getQueryBean(jData).getFilter(), getQueryBean(jData)
+                                .getQueryContext(), jParams, createdFacetValue);
+                if (getFacetValueBeanId() != null) {
+                    pageContext.setAttribute(getFacetValueBeanId(), createdFacetValue.get(0), PageContext.REQUEST_SCOPE);
+                }                
             }
             if (getFacetBeanId() != null) {
                 pageContext.setAttribute(getFacetBeanId(), facetBean, PageContext.REQUEST_SCOPE);
@@ -132,5 +154,22 @@ public class CreateFacetFilterTag extends ContainerQueryTag {
 
     public void setFacetBeanId(String facetBeanId) {
         this.facetBeanId = facetBeanId;
+    }
+    
+    /**
+     * Adds an argument (for parametric replacement) to this tag's message.
+     *
+     * @see ParamSupport
+     */
+    public void addParam(Object arg) {
+        params.add(arg);
+    }
+
+    public void setFacetValueBeanId(String facetValueBeanId) {
+        this.facetValueBeanId = facetValueBeanId;
+    }
+
+    public String getFacetValueBeanId() {
+        return facetValueBeanId;
     }
 }

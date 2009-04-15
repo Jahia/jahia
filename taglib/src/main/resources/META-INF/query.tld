@@ -586,13 +586,13 @@
         </attribute>
     </tag>
     <tag>
-        <description>Used inside a QueryParameterTag to set, append or remove Query Parameter value</description>
+        <description>Used inside a tag, which implements the ParamParent interface (e.g. SetPropertyTag, CreateFacetFilterTag) to add parameter values or do whatever the operation of the parent tag is.</description>
         <name>propertyValue</name>
         <tag-class>org.jahia.taglibs.query.PropertyValueTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>value</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
@@ -789,6 +789,13 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the FacetBeanValue will be set</description>
+            <name>facetValueBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
         </attribute>        
         <attribute>
             <name>queryObjectModelBeanName</name>
@@ -830,8 +837,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The name of the facet value to print the hits.</description>
-            <name>facetValueName</name>
+            <description>The id of the facet value to print the hits.</description>
+            <name>facetValueId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>   

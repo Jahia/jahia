@@ -35,6 +35,7 @@ package org.jahia.taglibs.query;
 
 import org.jahia.query.qom.QueryModelTools;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.utility.ParamParent;
 
 import javax.servlet.jsp.JspException;
 import java.util.Properties;
@@ -48,7 +49,7 @@ import java.util.Properties;
  * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
-public class SetPropertyTag extends AbstractJahiaTag {
+public class SetPropertyTag extends AbstractJahiaTag implements ParamParent {
 
     private QueryDefinitionTag queryModelDefTag = null;
 
@@ -73,7 +74,7 @@ public class SetPropertyTag extends AbstractJahiaTag {
         if ( QueryDefinitionTag.REMOVE_ACTION.equalsIgnoreCase(operation) ){
             properties.remove(name);
         } else if ( value != null ){
-            setProperty(value);
+            addParam(value);
         }
         return EVAL_BODY_BUFFERED;
     }
@@ -110,13 +111,13 @@ public class SetPropertyTag extends AbstractJahiaTag {
         this.operation = operation;
     }
 
-    public void setProperty(String value) {
+    public void addParam(Object value) {
         if (value != null) {
             if (QueryDefinitionTag.SET_ACTION.equalsIgnoreCase(operation)) {
-                queryModelDefTag.getProperties().setProperty(name, value);
+                queryModelDefTag.getProperties().setProperty(name, (String)value);
             } else {
                 QueryModelTools.appendPropertyValue(queryModelDefTag
-                        .getProperties(), name, value);
+                        .getProperties(), name, (String)value);
             }
         }
     }

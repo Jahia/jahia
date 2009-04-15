@@ -139,23 +139,23 @@ public class CategoryBean extends AbstractJahiaObjectBean {
      * @return an List containing JahiaObjects of the specified types,
      *         and sorted according to the type specific comparators.
      */
-    public List getChildsOfType(String type) {
-        List filteredChildsOfType = new ArrayList();
-        List fullChildsOfType;
+    public List<AbstractJahiaObjectBean> getChildsOfType(String type) {
+        List<AbstractJahiaObjectBean> filteredChildsOfType = new ArrayList<AbstractJahiaObjectBean>();
+        List<JahiaObject> fullChildsOfType;
         try {
             fullChildsOfType = getSortedChildJahiaObjects(type);
         } catch (Exception t) {
             logger.error("Error while retrieving child objects", t);
             return filteredChildsOfType;
         }
-        Iterator childsIter = fullChildsOfType.iterator();
+        Iterator<JahiaObject> childsIter = fullChildsOfType.iterator();
         /**
          * todo this code is ugly, can we do this a cleaner way ? We would
          * probably need some kind of common interface for checks on content
          * objects to clean it up.
          */
         while (childsIter.hasNext()) {
-            JahiaObject curJahiaObject = (JahiaObject) childsIter.next();
+            JahiaObject curJahiaObject = childsIter.next();
             if (curJahiaObject instanceof ContentObject) {
                 ContentObject curContentObject = (ContentObject) curJahiaObject;
 
@@ -246,10 +246,10 @@ public class CategoryBean extends AbstractJahiaObjectBean {
      * @return an List containing JahiaObjects of the specified types,
      *         and sorted according to the type specific comparators.
      */
-    public List getChildsOfTypeNoChecks(String type) {
-        List childsOfType = new ArrayList();
+    public List<AbstractJahiaObjectBean> getChildsOfTypeNoChecks(String type) {
+        List<AbstractJahiaObjectBean> childsOfType = new ArrayList<AbstractJahiaObjectBean>();
         try {
-            List childJahiaObjects = getSortedChildJahiaObjects(type);
+            List<JahiaObject> childJahiaObjects = getSortedChildJahiaObjects(type);
 
             childsOfType = jahiaObjectToBeans(childJahiaObjects);
         } catch (ClassNotFoundException cnfe) {
@@ -262,12 +262,12 @@ public class CategoryBean extends AbstractJahiaObjectBean {
         return childsOfType;
     }
 
-    private List jahiaObjectToBeans(List childJahiaObjects)
+    private List<AbstractJahiaObjectBean> jahiaObjectToBeans(List<JahiaObject> childJahiaObjects)
             throws ClassNotFoundException {
-        List beanList = new ArrayList();
-        Iterator sortedJahiaObjectIter = childJahiaObjects.iterator();
+        List<AbstractJahiaObjectBean> beanList = new ArrayList<AbstractJahiaObjectBean>();
+        Iterator<JahiaObject> sortedJahiaObjectIter = childJahiaObjects.iterator();
         while (sortedJahiaObjectIter.hasNext()) {
-            JahiaObject curObject = (JahiaObject) sortedJahiaObjectIter.
+            JahiaObject curObject = sortedJahiaObjectIter.
                     next();
             AbstractJahiaObjectBean curObjectBean = AbstractJahiaObjectBean.
                     getInstance(curObject, processingContext);
@@ -276,14 +276,10 @@ public class CategoryBean extends AbstractJahiaObjectBean {
         return beanList;
     }
 
-    private List getSortedChildJahiaObjects(String type)
+    private List<JahiaObject> getSortedChildJahiaObjects(String type)
             throws ClassNotFoundException, JahiaException {
-        List allChildrenObjectKeys = category.getChildObjectKeys();
-        Iterator allChildObjectKeysIter = allChildrenObjectKeys.iterator();
-        List childJahiaObjects = new ArrayList();
-        while (allChildObjectKeysIter.hasNext()) {
-            ObjectKey curObjectKey = (ObjectKey) allChildObjectKeysIter.
-                    next();
+        List<JahiaObject> childJahiaObjects = new ArrayList<JahiaObject>();
+        for (ObjectKey curObjectKey : category.getChildObjectKeys()) {
             if (curObjectKey.getType().equals(type)) {
                 // we have found a matching type object.
                 JahiaObject curObject = JahiaObject.getInstance(
@@ -312,13 +308,10 @@ public class CategoryBean extends AbstractJahiaObjectBean {
      *         the current category. May return an empty array if there are no
      *         children but never returns null.
      */
-    public List getChildCategoryBeans() {
-        List childCategoryBeans = new ArrayList();
+    public List<CategoryBean> getChildCategoryBeans() {
+        List<CategoryBean> childCategoryBeans = new ArrayList<CategoryBean>();
         try {
-            List childCategories = category.getChildCategories(processingContext.getUser());
-            Iterator childCategoriesIter = childCategories.iterator();
-            while (childCategoriesIter.hasNext()) {
-                Category curCategory = (Category) childCategoriesIter.next();
+            for (Category curCategory : category.getChildCategories(processingContext.getUser())) {
                 CategoryBean curCategoryBean = new CategoryBean(curCategory,
                         processingContext);
                 childCategoryBeans.add(curCategoryBean);

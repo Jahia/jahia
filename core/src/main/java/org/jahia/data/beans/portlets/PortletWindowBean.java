@@ -34,7 +34,6 @@
  package org.jahia.data.beans.portlets;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.portlet.PortletMode;
@@ -84,13 +83,10 @@ public class PortletWindowBean {
         return entryPointInstance.getID();
     }
 
-    public List getPortletModeBeans () {
-        List portletModeBeans = new ArrayList();
+    public List<PortletModeBean> getPortletModeBeans () {
+        List<PortletModeBean> portletModeBeans = new ArrayList<PortletModeBean>();
         if (entryPointDefinition != null) {
-            List portletModes = entryPointDefinition.getPortletModes();
-            Iterator portletModesIter = portletModes.iterator();
-            while (portletModesIter.hasNext()) {
-                PortletMode curPortletMode = (PortletMode) portletModesIter.next();
+            for (PortletMode curPortletMode : entryPointDefinition.getPortletModes()) {
                 PortletModeBean curPortletModeBean = new PortletModeBean(processingContext, this);
                 curPortletModeBean.setName(curPortletMode.toString());
                 portletModeBeans.add(curPortletModeBean);
@@ -99,13 +95,10 @@ public class PortletWindowBean {
         return portletModeBeans;
     }
 
-    public List getWindowStateBeans () {
-        List windowStateBeans = new ArrayList();
+    public List<WindowStateBean> getWindowStateBeans () {
+        List<WindowStateBean> windowStateBeans = new ArrayList<WindowStateBean>();
         if (entryPointDefinition != null) {
-            List windowStates = entryPointDefinition.getWindowStates();
-            Iterator windowStatesIter = windowStates.iterator();
-            while (windowStatesIter.hasNext()) {
-                WindowState curWindowState = (WindowState) windowStatesIter.next();
+            for (WindowState curWindowState : entryPointDefinition.getWindowStates()) {
                 WindowStateBean curWindowStateBean = new WindowStateBean(processingContext,
                         this);
                 curWindowStateBean.setName(curWindowState.toString());

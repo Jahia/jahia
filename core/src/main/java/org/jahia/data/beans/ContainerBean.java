@@ -86,8 +86,8 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
 
     private JahiaContainer jahiaContainer;
     private ContentContainer contentContainer;
-    private Map fields;
-    private Map actionURIs;
+    private Map<String, FieldBean> fields;
+    private Map<String, ActionURIBean> actionURIs;
     private boolean completelyLocked;
     private boolean independantWorkflow;
     private boolean independantWorkflowInitialized = false;
@@ -268,14 +268,14 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
     }
 
 
-    public Map getFields() {
+    public Map<String, FieldBean> getFields() {
         if (fields != null) {
             return fields;
         }
-        fields = new TreeMap();
+        fields = new TreeMap<String, FieldBean>();
         final Iterator<JahiaField> fieldEnum = jahiaContainer.getFields();
         while (fieldEnum.hasNext()) {
-            final JahiaField curJahiaField = (JahiaField) fieldEnum.next();
+            final JahiaField curJahiaField = fieldEnum.next();
             final FieldBean curFieldBean = new FieldBean(curJahiaField, processingContext);
             fields.put(curFieldBean.getName(), curFieldBean);
         }
@@ -358,7 +358,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
         jahiaContainer.setProperty(propertyName, propertyValue);
     }
 
-    public Map getActionURIBeans() {
+    public Map<String, ActionURIBean> getActionURIBeans() {
         if (actionURIs == null) {
             buildActionURIs();
         }
@@ -377,10 +377,8 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
             buildActionURIs();
         }
         if (!completelyLocked) {
-            final Iterator actionURIIter = actionURIs.entrySet().iterator();
             boolean partiallyLocked = false;
-            while (actionURIIter.hasNext()) {
-                final Map.Entry curActionURIEntry = (Map.Entry) actionURIIter.next();
+            for (final Map.Entry<String, ActionURIBean>curActionURIEntry : actionURIs.entrySet()) {
                 final ActionURIBean curActionURIBean = (ActionURIBean) curActionURIEntry.getValue();
                 if (curActionURIBean.isLocked()) {
                     partiallyLocked = true;
@@ -415,7 +413,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                         theContainer);
                 Integer languageState = languagesStates.get(
                         processingContext.getLocale().toString());
-                final Integer sharedLanguageState = (Integer) languagesStates.get(
+                final Integer sharedLanguageState = languagesStates.get(
                         ContentObject.SHARED_LANGUAGE);
                 if (languageState != null && languageState.intValue() != -1) {
                     if (sharedLanguageState != null &&
@@ -466,7 +464,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
     }
 
     private void buildActionURIs() {
-        actionURIs = new InsertionSortedMap();
+        actionURIs = new InsertionSortedMap<String, ActionURIBean>();
         final GuiBean guiBean = new GuiBean(processingContext);
         final HTMLToolBox htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         completelyLocked = true;
@@ -501,8 +499,8 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                                 logger.debug("cross-site");
                             }
                         }
-                        final List l = pickedContainer.getChilds(null, EntryLoadRequest.STAGED);
-                        for (final Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                        final List<? extends ContentObject> l = pickedContainer.getChilds(null, EntryLoadRequest.STAGED);
+                        for (final Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
                             final Object o = iterator1.next();
                             if (!(o instanceof ContentPageField)) continue;
                             //defensive code relative to poor impl of exception catching/throwing of method getPage below
@@ -651,7 +649,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 actionURIs.put(curActionURIBean.getName(), curActionURIBean);
 
                 //looping for pickers to display the list directly in actionmenu
-                Iterator pickers = theContainer.getPickerObjects().iterator();
+                Iterator<ContentObject> pickers = theContainer.getPickerObjects().iterator();
                 int count = 0;
                 while (pickers.hasNext() && count < 4) {
                     ContentObject co = (ContentObject) pickers.next();
@@ -719,9 +717,9 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 pageID = o.getPageID();
                 siteID = o.getSiteID();
 
-                List l = o.getChilds(processingContext.getUser(), EntryLoadRequest.STAGED, JahiaContainerStructure.JAHIA_FIELD);
+                List<? extends ContentObject> l = o.getChilds(processingContext.getUser(), EntryLoadRequest.STAGED, JahiaContainerStructure.JAHIA_FIELD);
 
-                for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
 
                     ContentField contentField = (ContentField) iterator1.next();
                     String value = contentField.getValue(processingContext, EntryLoadRequest.STAGED);
@@ -735,7 +733,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 }
 
                 // case the content object is text
-                for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
 
                     ContentField contentField = (ContentField) iterator1.next();
                     if (contentField instanceof ContentSmallTextField) {
@@ -753,7 +751,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                 }
 
                 //looping list of childs to check page type?
-                for (Iterator iterator1 = l.iterator(); iterator1.hasNext();) {
+                for (Iterator<? extends ContentObject> iterator1 = l.iterator(); iterator1.hasNext();) {
 
                     ContentField contentField = (ContentField) iterator1.next();
                     if (contentField instanceof ContentPageField) {
@@ -762,7 +760,7 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
                         ContentPage contentPage = ((ContentPageField) contentField).getContentPage(EntryLoadRequest.STAGED);
                         if (contentPage != null) {
                             if (contentPage.getPageType(EntryLoadRequest.STAGED) == JahiaPage.TYPE_DIRECT) {
-                                List li=new ArrayList();
+                                List<Locale> li=new ArrayList<Locale>();
                                 li.add(processingContext.getLocale());
                                 EntryLoadRequest lr = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0,
                                         li, org.jahia.settings.SettingsBean.getInstance().isDisplayMarkedForDeletedContentObjects());

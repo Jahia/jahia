@@ -70,7 +70,7 @@ public abstract class ContentBean extends AbstractJahiaObjectBean {
      */
     public abstract String getBeanType();
     
-    public abstract Map getActionURIBeans();
+    public abstract Map<String, ActionURIBean> getActionURIBeans();
     
     public abstract boolean isCompletelyLocked();
     

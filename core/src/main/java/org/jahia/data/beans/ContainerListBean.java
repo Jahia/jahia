@@ -85,9 +85,9 @@ public class ContainerListBean extends ContentBean {
 
     private JahiaContainerList jahiaContainerList;
     private ContentContainerList contentContainerList;
-    private List containers;
+    private List<ContainerBean> containers;
     private ContainerBean parentContainerBean;
-    private Map actionURIs;
+    private Map<String, ActionURIBean> actionURIs;
     private boolean completelyLocked = false;
     private boolean independantWorkflow = false;
     private int groupWorkflowState = 0;
@@ -131,7 +131,7 @@ public class ContainerListBean extends ContentBean {
             final Map<String, Integer> languagesStates = workflowService.getLanguagesStates(theList);
             Integer languageState = languagesStates.get(
                     processingContext.getLocale().toString());
-            final Integer sharedLanguageState = (Integer) languagesStates.
+            final Integer sharedLanguageState = languagesStates.
                     get(ContentObject.SHARED_LANGUAGE);
             if (languageState != null && languageState.intValue() != -1) {
                 if (sharedLanguageState != null &&
@@ -161,7 +161,7 @@ public class ContainerListBean extends ContentBean {
     public List<Integer> getContainerIdsInList(final EntryLoadRequest loadRequest) {
         final int id = getID();
         if (id == 0) {
-            return new ArrayList(0);
+            return new ArrayList<Integer>(0);
         }
         try {
             return jahiaContainersService.getctnidsInList(id, loadRequest);
@@ -190,12 +190,12 @@ public class ContainerListBean extends ContentBean {
         return jahiaContainerList.size();
     }
 
-    public List getContainerBeans() {
+    public List<ContainerBean> getContainerBeans() {
         if (containers != null) {
             return containers;
         }
-        final Iterator containerEnum = jahiaContainerList.getContainers();
-        containers = new ArrayList();
+        final Iterator<JahiaContainer> containerEnum = jahiaContainerList.getContainers();
+        containers = new ArrayList<ContainerBean>();
         while (containerEnum.hasNext()) {
             final JahiaContainer jahiaContainer = (JahiaContainer) containerEnum.next();
             final ContainerBean containerBean = new ContainerBean(jahiaContainer, processingContext);
@@ -204,14 +204,14 @@ public class ContainerListBean extends ContentBean {
         return containers;
     }
 
-    public List getContainers() {
+    public List<ContainerBean> getContainers() {
         return getContainerBeans();
     }
 
     public ContainerBean getContainerByID(final int containerID) {
-        final Iterator containerIter = getContainers().iterator();
+        final Iterator<ContainerBean> containerIter = getContainers().iterator();
         while (containerIter.hasNext()) {
-            final ContainerBean curContainerBean = (ContainerBean) containerIter.next();
+            final ContainerBean curContainerBean = containerIter.next();
             if (curContainerBean.getID() == containerID) {
                 return curContainerBean;
             }
@@ -226,9 +226,9 @@ public class ContainerListBean extends ContentBean {
 //        if (containerUUID.indexOf('/')>0) {
 //            containerUUID = containerUUID.substring(0, containerUUID.indexOf('/'));
 //        }
-        final Iterator containerIter = getContainers().iterator();
+        final Iterator<ContainerBean> containerIter = getContainers().iterator();
         while (containerIter.hasNext()) {
-            final ContainerBean curContainerBean = (ContainerBean) containerIter.next();
+            final ContainerBean curContainerBean = containerIter.next();
             try {
                 ContentContainer contentContainer = curContainerBean.getJahiaContainer().getContentContainer();
                 if (containerUUID.equals(contentContainer.getProperty("uuid"))) {
@@ -359,7 +359,7 @@ public class ContainerListBean extends ContentBean {
         return jahiaContainerList.getctndefid();
     }
 
-    public Map getActionURIBeans() {
+    public Map<String, ActionURIBean> getActionURIBeans() {
         if (actionURIs == null) {
             buildActionURIs();
         }
@@ -378,11 +378,9 @@ public class ContainerListBean extends ContentBean {
             buildActionURIs();
         }
         if (!completelyLocked) {
-            final Iterator actionURIIter = actionURIs.entrySet().iterator();
             boolean partiallyLocked = false;
-            while (actionURIIter.hasNext()) {
-                final Map.Entry curActionURIEntry = (Map.Entry) actionURIIter.next();
-                final ActionURIBean curActionURIBean = (ActionURIBean) curActionURIEntry.getValue();
+            for (final Map.Entry<String, ActionURIBean> curActionURIEntry : actionURIs.entrySet()) {
+                final ActionURIBean curActionURIBean = curActionURIEntry.getValue();
                 if (curActionURIBean.isLocked()) {
                     partiallyLocked = true;
                 }
@@ -412,7 +410,7 @@ public class ContainerListBean extends ContentBean {
     }
 
     private void buildActionURIs() {
-        actionURIs = new InsertionSortedMap();
+        actionURIs = new InsertionSortedMap<String, ActionURIBean>();
         final GuiBean guiBean = new GuiBean(processingContext);
         final HTMLToolBox htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         completelyLocked = true;

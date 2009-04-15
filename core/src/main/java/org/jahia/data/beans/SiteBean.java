@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.Set;
 
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.fields.LoadFlags;
@@ -49,6 +49,7 @@ import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.SiteLanguageMapping;
 import org.jahia.services.sites.SiteLanguageSettings;
 
 /**
@@ -111,14 +112,14 @@ public class SiteBean {
      * @todo FIXME complete object model loading to include sub container list
      * access
      */
-    public List getLightContainerLists(String name) {
-        List containerLists = new ArrayList();
+    public List<ContainerListBean> getLightContainerLists(String name) {
+        List<ContainerListBean> containerLists = new ArrayList<ContainerListBean>();
         try {
-            SortedSet containerListIDs = ServicesRegistry.getInstance().
+            Set<Integer> containerListIDs = ServicesRegistry.getInstance().
                     getJahiaContainersService().
                     getSiteTopLevelContainerListsIDsByName(
                             getId(), name, processingContext.getEntryLoadRequest());
-            Iterator containerListIDIter = containerListIDs.iterator();
+            Iterator<Integer> containerListIDIter = containerListIDs.iterator();
             while (containerListIDIter.hasNext()) {
                 Integer curContainerListID = (Integer) containerListIDIter.next();
                 JahiaContainerList curContainerList = ServicesRegistry
@@ -142,14 +143,14 @@ public class SiteBean {
         }
     }
 
-    public List getAllContainerLists(String name) {
-        List containerLists = new ArrayList();
+    public List<ContainerListBean> getAllContainerLists(String name) {
+        List<ContainerListBean> containerLists = new ArrayList<ContainerListBean>();
         try {
-            SortedSet containerListIDs = ServicesRegistry.getInstance().
+            Set<Integer> containerListIDs = ServicesRegistry.getInstance().
                     getJahiaContainersService().
                     getSiteTopLevelContainerListsIDsByName(
                             getId(), name, processingContext.getEntryLoadRequest());
-            Iterator containerListIDIter = containerListIDs.iterator();
+            Iterator<Integer> containerListIDIter = containerListIDs.iterator();
             while (containerListIDIter.hasNext()) {
                 Integer curContainerListID = (Integer) containerListIDIter.next();
                 JahiaContainerList curContainerList = ServicesRegistry.getInstance().getJahiaContainersService()
@@ -225,7 +226,7 @@ public class SiteBean {
         return jahiaSite.getHomePageID();
     }
 
-    public List getLanguageMappings() {
+    public List<SiteLanguageMapping> getLanguageMappings() {
         try {
             return jahiaSite.getLanguageMappings();
         } catch (JahiaException je) {
@@ -234,7 +235,7 @@ public class SiteBean {
         }
     }
 
-    public List getLanguageSettings() {
+    public List<SiteLanguageSettings> getLanguageSettings() {
         try {
             return jahiaSite.getLanguageSettings();
         } catch (JahiaException je) {

@@ -44,6 +44,8 @@ import java.io.Serializable;
  * Time: 15:37:55
  */
 public class HistoryBean implements Serializable {
+
+    private static final long serialVersionUID = 1724028111779019468L;
     private int pid;
     private String pageTitle;
     private String url;

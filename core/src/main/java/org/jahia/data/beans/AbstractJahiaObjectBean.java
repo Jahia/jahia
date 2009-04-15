@@ -57,7 +57,7 @@ public abstract class AbstractJahiaObjectBean {
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(AbstractJahiaObjectBean.class);
 
-    private static Map jahiaObjectToBeanClassNames = new HashMap();
+    private static Map<String, String> jahiaObjectToBeanClassNames = new HashMap<String, String>();
 
     /**
      * Registers a new mapping for a sub class of JahiaObject in the factory
@@ -105,9 +105,9 @@ public abstract class AbstractJahiaObjectBean {
                                              jahiaObject.getClass().getName() + "]");
         }
         try {
-            Class childClass = Class.forName( (String) jahiaObjectToBeanClassNames.
-                                             get(jahiaObject.getClass().getName()));
-            Class[] childClassParameters = new Class[2];
+            Class<? extends AbstractJahiaObjectBean> childClass = Class.forName( jahiaObjectToBeanClassNames.
+                                             get(jahiaObject.getClass().getName())).asSubclass(AbstractJahiaObjectBean.class);
+            Class<?>[] childClassParameters = new Class[2];
             childClassParameters[0] = JahiaObject.class;
             childClassParameters[1] = ProcessingContext.class;
             java.lang.reflect.Method childClassMethod = childClass.

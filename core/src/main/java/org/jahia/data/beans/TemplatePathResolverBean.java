@@ -71,7 +71,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
  * @author Sergiy Shyrkov
  * @see JahiaTemplateManagerService
  */
-public class TemplatePathResolverBean extends LookupBaseBean {
+public class TemplatePathResolverBean extends LookupBaseBean<String, String> {
 
     public static final String REQUEST_ATTRIBUTE_NAME = "templatePathLookup";
 

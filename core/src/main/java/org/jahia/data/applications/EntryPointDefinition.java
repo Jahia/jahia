@@ -34,6 +34,8 @@
  package org.jahia.data.applications;
 
 import javax.portlet.PortletMode;
+import javax.portlet.WindowState;
+
 import java.util.List;
 
 /**
@@ -75,5 +77,5 @@ public interface EntryPointDefinition {
      * Get the supported WindowState for this entry point definition.
      * @return List a list of WindowState objects.
      */
-    public List getWindowStates();
+    public List<WindowState> getWindowStates();
 }

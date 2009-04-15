@@ -81,7 +81,7 @@ public class FieldBean extends ContentBean {
     private JahiaField jahiaField;
     private ContentField contentField;
     private Properties properties;
-    private Map actionURIs;
+    private Map<String, ActionURIBean> actionURIs;
     private boolean completelyLocked = false;
     private boolean independantWorkflow = false;
     private boolean independantWorkflowInitialized = false;
@@ -207,8 +207,8 @@ public class FieldBean extends ContentBean {
             return properties;
         }
         properties = new Properties();
-        final Map fieldProps = jahiaField.getProperties();
-        final Iterator propNameEnum = fieldProps.keySet().iterator();
+        final Map<Object, Object> fieldProps = jahiaField.getProperties();
+        final Iterator<?> propNameEnum = fieldProps.keySet().iterator();
         while (propNameEnum.hasNext()) {
             final String curPropName = (String) propNameEnum.next();
             final String curPropValue = (String) fieldProps.get(curPropName);
@@ -276,7 +276,7 @@ public class FieldBean extends ContentBean {
         return jahiaField.getWorkflowState();
     }
 
-    public Map getActionURIBeans() {
+    public Map<String, ActionURIBean> getActionURIBeans() {
         if (actionURIs == null) {
             buildActionURIs();
         }
@@ -295,11 +295,9 @@ public class FieldBean extends ContentBean {
             buildActionURIs();
         }
         if (!completelyLocked) {
-            final Iterator actionURIIter = actionURIs.entrySet().iterator();
             boolean partiallyLocked = false;
-            while (actionURIIter.hasNext()) {
-                final Map.Entry curActionURIEntry = (Map.Entry) actionURIIter.next();
-                final ActionURIBean curActionURIBean = (ActionURIBean) curActionURIEntry.getValue();
+            for (final Map.Entry<String, ActionURIBean> curActionURIEntry : actionURIs.entrySet()) {
+                final ActionURIBean curActionURIBean = curActionURIEntry.getValue();
                 if (curActionURIBean.isLocked()) {
                     partiallyLocked = true;
                 }
@@ -336,7 +334,7 @@ public class FieldBean extends ContentBean {
                         theField);
                 Integer languageState = languagesStates.get(
                         processingContext.getLocale().toString());
-                final Integer sharedLanguageState = (Integer) languagesStates.get(
+                final Integer sharedLanguageState = languagesStates.get(
                         ContentObject.SHARED_LANGUAGE);
                 if (languageState != null && languageState.intValue() != -1) {
                     if (sharedLanguageState != null &&
@@ -418,7 +416,7 @@ public class FieldBean extends ContentBean {
     }
 
     private void buildActionURIs() {
-        actionURIs = new InsertionSortedMap();
+        actionURIs = new InsertionSortedMap<String, ActionURIBean>();
         final GuiBean guiBean = new GuiBean(processingContext);
         final HTMLToolBox htmlToolBox = new HTMLToolBox(guiBean, processingContext);
         completelyLocked = true;

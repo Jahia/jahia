@@ -36,6 +36,7 @@ package org.jahia.engines.validation;
 import org.apache.commons.validator.Field;
 import org.apache.commons.validator.Form;
 import org.apache.commons.validator.ValidatorResources;
+import org.apache.derby.diag.ErrorMessages;
 import org.apache.struts.validator.Resources;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;
@@ -167,8 +168,10 @@ public class EngineValidationHelper {
 
         final EngineMessages result = new EngineMessages();
         for (ValidationError error : getErrors()) {
-            result.add(property, new EngineMessage(error
-                    .getRessourceBundleProp(), error.getValues()));
+            result.add(property,
+                    error.getRessourceBundleProp() != null ? new EngineMessage(
+                            error.getRessourceBundleProp(), error.getValues())
+                            : new EngineMessage(error.getMsgError(), false));
         }
 
         return result;

@@ -162,7 +162,7 @@ public class EngineMessages {
             List<EngineMessage> messagesByProperty = getMessages(property);
             if (messagesByProperty != null) {
                 for (EngineMessage engineMessage : messagesByProperty) {
-                    msgs.add(property, engineMessage.toActionMessage());
+                    msgs.add(property, engineMessage);
                 }
             }
         }

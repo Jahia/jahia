@@ -782,7 +782,7 @@ public class WAIValidator {
         if (fors.size() > 0) {
             for (int i = 0; i < fors.size(); i++) {
                 final ValidationError ve = new ValidationError(this,
-                        "They are no 'id' attribute in any 'input' element for attribute 'for' (" +
+                        "There is no 'id' attribute in any 'input' element for attribute 'for' (" +
                                 fors.get(i) + "). Check all your 'label' elements in the 'form'");
                 errors.add(ve);
             }

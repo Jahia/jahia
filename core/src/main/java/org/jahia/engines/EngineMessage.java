@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -32,8 +32,6 @@
  */
 
  package org.jahia.engines;
-
-import java.io.Serializable;
 
 import org.apache.struts.action.ActionMessage;
 
@@ -47,53 +45,26 @@ import org.apache.struts.action.ActionMessage;
  * @version 1.0
  */
 
-public class EngineMessage implements Serializable {
+public class EngineMessage extends ActionMessage {
 
-    private final String key;
-    private final Object[] values;
-
-    public EngineMessage () {
-        this (null, null);
+    public EngineMessage() {
+        this((String)null);
+    }
+    
+    
+    public EngineMessage(String key) {
+        super(key);
     }
 
-    public EngineMessage (String key) {
-        this (key, null);
+    public EngineMessage(String key, boolean resource) {
+        super(key, resource);
     }
 
-    public EngineMessage (String key, Object... value1) {
-        this.key = key;
-        this.values = value1;
+    public EngineMessage(String key, Object... values) {
+        super(key, values);
     }
 
-
-    public String getKey () {
-        return key;
-    }
-
-    public Object[] getValues () {
-        return values;
-    }
-
-    public String toString() {
-        final StringBuffer buff = new StringBuffer();
-        buff.append("org.jahia.engines.EngineMessage").
-                append(" key: ").append(key).append(" values: ");
-        if (values != null) {
-            for (int i=0; i<values.length; i++) {
-                buff.append(values[i]);
-                buff.append(", ");
-            }
-        } else {
-            buff.append("null");
-        }
-        return buff.toString();
-    }
-
-    public boolean equals (Object o) {
-        return this.toString().equals(o.toString());
-    }
-
-    public ActionMessage toActionMessage() {
-        return new ActionMessage(getKey(), getValues());
+    public EngineMessage(String key, String... values) {
+        super(key, values);
     }
 }

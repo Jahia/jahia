@@ -187,7 +187,7 @@ public class MessageTag extends TagSupport {
             } else if (name != null) {
                 final EngineMessage message = (EngineMessage) pageContext.findAttribute(name);
                 if (message != null) {
-                    resValue = MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(), currentLocale), message.getValues());
+                    resValue = message.isResource() ? MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(), currentLocale), message.getValues()) : message.getKey();
                 } else {
                     logger.error("Couldn't find any EngineMessage bean with name " + name + "!");
                 }

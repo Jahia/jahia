@@ -1,27 +1,17 @@
 package org.jahia.services.importexport;
 
-import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import junit.framework.TestResult;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.test.TestHelper;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.custommonkey.xmlunit.*;
 import org.xml.sax.InputSource;
 
-import java.util.Properties;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 
@@ -53,7 +43,7 @@ public class ImportTest extends XMLTestCase {
         ImportExportService exportService = ServicesRegistry.getInstance().getImportExportService();
         exportService.importDocument(site.getHomeContentPage(), ctx.getLocale().toString(),
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
-                importResult, new HashMap<String,String>(), null,null, importedMapping);
+                importResult, xxcscs, new HashMap<String,String>(), null,null, importedMapping);
 
         assertEquals("Invalid status code : "+importResult.getStatus(), ImportResult.COMPLETED_OPERATION_STATUS, importResult.getStatus());
         assertEquals(importResult.getWarnings().size() + " warnings",importResult.getWarnings().size(), 0);

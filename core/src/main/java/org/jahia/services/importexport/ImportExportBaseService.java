@@ -115,6 +115,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.NodeIterator;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.nodetype.NodeType;
 import javax.transaction.Status;
 import javax.xml.parsers.ParserConfigurationException;
@@ -755,6 +756,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, Integer> sizes = new HashMap<String, Integer>();
         List<String> fileList = new ArrayList<String>();
 
+        Map<String,String> uuidMapping = new HashMap<String,String>();
+        Map<String,String> references = new HashMap<String,String>();
+
         NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
         while (true) {
             ZipEntry zipentry = zis.getNextEntry();
@@ -776,7 +780,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zis.reallyClose();
 
         boolean hasRepositoryFile = false;
-        Map<String, String> pathMapping = null;
+        Map<String, String> pathMapping = new HashMap<String, String>();
 
         zis = new NoCloseZipInputStream(new FileInputStream(file));
         while (true) {
@@ -798,8 +802,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             if (name.equals(REPOSITORY_XML)) {
                 hasRepositoryFile = true;
                 DocumentViewImportHandler documentViewImportHandler = new DocumentViewImportHandler(jParams, file, fileList);
+
+                documentViewImportHandler.setUuidMapping(uuidMapping);
+                documentViewImportHandler.setReferences(references);
+                documentViewImportHandler.setPathMapping(pathMapping);
+
                 handleImport(zis, documentViewImportHandler);
-                pathMapping = documentViewImportHandler.getPathMapping();
+
                 break;
             }
             zis.closeEntry();
@@ -971,9 +980,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 zipentry.getSize();
                 if (obj == null) {
-                    obj = importDocument(parent, locale, jParams, zis, false, setUuid, actions, result, pathMapping, null, null, importedMapping);
+                    obj = importDocument(parent, locale, jParams, zis, false, setUuid, actions, result, uuidMapping, pathMapping, null, null, importedMapping);
                 } else {
-                    importDocument(obj, locale, jParams, zis, true, setUuid, actions, result, pathMapping, null, null, importedMapping);
+                    importDocument(obj, locale, jParams, zis, true, setUuid, actions, result, uuidMapping, pathMapping, null, null, importedMapping);
                 }
             }
             zis.closeEntry();
@@ -982,6 +991,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         categoriesImportHandler.setUuidProps(catProps);
         usersImportHandler.setUuidProps(userProps);
+
+        resolveCrossReferences(uuidMapping, references, jParams.getUser());
 
         return obj;
     }
@@ -1074,7 +1085,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-    public ContentObject importDocument(ContentObject parent, String lang, ProcessingContext jParams, InputStream inputStream, boolean updateOnly, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result, Map<String, String> pathMapping, Map<String, Map<String, String>> typeMapping, Map<String, String> tplMapping, Map<String, String> importedMapping) {
+    public ContentObject importDocument(ContentObject parent, String lang, ProcessingContext jParams, InputStream inputStream, boolean updateOnly, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result, Map<String, String> uuidMapping, Map<String, String> pathMapping, Map<String, Map<String, String>> typeMapping, Map<String, String> tplMapping, Map<String, String> importedMapping) {
         InputSource is = new InputSource(inputStream);
         JahiaUser oldUser = jParams.getUser();
         try {
@@ -1099,6 +1110,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             handler.setTypeMappings(typeMapping);
             handler.setTemplateMappings(tplMapping);
             handler.setImportedMappings(importedMapping);
+
+            handler.setUuidMapping(uuidMapping);
 
             parser.parse(is, handler);
             return handler.getLastObject();
@@ -1942,6 +1955,53 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public List importUsers(File file, JahiaSite site)
             throws IOException {
         return importUsers(file, new UsersImportHandler(site));
+    }
+
+    private void resolveCrossReferences(Map<String,String> uuidMapping, Map<String,String> references, JahiaUser user) {
+        System.out.println("--------- resolve crossrefs");
+        try {
+            JCRNodeWrapper refRoot = JCRStoreService.getInstance().getFileNode("/content/referencesKeeper", user);
+            NodeIterator ni = refRoot.getNodes();
+            while (ni.hasNext()) {
+                Node refNode = ni.nextNode();
+                String uuid = refNode.getProperty("j:originalUuid").getString();
+                if (uuidMapping.containsKey(uuid)) {
+                    String pName = refNode.getProperty("j:propertyName").getString();
+                    String refuuid = refNode.getProperty("j:node").getString();
+                    Node n = JCRStoreService.getInstance().getNodeByUUID(refuuid, user);
+                    n.setProperty(pName,uuidMapping.get(uuid));
+                    n.save();
+                    refNode.remove();
+                    refRoot.save();
+                }
+            }
+            for (String uuid : references.keySet()) {
+                if (uuidMapping.containsKey(uuid)) {
+                    String path = references.get(uuid);
+                    Node n = JCRStoreService.getInstance().getNodeByUUID(path.substring(0,path.lastIndexOf("/")), user);
+                    String pName = path.substring(path.lastIndexOf("/")+1);
+
+                    try {
+                        n.setProperty(pName,uuidMapping.get(uuid));
+                        n.save();
+                    } catch (ItemNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // store reference
+                    String path = references.get(uuid);
+                    JCRNodeWrapper r = refRoot.addNode("j:reference","jnt:reference");
+                    String refuuid = path.substring(0,path.lastIndexOf("/"));
+                    String pName = path.substring(path.lastIndexOf("/")+1);
+                    r.setProperty("j:node", refuuid);
+                    r.setProperty("j:propertyName", pName);
+                    r.setProperty("j:originalUuid", uuid);
+                    refRoot.save();
+                }
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
     }
 
 }

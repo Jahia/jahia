@@ -100,7 +100,7 @@ import java.util.*;
  */
 public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements JahiaService {
     private static final ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-    private static JahiaPreferencesProvider bookmarksPreferencesProvider;
+    private static JahiaPreferencesProvider<BookmarksJahiaPreference> bookmarksPreferencesProvider;
     private static final Logger logger = Logger.getLogger(JahiaContentServiceImpl.class);
 
     public String drawAddContainerUrl(GWTJahiaPageContext page, int parentConatainerId, String containerListName) {
@@ -349,10 +349,10 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
             return;
         }
         // get bookmarks provider
-        JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
+        JahiaPreferencesProvider<BookmarksJahiaPreference> jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
         // create a jahiaPreferenceKey
-        JahiaPreference jahiaPreferenceKey = jahiaPreferencesProvider.createJahiaPreferenceNode(retrieveParamBean(page));
+        JahiaPreference<BookmarksJahiaPreference> jahiaPreferenceKey = jahiaPreferencesProvider.createJahiaPreferenceNode(retrieveParamBean(page));
 
         // set preference
         jahiaPreferencesProvider.deleteJahiaPreference(jahiaPreferenceKey);
@@ -368,12 +368,12 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
         List<GWTJahiaBookmark> gwtBookmarks = new ArrayList<GWTJahiaBookmark>();
 
         // get bookmarks provider
-        JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
-        List<JahiaPreference> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaAllPreferences(getRemoteJahiaUser());
+        JahiaPreferencesProvider<BookmarksJahiaPreference> jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
+        List<JahiaPreference<BookmarksJahiaPreference>> jahiaPreferencesMap = jahiaPreferencesProvider.getJahiaAllPreferences(getRemoteJahiaUser());
         if (jahiaPreferencesMap != null) {
-            for (JahiaPreference jahiaPreference : jahiaPreferencesMap) {
+            for (JahiaPreference<BookmarksJahiaPreference> jahiaPreference : jahiaPreferencesMap) {
                 // current bookmark
-                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) jahiaPreference;
+                BookmarksJahiaPreference bPref = jahiaPreference.getNode();
 
                 // pid
                 try {
@@ -419,10 +419,10 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
      *
      * @return
      */
-    private JahiaPreferencesProvider getBookmarksJahiaPreferencesProvider() {
+    private JahiaPreferencesProvider<BookmarksJahiaPreference> getBookmarksJahiaPreferencesProvider() {
         try {
             if (bookmarksPreferencesProvider == null) {
-                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByType("bookmarks");
+                bookmarksPreferencesProvider = ServicesRegistry.getInstance().getJahiaPreferencesService().getPreferencesProviderByClass(BookmarksJahiaPreference.class);
             }
             return bookmarksPreferencesProvider;
         } catch (JahiaPreferenceProviderException e) {

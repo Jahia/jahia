@@ -35,6 +35,7 @@ package org.jahia.services.preferences.generic;
 
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeDecorator;
 
 import javax.jcr.RepositoryException;
 
@@ -43,7 +44,7 @@ import javax.jcr.RepositoryException;
  * Date: 27 mars 2008
  * Time: 16:30:31
  */
-public class GenericJahiaPreference extends JahiaPreference {
+public class GenericJahiaPreference extends JCRNodeDecorator {
 
     public GenericJahiaPreference(JCRNodeWrapper node) {
         super(node);

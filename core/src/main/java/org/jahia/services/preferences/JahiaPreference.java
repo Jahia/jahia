@@ -45,14 +45,12 @@ import java.security.Principal;
  * Date: 20 mars 2008
  * Time: 09:53:32
  */
-public abstract class JahiaPreference extends JCRNodeDecorator {
+public class JahiaPreference<T extends JCRNodeWrapper>  {
     private Principal principal;
-    public static String PRINCIPALE_TYPE_USER = "user";
-    public static String PRINCIPALE_TYPE_GROUP = "group";
+    private T node;
 
-
-    public JahiaPreference(JCRNodeWrapper node) {
-        super(node);
+    public JahiaPreference(T node) {
+        this.node = node;
     }
 
     public Principal getPrincipal() {
@@ -61,6 +59,10 @@ public abstract class JahiaPreference extends JCRNodeDecorator {
 
     public void setPrincipal(Principal thePrincipal) {
         this.principal = thePrincipal;
+    }
+
+    public T getNode() {
+        return node;
     }
 
     public boolean isEmpty() {

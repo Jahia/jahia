@@ -5,15 +5,13 @@
 <jnt = 'http://www.jahia.org/jahia/nt/1.0'>
 <jmix = 'http://www.jahia.org/jahia/mix/1.0'>
 
-[jnt:preferences] > nt:base, jmix:hierarchyNode
+[jnt:preferences] > nt:base, jmix:hierarchyNode, jmix:collection
 + * (jnt:preferenceProvider)
 
-[jnt:preferenceProvider] > nt:base, jmix:hierarchyNode
-+ * (jnt:preference) multiple
+[jnt:preferenceProvider] > nt:base, jmix:hierarchyNode, jmix:collection
++ * (nt:base) multiple
 
-[jnt:preference] > nt:base, jmix:hierarchyNode
-
-[jnt:toolbarPreference] > jnt:preference
+[jnt:toolbarPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:toolbarName (string)
 - j:type (string)
 - j:state (long)
@@ -22,23 +20,23 @@
 - j:positionY (long)
 - j:display (boolean)
 
-[jnt:simplePreference] > jnt:preference
+[jnt:simplePreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:prefName (string)
 - j:prefValue (string)
 
-[jnt:pagePreference] > jnt:preference
-- j:page (string)
+[jnt:pagePreference] > nt:base, jmix:hierarchyNode, jmix:collection
+- j:page (weakreference)
 - j:prefName (string)
 - j:prefValue (string)
 
-[jnt:bookmarkPreference] > jnt:preference
+[jnt:bookmarkPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:page (string)
 
-[jnt:layoutItemPreference] > jnt:preference
+[jnt:layoutItemPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:page (string)
 + j:layout (jnt:layout)
 
-[jnt:portletPreference] > jnt:preference
+[jnt:portletPreference] > nt:base, jmix:hierarchyNode, jmix:collection
 - j:portletName (string)
 - j:prefName (string)
 - j:readOnly (boolean)

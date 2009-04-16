@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * Time: 12:18:34
  * To change this template use File | Settings | File Templates.
  */
-public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
+public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements JahiaPreferencesProvider<T> {
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(JahiaPreferencesJCRProviders.class);
 
     // node name
@@ -40,6 +40,7 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
     // bean values
     private String type;
     private String nodeType;
+    private JCRStoreService jcrStoreService;
 
     public String getNodeType() {
         return nodeType;
@@ -55,6 +56,14 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
 
     public String getType() {
         return type;
+    }
+
+    public JCRStoreService getJCRStoreService() {
+        return jcrStoreService;
+    }
+
+    public void setJCRStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
     }
 
     /**
@@ -99,14 +108,19 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      */
     private JahiaPreference createJahiaPreference(Principal p, Node node) {
         try {
-            if (node instanceof JahiaPreference) {
-                JahiaPreference pref = (JahiaPreference) node;
-                pref.setPrincipal(p);
-                return pref;
-            } else {
-                logger.error(node.getClass() + " not instance of JahiaPreference");
-                return null;
-            }
+            JahiaPreference pref = new JahiaPreference((JCRNodeWrapper) node);
+            pref.setPrincipal(p);
+            return pref;
+
+
+//            if (node instanceof JahiaPreference) {
+//                JahiaPreference pref = (JahiaPreference) node;
+//                pref.setPrincipal(p);
+//                return pref;
+//            } else {
+//                logger.error(node.getClass() + " not instance of JahiaPreference");
+//                return null;
+//            }
         } catch (Exception e) {
             logger.error(e, e);
             return null;
@@ -140,7 +154,7 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      */
     public JahiaPreference getJahiaPreference(Principal principal, String xpathKey, boolean notNull) {
         logger.debug("Get preference -" + getType() + " - " + principal.getName() + " - " + xpathKey + "- ");
-        List<JahiaPreference> jahiaPreferences = findJahiaPreferences(principal, xpathKey);
+        List<JahiaPreference<T>> jahiaPreferences = findJahiaPreferences(principal, xpathKey);
         if (jahiaPreferences != null && !jahiaPreferences.isEmpty()) {
             return jahiaPreferences.get(0);
         }
@@ -156,7 +170,7 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      * @param principal
      * @return
      */
-    public List<JahiaPreference> getJahiaAllPreferences(Principal principal) {
+    public List<JahiaPreference<T>> getJahiaAllPreferences(Principal principal) {
         return findJahiaPreferences(principal, null);
     }
 
@@ -165,12 +179,12 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      * @param xpath
      * @return
      */
-    public List<JahiaPreference> findJahiaPreferences(Principal principal, String xpath) {
+    public List<JahiaPreference<T>> findJahiaPreferences(Principal principal, String xpath) {
         NodeIterator ni = findPreferenceNodeByJahiaPreferenceXPath(principal, xpath);
         if (ni == null) {
-            return new ArrayList<JahiaPreference>();
+            return new ArrayList<JahiaPreference<T>>();
         }
-        List<JahiaPreference> jahiaPreferenceList = new ArrayList<JahiaPreference>();
+        List<JahiaPreference<T>> jahiaPreferenceList = new ArrayList<JahiaPreference<T>>();
         while (ni.hasNext()) {
             Node currentPrefNode = ni.nextNode();
             jahiaPreferenceList.add(createJahiaPreference(principal, currentPrefNode));
@@ -184,7 +198,7 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
      * @param processingContext
      * @return
      */
-    public List<JahiaPreference> getAllJahiaPreferences(ProcessingContext processingContext) {
+    public List<JahiaPreference<T>> getAllJahiaPreferences(ProcessingContext processingContext) {
         return getJahiaAllPreferences(processingContext.getUser());
     }
 
@@ -227,8 +241,8 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
             return;
         }
         try {
-            Node parentNode = jahiaPreference.getParent();
-            jahiaPreference.remove();
+            Node parentNode = jahiaPreference.getNode().getParent();
+            jahiaPreference.getNode().remove();
             parentNode.save();
         } catch (RepositoryException re) {
             logger.error("Error while deleting preference " + jahiaPreference, re);
@@ -251,10 +265,11 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
                 deleteJahiaPreference(jahiaPreference);
                 return;
             }
-            jahiaPreference.getParent().save();
+            JCRNodeWrapper node = jahiaPreference.getNode();
+            node.getParent().save();
             logger.debug("Jahia preference [" + jahiaPreference + "] saved.");
 
-            logger.debug("[" + jahiaPreference.getPath() + JahiaPreferencesXpathHelper.convetToXpath2(jahiaPreference.getPropertiesAsString()) + "] saved.");
+            logger.debug("[" + node.getPath() + JahiaPreferencesXpathHelper.convetToXpath2(node.getPropertiesAsString()) + "] saved.");
         } catch (RepositoryException re) {
             logger.error("Error while setting preference " + jahiaPreference, re);
         }
@@ -358,15 +373,6 @@ public class JahiaPreferencesJCRProviders implements JahiaPreferencesProvider {
             principalName = ((JahiaGroup) principal).getGroupname();
         }
         return "content/users/" + principalName + "/preferences/";
-    }
-
-    /**
-     * Get the JCR store service
-     *
-     * @return
-     */
-    private JCRStoreService getJCRStoreService() {
-        return ServicesRegistry.getInstance().getJCRStoreService();
     }
 
     /**

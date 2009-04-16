@@ -42,7 +42,6 @@ public final class JCRClientUtils {
     public static final String FOLDER_NODETYPES = "nt:folder,jnt:mountPoint";
     public static final String FILE_NODETYPES = "nt:file,nt:folder,jnt:mountPoint,jnt:portlet";
     public static final String PORTLET_NODETYPES = "nt:folder,jnt:mountPoint,jnt:portlet";
-    public static final String GARBAGE_NODETYPES = "jnt:jahiacontent,jnt:systemRoot,jnt:jahiaVirtualsite";
 
     public final static String MY_REPOSITORY = "myRepository";
     public final static String MY_EXTERNAL_REPOSITORY = "myExternalRepository";

@@ -35,6 +35,7 @@ package org.jahia.services.applications.pluto;
 
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeDecorator;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -46,7 +47,7 @@ import javax.jcr.Value;
  * Time: 3:56:47 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JahiaPortletPreference extends JahiaPreference {
+public class JahiaPortletPreference extends JCRNodeDecorator {
     public JahiaPortletPreference(JCRNodeWrapper node) {
         super(node);
     }

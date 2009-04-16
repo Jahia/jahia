@@ -35,6 +35,7 @@ package org.jahia.services.preferences.bookmarks;
 
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeDecorator;
 
 import javax.jcr.RepositoryException;
 
@@ -43,7 +44,7 @@ import javax.jcr.RepositoryException;
  * Date: 15 mai 2008
  * Time: 16:24:45
  */
-public class BookmarksJahiaPreference extends JahiaPreference {
+public class BookmarksJahiaPreference extends JCRNodeDecorator {
     public BookmarksJahiaPreference(JCRNodeWrapper node) {
         super(node);
     }

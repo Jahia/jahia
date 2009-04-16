@@ -108,7 +108,7 @@ public class ImportJob extends BackgroundJob {
                 if (contentType.indexOf("zip")>0) {
                     imported = ServicesRegistry.getInstance().getImportExportService().importFile(target, context, inputStream, true, actions, result);
                 } else if ("text/xml".equals(contentType) || "application/xml".equals(contentType)) {
-                    imported = ServicesRegistry.getInstance().getImportExportService().importDocument(target, context.getLocale().toString(), context, inputStream, false, true, actions, result, null, null, null, null);
+                    imported = ServicesRegistry.getInstance().getImportExportService().importDocument(target, context.getLocale().toString(), context, inputStream, false, true, actions, result, null, null, null, null, null);
                 }
 
                 if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END)) ) {

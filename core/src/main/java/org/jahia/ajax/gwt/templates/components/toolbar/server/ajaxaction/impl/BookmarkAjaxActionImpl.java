@@ -42,6 +42,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.pages.ContentPage;
@@ -117,14 +118,15 @@ public class BookmarkAjaxActionImpl extends AjaxAction {
             JahiaPreferencesProvider jahiaPreferencesProvider = getBookmarksJahiaPreferencesProvider();
 
             // create a bookmarksJahiaPreferenceKey
-            BookmarksJahiaPreference bookmarksJahiaPreference = (BookmarksJahiaPreference) jahiaPreferencesProvider.createJahiaPreferenceNode(processingContext);
-            bookmarksJahiaPreference.setPageUUID(pageUUID);
+            JahiaPreference bookmarksJahiaPreference = jahiaPreferencesProvider.createJahiaPreferenceNode(processingContext);
+            BookmarksJahiaPreference node = (BookmarksJahiaPreference) bookmarksJahiaPreference.getNode();
+            node.setPageUUID(pageUUID);
 
 
             // set preference
             jahiaPreferencesProvider.setJahiaPreference(bookmarksJahiaPreference);
-            logger.debug("bookmark [pageID=" + bookmarksJahiaPreference.getPageUUID() + " added]");
-            return "bookmark [pageID=" + bookmarksJahiaPreference.getPageUUID() + " added]";
+            logger.debug("bookmark [pageID=" + node.getPageUUID() + " added]");
+            return "bookmark [pageID=" + node.getPageUUID() + " added]";
         } catch (Exception e) {
             logger.error(e, e);
             return null;

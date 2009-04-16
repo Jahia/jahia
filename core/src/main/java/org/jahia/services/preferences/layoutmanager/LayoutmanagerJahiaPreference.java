@@ -37,6 +37,7 @@ import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRLayoutNode;
 import org.jahia.services.content.JCRLayoutItemNode;
+import org.jahia.services.content.JCRNodeDecorator;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.PathNotFoundException;
@@ -47,7 +48,7 @@ import java.util.List;
  * Date: 26 mars 2008
  * Time: 10:05:34
  */
-public class LayoutmanagerJahiaPreference extends JahiaPreference {
+public class LayoutmanagerJahiaPreference extends JCRNodeDecorator {
     public static String PROVIDER_TYPE = "layoutmanager";
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LayoutmanagerJahiaPreference.class);
 

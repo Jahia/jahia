@@ -117,6 +117,7 @@ public class ImportHandler extends DefaultHandler {
     protected ProcessingContext jParams;
     protected Stack<ContentObject> objects;
     protected Map<String,ContentObject> objectMap;
+    protected Map<String,String> uuidMapping;
     protected Map<ACLResourceInterface, List<String>> links;
     protected List<Object[]> jahiaLinks;
     protected String language;
@@ -154,6 +155,7 @@ public class ImportHandler extends DefaultHandler {
         this.objects = new Stack<ContentObject>();
         this.currentObject = root;
         objectMap = new HashMap<String,ContentObject>();
+        uuidMapping = new HashMap<String,String>();
         links = new HashMap<ACLResourceInterface, List<String>>();
         jahiaLinks = new ArrayList<Object[]>();
         containerIndex = new HashMap<ContentObject, Integer>();
@@ -719,6 +721,7 @@ public class ImportHandler extends DefaultHandler {
             }
             if (currentObject != null) {
                 objectMap.put(uuid, currentObject);
+                uuidMapping.put(uuid, currentObject.getUUID());
             } else {
 //                ObjectKey parentKey = null;
 //                if (!objects.isEmpty() && objects.peek() != null) {
@@ -2021,6 +2024,12 @@ public class ImportHandler extends DefaultHandler {
 
     public void setPathMapping(Map<String, String> pathMapping) {
         this.pathMapping = pathMapping;
+    }
+
+    public void setUuidMapping(Map<String, String> uuidMapping) {
+        if (uuidMapping != null) {
+            this.uuidMapping = uuidMapping;
+        }
     }
 
     public void setTypeMappings(Map<String, Map<String, String>> typeMappings) {

@@ -42,14 +42,14 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.utils.zip.ZipEntry;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.Value;
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -76,6 +76,7 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private Map<String,String> uuidMapping = new HashMap<String,String>();
     private Map<String,String> pathMapping = new HashMap<String,String>();
+    private Map<String,String> references = new HashMap<String,String>();
 
     private String currentFilePath = null;
 
@@ -186,7 +187,12 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
                         } else if (attrName.equals(Constants.JCR_MIMETYPE)) {
 
+                        } else if (propDef.getRequiredType() == PropertyType.REFERENCE) {
+                            references.put(attrValue, child.getUUID()+"/"+attrName);
                         } else {
+                            if (propDef.getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                                references.put(attrValue, child.getUUID()+"/"+attrName);
+                            }
                             if (propDef.isMultiple()) {
                                 String[] s = "".equals(attrValue) ? new String[0] : attrValue.split(" ");
                                 Value[] v = new Value[s.length];
@@ -283,5 +289,21 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     public Map<String, String> getPathMapping() {
         return pathMapping;
+    }
+
+    public Map<String, String> getReferences() {
+        return references;
+    }
+
+    public void setUuidMapping(Map<String, String> uuidMapping) {
+        this.uuidMapping = uuidMapping;
+    }
+
+    public void setPathMapping(Map<String, String> pathMapping) {
+        this.pathMapping = pathMapping;
+    }
+
+    public void setReferences(Map<String, String> references) {
+        this.references = references;
     }
 }

@@ -35,6 +35,7 @@ package org.jahia.services.preferences;
 
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.preferences.exception.*;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import java.security.Principal;
 import java.util.Date;
@@ -46,7 +47,7 @@ import java.util.Map;
  * Date: 19 mars 2008
  * Time: 11:44:07
  */
-public interface JahiaPreferencesProvider {
+public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
 
     /**
      * Get the type of the provider. Each provider has a unique type.
@@ -63,7 +64,7 @@ public interface JahiaPreferencesProvider {
      * @param processingContext
      * @return
      */
-    abstract public JahiaPreference createJahiaPreferenceNode(ProcessingContext processingContext);
+    abstract public JahiaPreference<T> createJahiaPreferenceNode(ProcessingContext processingContext);
 
 
     /**
@@ -72,7 +73,7 @@ public interface JahiaPreferencesProvider {
      * @param principal
      * @return
      */
-    abstract public JahiaPreference createJahiaPreferenceNode(Principal principal);
+    abstract public JahiaPreference<T> createJahiaPreferenceNode(Principal principal);
 
 
     /**
@@ -81,7 +82,7 @@ public interface JahiaPreferencesProvider {
      * @throws JahiaPreferencesNotValidException
      *
      */
-    abstract public boolean validate(JahiaPreference jahiaPreference) throws JahiaPreferencesNotValidException;
+    abstract public boolean validate(JahiaPreference<T> jahiaPreference) throws JahiaPreferencesNotValidException;
 
 
     /**
@@ -92,7 +93,7 @@ public interface JahiaPreferencesProvider {
      * @throws JahiaPreferenceNotDefinedAttributeException
      *          if the jahia preference key attributes map contains a un-valid attributes.
      */
-    abstract public JahiaPreference getJahiaPreference(Principal principal, String xpathKey);
+    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String xpathKey);
 
 
     /**
@@ -102,7 +103,7 @@ public interface JahiaPreferencesProvider {
      * @param notNull
      * @return
      */
-    abstract public JahiaPreference getJahiaPreference(Principal principal, String xpathKey, boolean notNull);
+    abstract public JahiaPreference<T> getJahiaPreference(Principal principal, String xpathKey, boolean notNull);
 
 
     /**
@@ -112,7 +113,7 @@ public interface JahiaPreferencesProvider {
      * @param principal
      * @return
      */
-    abstract public List<JahiaPreference> getJahiaAllPreferences(Principal principal);
+    abstract public List<JahiaPreference<T>> getJahiaAllPreferences(Principal principal);
 
 
     /**
@@ -125,7 +126,7 @@ public interface JahiaPreferencesProvider {
      * @param xpath
      * @return
      */
-    abstract public List<JahiaPreference> findJahiaPreferences(Principal principal, String xpath);
+    abstract public List<JahiaPreference<T>> findJahiaPreferences(Principal principal, String xpath);
 
 
     /**
@@ -135,7 +136,7 @@ public interface JahiaPreferencesProvider {
      * @return list <preference> that contains all preferences of the principal.
      */
 
-    abstract public List<JahiaPreference> getAllJahiaPreferences(ProcessingContext processingContext);
+    abstract public List<JahiaPreference<T>> getAllJahiaPreferences(ProcessingContext processingContext);
 
     /**
      * Delete a jahia preference that has a key created from jahiaPreferenceKeyAttributes.
@@ -153,7 +154,7 @@ public interface JahiaPreferencesProvider {
      *
      * @param jahiaPreference
      */
-    abstract public void deleteJahiaPreference(JahiaPreference jahiaPreference);
+    abstract public void deleteJahiaPreference(JahiaPreference<T> jahiaPreference);
 
 
     /**
@@ -163,7 +164,7 @@ public interface JahiaPreferencesProvider {
      * @throws JahiaPreferencesNotValidException
      *
      */
-    abstract public void setJahiaPreference(JahiaPreference jahiaPreference);
+    abstract public void setJahiaPreference(JahiaPreference<T> jahiaPreference);
 
     /**
      * Set a jahia preference value. The jahia preference key object is created dynamically from the corresponding map.

@@ -159,7 +159,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
         if (jahiaPreferenceList != null) {
             for (JahiaPreference pref : jahiaPreferenceList) {
                 // current bookmark
-                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) pref;
+                BookmarksJahiaPreference bPref = (BookmarksJahiaPreference) pref.getNode();
                 try {
                     String pageUUID = bPref.getPageUUID();
                     ContentPage contentPage = getContentPage(pageUUID, jahiaData.getProcessingContext().getUser());
@@ -211,18 +211,20 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
             List<JahiaSite> sitesList = jahiaGroupManagerService.getAdminGrantedSites(jahiaData.getProcessingContext().getUser());
             if (sitesList != null && sitesList.size() > 1) {
                 for (JahiaSite site : sitesList) {
-                    GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
-                    // add to itemsgroup
-                    if (gwtToolbarItem != null) {
-                        String minIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
-                        String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
-                        gwtToolbarItem.setMediumIconStyle(maxIconStyle);
-                        gwtToolbarItem.setMinIconStyle(minIconStyle);
-                        if (jahiaData.getProcessingContext().getSiteID() == site.getID()) {
-                            gwtToolbarItem.setSelected(true);
+                    if (site.getHomePageID() > -1) {
+                        GWTJahiaToolbarItem gwtToolbarItem = createRedirectItem(jahiaData, site.getTitle(), site.getHomePage());
+                        // add to itemsgroup
+                        if (gwtToolbarItem != null) {
+                            String minIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
+                            String maxIconStyle = "gwt-toolbar-ItemsGroup-icons-site-min";
+                            gwtToolbarItem.setMediumIconStyle(maxIconStyle);
+                            gwtToolbarItem.setMinIconStyle(minIconStyle);
+                            if (jahiaData.getProcessingContext().getSiteID() == site.getID()) {
+                                gwtToolbarItem.setSelected(true);
+                            }
+                            // add to group lis
+                            gwtToolbarItemsList.add(gwtToolbarItem);
                         }
-                        // add to group lis
-                        gwtToolbarItemsList.add(gwtToolbarItem);
                     }
                 }
             }

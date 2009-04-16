@@ -35,6 +35,7 @@ package org.jahia.services.preferences.page;
 
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeDecorator;
 
 import javax.jcr.RepositoryException;
 
@@ -45,7 +46,7 @@ import javax.jcr.RepositoryException;
  * Time: 10:30:57
  * To change this template use File | Settings | File Templates.
  */
-public class PageJahiaPreference extends JahiaPreference {
+public class PageJahiaPreference extends JCRNodeDecorator {
 
     public PageJahiaPreference(JCRNodeWrapper node) throws RepositoryException {
         super(node);

@@ -2,15 +2,10 @@ package org.jahia.services.workflow;
 
 import junit.framework.TestCase;
 import org.jahia.bin.Jahia;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaAdminUser;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.importexport.ExtendedImportResult;
 import org.jahia.services.importexport.ImportAction;
 import org.jahia.services.importexport.ImportExportService;
-import org.jahia.services.importexport.ImportResult;
-import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.pages.JahiaPageBaseService;
@@ -21,16 +16,8 @@ import org.jahia.content.ObjectKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.test.TestHelper;
-import org.custommonkey.xmlunit.DifferenceListener;
-import org.custommonkey.xmlunit.Difference;
-import org.custommonkey.xmlunit.DifferenceConstants;
-import org.custommonkey.xmlunit.Diff;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 
 import java.util.*;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,7 +44,7 @@ public class WorkflowTest extends TestCase {
         ImportExportService exportService = ServicesRegistry.getInstance().getImportExportService();
         exportService.importDocument(site.getHomeContentPage(), ctx.getLocale().toString(),
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
-                importResult, new HashMap<String,String>(), null,null, importedMapping);
+                importResult, new HashMap<String,String>(), new HashMap<String,String>(), null,null, importedMapping);
 
         ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
 
@@ -95,7 +82,7 @@ public class WorkflowTest extends TestCase {
         ImportExportService exportService = ServicesRegistry.getInstance().getImportExportService();
         exportService.importDocument(site.getHomeContentPage(), ctx.getLocale().toString(),
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
-                importResult, new HashMap<String,String>(), null,null, importedMapping);
+                importResult, new HashMap<String,String>(), new HashMap<String,String>(), null,null, importedMapping);
 
         ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
 

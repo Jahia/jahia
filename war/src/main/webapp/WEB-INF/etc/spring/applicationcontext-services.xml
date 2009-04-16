@@ -126,13 +126,14 @@ FRAG2(frag_size=60000)</value>
     </bean>
     <bean id="JahiaPreferencesService" class="org.jahia.services.preferences.JahiaPreferencesService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="cacheService" ref="JahiaCacheService" />
+        <property name="jcrStoreService" ref="JCRStoreService" />
         <property name="providerTypes">
             <map>
                 <entry key="simple" value="jnt:simplePreference" />
                 <entry key="page" value="jnt:pagePreference"  />
                 <entry key="toolbar" value="jnt:toolbarPreference"  />
                 <entry key="portlet" value="jnt:portletPreference"  />
-                <entry key="layoutmanager" value="jnt:layoutItemPreference"  />
+                <entry key="layoutmanager" value="jnt:layout"  />
                 <entry key="bookmarks" value="jnt:bookmarkPreference"  />
             </map>
         </property>
@@ -770,7 +771,7 @@ FRAG2(frag_size=60000)</value>
                 <property name="repositoryName" value="alfresco"/>
             </bean>
         </property>
-        <property name="mountPoint" value="/content/entropy"/>
+        <property name="mountPoint" value="/content/shared/files/entropy"/>
         <property name="rmibind" value="entropy"/>
     </bean>
     -->
@@ -809,10 +810,10 @@ FRAG2(frag_size=60000)</value>
                         <entry key="nt:query" value="org.jahia.services.content.JCRQueryNode"/>
                         <entry key="jnt:mountPoint" value="org.jahia.services.content.JCRMountPointNode"/>
                         <entry key="jnt:jahiacontent" value="org.jahia.services.content.JCRJahiaContentNode"/>
+                        <entry key="jnt:layout" value="org.jahia.services.content.JCRLayoutNode"/>
 
                         <entry key="jnt:simplePreference" value="org.jahia.services.preferences.generic.GenericJahiaPreference"/>
                         <entry key="jnt:pagePreference" value="org.jahia.services.preferences.page.PageJahiaPreference"/>
-                        <entry key="jnt:layoutItemPreference" value="org.jahia.services.preferences.layoutmanager.LayoutmanagerJahiaPreference"/>
                         <entry key="jnt:toolbarPreference" value="org.jahia.services.preferences.toolbar.ToolbarJahiaPreference"/>                        
                         <entry key="jnt:bookmarkPreference" value="org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference"/>
                         <entry key="jnt:portletPreference" value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>

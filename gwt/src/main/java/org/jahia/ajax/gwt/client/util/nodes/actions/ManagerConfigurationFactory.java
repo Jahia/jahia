@@ -162,6 +162,7 @@ public class ManagerConfigurationFactory {
         completeManagerConfig.addAccordion(JCRClientUtils.MY_MASHUP_REPOSITORY);
         completeManagerConfig.addAccordion(JCRClientUtils.GLOBAL_REPOSITORY);
 
+        completeManagerConfig.setNodeTypes("");
 
         // show the current site (first) tab by default
 

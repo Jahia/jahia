@@ -30,6 +30,8 @@
         </j:acl>
     </layoutmanager>
 
+    <referencesKeeper jcr:primaryType="jnt:referencesKeeper" />
+
     <mounts jcr:primaryType="jnt:folder" >
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>

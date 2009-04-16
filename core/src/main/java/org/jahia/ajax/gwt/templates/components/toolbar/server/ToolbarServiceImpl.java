@@ -56,6 +56,7 @@ import org.jahia.params.ParamBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
+import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -328,17 +329,18 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
 
     private GWTJahiaState createJahiaToolbarState(GWTJahiaToolbar gwtToolbar, GWTJahiaState defaultState) {
         try {
-            ToolbarJahiaPreference preference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
+            JahiaPreference preference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
             if (preference == null) {
                 return defaultState;
             }
             logger.debug("Preference found for toolbar: " + gwtToolbar.getName());
+            ToolbarJahiaPreference node = (ToolbarJahiaPreference) preference.getNode();
             GWTJahiaState state = new GWTJahiaState();
-            state.setValue(preference.getState());
-            state.setIndex(preference.getToolbarIndex());
-            state.setPagePositionX(preference.getPositionX());
-            state.setPagePositionY(preference.getPositionY());
-            state.setDisplay(gwtToolbar.isMandatory() || preference.isDisplay());
+            state.setValue(node.getState());
+            state.setIndex(node.getToolbarIndex());
+            state.setPagePositionX(node.getPositionX());
+            state.setPagePositionY(node.getPositionY());
+            state.setDisplay(gwtToolbar.isMandatory() || node.isDisplay());
             return state;
 
         } catch (Exception e) {
@@ -349,20 +351,21 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
 
     }
 
-    private ToolbarJahiaPreference createToolbarPreference(GWTJahiaToolbar gwtToolbar) {
+    private JahiaPreference createToolbarPreference(GWTJahiaToolbar gwtToolbar) {
         JahiaUser remoteJahiaUser = getRemoteJahiaUser();
         try {
-            ToolbarJahiaPreference jahiaPreference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
+            JahiaPreference jahiaPreference = getToolbarPreference(gwtToolbar.getName(), gwtToolbar.getType());
             if (jahiaPreference == null) {
-                jahiaPreference = (ToolbarJahiaPreference) getToolbarJahiaPreferencesProvider().createJahiaPreferenceNode(remoteJahiaUser);
+                jahiaPreference = (JahiaPreference) getToolbarJahiaPreferencesProvider().createJahiaPreferenceNode(remoteJahiaUser);
             }
-            jahiaPreference.setToolbarName(gwtToolbar.getName());
-            jahiaPreference.setType(gwtToolbar.getType());
-            jahiaPreference.setState(gwtToolbar.getState().getValue());
-            jahiaPreference.setToolbarIndex(gwtToolbar.getState().getIndex());
-            jahiaPreference.setPositionX(gwtToolbar.getState().getPagePositionX());
-            jahiaPreference.setPositionY(gwtToolbar.getState().getPagePositionY());
-            jahiaPreference.setDisplay(gwtToolbar.getState().isDisplay());
+            ToolbarJahiaPreference node = (ToolbarJahiaPreference) jahiaPreference.getNode();
+            node.setToolbarName(gwtToolbar.getName());
+            node.setType(gwtToolbar.getType());
+            node.setState(gwtToolbar.getState().getValue());
+            node.setToolbarIndex(gwtToolbar.getState().getIndex());
+            node.setPositionX(gwtToolbar.getState().getPagePositionX());
+            node.setPositionY(gwtToolbar.getState().getPagePositionY());
+            node.setDisplay(gwtToolbar.getState().isDisplay());
             logger.debug("toolbar: " + gwtToolbar.getType() + "," + gwtToolbar.getName());
             return jahiaPreference;
         } catch (RepositoryException e) {
@@ -378,9 +381,9 @@ public class ToolbarServiceImpl extends AbstractJahiaGWTServiceImpl implements T
      * @param type
      * @return
      */
-    private ToolbarJahiaPreference getToolbarPreference(String name, String type) {
+    private JahiaPreference getToolbarPreference(String name, String type) {
         JahiaUser remoteJahiaUser = getRemoteJahiaUser();
-        return (ToolbarJahiaPreference) getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesXpathHelper.getToolbarXpath(name, type));
+        return getToolbarJahiaPreferencesProvider().getJahiaPreference(remoteJahiaUser, JahiaPreferencesXpathHelper.getToolbarXpath(name, type));
     }
 
 

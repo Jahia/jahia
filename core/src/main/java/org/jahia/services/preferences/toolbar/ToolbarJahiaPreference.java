@@ -35,6 +35,7 @@ package org.jahia.services.preferences.toolbar;
 
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeDecorator;
 
 import javax.jcr.RepositoryException;
 
@@ -43,7 +44,7 @@ import javax.jcr.RepositoryException;
  * Date: 9 avr. 2008
  * Time: 16:08:18
  */
-public class ToolbarJahiaPreference extends JahiaPreference {
+public class ToolbarJahiaPreference extends JCRNodeDecorator {
     public static final String PROVIDER_TYPE = "toolbar";
 
     public ToolbarJahiaPreference(JCRNodeWrapper node) {

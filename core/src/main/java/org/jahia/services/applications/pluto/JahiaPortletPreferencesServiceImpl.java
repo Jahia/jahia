@@ -97,7 +97,7 @@ public class JahiaPortletPreferencesServiceImpl implements PortletPreferencesSer
             List<InternalPortletPreference> portletPreferences = new ArrayList<InternalPortletPreference>();
 
             for (JahiaPreference currentPreference : foundPreferences) {
-                JahiaPortletPreference curPortletPreference = (JahiaPortletPreference) currentPreference;
+                JahiaPortletPreference curPortletPreference = (JahiaPortletPreference) currentPreference.getNode();
                 PortletPreferenceImpl portletPreferenceImpl = new PortletPreferenceImpl(curPortletPreference.getPrefName(), curPortletPreference.getValues(), curPortletPreference.getReadOnly());
                 portletPreferences.add(portletPreferenceImpl);
             }
@@ -132,11 +132,12 @@ public class JahiaPortletPreferencesServiceImpl implements PortletPreferencesSer
             JahiaPreferencesProvider portletPreferenceProvider = jahiaPreferencesService.getPreferencesProviderByType("portlet");
             for (InternalPortletPreference curPlutoPreference : preferences) {
                 String portletName = portletWindow.getContextPath() + "." + portletWindow.getPortletName();
-                JahiaPortletPreference portletPreference = (JahiaPortletPreference) portletPreferenceProvider.getJahiaPreference(request.getUserPrincipal(), JahiaPreferencesXpathHelper.getPortletXpath(portletName, curPlutoPreference.getName()));
+                JahiaPreference portletPreference = portletPreferenceProvider.getJahiaPreference(request.getUserPrincipal(), JahiaPreferencesXpathHelper.getPortletXpath(portletName, curPlutoPreference.getName()));
                 if (portletPreference == null) {
-                    portletPreference = (JahiaPortletPreference) portletPreferenceProvider.createJahiaPreferenceNode(request.getUserPrincipal());
-                    portletPreference.setPortletName(portletName);
-                    portletPreference.setPrefName(curPlutoPreference.getName());
+                    portletPreference = portletPreferenceProvider.createJahiaPreferenceNode(request.getUserPrincipal());
+                    JahiaPortletPreference node = (JahiaPortletPreference) portletPreference.getNode();
+                    node.setPortletName(portletName);
+                    node.setPrefName(curPlutoPreference.getName());
                 } else {
                     // if values == null then delete the corresponding preference
                     if (curPlutoPreference.getValues() == null) {
@@ -145,8 +146,9 @@ public class JahiaPortletPreferencesServiceImpl implements PortletPreferencesSer
                 }
                 // if values == null the pref is not saved
                 if (curPlutoPreference.getValues() != null) {
-                    portletPreference.setReadOnly(curPlutoPreference.isReadOnly());
-                    portletPreference.setValues(curPlutoPreference.getValues());
+                    JahiaPortletPreference node = (JahiaPortletPreference) portletPreference.getNode();
+                    node.setReadOnly(curPlutoPreference.isReadOnly());
+                    node.setValues(curPlutoPreference.getValues());
                     portletPreferenceProvider.setJahiaPreference(portletPreference);
                 }
             }

@@ -43,7 +43,7 @@ public class ImportTest extends XMLTestCase {
         ImportExportService exportService = ServicesRegistry.getInstance().getImportExportService();
         exportService.importDocument(site.getHomeContentPage(), ctx.getLocale().toString(),
                 ctx,getClass().getClassLoader().getResourceAsStream("imports/import.xml"), false, true, list,
-                importResult, xxcscs, new HashMap<String,String>(), null,null, importedMapping);
+                importResult, new HashMap<String,String>(), new HashMap<String,String>(), null,null, importedMapping);
 
         assertEquals("Invalid status code : "+importResult.getStatus(), ImportResult.COMPLETED_OPERATION_STATUS, importResult.getStatus());
         assertEquals(importResult.getWarnings().size() + " warnings",importResult.getWarnings().size(), 0);

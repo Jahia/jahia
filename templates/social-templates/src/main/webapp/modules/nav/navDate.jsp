@@ -2,6 +2,7 @@
 
 <template:cache cacheKey="fullListInOneEntry">
 <div class="archives">
+    <h3><fmt:message key="blog.nav.archives"/> </h3>
 <c:set var="previousYear" value="0000"/>
 <c:set var="previousMonth" value="00"/>
 <c:set var="counter" value="0"/>

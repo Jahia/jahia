@@ -141,6 +141,7 @@ body {
 	margin:0;
 	padding:0;
 	line-height:normal
+
 }
 
 #bodywrapper fieldset {
@@ -259,6 +260,7 @@ overflow:hidden;
 #bodywrapper #pageTop #logotop h1{
 color:#fff;
 }
+
 #bodywrapper #pageTop #logotop h1 a,
 #bodywrapper #pageTop #logotop h1 a:link,
 #bodywrapper #pageTop #logotop h1 a:visited  {
@@ -1094,6 +1096,8 @@ padding-bottom:1em;
 	padding:2px 0;
 	padding-left:24px;
 }
+
+
 /******************************************************************************
 * bookmarks Form 
 ******************************************************************************/

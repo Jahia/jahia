@@ -53,15 +53,19 @@
                     </div>
                 </li>
             </template:container>
+     </ul>
+    <div class="bookmarksForm">
             <template:containerForm var="bookmarkform">
-                <li>
-                    <label><fmt:message key="bookmark.url"/></label><input type="text" name="${bookmarkform['url'].name}">
-                    <label><fmt:message key="bookmark.name"/></label><input type="text" name="${bookmarkform['name'].name}">
-                    <label><fmt:message key="bookmark.note"/></label><input type="text" name="${bookmarkform['note'].name}">
-                    <input type="submit"/>
-                </li>
+                <h3><fmt:message key="bookmark.add"/></h3>
+                    <p class="field"><label><fmt:message key="bookmark.url"/></label><input type="text" name="${bookmarkform['url'].name}"></p>
+                    <p class="field"><label><fmt:message key="bookmark.name"/></label><input type="text" name="${bookmarkform['name'].name}"></p>
+                    <p class="field">
+                        <label><fmt:message key="bookmark.note"/></label>
+                        <textarea id="bookmarks_content" tabindex="14" name="${bookmarkform['note'].name}" cols="15" rows="4"></textarea>
+                    </p>
+                    <p class="bookmarks_button"><input class="button" type="submit" value="<fmt:message key='bookmark.add'/>"/></p>
             </template:containerForm>
 
         </template:containerList>
-    </ul>
+    </div>
 </div>

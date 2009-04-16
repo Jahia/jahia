@@ -1958,7 +1958,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private void resolveCrossReferences(Map<String,String> uuidMapping, Map<String,String> references, JahiaUser user) {
-        System.out.println("--------- resolve crossrefs");
         try {
             JCRNodeWrapper refRoot = JCRStoreService.getInstance().getFileNode("/content/referencesKeeper", user);
             NodeIterator ni = refRoot.getNodes();

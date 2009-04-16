@@ -718,7 +718,7 @@
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>quartz-all</artifactId>
-            <version>1.6.4</version>
+            <version>1.6.5</version>
         </dependency>
         <!--<dependency>
             <groupId>openjms</groupId>

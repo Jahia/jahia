@@ -90,6 +90,7 @@
                                 </c:if>
                                 <template:include page="modules/nav/addEntry.jsp"/>
                                 <template:include page="modules/filtersDisplay.jsp"/>
+                                <template:include page="modules/nav/navCategories.jsp"/>
                                 <template:include page="modules/searchForm.jsp"/>
                                 <template:include page="modules/aboutMe.jsp"/>
                                 <template:include page="modules/nav/navDate.jsp"/>

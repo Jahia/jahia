@@ -14,7 +14,7 @@
         <c:set var="tagCloudsString" value="${tagCloudsString},${keywords}"/>
         </template:container>
         <c:set var="listAllTags" value="${tagCloudsString}"/>
-        <c:set var="listTags" value="${functions:removeDupilcates(tagCloudsString, ',')}"/>
+        <c:set var="listTags" value="${functions:removeDuplicates(tagCloudsString, ',')}"/>
         <c:forTokens items="${listTags}" delims="," var="tag">
             <li><a class="tag${functions:countOccurences(tagCloudsString, tag)}0" href="${currentPage.url}?keyword=${tag}">${tag}</a></li>
         </c:forTokens>

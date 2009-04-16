@@ -1150,3 +1150,69 @@ padding-bottom:1em;
 #bodywrapper .bookmarksForm .bookmarks_button {
 	text-align:right
 }
+/******************************************************************************
+* Form Preferences
+******************************************************************************/
+
+#bodywrapper .formPreferences {
+	margin: 0;
+	padding: 0.5em 1em;
+	background: #e0e4e5;
+}
+#bodywrapper .formPreferences fieldset {
+	
+}
+#bodywrapper .formPreferences fieldset p {
+	padding:5px 0;
+}
+#bodywrapper .formPreferences fieldset p.field {
+	padding:5px 0;
+	margin: 0px;
+	width: auto; 
+	clear: left; 
+}
+#bodywrapper .formPreferences div.left {
+	padding: 0px 0px 0px 30%; 
+	width: auto; 
+	font-style: italic;
+	line-height:normal
+}
+
+#bodywrapper .formPreferences p label {
+	width: auto; 
+}
+#bodywrapper .formPreferences p.field label {
+	padding: 0 0 0 1%;
+	font-weight: bold;
+	float: left;
+	width: 29%;
+	display: block;
+	text-align: right;
+	margin-right:3px
+}
+
+#bodywrapper .formPreferences input {
+	border: #ccc 1px solid;
+	padding:3px;
+	background: #ffffff;
+	width: 200px;
+}
+#bodywrapper .formPreferences input.smallfield {
+	width: 40px;
+}
+
+#bodywrapper .formPreferences textarea {
+	border: #ccc 1px solid;
+	padding:2px;
+	background: #ffffff;
+	height: 115px
+}
+#bodywrapper .formPreferences textarea:focus {
+	background: #eaeaea
+}
+#bodywrapper .formPreferences input[type='text']:focus {
+	background: #eaeaea
+}
+#bodywrapper .formPreferences  .fp_button {
+	margin-left: 31%
+}

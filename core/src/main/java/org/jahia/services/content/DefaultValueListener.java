@@ -88,7 +88,7 @@ public class DefaultValueListener extends DefaultEventListener {
                 events.add(event);
             }
 
-            Session s = provider.getSystemSession(username);
+            Session s = provider.getSystemSession(username,workspace);
 
             Iterator<Event> it = events.iterator();
 
@@ -136,7 +136,9 @@ public class DefaultValueListener extends DefaultEventListener {
                         logger.error("Error when executing event",e);
                     }
                 }
-                s.save();
+                if (s.hasPendingChanges()) {
+                    s.save();
+                }
             } finally {
                 s.logout();
             }

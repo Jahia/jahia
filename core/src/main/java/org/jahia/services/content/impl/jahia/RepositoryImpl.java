@@ -105,10 +105,7 @@ public class RepositoryImpl implements Repository {
         if (jahiaUser == null) {
             throw new LoginException("User " + simpleCredentials.getUserID() + " not found");
         }
-//        if (!ServicesRegistry.getInstance().getJahiaUserManagerService().login(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()))) {
-//            throw new LoginException("User " + simpleCredentials.getUserID() + " couldn't login, invalid password ?");
-//        }
-
+       
         SessionImpl newSession = new SessionImpl(this, jahiaUser, key);
         Workspace workspace = new WorkspaceImpl(newSession, workspaceName);
         newSession.setWorkspace(workspace);

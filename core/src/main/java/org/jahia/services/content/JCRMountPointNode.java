@@ -34,6 +34,7 @@
 package org.jahia.services.content;
 
 import org.jahia.services.content.impl.vfs.VFSContentStoreProvider;
+import org.springframework.beans.BeanUtils;
 
 import javax.jcr.*;
 import javax.jcr.version.VersionException;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.beans.PropertyDescriptor;
 
 /**
  * Created by IntelliJ IDEA.
@@ -76,6 +78,18 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         return new ArrayList<JCRNodeWrapper>();
     }
 
+    public Node getNode(String s) throws PathNotFoundException, RepositoryException {
+        return getRootNode().getNode(s);
+    }
+
+    public NodeIterator getNodes() throws RepositoryException {
+        return getRootNode().getNodes();
+    }
+
+    public NodeIterator getNodes(String s) throws RepositoryException {
+        return getRootNode().getNodes(s);
+    }
+
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
         return getRootNode().addNode(name);
     }
@@ -90,14 +104,14 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             if (isNodeType("jnt:vfsMountPoint")) {
                 Map<String, Object> m = new HashMap<String, Object>();
                 m.put("root",getProperty("j:root").getString());
-                provider = getProvider().getService().mount(VFSContentStoreProvider.class, getPath(), getUUID(), m);
+                provider = mount(VFSContentStoreProvider.class, getPath(), getUUID(), m);
             }
         } else {
             provider = getProvider().getService().getDynamicMountPoints().get(getPath());
         }
 
         if (provider != null) {
-            return provider.getNodeWrapper("/", getUser());
+            return provider.getNodeWrapper("/", (JCRSessionWrapper) getSession());
         }
         return null;
     }
@@ -106,4 +120,29 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         getProvider().getService().unmount(getProvider());
         super.remove();
     }
+
+
+    public JCRStoreProvider mount(Class<? extends JCRStoreProvider> providerClass, String mountPoint, String key, Map<String, Object> params) throws RepositoryException {
+        JCRStoreProvider provider = null;
+        try {
+            provider = providerClass.newInstance();
+            provider.setUserManagerService(getProvider().getUserManagerService());
+            provider.setGroupManagerService(getProvider().getGroupManagerService());
+            provider.setSitesService(getProvider().getSitesService());
+            provider.setService(getProvider().getService());
+            provider.setKey(key);
+            provider.setMountPoint(mountPoint);
+            provider.setDynamicallyMounted(true);
+            for (String k : params.keySet()) {
+                PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(providerClass, k);
+                pd.getWriteMethod().invoke(provider, params.get(k));
+            }
+            provider.start();
+            return provider;
+        } catch (Exception e) {
+            throw new RepositoryException(e);
+        }
+    }
+
+
 }

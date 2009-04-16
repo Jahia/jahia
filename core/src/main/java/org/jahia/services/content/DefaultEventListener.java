@@ -52,6 +52,7 @@ public abstract class DefaultEventListener implements EventListener {
 
     protected Set<String> propertiesToIgnore;
     protected JCRStoreProvider provider;
+    protected String workspace;
 
     protected DefaultEventListener() {
         propertiesToIgnore = new HashSet<String>();
@@ -68,6 +69,10 @@ public abstract class DefaultEventListener implements EventListener {
 
     public void setProvider(JCRStoreProvider provider) {
         this.provider = provider;
+    }
+
+    public void setWorkspace(String workspace) {
+        this.workspace = workspace;
     }
 
     protected boolean isExternal(Event event) {

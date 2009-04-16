@@ -50,6 +50,7 @@ import javax.jcr.ValueFormatException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.jackrabbit.util.ISO8601;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.engines.search.SearchCriteria.DateValue;
 import org.jahia.engines.search.SearchCriteria.DocumentProperty;
@@ -178,29 +179,18 @@ public class FileSearchViewHandler extends AbstractSearchViewHandler {
                     + dateValue.getType() + "'");
         }
 
-        JCRStoreProvider jcrStore = JCRStoreService.getInstance()
-                .getMainStoreProvider();
-        ValueFactory factory = jcrStore.getValueFactory(ctx.getUser());
         try {
             if (greaterThanDate != null) {
                 addConstraint(constraints, "and", paramName
                         + " >= xs:dateTime('"
-                        + factory.createValue(
-                                DateUtils.dayStart(greaterThanDate))
-                                .getString() + "')");
+                        + ISO8601.format(DateUtils.dayStart(greaterThanDate)) + "')");
             }
             if (smallerThanDate != null) {
                 addConstraint(constraints, "and", paramName
                         + " <= xs:dateTime('"
-                        + factory
-                                .createValue(DateUtils.dayEnd(smallerThanDate))
-                                .getString() + "')");
+                        + ISO8601.format(DateUtils.dayEnd(smallerThanDate)) + "')");
             }
-        } catch (ValueFormatException e) {
-            logger.warn(e);
         } catch (IllegalStateException e) {
-            logger.warn(e);
-        } catch (RepositoryException e) {
             logger.warn(e);
         }
     }

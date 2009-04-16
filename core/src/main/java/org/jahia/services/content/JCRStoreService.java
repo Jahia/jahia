@@ -35,21 +35,19 @@ package org.jahia.services.content;
 
 import java.beans.PropertyDescriptor;
 import java.util.*;
+import java.io.IOException;
 
 import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import javax.jcr.query.RowIterator;
+
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModel;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Source;
 
-import javax.jcr.version.VersionException;
+import javax.security.auth.Subject;
+import javax.security.auth.callback.*;
+import javax.servlet.ServletContext;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -57,16 +55,19 @@ import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.params.ProcessingContext;
-import org.jahia.query.qom.QueryExecute;
-import org.jahia.query.qom.SelectorImpl;
 import org.jahia.services.JahiaService;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
 import org.jahia.api.Constants;
+import org.jahia.jaas.JahiaLoginModule;
+import org.jahia.jaas.JahiaPrincipal;
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -75,7 +76,7 @@ import org.xml.sax.ContentHandler;
  * User: toto
  * Date: 15 nov. 2007 - 15:18:34
  */
-public class JCRStoreService extends JahiaService {
+public class JCRStoreService extends JahiaService implements Repository, ServletContextAware {
     private static org.apache.log4j.Logger logger =
         org.apache.log4j.Logger.getLogger(JCRStoreService.class);
 
@@ -83,6 +84,9 @@ public class JCRStoreService extends JahiaService {
     private SortedMap<String,JCRStoreProvider> mountPoints = new TreeMap<String,JCRStoreProvider>();
     private SortedMap<String,JCRStoreProvider> dynamicMountPoints = new TreeMap<String,JCRStoreProvider>();
     private JahiaFieldXRefManager fieldXRefManager = null;
+    private JahiaUserManagerService userService;
+    private String servletContextAttributeName;
+    private ServletContext servletContext;
 
     private Map<String,String> decorators = new HashMap<String,String>();
 
@@ -96,6 +100,22 @@ public class JCRStoreService extends JahiaService {
             instance = new JCRStoreService();
         }
         return instance;
+    }
+
+    public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {
+        this.fieldXRefManager = fieldXRefManager;
+    }
+
+    public void setUserService(JahiaUserManagerService userManagerService) {
+        this.userService = userManagerService;
+    }
+
+    public void setServletContextAttributeName(String servletContextAttributeName) {
+        this.servletContextAttributeName = servletContextAttributeName;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 
     public void start() throws JahiaInitializationException {
@@ -112,10 +132,11 @@ public class JCRStoreService extends JahiaService {
         } catch (Exception e){
             logger.error("Repository init error",e);
         }
-    }
 
-    public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {
-        this.fieldXRefManager = fieldXRefManager;
+        if ((servletContextAttributeName != null) &&
+            (servletContext != null)) {
+            servletContext.setAttribute(servletContextAttributeName, this);
+        }
     }
 
     public Map<String, String> getDecorators() {
@@ -129,6 +150,10 @@ public class JCRStoreService extends JahiaService {
     public void stop() throws JahiaException {
     }
 
+    /**
+     * @deprecated
+     * @return
+     */
     public JCRStoreProvider getMainStoreProvider() {
         return mountPoints.get("/");
     }
@@ -147,6 +172,77 @@ public class JCRStoreService extends JahiaService {
         }
     }
 
+    //    private ThreadLocal systemSession = new ThreadLocal();
+    protected ThreadLocal<Map<String,JCRSessionWrapper>> userSession = new ThreadLocal<Map<String,JCRSessionWrapper>>();
+
+
+    protected JCRSessionWrapper getThreadSession(JahiaUser user) throws RepositoryException {
+        // thread user session might be inited/closed in an http filter, instead of keeping it
+
+
+        Map<String,JCRSessionWrapper> smap = userSession.get();
+        if (smap == null) {
+            smap = new HashMap<String,JCRSessionWrapper>();
+        }
+        userSession.set(smap);
+
+        String username;
+
+        if (JahiaUserManagerService.isGuest(user)) {
+            username = JahiaLoginModule.GUEST;
+        } else {
+            username = user.getUsername();
+        }
+
+//        try {
+//            if (s != null && !username.equals(s.getUserID())) {
+//                logger.error("Session is switching user, was :"+ s.getUserID() + " now :" + username);
+//                s.logout();
+//            }
+//        } catch (IllegalStateException e) {
+//            logger.error("Exception on session : "+e);
+//            s = null;
+//        }
+
+        JCRSessionWrapper s = smap.get(username);
+        if (s == null || !s.isLive()) {
+            if (!JahiaLoginModule.GUEST.equals(username)) {
+                s = login(org.jahia.jaas.JahiaLoginModule.getCredentials(username));
+                // should be done somewhere else, call can be quite expensive
+                deployNewUser(username);
+            } else {
+                s = login(org.jahia.jaas.JahiaLoginModule.getGuestCredentials());
+            }
+            smap.put(username, s);
+        } else {
+            s.refresh(true);
+        }
+        return s;
+    }
+
+    public JCRSessionWrapper getSystemSession() throws RepositoryException {
+        return login(JahiaLoginModule.getSystemCredentials());
+    }
+
+    public JCRSessionWrapper getSystemSession(String username) throws RepositoryException {
+        return login(JahiaLoginModule.getSystemCredentials(username));
+    }
+
+    public JCRSessionWrapper getSystemSession(String username, String workspace) throws RepositoryException {
+        return login(JahiaLoginModule.getSystemCredentials(username), workspace);
+    }
+
+    public void deployNewSite(JahiaSite site, JahiaUser user) throws RepositoryException {
+        for (JCRStoreProvider provider : providers.values()) {
+            provider.deployNewSite(site, user);
+        }
+    }
+
+    public void deployNewUser(String username) throws RepositoryException {
+        for (JCRStoreProvider provider : providers.values()) {
+            provider.deployNewUser(username);
+        }
+    }
 
     public void addProvider(String key, String mountPoint, JCRStoreProvider p) {
         providers.put(key, p);
@@ -168,28 +264,6 @@ public class JCRStoreService extends JahiaService {
         }
     }
 
-    public JCRStoreProvider mount(Class<? extends JCRStoreProvider> providerClass, String mountPoint, String key, Map<String, Object> params) throws RepositoryException {
-        JCRStoreProvider provider = null;
-        try {
-            provider = providerClass.newInstance();
-            provider.setUserManagerService(getMainStoreProvider().getUserManagerService());
-            provider.setGroupManagerService(getMainStoreProvider().getGroupManagerService());
-            provider.setSitesService(getMainStoreProvider().getSitesService());
-            provider.setService(this);
-            provider.setKey(key);
-            provider.setMountPoint(mountPoint);
-            provider.setDynamicallyMounted(true);
-            for (String k : params.keySet()) {
-                PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(providerClass, k);
-                pd.getWriteMethod().invoke(provider, params.get(k));
-            }
-            provider.start();
-            return provider;
-        } catch (Exception e) {
-            throw new RepositoryException(e);
-        }
-    }
-
     public boolean unmount(JCRStoreProvider p) {
         if (p != null && p.isDynamicallyMounted()) {
             p.stop();
@@ -198,6 +272,9 @@ public class JCRStoreService extends JahiaService {
         return false;
     }
 
+    /**
+     * @deprecated Use getThreadSession().getNode()
+     */
     public JCRNodeWrapper getFileNode(String path, JahiaUser user) {
         if (path != null) {
             if (path.startsWith("/")) {
@@ -234,7 +311,11 @@ public class JCRStoreService extends JahiaService {
                 }
             }
         }
-        return new JCRNodeWrapperImpl("?",null, null, null);
+        return new JCRNodeWrapperImpl("?", null, null);
+    }
+
+    public Map<String, JCRStoreProvider> getProviders() {
+        return providers;
     }
 
     public JCRStoreProvider getProvider(String path) {
@@ -294,12 +375,12 @@ public class JCRStoreService extends JahiaService {
     }
 
     public void closeAllSessions() {
-        for (JCRStoreProvider storeProvider : getMountPoints().values()) {
-            try {
-                storeProvider.closeThreadSession();
-            } catch (RepositoryException e) {
-                logger.warn("Cannot close session",e);
+        Map<String, JCRSessionWrapper> smap = userSession.get();
+        if (smap != null) {
+            for (Session s : smap.values()) {
+                s.logout();
             }
+            userSession.set(null);
         }
     }
 
@@ -406,62 +487,35 @@ public class JCRStoreService extends JahiaService {
         return w;
     }
 
-//    public Session login(JahiaUser user) throws LoginException, NoSuchWorkspaceException, RepositoryException {
-//
-//    }
-//
-//    public Session login(Credentials credentials, String workspaceName) throws LoginException, NoSuchWorkspaceException, RepositoryException {
-//        if (!(credentials instanceof SimpleCredentials)) {
-//            throw new LoginException("Only SimpleCredentials supported in this implementation");
-//        }
-//        SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
-//        String key = simpleCredentials.getUserID();
-//        JahiaUser jahiaUser;
-//        if (key.startsWith(JahiaLoginModule.SYSTEM)) {
-//            jahiaUser = ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdminUser(0);
-//        } else {
-//            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(key);
-//        }
-//        return login(jahiaUser);
-//    }
-//
-//    public Session login(Credentials credentials) throws LoginException, NoSuchWorkspaceException, RepositoryException {
-//        return login(credentials, null);
-//    }
-//
-//    public Session login(String workspaceName) throws LoginException, NoSuchWorkspaceException, RepositoryException {
-//        return login(null, workspaceName);
-//    }
-//
-//    public Session login() throws LoginException, NoSuchWorkspaceException, RepositoryException {
-//        return login(null, null);
-//    }
-
-
     public JCRNodeWrapper getNodeByUUID(String uuid, JahiaUser user) throws ItemNotFoundException, RepositoryException {
-        for (JCRStoreProvider provider : providers.values()) {
-            try {
-                Session session = provider.getThreadSession(user);
-                Node n = session.getNodeByUUID(uuid);
-                return provider.getNodeWrapper(n, user, session);
-            } catch (ItemNotFoundException ee) {
-            } catch (UnsupportedRepositoryOperationException uso) {
-                logger.debug("getNodeByUUID unsupported by : "+provider.getKey() + " / " + provider.getClass().getName());
-            }
-        }
-        throw new ItemNotFoundException(uuid);
+        return (JCRNodeWrapper) getThreadSession(user).getNodeByUUID(uuid);
     }
 
     public QueryManager getQueryManager(JahiaUser user) {
-        return new QueryManagerImpl(user, Jahia.getThreadParamBean());
+        try {
+            return getThreadSession(user).getWorkspace().getQueryManager();
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
     }
 
     public QueryManager getQueryManager(JahiaUser user,ProcessingContext context) {
-        return new QueryManagerImpl(user,context);
+        try {
+            return getThreadSession(user).getWorkspace().getQueryManager(context);
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
     }
 
     public QueryManager getQueryManager(JahiaUser user,ProcessingContext context,Properties properties) {
-        return new QueryManagerImpl(user,context, properties);
+        try {
+            return getThreadSession(user).getWorkspace().getQueryManager(context, properties);
+        } catch (RepositoryException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
     }
 
     /**
@@ -474,241 +528,73 @@ public class JCRStoreService extends JahiaService {
      */
     public QueryResult execute(QueryObjectModel queryObjectModel, JahiaUser user) throws InvalidQueryException,
                     RepositoryException {
+        return getThreadSession(user).getWorkspace().execute(queryObjectModel);
+    }
 
-        List<QueryResult> results = new ArrayList<QueryResult>();
-        for (JCRStoreProvider jcrStoreProvider : providers.values()) {
-            QueryManager qm = jcrStoreProvider.getQueryManager(user);
-            if (qm != null && qm instanceof org.jahia.query.qom.QueryManagerImpl)  {
-                QueryObjectModel qom = ((org.jahia.query.qom.QueryManagerImpl)qm).getQOMFactory()
-                        .createQuery(queryObjectModel.getSource(),
-                        queryObjectModel.getConstraint(),queryObjectModel.getOrderings(),queryObjectModel.getColumns());
-                if (qom != null){
-                    QueryResult result = qom.execute();
-                    if (result != null){
-                        results.add(result);
+
+    public String[] getDescriptorKeys() {
+        return new String[0];
+    }
+
+    public String getDescriptor(String s) {
+        return null;
+    }
+
+    public JCRSessionWrapper login(Credentials credentials, String workspace) throws LoginException, NoSuchWorkspaceException, RepositoryException {
+        if (!(credentials instanceof SimpleCredentials)) {
+            throw new LoginException("Only SimpleCredentials supported in this implementation");
+        }
+
+        final SimpleCredentials simpleCreds = (SimpleCredentials) credentials;
+
+        JahiaLoginModule m = new JahiaLoginModule();
+        Subject s = new Subject();
+        HashMap<String,?> sharedState = new HashMap<String,Object>();
+        HashMap<String,?> options = new HashMap<String,Object>();
+        m.initialize(s, new CallbackHandler() {
+            public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+                for (Callback callback : callbacks) {
+                    if (callback instanceof NameCallback) {
+                        ((NameCallback)callback).setName(simpleCreds.getUserID());
+                    } else if (callback instanceof PasswordCallback) {
+                        ((PasswordCallback)callback).setPassword(simpleCreds.getPassword());
+                    } else {
+                        throw new UnsupportedCallbackException(callback);
                     }
                 }
             }
+        }, sharedState, options);
+
+        try {
+            m.login();
+            m.commit();
+        } catch (javax.security.auth.login.LoginException e) {
+            throw new LoginException(e);
         }
-        return new QueryResultAdapter(results);
+
+        Set<JahiaPrincipal> p = s.getPrincipals(JahiaPrincipal.class);
+        for (JahiaPrincipal jahiaPrincipal : p) {
+            JahiaUser user;
+            if (jahiaPrincipal.isGuest()) {
+                user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+            } else {
+                user = userService.lookupUser(jahiaPrincipal.getName());
+            }
+            return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, this);
+        }
+        throw  new LoginException("Can't login");
     }
 
-    class QueryManagerImpl extends org.jahia.query.qom.QueryManagerImpl {
-
-        private JahiaUser user;
-
-        QueryManagerImpl(JahiaUser user) {
-            super(Jahia.getThreadParamBean());
-            this.user = user;
-        }
-
-        QueryManagerImpl(JahiaUser user, ProcessingContext context) {
-            super(context);
-            this.user = user;
-        }
-
-        QueryManagerImpl(JahiaUser user, ProcessingContext context, Properties properties) {
-            super(context,properties);
-            this.user = user;
-        }
-
-        public QueryExecute getQueryExecute() {
-            return new QueryExecute(){
-                public QueryResult execute(QueryObjectModel queryObjectModel) throws RepositoryException {
-                    List<QueryResult> results = new ArrayList<QueryResult>();
-                    String nodeType = "";
-                    Source source = queryObjectModel.getSource();
-                    if (source instanceof SelectorImpl) {
-                        nodeType = ((SelectorImpl)source).getNodeTypeName();
-                    } else if (source instanceof org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl) {
-                        nodeType = ((org.apache.jackrabbit.spi.commons.query.qom.SelectorImpl)source).getNodeTypeName();
-                    }
-                        
-                    for (JCRStoreProvider jcrStoreProvider : providers.values()) {
-                        QueryManager qm = jcrStoreProvider.getQueryManager(user);
-                        if (!Constants.JAHIANT_FILE.equals(nodeType) && qm != null && qm instanceof org.jahia.query.qom.QueryManagerImpl)  {
-                            QueryObjectModel qom = ((org.jahia.query.qom.QueryManagerImpl)qm).getQOMFactory()
-                                    .createQuery(queryObjectModel.getSource(),
-                                    queryObjectModel.getConstraint(),queryObjectModel.getOrderings(),queryObjectModel.getColumns());
-                            if (qom != null){
-                                QueryResult result = qom.execute();
-                                if (result != null){
-                                    results.add(result);
-                                }
-                            }
-                        } 
-/* not activated yet                        
-                        else if (Constants.JAHIANT_FILE.equals(nodeType)
-                                && qm != null
-                                && qm instanceof JCRStoreQueryManagerAdapter) {
-                            QueryObjectModel qom = ((JCRStoreQueryManagerAdapter) qm)
-                                    .getQOMFactory().createQuery(
-                                            queryObjectModel.getSource(),
-                                            queryObjectModel.getConstraint(),
-                                            queryObjectModel.getOrderings(),
-                                            queryObjectModel.getColumns());
-                            if (qom != null) {
-                                QueryResult result = qom.execute();
-                                if (result != null) {
-                                    results.add(result);
-                                }
-                            }
-                        } 
-*/
-                    }
-                    return new QueryResultAdapter(results);
-                }
-            };
-        }
-
-        public Query createQuery(String statement, String language) throws InvalidQueryException, RepositoryException {
-            return new QueryWrapper(statement, language, user);
-        }
-
-        public Query getQuery(Node node) throws InvalidQueryException, RepositoryException {
-            return new QueryWrapper(node, user);
-        }
-
-        public String[] getSupportedQueryLanguages() throws RepositoryException {
-            List<String> res = new ArrayList<String>();
-            for (JCRStoreProvider jcrStoreProvider : providers.values()) {
-                QueryManager qm = jcrStoreProvider.getQueryManager(user);
-                if (qm != null) {
-                    res.addAll(Arrays.asList(qm.getSupportedQueryLanguages()));
-                }
-            }
-            return res.toArray(new String[res.size()]);
-        }
+    public JCRSessionWrapper login(Credentials credentials) throws LoginException, RepositoryException {
+        return login(credentials, null);
     }
 
-    class QueryWrapper implements Query {
-        private String statement;
-        private String language;
-        private Map<JCRStoreProvider, Query> queries;
-        private Node node;
-        private JahiaUser user;
-
-        QueryWrapper(String statement, String language, JahiaUser user) throws InvalidQueryException, RepositoryException  {
-            this.statement = statement;
-            this.language = language;
-            this.user = user;
-            init();
-        }
-
-        QueryWrapper(Node node, JahiaUser user) throws InvalidQueryException, RepositoryException {
-            this.node = node;
-            this.statement = node.getProperty("jcr:statement").getString();
-            this.language = node.getProperty("jcr:language").getString();
-            this.user = user;
-            init();
-        }
-
-        private void init() throws InvalidQueryException, RepositoryException {
-            queries = new HashMap<JCRStoreProvider, Query>();
-
-            Collection<JCRStoreProvider> providers = JCRStoreService.this.providers.values();
-
-            if (language.equals(Query.XPATH)) {
-                if (!statement.startsWith("//")) {
-                    JCRStoreProvider p = getProvider("/"+statement);
-                    providers = Collections.singletonList(p);
-                }
-            }
-            for (JCRStoreProvider jcrStoreProvider : providers) {
-                QueryManager qm = jcrStoreProvider.getQueryManager(user);
-                if (qm != null) {
-                    queries.put(jcrStoreProvider, qm.createQuery(statement,language));
-                }
-            }
-        }
-
-        public QueryResult execute() throws RepositoryException {
-            for (Map.Entry<JCRStoreProvider,Query> entry : queries.entrySet()) {
-                // should gather results
-                return new QueryResultWrapper(entry.getKey(),entry.getValue().execute(), user);
-            }
-            throw new UnsupportedOperationException("No statement "+statement);
-        }
-
-        public String getStatement() {
-            return statement;
-        }
-
-        public String getLanguage() {
-            return language;
-        }
-
-        public String getStoredQueryPath() throws ItemNotFoundException, RepositoryException {
-            if (node == null) {
-                throw new ItemNotFoundException();
-            }
-            return node.getPath();
-        }
-
-        public Node storeAsNode(String s) throws ItemExistsException, PathNotFoundException, VersionException, ConstraintViolationException, LockException, UnsupportedRepositoryOperationException, RepositoryException {
-            String path = StringUtils.substringBeforeLast(s,"/");
-            String name = StringUtils.substringAfterLast(s,"/");
-            Node n = getFileNode(path, user);
-            node = n.addNode(name, "jnt:query");
-
-            node.setProperty("jcr:statement", statement);
-            node.setProperty("jcr:language", language);
-
-            return node;
-        }
+    public JCRSessionWrapper login(String workspace) throws LoginException, NoSuchWorkspaceException, RepositoryException {
+        return login(JahiaLoginModule.getGuestCredentials(), workspace);
     }
 
-    class QueryResultWrapper implements QueryResult {
-        private JCRStoreProvider provider;
-        private QueryResult result;
-        private JahiaUser user;
-
-        QueryResultWrapper(JCRStoreProvider provider, QueryResult result, JahiaUser user) {
-            this.provider = provider;
-            this.result = result;
-            this.user = user;
-        }
-
-        public String[] getColumnNames() throws RepositoryException {
-            return result.getColumnNames();
-        }
-
-        public RowIterator getRows() throws RepositoryException {
-            return result.getRows();
-        }
-
-        public NodeIterator getNodes() throws RepositoryException {
-            final NodeIterator ni = result.getNodes();
-            final Session session =  provider.getThreadSession(user);
-            return new NodeIterator() {
-                public Node nextNode() {
-                    return provider.getNodeWrapper(ni.nextNode(), user, session);
-                }
-
-                public void skip(long l) {
-                    ni.skip(l);
-                }
-
-                public long getSize() {
-                    return ni.getSize();
-                }
-
-                public long getPosition() {
-                    return ni.getPosition();
-                }
-
-                public boolean hasNext() {
-                    return ni.hasNext();
-                }
-
-                public Object next() {
-                    return nextNode();
-                }
-
-                public void remove() {
-                    ni.remove();
-                }
-            };
-        }
+    public JCRSessionWrapper login() throws LoginException, RepositoryException {
+        return login(null, null);
     }
+
 }

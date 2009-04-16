@@ -89,8 +89,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Exception exception = null;
 
-    protected JCRNodeWrapperImpl(String path, JahiaUser user, Session session, JCRStoreProvider provider) {
-        super(user, session, provider);
+    protected JCRNodeWrapperImpl(String path, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(session, provider);
         localPath = path;
         if (localPath != null) {
             if (localPath.endsWith("/")) {
@@ -103,8 +103,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         init(path,session);
     }
 
-    protected JCRNodeWrapperImpl(Node objectNode, JahiaUser user, Session session, JCRStoreProvider provider) {
-        super(user, session, provider);
+    protected JCRNodeWrapperImpl(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(session, provider);
         this.objectNode = objectNode;
         setItem(objectNode);
         try {
@@ -114,7 +114,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
-    private void init(String localPath, Session session) {
+    private void init(String localPath, JCRSessionWrapper session) {
         final Monitor mon;
         if (monitorLogger.isDebugEnabled()) {
             mon = MonitorFactory.start("org.jahia.services.content.JCRNodeWrapper.init");
@@ -124,9 +124,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             if (localPath != null) {
                 if (localPath.startsWith("/")) {
-                    objectNode = (Node) session.getItem(provider.encodeInternalName(localPath));
+                    objectNode = (Node) session.getProviderSession(provider).getItem(provider.encodeInternalName(localPath));
                 } else {
-                    objectNode = session.getNodeByUUID(localPath);
+                    objectNode = session.getProviderSession(provider).getNodeByUUID(localPath);
                     this.localPath = objectNode.getPath();
                 }
                 setItem(objectNode);
@@ -145,9 +145,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         if (localPath.equals("/")) {
-            return provider.getService().getFileNode(StringUtils.substringBeforeLast(provider.getMountPoint(),"/"), user);
+            return (Node) session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(),"/"));
         } else {
-            return provider.getNodeWrapper(objectNode.getParent(), user, session);
+            return provider.getNodeWrapper(objectNode.getParent(), session);
         }
     }
 
@@ -163,7 +163,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public JahiaUser getUser() {
-        return user;
+        return session.getUser();
     }
 
     public boolean isValid() {
@@ -184,7 +184,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
         JCRStoreProvider jcrStoreProvider = getProvider();
         if (jcrStoreProvider.isDynamicallyMounted()) {
-            return jcrStoreProvider.getService().getFileNode(jcrStoreProvider.getMountPoint(), user).isWriteable();
+            try {
+                return ((JCRNodeWrapper) session.getItem(jcrStoreProvider.getMountPoint())).isWriteable();
+            } catch (RepositoryException e) {
+                logger.error("Cannot get node",e);
+                return false;
+            }
         }
         return hasPermission(WRITE);
     }
@@ -199,10 +204,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     return true;
                 }
             } else if (WRITE.equals(perm)) {
-                session.checkPermission(objectNode.getPath(),  "set_property");
+                session.getProviderSession(provider).checkPermission(objectNode.getPath(),  "set_property");
                 return true;
             } else if (MANAGE.equals(perm)) {
-                session.checkPermission(objectNode.getPath(),  "set_property");
+                session.getProviderSession(provider).checkPermission(objectNode.getPath(),  "set_property");
                 return true;
             }
         } catch (AccessControlException e) {
@@ -254,7 +259,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public JCRNodeWrapper uploadFile(String name, final InputStream is, final String contentType) throws RepositoryException {
-        JCRNodeWrapper file = provider.getNodeWrapper(localPath + "/" + name, user);
+        JCRNodeWrapper file = provider.getNodeWrapper(localPath + "/" + name, session);
         if (!file.isValid()) {
             logger.debug("file " + name + " does not exist, creating...") ;
             file = addNode(name, JNT_FILE);
@@ -269,12 +274,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public JCRNodeWrapper addNode(String name) throws RepositoryException {
         Node n = objectNode.addNode(provider.encodeInternalName(name));
-        return provider.getNodeWrapper(n, user, session);
+        return provider.getNodeWrapper(n, session);
     }
 
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         Node n = objectNode.addNode(provider.encodeInternalName(name), type);
-        return provider.getNodeWrapper(n, user, session);
+        return provider.getNodeWrapper(n, session);
     }
 
     public JahiaFileField getJahiaFileField () {
@@ -313,6 +318,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             url.setURIStartingAtPath (true);
             fField.setDownloadUrl (url.toString ());
             fField.setThumbnailUrl(getThumbnailUrl("thumbnail"));
+            try {
+                if (hasProperty("j:width") && hasProperty("j:height")) {
+                    fField.setOrientation(getProperty("j:width").getLong() >= getProperty("j:height").getLong() ? "landscape" : "portrait");
+                }
+            } catch (RepositoryException e) {
+                logger.debug("Can't get orientation",e);
+            }
         } else {
             JahiaFile file = new JahiaFile (-1, // filemanager id
                     -1, // folder id
@@ -414,7 +426,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     if (mpp.equals("")) mpp="/";
                     if (mpp.equals(getPath())) {
                         JCRStoreProvider storeProvider = mountPoints.get(key);
-                        list.add(storeProvider.getNodeWrapper("/", user));
+                        list.add(storeProvider.getNodeWrapper("/", session));
                     }
                 }
             }
@@ -427,7 +439,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                JCRNodeWrapper child = provider.getNodeWrapper(node, user, session);
+                JCRNodeWrapper child = provider.getNodeWrapper(node, session);
                 if (child.getException () == null) {
                     list.add (child);
                 }
@@ -445,7 +457,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             Map<String, JCRStoreProvider> mountPoints = provider.getService().getMountPoints();
 
             if (mountPoints.containsKey(getPath()+"/"+name)) {
-                list.add(mountPoints.get(getPath()+"/"+name).getNodeWrapper("/", user));
+                list.add(mountPoints.get(getPath()+"/"+name).getNodeWrapper("/", session));
             }
         }
         if (exception != null) {
@@ -456,7 +468,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
-                JCRNodeWrapper child = provider.getNodeWrapper(node, user, session);
+                JCRNodeWrapper child = provider.getNodeWrapper(node, session);
                 if (child.getException () == null) {
                     list.add (child);
                 }
@@ -690,14 +702,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public Property getProperty(String name) throws javax.jcr.PathNotFoundException, javax.jcr.RepositoryException {
-        return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), user, session, provider);
+        return new JCRPropertyWrapperImpl(this, objectNode.getProperty(name), session, provider);
     }
 
     public PropertyIterator getProperties() throws RepositoryException {
         List<JCRPropertyWrapperImpl> res = new ArrayList<JCRPropertyWrapperImpl>();
         PropertyIterator pi = objectNode.getProperties();
         while (pi.hasNext()) {
-            res.add(new JCRPropertyWrapperImpl(this, pi.nextProperty(), user, session, provider));
+            res.add(new JCRPropertyWrapperImpl(this, pi.nextProperty(), session, provider));
         }
         return new PropertyIteratorImpl(res.iterator(), res.size());
     }
@@ -706,7 +718,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         List<JCRPropertyWrapperImpl> res = new ArrayList<JCRPropertyWrapperImpl>();
         PropertyIterator pi = objectNode.getProperties(s);
         while (pi.hasNext()) {
-            res.add(new JCRPropertyWrapperImpl(this, pi.nextProperty(), user, session, provider));
+            res.add(new JCRPropertyWrapperImpl(this, pi.nextProperty(), session, provider));
         }
         return new PropertyIteratorImpl(res.iterator(), res.size());
     }
@@ -730,7 +742,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public String getPropertyAsString(String namespace, String name) {
         try {
-            String pref = session.getNamespacePrefix(namespace);
+            String pref = objectNode.getSession().getNamespacePrefix(namespace);
             name = pref+":"+name;
             return getPropertyAsString(name);
         } catch (RepositoryException e) {
@@ -743,91 +755,91 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,s1), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,s1), session, provider);
     }
 
     public Property setProperty(String s, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,value), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,value), session, provider);
     }
 
     public Property setProperty(String s, Value value, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,i), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,i), session, provider);
     }
 
     public Property setProperty(String s, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s,values), user, session, provider);
+        return new JCRPropertyWrapperImpl(this, objectNode.setProperty(s,values), session, provider);
     }
 
     public Property setProperty(String s, Value[] values, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,values,i), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,values,i), session, provider);
     }
 
     public Property setProperty(String s, String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,strings), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,strings), session, provider);
     }
 
     public Property setProperty(String s, String[] strings, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,strings, i), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,strings, i), session, provider);
     }
 
     public Property setProperty(String s, String s1, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,s1), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,s1), session, provider);
     }
 
     public Property setProperty(String s, InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,inputStream), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,inputStream), session, provider);
     }
 
     public Property setProperty(String s, boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,b), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,b), session, provider);
     }
 
     public Property setProperty(String s, double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,v), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,v), session, provider);
     }
 
     public Property setProperty(String s, long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,l), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,l), session, provider);
     }
 
     public Property setProperty(String s, Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         if (exception != null) {
             return null;
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,calendar), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,calendar), session, provider);
     }
 
     public Property setProperty(String s, Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -837,7 +849,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (node instanceof JCRNodeWrapper) {
             node = ((JCRNodeWrapper)node).getRealNode();
         }
-        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,node), user, session, provider);
+        return new JCRPropertyWrapperImpl(this,  objectNode.setProperty(s,node), session, provider);
     }
 
     public boolean hasProperty(String s) throws RepositoryException {
@@ -853,7 +865,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return;
         }
 
-        String pref = session.getNamespacePrefix(namespace);
+        String pref = objectNode.getSession().getNamespacePrefix(namespace);
         String key = pref+":"+name;
         setProperty(key, value);
     }
@@ -864,7 +876,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
 
         try {
-            session.move(objectNode.getPath(), objectNode.getParent().getPath()+"/"+ provider.encodeInternalName(newName));
+            objectNode.getSession().move(objectNode.getPath(), objectNode.getParent().getPath()+"/"+ provider.encodeInternalName(newName));
         } catch (RepositoryException e) {
             logger.error(e) ;
         }
@@ -890,10 +902,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             String copyPath = provider.encodeInternalName(dest) + "/" + name;
             try {
-                Node copy = (Node) session.getItem(copyPath);
+                Node copy = (Node) objectNode.getSession().getItem(copyPath);
                 if (isFile()) {
                     copy.remove();
-                    session.move(objectNode.getPath(), copyPath);
+                    objectNode.getSession().move(objectNode.getPath(), copyPath);
                 } else {
                     for (JCRNodeWrapper jcrFileNodeWrapper : getChildren()) {
                         jcrFileNodeWrapper.moveFile(copyPath);
@@ -901,7 +913,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     objectNode.remove();
                 }
             } catch (PathNotFoundException e) {
-                session.move(objectNode.getPath(), copyPath);
+                objectNode.getSession().move(objectNode.getPath(), copyPath);
             }
         }
         return true;
@@ -912,7 +924,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean copyFile(String dest, String name) throws RepositoryException {
-        JCRNodeWrapper node = provider.getService().getFileNode(dest, user);
+        JCRNodeWrapper node = (JCRNodeWrapper) session.getItem(dest);
         boolean sameProvider = (provider.getKey().equals(node.getProvider().getKey()));
         if (!sameProvider) {
             copyFile(node, name);
@@ -924,7 +936,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean copyFile(JCRNodeWrapper dest, String name) throws RepositoryException {
-        JCRNodeWrapper copy = provider.getService().getFileNode(dest.getPath()+"/"+name,user);
+        JCRNodeWrapper copy = (JCRNodeWrapper) session.getItem(dest.getPath()+"/"+name);
         if (!copy.isValid()) {
             copy = dest.addNode(name, getPrimaryNodeTypeName());
         }
@@ -1018,7 +1030,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Lock lock = objectNode.lock(false,false);
             objectNode.setProperty("j:locktoken",lock.getLockToken());
-            session.removeLockToken(lock.getLockToken());
+            objectNode.getSession().removeLockToken(lock.getLockToken());
         } catch (RepositoryException e) {
             logger.error(e, e) ;
             return false;
@@ -1144,7 +1156,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Version v = objectNode.getVersionHistory().getVersion(name);
             Node frozen = v.getNode(Constants.JCR_FROZENNODE);
-            return provider.getNodeWrapper(frozen, user, session);
+            return provider.getNodeWrapper(frozen, session);
         } catch (RepositoryException e) {
             logger.error(e) ;
         }

@@ -36,7 +36,6 @@ package org.jahia.services.content;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
@@ -59,8 +58,8 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
     private JCRNodeWrapper node;
     private Property property;
 
-    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JahiaUser user, Session session, JCRStoreProvider provider) {
-        super(user, session, provider);
+    public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(session, provider);
         this.node = objectNode;
         this.property = property;
         try {
@@ -144,7 +143,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
     }
 
     public Node getNode() throws ValueFormatException, RepositoryException {
-        return provider.getService().getNodeByUUID(property.getString(), user);
+        return session.getNodeByUUID(property.getString());
     }
 
     public long getLength() throws ValueFormatException, RepositoryException {
@@ -161,6 +160,13 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
         if (name.equals("nt:hierarchyNode") && def.getName().equals("jcr:created")) {
             name = "mix:created";
         }
+        if (name.equals("nt:resource") && (def.getName().equals("jcr:mimeType") || def.getName().equals("jcr:encoding"))) {
+            name = "mix:mimeType";
+        }
+        if (name.equals("nt:resource") && def.getName().equals("jcr:lastModified")) {
+            name = "mix:lastModified";
+        }
+
         ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(name);
         ExtendedPropertyDefinition epd = ent.getPropertyDefinition(def.getName());
         return epd;
@@ -184,10 +190,6 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
 
     public int getDepth() throws RepositoryException {
         return property.getDepth();
-    }
-
-    public Session getSession() throws RepositoryException {
-        return property.getSession();
     }
 
     public boolean isNode() {

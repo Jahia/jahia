@@ -120,11 +120,15 @@ public class ValueImpl implements Value {
     }
 
     public long getLong() throws ValueFormatException, IllegalStateException, RepositoryException {
-        String s = getString();
-        try {
-            return Long.parseLong(s);
-        } catch (NumberFormatException e) {
-            throw new ValueFormatException(s);
+        if (getType() == PropertyType.DATE) {
+            return getDate().getTimeInMillis();
+        } else {
+            String s = getString();
+            try {
+                return Long.parseLong(s);
+            } catch (NumberFormatException e) {
+                throw new ValueFormatException(s);
+            }
         }
     }
 

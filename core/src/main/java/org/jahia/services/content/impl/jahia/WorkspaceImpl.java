@@ -68,10 +68,10 @@ public class WorkspaceImpl implements Workspace {
     public WorkspaceImpl(SessionImpl session, String name) throws NoSuchWorkspaceException {
         this.session = session;
         if (name == null) {
-            name = "staging";
+            name = "default";
         }
         this.name = name;
-        if ("staging".equals(name)) {
+        if ("default".equals(name)) {
             workflowState = 2;
         } else if ("live".equals(name)) {
             workflowState = 1;

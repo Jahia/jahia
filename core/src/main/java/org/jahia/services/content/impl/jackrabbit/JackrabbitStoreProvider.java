@@ -56,9 +56,9 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.JRCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * @author hollis
@@ -76,12 +76,12 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     public void stop() {
     }
 
-    public JCRNodeWrapper getNodeWrapper(String path, JahiaUser user, Session session) {
-        return getService().decorate(new JackrabbitNodeWrapper(path, user, session, this));
+    public JCRNodeWrapper getNodeWrapper(String path, JCRSessionWrapper session) {
+        return getService().decorate(new JackrabbitNodeWrapper(path, session, this));
     }
 
-    public JCRNodeWrapper getNodeWrapper(Node objectNode, JahiaUser user, Session session) {
-        return getService().decorate(new JackrabbitNodeWrapper(objectNode, user, session, this));
+    public JCRNodeWrapper getNodeWrapper(Node objectNode, JCRSessionWrapper session) {
+        return getService().decorate(new JackrabbitNodeWrapper(objectNode, session, this));
     }
 
     protected void registerCustomNodeTypes(Workspace ws) throws IOException, RepositoryException {

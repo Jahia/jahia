@@ -44,10 +44,7 @@ import org.jahia.api.Constants;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.lock.Lock;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeDefinition;
+import javax.jcr.nodetype.*;
 import javax.jcr.version.VersionException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
@@ -57,6 +54,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -198,6 +196,14 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                         return null;
                     }
                 }
+
+                public String getName() throws RepositoryException {
+                    return Constants.JCR_DATA;
+                }
+
+                public PropertyDefinition getDefinition() throws RepositoryException {
+                    return NodeTypeRegistry.getInstance().getNodeType(Constants.NT_RESOURCE).getPropertyDefinition(Constants.JCR_DATA);
+                }
             };
         } else if (s.equals(Constants.JCR_MIMETYPE)) {
             return new VFSPropertyImpl() {
@@ -212,13 +218,26 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
                         return null;
                     }
                 }
+
+                public String getName() throws RepositoryException {
+                    return Constants.JCR_MIMETYPE;
+                }
+
+                public PropertyDefinition getDefinition() throws RepositoryException {
+                    return NodeTypeRegistry.getInstance().getNodeType("mix:mimeType").getPropertyDefinition(Constants.JCR_MIMETYPE);
+                }
+
             };
         }
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public PropertyIterator getProperties() throws RepositoryException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List l = new ArrayList();
+        l.add(getProperty(Constants.JCR_DATA));
+        l.add(getProperty(Constants.JCR_MIMETYPE));
+
+        return new PropertyIteratorImpl(l.iterator(), l.size());
     }
 
     public PropertyIterator getProperties(String s) throws RepositoryException {
@@ -246,7 +265,7 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
     }
 
     public boolean hasProperty(String s) throws RepositoryException {
-        return s.equals("jcr:data") && s.equals("jcr:mimeType");
+        return s.equals("jcr:data") || s.equals("jcr:mimeType");
     }
 
     public boolean hasNodes() throws RepositoryException {
@@ -348,6 +367,22 @@ public class VFSContentNodeImpl extends VFSItemImpl implements Node {
 
     public boolean isLocked() throws RepositoryException {
         return false;
+    }
+
+    public String getPath() throws RepositoryException {
+        String s = content.getFile().getName().getPath().substring(((VFSRepositoryImpl)session.getRepository()).getRootPath().length());
+        if (!s.startsWith("/")) {
+            s = "/"+s;
+        }
+        return s+"/"+Constants.JCR_CONTENT;
+    }
+
+    public String getName() throws RepositoryException {
+        return Constants.JCR_CONTENT;
+    }
+
+    public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
+        return new VFSNodeImpl(content.getFile(), session);
     }
 
     class DataPropertyImpl extends VFSPropertyImpl {

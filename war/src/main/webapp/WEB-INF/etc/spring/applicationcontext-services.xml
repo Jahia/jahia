@@ -688,31 +688,37 @@ FRAG2(frag_size=60000)</value>
         <property name="service" ref="JCRStoreService"/>
     </bean>
 
+    <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop">
+        <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
+        <property name="homeDir" value="WEB-INF/var/repository"/>
+        <property name="userService" ref="JahiaUserManagerService"/>
+        <property name="groupService" ref="JahiaGroupManagerService"/>
+        <property name="sitesService" ref="JahiaSitesService"/>
+        <property name="servletContextAttributeName" value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" />
+    </bean>
+
     <bean id="DefaulJCRStoreProvider" class="org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider" parent="AbstractJCRStoreProvider">
         <property name="key" value="default"/>
-        <property name="repository">
-            <bean class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" init-method="start" destroy-method="stop">
-                <property name="configFile" value="WEB-INF/etc/repository/jackrabbit/repository.xml"/>
-                <property name="homeDir" value="WEB-INF/var/repository"/>
-                <property name="userService" ref="JahiaUserManagerService"/>
-                <property name="servletContextAttributeName" value="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" />
-            </bean>
-        </property>
+        <property name="repository" ref="jackrabbit"/>
         <property name="mountPoint" value="/"/>
         <property name="webdavPath" value="${jahia.deploy.war.contextPath}/repository/default"/>
         <property name="rmibind" value="jackrabbit"/>
 
         <property name="listeners">
-            <list>
-                <bean class="org.jahia.services.content.FieldReferenceListener"/>
-                <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
-                    <property name="ruleFiles" value="/repository/rules/files-rules.drl" />
-                    <property name="serverId" value="${cluster.node.serverId}"/>
-                </bean>
-                <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
-                <bean class="org.jahia.services.content.DefaultValueListener"/>
-                <bean class="org.jahia.services.content.CacheListener"/>
-            </list>
+            <map>
+                <entry key="default">
+                    <list>
+                        <bean class="org.jahia.services.content.FieldReferenceListener"/>
+                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                            <property name="ruleFiles" value="/repository/rules/files-rules.drl" />
+                            <property name="serverId" value="${cluster.node.serverId}"/>
+                        </bean>
+                        <bean class="org.jahia.services.content.textextraction.TextExtractionListener"/>
+                        <bean class="org.jahia.services.content.DefaultValueListener"/>
+                        <bean class="org.jahia.services.content.CacheListener"/>
+                    </list>
+                </entry>
+            </map>
         </property>
     </bean>
 
@@ -733,33 +739,29 @@ FRAG2(frag_size=60000)</value>
     <bean id="JahiaStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">
         <property name="key" value="jahia"/>
         <property name="rmibind" value="jahia"/>
-        <property name="workspace" value="staging"/>
         <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
+        <property name="workspace" value="default"/>
         <property name="listeners">
-            <list>
-                <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
-                    <property name="ruleFiles" value="/repository/rules/jahia-rules.drl" />
-                    <property name="serverId" value="${cluster.node.serverId}" />
-                </bean>
-            </list>
+            <map>
+                <entry key="default">
+                    <list>
+                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                            <property name="ruleFiles" value="/repository/rules/jahia-rules.drl" />
+                            <property name="serverId" value="${cluster.node.serverId}" />
+                        </bean>
+                    </list>
+                </entry>
+                <entry key="live">
+                    <list>
+                        <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
+                            <property name="ruleFiles" value="/repository/rules/jahialive-rules.drl" />
+                            <property name="serverId" value="${cluster.node.serverId}" />
+                        </bean>
+                    </list>
+                </entry>
+            </map>
         </property>
         <property name="mountPoint" value="/content/jahia"/>
-    </bean>
-
-    <bean id="JahiaLiveStoreProvider" class="org.jahia.services.content.impl.jahia.JahiaContentStoreProvider"  parent="AbstractJCRStoreProvider">
-        <property name="key" value="jahialive"/>
-        <property name="rmibind" value="jahia"/>
-        <property name="workspace" value="live"/>
-        <property name="processingContextFactory" ref="org.jahia.params.ProcessingContextFactory"/>
-        <property name="listeners">
-            <list>
-                <bean class="org.jahia.services.content.automation.RulesListener" init-method="start">
-                    <property name="ruleFiles" value="/repository/rules/jahialive-rules.drl" />
-                    <property name="serverId" value="${cluster.node.serverId}" />
-                </bean>
-            </list>
-        </property>
-        <property name="mountPoint" value="/content/jahialive"/>
     </bean>
 
     <!--
@@ -801,6 +803,7 @@ FRAG2(frag_size=60000)</value>
     <bean id="JCRStoreService" parent="proxyTemplate">
         <property name="target">
             <bean class="org.jahia.services.content.JCRStoreService" parent="jahiaServiceTemplate" factory-method="getInstance">
+                <property name="userService" ref="JahiaUserManagerService"/>
                 <property name="fieldXRefManager" ref="org.jahia.hibernate.manager.JahiaFieldXRefManager"/>
                 <property name="decorators">
                     <map>
@@ -819,6 +822,7 @@ FRAG2(frag_size=60000)</value>
                         <entry key="jnt:portletPreference" value="org.jahia.services.applications.pluto.JahiaPortletPreference"/>
                     </map>
                 </property>
+                <property name="servletContextAttributeName" value="jcrStoreService"/>
             </bean>
         </property>
     </bean>

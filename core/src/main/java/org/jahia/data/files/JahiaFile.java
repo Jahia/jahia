@@ -119,6 +119,7 @@ public class JahiaFile implements Serializable, Cloneable {
      */
     private String m_DownloadUrl = "#";
     private String m_ThumbnailUrl = "#";
+    private String m_Orientation = "";
     /**
      * the version id *
      */
@@ -311,6 +312,14 @@ public class JahiaFile implements Serializable, Cloneable {
 
     public void setThumbnailUrl(String dUrl) {
         m_ThumbnailUrl = dUrl;
+    }
+
+    public String getOrientation() {
+        return m_Orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        m_Orientation = orientation;
     }
 
     // Output Representation purpose

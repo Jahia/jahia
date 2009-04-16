@@ -37,6 +37,7 @@ import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRJahiaContentNode;
 import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
@@ -95,8 +96,11 @@ public class GetContainerTag extends AbstractJahiaTag implements ContainerSuppor
                 ctn = ContentContainer.getContainer(containerID);
             } else if (path != null) {
                 try {
-                    JCRJahiaContentNode jahiaContentNode = (JCRJahiaContentNode) JCRStoreService.getInstance().getFileNode(getPath(), jParams.getUser());
-                    ctn = (ContentContainer) jahiaContentNode.getContentObject();
+                    JCRNodeWrapper nodeWrapper = JCRStoreService.getInstance().getFileNode(getPath(), jParams.getUser());
+                    if (nodeWrapper.isValid() && nodeWrapper instanceof JCRJahiaContentNode) {
+                        JCRJahiaContentNode jahiaContentNode = (JCRJahiaContentNode) nodeWrapper;
+                        ctn = (ContentContainer) jahiaContentNode.getContentObject();
+                    }
                 } catch (Exception e) {
                     logger.error("Cannot use path",e);
                 }

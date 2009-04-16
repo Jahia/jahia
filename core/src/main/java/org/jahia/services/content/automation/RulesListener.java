@@ -239,7 +239,7 @@ public class RulesListener extends DefaultEventListener {
                 events.add(event);
             }
 
-            Session s = provider.getSystemSession(username);
+            Session s = provider.getSystemSession(username, workspace);
 
             Iterator<Event> it = events.iterator();
 
@@ -419,7 +419,7 @@ public class RulesListener extends DefaultEventListener {
 
         public void run() {
             try {
-                Session s = provider.getSystemSession(username);
+                Session s = provider.getSystemSession(username, workspace);
                 try {
                     List<Updateable> newDelayed = new ArrayList<Updateable>();
 

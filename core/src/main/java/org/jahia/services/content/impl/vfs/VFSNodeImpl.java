@@ -328,14 +328,14 @@ public class VFSNodeImpl extends VFSItemImpl implements Node {
         try {
             FileType fileType = fileObject.getType();
             if (fileType == FileType.FILE) {
-                return NodeTypeRegistry.getInstance().getNodeType("jnt:file");
+                return NodeTypeRegistry.getInstance().getNodeType("nt:file");
             } else if (fileType == FileType.FOLDER) {
-                return NodeTypeRegistry.getInstance().getNodeType("jnt:folder");
+                return NodeTypeRegistry.getInstance().getNodeType("nt:folder");
             }
         } catch (FileSystemException e) {
             throw new RepositoryException(e);
         }
-        return NodeTypeRegistry.getInstance().getNodeType("jnt:file");
+        return NodeTypeRegistry.getInstance().getNodeType("nt:file");
     }
 
     public NodeType[] getMixinNodeTypes() throws RepositoryException {

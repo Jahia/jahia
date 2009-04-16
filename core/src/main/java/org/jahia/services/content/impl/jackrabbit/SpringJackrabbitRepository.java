@@ -10,8 +10,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.api.user.JahiaUserService;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.jaas.JahiaLoginModule;
 import org.springframework.web.context.ServletContextAware;
@@ -41,6 +41,10 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     private Resource configFile;
     private Resource homeDir;
     private JahiaUserManagerService userService;
+    private JahiaGroupManagerService groupService;
+    private JahiaSitesService sitesService;
+
+
     private String servletContextAttributeName;
     private ServletContext servletContext;
 
@@ -66,6 +70,22 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
     public void setUserService(JahiaUserManagerService userService) {
         this.userService = userService;
+    }
+
+    public JahiaGroupManagerService getGroupService() {
+        return groupService;
+    }
+
+    public void setGroupService(JahiaGroupManagerService groupService) {
+        this.groupService = groupService;
+    }
+
+    public JahiaSitesService getSitesService() {
+        return sitesService;
+    }
+
+    public void setSitesService(JahiaSitesService sitesService) {
+        this.sitesService = sitesService;
     }
 
     public String getServletContextAttributeName() {
@@ -172,7 +192,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         public boolean isServerAdmin(String username) {
             JahiaUser user = userService.lookupUser(username);
             if (user != null) {
-                JahiaGroup admingroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(0, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+                JahiaGroup admingroup = groupService.lookupGroup(0, JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
                 return admingroup.isMember(user);
             }
             return false;
@@ -181,7 +201,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         public boolean isAdmin(String username, String site) {
             JahiaSite s = null;
             try {
-                s = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(site);
+                s = sitesService.getSiteByKey(site);
             } catch (JahiaException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -190,7 +210,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             }
             JahiaUser user = userService.lookupUser(username);
             if (user != null) {
-                JahiaGroup admingroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(s.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
+                JahiaGroup admingroup = groupService.lookupGroup(s.getID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
                 return admingroup.isMember(user);
             }
             return false;
@@ -206,7 +226,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             }
             int siteId = 0;
             try {
-                s = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(site);
+                s = sitesService.getSiteByKey(site);
                 if (s != null) {
                     siteId = s.getID();
                 }
@@ -214,7 +234,7 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
                 logger.error(e.getMessage(), e);
             }
             JahiaUser user = userService.lookupUser(username);
-            JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, groupname);
+            JahiaGroup group = groupService.lookupGroup(siteId, groupname);
             return (user != null) && (group != null) && group.isMember(user);
         }
 

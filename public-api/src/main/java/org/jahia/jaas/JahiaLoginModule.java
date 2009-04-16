@@ -161,6 +161,9 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public static Credentials getSystemCredentials(String username) {
+        if (username == null) {
+            return getSystemCredentials();
+        }
         return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(JahiaLoginModule.SYSTEM + username).toCharArray());
     }
 

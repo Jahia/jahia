@@ -48,6 +48,7 @@ import javax.jcr.Value;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -60,12 +61,12 @@ import org.jahia.services.usermanager.JahiaUser;
 public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
     private static final transient Logger logger = Logger.getLogger(JackrabbitNodeWrapper.class);
 
-    protected JackrabbitNodeWrapper(String localPath, JahiaUser user, Session session, JCRStoreProvider provider) {
-        super(localPath, user, session, provider);
+    protected JackrabbitNodeWrapper(String localPath, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(localPath, session, provider);
     }
 
-    protected JackrabbitNodeWrapper(Node objectNode, JahiaUser user, Session session, JCRStoreProvider provider) {
-        super(objectNode, user, session, provider);
+    protected JackrabbitNodeWrapper(Node objectNode, JCRSessionWrapper session, JCRStoreProvider provider) {
+        super(objectNode, session, provider);
     }
 
     public Map<String, List<String[]>> getAclEntries() {

@@ -56,7 +56,7 @@ public class JCRSiteListener extends JahiaEventListener {
     
     public void siteAdded(JahiaEvent je) {
         try {
-            ServicesRegistry.getInstance().getJCRStoreService().getMainStoreProvider().deployNewSite((JahiaSite) je.getObject(), je.getProcessingContext().getUser());
+            ServicesRegistry.getInstance().getJCRStoreService().deployNewSite((JahiaSite) je.getObject(), je.getProcessingContext().getUser());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -68,7 +68,7 @@ public class JCRSiteListener extends JahiaEventListener {
     @Override
     public void userAdded(JahiaEvent je) {
         try {
-            ServicesRegistry.getInstance().getJCRStoreService().getMainStoreProvider().deployNewUser(((JahiaUser) je.getObject()).getUsername());
+            ServicesRegistry.getInstance().getJCRStoreService().deployNewUser(((JahiaUser) je.getObject()).getUsername());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

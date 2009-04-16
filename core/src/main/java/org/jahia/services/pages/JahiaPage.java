@@ -1322,4 +1322,8 @@ public class JahiaPage implements PageInfoInterface, ACLResourceInterface, Compa
     public int getSiteID() {
         return mContentPage.getSiteID();
     }
+    
+    public String getURLKey() throws JahiaException {
+        return getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
+    }
 }

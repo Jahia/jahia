@@ -5215,4 +5215,8 @@ public class ContentPage extends ContentObject implements
         }
         return versionService;
     }
+    
+    public String getURLKey() throws JahiaException {
+        return getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
+    }
 }

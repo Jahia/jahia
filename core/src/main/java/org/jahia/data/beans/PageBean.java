@@ -531,6 +531,6 @@ public class PageBean extends ContentBean {
     }
 
     public String getUrlKey() throws JahiaException {
-        return jahiaPage.getProperty(PageProperty.PAGE_URL_KEY_PROPNAME);
+        return jahiaPage.getURLKey();
     }
 }

@@ -146,12 +146,12 @@ body {
 
 #bodywrapper fieldset {
 	padding:0.5em;
-	border:none;
+	border:1px solid #fff;
 }
 
 #bodywrapper legend{
 	text-transform:uppercase;
-	color:#ccc;
+	color:#0074D4;
 	padding:0 0.5em;
 	font-weight:bold
 }
@@ -545,17 +545,19 @@ color:#fff;
 #bodywrapper .post-title {
 	color: #0074d4;
 	font-size:1.8em;
+	margin:0;
+	padding:0;
 }
 
 #bodywrapper .post-info {
-	margin: 0.2em 0 0.2em 50px;
+	margin: 0 50px;
 }
 
 
 #bodywrapper .post-tags {
 	list-style: none;
-	margin: 0.2em 0 0.2em 50px;
-	padding: 3px 0;
+	margin: 0 50px;
+	padding: 0;
 }
 #bodywrapper .post-tags li {
 	display: inline;
@@ -585,37 +587,45 @@ color:#fff;
 #bodywrapper #search p{
 	margin:0;
 	padding:0;
-	background-color:#fff;
 	overflow:hidden;
-	border: 1px solid #ccc;
 	margin-bottom:1em;
 	height:1%;
 	clear:both
 }
 #bodywrapper #search fieldset {
-padding:0 ;
+	padding:0 ;
+	border:none;
 }
 #bodywrapper #search .search{
 	margin:0;
 	padding:0;
 	border:0px;
-	height:22px;
+	height:20px;
 	width:200px;
-	float:left
+	float:left;
+	border: 1px solid #ccc;
 }
 
 #bodywrapper #search .gobutton{
-	background-color:#fff;
-	border: none;
 	width: 30px;
 	height: 22px;
 	font: bold 13px Arial, Helvetica, sans-serif;
-	color: #0074d4;
 	vertical-align: middle;
 	float:right;
+	color: #fff;
+	text-decoration: none;
+	background: #0295d4 url(../img/gradient.png) repeat-x top left;
+	border: 1px solid #19507b;
 	margin:0;
 	padding:0;
+	cursor:pointer;
 }
+
+#bodywrapper #search .gobutton:hover {
+	color: #19507b;
+	background: #9acd34 url(../img/gradient-on.png) repeat-x top left !important;
+}
+
 /******************************************************************************
 * Categories
 ******************************************************************************/
@@ -1012,7 +1022,7 @@ padding:0 ;
 padding-bottom:1em;
 }
 #bodywrapper #comment-form fieldset {
-	border: none
+	border: none;
 }
 #bodywrapper #comment-form fieldset p {
 	padding:5px 0;
@@ -1024,7 +1034,7 @@ padding-bottom:1em;
 	clear: left; 
 }
 #bodywrapper #comment-form p.form-help {
-	padding: 0px 0px 0px 30%; 
+	padding: 0px 0px 0px 31%; 
 	width: auto; 
 	font-style: italic;
 	line-height:normal
@@ -1071,7 +1081,7 @@ padding-bottom:1em;
 }
 
 #bodywrapper #comment-form  p.c_button {
-	margin-left: 30%
+	margin-left: 31%
 }
 /******************************************************************************
 * comment previsualisation
@@ -1094,7 +1104,7 @@ padding-bottom:1em;
 #bodywrapper a.addArticle {
 	background: url(../img/addarticle.png) no-repeat;
 	padding:2px 0;
-	padding-left:24px;
+	padding-left:28px;
 }
 
 

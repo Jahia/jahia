@@ -41,26 +41,9 @@
     <div class="columnspace"><!--start columnspace -->
         <div class="mapshortcuts"><!--start bottomshortcuts-->
             <h4><fmt:message key="social_templates_lastComments.recent"/></h4>
-            <template:containerList name="lastComments" id="lastComments"
-                                    actionMenuNamePostFix="lastcommentss" actionMenuNameLabelKey="lastcommentss">
-                <template:container id="lastComments" cache="off" actionMenuNamePostFix="lastcomments"
-                                    actionMenuNameLabelKey="lastcomments.update">
-                    <template:field name="maxEntries" var="maxEntries" defaultValue="10" display="false"/>
-                    <c:if test="${requestScope.currentRequest.editMode}">
-                        <div class="preferences">
-                            <h5><fmt:message key="social_templates_lastComments.preferences"/></h5>
-
-                            <p class="preference-item"><span class="preference-label"><fmt:message
-                                    key="social_templates_lastComments.rowsDisplay"/>: </span><span
-                                    class="preference-value">${maxEntries.integer}</span></p>
-                        </div>
-                    </c:if>
-                    <c:set var="maxEntries" value="${maxEntries}"/>
-                </template:container>
-            </template:containerList>
             <ul class="footer-recent-comments">
             <c:set var="isComment" value="false"/>
-            <template:containerList maxSize="${maxEntries.integer}" id="newsList" displayActionMenu="false">
+            <template:containerList maxSize="${lastCommentsMaxEntries.integer}" id="newsList" displayActionMenu="false">
                 <query:containerQuery>
                     <query:selector nodeTypeName="jnt:comment" selectorName="comments"/>
                     <query:descendantNode selectorName="comments" path="${currentSite.JCRPath}"/>

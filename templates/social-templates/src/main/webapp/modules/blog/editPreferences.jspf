@@ -1,0 +1,111 @@
+<%--
+
+
+    This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+    Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 2
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+    As a special exception to the terms and conditions of version 2.0 of
+    the GPL (or any later version), you may redistribute this Program in connection
+    with Free/Libre and Open Source Software ("FLOSS") applications as described
+    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    describing the FLOSS exception, and it is also available here:
+    http://www.jahia.com/license
+
+    Commercial and Supported Versions of the program
+    Alternatively, commercial and supported versions of the program may be used
+    in accordance with the terms contained in a separate written agreement
+    between you and Jahia Limited. If you are unsure which license is appropriate
+    for your use, please contact the sales department at sales@jahia.com.
+
+--%>
+<%@ include file="../../common/declarations.jspf" %>
+<template:containerForm ignoreAcl="true" var="inputs" action="${currentPage.url}">
+    <fieldset>
+        <legend><fmt:message key="settings.display"/></legend>
+        <p class="field">
+            <label for="c_nameBlog"><fmt:message key="settings.display.blog.maxrows"/> :</label>
+            <input type="text" size="30" id="c_nameBlog" name="${inputs['blogPrefsMaxEntries'].name}"
+                   value="${blogPrefsMaxEntries.integer}" tabindex="20"/>
+        </p>
+
+        <p class="field">
+            <label for="c_nameLastcomments"><fmt:message key="settings.display.lastComments.maxrows"/> :</label>
+            <input type="text" size="30" id="c_nameLastcomments" name="${inputs['lastCommentsMaxEntries'].name}"
+                   value="${lastCommentsMaxEntries.integer}" tabindex="20"/>
+        </p>
+
+        <p class="field">
+            <label for="c_nameLastEntries"><fmt:message key="settings.display.lastEntries.maxrows"/> :</label>
+            <input type="text" size="30" id="c_nameLastEntries" name="${inputs['lastEntriesMaxEntries'].name}"
+                   value="${lastEntriesMaxEntries.integer}" tabindex="20"/>
+        </p>
+        </fieldset>
+            <fieldset>
+                <legend><fmt:message key="settings.user"/></legend>
+                <p class="field">
+                    <label for="c_lastname"><fmt:message key="settings.user.name"/> :</label>
+                    <input type="text" size="30" id="c_lastname" name="${inputs['lastname'].name}"
+                           value="${lastname}" tabindex="20"/>
+                </p>
+
+                <p class="field">
+                    <label for="c_firstname"><fmt:message key="settings.user.surname"/> :</label>
+                    <input type="text" size="30" id="c_firstname" name="${inputs['firstname'].name}"
+                           value="${firstname}" tabindex="20"/>
+                </p>
+
+                <%--<p class="field">
+                    <label for="c_birthdate"><fmt:message key="settings.user.birthdate"/> :</label>
+                    <input type="text" size="30" id="c_birthdate" name="${inputs['birthdate'].name}"
+                           value="${birthdate}" tabindex="20"/>
+                </p>--%>
+
+                <p class="field">
+                    <label for="mainContentBody"><fmt:message key="settings.user.description"/> :</label>
+                    <textarea rows="7" cols="35" id="mainContentBody" name="${inputs['description'].name}">
+                        ${description}
+                    </textarea>
+                </p>
+
+                <p class="field">
+                    <label for="c_picture"><fmt:message key="settings.user.picture"/> :</label>
+                    <input type="file" size="10" id="c_picture" name="${inputs['picture'].name}"
+                            tabindex="20"/>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend><fmt:message key="settings.intro"/></legend>
+                <p class="field">
+                    <label for="c_intro"><fmt:message key="settings.intro.text"/> :</label>
+                    <textarea rows="7" cols="35" id="c_intro" name="${inputs['intro'].name}">
+                        ${intro}
+                    </textarea>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend><fmt:message key="settings.footer"/></legend>
+                <p class="field">
+                    <label for="c_footer"><fmt:message key="settings.footer.text"/> :</label>
+                    <textarea rows="7" cols="35" id="c_footer" name="${inputs['footer'].name}">
+                        ${footer}
+                    </textarea>
+                </p>
+            </fieldset>
+            <p class="fp_button">
+                <input type="submit" tabindex="20" class="button" value="envoyer"/>
+            </p>
+</template:containerForm>

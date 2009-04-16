@@ -40,13 +40,7 @@
             <h4><fmt:message key="about"/></h4>
 
             <p>
-                <template:absoluteContainerList name="footer" id="footerList" pageLevel="1"
-                                                actionMenuNamePostFix="footers" actionMenuNameLabelKey="footers">
-                    <template:container id="footerContainer" actionMenuNamePostFix="footer"
-                                        actionMenuNameLabelKey="footer.update">
-                        <template:field name="footer"/>
-                    </template:container>
-                </template:absoluteContainerList>
+                ${footer}
             </p>
         </div>
     </div>

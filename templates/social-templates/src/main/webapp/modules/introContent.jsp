@@ -34,10 +34,5 @@
 --%>
 <%@ include file="../common/declarations.jspf" %>
 <div class="desc">
-    <template:absoluteContainerList name="intro" id="introList" pageLevel="1"
-                                actionMenuNamePostFix="intros" actionMenuNameLabelKey="intros">
-    <template:container id="footerContainer" actionMenuNamePostFix="footer" actionMenuNameLabelKey="intro.update">
-        <template:field name="intro"/>
-    </template:container>
-</template:absoluteContainerList>
+    ${intro}
 </div>

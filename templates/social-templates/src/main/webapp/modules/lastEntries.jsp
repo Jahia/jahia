@@ -42,24 +42,7 @@
     <div class="columnspace"><!--start columnspace -->
         <div class="mapshortcuts"><!--start bottomshortcuts-->
             <h4><fmt:message key="social_templates_lastEntries.recent"/></h4>
-            <template:containerList name="lastEntries" id="lastEntries"
-                                    actionMenuNamePostFix="lastentriess" actionMenuNameLabelKey="lastentriess">
-                <template:container id="lastEntry" cache="off" actionMenuNamePostFix="lastentries"
-                                    actionMenuNameLabelKey="lastentries.update">
-                    <template:field name="maxEntries" var="maxEntries" defaultValue="10" display="false"/>
-                    <c:if test="${requestScope.currentRequest.editMode}">
-                        <div class="preferences">
-                            <h5><fmt:message key="social_templates_lastEntries.preferences"/></h5>
-
-                            <p class="preference-item"><span class="preference-label"><fmt:message
-                                    key="social_templates_lastEntries.rowsDisplay"/>: </span><span
-                                    class="preference-value">${maxEntries.integer}</span></p>
-                        </div>
-                    </c:if>
-                    <c:set var="maxEntries" value="${maxEntries}"/>
-                </template:container>
-            </template:containerList>
-            <template:containerList maxSize="${maxEntries.integer}" id="newsList" displayActionMenu="false">
+            <template:containerList maxSize="${lastEntriesMaxEntries.integer}" id="newsList" displayActionMenu="false">
                 <query:containerQuery>
                     <query:selector nodeTypeName="social_templates:blogEntry" selectorName="blogEntry"/>
                     <query:descendantNode selectorName="blogEntry" path="${currentSite.JCRPath}"/>

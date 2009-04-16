@@ -34,29 +34,24 @@
 --%>
 <%@ include file="../common/declarations.jspf" %>
 
-<template:containerList name="owner" id="ownerContainer" actionMenuNamePostFix="postfix.aboutMe" actionMenuNameLabelKey="aboutMe">
-    <template:container id="ownerContent">
 <h3><fmt:message key="aboutMe"/> </h3>
 
                         <div class="aboutMeListItem"><!--start aboutMeListItem -->
                             <div class="aboutMePhoto">
-                                <template:image file="picture"/>
+                                <img src="${picture.file.downloadUrl}" alt=""/>
                             </div>
                             <div class="aboutMeBody"><!--start aboutMeBody -->
-                                <h5><template:field name="firstname" inlineEditingActivated="false"/>&nbsp;<template:field name="lastname" inlineEditingActivated="false"/></h5>
-                                <template:field name="birthdate" var="birthdate" display="false"/>
+                                <h5>${firstname}&nbsp;${lastname}</h5>
                                 <fmt:formatDate pattern="yyyy" value="${birthdate.date}" var="birthyear"/>
                                 <jsp:useBean id="now" class="java.util.Date" />
                                 <fmt:formatDate pattern="yyyy" value="${now}" var="actualyear"/>
                                 <p class="aboutMeAge"><fmt:message key="age">
-                                        <fmt:param value="${actualyear - birthyear }"/>
+                                        <fmt:param value="${actualyear - birthyear}"/>
                                 </fmt:message> </p>
 
                                 <div class="clear"></div>
-                                <p class="aboutMeResume"><template:field name="description"/></p>
+                                <p class="aboutMeResume">${description}</p>
                             </div>
                             <!--stop aboutMeBody -->
                             <div class="clear"></div>
                         </div>                        <!--stop aboutMeListItem -->
-    </template:container>
-</template:containerList>

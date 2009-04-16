@@ -42,7 +42,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 
 
-<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="${param.numBlogEntries}"
+<template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="${blogPrefsMaxEntries.integer}"
                         actionMenuNameLabelKey="article" actionMenuNamePostFix="manage">
     <%--query search --%>
     <query:containerQuery queryBeanID="blogQuery">

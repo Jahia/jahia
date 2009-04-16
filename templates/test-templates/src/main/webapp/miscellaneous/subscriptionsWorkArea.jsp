@@ -46,12 +46,6 @@
 <%@page import="org.jahia.services.notification.NotificationEvent"%>
 <%@page import="org.jahia.services.mail.MailHelper"%>
 
-<div class="expectedResultTitle">
-  <fmt:message key="label.expected.result"/>:
-</div> 
-<div class="expectedResult">
-  <fmt:message key="description.template.subscriptions.expectedResult"/>
-</div>
 <h3>Simple subscription management</h3>
 <%--
     We use 'testSubscriptionEvent' as the event name and site's home page

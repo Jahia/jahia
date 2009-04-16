@@ -33,9 +33,25 @@
 
 package org.jahia.services.toolbar.resolver.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+
 import org.jahia.data.JahiaData;
+import org.jahia.data.constants.JahiaConstants;
 import org.jahia.gui.GuiBean;
+import org.jahia.security.license.CommonDaysLeftValidator;
+import org.jahia.security.license.LicenseConstants;
+import org.jahia.security.license.LicenseManager;
+import org.jahia.security.license.LicensePackage;
+import org.jahia.security.license.Limit;
 import org.jahia.services.toolbar.resolver.PropertyResolver;
+import org.jahia.utils.i18n.JahiaResourceBundle;
+import org.jahia.utils.i18n.ResourceBundleMarker;
+
+
 
 /**
  * User: jahia
@@ -44,6 +60,7 @@ import org.jahia.services.toolbar.resolver.PropertyResolver;
  */
 public class InfoPropertyResolver implements PropertyResolver {
     public static final String ORG_JAHIA_TOOLBAR_ITEM_CONNECTED_USER = "user";
+    public static final String ORG_JAHIA_TOOLBAR_ITEM_LICENSE_INFO = "license";
 
     public String getValue(JahiaData jData,String input) {
         if (jData == null) {
@@ -56,6 +73,49 @@ public class InfoPropertyResolver implements PropertyResolver {
                 }else{
                     return "";
                 }
+            } else if(input.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_LICENSE_INFO)) {
+            	try{
+              LicensePackage licensePackage = LicenseManager.getInstance().
+              getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
+
+              Limit daysLeftLimit = licensePackage.
+                      getLicense("org.jahia.actions.server.admin.sites.ManageSites").
+                      getLimit("maxUsageDays");
+              if (daysLeftLimit != null) {
+              	CommonDaysLeftValidator daysLeftValidator = (CommonDaysLeftValidator)
+                  	daysLeftLimit.getValidator();
+              	int maxDays = Integer.parseInt(daysLeftLimit.getValueStr());
+              	long expirationTime = daysLeftValidator.
+                  	getCommonInstallDate().getTime() +
+                  	1000L * 60L * 60L * 24L * maxDays;
+              	Date expirationDate = new Date(expirationTime);            	
+              	SimpleDateFormat sf = new SimpleDateFormat("dd-MMM-yyyy");
+              	//JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", getLocale());
+            	  return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + " "  + sf.format(expirationDate);
+              }
+              else
+              {
+                Limit dateLimit = licensePackage.
+                getLicense("org.jahia.actions.server.admin.sites.ManageSites").
+                getLimit("date");
+            	  if(dateLimit != null)
+            	  {
+            	  	String enddate = dateLimit.getValueStr();
+            	  	int year = Integer.parseInt(enddate.substring(0, 4));
+            	  	int month = Integer.parseInt(enddate.substring(5, 7));
+            	  	int day = Integer.parseInt(enddate.substring(8, 10));
+            	  	Calendar cal = new GregorianCalendar(year, month-1, day);
+            	  	Calendar cal1 = new GregorianCalendar(year, month-1, day);
+            	  	cal1.add(Calendar.DATE, -10);
+            	  	if(cal1.getTime().before(new Date(System.currentTimeMillis())))
+            	  	{
+            	  		SimpleDateFormat sf1 = new SimpleDateFormat("dd-MMM-yyyy");
+            	  		return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + " " + sf1.format(cal.getTime());
+            	  	}
+            	  }
+              }
+              }catch(Exception ex)
+              {}
             }
         }
         return "";

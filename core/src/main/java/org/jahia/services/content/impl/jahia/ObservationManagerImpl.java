@@ -92,7 +92,7 @@ public class ObservationManagerImpl implements ObservationManager {
     }
 
     public void removeEventListener(EventListener eventListener) throws RepositoryException {
-        listeners.remove(listeners);
+        listeners.remove(eventListener);
     }
 
     public EventListenerIterator getRegisteredEventListeners() throws RepositoryException {

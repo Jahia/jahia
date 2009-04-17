@@ -271,10 +271,9 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
     public List<JahiaContainerDefinition> getDefinitionsInTemplate (JahiaPageDefinition pageDefinition) {
         List<JahiaContainerDefinition> containerDefinitions = getContainersService().loadContainerDefinitionInTemplate(0);
         List<JahiaContainerDefinition> theDefs = new ArrayList<JahiaContainerDefinition>();
-        Set<String> keys = pageDefinition.getNodeType().getChildNodeDefinitionsAsMap().keySet();
         for (JahiaContainerDefinition def : containerDefinitions) {
             String pageDefName = pageDefinition.getPageType().replace(':', '_');
-            if (def.getName().startsWith(pageDefName) && keys.contains(def.getName().substring(pageDefinition.getPageType().replace(':','_').length()+1))) {
+            if (def.getName().startsWith(pageDefName)) {
                 theDefs.add(def);
             }
         }

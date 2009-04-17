@@ -36,18 +36,20 @@ package org.jahia.taglibs.query;
 import javax.servlet.jsp.JspException;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
+import org.apache.log4j.Logger;
 import org.jahia.query.qom.FullTextSearchImpl;
 
 
 /**
- * Created by IntelliJ IDEA.
  * User: hollis
  * Date: 7 nov. 2007
  * Time: 15:33:24
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
 public class FullTextSearchTag extends ConstraintTag  {
+
+    private static Logger logger =
+        Logger.getLogger(FullTextSearchTag.class);
 
     private FullTextSearchImpl fullTextSearch;
 
@@ -74,8 +76,8 @@ public class FullTextSearchTag extends ConstraintTag  {
             fullTextSearch = (FullTextSearchImpl)this.getQueryFactory()
                     .fullTextSearch(this.propertyName,this.searchExpression);
             fullTextSearch.setMetadata("true".equals(this.isMetadata));
-        } catch ( Exception t ){
-                
+        } catch ( Exception e ){
+            logger.warn(e.getMessage(), e);
         }
         return fullTextSearch;
     }

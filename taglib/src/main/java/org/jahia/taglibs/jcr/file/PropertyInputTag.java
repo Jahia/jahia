@@ -150,7 +150,7 @@ public class PropertyInputTag extends PropertyValueTag {
         name = name.replace(':','_');
         String[] cs = propDef.getValueConstraints();
 
-        request.setAttribute("multiple", new Boolean(propDef.isMultiple()));
+        request.setAttribute("multiple", Boolean.valueOf(propDef.isMultiple()));
         request.setAttribute("propertyName", name);
         request.setAttribute("value", value);
         request.setAttribute("values", cs);

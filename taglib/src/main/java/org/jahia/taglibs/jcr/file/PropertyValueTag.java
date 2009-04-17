@@ -278,7 +278,7 @@ public class PropertyValueTag extends TagSupport {
             Node node = objectNode.getNode(name);
             String path = provider.getWebdavPath() + node.getPath();
             request.setAttribute("path", path);
-            request.setAttribute("isImage", new Boolean(node.getProperty(Constants.JCR_MIMETYPE).getString().startsWith("image/")));
+            request.setAttribute("isImage", Boolean.valueOf(node.getProperty(Constants.JCR_MIMETYPE).getString().startsWith("image/")));
         } else {
             request.setAttribute("path", null);
         }

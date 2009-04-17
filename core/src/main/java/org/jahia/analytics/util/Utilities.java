@@ -41,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -121,7 +122,7 @@ public final class Utilities {
 		Calendar calendar = Calendar.getInstance();
 
 		try {
-			calendar.setTime(JAnalytics.GOOGLE_DATE_FORMAT.parse(dateString));
+			calendar.setTime(new SimpleDateFormat(JAnalytics.GOOGLE_DATE_PATTERN).parse(dateString));
 			calendar = trimCalendar(calendar);
 		} catch (ParseException e) {
 			throw new IllegalArgumentException("The date '" + dateString

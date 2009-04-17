@@ -56,6 +56,7 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.cookie.CookieSpec;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -174,8 +175,7 @@ public class JAnalytics {
     /**
      * The <code>DateFormat</code> for the report get request.
      */
-    public static final DateFormat GOOGLE_DATE_FORMAT = new SimpleDateFormat(
-            GOOGLE_DATE_PATTERN);
+    public static final FastDateFormat GOOGLE_DATE_FORMAT = FastDateFormat.getInstance(GOOGLE_DATE_PATTERN);
 
     /**
      * The <code>HttpClient</code> for the Google Analytics service.

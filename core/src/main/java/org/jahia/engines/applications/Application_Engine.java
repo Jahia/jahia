@@ -276,7 +276,7 @@ public class Application_Engine implements JahiaEngine {
         } else if (theScreen.equals(OPEN_CATEGORIES)) {
             engineMap.put(SCREEN_STR, jParams.getParameter(LASTSCREEN_STR));
             String[] objectIDs = jParams.getParameterValues("objectIDs");
-            if (objectIDs != null && objectIDs.length > -1) {
+            if (objectIDs != null && objectIDs.length > 0) {
                 engineMap.put("openCategoriesManager", Boolean.TRUE);
                 jParams.getSessionState().setAttribute("objectIDs", objectIDs);
             }

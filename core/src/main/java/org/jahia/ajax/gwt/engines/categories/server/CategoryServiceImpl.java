@@ -484,6 +484,12 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         for (Category curChildCategory : childCategories) {
             recursiveDeleteCategory(curChildCategory);
         }
+
+        //  do not remove 'root' category
+        List<Category>  parentCategories = currentCategory.getParentCategories();
+        if(parentCategories == null || parentCategories.size() == 0 ){
+            return;
+        }
         currentCategory.delete();
     }
 

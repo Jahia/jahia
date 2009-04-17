@@ -103,9 +103,11 @@ public class LanguageSwitcher {
                 }
             }
             parentItem.setMenu(menu);
+            parentItem.el().child("tr").addStyleName("x-btn-with-menu");
             parentItem.setEnabled(true);
         } else {
             parentItem.setEnabled(false);
+            parentItem.el().child("tr").removeStyleName("x-btn-with-menu");
         }
     }
 }

@@ -65,8 +65,4 @@ public class JahiaPreference<T extends JCRNodeWrapper>  {
         return node;
     }
 
-    public boolean isEmpty() {
-        return false;
-    }
-
 }

@@ -260,11 +260,6 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
             return;
         }
         try {
-            if (jahiaPreference.isEmpty()) {
-                logger.debug("Jahia preference is empty --> delete it");
-                deleteJahiaPreference(jahiaPreference);
-                return;
-            }
             JCRNodeWrapper node = jahiaPreference.getNode();
             node.getParent().save();
             logger.debug("Jahia preference [" + jahiaPreference + "] saved.");

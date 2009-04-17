@@ -59,16 +59,27 @@ public class GenericJahiaPreference extends JCRNodeDecorator {
     }
 
     public String getPrefValue() throws RepositoryException {
-        return getProperty("j:prefValue").getString();
+        if (hasProperty("j:prefValue")) {
+            return getProperty("j:prefValue").getString();
+        }
+        return null;
     }
 
     public void setPrefValue(String prefValue) throws RepositoryException {
         setProperty("j:prefValue", prefValue);
     }
 
+    public boolean isEmpty() {
+        try {
+            return !hasProperty("j:prefValue") || getPrefValue() == null;
+        } catch (RepositoryException e) {
+            return false;
+        }
+    }
+
     public String toString() {
         try {
-            return super.toString()+" ,[prefName=" + getPrefName() + ",prefValue" + getPrefValue() + "]";
+            return super.toString() + " ,[prefName=" + getPrefName() + ",prefValue" + getPrefValue() + "]";
         } catch (RepositoryException e) {
             e.printStackTrace();
         }

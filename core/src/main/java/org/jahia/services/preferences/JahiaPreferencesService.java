@@ -91,7 +91,7 @@ public class JahiaPreferencesService extends JahiaService {
         }
     }
 
-    public <T extends JCRNodeWrapper> JahiaPreferencesJCRProviders<T> createProvider (Class<T> c) {
+    public <T extends JCRNodeWrapper> JahiaPreferencesJCRProviders<T> createProvider(Class<T> c) {
         return new JahiaPreferencesJCRProviders<T>();
     }
 
@@ -221,7 +221,7 @@ public class JahiaPreferencesService extends JahiaService {
         try {
 
             JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(key));
-            if (preference != null && !preference.isEmpty()) {
+            if (preference != null) {
                 try {
                     return ((GenericJahiaPreference) preference.getNode()).getPrefValue();
                 } catch (RepositoryException e) {
@@ -257,7 +257,7 @@ public class JahiaPreferencesService extends JahiaService {
     public String getPagePreferenceValue(String key, ProcessingContext jParams) {
         try {
             JahiaPreference<PageJahiaPreference> preference = getPagePreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getPageXpath(jParams.getPageID(), key));
-            if (!preference.isEmpty()) {
+            if (preference != null) {
                 return preference.getNode().getPrefValue();
             }
         } catch (Exception e) {
@@ -283,10 +283,17 @@ public class JahiaPreferencesService extends JahiaService {
             if (preference == null) {
                 preference = basicProvider.createJahiaPreferenceNode(jParams);
                 preference.getNode().setPrefName(prefName);
+            }else{
+                // delete preference
+                if(prefValue == null){
+                    basicProvider.deleteJahiaPreference(preference);
+                    return;
+                }
             }
 
             // create genereic preference value
             preference.getNode().setPrefValue(prefValue);
+
 
             basicProvider.setJahiaPreference(preference);
         } catch (Exception e) {

@@ -150,6 +150,10 @@ public class RequestBean {
         return guiBean.checkWriteAccess();
     }
 
+    public boolean isHasWriteAccess() {
+        return guiBean.checkWriteAccess();
+    }
+
     public boolean hasAdminAccess() {
         return processingContext.getPage().checkAdminAccess(processingContext.getUser());
     }

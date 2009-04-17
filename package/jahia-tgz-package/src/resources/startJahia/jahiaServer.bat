@@ -31,7 +31,7 @@ call bin\catalina-jikes.bat start
 :skipjikes
 cd webapps/config/WEB-INF/classes
 java -classpath "%CLASSPATH%;.\;.\WEB-INF\lib\log4j-1.2.15.jar" org.jahia.init.TomcatWaitInstallation
-start http://localhost:8080/cms/
+start http://localhost:8080/config/html/startup/loadingjahiaServer.jsp
 echo Starting browser...
 echo Done. Please wait while systems initialize...
 goto end

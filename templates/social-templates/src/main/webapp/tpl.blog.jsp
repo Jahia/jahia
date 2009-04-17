@@ -87,10 +87,10 @@
                         <div id="areaB"><!--start areaB-->
 
                             <div class="spacer"><!--start spacer areaB -->
-                                <c:if test="${requestScope.currentRequest.editMode}">
+                                <c:if test="${requestScope.currentRequest.hasWriteAccess}">
                                     <template:include page="modules/preferences.jsp"/>
+                                    <template:include page="modules/nav/addEntry.jsp"/>
                                 </c:if>
-                                <template:include page="modules/nav/addEntry.jsp"/>
                                 <template:include page="modules/filtersDisplay.jsp"/>
                                 <template:include page="modules/nav/navCategories.jsp"/>
                                 <template:include page="modules/searchForm.jsp"/>

@@ -34,14 +34,14 @@
 --%>
 <%@ include file="../common/declarations.jspf" %>
 <div id="search">
-                            <h3><label for="search"><fmt:message key="blog.search"/> </label></h3>
+    <h3><label for="search"><fmt:message key="blog.search"/> </label></h3>
 
-                            <form method="get" action="">
-                                <fieldset>
-                                    <p>
-                                        <input type="text" value="" name="search" class="search" tabindex="4"/>
-                                        <input type="submit" value="GO" class="gobutton" tabindex="5"/>
-                                    </p>
-                                </fieldset>
-                            </form>
-                        </div>
+    <form method="get" action="">
+        <fieldset>
+            <p>
+                <input type="text" value="" name="search" class="search" tabindex="4"/>
+                <input type="submit" value="GO" class="gobutton" tabindex="5"/>
+            </p>
+        </fieldset>
+    </form>
+</div>

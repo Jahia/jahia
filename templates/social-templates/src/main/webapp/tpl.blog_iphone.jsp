@@ -58,15 +58,15 @@
         <div class="iLayer" id="waNews" title="News">
 
             <div class="iMenu">
-                <h3><fmt:message key='news'/></h3>
+                <h3><fmt:message key='template.name.blog'/></h3>
 
                 <!--start newslist -->
                 <template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="5" displayActionMenu="false">
                     <ul class="iArrow">
-                        <template:container id="entry" displayActionMenu="false" cacheKey="iphone_menu"
-                                            displaySkins="false" displayContainerAnchor="false">
+                        <template:container id="blogEntry" displayActionMenu="false" cacheKey="iphone_menu"
+                                            displaySkins="false" displayContainerAnchor="false" displayExtensions="false">
                             <!--start newsListItem -->
-                            <li><a href="#_Container<c:out value='${entry.ID}'/>"><template:field
+                            <li><a href="#_Container<c:out value='${blogEntry.ID}'/>"><template:field
                                     name="title" diffActive="false"/></a>
                             </li>
                             <!--stop newsListItem -->
@@ -80,35 +80,53 @@
 
         <!--start newslist -->
         <template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="5" displayActionMenu="false">
-            <template:container id="entry" displayActionMenu="false" cacheKey="iphone_details"
+            <template:container id="blogEntry" displayActionMenu="false" cacheKey="iphone_details"
                                 displaySkins="false" displayContainerAnchor="false">
                 <template:getContentObjectCategories valueID="blogEntryCatKeys"
                                          objectKey="contentContainer_${pageScope.entry.ID}"/>
-                <div class="iLayer" id="waContainer<c:out value='${entry.ID}'/>" title="Blog Detail">
+                <div class="iLayer" id="waContainer<c:out value='${blogEntry.ID}'/>" title="Blog Detail">
                     <div class="iBlock">
-                        <template:field name="title" var="title" display="false"/>
-                        <h4><c:out value="${title}"/></h4>
-
-                        <p class="newsInfo">
-                            <span class="newsLabelName">Auteur :</span>
-                            <span class="newsName"></span>
-                            <span class="newsLabelDate">Date :</span>
-                            <span class="newsDate"><template:field name='date'/></span>
-                        </p>
-
-                        <p class="newsResume">
-                            <template:field name="newsDesc"/>
-                        </p>
-
-                        <div class="newsMeta">
-                            <span class="categoryLabel"><fmt:message key='category'/>  :</span>
-                            <<c:if test="${!empty blogEntryCatKeys }">
+       <template:containerList name="comment" id="comment" displayActionMenu="false">
+            <c:set var="nbComment" value="${comment.size}"/>
+        </template:containerList>
+        <div class="post"><!--start post-->
+            <div class="post-date"><span><fmt:formatDate pattern="MMMM" value="${date.date}"/></span><fmt:formatDate pattern="dd" value="${date.date}"/></div>
+            <h2 class="post-tit:deplle"> <a href="?article=${blogEntry.ID}"><template:field name="title"/></a></h2>
+            <template:metadata metadataName="createdBy" contentBean="${blogEntry}" var="createdBy"/>
+            <p class="post-info">Par <a href="?user=${createdBy}">${createdBy}.</a> <fmt:formatDate pattern="dd MMMM aaaa h:m" value="${date.date}"/>-
+            <c:if test="${!empty blogEntryCatKeys }">
                 <c:forEach var="blogEntryCatKey" items="${fn:split(blogEntryCatKeys, '$$$')}">
-                    &nbsp;<a href="#"><ui:displayCategoryTitle categoryKeys="${blogEntryCatKey}"/></a>
+                    &nbsp;<a href="${currentPage.url}?category=${blogEntryCatKey}"><ui:displayCategoryTitle categoryKeys="${blogEntryCatKey}"/></a>
                 </c:forEach>
              </c:if>
-                        </div>
-                        <!--stop newsListItem -->
+            </p>
+            <template:metadata metadataName="keywords" contentBean="${blogEntry}" var="keywords"/>
+            <ul class="post-tags">
+                <c:forEach var="keyword" items="${fn:split(keywords, ',')}">
+                    <c:if test="${fn:length(keyword) > 0}">
+                        <li><a href="${currentPage.url}?keyword=${keyword}"><c:out value="${keyword}"/></a></li>
+                    </c:if>
+                </c:forEach>
+            </ul>
+            <div class="post-content"><p><template:field name="content"/></p>
+            </div>
+            <template:field name="isCommentable" var="commentable" display="false"/>
+
+             <p class="post-info-links">
+                <c:if test="${commentable.boolean}">
+                <c:if test="${nbComment > 0}">
+                        <fmt:message key="number.comment">
+                            <fmt:param value="${nbComment}"/>
+                        </fmt:message>
+                        <a class="comment_count" href="?article=${blogEntry.ID}#comment"><fmt:message key="number.comment.add"/></a>
+                </c:if>
+                <c:if test="${nbComment == 0}"><fmt:message key="no.comment"/>
+                    <a class="comment_count" href="?article=${blogEntry.ID}"><fmt:message key="no.comment.add"/></a>
+                </c:if>
+                </c:if>
+                <a class="ping_count" href="#">aucun r&eacute;trolien</a>
+            </p>
+        </div>
                     </div>
                 </div>
             </template:container>

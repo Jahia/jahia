@@ -1743,6 +1743,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         int code = folderRes.getStatusCode();
         if (code < 200 || code >= 300) {
             if (!folderRes.mkcolMethod()) {
+                logger.error("Cannot create folder at : "+folderRes);
                 throw new IOException();
             }
         }

@@ -925,6 +925,11 @@
             <artifactId>pluto-portal-driver-impl</artifactId>
             <version>${pluto.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.pluto</groupId>
+            <artifactId>pluto-util</artifactId>
+            <version>${pluto.version}</version>
+        </dependency>
 
 <!-- BEGIN clipBuilder dependencies--><!-- main lib -->
         <dependency>

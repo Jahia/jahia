@@ -99,7 +99,7 @@ jahiaTemplatesHttpPath                                 =
 jahiaEnginesHttpPath                                   =
 jahiaJavaScriptHttpPath                                =
 
-jahiaWebAppsDeployerBaseURL                            =
+jahiaWebAppsDeployerBaseURL                            = http://127.0.0.1:8080/manager/html/
 
 # This parameter will force the generation of the /site/ URL parameter
 # every time, even when sites are used with hostname resolution. This
@@ -303,6 +303,13 @@ JahiaWebAppsDeployerService                            =
 # If you set this to true then the portlet applications will be able
 # to access session attributes set by the templates.
 webapps.dispatcher.inheritJahiaSessionAttributes       =   false
+
+######################################################################
+### WebApps Preparing war  ##############################################
+######################################################################
+# In 'manager portlet' view, when you click on 'prepar war', it's saved in the filemanger
+# The following value specifies where it's saved.
+prepare.portlet.jcr.path       =   /content/shared/files
 
 ######################################################################
 ### Audit log  #######################################################

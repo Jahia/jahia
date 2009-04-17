@@ -114,6 +114,7 @@ public class SettingsBean {
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaJavaScriptDiskPath;
     private String jahiaNewTemplatesDiskPath;
+    private String jahiaPreparePortletJCRPath;
     private String jahiaNewWebAppsDiskPath;
     private String jahiaImportsDiskPath;
     private String jahiaSharedTemplatesDiskPath;
@@ -707,6 +708,8 @@ public class SettingsBean {
             gmailPasswordExported = getBoolean("gmailPasswordExported", true);
 
             checkAclInPagePath = getBoolean("checkAclInPagePath", true) ;
+
+            jahiaPreparePortletJCRPath = getString("prepare.portlet.jcr.path");
 
             try {
                 DatabaseScripts scriptsManager = new DatabaseScripts();
@@ -1943,5 +1946,13 @@ public class SettingsBean {
 
     public String getEhCacheJahiaFile() {
         return ehCacheJahiaFile;
+    }
+
+    public String getJahiaPreparePortletJCRPath() {
+        return jahiaPreparePortletJCRPath;
+    }
+
+    public void setJahiaPreparePortletJCRPath(String jahiaPreparePortletJCRPath) {
+        this.jahiaPreparePortletJCRPath = jahiaPreparePortletJCRPath;
     }
 }

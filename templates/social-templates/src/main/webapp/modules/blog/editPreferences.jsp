@@ -33,6 +33,7 @@
 
 --%>
 <%@ include file="../../common/declarations.jspf" %>
+<c:if test="${requestScope.currentRequest.hasWriteAccess}">
 <c:set var="fckUrl" value="${pageContext.request.contextPath}/htmleditors/fckeditor"/>
 <script type="text/javascript" src="${fckUrl}/fckeditor.js"></script>
 <script type="text/javascript">
@@ -69,3 +70,7 @@
     </c:if>
 </template:containerList>
 </div>
+</c:if>
+<c:if test="${!requestScope.currentRequest.hasWriteAccess}">
+    <fmt:message key="blog.noAccess"/>
+</c:if>

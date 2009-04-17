@@ -312,6 +312,18 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>store-build-number</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <echo message="${buildNumber}" file="${project.build.directory}/classes/META-INF/jahia-impl-marker.txt"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
 
                 </executions>
             </plugin>

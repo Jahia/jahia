@@ -61,6 +61,9 @@ final boolean openReadmeFile = jsp.equals("site_values.jsp"); %>
 <fmt:setLocale value="<%=locale%>" />
 <fmt:setBundle basename="JahiaMessageResources" />
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=locale%>" lang="<%=locale%>">
+<%
+    String copyright=JahiaConfigurationWizard.COPYRIGHT;
+%>	
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <meta name="gwt:property" content="locale=<%=locale%>"/>

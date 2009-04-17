@@ -32,17 +32,16 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
-
-<jsp:useBean id="copyright" class="java.lang.String" scope="request"/>
-</form>
-
-<!-- end mainForm -->
-
-<div id="footer">
-  <div id="copyright">
-  </div>
+<div id="copyright">
+  <%=copyright %>&nbsp;Jahia <%=JahiaConfigurationWizard.VERSION + "." + JahiaConfigurationWizard.getPatchNumber() + " r" + JahiaConfigurationWizard.getBuildNumber() %>
 </div>
 </div>
-<!-- end wrapper -->
+<br/>
+<br/>
+ <c:if test="${empty requestScope['jahia.engines.gwtModuleIncluded']}">
+<internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin"/>
+</c:if>
+<internal:gwtGenerateDictionary/>        
 </body>
 </html>
+<% out.flush(); %>

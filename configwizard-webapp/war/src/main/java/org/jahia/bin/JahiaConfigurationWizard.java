@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -35,9 +35,7 @@ package org.jahia.bin;
 
 import static javax.servlet.http.HttpServletResponse.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -71,6 +69,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.struts.util.RequestUtils;
 import org.jahia.admin.database.DatabaseConnection;
 import org.jahia.admin.database.DatabaseScripts;
@@ -111,12 +110,13 @@ public class JahiaConfigurationWizard extends HttpServlet {
     private  org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(JahiaConfigurationWizard.class);
     /** ... */
-    public final String COPYRIGHT =
-            "&copy; Copyright 2002-2008  <a href=\"http://www.jahia.org\" target=\"newJahia\">Jahia Ltd</a> -";
+    static public final String COPYRIGHT =
+            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.org\" target=\"newJahia\">Jahia Ltd</a> -";
+    public static final String VERSION = "6.0";
 
     private  ServletContext context;
     private  ServletConfig config;
-    private  PathResolver pathResolver;
+    private static PathResolver pathResolver;
     private final String INIT_PARAM_WEBINF_PATH = "webinf_path";
     private  PropertiesManager properties;
 
@@ -183,7 +183,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
      */
     public void init(final ServletConfig config) throws ServletException {
 
-        
+
         super.init(config);
         this.config = config;
         // get local context and config...
@@ -202,7 +202,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
         hsql.startup(new File(hsqldir, "hsqldbjahia").getPath());
 
         jahiafilename = this.config.getInitParameter("jahia-filename");
-           
+
 
         if(!jahiaExists()){
 
@@ -220,7 +220,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
         }else{
 
             values.put("jahiaconfigured", "true");
-          
+
 
         }
     }
@@ -495,7 +495,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
 
             testEmail(request,response);
 
-        } 
+        }
 
         // call the action handler...
         //actionHandler.call(this, call, request, response);
@@ -2038,7 +2038,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
 // default templates set
             values.put("templates", properties.getProperty("default_templates_set").trim());
         }
-        
+
     }
 
     private void copyStringSetting(final Map sourceMap, final String sourceName, final Map destMap,
@@ -2114,7 +2114,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
     }
 
     private void testEmail(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+                           HttpServletResponse response) throws ServletException, IOException {
         try {
             String host = getParameter(request, "host");
             String from = getParameter(request, "from");
@@ -2122,7 +2122,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
 
             Locale locale = (Locale) request.getSession(true).getAttribute(SESSION_LOCALE);
             locale = locale != null ? locale : request.getLocale();
-            
+
             ResourceBundle bundle = ResourceBundle.getBundle(JahiaResourceBundle.MESSAGE_DEFAULT_RESOURCE_BUNDLE, locale);
 
             response.setContentType("text/html;charset=UTF-8");
@@ -2132,9 +2132,9 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
                         .getWriter()
                         .append(
                                 JahiaResourceBundle
-                                        .getString(bundle, 
-                                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
-                                                "Please provide a valid administrator e-mail address"));
+                                        .getString(bundle,
+                                        "org.jahia.admin.JahiaDisplayMessage.enterValidEmailAdmin.label",
+                                        "Please provide a valid administrator e-mail address"));
                 return;
             }
             if (!MailSettings.isValidEmailAddress(from, false)) {
@@ -2144,8 +2144,8 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
                         .append(
                                 JahiaResourceBundle
                                         .getString(bundle,
-                                                "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
-                                                "Please provide a valid sender e-mail address"));
+                                        "org.jahia.admin.JahiaDisplayMessage.enterValidEmailFrom.label",
+                                        "Please provide a valid sender e-mail address"));
                 return;
             }
 
@@ -2155,14 +2155,14 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
                     to,
                     JahiaResourceBundle
                             .getString(
-                                    bundle,
-                                    "org.jahia.admin.server.ManageServer.testSettings.mailSubject",
-                                    "[Jahia] Test message"),
+                            bundle,
+                            "org.jahia.admin.server.ManageServer.testSettings.mailSubject",
+                            "[Jahia] Test message"),
                     JahiaResourceBundle
                             .getString(
-                                    bundle,
-                                    "org.jahia.admin.server.ManageServer.testSettings.mailText",
-                                    "Test message"));
+                            bundle,
+                            "org.jahia.admin.server.ManageServer.testSettings.mailText",
+                            "Test message"));
 
             response.setStatus(HttpServletResponse.SC_OK);
 
@@ -2178,9 +2178,9 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
                     + e.getMessage(), e);
         }
     }
-    
+
     private static void sendEmail(String host, String from, String to,
-            String subject, String text) throws AddressException,
+                                  String subject, String text) throws AddressException,
             MessagingException {
         MailSettings cfg = new MailSettings(false, host, from, to, "Disabled");
         Properties props = new Properties();
@@ -2208,7 +2208,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
     }
 
     private static String getParameter(final HttpServletRequest request,
-            final String name) throws IllegalArgumentException {
+                                       final String name) throws IllegalArgumentException {
         final String value = request.getParameter(name);
         if (value == null) {
             throw new IllegalArgumentException("Missing required '" + name
@@ -2216,4 +2216,26 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         }
         return value;
     }
+    public static int getBuildNumber() {
+        try {
+                BufferedReader in = new BufferedReader(new FileReader(pathResolver.resolvePath("META-INF/jahia-impl-marker.txt")));
+                String str;
+                while ((str = in.readLine()) != null) {
+                    BUILD_NUMBER=Integer.parseInt(str);
+                }
+                in.close();
+            } catch (IOException e) {
+            }
+               return BUILD_NUMBER;
+    }
+
+    public static double getReleaseNumber() {
+        return RELEASE_NUMBER;
+    }
+
+    public static int getPatchNumber() {
+        return PATCH_NUMBER;
+    }
+
+
 }

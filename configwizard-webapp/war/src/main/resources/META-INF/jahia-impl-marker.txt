@@ -1,0 +1,2 @@
+This file is a marker file so that calls to getResource on this file will allow
+us to resolve the jahia-impl JAR url. This is used from Jahia.getBuilderNumber()

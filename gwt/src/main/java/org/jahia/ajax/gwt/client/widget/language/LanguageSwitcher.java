@@ -81,7 +81,6 @@ public class LanguageSwitcher {
             public void onSuccess (GWTJahiaLanguageSwitcherBean bean) {
                 Map<String, GWTLanguageSwitcherLocaleBean> locales = bean.getAvailableLanguages();
                 generateMenu(parentItem, locales, bean.getWorkflowStates());
-                //parentItem.recalculate();
             }
         });
     }

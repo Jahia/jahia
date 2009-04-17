@@ -176,7 +176,7 @@ public class JackrabbitNodeWrapper extends JCRNodeWrapperImpl {
             while (true) {
                 if (n.hasNode("j:acl")) {
                     Node acl = n.getNode("j:acl");
-                    NodeIterator aces = acl.getNodes("j:ace");
+                    NodeIterator aces = acl.getNodes();
                     Map<String, List<String[]>> localResults = new HashMap<String, List<String[]>>();
                     while (aces.hasNext()) {
                         Node ace = aces.nextNode();

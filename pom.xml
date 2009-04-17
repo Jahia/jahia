@@ -106,7 +106,7 @@
     <module>gwt</module>
     <module>templates</module>
     <module>war</module>
-    <!--<module>ear</module>-->
+    <module>ear</module>
   </modules>
 
     <distributionManagement>

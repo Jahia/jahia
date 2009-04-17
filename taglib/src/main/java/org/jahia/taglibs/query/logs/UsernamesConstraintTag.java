@@ -42,11 +42,9 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
  * User: hollis
  * Date: 5 d�c. 2007
  * Time: 15:53:00
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
 public class UsernamesConstraintTag extends TagSupport {
@@ -70,7 +68,7 @@ public class UsernamesConstraintTag extends TagSupport {
         if (logQueryTag == null) {
             return SKIP_BODY;
         }
-        if (usernames == null && "".equals(usernames.trim())){
+        if (usernames == null || usernames.trim().length() == 0){
             return SKIP_BODY;
         }
         LogsQuery logsQuery = logQueryTag.getLogsQuery();

@@ -32,8 +32,9 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
+<%@ include file="../common/declarations.jspf" %>
 <div id="search">
-                            <h3><label for="search">Rechercher</label></h3>
+                            <h3><label for="search"><fmt:message key="blog.search"/> </label></h3>
 
                             <form method="get" action="">
                                 <fieldset>

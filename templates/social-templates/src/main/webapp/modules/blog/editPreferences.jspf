@@ -68,11 +68,11 @@
                            value="${firstname}" tabindex="20"/>
                 </p>
 
-                <%--<p class="field">
+                <p class="field">
                     <label for="c_birthdate"><fmt:message key="settings.user.birthdate"/> :</label>
                     <input type="text" size="30" id="c_birthdate" name="${inputs['birthdate'].name}"
                            value="${birthdate}" tabindex="20"/>
-                </p>--%>
+                </p>
 
                 <p class="field">
                     <label for="mainContentBody"><fmt:message key="settings.user.description"/> :</label>

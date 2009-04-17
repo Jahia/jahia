@@ -38,27 +38,10 @@
 
 <%@ include file="../common/declarations.jspf" %>
 
-<div class="column-item"><!--start column-item -->
-    <div class="columnspace"><!--start columnspace -->
-        <div class="mapshortcuts"><!--start bottomshortcuts-->
-            <template:containerList name="blogPrefs" id="preferences"
-                                    actionMenuNamePostFix="preferencess" actionMenuNameLabelKey="preferencess">
-                <template:container id="preference" cache="off" actionMenuNamePostFix="preferences"
-                                    actionMenuNameLabelKey="preferences.update">
-                    <template:field name="maxEntries" var="maxEntries" defaultValue="10" display="false"/>
-                        <div class="preferences">
-                            <h5><fmt:message key="social_templates.preferences"/></h5>
-
-                            <p class="preference-item"><span class="preference-label"><fmt:message
-                                    key="social_templates.rowsDisplay"/>: </span><span
-                                    class="preference-value">${maxEntries.integer}</span></p>
-                        </div>
-                </template:container>
-            </template:containerList>
-        </div>
+<div class="spacer"><!--start column-item -->
+    <div class="addArticle">
+        <h5><a class="addArticle" href="?editPreferences=true"><fmt:message key="settings.edit"/></a></h5>
     </div>
-    <!--stop columnspace -->
-    <div class="clear"></div>
 </div>
 <!--stop column-item -->
 

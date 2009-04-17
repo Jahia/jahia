@@ -38,6 +38,7 @@
         <template:include page="common/header.jsp"/>
         <link rel="alternate" type="application/rss+xml" title="web templates : news"
               href="${currentPage.url}/template/blog.rss?definitionName=social_templates_blog_blogEntries"/>
+        <template:include page="modules/blog/loadPreferences.jsp"/>
     </template:templateHead>
     <template:templateBody gwtScript="">
         <div id="bodywrapper"><!--start bodywrapper-->
@@ -52,12 +53,7 @@
                                 <!--start content  #content2=areaB/content #content3=content/InsetA   content4=alone #content5=50%areaB/50%content-->
                                 <div class="spacer"><!--start spacer -->
                                     <!--stop post-->
-                                    <template:containerList name="blogPrefs"  displayActionMenu="false">
-                                        <template:container id="preference" cache="off" displayActionMenu="false">
-                                            <template:field name="maxEntries" var="blogMaxEntries" defaultValue="10" display="false"/>
-                                            <c:set var="blogMaxEntries" value="${blogMaxEntries}" scope="page"/>
-                                        </template:container>
-                                    </template:containerList>
+
                                     <c:if test="${!empty param.article}">
                                         <template:include page="modules/blog/blogComment.jsp">
                                             <template:param name="article" value="${param.article}"/>
@@ -68,11 +64,17 @@
                                             <template:param name="article" value="${param.article}"/>
                                         </template:include>
                                     </c:if>
-                                    <c:if test="${empty param.article && empty param.addArticle}">
+                                    <c:if test="${!empty param.editPreferences}">
+                                        <template:include page="modules/blog/editPreferences.jsp">
+                                            <template:param name="numBlogEntries" value="${blogMaxEntries}"/>
+                                        </template:include>
+                                    </c:if>
+                                    <c:if test="${empty param.article && empty param.addArticle && empty param.editPreferences}">
                                         <template:include page="modules/blog/blog.jsp">
                                             <template:param name="numBlogEntries" value="${blogMaxEntries}"/>
                                         </template:include>
                                     </c:if>
+
                                     <!--stop post-->
                                 </div>
                                 <!--stop space content-->

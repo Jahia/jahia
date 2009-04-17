@@ -42,12 +42,17 @@
                             </div>
                             <div class="aboutMeBody"><!--start aboutMeBody -->
                                 <h5>${firstname}&nbsp;${lastname}</h5>
+                                <%--
+                                use this method when form handler manage dates
                                 <fmt:formatDate pattern="yyyy" value="${birthdate.date}" var="birthyear"/>
                                 <jsp:useBean id="now" class="java.util.Date" />
-                                <fmt:formatDate pattern="yyyy" value="${now}" var="actualyear"/>
-                                <p class="aboutMeAge"><fmt:message key="age">
+                                <fmt:formatDate pattern="yyyy" value="${now}" var="actualyear"/>--%>
+                                <p class="aboutMeAge">
+                                    ${birthdate}
+                                    <%--<fmt:message key="age">
                                         <fmt:param value="${actualyear - birthyear}"/>
-                                </fmt:message> </p>
+                                    </fmt:message>--%>
+                                </p>
 
                                 <div class="clear"></div>
                                 <p class="aboutMeResume">${description}</p>

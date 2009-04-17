@@ -9,7 +9,7 @@ bigText     footer
 [social_templates:owner] > jnt:container
 smallText   lastname primary
 smallText   firstname
-date        birthdate
+smallText   birthdate
 bigText     description
 file        picture (fileupload[mime='image/*',path='$home'])
 

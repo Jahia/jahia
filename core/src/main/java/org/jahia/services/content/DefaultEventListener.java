@@ -34,6 +34,7 @@
 package org.jahia.services.content;
 
 import org.apache.jackrabbit.core.observation.EventImpl;
+import org.apache.jackrabbit.core.observation.SynchronousEventListener;
 import org.jahia.api.Constants;
 
 import javax.jcr.observation.Event;
@@ -48,7 +49,7 @@ import java.util.Set;
  * Time: 15:56:43
  * To change this template use File | Settings | File Templates.
  */
-public abstract class DefaultEventListener implements EventListener {
+public abstract class DefaultEventListener implements SynchronousEventListener {
 
     protected Set<String> propertiesToIgnore;
     protected JCRStoreProvider provider;

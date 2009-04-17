@@ -41,6 +41,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.api.Constants;
+import org.jahia.bin.Jahia;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
@@ -101,8 +102,13 @@ public class TextExtractionListener extends DefaultEventListener {
                             }
                         }
                         JahiaUser member = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(event.getUserID());
-                        ProcessingContext jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
-                        jParams.setCurrentLocale(Locale.getDefault());
+
+                        ProcessingContext jParams = Jahia.getThreadParamBean();
+                        if (jParams == null) {
+                            jParams = new ProcessingContext(org.jahia.settings.SettingsBean.getInstance(), System.currentTimeMillis(), null, member, null);
+                            jParams.setCurrentLocale(Locale.getDefault());
+                        }
+
                         JobDetail jobDetail = BackgroundJob.createJahiaJob("Text extraction for "+p.getParent().getName(), TextExtractorJob.class, jParams);
 
                         SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();

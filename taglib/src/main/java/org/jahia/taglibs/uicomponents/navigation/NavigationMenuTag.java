@@ -41,6 +41,7 @@ import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentContainerListKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.data.JahiaData;
+import org.jahia.data.fields.JahiaField;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.beans.RequestBean;
@@ -82,6 +83,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     private String kind = null;
     private String containerListName = null;
     private String pageFieldName = null;
+    private String separatorName = null;
     private int startLevel = -1;
     private int startPid = -1;
     private int maxDepth = -1;
@@ -327,13 +329,14 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             pageFieldLabelKey = "navmenu.containername";
         }
 
-        if (containerListName == null && pageFieldName == null) {
+        if (containerListName == null && pageFieldName == null && separatorName == null) {
             // use default names
             containerListName = "navLink";
             pageFieldName = "navLink";
+            separatorName = "separator";
 
-        } else if (containerListName != null ^ pageFieldName != null) {
-            throw new JahiaException("You must either declare both container list and page field or none",
+        } else if (containerListName != null ^ pageFieldName != null ^ separatorName !=null) {
+            throw new JahiaException("You must either declare container list, page field and separator field or none",
                     "Unable to create the navmenu container list", JahiaException.TEMPLATE_SERVICE_ERROR,
                     JahiaException.ERROR_SEVERITY);
         }
@@ -474,9 +477,15 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                             if (displayActionMenuBeforeLink && editMode) {
                     out.append(navMenuItemBean.getActionMenu());
                 }
-                            out.append("<a class=\"").append(aCssString).append("\" href=\"").append(navMenuItemBean.getUrl()).append("\"><span>");
+                if (navMenuItemBean.getUrl().length() > 0) {
+                    out.append("<a class=\"").append(aCssString).append("\" href=\"").append(navMenuItemBean.getUrl()).append("\">");
+                }
+                out.append("<span>");
                 out.append(navMenuItemBean.getDisplayLink());
-                out.append("</span></a>");
+                out.append("</span>");
+                if (navMenuItemBean.getUrl().length() > 0) {
+                    out.append("</a>");
+                }
                 if (!displayActionMenuBeforeLink && editMode) {
                     out.append(navMenuItemBean.getActionMenu());
                 }
@@ -571,6 +580,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                 logger.debug("level = " + level);
                 JahiaContainer linkContainer = (JahiaContainer) linkContainerEnum.next();
                 JahiaPage link = (JahiaPage) linkContainer.getFieldObject(pageFieldName);
+                JahiaField separator = (JahiaField) linkContainer.getField(separatorName);
                 dependencies.add(new ContentContainerKey(linkContainer.getID()));
                 if ((jParams.getOperationMode().equals(ProcessingContext.NORMAL) ||
                         jParams.getOperationMode().equals(ProcessingContext.PREVIEW)) && link != null) {
@@ -635,10 +645,10 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                             }
                         }
 
-                        if (dispLink == null) {
+                        if (dispLink == null || dispLink.length() == 0) {
                             dispLink = getMessage("noPageTitle", "n/d");
                         }
-                        if (title == null) {
+                        if (title == null || title.length() == 0) {
                             title = getMessage("noPageTitle", "n/d");
                         }
                         navMenuItemBean.setUrl(link.getURL(jParams));
@@ -653,9 +663,15 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         }
                     }
                     else {
+                        if (separator != null && separator.getValue().length() > 0) {
+                            navMenuItemBean.setTitle(separator.getValue());
+                            navMenuItemBean.setDisplayLink(separator.getValue());
+                        }
+                        else {
                         // add an empty navItemBean to show the action menu if needed
-                        navMenuItemBean.setTitle(getMessage("noPageTitle", "n/d"));
-                        navMenuItemBean.setDisplayLink(getMessage("noPageTitle", "n/d"));
+                            navMenuItemBean.setTitle(getMessage("noPageSet", "n/d"));
+                            navMenuItemBean.setDisplayLink(getMessage("noPageSet", "n/d"));
+                        }
                         navMenuItemsBean.add(navMenuItemBean);
                     }
                 }
@@ -730,6 +746,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         jData = null;
         containerListName = null;
         pageFieldName = null;
+        separatorName = null;
         containerListLabelKey = null;
         pageFieldLabelKey = null;
         containerListNamePostFix = null;
@@ -759,6 +776,7 @@ public class NavigationMenuTag extends AbstractJahiaTag {
     public class NavMenuItemBean implements Comparable<NavMenuItemBean> {
         private String title="";
         private String url="";
+        private String separator="";
         private String actionMenu="";
         private int level=0;
         private boolean firstInLevel=false;
@@ -770,6 +788,14 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         private String displayLink = "";
         private int itemCount=0;
         private boolean actionMenuOnly = false;
+
+        public String getSeparator() {
+            return separator;
+        }
+
+        public void setSeparator(String separator) {
+            this.separator = separator;
+        }
 
         public boolean isActionMenuOnly() {
             return actionMenuOnly;

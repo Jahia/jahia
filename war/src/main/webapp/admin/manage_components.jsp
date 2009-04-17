@@ -281,7 +281,7 @@ stretcherToOpen   = 0; %>
                 </span>
             <span class="dex-PushButton">
                       <span class="first-child">
-                             <a href="#help" onclick="javascript:{document.getElementById('help').style.display='';}"><fmt:message key="org.jahia.admin.components.ManageComponents.deploy.help.label"/></a>
+                             <a class="ico-help" href="#help" onclick="javascript:{document.getElementById('help').style.display='';}"><fmt:message key="org.jahia.admin.components.ManageComponents.deploy.help.label"/></a>
                        </span>
                 </span>
             <br/><br/>

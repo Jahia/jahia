@@ -1,29 +1,29 @@
 /**
- * 
+ *
  * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
  * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * 
+ *
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
  * in Jahia's FLOSS exception. You should have recieved a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
- * 
+ *
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
  * in accordance with the terms contained in a separate written agreement
@@ -167,6 +167,10 @@ public class ProcessingContext {
     public static final String CONTAINER_ID_PARAMETER = "cid";
     public static final String FIELD_ID_PARAMETER = "fid";
     public static final String APPUNIQUE_ID_PARAMETER = "appid";
+    public static final String PLUTO_PREFIX = "__";
+    public static final String PLUTO_PORTLET_ID = "pd";
+    public static final String PLUTO_ACTION = "ac";
+    public static final String PLUTO_RESOURCE = "rs";
 
     public static final String OPERATION_MODE_PARAMETER = "op";
     public static final String USERALIASING_MODE_PARAMETER = "useraliasing";
@@ -1573,7 +1577,7 @@ public class ProcessingContext {
 
         }
         setContentPageLoadedWhileTryingToFindSiteByPageID(true);
-        
+
         if (getContentPage() == null)
             return false;
 
@@ -1911,7 +1915,7 @@ public class ProcessingContext {
             return theUrl.toString();
         }
     }
-    
+
     // -------------------------------------------------------------------------
     // MJ 27 Feb. 2001 : Overloaded method without params besides engineName
     // MJ 29 May. 2001 : get http path from request instead of settings,
@@ -2533,23 +2537,20 @@ public class ProcessingContext {
      * @return True if request is a portlet request.
      */
     public static boolean isPortletRequest(final HttpServletRequest req) {
-        // look if there is appid in pathInfo; if true --> is a portletRequest
-        boolean isPortletRequest = false;
         String pathInfo = req.getPathInfo();
-        if (pathInfo != null) {
-            pathInfo = pathInfo.toLowerCase();
-            String appid = "/" + APPUNIQUE_ID_PARAMETER.toLowerCase() + "/";
-            if (logger.isDebugEnabled()) {
-                logger.debug("Path Info: " + pathInfo);
-                logger.debug("appid : " + appid);
-            }
-            isPortletRequest = pathInfo.indexOf(appid) > -1;
+        StringTokenizer st = new StringTokenizer(pathInfo, "/", false);
+        while (st.hasMoreTokens()) {
+        	String token = st.nextToken();
+            // remder/resource url
+           if (token.startsWith(PLUTO_PREFIX + PLUTO_RESOURCE)) {
+               return true;
+           }
+        	// actionUrl
+        	else if (token.startsWith(PLUTO_PREFIX + PLUTO_ACTION)) {
+        		return true;
+        	}
         }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Request is a portlet request? " + isPortletRequest);
-        }
-        return isPortletRequest;
+        return false;
 
     }
 
@@ -2852,7 +2853,7 @@ public class ProcessingContext {
      *                             just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
      *                             since we are sending SESSION IDs to people that should not have them.
      * @param withOperationMode    a boolean that specifies whether we should include the operation mode in the URL or not.
-     * @param languageCode         force inclusion of the language code (if not null) 
+     * @param languageCode         force inclusion of the language code (if not null)
      * @param forceServerNameInURL allow to ensure that the server name is present in the url (useful for mail)
      * @param theSite              the site agaisnt we build the url
      * @return String a full URL to the site using the currently set values in the ProcessingContext.
@@ -2874,7 +2875,7 @@ public class ProcessingContext {
                 operationMode = this.getOperationMode();
             }
         }
-        
+
         return getSiteURL(theSite, pageID, withSessionID, operationMode, languageCode, forceServerNameInURL);
     }
 
@@ -2888,7 +2889,7 @@ public class ProcessingContext {
      *                             just want to set this to true, but in the case of URLs sent by email we do not, otherwise we have a security problem
      *                             since we are sending SESSION IDs to people that should not have them.
      * @param operationMode    operation mode to use
-     * @param languageCode         force inclusion of the language code (if not null) 
+     * @param languageCode         force inclusion of the language code (if not null)
      * @param forceServerNameInURL allow to ensure that the server name is present in the url (useful for mail)
      * @return String a full URL to the site using the currently set values in the ProcessingContext.
      */
@@ -2956,7 +2957,7 @@ public class ProcessingContext {
         if (operationMode != null) {
             newSiteURL.append(getOpModeURLPart(operationMode));
         }
-        
+
         if (languageCode != null) {
             newSiteURL.append(appendParam(LANGUAGE_CODE, languageCode));
         }
@@ -3313,7 +3314,7 @@ public class ProcessingContext {
             }
             setCanEdit(Boolean.valueOf((getContentPage().checkWriteAccess(getTheUser(), true) ||
                                         getContentPage().checkAdminAccess(getTheUser(), true) ) &&
-                                        REGISTRY.getJahiaACLManagerService().getSiteActionPermission( "engines.actions.editMode", 
+                                        REGISTRY.getJahiaACLManagerService().getSiteActionPermission( "engines.actions.editMode",
                                                 getUser(), JahiaBaseACL.READ_RIGHTS, getSiteID()) > 0));
         }
 

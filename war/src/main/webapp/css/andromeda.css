@@ -992,6 +992,11 @@ li.section a:hover {
   5px;
 }
 
+.ico-help {
+  background: url(images/andromeda/icons/help2.png) no-repeat 4px
+  5px;
+}
+
 /* Actions icons (End) */ /**
  * Edition object menu
  */

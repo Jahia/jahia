@@ -97,7 +97,7 @@ public class TextExtractionListener extends DefaultEventListener {
                         if (n.hasProperty(Constants.EXTRACTION_DATE)) {
                             Calendar lastModified = n.getProperty(Constants.JCR_LASTMODIFIED).getDate();
                             Calendar extractionDate = n.getProperty(Constants.EXTRACTION_DATE).getDate();
-                            if (extractionDate.after(lastModified)) {
+                            if (extractionDate.after(lastModified) || extractionDate.equals(lastModified)) {
                                 continue;
                             }
                         }

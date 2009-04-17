@@ -236,7 +236,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         if (this.qomBuilder.getColumns()== null || this.qomBuilder.getColumns().isEmpty()){
             return new Column[]{};
         }
-        return (Column[])this.qomBuilder.getColumns().toArray();
+        return this.qomBuilder.getColumns().toArray(new Column[] {});
     }
 
     public void setColumns(Column[] columns) {

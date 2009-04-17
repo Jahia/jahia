@@ -1825,6 +1825,7 @@ public abstract class ContentObject extends JahiaObject {
             try {
                 ObjectLink.createLink(this.getObjectKey(), object.getObjectKey(), type, new HashMap<String, String>());
                 object.resetPicked();
+                ServicesRegistry.getInstance().getWorkflowService().flushCacheForPageCreatedOrDeleted((ContentObjectKey) object.getObjectKey());
             } catch (Exception e) {
                 logger.debug(e);
             }

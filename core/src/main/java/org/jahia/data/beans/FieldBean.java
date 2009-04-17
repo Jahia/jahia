@@ -477,7 +477,7 @@ public class FieldBean extends ContentBean {
     }
 
     public ContentObject getContentObject() {
-        return getContentObject();
+        return getContentField();
     }
 
     public String getJCRPath() throws JahiaException {

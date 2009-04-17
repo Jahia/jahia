@@ -33,12 +33,11 @@
 
 package org.jahia.taglibs.search;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.time.FastDateFormat;
 import org.displaytag.decorator.TableDecorator;
 import org.jahia.engines.search.FileHit;
 import org.jahia.engines.calendar.CalendarHandler;
@@ -50,7 +49,7 @@ import org.jahia.engines.calendar.CalendarHandler;
  */
 public class FileSearchTableDecorator extends TableDecorator {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
+    private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance(
             CalendarHandler.DEFAULT_DATE_FORMAT);
 
     protected String formatDate(Date date) {

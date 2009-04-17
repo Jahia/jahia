@@ -193,7 +193,12 @@ public class FileDetails extends BottomRightComponent {
     public void fillData(Object selectedItem) {
         clear();
         if (selectedItem != null) {
-            selectedNodes = (List<GWTJahiaNode>) selectedItem;
+            if (selectedItem instanceof GWTJahiaNode) {
+                selectedNodes = new ArrayList<GWTJahiaNode>() ;
+                selectedNodes.add((GWTJahiaNode) selectedItem) ;
+            } else {
+                selectedNodes = (List<GWTJahiaNode>) selectedItem;
+            }
             String heading;
             if (selectedNodes.size() == 0) {
                 heading = "&nbsp;";
@@ -278,7 +283,7 @@ public class FileDetails extends BottomRightComponent {
                     if (preview != null) {
                         g.setWidget(0, 0, new Image(preview));
                     }
-                    String name = selectedNode.getName();
+                    String name = selectedNode.getDisplayName();
                     if (name != null) {
                         flowPanel.add(new HTML("<b>" + Messages.getResource("fm_info_name") + " :</b> " + name));
                     }

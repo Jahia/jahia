@@ -182,7 +182,7 @@ public class HttpSessionWrapper implements HttpSession {
     public String[] getValueNames () {
         Map appAttributes = (Map) originalSession.getAttribute (
                 KEY_PREFIX + appName + KEY_SEPARATOR + contextID);
-        return (String[]) appAttributes.keySet ().toArray ();
+        return (String[]) appAttributes.keySet().toArray(new String[] {});
     }
 
     public void setAttribute (String name,

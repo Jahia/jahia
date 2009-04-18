@@ -358,7 +358,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         }
 
         if (content.getCount() == 0) {
-            new JahiaInitializationException(
+            throw new JahiaInitializationException(
                     "Unable to find neither text nor html body part of the notification e-mail. Skip sending notification");
         }
 

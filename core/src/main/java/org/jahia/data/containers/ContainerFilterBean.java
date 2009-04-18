@@ -499,7 +499,7 @@ public class ContainerFilterBean implements Serializable,
         long nowLong = System.currentTimeMillis();
 
         addDateClause(COMP_SMALLER_OR_EQUAL, COMP_BIGGER_OR_EQUAL, nowLong,
-                nowLong - (nbDays * 24 * 60 * 60 * 1000));
+                nowLong - (nbDays * 24 * 60 * 60 * 1000L));
     }
 
     // --------------------------------------------------------------------------

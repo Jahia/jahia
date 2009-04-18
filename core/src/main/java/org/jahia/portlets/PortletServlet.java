@@ -292,7 +292,7 @@ public class PortletServlet extends HttpServlet {
         try {
 
             // The requested method is RENDER: call Portlet.render(..)
-            if (methodId == Constants.METHOD_RENDER) {
+            if (methodId.equals(Constants.METHOD_RENDER)) {
                 RenderRequestImpl renderRequest =
                 		(RenderRequestImpl) portletRequest;
                 RenderResponseImpl renderResponse =
@@ -301,7 +301,7 @@ public class PortletServlet extends HttpServlet {
             }
 
             //The requested method is RESOURCE: call ResourceServingPortlet.serveResource(..)
-            else if (methodId == Constants.METHOD_RESOURCE) {
+            else if (methodId.equals(Constants.METHOD_RESOURCE)) {
             	ResourceRequestImpl resourceRequest =
                     	(ResourceRequestImpl) portletRequest;
             	ResourceResponseImpl resourceResponse =
@@ -310,7 +310,7 @@ public class PortletServlet extends HttpServlet {
             }
 
             // The requested method is ACTION: call Portlet.processAction(..)
-            else if (methodId == Constants.METHOD_ACTION) {
+            else if (methodId.equals(Constants.METHOD_ACTION)) {
                 ActionRequestImpl actionRequest =
                     	(ActionRequestImpl) portletRequest;
                 ActionResponseImpl actionResponse =
@@ -319,7 +319,7 @@ public class PortletServlet extends HttpServlet {
             }
 
             //The request methode is Event: call Portlet.processEvent(..)
-            else if (methodId == Constants.METHOD_EVENT){
+            else if (methodId.equals(Constants.METHOD_EVENT)){
             	EventRequestImpl eventRequest =
                 	(EventRequestImpl) portletRequest;
             	EventResponseImpl eventResponse =
@@ -327,7 +327,7 @@ public class PortletServlet extends HttpServlet {
             	filterManager.processFilter(eventRequest, eventResponse, loader, eventPortlet,portletContext);
             }
             // The requested method is ADMIN: call handlers.
-            else if (methodId == Constants.METHOD_ADMIN) {
+            else if (methodId.equals(Constants.METHOD_ADMIN)) {
                 ContainerInvocation inv = ContainerInvocation.getInvocation();
                 PortalAdministrationService pas =
                     inv.getPortletContainer()
@@ -342,7 +342,7 @@ public class PortletServlet extends HttpServlet {
             }
 
             // The requested method is NOOP: do nothing.
-            else if (methodId == Constants.METHOD_NOOP) {
+            else if (methodId.equals(Constants.METHOD_NOOP)) {
                 // Do nothing.
             }
 

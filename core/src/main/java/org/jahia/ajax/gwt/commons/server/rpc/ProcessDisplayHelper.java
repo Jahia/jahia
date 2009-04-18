@@ -126,6 +126,7 @@ public class ProcessDisplayHelper {
             switch (treeOperationResult.getStatus()) {
                 case TreeOperationResult.FAILED_OPERATION_STATUS:
                     currentJobStatus = "failed";
+                    break;
                 case TreeOperationResult.PARTIAL_OPERATION_STATUS:
                     currentJobStatus = "partial";
             }

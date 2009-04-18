@@ -342,7 +342,7 @@ public class ContainerListLoader implements Serializable {
         }
         if (!fakeSearcher){
             this.containerSearchersMap.put(key,cSearcher);
-        } else if (this.containerSearchersMap == null){
+        } else if (this.containerSearchersMap != null){
             this.containerSearchersMap.remove(key);            
         }
 

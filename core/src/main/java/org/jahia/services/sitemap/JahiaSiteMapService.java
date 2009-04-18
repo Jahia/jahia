@@ -168,9 +168,9 @@ public class JahiaSiteMapService extends JahiaService {
 
     /**
      * Construct the tree site map view helper if necessary. In the case a same user
-     * acesses from a same page to the site map, a previous stored site map view
+     * accesses from a same page to the site map, a previous stored site map view
      * helper is returned. Otherwise a new one is created.
-     * The reason of page dependency is to garantize a low memory obstruction.
+     * The reason of page dependency is to guarantee a low memory obstruction.
      *
      * @param user The Jahia user context referencing the site map.
      * @param page The Jahia page context referencing the site map.
@@ -195,7 +195,7 @@ public class JahiaSiteMapService extends JahiaService {
     public SiteMapViewHelper getTreeSiteMapViewHelper(JahiaUser user, List pages,
             String sessionID, int pageInfosFlag, String languageCode, int defaultMaxLevel, 
             boolean directPageOnly, PagesFilter pagesFilter) {        
-        String pagesFilterClassName = (pagesFilter != null && pagesFilter != null ? pagesFilter.getClass().getName() : null);
+        String pagesFilterClassName = (pagesFilter != null ? pagesFilter.getClass().getName() : null);
         StringBuffer pageIDBuffer = new StringBuffer();
         for (Iterator i = pages.iterator(); i.hasNext();) {
             pageIDBuffer.append(((ContentPage)i.next()).getID()).append(":");
@@ -218,9 +218,9 @@ public class JahiaSiteMapService extends JahiaService {
     }
    /**
      * Construct the tree site map view helper if necessary. In the case a same user
-     * acesses from a same page to the site map, a previous stored site map view
+     * accesses from a same page to the site map, a previous stored site map view
      * helper is returned. Otherwise a new one is created.
-     * The reason of page dependency is to garantize a low memory obstruction.
+     * The reason of page dependency is to guarantee a low memory obstruction.
      *
      * @param user The Jahia user context referencing the site map.
      * @param page The Jahia page context referencing the site map.
@@ -236,7 +236,7 @@ public class JahiaSiteMapService extends JahiaService {
      */
     public SiteMapViewHelper getWorkflowSiteMapViewHelper(JahiaUser user, ContentPage page,
             String sessionID, int pageInfosFlag, String languageCode, int defaultMaxLevel, PagesFilter pagesFilter) {
-        String pagesFilterClassName = (pagesFilter != null && pagesFilter != null ? pagesFilter.getClass().getName() : null);
+        String pagesFilterClassName = (pagesFilter != null ? pagesFilter.getClass().getName() : null);
         String context = user.getUserKey() + ":" + sessionID + ":" + page.getID() + ":" +
                          pageInfosFlag + ":" + languageCode + 
                          (pagesFilterClassName == null ? "" : ":" + pagesFilterClassName);
@@ -255,9 +255,9 @@ public class JahiaSiteMapService extends JahiaService {
 
     /**
      * Construct the tree site map view helper if necessary. In the case a same user
-     * acesses from a same page to the site map, a previous stored site map view
+     * accesses from a same page to the site map, a previous stored site map view
      * helper is returned. Otherwise a new one is created.
-     * The reason of page dependency is to garantize a low memory obstruction.
+     * The reason of page dependency is to guarantee a low memory obstruction.
      *
      * @param user The Jahia user context referencing the site map.
      * @param page The Jahia page context referencing the site map.
@@ -278,9 +278,9 @@ public class JahiaSiteMapService extends JahiaService {
 
     /**
      * Construct the flat site map view helper if necessary. In the case a same user
-     * acesses from a same page to the site map, a previous stored site map view
+     * accesses from a same page to the site map, a previous stored site map view
      * helper is returned. Otherwise a new one is created.
-     * The reason of page dependency is to garantize a low memory obstruction.
+     * The reason of page dependency is to guarantee a low memory obstruction.
      *
      * @param user The Jahia user context referencing the site map.
      * @param page The Jahia page context referencing the site map.
@@ -296,7 +296,7 @@ public class JahiaSiteMapService extends JahiaService {
      */
     public SiteMapViewHelper getFlatSiteMapViewHelper(ProcessingContext jParams, JahiaUser user, ContentPage page,
             String sessionID, int pageInfosFlag, String languageCode, int defaultMaxLevel, PagesFilter pagesFilter) {
-        String pagesFilterClassName = (pagesFilter != null && pagesFilter != null ? pagesFilter.getClass().getName() : null);          
+        String pagesFilterClassName = (pagesFilter != null ? pagesFilter.getClass().getName() : null);          
         String context = user.getUserKey() + ":" + sessionID + ":" + page.getID() + ":" +
                          pageInfosFlag + ":" + languageCode + 
                          (pagesFilterClassName == null ? "" : ":" + pagesFilterClassName);

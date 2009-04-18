@@ -261,15 +261,8 @@ public class ContentFileField extends ContentField {
 
                 JahiaFileField jahiaFileField = JahiaWebdavBaseService.getInstance ()
                         .getJahiaFileField (processingContext, (processingContext!=null)?processingContext.getSite():null, (processingContext!=null)?processingContext.getUser():null, getDBValue (entryState));
-                if (jahiaFileField == null) {
-                    // we are in the case of a default value file.
-                    xmlWriter.writeEntity ("file").
-                            writeAttribute ("url", getDBValue (entryState));
-                    xmlWriter.endEntity ();
-                }
-
                 xmlWriter.writeEntity ("file").
-                        writeAttribute ("url", jahiaFileField.getDownloadUrl ());
+                        writeAttribute ("url", jahiaFileField != null ? jahiaFileField.getDownloadUrl() : getDBValue (entryState));
                 xmlWriter.endEntity ();
             }
 

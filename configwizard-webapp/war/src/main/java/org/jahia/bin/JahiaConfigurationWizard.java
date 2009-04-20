@@ -2218,7 +2218,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
     }
     public static int getBuildNumber() {
         try {
-                BufferedReader in = new BufferedReader(new FileReader(pathResolver.resolvePath("META-INF/jahia-impl-marker.txt")));
+                BufferedReader in = new BufferedReader(new FileReader(pathResolver.resolvePath("configuration_wizard/jahia-buildnumber.txt")));
                 String str;
                 while ((str = in.readLine()) != null) {
                     BUILD_NUMBER=Integer.parseInt(str);

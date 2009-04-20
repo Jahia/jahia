@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -33,7 +33,6 @@
 
 package org.jahia.services.content;
 
-import java.beans.PropertyDescriptor;
 import java.util.*;
 import java.io.IOException;
 
@@ -63,10 +62,8 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
-import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.jaas.JahiaPrincipal;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.context.ServletContextAware;
 import org.xml.sax.ContentHandler;
 
@@ -395,7 +392,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
             fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
         }
 
-        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTargetWithWildcard(JahiaFieldXRefManager.FILE+sourceUri);
+        Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE+sourceUri);
 
         for (Iterator<JahiaFieldXRef> iterator = c.iterator(); iterator.hasNext();) {
             JahiaFieldXRef jahiaFieldXRef = iterator.next();

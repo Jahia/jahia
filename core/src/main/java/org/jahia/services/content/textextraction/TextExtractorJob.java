@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -64,7 +64,6 @@ import java.util.*;
  * User: toto
  * Date: 29 janv. 2008
  * Time: 13:58:32
- * To change this template use File | Settings | File Templates.
  */
 public class TextExtractorJob extends BackgroundJob {
     private final static Logger logger = Logger.getLogger(TextExtractorJob.class);
@@ -167,7 +166,7 @@ public class TextExtractorJob extends BackgroundJob {
                 .getInstance().getContext().getBean(
                         JahiaFieldXRefManager.class.getName());
         Collection<JahiaFieldXRef> c = fieldXRefManager
-                .getReferencesForTargetWithWildcard(JahiaFieldXRefManager.FILE
+                .getReferencesForTarget(JahiaFieldXRefManager.FILE
                         + provider.getKey() + ":" + n.getUUID());
         for (JahiaFieldXRef xref : c) {
             try {

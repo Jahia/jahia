@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -71,7 +71,6 @@ import java.util.*;
  * User: Rincevent
  * Date: 6 janv. 2005
  * Time: 14:37:48
- * To change this template use File | Settings | File Templates.
  */
 public class JahiaContainerManager {
     // ------------------------------ FIELDS ------------------------------
@@ -1253,7 +1252,7 @@ public class JahiaContainerManager {
 
     public int getParentContainerListId(int id, EntryLoadRequest req) {
         Integer i = dao.getParentContainerListId((id));
-        if (i == null && (req.isWithDeleted() || req.isWithMarkedForDeletion())) {
+        if (i == null && req != null && (req.isWithDeleted() || req.isWithMarkedForDeletion())) {
             i = dao.getDeletedParentContainerListId((id));
         }
         if (i != null) {

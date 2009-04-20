@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
@@ -57,11 +56,10 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.webdav.UsageEntry;
 
 /**
- * Created by IntelliJ IDEA.
+ * Listener for flushing container HTML cache entries.
  * User: toto
  * Date: 25 févr. 2008
  * Time: 14:36:14
- * To change this template use File | Settings | File Templates.
  */
 public class CacheListener extends DefaultEventListener {
     private static org.apache.log4j.Logger logger =
@@ -109,6 +107,10 @@ public class CacheListener extends DefaultEventListener {
                     parentPath = parentPath.substring(0,parentPath.lastIndexOf('/'));
                     nodes.add(parentPath);
                 }
+                if (event.getType() == Event.PROPERTY_CHANGED && name.equals("j:fullpath")) {
+                    // invalidate container HTML cache when the file is moved/renamed 
+                    nodes.add(parentPath);
+                }
                 if ((event.getType() == Event.NODE_REMOVED) && name.indexOf(':')==-1) {
                     nodes.add(path);
                 }
@@ -150,28 +152,35 @@ public class CacheListener extends DefaultEventListener {
                     if (usageEntry.getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                         containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
                         containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        if (listkey != null) {
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        }
                         if (!field.hasStagingEntries()) {
                             containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.EDIT, usageEntry.getLang());
                             containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
+                            if (listkey != null) {
+                                containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
+                                containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
+                            }
                         }
                     } else if (usageEntry.getWorkflow() == EntryLoadRequest.STAGING_WORKFLOW_STATE ||
                             usageEntry.getWorkflow() == EntryLoadRequest.WAITING_WORKFLOW_STATE) {
                         containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.EDIT, usageEntry.getLang());
                         containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
                         containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
-                        containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        if (listkey != null) {
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.EDIT, usageEntry.getLang());
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.PREVIEW, usageEntry.getLang());
+                            containerHTMLCache.invalidateContainerEntries(listkey.toString(), ProcessingContext.COMPARE, usageEntry.getLang());
+                        }
                     }
                 }
-            }
-            List<JCRNodeWrapper> children = n.getChildren();
-            for (JCRNodeWrapper child : children) {
-                flushNodeRefs(child);
+            } else {
+                List<JCRNodeWrapper> children = n.getChildren();
+                for (JCRNodeWrapper child : children) {
+                    flushNodeRefs(child);
+                }
             }
         }
     }

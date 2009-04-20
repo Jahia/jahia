@@ -1472,6 +1472,10 @@ public abstract class ContentField extends ContentObject
     protected String getDBValue (EntryStateable entryState) throws JahiaException {
         // We ensure to check if this content object is Shared or not even though
         // the entryState is provided with a specific language ( en, fr, ... )
+        if (entryState == null) {
+            return "";
+        }
+
         String languageCode = entryState.getLanguageCode ();
         if (this.isShared ()) {
             languageCode = ContentObject.SHARED_LANGUAGE;

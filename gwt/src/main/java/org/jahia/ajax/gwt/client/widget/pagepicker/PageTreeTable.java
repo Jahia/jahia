@@ -132,7 +132,7 @@ public class PageTreeTable extends TopRightComponent {
             public String getStringValue(GWTJahiaPageWrapper node, String property) {
                 if (!node.isSiteRoot()) {
                     if (operation.equals("movePage")) {
-                        if (parentPath.contains("/"+node.getPid()+"/") || parentPath.endsWith("/" + node.getParentPid() + "/")) {
+                        if (parentPath.contains("/"+node.getPid()+"/")) {
                             Log.debug("in path:"+node.getPid()+"/"+property);
                             return "gwt-pagepicker-icon-inpath";
                         }

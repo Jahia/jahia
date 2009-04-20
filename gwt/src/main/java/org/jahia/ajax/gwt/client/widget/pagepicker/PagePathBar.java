@@ -115,7 +115,7 @@ public class PagePathBar extends TopBar {
             Log.debug("parentPath " + parentPath);
             Log.debug("parentPID " + selection.getParentPid());
             if (selection.getPid() != 0 &&
-                    (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !parentPath.endsWith("/" + selection.getParentPid() + "/") && !selection.isLocked()))) {
+                    (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !selection.isLocked()))) {
                 pathTextField.setRawValue(String.valueOf(selection.getPid()));
                 if ("SetUrl".equals(callback)) {
                     nativeSetUrl(selection.getLink());

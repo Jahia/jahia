@@ -35,6 +35,7 @@ package org.jahia.services.timebasedpublishing;
 
 import org.jahia.bin.Jahia;
 import org.jahia.content.ObjectKey;
+import org.jahia.content.ContentObject;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.hibernate.manager.JahiaObjectManager;
@@ -46,6 +47,8 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -128,6 +131,16 @@ public class TimeBasedPublishingJob extends BackgroundJob {
                 jahiaObjectDelegate.setRule(rule);
                 jahiaObjectDelegate.setObjectKey(objectKey);
                 jahiaObjectMgr.save(jahiaObjectDelegate);
+
+                Set<ContentObject> pickers = ContentObject.getContentObjectInstance(objectKey).getPickerObjects();
+                for (ContentObject contentObject : pickers) {
+                    tbpServ.scheduleBackgroundJob(contentObject.getObjectKey(),TimeBasedPublishingJob.UPDATE_OPERATION,rule,jParams);
+
+                    jahiaObjectDelegate = jahiaObjectMgr.getJahiaObjectDelegate(contentObject.getObjectKey());
+                    jahiaObjectDelegate.setRule(rule);
+                    jahiaObjectDelegate.setObjectKey(objectKey);
+                    jahiaObjectMgr.save(jahiaObjectDelegate);
+                }
 
                 RetentionRuleEvent event = new RetentionRuleEvent(this, jParams,
                         rule.getId().intValue(), RetentionRuleEvent.UPDATING_RULE, -1);

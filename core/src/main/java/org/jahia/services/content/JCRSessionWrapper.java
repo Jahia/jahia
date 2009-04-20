@@ -131,8 +131,8 @@ public class JCRSessionWrapper implements Session {
         throw new PathNotFoundException(path);
     }
 
-    public Node getNode(String path) throws PathNotFoundException, RepositoryException {
-        return (Node) getItem(path);
+    public JCRNodeWrapper getNode(String path) throws PathNotFoundException, RepositoryException {
+        return (JCRNodeWrapper) getItem(path);
     }
 
     public boolean itemExists(String path) throws RepositoryException {

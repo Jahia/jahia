@@ -91,6 +91,37 @@ public class LanguageCodeConverters {
     }
 
     /**
+     * Converts (alt) string such as
+     *   en_US, fr_CH_unix, fr, en, _GB, fr__UNIX
+     * into Locale objects. This method is the reverse operation of the
+     * Locale.toString() output. So a good test case for this method could
+     * be :
+     *   languageCodeToLocale(Locale.toString()).equals(Locale)
+     * @param code the encoded string
+     * @return the resulting Locale object, or the default language code if
+     * no language was found.
+     */
+    public static Locale getLocaleFromCode(String code) {
+        if (code == null || code.length() == 0) {
+            return Locale.getDefault() ;
+        }
+        Locale loc ;
+        String[] codes = code.split("_") ;
+        if (codes.length == 0) {
+            return Locale.getDefault() ;
+        } else if (codes.length == 1) {
+            loc = new Locale(codes[0]) ;
+        } else if (codes.length == 2) {
+            loc = new Locale(codes[0], codes[1]) ;
+        } else if (codes.length == 3) {
+            loc = new Locale(codes[0], codes[1], codes[2]) ;
+        } else {
+            return Locale.getDefault() ;
+        }
+        return loc ;
+    }
+
+    /**
      * Converts language tags encoded (RFC 3066) to Locales. Examples of
      * language tags encoding are :
      *   en-us, en, en-scouse

@@ -81,6 +81,7 @@ import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.JahiaTools;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.gui.GuiBean;
 
 import javax.jcr.RepositoryException;
@@ -614,7 +615,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     public void changeLocaleForAllPagesAndEngines(String languageSelected) throws GWTJahiaServiceException {
         ProcessingContext jParams = retrieveParamBean();
         try {
-            jParams.changeLanguage(new Locale(languageSelected));
+            jParams.changeLanguage(LanguageCodeConverters.getLocaleFromCode(languageSelected));
         } catch (JahiaException e) {
             throw new GWTJahiaServiceException(e.getMessage());
         }
@@ -623,7 +624,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     public void changeLocaleForCurrentEngine(String languageSelected) {
         ProcessingContext jParams = retrieveParamBean();
         if (languageSelected != null)
-            jParams.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE_ENGINE, new Locale(languageSelected));
+            jParams.getSessionState().setAttribute(ProcessingContext.SESSION_LOCALE_ENGINE, LanguageCodeConverters.getLocaleFromCode(languageSelected));
         else jParams.getSessionState().removeAttribute(ProcessingContext.SESSION_LOCALE_ENGINE);
     }
 

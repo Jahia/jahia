@@ -237,12 +237,13 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public void cropImage(String path, String target, int top, int left, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRNodeWrapper node = jcr.getFileNode(path, getUser());
-        JCRNodeWrapper targetCheck = jcr.getFileNode(node.getPath().replace(node.getName(), target), getUser());
-        if (targetCheck.isValid() && !forceReplace) {
-            throw new ExistingFileException("The file " + target + " already exists.");
-        }
         try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper targetCheck = jcr.getThreadSession(getUser()).getNode(node.getPath().replace(node.getName(), target));
+            if (targetCheck.isValid() && !forceReplace) {
+                throw new ExistingFileException("The file " + target + " already exists.");
+            }
+
             File tmp = File.createTempFile("image", "tmp");
             FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
             Opener op = new Opener();
@@ -255,7 +256,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
             File f = File.createTempFile("image", "tmp");
             ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            JCRNodeWrapper newFile = ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
+            ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
             node.getParent().save();
             tmp.delete();
             f.delete();
@@ -267,12 +268,13 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public void resizeImage(String path, String target, int width, int height, boolean forceReplace) throws GWTJahiaServiceException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRNodeWrapper node = jcr.getFileNode(path, getUser());
-        JCRNodeWrapper targetCheck = jcr.getFileNode(node.getPath().replace(node.getName(), target), getUser());
-        if (targetCheck.isValid() && !forceReplace) {
-            throw new ExistingFileException("The file " + target + " already exists.");
-        }
         try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper targetCheck = jcr.getThreadSession(getUser()).getNode(node.getPath().replace(node.getName(), target));
+            if (targetCheck.isValid() && !forceReplace) {
+                throw new ExistingFileException("The file " + target + " already exists.");
+            }
+
             File tmp = File.createTempFile("image", "tmp");
             FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
             Opener op = new Opener();
@@ -283,7 +285,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
             File f = File.createTempFile("image", "tmp");
             ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            JCRNodeWrapper newFile = ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
+            ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
             node.getParent().save();
             tmp.delete();
             f.delete();
@@ -296,12 +298,13 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
     public void rotateImage(String path, String target, boolean clockwise, boolean forceReplace) throws GWTJahiaServiceException {
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
-        JCRNodeWrapper node = jcr.getFileNode(path, getUser());
-        JCRNodeWrapper targetCheck = jcr.getFileNode(node.getPath().replace(node.getName(), target), getUser());
-        if (targetCheck.isValid() && !forceReplace) {
-            throw new ExistingFileException("The file " + target + " already exists.");
-        }
         try {
+            JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
+            JCRNodeWrapper targetCheck = jcr.getThreadSession(getUser()).getNode(node.getPath().replace(node.getName(), target));
+            if (targetCheck.isValid() && !forceReplace) {
+                throw new ExistingFileException("The file " + target + " already exists.");
+            }
+
             File tmp = File.createTempFile("image", "tmp");
             FileUtils.copyStream(node.getFileContent().downloadFile(), new FileOutputStream(tmp));
             Opener op = new Opener();
@@ -316,7 +319,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
 
             File f = File.createTempFile("image", "tmp");
             ImageProcess.save(op.getFileType(tmp.getPath()), ip, f);
-            JCRNodeWrapper newFile = ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
+            ((JCRNodeWrapper) node.getParent()).uploadFile(target, new FileInputStream(f), node.getFileContent().getContentType());
             node.getParent().save();
             tmp.delete();
             f.delete();

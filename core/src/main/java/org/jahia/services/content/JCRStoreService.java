@@ -176,7 +176,7 @@ public class JCRStoreService extends JahiaService implements Repository, Servlet
     protected ThreadLocal<Map<String,JCRSessionWrapper>> userSession = new ThreadLocal<Map<String,JCRSessionWrapper>>();
 
 
-    protected JCRSessionWrapper getThreadSession(JahiaUser user) throws RepositoryException {
+    public JCRSessionWrapper getThreadSession(JahiaUser user) throws RepositoryException {
         // thread user session might be inited/closed in an http filter, instead of keeping it
 
 

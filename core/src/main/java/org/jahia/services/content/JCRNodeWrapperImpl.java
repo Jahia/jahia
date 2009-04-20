@@ -936,8 +936,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     }
 
     public boolean copyFile(JCRNodeWrapper dest, String name) throws RepositoryException {
-        JCRNodeWrapper copy = (JCRNodeWrapper) session.getItem(dest.getPath()+"/"+name);
-        if (!copy.isValid()) {
+        JCRNodeWrapper copy = null;
+        try {
+            copy = (JCRNodeWrapper) session
+                    .getItem(dest.getPath() + "/" + name);
+        } catch (PathNotFoundException ex) {
+            // node does not exist
+        }
+        if (copy == null || !copy.isValid()) {
             copy = dest.addNode(name, getPrimaryNodeTypeName());
         }
         if (isFile()) {

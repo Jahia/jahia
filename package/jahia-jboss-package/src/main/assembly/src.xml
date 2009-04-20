@@ -1,0 +1,13 @@
+<assembly>
+  <id>jahia</id>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <fileSets>
+    <fileSet>
+      <directory>${project.build.directory}/jboss-4.2.3.GA</directory>
+      <outputDirectory>jahia</outputDirectory>
+    </fileSet>
+  </fileSets>
+</assembly>

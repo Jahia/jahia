@@ -180,6 +180,23 @@ public class JahiaResourceBundle extends ResourceBundle {
         return getMessageResource(key, locale,null);
     }
 
+    public static String getInternalOrMessageResource(String key, Locale locale) {
+        String value = null ;
+        try{
+            value = ResourceBundle.getBundle(JAHIA_INTERNAL_RESOURCES, locale).getString(key) ;
+        } catch (MissingResourceException e) {}
+        if (value != null) {
+            return value ;
+        }
+        try{
+            value = ResourceBundle.getBundle(JAHIA_MESSAGE_RESOURCES, locale).getString(key) ;
+        } catch (MissingResourceException e) {}
+        if (value != null) {
+            return value ;
+        }
+        return MISSING_RESOURCE + key + MISSING_RESOURCE ;
+    }
+
     public static String getString(String bundle, String key, Locale locale, String templatePackageName) {
         return new JahiaResourceBundle(bundle, locale, templatePackageName, Thread.currentThread().getContextClassLoader()).getString(key);
     }

@@ -38,7 +38,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 <head>
-    <title>Jahia Mashup Manager</title>
+    <title><title><internal:message key="button.mashupmanager"/></title></title>
 
 
     <link rel="stylesheet" type="text/css" media="screen"

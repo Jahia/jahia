@@ -157,7 +157,7 @@ public class MessageTag extends TagSupport {
         final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
         Locale currentLocale = null;
         if (jParams != null) {
-            final Map<?, ?> engineMap = !Core_Engine.ENGINE_NAME.equals(jParams.getEngineName()) ? (Map<?, ?>) jParams.getSessionState().getAttribute("jahia_session_engineMap") : null;
+            final Map<String, ?> engineMap = !Core_Engine.ENGINE_NAME.equals(jParams.getEngineName()) ? (Map<String, ?>) jParams.getSessionState().getAttribute("jahia_session_engineMap") : null;
             if (engineMap != null) {
                 final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
                 if (elh != null) {
@@ -183,7 +183,7 @@ public class MessageTag extends TagSupport {
         String resValue = null;
         try {
             if (key != null) {
-                resValue = JahiaResourceBundle.getMessageResource(key, currentLocale);
+                resValue = JahiaResourceBundle.getInternalOrMessageResource(key, currentLocale);
             } else if (name != null) {
                 final EngineMessage message = (EngineMessage) pageContext.findAttribute(name);
                 if (message != null) {

@@ -39,7 +39,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 	<head>
-		<title>Jahia Workflow Manager</title>
+		<title><internal:message key="button.workflow"/></title>
 		<internal:gwtInit standalone="true"/>
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.workflow.WorkflowManager" />
 	</head>

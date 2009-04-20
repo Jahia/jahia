@@ -38,7 +38,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 <head>
-    <title>Jahia Process Display</title>
+    <title><internal:message key="org.jahia.engines.processDisplay.engine.title"/></title>
     <internal:gwtInit standalone="true"/>
     <internal:gwtImport module="org.jahia.ajax.gwt.module.pdisplay.ProcessDisplay"/>
 </head>

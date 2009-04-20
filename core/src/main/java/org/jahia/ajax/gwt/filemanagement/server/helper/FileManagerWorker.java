@@ -655,8 +655,10 @@ public class FileManagerWorker {
                                                          List<String> lockedNodes, String username) {
         if (nodeToDelete.isCollection()) {
             for (JCRNodeWrapper child : nodeToDelete.getChildren()) {
-                if (child.isCollection()) {
-                    getRecursedLocksAndFileUsages(child, lockedNodes, username);
+                getRecursedLocksAndFileUsages(child, lockedNodes, username);
+                if (lockedNodes.size() >= 10) {
+                    // do not check further
+                    return true;
                 }
             }
         }

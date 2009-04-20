@@ -33,7 +33,7 @@
 
 --%>
 <div id="copyright">
-  <%=copyright %>&nbsp;Jahia <%=JahiaConfigurationWizard.VERSION + "." + JahiaConfigurationWizard.getPatchNumber() + " r" + JahiaConfigurationWizard.getBuildNumber() %>
+  <%=copyright %>&nbsp; <fmt:message key="org.jahia.copyright"/> Jahia <%=JahiaConfigurationWizard.VERSION + "." + JahiaConfigurationWizard.getPatchNumber() + " r" + JahiaConfigurationWizard.getBuildNumber() %>
 </div>
 </div>
 <br/>
@@ -41,7 +41,7 @@
  <c:if test="${empty requestScope['jahia.engines.gwtModuleIncluded']}">
 <internal:gwtImport module="org.jahia.ajax.gwt.module.admin.Admin"/>
 </c:if>
-<internal:gwtGenerateDictionary/>        
+<internal:gwtGenerateDictionary/>
 </body>
 </html>
 <% out.flush(); %>

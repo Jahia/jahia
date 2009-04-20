@@ -618,7 +618,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     // reads the container list from a container set
     protected boolean retrieveContainerList() throws JahiaException {
         JahiaContainerList list = getContainerList(jData, getName());
-        if (list != null && list.getID() != 0) {
+        if (list != null && list.getID() != 0 && list.getFactoryProxy() != null ) {
             list.getFactoryProxy().setListViewId(getId());
             setContainerList(list);
             setSizeAndOffsetSettings();

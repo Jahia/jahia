@@ -579,6 +579,9 @@ public class WorkflowService extends JahiaService {
         }
         if (oldMode == LINKED || mode == LINKED) {
             ServicesRegistry.getInstance().getJahiaSiteMapService().resetSiteMap();
+
+            WorkflowEvent theEvent = new WorkflowEvent (this, contentObject, jParams.getUser(), jParams.getCurrentLocale().toString(), false);
+            ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
         }
         if (oldMode == LINKED) {
             storeLanguageState(oldMainObject, jParams.getSiteID());
@@ -588,9 +591,6 @@ public class WorkflowService extends JahiaService {
             storeLanguageState(getMainLinkObject(object), jParams.getSiteID());
             languagesStatesManager.clearEntries(object.toString());
         }
-
-        WorkflowEvent theEvent = new WorkflowEvent (this, contentObject, jParams.getUser(), jParams.getCurrentLocale().toString(), false);
-        ServicesRegistry.getInstance().getJahiaEventService().fireObjectChanged(theEvent);
     }
 
     public boolean hasChanged(ContentObjectKey object, int mode, String workflowName, String processId) throws JahiaException {

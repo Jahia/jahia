@@ -58,10 +58,7 @@ import org.jahia.params.SessionState;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.lock.LockKey;
-import org.jahia.services.lock.LockService;
-import org.jahia.services.lock.LockPrerequisitesResult;
-import org.jahia.services.lock.LockPrerequisites;
+import org.jahia.services.lock.*;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.ContentObjectEntryState;
@@ -77,8 +74,7 @@ import java.util.*;
 public class UpdateField_Engine implements JahiaEngine {
 
     /** logging */
-    private static final org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (UpdateField_Engine.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger (UpdateField_Engine.class);
 
     private static final String TEMPLATE_JSP = "update_field";
     public static final String ENGINE_NAME = "updatefield";
@@ -89,13 +85,13 @@ public class UpdateField_Engine implements JahiaEngine {
      * Default constructor, creates a new <code>UpdateField_Engine</code> instance.
      */
     public UpdateField_Engine () {
-        toolBox = EngineToolBox.getInstance ();
+        toolBox = EngineToolBox.getInstance();
     }
 
     /**
      * authoriseRender AK    19.12.2000
      */
-    public boolean authoriseRender (ProcessingContext jParams) {
+    public boolean authoriseRender(ProcessingContext jParams) {
         return toolBox.authoriseRender (jParams);
     } // end authoriseRender
 
@@ -103,17 +99,16 @@ public class UpdateField_Engine implements JahiaEngine {
      * renderLink AK    19.12.2000 AK    04.01.2001  add the select parameter MJ    21.03.2001
      * mode is now the first URL parameter
      */
-    public String renderLink (ProcessingContext jParams, Object theObj)
-            throws JahiaException {
+    public String renderLink(ProcessingContext jParams, Object theObj) throws JahiaException {
         ContentField contentField = (ContentField) theObj;
-        String params = "?mode=display&fid=" + contentField.getID ();
-        return jParams.composeEngineUrl (ENGINE_NAME, params);
+        String params = "?mode=display&fid=" + contentField.getID();
+        return jParams.composeEngineUrl(ENGINE_NAME, params);
     } // end renderLink
 
     /**
      * needsJahiaData AK    19.12.2000
      */
-    public boolean needsJahiaData (ProcessingContext jParams) {
+    public boolean needsJahiaData(ProcessingContext jParams) {
         return false;
     } // end needsJahiaData
 
@@ -123,59 +118,47 @@ public class UpdateField_Engine implements JahiaEngine {
      * @param jParams a ProcessingContext object
      * @param jData   a JahiaData object (not mandatory)
      */
-    public EngineValidationHelper handleActions (ProcessingContext jParams, JahiaData jData)
-            throws JahiaException,
-            JahiaSessionExpirationException,
-            JahiaForbiddenAccessException {
+    public EngineValidationHelper handleActions(ProcessingContext jParams, JahiaData jData) throws JahiaException {
         // initalizes the hashmap
-        Map engineMap = initEngineMap (jParams);
+        Map engineMap = initEngineMap(jParams);
 
         // checks if the user has the right to display the engine
-        JahiaField theField = (JahiaField) engineMap.get (ENGINE_NAME + ".theField");
+        JahiaField theField = (JahiaField) engineMap.get(ENGINE_NAME + ".theField");
         final JahiaUser user = jParams.getUser();
 
         // does the current user have permission for the current engine ?
-        if (ServicesRegistry.getInstance().getJahiaACLManagerService().
-                getSiteActionPermission("engines.actions.update",
-                        jParams.getUser(), JahiaBaseACL.READ_RIGHTS,
-                        jParams.getSiteID()) <=0 ) {
+        if (ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission("engines.actions.update",  jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0) {
             throw new JahiaForbiddenAccessException();
         }
 
         if (theField.checkAdminAccess (user)) {
             engineMap.put("enableAuthoring", Boolean.TRUE);
-            engineMap.put ("adminAccess", Boolean.TRUE);
-            engineMap.put ("enableRightView", Boolean.TRUE);
-            engineMap.put ("enableAdvancedWorkflow", Boolean.TRUE);
-            engineMap.put ("writeAccess", Boolean.TRUE);
+            engineMap.put("adminAccess", Boolean.TRUE);
+            engineMap.put("enableRightView", Boolean.TRUE);
+            engineMap.put("enableAdvancedWorkflow", Boolean.TRUE);
+            engineMap.put("writeAccess", Boolean.TRUE);
         } else if (theField.checkWriteAccess (user)) {
             engineMap.put("enableAuthoring", Boolean.TRUE);
-            engineMap.put ("writeAccess", Boolean.TRUE);
+            engineMap.put("writeAccess", Boolean.TRUE);
         }
 
-        if (engineMap.get ("writeAccess") != null) {
+        if (engineMap.get("writeAccess") != null) {
 
             // #ifdef LOCK
-            final LockService lockRegistry = ServicesRegistry.getInstance ().getLockService ();
-            if (jParams.settings ().areLocksActivated ()) {
-                final LockKey lockKey = LockKey.composeLockKey (LockKey.UPDATE_FIELD_TYPE, theField.getID ());
-                if (lockRegistry.acquire (lockKey, user,
-                        user.getUserKey(),
-                        jParams.getSessionState ().
-                        getMaxInactiveInterval ())) {
-
-                    processLastScreen (jParams, engineMap);
-                    processCurrentScreen (jParams, engineMap);
-
+            final LockService lockRegistry = ServicesRegistry.getInstance ().getLockService();
+            if (jParams.settings().areLocksActivated()) {
+                final LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_FIELD_TYPE, theField.getID());
+                if (lockRegistry.acquire(lockKey, user, user.getUserKey(), jParams.getSessionState().getMaxInactiveInterval())) {
+                    processLastScreen(jParams, engineMap);
+                    processCurrentScreen(jParams, engineMap);
                     // #ifdef LOCK
                 } else {
-                    final Map m = lockRegistry.getLocksOnObject(lockKey);
-                    if (! m.isEmpty()) {
-                        final String action = (String) m.keySet().iterator().next();
+                    final Map<String, Set<Lock>> m = lockRegistry.getLocksOnObject(lockKey);
+                    if (!m.isEmpty()) {
+                        final String action = m.keySet().iterator().next();
                         engineMap.put("LockKey", LockKey.composeLockKey(lockKey.getObjectKey(), action));
                     } else {
-                        final LockPrerequisitesResult results = LockPrerequisites.getInstance().
-                                getLockPrerequisitesResult(lockKey);
+                        final LockPrerequisitesResult results = LockPrerequisites.getInstance().getLockPrerequisitesResult(lockKey);
                         engineMap.put("LockKey", results.getFirstLockKey());
                     }
                     processCurrentScreen(jParams, engineMap);
@@ -184,11 +167,11 @@ public class UpdateField_Engine implements JahiaEngine {
             // #endif
 
         } else {
-            throw new JahiaForbiddenAccessException ();
+            throw new JahiaForbiddenAccessException();
         }
 
         // displays the screen
-        toolBox.displayScreen (jParams, engineMap);
+        toolBox.displayScreen(jParams, engineMap);
 
         return null;
 
@@ -199,7 +182,7 @@ public class UpdateField_Engine implements JahiaEngine {
      *
      * @return the engine name.
      */
-    public final String getName () {
+    public final String getName() {
         return ENGINE_NAME;
     }
 
@@ -208,78 +191,67 @@ public class UpdateField_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object
      */
-    public void processLastScreen (ProcessingContext jParams, Map engineMap)
-            throws JahiaException,
-            JahiaForbiddenAccessException {
+    public void processLastScreen(ProcessingContext jParams, Map engineMap) throws JahiaException {
         logger.debug ("started");
-        EngineLanguageHelper elh = (EngineLanguageHelper)engineMap
-                                   .get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
-        JahiaContentFieldFacade jahiaContentFieldFacade
-                = (JahiaContentFieldFacade) engineMap.get ("jahiaContentFieldFacade");
+        EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
+        JahiaContentFieldFacade jahiaContentFieldFacade = (JahiaContentFieldFacade) engineMap.get("jahiaContentFieldFacade");
 
-        JahiaField theField = jahiaContentFieldFacade.getField (
-                elh.getPreviousEntryLoadRequest(), true);
+        JahiaField theField = jahiaContentFieldFacade.getField(elh.getPreviousEntryLoadRequest(), true);
 
         // handle undefined field
-        int initialFieldType = theField.getType ();
+        int initialFieldType = theField.getType();
 
-        engineMap.put (JahiaEngine.PROCESSING_LOCALE,
-                elh.getPreviousLocale());
-        engineMap.put (ENGINE_NAME +"."+"theField", theField);
+        engineMap.put(JahiaEngine.PROCESSING_LOCALE, elh.getPreviousLocale());
+        engineMap.put(ENGINE_NAME +"."+"theField", theField);
 
         // gets the last screen
         // lastscreen   = edit, rights, logs
-        String lastScreen = jParams.getParameter ("lastscreen");
+        String lastScreen = jParams.getParameter("lastscreen");
         if (lastScreen == null) {
             //lastScreen = "edit";
             lastScreen = EMPTY_STRING;
         }
 
-        logger.debug ("lastscreen=" + lastScreen);
+        logger.debug("lastscreen=" + lastScreen);
 
         // indicates to sub engines that we are processing last screen
         int mode = JahiaEngine.UPDATE_MODE;
 
         // dispatches to the appropriate sub engine
-        if (lastScreen.equals ("edit")) {
-            if (!toolBox.processFieldTypes (theField, null, ENGINE_NAME, jParams, mode, engineMap)) {
+        if (lastScreen.equals("edit")) {
+            if (!toolBox.processFieldTypes(theField, null, ENGINE_NAME, jParams, mode, engineMap)) {
                 // if there was an error, come back to last screen
-                engineMap.put ("screen", lastScreen);
-                engineMap.put ("jspSource", TEMPLATE_JSP);
+                engineMap.put("screen", lastScreen);
+                engineMap.put("jspSource", TEMPLATE_JSP);
             } else {
-                if (jParams.getParameter (
-                        "apply_change_to_all_lang_" + theField.getID ()) != null) {
-                    applyChangeToAllLang (theField, jahiaContentFieldFacade,
-                            engineMap, jParams);
+                if (jParams.getParameter("apply_change_to_all_lang_" + theField.getID()) != null) {
+                    applyChangeToAllLang (theField, jahiaContentFieldFacade, engineMap, jParams);
                 }
             }
-        } else if (lastScreen.equals ("rightsMgmt")) {
-            if (engineMap.get ("adminAccess") != null) {
-                ManageRights.getInstance ().handleActions (jParams, mode,
-                        engineMap, theField.getAclID (), null, null);
+        } else if (lastScreen.equals("rightsMgmt")) {
+            if (engineMap.get("adminAccess") != null) {
+                ManageRights.getInstance().handleActions(jParams, mode, engineMap, theField.getAclID(), null, null);
             } else {
-                throw new JahiaForbiddenAccessException ();
+                throw new JahiaForbiddenAccessException();
             }
-        } else if (lastScreen.equals ("logs")) {
-            if (engineMap.get ("adminAccess") != null) {
+        } else if (lastScreen.equals("logs")) {
+            if (engineMap.get("adminAccess") != null) {
                 // ManageLogs_Engine.getInstance().handleActions( jParams, null );
             } else {
-                throw new JahiaForbiddenAccessException ();
+                throw new JahiaForbiddenAccessException();
             }
         } else if (lastScreen.equals("workflow")) {
-            final boolean isReadOnly = LockPrerequisites.getInstance().
-                    getLockPrerequisitesResult((LockKey) engineMap.get("LockKey")) != null;
+            final boolean isReadOnly = LockPrerequisites.getInstance().getLockPrerequisitesResult((LockKey) engineMap.get("LockKey")) != null;
             if (engineMap.get("adminAccess") != null || isReadOnly) {
-                ManageWorkflow.getInstance().handleActions(jParams, mode,
-                        engineMap, theField.getContentField());
+                ManageWorkflow.getInstance().handleActions(jParams, mode, engineMap, theField.getContentField());
             } else {
                 throw new JahiaForbiddenAccessException();
             }
         } else if (lastScreen.equals("metadata")) {
             ObjectKey objectKey = ContentField.getField(theField.getID()).getObjectKey();
             Metadata_Engine.getInstance().handleActions(jParams, mode, objectKey);
-        } else if (lastScreen.equals ("versioning")) {
-            if (engineMap.get ("adminAccess") != null) {
+        } else if (lastScreen.equals("versioning")) {
+            if (engineMap.get("adminAccess") != null) {
 
                 /**
                  * todo forward to versioning URL
@@ -291,41 +263,28 @@ public class UpdateField_Engine implements JahiaEngine {
                  .handleAction( jParams, mode, engineMap, JahiaObjectTool.FIELD_TYPE, theField );
                  */
             } else {
-                throw new JahiaForbiddenAccessException ();
+                throw new JahiaForbiddenAccessException();
             }
         }
         theField = (JahiaField) engineMap.get (ENGINE_NAME + "." + "theField");
-        if (initialFieldType != theField.getType ()) {
+        if (initialFieldType != theField.getType()) {
             // init the JahiaContentFieldFacade
-            List localeList = new ArrayList();
-            List siteLanguageSettings = jParams.getSite ().getLanguageSettings ();
+            List<Locale> localeList = new ArrayList<Locale>();
+            List<SiteLanguageSettings> siteLanguageSettings = jParams.getSite().getLanguageSettings();
             if (siteLanguageSettings != null) {
-                for (int i = 0; i < siteLanguageSettings.size (); i++) {
-                    SiteLanguageSettings curSetting = (SiteLanguageSettings)
-                            siteLanguageSettings.get(i);
-                    if (curSetting.isActivated ()) {
-                        Locale tempLocale = LanguageCodeConverters.
-                                languageCodeToLocale (curSetting.
-                                getCode ());
+                for (SiteLanguageSettings curSetting: siteLanguageSettings) {
+                    if (curSetting.isActivated()) {
+                        Locale tempLocale = LanguageCodeConverters. languageCodeToLocale (curSetting.getCode());
                         localeList.add (tempLocale);
                     }
                 }
             }
 
-            jahiaContentFieldFacade =
-                    new JahiaContentFieldFacade (theField.getID (),
-                            theField.getJahiaID (),
-                            theField.getPageID (),
-                            theField.getctnid (),
-                            theField.getFieldDefID (),
-                            theField.getType (),
-                            theField.getConnectType (),
-                            theField.getValue (),
-                            theField.getAclID (),
-                            jParams,
-                            localeList);
+            jahiaContentFieldFacade = new JahiaContentFieldFacade (theField.getID(), theField.getJahiaID(), theField.getPageID(), theField.getctnid(),
+                                                                   theField.getFieldDefID(), theField.getType(), theField.getConnectType(),
+                                                                   theField.getValue(), theField.getAclID(), jParams, localeList);
 
-            engineMap.put ("jahiaContentFieldFacade", jahiaContentFieldFacade);
+            engineMap.put("jahiaContentFieldFacade", jahiaContentFieldFacade);
 
         }
     } // end processLastScreen
@@ -335,63 +294,55 @@ public class UpdateField_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object
      */
-    public void processCurrentScreen (final ProcessingContext jParams, final Map engineMap)
-            throws JahiaException,
-            JahiaForbiddenAccessException {
+    public void processCurrentScreen(final ProcessingContext jParams, final Map engineMap) throws JahiaException {
         logger.debug ("started");
-        EngineLanguageHelper elh = (EngineLanguageHelper)engineMap
-                                   .get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
-        final JahiaContentFieldFacade jahiaContentFieldFacade
-                = (JahiaContentFieldFacade) engineMap.get ("jahiaContentFieldFacade");
+        EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
+        final JahiaContentFieldFacade jahiaContentFieldFacade = (JahiaContentFieldFacade) engineMap.get("jahiaContentFieldFacade");
 
-        engineMap.put (JahiaEngine.PROCESSING_LOCALE,
-                elh.getCurrentLocale());
+        engineMap.put(JahiaEngine.PROCESSING_LOCALE, elh.getCurrentLocale());
 
-        final JahiaField theField = jahiaContentFieldFacade.getField (elh.getCurrentEntryLoadRequest(), true);
-        engineMap.put (ENGINE_NAME + "." +"theField", theField);
+        final JahiaField theField = jahiaContentFieldFacade.getField(elh.getCurrentEntryLoadRequest(), true);
+        engineMap.put(ENGINE_NAME + "." +"theField", theField);
 
         // gets the current screen
         // screen   = edit, rights, logs
-        final String theScreen = (String) engineMap.get ("screen");
-        //JahiaField theField = (JahiaField)  engineMap.get( "theField" );
+        final String theScreen = (String) engineMap.get("screen");
+        //JahiaField theField = (JahiaField) engineMap.get("theField");
 
-        logger.debug ("screen=" + theScreen);
+        if (logger.isDebugEnabled()) {
+            logger.debug("screen=" + theScreen);
+        }
 
-        final Set updatedLanguageEntries = (Set) engineMap.get (
-                ENGINE_NAME + "." +"updatedLanguageEntries");
+        final Set updatedLanguageEntries = (Set) engineMap.get(ENGINE_NAME + "." + "updatedLanguageEntries");
 
-        final Set updatedFields = (Set) engineMap.get (ENGINE_NAME + "." +"updated.fields");
+        final Set updatedFields = (Set) engineMap.get(ENGINE_NAME + "." + "updated.fields");
 
         // indicates to sub engines that we are processing last screen
         int mode = JahiaEngine.LOAD_MODE;
 
         // #ifdef LOCK
-        final LockKey lockKey = LockKey.composeLockKey (LockKey.UPDATE_FIELD_TYPE, theField.getID ());
-        final LockService lockRegistry = ServicesRegistry.getInstance ().
-                getLockService ();
+        final LockKey lockKey = LockKey.composeLockKey(LockKey.UPDATE_FIELD_TYPE, theField.getID());
+        final LockService lockRegistry = ServicesRegistry.getInstance ().getLockService();
         // #endif
 
         // dispatches to the appropriate sub engine
         final JahiaUser user = jParams.getUser();
-        if (theScreen.equals ("edit")) {
-            if (toolBox.processFieldTypes (theField, null, ENGINE_NAME, jParams, mode, engineMap)) {
-                if (jParams.getParameter (
-                        "apply_change_to_all_lang_" + theField.getID ()) != null) {
-                    applyChangeToAllLang (theField, jahiaContentFieldFacade,
-                                          engineMap, jParams);
+        if (theScreen.equals("edit")) {
+            if (toolBox.processFieldTypes(theField, null, ENGINE_NAME, jParams, mode, engineMap)) {
+                if (jParams.getParameter("apply_change_to_all_lang_" + theField.getID ()) != null) {
+                    applyChangeToAllLang(theField, jahiaContentFieldFacade, engineMap, jParams);
                 }
             }
-        } else if (theScreen.equals ("logs")) {
-            toolBox.loadLogData (jParams, JahiaObjectTool.FIELD_TYPE, engineMap);
-        } else if (theScreen.equals ("rightsMgmt")) {
-            if (engineMap.get ("adminAccess") != null) {
-                ManageRights.getInstance ().handleActions (jParams, mode,
-                                                           engineMap, theField.getAclID (), null, null);
+        } else if (theScreen.equals("logs")) {
+            toolBox.loadLogData(jParams, JahiaObjectTool.FIELD_TYPE, engineMap);
+        } else if (theScreen.equals("rightsMgmt")) {
+            if (engineMap.get("adminAccess") != null) {
+                ManageRights.getInstance ().handleActions(jParams, mode, engineMap, theField.getAclID (), null, null);
             } else {
-                throw new JahiaForbiddenAccessException ();
+                throw new JahiaForbiddenAccessException();
             }
-        } else if (theScreen.equals ("versioning")) {
-            if (engineMap.get ("adminAccess") != null) {
+        } else if (theScreen.equals("versioning")) {
+            if (engineMap.get("adminAccess") != null) {
                 /**
                  VersioningEngine.getInstance()
                  .handleAction( jParams, mode,engineMap, JahiaObjectTool.FIELD_TYPE, theField );
@@ -400,27 +351,24 @@ public class UpdateField_Engine implements JahiaEngine {
                  * Todo forward to Versioning engine
                  */
             } else {
-                throw new JahiaForbiddenAccessException ();
+                throw new JahiaForbiddenAccessException();
             }
         } else if (theScreen.equals("workflow")) {
             if (engineMap.get("adminAccess") != null) {
-                ManageWorkflow.getInstance().handleActions(jParams, mode,
-                                                           engineMap, theField.getContentField());
+                ManageWorkflow.getInstance().handleActions(jParams, mode, engineMap, theField.getContentField());
             } else {
                 throw new JahiaForbiddenAccessException();
             }
         } else if (theScreen.equals("metadata")) {
             ObjectKey objectKey = ContentField.getField(theField.getID()).getObjectKey();
             Metadata_Engine.getInstance().handleActions(jParams, mode, objectKey);
-        } else if (theScreen.equals ("save") || theScreen.equals ("apply")) {
+        } else if (theScreen.equals("save") || theScreen.equals("apply")) {
 
             // #ifdef LOCK
             // Did somebody steal the lock ? Panpan cucul !
-            if (jParams.settings ().areLocksActivated () &&
-                lockRegistry.isStealedInContext (lockKey, user,user.getUserKey())) {
-                engineMap.put ("screen",
-                               jParams.getParameter ("lastscreen"));
-                engineMap.put ("jspSource", "apply");
+            if (jParams.settings().areLocksActivated() && lockRegistry.isStealedInContext(lockKey, user,user.getUserKey())) {
+                engineMap.put("screen", jParams.getParameter ("lastscreen"));
+                engineMap.put("jspSource", "apply");
                 return;
             }
             // #endif
@@ -439,47 +387,32 @@ public class UpdateField_Engine implements JahiaEngine {
 //                    protected void doInTransactionWithoutResult(TransactionStatus status) {
 //                        try {
                             // save workflow
-                            if(!ManageWorkflow.getInstance().handleActions(jParams, mode1,
-                                                                       engineMap, theField.getContentField())) {
+                            if(!ManageWorkflow.getInstance().handleActions(jParams, mode1, engineMap, theField.getContentField())) {
                                 engineMap.put("screen", "workflow");
                                 engineMap.put("jspSource", TEMPLATE_JSP);
                                 return;
                             }
                             // handle field type change
                             if (theField.getID() > 0) {
-                                ContentField contentField = ContentField.getField(theField.
-                                        getID());
+                                ContentField contentField = ContentField.getField(theField.getID());
                                 if (theField.getType() != contentField.getType()) {
-                                    EntrySaveRequest entrySaveRequest = new EntrySaveRequest(
-                                            user, theField.getLanguageCode());
-                                    contentField = contentField.changeType(theField.getType(),
-                                                                           theField.getValue(), jParams, entrySaveRequest);
+                                    EntrySaveRequest entrySaveRequest = new EntrySaveRequest(user, theField.getLanguageCode());
+                                    contentField = contentField.changeType(theField.getType(), theField.getValue(), jParams, entrySaveRequest);
                                 }
                             }
 
                             Iterator fields = jahiaContentFieldFacade.getFields();
                             while (fields.hasNext()) {
                                 JahiaField field = (JahiaField) fields.next();
-                                if (field.hasChanged() &&
-                                    (field.getLanguageCode().equals(ContentField.
-                                            SHARED_LANGUAGE)
-                                     || updatedLanguageEntries.contains(field.getLanguageCode()))
-                                    || updatedFields.contains(new Integer(field.getID()))) {
+                                if (field.hasChanged() && (field.getLanguageCode().equals(ContentField.SHARED_LANGUAGE)
+                                        || updatedLanguageEntries.contains(field.getLanguageCode())) || updatedFields.contains(new Integer(field.getID()))) {
                                     // save the active entry only if the staging doesn't exists.
                                     boolean processField = true;
-                                    if (field.getWorkflowState() ==
-                                        ContentObjectEntryState.WORKFLOW_STATE_ACTIVE) {
-                                        List entryLocales = new ArrayList();
-                                        entryLocales.add(LanguageCodeConverters
-                                                .languageCodeToLocale(field.
-                                                getLanguageCode()));
-                                        EntryLoadRequest stagingLoadRequest =
-                                                new EntryLoadRequest(ContentObjectEntryState.
-                                                        WORKFLOW_STATE_START_STAGING,
-                                                                     0, entryLocales);
-
-                                        processField = (jahiaContentFieldFacade.getField(
-                                                stagingLoadRequest, false) == null);
+                                    if (field.getWorkflowState() == ContentObjectEntryState.WORKFLOW_STATE_ACTIVE) {
+                                        List<Locale> entryLocales = new ArrayList<Locale>();
+                                        entryLocales.add(LanguageCodeConverters.languageCodeToLocale(field.getLanguageCode()));
+                                        EntryLoadRequest stagingLoadRequest = new EntryLoadRequest(ContentObjectEntryState.WORKFLOW_STATE_START_STAGING, 0, entryLocales);
+                                        processField = (jahiaContentFieldFacade.getField(stagingLoadRequest, false) == null);
                                     }
                                     if (processField) {
                                         engineMap.put(ENGINE_NAME + "." + "theField", field);
@@ -488,12 +421,10 @@ public class UpdateField_Engine implements JahiaEngine {
                                 }
                             }
                             if (engineMap.get("adminAccess") != null) {
-                                engineMap.put("logObjectType",
-                                              Integer.toString(JahiaObjectTool.FIELD_TYPE));
+                                engineMap.put("logObjectType", Integer.toString(JahiaObjectTool.FIELD_TYPE));
                                 engineMap.put("logObject", theField);
                                 //ViewRights.getInstance().handleActions( jParams, mode, engineMap, theField.getAclID() );
-                                ManageRights.getInstance().handleActions(jParams, mode1,
-                                                                         engineMap, theField.getAclID(), null, null);
+                                ManageRights.getInstance().handleActions(jParams, mode1, engineMap, theField.getAclID(), null, null);
                             }
 
                             // save metadata
@@ -501,8 +432,7 @@ public class UpdateField_Engine implements JahiaEngine {
                             Metadata_Engine.getInstance().handleActions(jParams, mode1, objectKey);
 
                             JahiaEvent theEvent = new JahiaEvent(this, jParams, theField);
-                            ServicesRegistry.getInstance().getJahiaEventService().
-                                    fireUpdateField(theEvent);
+                            ServicesRegistry.getInstance().getJahiaEventService().fireUpdateField(theEvent);
 
                             logger.debug("Changes applied and saved !");
 //                        } catch (Exception e) {
@@ -513,13 +443,11 @@ public class UpdateField_Engine implements JahiaEngine {
             } catch (Exception e) {
                 logger.error("Error during update operation of an element we must flush all caches to ensure integrity between database and viewing");
                 ServicesRegistry.getInstance().getCacheService().flushAllCaches();
-                throw new JahiaException(e.getMessage(), e.getMessage(),
-                                         JahiaException.DATABASE_ERROR, JahiaException.CRITICAL_SEVERITY, e);
+                throw new JahiaException(e.getMessage(), e.getMessage(), JahiaException.DATABASE_ERROR, JahiaException.CRITICAL_SEVERITY, e);
             } finally{
                 if (theScreen.equals("apply")) {
                     engineMap.put("prevScreenIsApply", Boolean.TRUE);
-                    String lastScreen =
-                            jParams.getParameter("lastscreen");
+                    String lastScreen = jParams.getParameter("lastscreen");
                     engineMap.put("screen", lastScreen);
                 }
                 // #ifdef LOCK
@@ -531,9 +459,9 @@ public class UpdateField_Engine implements JahiaEngine {
                 // #endif
             }
         }
-        else if (theScreen.equals ("cancel")) {
-            if (jParams.settings ().areLocksActivated ()) {
-                lockRegistry.release (lockKey, user,user.getUserKey());
+        else if (theScreen.equals("cancel")) {
+            if (jParams.settings().areLocksActivated()) {
+                lockRegistry.release(lockKey, user,user.getUserKey());
                 ManageWorkflow.getInstance().handleActions(jParams, CANCEL_MODE, engineMap, theField.getContentField());
             }
         }
@@ -546,9 +474,7 @@ public class UpdateField_Engine implements JahiaEngine {
      *
      * @return a Map object containing all the basic values needed by an engine
      */
-    private Map initEngineMap (ProcessingContext jParams)
-            throws JahiaException,
-            JahiaSessionExpirationException {
+    private Map initEngineMap(ProcessingContext jParams) throws JahiaException {
         logger.debug ("started");
 
         Map engineMap;
@@ -559,24 +485,20 @@ public class UpdateField_Engine implements JahiaEngine {
         // gets session values
         SessionState theSession = jParams.getSessionState ();
 
-        engineMap = (Map) theSession.getAttribute (
-                    "jahia_session_engineMap");
+        engineMap = (Map) theSession.getAttribute("jahia_session_engineMap");
 
         // tries to find if this is the first screen generated by the engine
-        String theScreen = jParams.getParameter ("screen");
-        logger.debug ("theScreen=" + theScreen);
+        String theScreen = jParams.getParameter("screen");
+        logger.debug("theScreen=" + theScreen);
 
         boolean prevScreenIsApply = false;
 
         if (engineMap != null && theScreen != null) {
-            Boolean prevScreenIsApplyBool = (Boolean) engineMap.get (
-                    "prevScreenIsApply");
-            prevScreenIsApply = (prevScreenIsApplyBool != null &&
-                    prevScreenIsApplyBool.booleanValue ());
+            Boolean prevScreenIsApplyBool = (Boolean) engineMap.get("prevScreenIsApply");
+            prevScreenIsApply = (prevScreenIsApplyBool != null && prevScreenIsApplyBool.booleanValue ());
 
-            if ( prevScreenIsApply ){
-                elh = (EngineLanguageHelper)engineMap
-                      .get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
+            if (prevScreenIsApply) {
+                elh = (EngineLanguageHelper)engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
                 if (elh != null) {
                     previousLocale = elh.getPreviousLocale();
                 }
@@ -587,8 +509,7 @@ public class UpdateField_Engine implements JahiaEngine {
 
         if (theScreen != null) {
             // if no, load the field value from the session
-            engineMap = (Map) theSession.getAttribute (
-                    "jahia_session_engineMap");
+            engineMap = (Map) theSession.getAttribute("jahia_session_engineMap");
 
             ///////////////////////////////////////////////////////////////////////////////////////
             // FIXME -Fulco-
@@ -598,30 +519,20 @@ public class UpdateField_Engine implements JahiaEngine {
             //      checked them at all.
             ///////////////////////////////////////////////////////////////////////////////////////
             if (engineMap == null) {
-                throw new JahiaSessionExpirationException ();
+                throw new JahiaSessionExpirationException();
             }
 
             if (prevScreenIsApply) {
-                engineMap.remove ("prevScreenIsApply");
-                int fieldID = jParams.getFieldID ();
+                engineMap.remove("prevScreenIsApply");
+                int fieldID = jParams.getFieldID();
 
-                List<Locale> localeList = jParams.getSite ().
-                        getLanguageSettingsAsLocales (false);
-                jahiaContentFieldFacade
-                        = new JahiaContentFieldFacade (fieldID,
-                                LoadFlags.ALL,
-                                jParams,
-                                localeList,
-                                true);
+                List<Locale> localeList = jParams.getSite().getLanguageSettingsAsLocales(false);
+                jahiaContentFieldFacade = new JahiaContentFieldFacade(fieldID, LoadFlags.ALL, jParams, localeList, true);
 
-                engineMap.put ("jahiaContentFieldFacade",
-                        jahiaContentFieldFacade);
-                Page_Field.resetPageBeanSession (jParams);
-
+                engineMap.put("jahiaContentFieldFacade", jahiaContentFieldFacade);
+                Page_Field.resetPageBeanSession(jParams);
             } else {
-                jahiaContentFieldFacade
-                        = (JahiaContentFieldFacade) engineMap.get (
-                                "jahiaContentFieldFacade");
+                jahiaContentFieldFacade = (JahiaContentFieldFacade) engineMap.get("jahiaContentFieldFacade");
             }
         } else {
             engineMap = new HashMap();
@@ -634,91 +545,77 @@ public class UpdateField_Engine implements JahiaEngine {
             }
 
             int fieldID = jParams.getFieldID();
-            Page_Field.resetPageBeanSession (jParams);
-            List<Locale> localeList = new ArrayList();
-            List siteLanguageSettings = jParams.getSite ().getLanguageSettings ();
+            Page_Field.resetPageBeanSession(jParams);
+            List<Locale> localeList = new ArrayList<Locale>();
+            List<SiteLanguageSettings> siteLanguageSettings = jParams.getSite().getLanguageSettings();
             if (siteLanguageSettings != null) {
-                for (int i = 0; i < siteLanguageSettings.size (); i++) {
-                    SiteLanguageSettings curSetting = (SiteLanguageSettings)
-                            siteLanguageSettings.get(i);
-                    if (curSetting.isActivated ()) {
-                        Locale tempLocale = LanguageCodeConverters.
-                                languageCodeToLocale (curSetting.
-                                getCode ());
-                        localeList.add (tempLocale);
+                for (SiteLanguageSettings curSetting: siteLanguageSettings) {
+                    if (curSetting.isActivated()) {
+                        Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
+                        localeList.add(tempLocale);
                     }
                 }
             }
 
-            jahiaContentFieldFacade
-                    = new JahiaContentFieldFacade (fieldID,
-                            LoadFlags.ALL,
-                            jParams,
-                            localeList,
-                            true);
+            jahiaContentFieldFacade = new JahiaContentFieldFacade(fieldID, LoadFlags.ALL, jParams, localeList, true);
 
-            engineMap.put ("jahiaContentFieldFacade", jahiaContentFieldFacade);
+            engineMap.put("jahiaContentFieldFacade", jahiaContentFieldFacade);
 
             // init session
-            engineMap.put (ENGINE_NAME + ".isSelectedField", Boolean.TRUE);
-
+            engineMap.put(ENGINE_NAME + ".isSelectedField", Boolean.TRUE);
         }
 
-        elh = (EngineLanguageHelper)engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
-        if ( elh == null ){
+        elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
+        if (elh == null) {
             elh = new EngineLanguageHelper();
-            engineMap.put(JahiaEngine.ENGINE_LANGUAGE_HELPER,elh);
+            engineMap.put(JahiaEngine.ENGINE_LANGUAGE_HELPER, elh);
         }
         elh.update(jParams);
-        if ( previousLocale != null ){
+        if (previousLocale != null) {
             elh = new EngineLanguageHelper(previousLocale);
         }
-        Set updatedLanguageEntries = (Set) engineMap.get (
-                ENGINE_NAME + "." +"updatedLanguageEntries");
-        if ( updatedLanguageEntries == null ){
-            updatedLanguageEntries = new HashSet();
+        Set<String> updatedLanguageEntries = (Set<String>) engineMap.get(ENGINE_NAME + "." + "updatedLanguageEntries");
+        if (updatedLanguageEntries == null){
+            updatedLanguageEntries = new HashSet<String>();
         }
         if ( !updatedLanguageEntries.contains(elh.getCurrentLanguageCode()) ){
             updatedLanguageEntries.add(elh.getCurrentLanguageCode());
         }
-        engineMap.put (ENGINE_NAME + "." +"updatedLanguageEntries", updatedLanguageEntries);
+        engineMap.put(ENGINE_NAME + "." + "updatedLanguageEntries", updatedLanguageEntries);
 
         // remember the updated fields ( Apply Change to all lang options )
-        Set updatedFields = (Set) engineMap.get (ENGINE_NAME + "." +"updated.fields");
+        Set updatedFields = (Set) engineMap.get(ENGINE_NAME + "." + "updated.fields");
         if (updatedFields == null) {
             updatedFields = new HashSet();
         }
-        engineMap.put (ENGINE_NAME + "." +"updated.fields", updatedFields);
+        engineMap.put(ENGINE_NAME + "." + "updated.fields", updatedFields);
 
         // MultiLanguage Issue -------------------------------------------------
 
         theField = jahiaContentFieldFacade.getField (elh.getCurrentEntryLoadRequest(), true);
-        engineMap.put (ENGINE_NAME + "." +"theField", theField);
+        engineMap.put(ENGINE_NAME + "." + "theField", theField);
 
-        engineMap.put (RENDER_TYPE_PARAM, new Integer (JahiaEngine.RENDERTYPE_FORWARD));
-        engineMap.put (ENGINE_NAME_PARAM, ENGINE_NAME);
-        engineMap.put (ENGINE_URL_PARAM,
-                jParams.composeEngineUrl ("updatefield",
-                        "?fid=" + theField.getID ()));
-        engineMap.put ("updateField", "updateField");
-        theSession.setAttribute ("jahia_session_engineMap", engineMap);
+        engineMap.put(RENDER_TYPE_PARAM, Integer.valueOf(JahiaEngine.RENDERTYPE_FORWARD));
+        engineMap.put(ENGINE_NAME_PARAM, ENGINE_NAME);
+        engineMap.put(ENGINE_URL_PARAM, jParams.composeEngineUrl("updatefield", "?fid=" + theField.getID()));
+        engineMap.put("updateField", "updateField");
+        theSession.setAttribute("jahia_session_engineMap", engineMap);
 
         // sets screen
-        engineMap.put ("screen", theScreen);
-        if (theScreen.equals ("save")) {
-            engineMap.put ("jspSource", "close");
+        engineMap.put("screen", theScreen);
+        if (theScreen.equals("save")) {
+            engineMap.put("jspSource", "close");
         } else if (theScreen.equals ("apply")) {
-            engineMap.put ("jspSource", "apply");
+            engineMap.put("jspSource", "apply");
         } else if (theScreen.equals ("cancel")) {
-            engineMap.put ("jspSource", "close");
+            engineMap.put("jspSource", "close");
         } else {
-            engineMap.put ("jspSource", TEMPLATE_JSP);
+            engineMap.put("jspSource", TEMPLATE_JSP);
         }
 
         // sets engineMap for JSPs
-        jParams.setAttribute ("engineTitle", "Update Field");
-        jParams.setAttribute ("org.jahia.engines.EngineHashMap",
-                engineMap);
+        jParams.setAttribute("engineTitle", "Update Field");
+        jParams.setAttribute("org.jahia.engines.EngineHashMap", engineMap);
         return engineMap;
     }
 
@@ -729,22 +626,16 @@ public class UpdateField_Engine implements JahiaEngine {
      *
      * @throws JahiaException
      */
-    private void applyChangeToAllLang (JahiaField theField,
-                                       JahiaContentFieldFacade
-            jahiaContentFieldFacade,
-                                       Map engineMap, ProcessingContext jParams)
-            throws JahiaException {
-
-        Set updatedFields = (Set) engineMap.get (ENGINE_NAME + "." +"updated.fields");
-        Iterator fieldEnum = jahiaContentFieldFacade.getFields ();
-        JahiaField field;
-        while (fieldEnum.hasNext ()) {
-            field = (JahiaField) fieldEnum.next ();
-            theField.copyValueInAnotherLanguage (field, jParams);
+    private void applyChangeToAllLang(JahiaField theField, JahiaContentFieldFacade jahiaContentFieldFacade, Map engineMap, ProcessingContext jParams) throws JahiaException {
+        Set<Integer> updatedFields = (Set<Integer>) engineMap.get(ENGINE_NAME + "." + "updated.fields");
+        Iterator<JahiaField> fieldEnum = jahiaContentFieldFacade.getFields();
+        while (fieldEnum.hasNext()) {
+            JahiaField field = fieldEnum.next();
+            theField.copyValueInAnotherLanguage(field, jParams);
 
             // remember change
-            if (!updatedFields.contains (new Integer (field.getID ()))) {
-                updatedFields.add (new Integer (field.getID ()));
+            if (!updatedFields.contains(Integer.valueOf(field.getID()))) {
+                updatedFields.add(Integer.valueOf(field.getID()));
             }
         }
     }

@@ -90,6 +90,12 @@
           <dependencies>
             <dependency>
               <groupId>jboss</groupId>
+              <artifactId>jboss-cache</artifactId>
+              <version>1.4.1.GA</version>
+              <scope>provided</scope>
+            </dependency>          
+            <dependency>
+              <groupId>jboss</groupId>
               <artifactId>jboss-common</artifactId>
               <version>4.2.2.GA</version>
               <scope>provided</scope>

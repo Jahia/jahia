@@ -3,8 +3,6 @@ TODO
 
 - Fix problems with Jahia restart under Tomcat 6
 - Update JARs to be in sync with Maven 1 branch
-- Fix problem with context.xml file that differs between Tomcat 6 and Tomcat 5.5. For the moment only deployment on Tomcat 5.5 is supported because of this.
-- Find a better way to deploy the shared libraries into Tomcat, especially in the locations that differ from one version of Tomcat to another.
 - Integrate Jammer Javascript regrouping if possible (probably by using Ant scripts from Maven), or using YUI Compressor plugin.
 - Reactivate JSP compilation
 - Generate Jahia windows installer in "jahia-windows-package" subprojects

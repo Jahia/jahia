@@ -16,9 +16,9 @@
         </repository>
     </repositories>
     <scm>
-        <connection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/</connection>
-        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/</developerConnection>
-        <url>http://10.8.37.111/svn/jahia/branches/JAHIA-ANDROMEDA-BRANCH/</url>
+        <connection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-6-0-BRANCH/</connection>
+        <developerConnection>scm:svn:http://10.8.37.111/svn/jahia/branches/JAHIA-6-0-BRANCH/</developerConnection>
+        <url>http://10.8.37.111/svn/jahia/branches/JAHIA-6-0-BRANCH</url>
     </scm>
     <name>New configuration wizard WAR module</name>
     <dependencies>

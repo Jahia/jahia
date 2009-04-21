@@ -70,22 +70,22 @@
                    value="${inputs['commentDate'].defaultValue}" />
 
             <div id="commentsForm"><!--start commentsForm-->
-                <h3>Ajouter un commentaire</h3>
+                <h3><fmt:message key="postYourComment"/></h3>
 
                 <fieldset>
                     <p class="field">
-                        <label for="c_name">Nom ou pseudo :</label>
+                        <label for="c_name"><fmt:message key="comments.name"/>:</label>
                         <input type="text" size="30" id="c_name" name="${inputs['commentAuthor'].name}"
                                value="${inputs['commentAuthor'].defaultValue}" tabindex="11"/>
                     </p>
 
                     <p class="field">
-                        <label for="c_title">Titre :</label>
+                        <label for="c_title"><fmt:message key="comments.title"/>:</label>
                         <input type="text" size="30" id="c_title" name="${inputs['commentTitle'].name}" tabindex="12"/>
                     </p>
 
                     <p class="field">
-                        <label for="c_content">Commentaire :</label>
+                        <label for="c_content"><fmt:message key="comments.message"/>:</label>
                         <textarea rows="7" cols="35" id="c_content" name="${inputs['commentBody'].name}"
                                   tabindex="13"></textarea>
                     </p>
@@ -95,13 +95,11 @@
                         <%--captcha = <input name="captcha" />--%>
                 </fieldset>
 
-                <p class="form-help">help aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
-                    himenaeos. Nullam erat leo, aliquet sit amet, convallis sit amet, euismod vel, urna. Aliquam
-                    pulvinar.</p>
+                <p class="form-help"><fmt:message key="omments.help"/></p>
                 <fieldset>
 
                     <p class="c_button">
-                        <input type="submit" value="envoyer" class="button" tabindex="11"/>
+                        <input type="submit" value="<fmt:message key="comments.submit"/>" class="button" tabindex="11"/>
                     </p>
 
                 </fieldset>
@@ -112,11 +110,6 @@
         </template:containerForm>
 
     </template:containerList>
-
-    <template:getContainerField fieldName="newsTitle" containerBean="${container}" valueID="newsTitle"/>
-
-    <h5><fmt:message key="postYourComment"/>:</h5>
-
     <%--<template:gwtJahiaModule isTemplate="true" jahiaType="form" id='<%= "form" + IdentifierUtils.nextStringNumericIdentifier() %>' nodeType="jnt:comment" captcha="${pageContext.request.contextPath}/jcaptcha"--%>
     <%--action="createNode" target="${comment.JCRPath}" cssClassName="comment" />--%>
     </div>

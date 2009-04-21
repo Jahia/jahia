@@ -176,7 +176,10 @@ public class SubscriptionsJahiaToolItemProvider extends
             cb.setBoxLabel(getMessage(
                     "includeChildren", "include child pages"));
             cb.setName(subscriptionInfo.getEvent() + "_includeChildren");
-            cb.setValue(subscriptionInfo.isIncludeChildren());
+            // TODO find a solution for subscribing to all objects on the current page (without subpages) 
+            cb.setValue(true);
+            cb.setEnabled(false);
+            //cb.setValue(subscriptionInfo.isIncludeChildren());
             right.add(cb);
         }
 

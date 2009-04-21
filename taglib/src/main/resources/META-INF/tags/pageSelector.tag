@@ -83,7 +83,7 @@
 <c:set target="${attributes}" property="onclick" value="<%= null %>"/>
 <c:if test="${empty attributes.title}"><c:set target="${attributes}" property="title"><fmt:message key="selectors.pageSelector.selectPage"/></c:set></c:if>
 <c:if test="${empty label}"><c:set var="label"><fmt:message key="selectors.select"/></c:set></c:if>
-<a ${h:attributes(attributes)} onclick="javascript:{var pageSelector = window.open('${link}', '<%="pageSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=600'); pageSelector.focus(); return false;}">${fn:escapeXml(label)}</a>
+<a ${h:attributes(attributes)} onclick="javascript:{var pageSelector = window.open('${fn:escapeXml(link)}', '<%="pageSelector_" + session.getId().replaceAll("[^a-zA-Z0-9]", "_")%>', 'resizable,height=800,width=600'); pageSelector.focus(); return false;}">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
     &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldIdIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}"><fmt:message key="selectors.pageSelector.selectPage.includeChildren"/></label>
 </c:if>

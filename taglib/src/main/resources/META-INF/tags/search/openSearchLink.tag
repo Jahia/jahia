@@ -70,4 +70,4 @@ if (!"html".equals(jspContext.getAttribute("format")) && !"rss".equals(jspContex
     <c:param name="title" value="${title}"/>
     <c:param name="description" value="${description}"/>
 </c:url>
-<link rel="search" type="application/opensearchdescription+xml" href="${url}" title="${fn:escapeXml(title)}" />
+<link rel="search" type="application/opensearchdescription+xml" href="${fn:escapeXml(url)}" title="${fn:escapeXml(title)}" />

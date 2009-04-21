@@ -33,6 +33,7 @@
 
 package org.jahia.taglibs.uicomponents.i18n;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
@@ -142,7 +143,7 @@ public class DisplayLanguageSwitchLinkTag extends AbstractJahiaTag {
                         throw new JspTagException("Unknown onLanguageSwitch attribute value " + onLanguageSwitch);
                     }
 
-                    buff.append(link);
+                    buff.append(StringEscapeUtils.escapeXml(link));
                     if (urlValueID != null && urlValueID.length() > 0) {
                         pageContext.setAttribute(urlValueID, link);
                     }

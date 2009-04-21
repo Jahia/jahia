@@ -477,13 +477,13 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                             if (displayActionMenuBeforeLink && editMode) {
                     out.append(navMenuItemBean.getActionMenu());
                 }
-                if (navMenuItemBean.getUrl().length() > 0) {
+                if (navMenuItemBean.getUrl() != null && navMenuItemBean.getUrl().length() > 0) {
                     out.append("<a class=\"").append(aCssString).append("\" href=\"").append(navMenuItemBean.getUrl()).append("\">");
                 }
                 out.append("<span>");
                 out.append(navMenuItemBean.getDisplayLink());
                 out.append("</span>");
-                if (navMenuItemBean.getUrl().length() > 0) {
+                if (navMenuItemBean.getUrl() != null && navMenuItemBean.getUrl().length() > 0) {
                     out.append("</a>");
                 }
                 if (!displayActionMenuBeforeLink && editMode) {
@@ -917,28 +917,29 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             if (level != that.level) return false;
             if (markedForDelete != that.markedForDelete) return false;
             if (selected != that.selected) return false;
-            if (!actionMenu.equals(that.actionMenu)) return false;
-            if (!actionMenuList.equals(that.actionMenuList)) return false;
-            if (!displayLink.equals(that.displayLink)) return false;
+            if (actionMenu != null ? !actionMenu.equals(that.actionMenu) : that.actionMenu != null) return false;
+            if (actionMenuList != null ? !actionMenuList.equals(that.actionMenuList) : that.actionMenuList != null)
+                return false;
+            if (displayLink != null ? !displayLink.equals(that.displayLink) : that.displayLink != null) return false;
             if (!title.equals(that.title)) return false;
-            if (!url.equals(that.url)) return false;
+            if (url != null ? !url.equals(that.url) : that.url != null) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = title.hashCode();
-            result = 31 * result + url.hashCode();
-            result = 31 * result + actionMenu.hashCode();
+            int result = title != null ? title.hashCode() : 0;
+            result = 31 * result + (url != null ? url.hashCode() : 0);
+            result = 31 * result + (actionMenu != null ? actionMenu.hashCode() : 0);
             result = 31 * result + level;
             result = 31 * result + (firstInLevel ? 1 : 0);
             result = 31 * result + (lastInLevel ? 1 : 0);
-            result = 31 * result + actionMenuList.hashCode();
+            result = 31 * result + (actionMenuList != null ? actionMenuList.hashCode() : 0);
             result = 31 * result + (inPath ? 1 : 0);
             result = 31 * result + (selected ? 1 : 0);
             result = 31 * result + (markedForDelete ? 1 : 0);
-            result = 31 * result + displayLink.hashCode();
+            result = 31 * result + (displayLink != null ? displayLink.hashCode() : 0);
             return result;
         }
 

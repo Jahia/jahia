@@ -40,7 +40,6 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowHistoryEntry;
 import org.jahia.ajax.gwt.client.service.workflow.WorkflowService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowManager;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.TabPanel;

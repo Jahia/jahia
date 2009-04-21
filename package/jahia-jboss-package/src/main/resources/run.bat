@@ -76,7 +76,10 @@ rem With Sun JVMs reduce the RMI GCs to once per hour
 set JAVA_OPTS=%JAVA_OPTS% -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000
 
 rem Some settings added by Jahia
-set JAVA_OPTS=%JAVA_OPTS% -Dhibernate.jdbc.use_streams_for_binary=true -Dorg.jboss.logging.Log4jService.catchSystemOut=false -verbose:gc -XX:+HeapDumpOnOutOfMemoryError 
+set JAVA_OPTS=%JAVA_OPTS% -Dhibernate.jdbc.use_streams_for_binary=true -Dorg.jboss.logging.Log4jService.catchSystemOut=false -verbose:gc -XX:+HeapDumpOnOutOfMemoryError
+
+rem Tell JBossAS to use the platform MBean server 
+set JAVA_OPTS=%JAVA_OPTS% -Djboss.platform.mbeanserver
 
 rem JPDA options. Uncomment and modify as appropriate to enable remote debugging.
 rem set JAVA_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y %JAVA_OPTS%

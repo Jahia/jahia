@@ -40,24 +40,24 @@ package org.jahia.data.events;
 import java.util.Set;
 
 import org.jahia.services.workflow.WorkflowEvent;
+import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentUndoStagingEvent;
 import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
 import org.jahia.registries.ServicesRegistry;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 public class JahiaEventListener implements JahiaEventListenerInterface {
-    private static transient Category logger = Logger
+    private static transient Logger logger = Logger
             .getLogger(JahiaEventListener.class);
 
     protected Set<String> skipEvents;
     
     protected Set<String> handleEvents;
     
-    private static void log(String eventType, JahiaEvent evt) {
+    protected void log(String eventType, JahiaEvent evt) {
         if (logger.isDebugEnabled()) {
             logger.debug("Received event '" + eventType + "'. Details: " + evt);
         }
@@ -376,5 +376,13 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
 
     public void setHandleEvents(Set<String> handleEvents) {
         this.handleEvents = handleEvents;
+    }
+
+    public void aggregatedNotification(JahiaEvent evt) {
+        log("aggregatedNotification", evt);
+    }
+
+    public void notification(NotificationEvent evt) {
+        log("notification", evt);
     }
 }

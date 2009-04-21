@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -45,6 +45,8 @@ import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.id.IdentifierUtils;
 import org.apache.log4j.Logger;
+import org.jahia.data.events.JahiaEvent;
+import org.jahia.data.events.JahiaEventListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -56,6 +58,30 @@ import org.jahia.services.JahiaService;
  * @author Sergiy Shyrkov
  */
 public class NotificationService extends JahiaService {
+
+    /**
+     * Handler for the notification events.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    public static class NotificationEventListener extends JahiaEventListener {
+
+        @Override
+        public void aggregatedNotification(JahiaEvent evt) {
+            getInstance().handleEvents(
+                    (List<NotificationEvent>) evt.getObject());
+        }
+
+        @Override
+        protected void log(String eventType, JahiaEvent evt) {
+            // do nothing
+        }
+
+        @Override
+        public void notification(NotificationEvent evt) {
+            // ignore single events --> handle aggregated
+        }
+    }
 
     private static final OrderedMap handlers = ListOrderedMap
             .decorate(new HashMap<Long, NotificationEventHandler>());
@@ -82,28 +108,14 @@ public class NotificationService extends JahiaService {
     private SubscriptionService subscriptionService;
 
     /**
-     * Register event handler.
-     * 
-     * @param handler
-     *            event handler to be registered
-     * @return the ID of the registered handler
-     */
-    public synchronized Long addHandler(NotificationEventHandler handler) {
-        Long nextId = IdentifierUtils.nextLongIdentifier();
-        handlers.put(nextId, handler);
-        return nextId;
-    }
-
-    /**
-     * Propagates the specified notification event to the handlers.
+     * Returns a list of active subscriptions for the specified event.
      * 
      * @param event
-     *            the notification event occurred
+     *            the notification event to be handled
+     * @return a list of active subscriptions for the specified event
      */
-    public void fireEvent(NotificationEvent event) {
-        List events = new LinkedList<NotificationEvent>();
-        events.add(event);
-        fireEvents(events);
+    private List<Subscription> getSubscriptions(NotificationEvent event) {
+        return subscriptionService.getActiveSubscriptions(event);
     }
 
     /**
@@ -112,16 +124,17 @@ public class NotificationService extends JahiaService {
      * @param events
      *            the list of events to be fired
      */
-    public void fireEvents(List<NotificationEvent> events) {
+    public void handleEvents(List<NotificationEvent> events) {
         if (!isStarted() || handlers.isEmpty()) {
             return;
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Fired " + events.size() + " notification event(s): "
-                    + events);
+            logger.debug("Found " + events.size()
+                    + " notification event(s) to be handled: " + events);
         } else {
-            logger.info("Fired " + events.size() + " notification event(s)");
+            logger.info("Found " + events.size()
+                    + " notification event(s) to be handled.");
         }
 
         Map<Subscription, Map<String, List<NotificationEvent>>> subscriptionEvents = LazyMap
@@ -156,22 +169,12 @@ public class NotificationService extends JahiaService {
                 if (!eventsByEventType.getValue().isEmpty()) {
                     for (NotificationEventHandler handler : (Collection<NotificationEventHandler>) handlers
                             .values()) {
-                        handler.handle(eventsBySubscription.getKey(), eventsByEventType.getValue());
+                        handler.handle(eventsBySubscription.getKey(),
+                                eventsByEventType.getValue());
                     }
                 }
             }
         }
-    }
-
-    /**
-     * Returns a list of active subscriptions for the specified event.
-     * 
-     * @param event
-     *            the notification event to be handled
-     * @return a list of active subscriptions for the specified event
-     */
-    private List<Subscription> getSubscriptions(NotificationEvent event) {
-        return subscriptionService.getActiveSubscriptions(event);
     }
 
     /**
@@ -188,34 +191,9 @@ public class NotificationService extends JahiaService {
         return started;
     }
 
-    /**
-     * Removes the specified handler from the registry.
-     * 
-     * @param handlerId
-     *            the handler to be removed
-     * @return the removed handler or <code>null</code> if the handler was not
-     *         in the registry
-     */
-    public synchronized NotificationEventHandler removeHandler(Long handlerId) {
-        return (NotificationEventHandler) handlers.remove(handlerId);
-    }
-
-    /**
-     * Removes the specified handler from the registry.
-     * 
-     * @param handler
-     *            the handler to be removed
-     * @return the removed handler or <code>null</code> if the handler was not
-     *         in the registry
-     */
-    public synchronized NotificationEventHandler removeHandler(
-            NotificationEventHandler handler) {
-        return handlers.values().remove(handler) ? handler : null;
-    }
-
     public void setHandlers(List<NotificationEventHandler> eventHandlers) {
         for (NotificationEventHandler handler : eventHandlers) {
-            addHandler(handler);
+            handlers.put(IdentifierUtils.nextLongIdentifier(), handler);
         }
     }
 

@@ -114,6 +114,7 @@
                 <ref bean="JSPEventListener" />
                 <ref bean="GroovyEventListener" />
                 <ref bean="JahiaSearchListener" />
+                <bean class="org.jahia.services.notification.NotificationService$NotificationEventListener"/>
             </list>
         </property>
     </bean>

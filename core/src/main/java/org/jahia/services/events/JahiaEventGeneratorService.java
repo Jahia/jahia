@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -51,6 +51,7 @@ package org.jahia.services.events;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.notification.NotificationEvent;
 
 
 public abstract class JahiaEventGeneratorService extends JahiaService {
@@ -270,4 +271,11 @@ public abstract class JahiaEventGeneratorService extends JahiaService {
     // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - end
     // ==================================================================
 
-} // end JahiaEventGeneratorService
+    /**
+     * Propagates the specified notification event to the listeners.
+     * 
+     * @param theEvent
+     *            the fired notification event
+     */
+    public abstract void fireNotification(NotificationEvent theEvent);
+}

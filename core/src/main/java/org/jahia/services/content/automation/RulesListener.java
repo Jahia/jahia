@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -46,7 +46,6 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaLoginModule;
 import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.notification.NotificationService;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.*;
@@ -341,8 +340,6 @@ public class RulesListener extends DefaultEventListener {
                         // not supported
                     }
                     
-                    AggregatedNotificationEvent aggregatedNotificationEvent = new AggregatedNotificationEvent();
-                    
                     Map<String, Object> globals = new HashMap<String, Object>();
 
                     globals.put("service", Service.getInstance());
@@ -352,7 +349,6 @@ public class RulesListener extends DefaultEventListener {
                     globals.put("user", new User(username));
                     globals.put("provider", provider);
                     globals.put("delayedUpdates", delayedUpdates);
-                    globals.put("aggregatedNotificationEvent", aggregatedNotificationEvent);
                     
                     executeRules(list, globals);
 
@@ -371,10 +367,6 @@ public class RulesListener extends DefaultEventListener {
                         rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
                     }
 
-                    if (!aggregatedNotificationEvent.getEvents().isEmpty()) {
-                        NotificationService.getInstance().fireEvents(aggregatedNotificationEvent.getEvents());
-                    }
-                    
                     Set<Object> objects = new HashSet<Object>();
                     for (Iterator<Object> iterator = list.iterator(); iterator.hasNext();) {
                         Object o = iterator.next();

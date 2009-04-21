@@ -33,7 +33,6 @@
 
 package org.jahia.services.content.automation;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.drools.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -42,9 +41,8 @@ import org.jahia.content.ContentObjectKey;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
-import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapperImpl;
-import org.jahia.services.content.impl.jahia.JahiaContainerNodeImpl;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
 import org.jahia.services.importexport.ImportJob;
 import org.jahia.services.importexport.ProductionJob;
@@ -73,11 +71,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for accessing Jahia service in rules.
  * User: toto
  * Date: 8 janv. 2008
  * Time: 12:04:29
- * To change this template use File | Settings | File Templates.
  */
 public class Service {
     private static Logger logger = Logger.getLogger(Service.class);
@@ -334,44 +331,23 @@ public class Service {
             KnowledgeHelper drools) {
         User user = (User) drools.getWorkingMemory().getGlobal("user");
         Node jcrNode = node.getNode();
-        NotificationEvent event = new NotificationEvent();
-        event.setAuthor(user.getName());
-        event.setEventType(eventType);
-        event.setTimestamp(System.currentTimeMillis());
         try {
-            event.setObjectPath(jcrNode.getPath());
+            NotificationEvent event = new NotificationEvent(JCRContentUtils
+                    .getContentNodeName(jcrNode), eventType);
+            event.setAuthor(user.getName());
+            event.setObjectPath(JCRContentUtils.getContentObjectPath(jcrNode));
             if (jcrNode instanceof JahiaContentNodeImpl) {
                 JahiaContentNodeImpl contentNode = (JahiaContentNodeImpl) jcrNode;
                 event.setSiteId(contentNode.getContentObject().getSiteID());
                 event.setPageId(contentNode.getContentObject().getPageID());
-                event.setObjectKey(contentNode.getContentObject()
-                        .getObjectKey().getKey());
-                if (jcrNode instanceof JahiaContainerNodeImpl) {
-                    // fix path
-                    JahiaContainerNodeImpl containerNode = (JahiaContainerNodeImpl) jcrNode;
-                    event.setObjectPath(StringUtils.substringBeforeLast(jcrNode
-                            .getPath(), "/")
-                            + "/ContentContainerList_"
-                            + ((ContentContainer) containerNode
-                                    .getContentObject())
-                                    .getParentContainerListID()
-                            + "/"
-                            + event.getObjectKey());
-                }
-            } else {
-                event.setObjectKey(StringUtils.substringAfterLast(jcrNode
-                        .getPath(), "/"));
             }
+            if (logger.isDebugEnabled()) {
+                logger.debug(event);
+            }
+            ServicesRegistry.getInstance().getJahiaEventService()
+                    .fireNotification(event);
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
-        }
-        if (logger.isDebugEnabled()) {
-        	logger.debug(event);
-        }
-        AggregatedNotificationEvent aggregatedEvent = (AggregatedNotificationEvent) drools
-                .getWorkingMemory().getGlobal("aggregatedNotificationEvent");
-        if (aggregatedEvent != null) {
-            aggregatedEvent.add(event);
         }
     }
 }

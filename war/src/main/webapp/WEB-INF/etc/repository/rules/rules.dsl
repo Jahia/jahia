@@ -19,8 +19,6 @@
 [condition][]A property {property} has been set on a node=property : PropertyWrapper ( name == "{property}" , propertyValue : stringValues , node : node )
 [condition][]- the value is {value}=stringValue == {value}
 [condition][]The property {property} has not been modified yet on the {node}=not PropertyWrapper ( name=="{property}" , node=={node} )
-[condition][]A node has been published=property : PropertyWrapper ( name == "j:workflowState" , node : node )
-[condition][]- the node has the type {type}=node.types contains "{type}"
 [condition][]The node has a parent=parent : NodeWrapper () from node.parent
 [condition][]- the mimetype is {mimetype}=mimeType == "{mimetype}"
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
@@ -32,6 +30,10 @@
 [condition][]- the mimetype is not {mimetype}=mimeType != "{mimetype}"
 [condition][]- the mimetype matches {mimetype}=mimeType matches "{mimetype}"
 [condition][]- it has the extension type {type}=types contains "{type}"
+[condition][]A workflow state has changed for a node=property : PropertyWrapper ( language : name, state : stringValue, workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
+[condition][]- the node has the type {type}=node.types contains "{type}"
+[condition][]A node has been published=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "active", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
+[condition][]- it has the type {type}=node.types contains "{type}"
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Create a new node {nodename} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", null, drools);insert ({nodename});
 [consequence][]Create a new folder {nodename} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", "jnt:folder", drools);insert ({nodename});

@@ -39,6 +39,7 @@
 package org.jahia.data.events;
 
 import org.jahia.services.workflow.WorkflowEvent;
+import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.timebasedpublishing.RetentionRuleEvent;
 import org.jahia.content.events.ContentActivationEvent;
 import org.jahia.content.events.ContentUndoStagingEvent;
@@ -46,8 +47,10 @@ import org.jahia.content.events.ContentObjectDeleteEvent;
 import org.jahia.content.events.ContentObjectRestoreVersionEvent;
 
 
-public interface JahiaEventListenerInterface
-{
+/**
+ * Set of event-triggered methods to catch system events.
+ */
+public interface JahiaEventListenerInterface {
 
     public void beforeServicesLoad( JahiaEvent je );
     public void afterServicesLoad( JahiaEvent je );
@@ -265,4 +268,20 @@ public interface JahiaEventListenerInterface
      *            the jahia event object
      */
     public void errorOccurred(JahiaErrorEvent je);
+    
+    /**
+     * Called when a notification event is fired.
+     * 
+     * @param evt
+     *            the notification event
+     */
+    void notification(NotificationEvent evt);
+
+    /**
+     * Called when an aggregated notification event is fired.
+     * 
+     * @param evt
+     *            the aggregated notification event
+     */
+    void aggregatedNotification(JahiaEvent evt);
 }

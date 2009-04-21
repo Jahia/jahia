@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -33,20 +33,20 @@
 
 package org.jahia.services.notification;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.jahia.data.events.JahiaEvent;
 
 /**
  * Notification data object.
  * 
  * @author Sergiy Shyrkov
  */
-public class NotificationEvent implements Serializable, Cloneable {
+public class NotificationEvent extends JahiaEvent {
 
     private String author;
 
@@ -78,18 +78,19 @@ public class NotificationEvent implements Serializable, Cloneable {
 
     private String siteTitle;
 
-    private long timestamp;
-
     private String title;
 
     private String url;
 
     /**
      * Initializes an instance of this class.
+     * @param objectKey the source of the event 
+     * @param eventType the type of the event
      */
-    public NotificationEvent() {
-        super();
-        timestamp = System.currentTimeMillis();
+    public NotificationEvent(String objectKey, String eventType) {
+        super(objectKey, null, null);
+        this.objectKey = objectKey;
+        this.eventType = eventType;
         extraInfo = new HashMap<String, Object>(1);
     }
 
@@ -169,10 +170,6 @@ public class NotificationEvent implements Serializable, Cloneable {
         return siteTitle;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -243,10 +240,6 @@ public class NotificationEvent implements Serializable, Cloneable {
 
     public void setSiteTitle(String siteTitle) {
         this.siteTitle = siteTitle;
-    }
-
-    public void setTimestamp(long timastamp) {
-        this.timestamp = timastamp;
     }
 
     public void setTitle(String title) {

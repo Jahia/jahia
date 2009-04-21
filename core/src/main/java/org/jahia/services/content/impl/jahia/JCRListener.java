@@ -105,25 +105,21 @@ public class JCRListener extends JahiaEventListener {
 
     @Override
     public void aggregatedContentWorkflowStatusChanged(JahiaEvent je) {
-        List allEvents = (List) je.getObject();
+        List<ContentActivationEvent> allEvents = new LinkedList<ContentActivationEvent>(
+                (List) je.getObject());
 
         Set<String> viewed = new HashSet<String>();
-        Set events;
-        for (int i = 0; i < allEvents.size(); ) {
-            ContentActivationEvent event = (ContentActivationEvent) allEvents.get(i);
-            ObjectKey objectKey = (ObjectKey) event.getObject();
-
-            if (objectKey == null) {
-                allEvents.remove(i);
+        for (Iterator<ContentActivationEvent> eventIterator = allEvents
+                .iterator(); eventIterator.hasNext();) {
+            ContentActivationEvent activationEvent = eventIterator.next();
+            ObjectKey objectKey = (ObjectKey) activationEvent.getObject();
+            Set<String> langs = new TreeSet<String>(activationEvent
+                    .getLanguageCodes());
+            String viewedKey = objectKey.toString() + langs;
+            if (viewed.contains(viewedKey)) {
+                eventIterator.remove();
             } else {
-
-                String k = objectKey.toString();
-                if (viewed.contains(k)) {
-                    allEvents.remove(i);
-                } else {
-                    i++;
-                }
-                viewed.add(k);
+                viewed.add(viewedKey);
             }
         }
         ObservationManagerImpl.fireWorkflowStatusEvents(allEvents);

@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -48,9 +48,11 @@
 
 package org.jahia.services.events;
 
+import org.apache.log4j.Logger;
 import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.JahiaListenersRegistry;
+import org.jahia.services.notification.NotificationEvent;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -59,8 +61,7 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
 
     private static JahiaEventGeneratorBaseService theObject;
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (JahiaEventGeneratorBaseService.class);
+    private static Logger logger = Logger.getLogger (JahiaEventGeneratorBaseService.class);
 
     private ThreadLocal<List<MethodWithEvent>> tlevents = new ThreadLocal<List<MethodWithEvent>>();
 
@@ -78,6 +79,7 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
      * constructor
      */
     protected JahiaEventGeneratorBaseService () {
+        super();
     }
 
 
@@ -558,5 +560,11 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
             }
             return -1;
         }
-    }    
+    }
+
+    @Override
+    public void fireNotification(NotificationEvent theEvent) {
+        addAggregableEvent("notification", theEvent);
+        listenersRegistry.wakeupListeners("notification", theEvent);
+    }
 }

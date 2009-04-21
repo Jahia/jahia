@@ -36,15 +36,15 @@
 <%@ include file="../common/declarations.jspf"%>
 
 
-<%@page import="org.jahia.services.notification.SubscriptionService"%>
-<%@page import="org.jahia.data.beans.JahiaBean"%>
-<%@page import="org.jahia.services.notification.Subscription"%>
-<%@page import="org.jahia.services.notification.templates.TemplateUtils"%>
-<%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
-<%@page import="org.jahia.services.notification.NotificationService"%>
-<%@page import="org.jahia.services.notification.NotificationEvent"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="org.jahia.data.beans.JahiaBean"%>
+<%@page import="org.jahia.registries.ServicesRegistry"%>
 <%@page import="org.jahia.services.mail.MailHelper"%>
+<%@page import="org.jahia.services.notification.Subscription"%>
+<%@page import="org.jahia.services.notification.SubscriptionService"%>
+<%@page import="org.jahia.services.notification.templates.TemplateUtils"%>
+<%@page import="org.jahia.services.notification.NotificationEvent"%>
 
 <h3>Simple subscription management</h3>
 <%--
@@ -90,12 +90,10 @@
           service.unsubscribe(Integer.valueOf(subscriptionId));
       } else if ("notify".equals(action)) {
           // fire an event
-            NotificationEvent evt = new NotificationEvent();
-            evt.setObjectKey(jBean.getSite().getHomeContentPage().getObjectKey().getKey());
-            evt.setEventType(event);
+            NotificationEvent evt = new NotificationEvent(jBean.getSite().getHomeContentPage().getObjectKey().getKey(), event);
             evt.setSiteId(jBean.getSite().getId());
             evt.setPageId(jBean.getSite().getHomepageID());
-            NotificationService.getInstance().fireEvent(evt);
+            ServicesRegistry.getInstance().getJahiaEventService().fireNotification(evt);
       }
   }
   

@@ -37,6 +37,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ItemDefinition;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -51,12 +53,14 @@ import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
+import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
+import org.jahia.services.content.impl.jahia.JahiaRootNodeImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
  * Utility class for accessing and manipulation JCR properties.
@@ -80,11 +84,64 @@ public final class JCRContentUtils {
                 ':', '_') : nodeTypeName;
     }
 
+    /**
+     * Returns a content object key for a node if available. Otherwise returns
+     * node name.
+     * 
+     * @param node
+     *            the node to get name
+     * @return a content object key for a node if available. Otherwise returns
+     *         node name
+     * @throws RepositoryException
+     */
+    public static String getContentNodeName(Node node)
+            throws RepositoryException {
+        return node instanceof JahiaContentNodeImpl ? ((JahiaContentNodeImpl) node)
+                .getContentObject().getObjectKey().getKey()
+                : node.getName();
+    }
+    
+    /**
+     * Returns a node path, composed using only content object keys, i.e.
+     * 
+     * <code>/mySite/ContentPage_1/ContentPage_19/ContentContainerList_21/ContentContainer_13</code>
+     * 
+     * @param node
+     *            the content node to compute path for
+     * @return a node path, composed using only content object keys
+     * @throws RepositoryException
+     */
+    public static String getContentObjectPath(Node node)
+            throws RepositoryException {
+        
+        StringBuilder path = new StringBuilder(64);
+        path.append("/").append(getContentNodeName(node));
+        Node parent = null;
+        try {
+            parent = node.getParent();
+        } catch (ItemNotFoundException e) {
+            // on parent
+        }
+        while (parent != null) {
+            path.insert(0, getContentNodeName(parent)).insert(0, "/");
+            try {
+                parent = parent.getParent();
+            } catch (ItemNotFoundException e) {
+                // on parent
+            }
+            if (parent instanceof JahiaRootNodeImpl) {
+                parent = null; // stop
+            }
+        }
+        
+        return path.toString();
+    }
+    
     public static String getDisplayLabel(String nodeName, ProcessingContext ctx) {
         return JahiaResourceBundle.getJahiaInternalResource(
                 "org.jahia.services.jcr.types." + cleanUpNodeName(nodeName),
                 ctx.getLocale(), nodeName);
-    }
+    } 
 
     public static JCRContentUtils getInstance() {
         return instance;

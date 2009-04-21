@@ -30,7 +30,7 @@
 					    <div class="publicationAction">
 					        <c:if test="${file.file.size > 0}">
                                 <fmt:formatNumber var="num" pattern="### ### ###.##" type="number" value="${(file.file.size/1024)}"/>
-                                <a class="publicationDownload" href="${file.file.downloadUrl}" ><fmt:message key="web_templates_publicationContainer.download"/></a><span class="publicationDocSize">(${num} Kb)</c:if>
+                                <a class="publicationDownload" href="${file.file.downloadUrl}" ><fmt:message key="web_templates_publicationContainer.download"/></a><span class="publicationDocSize">(${num} KB)</c:if>
                         </span>
 					</div>
 					<div class="clear"> </div>

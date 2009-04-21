@@ -17,7 +17,7 @@
 			<div class="publicationPhoto">
                 <a href="${file.file.downloadUrl}" >
                     <c:if test="${!empty preview}"><template:image file="preview"/></c:if>
-                    <c:if test="${!preview.file.image}"><img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/film.png'/>" alt=""/></c:if>
+                    <c:if test="${!preview.file.image}"><img src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/no_preview.png'/>" alt="no preview"/></c:if>
                 </a>
             </div>
 

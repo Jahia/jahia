@@ -13,7 +13,7 @@
         <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossas</artifactId>
-            <version>4.2.3.GA</version>
+            <version>4.2.3.GA-jdk6</version>
             <type>zip</type>
         </dependency>
         <dependency>
@@ -116,7 +116,7 @@
                                         <artifactItem>
                                             <groupId>org.jboss</groupId>
                                             <artifactId>jbossas</artifactId>
-                                            <version>4.2.3.GA</version>
+                                            <version>4.2.3.GA-jdk6</version>
                                             <type>zip</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}</outputDirectory>
@@ -162,7 +162,7 @@
                             <databasePassword>rootroot</databasePassword>
                             <overwritedb>true</overwritedb>
                             <storeFilesInDB>true</storeFilesInDB>
-                            <localIp>10.8.37.195</localIp>
+                            <localIp>10.8.37.152</localIp>
                         </configuration>
                         <executions>
                             <execution>
@@ -242,11 +242,11 @@
                                 <phase>install</phase>
                                 <configuration>
                                     <tasks>
-                                        <property name="distant.hosts.ip" value="10.8.37.195"/>
+                                        <property name="distant.hosts.ip" value="10.8.37.152"/>
                                         <property name="distant.hosts.username" value="jahia"/>
                                         <property name="distant.hosts.password" value="jahia"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="/home/jahia/install/jahia/bin/catalina.sh stop -force"
+                                                 command="export JAVA_HOME=/usr/local/java;/home/jahia/install/jahia/bin/shutdown.sh --shutdown"
                                                  trust="true" failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
                                                  command="rm -Rf /home/jahia/install/jahia" trust="true"
@@ -264,7 +264,7 @@
                                                  command="chmod 755 /home/jahia/install/jahia/bin/*.sh" trust="true"
                                                  failonerror="false"/>
                                         <sshexec host="${distant.hosts.ip}" username="${distant.hosts.username}" password="${distant.hosts.password}"
-                                                 command="export JAVA_HOME=/usr/java/latest;/home/jahia/install/jahia/bin/catalina.sh start"
+                                                 command="export JAVA_HOME=/usr/local/java;/home/jahia/install/jahia/bin/run.sh -b 0.0.0.0"
                                                  trust="true" failonerror="false"/>
                                     </tasks>
                                 </configuration>

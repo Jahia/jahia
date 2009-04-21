@@ -218,7 +218,7 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
 */
 
     boolean canDisplayTemplateSelection = true;
-    if (!isNewPage && !Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) {
+    if (!isNewPage) {
         canDisplayTemplateSelection = false;
     }
 
@@ -515,6 +515,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     </td>
 </tr>
 <% } %>
+<% if (canChangeType || canDisplayTemplateSelection) { %>
 <tr>
 <th valign="top">
     <fmt:message key="org.jahia.engines.shared.Page_Field.pageType.label"/>
@@ -727,6 +728,8 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 </table>
 </td>
 </tr>
+<% } %>
+
 </table>
 
 <script type="text/javascript">

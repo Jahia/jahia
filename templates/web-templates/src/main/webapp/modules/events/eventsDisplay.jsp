@@ -38,9 +38,17 @@
     <div class="box4 ">
         <div class="box4-topright"></div>
         <div class="box4-topleft"></div>
+        <c:choose>
+        <c:when test="${!empty param.startDate}">
+            <fmt:parseDate var="startDate" pattern="dd/MM/yyyy" value="${param.startDate}"/>
+        </c:when>
+        <c:otherwise>
+            <jsp:useBean id="startDate" class="java.util.Date" />
+        </c:otherwise>
+        </c:choose>
         <h3 class="box4-header"><span class="publicationTitle">
         <c:if test="${!empty param.startDate}">
-            <fmt:message key='statictitle.lastevents.from'/>&nbsp;${param.startDate}    
+            <fmt:message key='statictitle.lastevents.from'/>&nbsp;<fmt:formatDate value="${startDate}" dateStyle="long" type="date"/>  
         </c:if>
         <c:if test="${empty param.startDate}">
             <fmt:message key='statictitle.lastevents'/>
@@ -60,7 +68,7 @@
                 <option value="startDate" ${startDateSelected}><fmt:message key='sortDate'/></option>
                 <option value="location" ${locationSelected}><fmt:message key='sortLocation'/></option>
             </select>
-
+            <input type="hidden" name="startDate" value="${param.startDate}">
             <span class="hidden"><utility:dropDownFromBundle bundleName="resources.eventsType"/></span>
         </template:jahiaPageForm>
 
@@ -92,14 +100,7 @@
 <query:createFacetFilter facetName="eventTypeFacet" targetContainerListName="events" 
     propertyName="eventsType" facetBeanId="eventTypeFacet" valueTitle="Unknown"/>
 
-<c:choose>
-<c:when test="${!empty param.startDate}">
-    <fmt:parseDate var="startDate" pattern="dd/MM/yyyy" value="${param.startDate}"/>
-</c:when>
-<c:otherwise>
-    <jsp:useBean id="startDate" class="java.util.Date" />
-</c:otherwise>
-</c:choose>
+
 <c:forTokens var="count" items="0,1,2,3" delims=",">
     <utility:dateCalc value="${startDate}" var="beginMonth" 
         months="${count}" days="${utilConstants.TO_MIN}" hours="${utilConstants.TO_MIN}" 

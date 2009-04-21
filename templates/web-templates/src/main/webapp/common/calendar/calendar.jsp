@@ -42,6 +42,8 @@
             <div class="box2-text">
                 <p><fmt:message key='static.calendar.viewfromdate'/></p>
                 <form action="" name="calendarStartDate" method="get">
+                    <%--this is needed for event template--%>
+                    <input type="hidden" name="eventsSort" value="${param.eventsSort}"/>
                     <input type="hidden" name="startDate" id="startDate"/>
                 </form>
             <!--start calendar-->
@@ -57,7 +59,7 @@
                 --%>
                 <script type="text/javascript">
                     jQuery(document).ready(function(jQuery) {
-                        jQuery("#datepicker").datepicker({onSelect: function(dateText){setDate(dateText)},showButtonPanel: true, altField: '#startDate'},jQuery.datepicker.regional['${requestScope.currentRequest.locale}']);
+                        jQuery("#datepicker").datepicker({onSelect: function(dateText){setDate(dateText)},showButtonPanel: true, altField: '#startDate', altFormat: 'd/M/yy'},jQuery.datepicker.regional['${requestScope.currentRequest.locale}']);
                     });
                 </script>
                 <div id="datepicker"></div>

@@ -117,7 +117,7 @@ public class GWTDateTimePickerTag extends AbstractDateTag {
                 buf.append("=\"");
                 buf.append(JahiaType.DATE_FIELD);
                 buf.append("\" ");
-                buf.append("id=\"");
+                buf.append("id=\"df");
                 buf.append(new Random().nextInt() + System.currentTimeMillis());
                 buf.append("\" ");
 

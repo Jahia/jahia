@@ -60,75 +60,73 @@ public class EngineMessages {
     public static final String GLOBAL_MESSAGE = "org.jahia.engines.global_message";
     public static final String CONTEXT_KEY = "engineMessages";
 
-    Map messages = new HashMap();
+    Map<String, List<EngineMessage>> messages = new HashMap<String, List<EngineMessage>>();
 
-    public EngineMessages () {
+    public EngineMessages() {
     }
 
-    public void add (EngineMessage message) {
-        add (GLOBAL_MESSAGE, message);
+    public void add(EngineMessage message) {
+        add(GLOBAL_MESSAGE, message);
     }
 
-    public void add (String property,
-                     EngineMessage message) {
-        List propertyList = (List) messages.get (property);
+    public void add(String property, EngineMessage message) {
+        List<EngineMessage> propertyList = messages.get(property);
         if (propertyList == null) {
-            propertyList = new ArrayList();
+            propertyList = new ArrayList<EngineMessage>();
         }
-        propertyList.add (message);
-        messages.put (property, propertyList);
+        propertyList.add(message);
+        messages.put(property, propertyList);
     }
 
-    public Set getProperties () {
-        return messages.keySet ();
+    public Set<String> getProperties() {
+        return messages.keySet();
     }
 
-    public Set getEntrySet () {
-        return messages.entrySet ();
+    public Set getEntrySet() {
+        return messages.entrySet();
     }
 
-    public int getSize () {
-        Iterator propertyIter = getProperties ().iterator ();
+    public int getSize() {
+        Iterator propertyIter = getProperties().iterator();
         int size = 0;
-        while (propertyIter.hasNext ()) {
-            String curPropertyName = (String) propertyIter.next ();
-            List curPropertyList = (List) messages.get (curPropertyName);
-            size += curPropertyList.size ();
+        while (propertyIter.hasNext()) {
+            String curPropertyName = (String) propertyIter.next();
+            List curPropertyList = messages.get(curPropertyName);
+            size += curPropertyList.size();
         }
         return size;
     }
 
-    public List getMessages () {
-        List fullList = new ArrayList();
-        Iterator propertyIter = getProperties ().iterator ();
-        while (propertyIter.hasNext ()) {
-            String curPropertyName = (String) propertyIter.next ();
-            List curPropertyList = (List) messages.get (curPropertyName);
-            fullList.addAll (curPropertyList);
+    public List<EngineMessage> getMessages() {
+        List<EngineMessage> fullList = new ArrayList<EngineMessage>();
+        Iterator<String> propertyIter = getProperties().iterator();
+        while (propertyIter.hasNext()) {
+            String curPropertyName = propertyIter.next();
+            List<EngineMessage> curPropertyList = messages.get(curPropertyName);
+            fullList.addAll(curPropertyList);
         }
         return fullList;
     }
 
-    public List getMessages (String property) {
-        List propertyList = (List) messages.get (property);
-        return propertyList;
+    public List<EngineMessage> getMessages(String property) {
+        return messages.get(property);
     }
 
-    public int getSize (String property) {
-        List propertyList = (List) messages.get (property);
+    public int getSize(String property) {
+        List propertyList = messages.get(property);
         if (propertyList != null) {
-            return propertyList.size ();
+            return propertyList.size();
         } else {
             return 0;
         }
     }
 
-    public boolean isEmpty () {
-        return messages.isEmpty ();
+    public boolean isEmpty() {
+        return messages.isEmpty();
     }
 
-    public void saveMessages (ServletRequest request) {
-        request.setAttribute (CONTEXT_KEY, this);
+    public void saveMessages(ServletRequest request) {
+        request.setAttribute(CONTEXT_KEY, this);
     }
 
     /**
@@ -137,16 +135,16 @@ public class EngineMessages {
      * @param contextPrefix String
      * @param request ServletRequest
      */
-    public void saveMessages (String contextPrefix, ServletRequest request) {
-        request.setAttribute (contextPrefix + CONTEXT_KEY , this);
+    public void saveMessages(String contextPrefix, ServletRequest request) {
+        request.setAttribute(contextPrefix + CONTEXT_KEY , this);
     }
 
-    public void saveMessages (PageContext pageContext) {
-        pageContext.setAttribute (CONTEXT_KEY, this);
+    public void saveMessages(PageContext pageContext) {
+        pageContext.setAttribute(CONTEXT_KEY, this);
     }
 
-    public void saveMessages (PageContext pageContext, int scope) {
-        pageContext.setAttribute (CONTEXT_KEY, this, scope);
+    public void saveMessages(PageContext pageContext, int scope) {
+        pageContext.setAttribute(CONTEXT_KEY, this, scope);
     }
 
     public String toString() {
@@ -158,7 +156,7 @@ public class EngineMessages {
     
     public ActionMessages toActionMessages() {
         ActionMessages msgs = new ActionMessages();
-        for (String property : (Set<String>) getProperties()) {
+        for (String property : getProperties()) {
             List<EngineMessage> messagesByProperty = getMessages(property);
             if (messagesByProperty != null) {
                 for (EngineMessage engineMessage : messagesByProperty) {

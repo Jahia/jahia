@@ -36,6 +36,8 @@ package org.jahia.ajax.gwt.client.data;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
 import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 import java.io.Serializable;
 
 /**
@@ -49,14 +51,16 @@ public class GWTJahiaProcessJobAction extends BaseModelData implements Serializa
     private String key;
     private Set<String> langs;
     private String action;
+    private Map<String, String> workflowStateForLanguage;
 
     public GWTJahiaProcessJobAction() {
     }
 
-    public GWTJahiaProcessJobAction(String key, Set<String> langs, String action) {
+    public GWTJahiaProcessJobAction(String key, Set<String> langs, String action, Map<String, String> wfStates) {
         this.key = key;
         this.langs = langs;
         this.action = action;
+        this.workflowStateForLanguage = wfStates ;
     }
 
     public String getKey() {
@@ -71,4 +75,11 @@ public class GWTJahiaProcessJobAction extends BaseModelData implements Serializa
         return action;
     }
 
+    public Map<String, String> getWorkflowStateForLanguage() {
+        if (workflowStateForLanguage != null) {
+            return workflowStateForLanguage;
+        } else {
+            return new HashMap<String, String>() ;
+        }
+    }
 }

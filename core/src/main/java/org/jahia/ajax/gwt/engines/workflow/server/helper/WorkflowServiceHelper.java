@@ -406,11 +406,7 @@ public class WorkflowServiceHelper {
             languageStates = new HashMap<String, String>();
             logger.error(e.getMessage(), e);
         }
-        Map<String, String> workflowStates = new HashMap<String, String>();
-        for (String langCode : languageStates.keySet()) {
-            workflowStates.put(langCode, languageStates.get(langCode).toString());
-        }
-        return workflowStates;
+        return languageStates;
     }
 
 

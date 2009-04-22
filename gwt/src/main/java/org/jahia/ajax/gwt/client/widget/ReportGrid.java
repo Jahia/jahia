@@ -56,11 +56,11 @@ import java.util.Map;
 public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
 
     public ReportGrid(final Map<String, List<GWTJahiaProcessJobAction>> actions, final Map<String, String> titleForObjectKey){
-        this(actions, titleForObjectKey, false, null);
+        this(actions, titleForObjectKey, false, null, false);
     }
 
-    public ReportGrid(final Map<String, List<GWTJahiaProcessJobAction>> actions, final Map<String, String> titleForObjectKey, boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings) {
-        super(buildStore(actions, titleForObjectKey, enableExpander, errorsAndWarnings), buildColumnModel(enableExpander, errorsAndWarnings));
+    public ReportGrid(final Map<String, List<GWTJahiaProcessJobAction>> actions, final Map<String, String> titleForObjectKey, boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings, boolean enableWorkflowStates) {
+        super(buildStore(actions, titleForObjectKey, enableExpander, errorsAndWarnings), buildColumnModel(enableExpander, errorsAndWarnings, enableWorkflowStates));
 
         GroupingView view = new GroupingView();
         view.setForceFit(true);
@@ -106,7 +106,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
                             sbErrs.append("\n</ul>");
                             errs = new StringBuilder(sbErrs.toString()).append("\n").append(sbWars.toString()).toString();
                         }
-                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang, errs));
+                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang, errs, gwtaction.getWorkflowStateForLanguage().get(lang)));
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
             for (String action : actions.keySet()) {
                 for (GWTJahiaProcessJobAction gwtaction : actions.get(action)) {
                     for (String lang : gwtaction.getLangs()) {
-                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang));
+                        store.add(new GWTReportElement(gwtaction.getKey(), titleForObjectKey.get(gwtaction.getKey()), action, lang, gwtaction.getWorkflowStateForLanguage().get(lang)));
                     }
                 }
             }
@@ -123,7 +123,7 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         return store;
     }
 
-    public static ColumnModel buildColumnModel(boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings) {
+    public static ColumnModel buildColumnModel(boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings, boolean enableWorkflowStates) {
         XTemplate tpl = XTemplate.create("<div class=\"batchErrorsAndWarnings\">{errors}</div>");
 
         RowExpander expander = new RowExpander();
@@ -167,6 +167,22 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         ColumnConfig langCol = new ColumnConfig("language", "Language", 70);
         langCol.setFixed(true);
         config.add(langCol);
+
+        if (enableWorkflowStates) {
+            ColumnConfig wfCol = new ColumnConfig("workflow", "Workflow", 60);
+            wfCol.setRenderer(new GridCellRenderer<ReportGrid.GWTReportElement>() {
+                public String render(ReportGrid.GWTReportElement modelData, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                    String state = modelData.getWorkflowState() ;
+                    if (state != null) {
+                        return "<div class='workflow-" + modelData.getWorkflowState() + "'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>" ;
+                    } else {
+                        return "" ;
+                    }
+                }
+            });
+            config.add(wfCol) ;
+        }
+
         config.add(new ColumnConfig("key", "Key", 120));
         final ColumnModel cm = new ColumnModel(config);
 
@@ -179,16 +195,17 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         public GWTReportElement() {
         }
 
-        public GWTReportElement(String key, String title, String action, String language) {
-            this(key, title, action, language, "");
+        public GWTReportElement(String key, String title, String action, String language, String workflowStates) {
+            this(key, title, action, language, "", workflowStates);
         }
 
-        public GWTReportElement(String key, String title, String action, String language, String errors) {
+        public GWTReportElement(String key, String title, String action, String language, String errors, String workflowState) {
             setKey(key);
             setTitle(title);
             setAction(action);
             setLanguage(language);
             setErrors(errors);
+            setWorkflowState(workflowState) ;
         }
 
         public void setKey(String key) {
@@ -211,6 +228,10 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
             set("errors", errors);
         }
 
+        public void setWorkflowState(String wfState) {
+            set("workflowState", wfState) ;
+        }
+
         public String getKey() {
             return get("key");
         }
@@ -229,6 +250,10 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
 
         public String getErrors() {
             return get("errors");
+        }
+
+        public String getWorkflowState() {
+            return get("workflowState") ;
         }
 
     }

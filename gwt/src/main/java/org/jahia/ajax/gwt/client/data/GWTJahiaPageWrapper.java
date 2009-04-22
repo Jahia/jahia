@@ -121,7 +121,7 @@ public class GWTJahiaPageWrapper extends BaseModelData implements Serializable {
     }
 
     public void setLocked(boolean locked) {
-        set("locked", (Boolean) locked);
+        set("locked", Boolean.valueOf(locked));
     }
 
     public void setSubpages(List<GWTJahiaPageWrapper> pages) {

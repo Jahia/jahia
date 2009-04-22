@@ -107,15 +107,9 @@ public class ActionMenuLabelProvider {
      * @return the formatted label
      */
     public static String getIconLabel(String bundleName, String key, String type, ProcessingContext ctx) {
-        String iconLabel = getMessage(new JahiaResourceBundle(
-                bundleName != null && bundleName.length() > 0 ? bundleName
-                        : null, ctx.getLocale(), ctx.getSite()
-                        .getTemplatePackageName()), new StringBuilder(
-                "actionmenus.iconlabels.").append(key).toString(),
-                new StringBuilder("actionmenus.iconlabels.").append(type)
-                        .toString());
-        
-
+        JahiaResourceBundle bundle = new JahiaResourceBundle(bundleName != null && bundleName.length() > 0 ? bundleName : null , ctx.getLocale(), ctx.getSite().getTemplatePackageName()) ;
+        String[] labelKey = new String[] {new StringBuilder("actionmenus.iconlabels.").append(key).toString(), new StringBuilder("actionmenus.iconlabels.").append(type).toString()};
+        String iconLabel = getMessage(bundle, labelKey) ;
         return iconLabel != null ? iconLabel : "";
     }
 

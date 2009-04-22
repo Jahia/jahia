@@ -42,6 +42,8 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJobAction;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResult;
 import org.jahia.ajax.gwt.client.data.GWTJahiaNodeOperationResultItem;
 import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.engines.workflow.server.helper.WorkflowServiceHelper;
+import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.content.ContentObject;
 import org.jahia.content.NodeOperationResult;
 import org.jahia.content.ObjectKey;
@@ -54,6 +56,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.ProcessAction;
 import org.jahia.services.search.JahiaSiteIndexingJob;
 import org.jahia.services.workflow.AbstractActivationJob;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.registries.ServicesRegistry;
 import org.quartz.JobDataMap;
@@ -176,12 +179,24 @@ public class ProcessDisplayHelper {
         List<ProcessAction> actions = (List<ProcessAction>) currentJobDataMap.get(BackgroundJob.ACTIONS);
         if (actions != null) {
             for (ProcessAction action : actions) {
-                GWTJahiaProcessJobAction gwtAction = new GWTJahiaProcessJobAction(action.getKey().toString(), new HashSet(action.getLangs()), action.getAction());
+                ObjectKey objectKey = action.getKey();
+                Map<String, String> wfStates = null ;
+                try {
+                    ContentObject obj = JahiaObjectCreator.getContentObjectFromKey(objectKey) ;
+                    if (WorkflowService.getInstance().getWorkflowMode(obj) != WorkflowService.LINKED) {
+                        wfStates = WorkflowServiceHelper.getWorkflowStates(JahiaObjectCreator.getContentObjectFromKey(objectKey)) ;
+                    }
+                } catch (ClassNotFoundException e) {
+                    logger.error(e.toString(), e) ;
+                } catch (JahiaException e) {
+                    logger.error(e.toString(), e);
+                }
+                GWTJahiaProcessJobAction gwtAction = new GWTJahiaProcessJobAction(action.getKey().toString(), new HashSet<String>(action.getLangs()), action.getAction(), wfStates);
                 if (!batchContent.containsKey(action.getAction())) {
                     batchContent.put(action.getAction(), new ArrayList<GWTJahiaProcessJobAction>());
                 }
                 batchContent.get(action.getAction()).add(gwtAction);
-                ObjectKey objectKey = action.getKey();
+
 //                if (!batchContent.get(action.getAction()).containsKey(objectKey.getKey())) {
 //                    batchContent.get(action.getAction()).put(objectKey.getKey(), new HashSet<String>());
 //                }
@@ -192,9 +207,7 @@ public class ProcessDisplayHelper {
                     String title = null;
                     try {
                         title = ContentObject.getInstance(objectKey).getDisplayName(jParams);
-                    } catch (Exception e) {
-
-                    }
+                    } catch (Exception e) {}
                     if (title == null || title.length() == 0) {
                         title = objectKey.getKey();
                     }

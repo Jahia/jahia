@@ -60,7 +60,7 @@ public class JobReport extends Viewport {
             }
 
             public void onSuccess(GWTJahiaProcessJob job) {
-                add(new ReportGrid(job.getActions(), job.getTitleForObjectKey(), true, job.getLogs()));
+                add(new ReportGrid(job.getActions(), job.getTitleForObjectKey(), true, job.getLogs(), true));
             }
         });
 

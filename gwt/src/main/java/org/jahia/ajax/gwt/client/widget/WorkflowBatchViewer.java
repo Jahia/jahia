@@ -55,11 +55,11 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaProcessJobAction;
  */
 public abstract class WorkflowBatchViewer extends Window {
 
-    public WorkflowBatchViewer(final Map<String, Map<String, Set<String>>> batch, final Map<String, String> titleForObjectKey, boolean viewOnly) {
-        this(batch, titleForObjectKey, viewOnly, false, null) ;
+    public WorkflowBatchViewer(final Map<String, Map<String, Set<String>>> batch, final Map<String, String> titleForObjectKey, final Map<String, String> workflowStates, boolean viewOnly) {
+        this(batch, titleForObjectKey, workflowStates, viewOnly, false, null) ;
     }
 
-    public WorkflowBatchViewer(final Map<String, Map<String, Set<String>>> batch, final Map<String, String> titleForObjectKey, boolean viewOnly, boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings) {
+    public WorkflowBatchViewer(final Map<String, Map<String, Set<String>>> batch, final Map<String, String> titleForObjectKey, final Map<String, String> workflowStates, boolean viewOnly, boolean enableExpander, final Map<String, Map<String, GWTJahiaNodeOperationResult>> errorsAndWarnings) {
         super() ;
         this.setLayout(new BorderLayout());
         this.setHeading("Workflow Batch");
@@ -74,11 +74,11 @@ public abstract class WorkflowBatchViewer extends Window {
             }
             Map<String, Set<String>> m = batch.get(action);
             for (String key : m.keySet()) {
-                actions.get(action).add(new GWTJahiaProcessJobAction(key, m.get(key),action));
+                actions.get(action).add(new GWTJahiaProcessJobAction(key, m.get(key),action, workflowStates));
             }
         }
 
-        final ReportGrid grid = new ReportGrid(actions, titleForObjectKey, enableExpander, errorsAndWarnings);
+        final ReportGrid grid = new ReportGrid(actions, titleForObjectKey, enableExpander, errorsAndWarnings, false);
         final ListStore<ReportGrid.GWTReportElement> store = grid.getStore();
 
         ButtonBar buttons = new ButtonBar() ;

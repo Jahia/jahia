@@ -198,7 +198,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
         logger.debug("add " + jahiaContainer.getNbFields() + " fields.");
         while (fields.hasNext()) {
             // get current field
-            final JahiaField curJahiaField = (JahiaField) fields.next();
+            final JahiaField curJahiaField = fields.next();
             final String name = curJahiaField.getDefinition().getName();
             // load it's value;
             curJahiaField.load(LoadFlags.ALL, getParamBeanRequestAttr());
@@ -214,7 +214,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
         logger.debug("Sub Container List size:");
         while (containerLists.hasNext()) {
             // load gwtContainer list
-            JahiaContainerList containerList = (JahiaContainerList) containerLists.next();
+            JahiaContainerList containerList = containerLists.next();
             int containerListId = containerList.getID();
             String containerListName = containerList.getDefinition().getName();
             logger.debug("Container List Name: " + containerListName);
@@ -280,7 +280,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
             final Iterator<String> propertyNameIterator = all.propertyNameIterator();
             while (propertyNameIterator.hasNext()) {
                 // property name
-                final String name = (String) propertyNameIterator.next();
+                final String name = propertyNameIterator.next();
                 final UserProperty property = all.getUserProperty(name);
                 // create the corresponding gwt bean
                 final GWTJahiaUserProperty gwtJahiaUserProperty = new GWTJahiaUserProperty();
@@ -374,7 +374,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
                             if (!evalResult.isSuccess()) {
                                 // password not validated by the pwdPolicyService
                                 EngineMessages policyMsgs = evalResult.getEngineMessages();
-                                for (EngineMessage errorMessage : (List<EngineMessage>)policyMsgs.getMessages()) {
+                                for (EngineMessage errorMessage : policyMsgs.getMessages()) {
                                     gwtAjaxActionResult.addError(getLocaleMessageResource(errorMessage));
                                 }
                             } else {
@@ -447,7 +447,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
     public String getPagePropertyValue(GWTJahiaPageContext page, String propertyName) {
         try {
             Map<String, PageProperty> pageProperties = getJahiaPageService().getPageProperties(page.getPid());
-            PageProperty pp = (PageProperty) pageProperties.get(propertyName);
+            PageProperty pp = pageProperties.get(propertyName);
             if (pp != null) {
                 logger.debug("Property with name " + propertyName + " found. ");
                 return pp.getValue();

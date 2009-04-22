@@ -167,7 +167,7 @@ public class WorkflowToolbar extends TopBar {
     }
 
     public void showBatchReport() {
-        new WorkflowBatchViewer(batch, ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(), false){
+        new WorkflowBatchViewer(batch, ((WorkflowTable) getLinker().getTopRightObject()).getTitleForObjectKey(), null, false){
             public void buildContextMenu(final Grid<ReportGrid.GWTReportElement> grid) {
                 Menu contextMenu = new Menu() ;
                 final MenuItem removeAction = new MenuItem(WorkflowManager.getResource("wf_removeAction"), new SelectionListener<ComponentEvent>() {

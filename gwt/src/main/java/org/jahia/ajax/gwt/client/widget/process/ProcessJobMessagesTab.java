@@ -80,7 +80,7 @@ public class ProcessJobMessagesTab extends BottomRightComponent {
         m_component.setHeading(element.getJobName());
         m_component.removeAll();
 
-        ReportGrid grid = new ReportGrid(element.getActions(), element.getTitleForObjectKey(), true, element.getLogs());
+        ReportGrid grid = new ReportGrid(element.getActions(), element.getTitleForObjectKey(), true, element.getLogs(), true);
         m_component.add(grid);
         m_component.layout();
     }

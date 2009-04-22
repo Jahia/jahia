@@ -140,11 +140,8 @@ public class JahiaResourceBundle extends ResourceBundle {
     }
 
     private JahiaTemplatesRBLoader getClassLoader() {
-        return JahiaTemplatesRBLoader.getInstance(Thread.currentThread()
-                .getContextClassLoader(),
-                templatesPackage != null ? templatesPackage.getName() : Jahia
-                        .getThreadParamBean().getSite()
-                        .getTemplatePackageName());
+        return JahiaTemplatesRBLoader.getInstance(Thread.currentThread().getContextClassLoader(),
+                templatesPackage != null ? templatesPackage.getName() : Jahia.getThreadParamBean().getSite().getTemplatePackageName());
     }
 
     /**
@@ -209,8 +206,7 @@ public class JahiaResourceBundle extends ResourceBundle {
         return getString(key, defaultValue);
     }
 
-    public String getFormatted(String key, String defaultValue,
-            Object... arguments) {
+    public String getFormatted(String key, String defaultValue, Object... arguments) {
         return MessageFormat.format(get(key, defaultValue), arguments);
     }
 
@@ -235,15 +231,13 @@ public class JahiaResourceBundle extends ResourceBundle {
             bundles.add(basename);
         }
         if (templatesPackage != null) {
-            List<String> bundleHierarchy = templatesPackage
-                    .getResourceBundleHierarchy();
+            List<String> bundleHierarchy = templatesPackage.getResourceBundleHierarchy();
             for (String name : bundleHierarchy) {
                 if (basename == null || !basename.equals(name)) {
                     bundles.add(name);
                 }
             }
         }
-
         return bundles;
     }
 

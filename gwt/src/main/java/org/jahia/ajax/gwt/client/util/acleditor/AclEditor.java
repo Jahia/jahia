@@ -516,6 +516,16 @@ public class AclEditor {
     public void setSaved() {
         this.originalAcl = acl.cloneObject();
         reinitAcl();
+        aclTable.removeAll();
+        items.clear();
+        aceMap.clear();
+        List<GWTJahiaNodeACE> l = acl.getAce();
+        for (GWTJahiaNodeACE ace : l) {
+            addTableItem(aclTable, ace, available);
+            aceMap.put(ace.getPrincipalType() + ace.getPrincipalKey(), ace);
+        }
+        setBreakInheritanceLabel();
+        
     }
 
     /**

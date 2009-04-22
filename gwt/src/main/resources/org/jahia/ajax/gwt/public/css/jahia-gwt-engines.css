@@ -679,14 +679,6 @@ fm-globalMashupRepository {
     background: url( ../images/workflow/130.png ) center center no-repeat;
 }
 
-.workflow-200 {
-    background: url( ../images/workflow/200.png ) center center no-repeat;
-}
-
-.workflow-201 {
-    background: url( ../images/workflow/201.png ) center center no-repeat;
-}
-
 .workflow-210 {
     background: url( ../images/workflow/210.png ) center center no-repeat;
 }
@@ -719,12 +711,40 @@ fm-globalMashupRepository {
     background: url( ../images/workflow/241.png ) center center no-repeat;
 }
 
+.workflow-250 {
+    background: url( ../images/workflow/250.png ) center center no-repeat;
+}
+
+.workflow-251 {
+    background: url( ../images/workflow/251.png ) center center no-repeat;
+}
+
 .workflow-511 {
     background: url( ../images/workflow/511.png ) center center no-repeat;
 }
 
+.workflow-521 {
+    background: url( ../images/workflow/521.png ) center center no-repeat;
+}
+
 .workflow-600 {
     background: url( ../images/workflow/600.png ) center center no-repeat;
+}
+
+.workflow-620 {
+    background: url( ../images/workflow/620.png ) center center no-repeat;
+}
+
+.workflow-630 {
+    background: url( ../images/workflow/630.png ) center center no-repeat;
+}
+
+.workflow-640 {
+    background: url( ../images/workflow/640.png ) center center no-repeat;
+}
+
+.workflow-650 {
+    background: url( ../images/workflow/650.png ) center center no-repeat;
 }
 
 .workflow-910 {

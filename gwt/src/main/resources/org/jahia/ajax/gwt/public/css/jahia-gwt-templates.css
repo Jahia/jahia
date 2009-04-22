@@ -996,6 +996,16 @@
     cursor: pointer;
 }
 
+.workflow-000 {
+    background: url( ../images/workflow/000.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-000h {
+    background: url( ../images/workflow/000.png ) center center no-repeat;
+    cursor: pointer;
+}
+
 .workflow-110 {
     background: url( ../images/workflow/110.png ) center center no-repeat;
     cursor: pointer;
@@ -1043,26 +1053,6 @@
 
 .workflow-130h {
     background: url( ../images/workflow/130_h.png ) center center no-repeat;
-    cursor: pointer;
-}
-
-.workflow-200 {
-    background: url( ../images/workflow/200.png ) center center no-repeat;
-    cursor: pointer;
-}
-
-.workflow-200h {
-    background: url( ../images/workflow/200_h.png ) center center no-repeat;
-    cursor: pointer;
-}
-
-.workflow-201 {
-    background: url( ../images/workflow/201.png ) center center no-repeat;
-    cursor: pointer;
-}
-
-.workflow-201h {
-    background: url( ../images/workflow/201_h.png ) center center no-repeat;
     cursor: pointer;
 }
 
@@ -1146,6 +1136,26 @@
     cursor: pointer;
 }
 
+.workflow-250 {
+    background: url( ../images/workflow/250.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-250h {
+    background: url( ../images/workflow/250_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-251 {
+    background: url( ../images/workflow/251.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-251h {
+    background: url( ../images/workflow/251_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
 .workflow-511 {
     background: url( ../images/workflow/511.png ) center center no-repeat;
     cursor: pointer;
@@ -1156,6 +1166,16 @@
     cursor: pointer;
 }
 
+.workflow-521 {
+    background: url( ../images/workflow/521.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-521h {
+    background: url( ../images/workflow/521_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
 .workflow-600 {
     background: url( ../images/workflow/600.png ) center center no-repeat;
     cursor: pointer;
@@ -1163,6 +1183,46 @@
 
 .workflow-600h {
     background: url( ../images/workflow/600_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-620 {
+    background: url( ../images/workflow/620.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-620h {
+    background: url( ../images/workflow/620_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-630 {
+    background: url( ../images/workflow/630.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-630h {
+    background: url( ../images/workflow/630_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-640 {
+    background: url( ../images/workflow/640.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-640h {
+    background: url( ../images/workflow/640_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-650 {
+    background: url( ../images/workflow/650.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-650h {
+    background: url( ../images/workflow/650_h.png ) center center no-repeat;
     cursor: pointer;
 }
 

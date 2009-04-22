@@ -302,20 +302,22 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     function check() {
 
         // Test if checked
-        checked = false;
-        if (document.mainForm.operation.length > 1) {
-            for (var i = 0; i < document.mainForm.operation.length; i++) {
-                if (document.mainForm.operation[i].checked) {
-                    checked = true;
-                }
-            }
-        } else {
-            // if operation == 1 then we have to test differently.
-            if (document.mainForm.operation.checked) {
-                checked = true;
-            }
-        }
-        if (!checked) return false;
+        if (document.mainForm.operation != null) {
+	        checked = false;
+	        if (document.mainForm.operation.length > 1) {
+	            for (var i = 0; i < document.mainForm.operation.length; i++) {
+	                if (document.mainForm.operation[i].checked) {
+	                    checked = true;
+	                }
+	            }
+	        } else {
+	            // if operation == 1 then we have to test differently.
+	            if (document.mainForm.operation.checked) {
+	                checked = true;
+	            }
+	        }
+	        if (!checked) return false;
+	      }
 
         // now here we will test if the move page or the link page
         // target page IDs are valid or not.

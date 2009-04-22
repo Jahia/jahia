@@ -74,8 +74,9 @@ rule "Notifications: workflow state changed"
     when
         A workflow state has changed for a node
     then
-        Fire workflow notification event for node
-        Log "Workflow state for language " + language + " changed to " + state + " for node " +  node.getPath()
+        Fire workflow notification event to the current user
+        Fire workflow notification event to the users involved in the next step
+        Fire workflow notification event to the last user that did "notify"
 end
 
 rule "Notifications: content published"

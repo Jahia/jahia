@@ -93,6 +93,12 @@ public class WorkflowRole {
         return false;
     }
 
+    public Set<Principal> getAllMembers() {
+        Set<Principal> all = getMembers();
+        all.addAll(getInheritedMembers().keySet());
+        return all;
+    }
+
     public Set<Principal> getMembers() {
         final Set<Principal> membersSet = new HashSet<Principal>();
         if (group != null) {

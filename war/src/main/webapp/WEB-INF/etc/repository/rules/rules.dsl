@@ -61,6 +61,9 @@
 [consequence][]Import the node=service.importNode(node,drools);
 [consequence][]Log {message}= logger.debug({message});
 [consequence][]Fire {eventType} notification event for {node}=service.notify({node}, "{eventType}", drools);
+[consequence][]Fire {eventType} notification event to the current user=service.notify(node, "{eventType}", user.getJahiaUser(), drools);
+[consequence][]Fire {eventType} notification event to the users involved in the next step=service.notify(node, "{eventType}", service.getWorkflowNextStepPrincipals(node,language), drools);
+[consequence][]Fire {eventType} notification event to the last user that did "{action}"=service.notify(node, "{eventType}", service.getLastUserForAction(node,language,"{action}"), drools);
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]- the container is of type {containerType}=type == JahiaSearchHitInterface.CONTAINER_TYPE && containerType == "{containerType}"
 [consequence][]Append URL path "{urlPath}"=urlService.addURLPath(searchHit, "{urlPath}");

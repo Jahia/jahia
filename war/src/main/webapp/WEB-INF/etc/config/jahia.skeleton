@@ -81,6 +81,7 @@ jahiaNewTemplatesDiskPath                              =
 jahiaNewWebAppsDiskPath                                =
 jahiaSharedTemplatesDiskPath                           =
 jahiaImportsDiskPath                                   =
+jahiaWebAppsDiskPath                                   =
 
 jahiaCasDiskPath                                       =   $context/WEB-INF/etc/cas/
 

@@ -75,6 +75,7 @@ import org.jahia.admin.AbstractAdministrationModule;
 import org.jahia.tools.files.FileUpload;
 import org.jahia.settings.SettingsBean;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.BuildException;
 
 
@@ -155,10 +156,11 @@ public class ManageComponents extends AbstractAdministrationModule {
 
         sReg = ServicesRegistry.getInstance();
         jcr = sReg.getJCRStoreService();
-        
+
         // check if the user has really admin access to this site...
         user = (JahiaUser) session.getAttribute(ProcessingContext.SESSION_USER);
         site = (JahiaSite) session.getAttribute(ProcessingContext.SESSION_SITE);
+
         JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
         ProcessingContext jParams = null;
         if (jData != null) {
@@ -190,6 +192,8 @@ public class ManageComponents extends AbstractAdministrationModule {
                 editComponentOption(request, response, session);
             } else if (operation.equals("preparePortlet")) {
                 preparePortlet(request, response, session);
+            } else if (operation.equals("deployPortlet")) {
+                deployPortlet(request, response, session);
             }
 
         } else {
@@ -248,7 +252,13 @@ public class ManageComponents extends AbstractAdministrationModule {
             }
 
             request.setAttribute("appsList", authAppList.iterator());
-
+            request.setAttribute("appserverDeployerUrl", SettingsBean.getInstance().getJahiaWebAppsDeployerBaseURL());
+            String serverType = SettingsBean.getInstance().getServer();
+            if (serverType != null && serverType.equalsIgnoreCase("Tomcat")) {
+                request.setAttribute("isTomcat", Boolean.TRUE);
+            } else {
+                request.setAttribute("isTomcat", Boolean.FALSE);
+            }
             JahiaAdministration.doRedirect(request, response, session, JSP_PATH + "manage_components.jsp");
 
         } catch (JahiaException je) {
@@ -992,6 +1002,11 @@ public class ManageComponents extends AbstractAdministrationModule {
         if (jData != null) {
             jParams = jData.getProcessingContext();
         }
+        String deploy = jParams.getParameter("deploy");
+        boolean doDeploy = false;
+        if (deploy != null && Boolean.parseBoolean(deploy)) {
+            doDeploy = true;
+        }
         FileUpload fileUpload = ((ParamBean) jParams).getFileUpload();
         if (fileUpload != null) {
             Set<String> filesName = fileUpload.getFileNames();
@@ -1005,20 +1020,77 @@ public class ManageComponents extends AbstractAdministrationModule {
                     File generatedFile = processUploadedFile(f);
 
                     if (generatedFile != null) {
+                        // save it in the JCR
                         String url = writeToDisk(user, generatedFile, SettingsBean.getInstance().getJahiaPreparePortletJCRPath(), fileName);
+
+                        // deploy it
+                        if (doDeploy) {
+                            deployPortletWar(generatedFile, fileName);
+                            request.setAttribute("deploy", Boolean.TRUE);
+                        }
+
                         request.setAttribute("appserverDeployerUrl", SettingsBean.getInstance().getJahiaWebAppsDeployerBaseURL());
                         request.setAttribute("generatedFilePath", url);
                         request.setAttribute("generatedFileName", fileName);
+
+
                     }
                 } catch (Exception e) {
                     String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label", jParams.getLocale());
-                    request.setAttribute("warningMsg", dspMsg + ": " + e.getMessage());
-                    logger.error(e,e);
+                    request.setAttribute("warningMsg", dspMsg + ": " + e.getLocalizedMessage());
+                    logger.error(e, e);
                 }
             }
 
         }
         displayComponentList(request, response, session);
+    }
+
+    private void deployPortlet(HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws IOException, ServletException {
+        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+        ProcessingContext jParams = null;
+        if (jData != null) {
+            jParams = jData.getProcessingContext();
+        }
+        FileUpload fileUpload = ((ParamBean) jParams).getFileUpload();
+        if (fileUpload != null) {
+            Set<String> filesName = fileUpload.getFileNames();
+            Iterator<String> iterator = filesName.iterator();
+            if (iterator.hasNext()) {
+                String n = iterator.next();
+                String fileName = fileUpload.getFileSystemName(n);
+                File file = fileUpload.getFile(n);
+
+                try {
+                    if (file != null) {
+                        // deploy it
+                        deployPortletWar(file, fileName);
+
+                    }
+                } catch (Exception e) {
+                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label", jParams.getLocale());
+                    request.setAttribute("warningMsg", dspMsg + ": " + e.getMessage());
+                    logger.error(e, e);
+                }
+            }
+
+        }
+        displayComponentList(request, response, session);
+    }
+
+
+    private void deployPortletWar(File file, String filename) throws IOException {
+        // ugly: To do: rewrite deploy service with cargo.
+        // deploy: the easy way is to copy in tomcat/webapp.
+        String serverType = SettingsBean.getInstance().getServer();
+        if (serverType != null && serverType.equalsIgnoreCase("Tomcat")) {
+            String newName = SettingsBean.getInstance().getJahiaWebAppsDiskPath() + filename;
+            FileUtils.copyFile(file, new File(newName));
+            logger.info("Copy " + filename + " to " + SettingsBean.getInstance().getJahiaWebAppsDiskPath() + ". Waiting for tomcat. app deployment.");
+        } else {
+            logger.debug("Server: " + serverType);
+        }
     }
 
     private File processUploadedFile(File file) throws Exception {
@@ -1038,6 +1110,7 @@ public class ManageComponents extends AbstractAdministrationModule {
 
 
         JCRNodeWrapper locationFolder = jcr.getFileNode(location, user);
+
         locationFolder.getUrl();
         Exception ex = locationFolder.getException();
         if (ex != null) {

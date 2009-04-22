@@ -49,6 +49,8 @@ String warningMsg = (String) request.getAttribute("warningMsg");
 String appserverDeployerUrl = (String) request.getAttribute("appserverDeployerUrl");
 String generatedFilePath = (String) request.getAttribute("generatedFilePath");
 String generatedFileName = (String) request.getAttribute("generatedFileName");
+Boolean isTomcat = (Boolean) request.getAttribute("isTomcat");
+boolean deployed = request.getAttribute("deploy") != null;
 
 String sub = (String) request.getParameter("sub");
 String contextRoot = (String)request.getContextPath();
@@ -231,6 +233,21 @@ stretcherToOpen   = 0; %>
                   action='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=preparePortlet")%>'
                   method="post"
                   enctype="multipart/form-data">
+                  <input id="warDeploy" name="deploy" type="hidden" value="false"/>
+                  <div>
+                      <%if(isTomcat){%>
+                       <span class="dex-PushButton">
+                          <span class="first-child">
+                               <a class="ico-app-scan" href="javascript:{showWorkInProgress();document.getElementById('warDeploy').value='true'; document.preparePortlet.submit();}"><fmt:message key="org.jahia.admin.components.ManageComponents.deploy.preparewarAndDeploy"/></a>
+                         </span>
+                     </span>
+                     <%}%>
+                     <span class="dex-PushButton">
+                          <span class="first-child">
+                              <a class="ico-app-scan" href="javascript:{showWorkInProgress(); document.preparePortlet.submit();}"><fmt:message key="org.jahia.admin.components.ManageComponents.deploy.preparewar"/></a>
+                         </span>
+                     </span>
+                 </div>
                 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                     <tr>
                         <td>
@@ -238,18 +255,6 @@ stretcherToOpen   = 0; %>
                         </td>
                         <td>
                             :&nbsp;<input type="file" name="war">
-                        </td>
-                        <td>
-                             <span class="dex-PushButton">
-                                 <span class="first-child">
-                                      <a class="ico-app-scan" href="javascript:{showWorkInProgress(); document.preparePortlet.submit();}"><fmt:message key="org.jahia.admin.components.ManageComponents.deploy.preparewar"/></a>
-                                  </span>
-                             </span>
-                        </td>
-                        <td>
-                             <span class="dex-PushButton">
-
-                             </span>
                         </td>
                     </tr>
                 </table>
@@ -261,9 +266,15 @@ stretcherToOpen   = 0; %>
             <% } %>
             <% if (generatedFilePath != null && generatedFilePath != "" && sub.equals("preparePortlet")) { %>
             <p>
-               <fmt:message key="org.jahia.admin.components.ManageComponents.portletReady.label"/>
+                <% if (deployed){%>
+                   <fmt:message key="org.jahia.admin.components.ManageComponents.portletDeployed.label"/>
+                <% }else{%>
+                  <fmt:message key="org.jahia.admin.components.ManageComponents.portletReady.label"/>  
+                <%}%>
                 <ul>
-                    <li><a href="<%=generatedFilePath %>">  <%=generatedFileName %> </a> </li>
+                 <li>
+                     <a href="<%=generatedFilePath%>"> <%=generatedFileName%></a>
+                 </li>
                 </ul>
             </p>
             <% } %>
@@ -274,21 +285,50 @@ stretcherToOpen   = 0; %>
             </div>
         </div>
         <div  class="content-item">
-            <span class="dex-PushButton">
-                      <span class="first-child">
-                             <a class="ico-app-new" href="<%=appserverDeployerUrl%>"><fmt:message key="org.jahia.admin.components.ManageComponents.deployNewComponents.label"/></a>
-                       </span>
-                </span>
-            <span class="dex-PushButton">
-                      <span class="first-child">
-                             <a class="ico-help" href="#help" onclick="javascript:{document.getElementById('help').style.display='';}"><fmt:message key="org.jahia.admin.components.ManageComponents.deploy.help.label"/></a>
-                       </span>
-                </span>
-            <br/><br/>
-           <div id="help" style="display:none">
-                <fmt:message key="org.jahia.admin.components.ManageComponents.deploy.help"/>
-           </div>
+            <div>
+
+                     <%if(isTomcat){%>
+                     <span class="dex-PushButton">
+                          <span class="first-child">
+                               <a class="ico-app-scan" href="javascript:{showWorkInProgress(); document.deployPortlet.submit();}">
+                                     <fmt:message key="org.jahia.admin.components.ManageComponents.deployNewComponents.label"/>
+                                </a>
+                           </span>
+                      </span>
+                     <%}%>
+                    <span class="dex-PushButton">
+                       <span class="first-child">
+                              <a class="ico-app-new" href="<%=appserverDeployerUrl%>"><fmt:message key="org.jahia.admin.components.ManageComponents.openAppManager.label"/></a>
+                        </span>
+                     </span>
+                      <span class="dex-PushButton">
+                           <span class="first-child">
+                                 <a class="ico-help" href="#help" onclick="javascript:{document.getElementById('help').style.display='';}"><fmt:message key="org.jahia.admin.components.ManageComponents.deploy.help.label"/></a>
+                            </span>
+                      </span>
+             </div>
+            <%if(isTomcat){%>
+            <form name="deployPortlet"
+                  action='<%=JahiaAdministration.composeActionURL(request,response,"sharecomponents","&sub=deployPortlet")%>'
+                  method="post"
+                  enctype="multipart/form-data">
+                <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
+                    <tr>
+                        <td>
+                            <fmt:message key="org.jahia.admin.components.ManageComponents.deploy.preparewar.fileselect"/>&nbsp;
+                        </td>
+                        <td colspan="2" >
+                            :&nbsp;<input type="file" name="war">
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+            <%}%>
+            <div id="help" style="display:none">
+                    <fmt:message key="org.jahia.admin.components.ManageComponents.deploy.help"/>
             </div>
+         </div>
             </div>
             </td>
           </tr>

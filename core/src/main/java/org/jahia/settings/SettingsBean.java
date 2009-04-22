@@ -456,7 +456,13 @@ public class SettingsBean {
                 jahiaWebAppsDiskPath = parent.getAbsolutePath () + File.separator;
             } else if (server.indexOf (JahiaConstants.SERVER_TOMCAT) != -1) {      // the server is tomcat
                 jahiaHomeDiskPath = parent.getAbsolutePath ();
-                jahiaWebAppsDiskPath = parent.getParentFile ().getAbsolutePath () + File.separator;
+                // look in the properties file. If not found guess from jahiaContextFolder
+                jahiaWebAppsDiskPath = properties.getProperty("jahiaWebAppsDiskPath");
+                if(jahiaWebAppsDiskPath == null || jahiaWebAppsDiskPath.length() == 0){
+                    jahiaWebAppsDiskPath = parent.getParentFile ().getAbsolutePath () + File.separator;
+                }else{
+                   jahiaWebAppsDiskPath.trim();
+                }
                 /*
                 } else if ( (server.indexOf(JahiaConstants.SERVER_TOMCAT4_BETA2) != -1)
                         || (server.indexOf(JahiaConstants.SERVER_TOMCAT4_BETA3) != -1)

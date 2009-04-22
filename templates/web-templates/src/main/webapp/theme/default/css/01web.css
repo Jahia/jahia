@@ -2334,7 +2334,7 @@ body {
 #bodywrapper .paginationNavigation span {
     text-decoration: none;
     color: #666666;
-    padding: 0;
+    padding: 0.2em 0.5em;
 }
 
 /******************************************************************************

@@ -321,11 +321,11 @@ public class ManageSiteLanguages extends AbstractAdministrationModule {
                         curSetting.setActivated(false);
                     }
                     String mandatoryStr = request.getParameter("mandatory_" + curSetting.getCode());
-                    if (mandatoryStr != null) {
-                        curSetting.setMandatory(true);
-                    } else {
+//                    if (mandatoryStr != null) {
+//                        curSetting.setMandatory(true);
+//                    } else {
                         curSetting.setMandatory(false);
-                    }
+//                    }
                     logger.debug("lang " + curSetting.getCode() +
                             " activeStr=[" + activeStr +
                             "] mandatoryStr=[" + mandatoryStr + "]");

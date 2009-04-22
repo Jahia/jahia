@@ -901,7 +901,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         if ("rank".equals(t)) {
                             set.setRank(Integer.parseInt(value));
                         } else if ("mandatory".equals(t)) {
-                            set.setMandatory(Boolean.valueOf(value).booleanValue());
+//                            set.setMandatory(Boolean.valueOf(value).booleanValue());
                         } else if ("activated".equals(t)) {
                             set.setActivated(Boolean.valueOf(value).booleanValue());
                         }

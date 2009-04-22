@@ -146,9 +146,10 @@ SESSION_LOCALE);
                         <th style="text-align:center">
                           <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.active.label"/>
                         </th>
-                        <th style="text-align:center">
-                          <fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.mandatory.label"/>
-                        </th><!--
+                        <%--<th style="text-align:center">--%>
+                          <%--<fmt:message key="org.jahia.admin.languages.ManageSiteLanguages.mandatory.label"/>--%>
+                        <%--</th>--%>
+                          <!--
                         <th style="text-align:center"  ><fmt:message key="org.jahia.admin.delete.label"/></th>
                         -->
                       </tr>
@@ -185,11 +186,12 @@ SESSION_LOCALE);
                             <input type="checkbox" name="active_<%=curSetting.getCode()%>" value="<%=count%>" checked><% } else { %>
                             <input type="checkbox" name="active_<%=curSetting.getCode()%>" value="<%=count%>"><% } %>
                           </td>
-                          <td align="center">
-                            <% if (curSetting.isMandatory()) { %>
-                            <input type="checkbox" name="mandatory_<%=curSetting.getCode()%>" value="<%=count+1%>" checked><% } else { %>
-                            <input type="checkbox" name="mandatory_<%=curSetting.getCode()%>" value="<%=count+1%>"><% } %>
-                          </td><!--
+                          <%--<td align="center">--%>
+                            <%--<% if (curSetting.isMandatory()) { %>--%>
+                            <%--<input type="checkbox" name="mandatory_<%=curSetting.getCode()%>" value="<%=count+1%>" checked><% } else { %>--%>
+                            <%--<input type="checkbox" name="mandatory_<%=curSetting.getCode()%>" value="<%=count+1%>"><% } %>--%>
+                          <%--</td>--%>
+                          <!--
                           <td  align="center">
                           <input type="checkbox" name="delete_<%=curSetting.getCode()%>" value="<%=count+2%>">
                           </td>

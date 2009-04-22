@@ -76,7 +76,6 @@ rule "Notifications: workflow state changed"
     then
         Fire workflow notification event for node
         Log "Workflow state for language " + language + " changed to " + state + " for node " +  node.getPath()
-        Log "my test: " + workflowNode.getPath() 
 end
 
 rule "Notifications: content published"

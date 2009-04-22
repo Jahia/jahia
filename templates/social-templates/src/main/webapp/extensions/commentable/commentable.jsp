@@ -47,7 +47,7 @@
 <c:if test="${isCommentable.value}">
 
     <template:containerList name="comment" id="comment"
-                            actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment" sortByMetaData="created" sortOrder="desc" enforceDefinedSort="true">
+                            actionMenuNameLabelKey="comment.add" actionMenuNamePostFix="comment" sortByMetaData="created" sortOrder="desc">
         <div class="comments">
             <h3><fmt:message key="comments"/></h3>
             <c:set var="answerCounter" scope="page" value="1"/>

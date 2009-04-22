@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.ArrayList;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Column;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
@@ -52,6 +53,9 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
+import org.jahia.query.qom.JahiaQueryObjectModelConstants;
+import org.jahia.query.qom.PropertyValueImpl;
+import org.jahia.query.qom.QueryObjectModelFactoryImpl;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
@@ -78,7 +82,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
 
     private JahiaData jData;
 
-    private QOMBuilder qomBuilder;
+    protected QOMBuilder qomBuilder;
 
     private QueryObjectModelFactory queryFactory;
     private ValueFactory valueFactory;
@@ -228,7 +232,39 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         this.qomBuilder.setOrderings(orderingsList);
     }
 
-    public void addOrdering(Ordering ordering) {
+    public void addOrdering(String propertyName, boolean numberValue,
+            String numberFormat, boolean metadata, String valueProviderClass,
+            String order, boolean localeSensitive) throws RepositoryException {
+        Ordering ordering = null;
+        QueryObjectModelFactory queryFactory = getQueryFactory();
+        PropertyValueImpl propValue = (PropertyValueImpl) queryFactory
+                .propertyValue(propertyName.trim());
+        propValue.setNumberValue(numberValue);
+        propValue.setMetadata(metadata);
+        propValue.setNumberFormat(numberFormat);
+        propValue.setValueProviderClass(valueProviderClass);
+        if (queryFactory instanceof QueryObjectModelFactoryImpl) {
+            QueryObjectModelFactoryImpl ourQueryFactory = (QueryObjectModelFactoryImpl) queryFactory;
+            if (order != null
+                    && order.length() > 0
+                    && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
+                            .parseInt(order)) {
+                ordering = ourQueryFactory.descending(propValue,
+                        localeSensitive);
+            } else {
+                ordering = ourQueryFactory
+                        .ascending(propValue, localeSensitive);
+            }
+        } else {
+            if (order != null
+                    && order.length() > 0
+                    && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
+                            .parseInt(order)) {
+                ordering = queryFactory.descending(propValue);
+            } else {
+                ordering = queryFactory.ascending(propValue);
+            }
+        }
         this.qomBuilder.addOrdering(ordering);
     }
 

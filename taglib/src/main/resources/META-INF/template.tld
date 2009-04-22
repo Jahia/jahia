@@ -443,14 +443,6 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <description>This allows to always override the automatic sort by the one defined in the tag.
-            </description>
-            <name>enforceDefinedSort</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
     </tag>
     <tag>
         <description>Displays an absolute container list (declares it if needed)</description>

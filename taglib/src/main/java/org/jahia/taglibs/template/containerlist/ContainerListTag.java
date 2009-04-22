@@ -36,14 +36,10 @@ package org.jahia.taglibs.template.containerlist;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.portlet.PortletConfig;
@@ -62,7 +58,6 @@ import org.apache.log4j.Logger;
 import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentContainerListKey;
-import org.jahia.content.ContentObject;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.beans.PaginationBean;
@@ -71,7 +66,6 @@ import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.containers.JahiaContainerList;
 import org.jahia.data.containers.JahiaContainerListPagination;
-import org.jahia.data.events.JahiaEvent;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaFieldDefinition;
 import org.jahia.data.fields.LoadFlags;
@@ -79,7 +73,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerListFactoryProxy;
-import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -158,8 +151,8 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     private String actionMenuIconStyle;
     private String sortByMetaData;
     private String sortByField;
+    private JahiaFieldDefinition sortFieldDef = null;
     private String sortOrder;
-    private boolean enforceDefinedSort = false;
     private transient JahiaData jData = null;
     private static final transient Logger monitorLogger = Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
     private transient Monitor mon;
@@ -301,14 +294,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     public void setSortOrder (String sortOrder) {
         this.sortOrder = sortOrder;
     }
-    /**
-     * @jsp:attribute name="enforceDefinedSort" required="false" rtexprvalue="true"
-     * description="This allows to always override the automatic sort by the one defined in the tag."
-     * @param enforceDefinedSort true to enforce
-     */
-    public void setEnforceDefinedSort (boolean enforceDefinedSort) {
-        this.enforceDefinedSort = enforceDefinedSort;
-    }
 
     public int doStartTag() throws JspException {
         
@@ -373,38 +358,6 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
                     null,
                     null,
                     null));
-        }
-        if(getContainerList() != null && (getContainerList().getProperty("automatic_sort_handler")==null || enforceDefinedSort)) {
-            if (sortByField != null && !"".equals(sortByField.trim())) {
-                try {
-                    final JahiaContainerDefinition jahiaContainerDefinition = getContainerList().getDefinition();
-                    final JahiaFieldDefinition definition = jahiaContainerDefinition.findFieldInStructure(jahiaContainerDefinition.getName()+"_"+sortByField);
-                    boolean ignoreOptimizedMode = (definition.getType() == FieldTypes.PAGE ||
-                                                   definition.getType() == FieldTypes.BIGTEXT ||
-                                                   definition.getType() == FieldTypes.FILE);
-                    String fieldName = definition.getName();
-                    int fieldType = definition.getType();
-                    saveSort(ignoreOptimizedMode, fieldName, fieldType, Boolean.FALSE.toString(), false);
-                } catch (JahiaException e) {
-                    logger.error("Try to define a sort on a non existing field " + sortByField, e);
-                }
-            } else if (sortByMetaData != null && !"".equals(sortByMetaData.trim())) {
-                try {
-                    final JahiaFieldService service = ServicesRegistry.getInstance().getJahiaFieldService();
-                    final List<Integer> integerList = service.loadFieldDefinitionIds(sortByMetaData, true);
-                    if (integerList.size() == 1) {
-                        JahiaFieldDefinition definition = service.loadFieldDefinition(integerList.get(0));
-                        boolean ignoreOptimizedMode = (definition.getType() == FieldTypes.PAGE ||
-                                                       definition.getType() == FieldTypes.BIGTEXT ||
-                                                       definition.getType() == FieldTypes.FILE);
-                        String fieldName = definition.getName();
-                        int fieldType = definition.getType();
-                        saveSort(ignoreOptimizedMode, fieldName, fieldType, Boolean.TRUE.toString(), true);
-                    }
-                } catch (JahiaException e) {
-                    logger.error("Try to define a sort on a non existing metadata " + sortByMetaData, e);
-                }
-            }
         }
         boolean shouldWeDisplayActionMenus = displayActionMenu && ProcessingContext.EDIT.equals(jData.getProcessingContext().getOpMode());
         try {
@@ -482,45 +435,81 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         return (getId() != null && getId().length() > 0 ? getId() + "_": "") + getName() + "_windowoffset";
     }
     
-    private void saveSort (boolean ignoreOptimizedMode, String fieldName, int fieldType, String useOptimizedMode, boolean isMetaData) throws JahiaException {
-        String sort = "asc";
-        if (sortOrder != null && sortOrder.trim().toLowerCase().startsWith("desc")) {
-            sort = "desc";
+    public JahiaFieldDefinition getSortFieldDefinition(String sortByField,
+            String sortByMetaData) throws JahiaException {
+        JahiaFieldDefinition definition = sortFieldDef;
+        if (sortFieldDef == null) {
+            if (sortByField != null && !"".equals(sortByField.trim())) {
+                final JahiaContainerDefinition jahiaContainerDefinition = getContainerList()
+                        .getDefinition();
+                definition = jahiaContainerDefinition
+                        .findFieldInStructure(jahiaContainerDefinition
+                                .getName()
+                                + "_" + sortByField);
+
+            } else if (sortByMetaData != null
+                    && !"".equals(sortByMetaData.trim())) {
+                final JahiaFieldService service = ServicesRegistry
+                        .getInstance().getJahiaFieldService();
+                final List<Integer> integerList = service
+                        .loadFieldDefinitionIds(sortByMetaData, true);
+                if (integerList.size() == 1) {
+                    definition = service
+                            .loadFieldDefinition(integerList.get(0));
+                }
+            }
+            sortFieldDef = definition;
         }
-        StringBuffer buff = new StringBuffer(fieldName);
-        buff.append(";").append(sort);
-        switch (fieldType) {
-            case ContentFieldTypes.DATE:
-            case ContentFieldTypes.INTEGER:
-            case ContentFieldTypes.FLOAT:
-                buff.append(";true");
-                break;
-            default:
-                buff.append(";false");
-        }
-        buff.append(";").append(isMetaData);
-        getContainerList().setProperty("automatic_sort_ignoreOptimizedMode", String.valueOf(ignoreOptimizedMode));
-        getContainerList().setProperty("automatic_sort_handler", buff.toString());
-        getContainerList().setProperty("automatic_sort_useOptimizedMode", useOptimizedMode);
-        ContentContainerList contentContainerList = getContainerList().getContentContainerList();
-        Set<ContentObject> pickers = contentContainerList.getPickerObjects();
-        final Properties p = getContainerList().getProperties();
-        if (!contentContainerList.getProperties().equals(p)) {
-            final Set<ContentObject> objects = new HashSet<ContentObject>(pickers);
-            objects.add(contentContainerList);
-            for (ContentObject object : objects) {
-                ContentContainerList l = (ContentContainerList) object;
-                for (Enumeration<?> iterator1 = p.propertyNames(); iterator1.hasMoreElements();) {
-                    String key = (String) iterator1.nextElement();
-                    if (!p.get(key).equals(l.getProperty(key))) {
-                        l.setProperty(key, p.getProperty(key));
+        return definition;
+    }
+    
+    private void setSortSettings() throws JahiaException {
+        if (getContainerList() != null) {
+            try {
+                JahiaFieldDefinition definition = getSortFieldDefinition(sortByField, sortByMetaData);
+                if (definition != null) {
+                    boolean ignoreOptimizedMode = (definition.getType() == FieldTypes.PAGE
+                            || definition.getType() == FieldTypes.BIGTEXT || definition
+                            .getType() == FieldTypes.FILE);
+                    String fieldName = definition.getName();
+                    int fieldType = definition.getType();
+                    String useOptimizedMode = definition.getIsMetadata() ? Boolean.TRUE
+                            .toString()
+                            : Boolean.FALSE.toString();
+                    boolean isMetaData = definition.getIsMetadata();
+
+                    if (fieldName != null) {
+                        String sort = "asc";
+                        if (sortOrder != null
+                                && sortOrder.trim().toLowerCase().startsWith(
+                                        "desc")) {
+                            sort = "desc";
+                        }
+                        StringBuffer buff = new StringBuffer(fieldName);
+                        buff.append(";").append(sort);
+                        switch (fieldType) {
+                            case ContentFieldTypes.DATE:
+                            case ContentFieldTypes.INTEGER:
+                            case ContentFieldTypes.FLOAT:
+                                buff.append(";true");
+                                break;
+                            default:
+                                buff.append(";false");
+                        }
+                        buff.append(";").append(isMetaData);
+                        getContainerList().setProperty(
+                                "automatic_sort_ignoreOptimizedMode",
+                                String.valueOf(ignoreOptimizedMode));
+                        getContainerList().setProperty(
+                                "automatic_sort_handler", buff.toString());
+                        getContainerList().setProperty(
+                                "automatic_sort_useOptimizedMode",
+                                useOptimizedMode);
                     }
                 }
-                if(!enforceDefinedSort) {
-                    JahiaEvent theEvent = new JahiaEvent(this, getProcessingContext(), getContainerList());
-                    ServicesRegistry.getInstance().getJahiaEventService().fireSetContainerListProperties(theEvent);
-                    l.setUnversionedChanged();
-                }
+            } catch (JahiaException e) {
+                logger.error("Try to define a sort on a non existing field "
+                        + sortByField + " " + sortByMetaData, e);
             }
         }
     }
@@ -561,6 +550,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (list != null) {
             list.getFactoryProxy().setListViewId(getId());
             setContainerList(list);
+            setSortSettings();
             setSizeAndOffsetSettings();
             // Output a warning in html and in console if this container list is not a subdefintion of its parent
             checkSubdefinition(jData.getProcessingContext());
@@ -621,6 +611,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         if (list != null && list.getID() != 0 && list.getFactoryProxy() != null ) {
             list.getFactoryProxy().setListViewId(getId());
             setContainerList(list);
+            setSortSettings();
             setSizeAndOffsetSettings();
         } else {
             logger.debug("ContainerList is null: " + getName());
@@ -905,7 +896,7 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
         sortByField = null;
         sortByMetaData = null;
         sortOrder = null;
-        enforceDefinedSort = false;
+        sortFieldDef = null;
         super.resetState();
     }
 
@@ -997,5 +988,17 @@ public class ContainerListTag extends AbstractJahiaTag implements ContainerSuppo
     
     private void setContainerList(JahiaContainerList containerList) {
         this.containerList = containerList;
+    }
+
+    public String getSortByMetaData() {
+        return sortByMetaData;
+    }
+
+    public String getSortByField() {
+        return sortByField;
+    }
+
+    public String getSortOrder() {
+        return sortOrder;
     }
 }

@@ -33,11 +33,6 @@
 
 package org.jahia.taglibs.query;
 
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Ordering;
-import org.apache.jackrabbit.spi.commons.query.jsr283.qom.QueryObjectModelFactory;
-import org.jahia.query.qom.JahiaQueryObjectModelConstants;
-import org.jahia.query.qom.PropertyValueImpl;
-import org.jahia.query.qom.QueryObjectModelFactoryImpl;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
@@ -57,7 +52,6 @@ public class SortByTag extends AbstractJahiaTag {
         org.apache.log4j.Logger.getLogger(SortByTag.class);
 
     private QueryDefinitionTag queryModelDefTag = null;
-    private QueryObjectModelFactory queryFactory = null;
 
     private String propertyName;
 
@@ -74,37 +68,11 @@ public class SortByTag extends AbstractJahiaTag {
         if (queryModelDefTag == null || queryModelDefTag.getQueryFactory()==null) {
             return SKIP_BODY;
         }
-        this.queryFactory = queryModelDefTag.getQueryFactory();
         if (this.propertyName == null || this.propertyName.trim().equals("")){
             return EVAL_BODY_BUFFERED;
         }
-        Ordering ordering = null;
         try {
-            PropertyValueImpl propValue = (PropertyValueImpl)this.queryFactory.propertyValue(this.getPropertyName().trim());
-            propValue.setNumberValue("true".equals(this.getNumberValue()));
-            propValue.setMetadata("true".equals(this.getMetadata()));
-            propValue.setNumberFormat(this.getNumberFormat());
-            propValue.setValueProviderClass(this.valueProviderClass);
-            if (this.queryFactory instanceof QueryObjectModelFactoryImpl) {
-                QueryObjectModelFactoryImpl ourQueryFactory = (QueryObjectModelFactoryImpl) this.queryFactory;
-                if (order != null && order.length() > 0 && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
-                        .parseInt(order)) {
-                    ordering = ourQueryFactory.descending(propValue, Boolean
-                            .valueOf(this.getLocaleSensitive()).booleanValue());
-                } else {
-                    ordering = ourQueryFactory.ascending(propValue, Boolean
-                            .valueOf(this.getLocaleSensitive()).booleanValue());
-                }
-            } else {
-                if (order != null && order.length() > 0 && JahiaQueryObjectModelConstants.ORDER_DESCENDING == Integer
-                        .parseInt(order)) {
-                    ordering = this.queryFactory.descending(propValue);
-                } else {
-                    ordering = this.queryFactory.ascending(propValue);
-                }
-            }
-
-            this.queryModelDefTag.addOrdering(ordering);
+            this.queryModelDefTag.addOrdering(getPropertyName(), "true".equals(getNumberValue()), getNumberFormat(), "true".equals(getMetadata()), getValueProviderClass(), getOrder(), "true".equals(getLocaleSensitive()));
         } catch ( Exception t ){
             logger.debug("Error creating ordering clause",t);
             throw new JspException("Error creating Ordering node in SortBy Tag",t);
@@ -114,7 +82,6 @@ public class SortByTag extends AbstractJahiaTag {
 
     public int doEndTag() throws JspException {
         queryModelDefTag = null;
-        queryFactory = null;
         propertyName = null;
         propertyName = null;
         numberFormat = null;

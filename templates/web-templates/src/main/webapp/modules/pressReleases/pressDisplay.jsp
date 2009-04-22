@@ -65,7 +65,7 @@
     <!--stop pressRealeseForm -->
     <template:containerList name="press" id="pressContainer" actionMenuNamePostFix="press"
                             actionMenuNameLabelKey="pressReleases" windowSize="10" sortByField="date"
-                            enforceDefinedSort="true" sortOrder="desc">
+                            sortOrder="desc">
         <c:set var="doSearch" value="false"/>
         <c:if test="${!empty param.pressdatefrom || !empty param.pressdateto }">
             <c:set var="doSearch" value="true"/>

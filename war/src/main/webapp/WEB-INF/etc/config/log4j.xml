@@ -162,6 +162,10 @@ think twice before changing it! -->
     <category name="org.quartz">
         <priority value="info"/>
     </category>
+    
+    <category name="org.jahia.services.search.lucene.fs.LuceneSearchHandlerImpl">
+        <priority value="info"/>
+    </category>    
 
     <category name="org.jahia.spring.aop.interceptor">
         <!-- Set this to debug to activate JAMon monitoring -->

@@ -118,6 +118,7 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
+                            <echo message="${buildNumber}" file="${project.build.directory}/apache-tomcat-6.0.18/webapps/config/configuration_wizard/jahia-buildnumber.txt"/>
                                 <copy file="./src/resources/catalina.bat"
                                       tofile="${project.build.directory}/apache-tomcat-6.0.18/bin/catalina.bat"
                                       overwrite="true"/>

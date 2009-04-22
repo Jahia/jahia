@@ -668,7 +668,7 @@ public class FileDetails extends BottomRightComponent {
                             values[1] = gwtJahiaNodeUsage.getUrl();
                             values[2] = gwtJahiaNodeUsage.getLang();
                             String[] ws = new String[]{Messages.getResource("fm_versioned"), Messages.getResource("fm_live"), Messages.getResource("fm_staging"), Messages.getResource("fm_notify")};
-                            String[] images = new String[]{"600", "111", "211", "220"};
+                            String[] images = new String[]{"600", "111", "121", "130"};
                             values[3] = "<img src=\"../images/icons/workflow/" + images[gwtJahiaNodeUsage.getWorkflow()] + ".png\">&nbsp;" + ws[gwtJahiaNodeUsage.getWorkflow()];
                             TableItem item = new TableItem(values);
                             tbl.add(item);

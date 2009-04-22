@@ -65,6 +65,10 @@
     String filters = options.get("filters");
     if (mimeTypes == null) mimeTypes = "";
     if (filters == null) filters = "";
+
+    boolean folder = options.containsKey("folder");
+    String nodeType = folder ? "jnt:folder" : "jnt:file";
+
     final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
     if (elh != null) {
         jParams.setCurrentLocale(elh.getCurrentLocale());
@@ -105,5 +109,5 @@
     </tr>
   </table> 
 </div>
-<internal:fileManager startPath="<%=path%>" enginemode="true" nodeTypes="jnt:file" mimeTypes="<%=mimeTypes%>" filters="<%=filters%>" conf="filepicker" rootPath="files" />
+<internal:fileManager startPath="<%=path%>" enginemode="true" nodeTypes="<%=nodeType%>" mimeTypes="<%=mimeTypes%>" filters="<%=filters%>" conf="filepicker" rootPath="files" />
 

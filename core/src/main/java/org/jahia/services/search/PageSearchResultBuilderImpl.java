@@ -50,7 +50,6 @@ import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.data.search.JahiaSearchHitInterface;
 import org.jahia.data.search.JahiaSearchResult;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -264,9 +263,6 @@ public class PageSearchResultBuilderImpl extends
                                                 currentUser);
                                 info.setObject(file);
 
-                                url = file
-                                        .getAbsoluteWebdavUrl((ParamBean) jParams);
-
                                 if (mimeType == null) {
                                     parsedObject
                                             .getLazyFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE);
@@ -284,22 +280,21 @@ public class PageSearchResultBuilderImpl extends
                                 parsedObject
                                         .getLazyFieldValue(JahiaSearchConstant.FILE_PROPERTY_PREFIX
                                                 + "contributor");
-                            } else {
-                                try {
-                                    if (SettingsBean.getInstance()
-                                            .isSiteIDInSearchHitPageURL()
-                                            && aPage.getJahiaID() != jParams
-                                                    .getJahiaID()) {
-                                        jParams.setForceAppendSiteKey(true);
-                                    }
-                                    url = aPage.getPageType() == JahiaPage.TYPE_URL ? aPage
-                                            .getRemoteURL()
-                                            : aPage.getURL(jParams);
-                                } catch (Exception t) {
-                                    logger.warn("Error obtaining page search hit details", t);
-                                } finally {
-                                    jParams.setForceAppendSiteKey(false);
+                            }
+                            try {
+                                if (SettingsBean.getInstance()
+                                        .isSiteIDInSearchHitPageURL()
+                                        && aPage.getJahiaID() != jParams
+                                                .getJahiaID()) {
+                                    jParams.setForceAppendSiteKey(true);
                                 }
+                                url = aPage.getPageType() == JahiaPage.TYPE_URL ? aPage
+                                        .getRemoteURL()
+                                        : aPage.getURL(jParams);
+                            } catch (Exception t) {
+                                logger.warn("Error obtaining page search hit details", t);
+                            } finally {
+                                jParams.setForceAppendSiteKey(false);
                             }
                         }
 
@@ -441,41 +436,36 @@ public class PageSearchResultBuilderImpl extends
     
     private boolean shouldAddHit (JahiaSearchHit info, JahiaSearchResult result, String languageCode) {
         boolean shouldAdd = true;
-        boolean removePreviousHit = false;
-        int hitIndex = 0;
-        JahiaSearchHit searchHit = null;
         if (this.onlyOneHitByPage) {
+            boolean removePreviousHit = false;
+            boolean duplicateFound = false;
+            int hitIndex = 0;
+            JahiaSearchHit searchHit = null;
             for (int j = 0; j < result.getHitCount(); j++) { // page already found
-                shouldAdd = true;
-                removePreviousHit = false;
                 searchHit = result.results().get(j);
-                boolean biggerScore = searchHit.getScore() < info
-                        .getScore();
+                boolean biggerScore = searchHit.getScore() < info.getScore();
                 hitIndex = j;
                 if (info.getType() == JahiaSearchHitInterface.FILE_TYPE) {
-                    if (searchHit.getType() == JahiaSearchHitInterface.FILE_TYPE) {
-                        if (!"#".equals(searchHit.getURL())
-                                && searchHit.getURL().equals(
-                                        info.getURL())) {
-                            // its a same linked file
-                            if (biggerScore) {
-                                removePreviousHit = true;
-                            } else {
-                                shouldAdd = false;
-                            }
-                        }
+                    if (searchHit.getType() == JahiaSearchHitInterface.FILE_TYPE
+                            && !"#".equals(searchHit.getURL())
+                            && searchHit.getURL().equals(info.getURL())) {
+                        // its a same linked file
+                        duplicateFound = true;
+                    } else {
+                        shouldAdd = false;                        
                     }
-                } else {
-                    if (info.getPageId() == searchHit
-                            .getPageId()) {
-                        if (searchHit.getType() != JahiaSearchHitInterface.FILE_TYPE) {
-                            if (searchHit.getScore() < info
-                                    .getScore()) {
-                                removePreviousHit = true;
-                            } else {
-                                shouldAdd = false;
-                            }
-                        }
+                } else if (info.getPageId() == searchHit.getPageId()) {
+                    if (searchHit.getType() != JahiaSearchHitInterface.FILE_TYPE) {
+                        duplicateFound = true;
+                    } else {
+                        removePreviousHit = true;
+                    }
+                }
+                if (duplicateFound) {
+                    if (biggerScore) {
+                        removePreviousHit = true;
+                    } else {
+                        shouldAdd = false;
                     }
                 }
                 if (removePreviousHit || !shouldAdd) {

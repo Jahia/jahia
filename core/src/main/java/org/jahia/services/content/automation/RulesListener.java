@@ -70,10 +70,13 @@ public class RulesListener extends DefaultEventListener {
     private Timer rulesTimer = new Timer("rules-timer", true);
 
     private RuleBase ruleBase;
+    private long lastRead = 0;
 
     private static final int UPDATE_DELAY_FOR_LOCKED_NODE = 2000;
     private Set<String> ruleFiles;
     private String serverId;
+
+    private ThreadLocal inRules = new ThreadLocal();
 
     public RulesListener() {
         instances.add(this);
@@ -170,6 +173,7 @@ public class RulesListener extends DefaultEventListener {
                 logger.error("Errors when compiling rules : " + errors.toString());
                 logger.error("---------------------------------------------------------------------------------");
             }
+            lastRead = System.currentTimeMillis();
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
         } catch (Exception e) {
@@ -213,11 +217,23 @@ public class RulesListener extends DefaultEventListener {
         }
     }
 
+    private long lastModified() {
+        long last = 0;
+        for (String s : ruleFiles) {
+            last = Math.max(last, new File(SettingsBean.getInstance().getJahiaEtcDiskPath() + s).lastModified());
+        }
+        return last;
+    }
+
 
     public void onEvent(EventIterator eventIterator) {
         Map<String, NodeWrapper> eventsMap = new HashMap<String, NodeWrapper>();
 
-        if (ruleBase == null) {
+        if (Boolean.TRUE.equals(inRules.get())) {
+            return;
+        }
+
+        if (ruleBase == null || SettingsBean.getInstance().isDevelopmentMode() && lastModified() > lastRead) {
             initRules();
             if (ruleBase == null) {
                 return;
@@ -232,9 +248,6 @@ public class RulesListener extends DefaultEventListener {
             while (eventIterator.hasNext()) {
                 Event event = eventIterator.nextEvent();
                 username = event.getUserID();
-                if (event.getPath().startsWith("/j:tmpRules")) {
-                    return;
-                }
                 events.add(event);
             }
 
@@ -313,33 +326,14 @@ public class RulesListener extends DefaultEventListener {
                 if (!list.isEmpty()) {
                     long time = System.currentTimeMillis();
                     if (list.size()>3) {
-                        logger.debug("Executing rules for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
+                        logger.info("Executing rules for " + list.subList(0,3)+ " ... and "+(list.size()-3)+" other nodes");
                     } else {
-                        logger.debug("Executing rules for " + list);
+                        logger.info("Executing rules for " + list);
                     }
 
                     final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
-                    try {
-                        Node r;
-                        try {
-                            r = (Node) s.getItem("/j:tmpRules");
-                        } catch (PathNotFoundException e) {
-                            r = s.getRootNode().addNode("j:tmpRules", Constants.JAHIANT_FOLDER);
-                            r.setProperty("j:hidden", true);
-                        }
-                        try {
-                            r = r.getNode("j:" + serverId);
-                        } catch (PathNotFoundException e) {
-                            r = r.addNode("j:" + serverId, Constants.JAHIANT_FOLDER);
-                        }
-                        if (r != null) {
-                            r.setProperty("jcr:lastModified", new GregorianCalendar());
-                        }
-                    } catch (UnsupportedRepositoryOperationException e) {
-                        // not supported
-                    }
-                    
+
                     Map<String, Object> globals = new HashMap<String, Object>();
 
                     globals.put("service", Service.getInstance());
@@ -359,7 +353,9 @@ public class RulesListener extends DefaultEventListener {
                     }
 
                     if (s.hasPendingChanges()) {
+                        inRules.set(Boolean.TRUE);
                         s.save();
+                        inRules.set(null);
                     }
 
                     if (!delayedUpdates.isEmpty()) {

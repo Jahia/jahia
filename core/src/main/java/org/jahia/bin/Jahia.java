@@ -630,7 +630,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     public void destroy() {
 
-        logger.info("shutdown requested !");
+        logger.info("Shutdown requested");
 
         // check first if Jahia was initialized or if we just ran the configuration wizard.
         if (!mInitiated) {
@@ -666,7 +666,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
         }
         super.destroy();
 
-        logger.info("done shuting down !");
+        logger.info("...done shutting down");
 
     }
 

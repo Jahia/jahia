@@ -108,8 +108,8 @@
                                 <% } else { %>
 
                             <div class="dex-TabPanelBottom-full">
-															<div id="content" class="full">
-                                <div class="full">
+
+                                <div id="content" class="full">
                                     <% } %>
                                     <div class="head">
                                         <div class="object-title"><fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>
@@ -157,23 +157,23 @@
                                                 </c:if>
                                             </tr>
                                             <script type="text/javascript">
-                                            function swapImage(imgId,imgToSwitch){
-                                                var image = document.getElementById(imgId);
-                                                var dropd = document.getElementById(imgToSwitch);
-                                                var themePreview = '${selectedPackage.thumbnail}';
-                                                var themePreviewBegin = themePreview.substr(0,themePreview.lastIndexOf("."));
-                                                var themePreviewEnd = themePreview.substr(themePreview.lastIndexOf("."),themePreview.length);
-                                                if (image != null) {
-                                                    if (dropd.value.length > 0) {
-                                                        image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreviewBegin + '_' + dropd.value + themePreviewEnd;
-                                                    } else {
-                                                        image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreview;
+                                                function swapImage(imgId,imgToSwitch){
+                                                    var image = document.getElementById(imgId);
+                                                    var dropd = document.getElementById(imgToSwitch);
+                                                    var themePreview = '${selectedPackage.thumbnail}';
+                                                    var themePreviewBegin = themePreview.substr(0,themePreview.lastIndexOf("."));
+                                                    var themePreviewEnd = themePreview.substr(themePreview.lastIndexOf("."),themePreview.length);
+                                                    if (image != null) {
+                                                        if (dropd.value.length > 0) {
+                                                            image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreviewBegin + '_' + dropd.value + themePreviewEnd;
+                                                        } else {
+                                                            image.src = '<%=URL%>../${selectedPackage.rootFolderPath}/' + themePreview;
+                                                        }
                                                     }
-                                                }
-                                            };
-                                            swapImage('themePreview','selectTmplSet');
+                                                };
+                                                swapImage('themePreview','selectTmplSet');
                                             </script>
-                                                    <tr>
+                                            <tr>
                                                 <c:if test="${not empty selectedPackage && not empty selectedPackage.thumbnail}">
                                                     <td>&nbsp;</td>
                                                     <td>
@@ -240,7 +240,6 @@
 
                                 </div>
                             </div>
-												</div>
 
             </td>
         </tr>

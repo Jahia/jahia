@@ -281,6 +281,10 @@ public class JahiaPreferencesService extends JahiaService {
             // create generic preference key
             JahiaPreference<GenericJahiaPreference> preference = basicProvider.getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(prefName));
             if (preference == null) {
+                if(prefValue == null){
+                    return;
+                }
+
                 preference = basicProvider.createJahiaPreferenceNode(jParams);
                 preference.getNode().setPrefName(prefName);
             }else{

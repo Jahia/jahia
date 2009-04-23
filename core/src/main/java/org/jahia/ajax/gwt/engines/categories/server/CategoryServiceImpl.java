@@ -448,7 +448,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
 
             JahiaBaseACL baseACL = cat.getACL();
 
-            GWTJahiaNodeACL gwtacl = ACLHelper.getGWTJahiaNodeACL(baseACL, false, retrieveParamBean());
+            GWTJahiaNodeACL gwtacl = ACLHelper.getGWTJahiaNodeACL(baseACL, cat, cat, false, retrieveParamBean());
             return gwtacl;
         } catch (JahiaException e) {
             logger.error("Error retrieveing ACL for " + gwtJahiaCategoryNode

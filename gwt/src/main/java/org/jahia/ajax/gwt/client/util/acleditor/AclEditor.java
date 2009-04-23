@@ -444,7 +444,13 @@ public class AclEditor {
      * @return
      */
     private Text buildInheritanceLabel(GWTJahiaNodeACE ace) {
-        String label = getResource("ae_inherited_from") + " : " + ace.getInheritedFrom();
+        String label;
+        if (ace.getInheritedFrom() != null) {
+            label = getResource("ae_inherited_from") + " : " + ace.getInheritedFrom();
+        } else {
+            label = getResource("ae_inherited");
+        }
+
         Text text = new Text(label);
         text.setToolTip(label);
         text.setStyleName("my-tbl-item-cell-text");

@@ -51,6 +51,8 @@
                             aliasResourceName="ae_restore_inheritance"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.inheritedFrom.label"
                             aliasResourceName="ae_inherited_from"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.inherited.label"
+                            aliasResourceName="ae_inherited"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.restoreAllInheritance.label"
                             aliasResourceName="ae_restore_all_inheritance"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.breakAllInheritance.label"

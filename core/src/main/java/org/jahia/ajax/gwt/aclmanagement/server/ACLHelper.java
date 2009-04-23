@@ -37,6 +37,8 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.acl.JahiaACLEntry;
+import org.jahia.services.acl.ParentACLFinder;
+import org.jahia.services.acl.ACLResourceInterface;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -45,6 +47,7 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.hibernate.model.JahiaAclEntry;
+import org.jahia.hibernate.model.JahiaAcl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -68,6 +71,10 @@ public class ACLHelper {
     }
 
     public static GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, boolean newAcl, ProcessingContext jParams) {
+        return getGWTJahiaNodeACL(baseACL, null,null, newAcl, jParams);
+    }
+
+    public static GWTJahiaNodeACL getGWTJahiaNodeACL(JahiaBaseACL baseACL, ACLResourceInterface resource, ParentACLFinder finder, boolean newAcl, ProcessingContext jParams) {
         GWTJahiaNodeACL gwtacl = new GWTJahiaNodeACL();
         List<GWTJahiaNodeACE> aces = new ArrayList<GWTJahiaNodeACE>();
 
@@ -88,17 +95,29 @@ public class ACLHelper {
         Map<String, JahiaAclEntry> inheritedUsers = new HashMap<String, JahiaAclEntry>();
         Map<String, JahiaAclEntry> localGroups = baseACL.getACL().getGroupEntries();
         Map<String, JahiaAclEntry> localUsers = baseACL.getACL().getUserEntries();
+
+        JahiaAcl parentAcl = null;
+        ACLResourceInterface parentResource = null;
+        if (finder == null) {
+            parentAcl =  baseACL.getACL().getParent();
+        } else {
+            parentResource = finder.getParent(resource);
+            if (parentResource != null) {
+                parentAcl = parentResource.getACL().getACL();
+            }
+        }
+
         if (newAcl) {
             inheritedGroups = new HashMap<String, JahiaAclEntry>(localGroups);
             inheritedUsers = new HashMap<String, JahiaAclEntry>(localUsers);
-            inheritedGroups.putAll(baseACL.getACL().getParent().getRecursedGroupEntries());
-            inheritedUsers.putAll(baseACL.getACL().getParent().getRecursedUserEntries());
+            inheritedGroups.putAll(parentAcl.getRecursedPermissions(finder, parentResource)[1]);
+            inheritedUsers.putAll(parentAcl.getRecursedPermissions(finder, parentResource)[0]);
             localGroups = new HashMap<String, JahiaAclEntry>();
             localUsers = new HashMap<String, JahiaAclEntry>();
         } else {
-            if (baseACL.getACL().getParent() != null) {
-                inheritedGroups = baseACL.getACL().getParent().getRecursedGroupEntries();
-                inheritedUsers = baseACL.getACL().getParent().getRecursedUserEntries();
+            if (parentAcl != null) {
+                inheritedGroups = parentAcl.getRecursedPermissions(finder, parentResource)[1];
+                inheritedUsers = parentAcl.getRecursedPermissions(finder, parentResource)[0];
             }
         }
         Set<String> groupsKeys = new HashSet<String>(inheritedGroups.keySet());

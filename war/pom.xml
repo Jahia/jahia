@@ -306,7 +306,46 @@
                 </plugins>
             </build>
         </profile>
-
+        <profile>
+            <id>generate-sequences</id>
+            <activation>
+                <property>
+                    <name>jahia.generate.ddl</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.groovy.maven</groupId>
+                        <artifactId>gmaven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.hibernate</groupId>
+                                <artifactId>hibernate</artifactId>
+                                <version>3.2.6.ga</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.jahia.server</groupId>
+                                <artifactId>jahia-impl</artifactId>
+                                <version>${jahia.package.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <configuration>
+                                    <source>${pom.basedir}/generateSequences.groovy</source>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <dependencies>

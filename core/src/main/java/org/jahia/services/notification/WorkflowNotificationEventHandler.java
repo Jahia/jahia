@@ -36,30 +36,44 @@ package org.jahia.services.notification;
 import java.security.Principal;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
+import org.jahia.params.ProcessingContext;
+import org.jahia.services.notification.templates.WorkflowMessageBuilder;
+import org.jahia.services.usermanager.JahiaUser;
+
 /**
- * Defines handler behavior for notification type events.
+ * Handles workflow notification events.
  * 
  * @author Sergiy Shyrkov
  */
-public interface NotificationEventHandler {
+public class WorkflowNotificationEventHandler extends
+        EmailNotificationEventHandler {
 
-    /**
-     * Notifies specified subscriber about occurred notification events.
-     * 
-     * @param subscription
-     *            the subscriber information
-     * @param events
-     *            list of event matching the subscription
-     */
-    void handle(Principal subscriber, List<NotificationEvent> events);
+    private static Logger logger = Logger
+            .getLogger(WorkflowNotificationEventHandler.class);
 
-    /**
-     * Notifies specified subscriber about occurred notification events.
-     * 
-     * @param subscription
-     *            the subscriber information
-     * @param events
-     *            list of event matching the subscription
-     */
-    void handle(Subscription subscription, List<NotificationEvent> events);
+    @Override
+    protected void handleEvents(Principal subscriber,
+            List<NotificationEvent> events) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Handling " + events.size() + " notification events: "
+                    + events + " for subscriber: " + subscriber);
+        } else {
+            logger.info("Handling " + events.size()
+                    + " notification event(s) for subscriber "
+                    + subscriber.getName());
+        }
+
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        if (ctx != null) {
+            getMailService().sendTemplateMessage(
+                    new WorkflowMessageBuilder((JahiaUser) subscriber, events,
+                            ctx));
+        } else {
+            logger.warn("Unable to get current ProcessingContext instance."
+                    + " Skip sending workflow notifications.");
+        }
+    }
+
 }

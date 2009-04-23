@@ -35,9 +35,12 @@ package org.jahia.services.notification.templates;
 
 import groovy.lang.Binding;
 
+import java.util.List;
+
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.mail.MailHelper;
+import org.jahia.services.notification.NotificationEvent;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -48,7 +51,8 @@ import org.jahia.settings.SettingsBean;
  * 
  * @author Sergiy Shyrkov
  */
-public class WorkflowMessageBuilder extends MessageBuilder {
+public class WorkflowMessageBuilder extends
+        SubscriberNotificationMessageBuilder {
 
     private ProcessingContext ctx;
 
@@ -56,9 +60,9 @@ public class WorkflowMessageBuilder extends MessageBuilder {
 
     private String jobName;
 
-    public WorkflowMessageBuilder(JahiaUser subscriber, int siteId,
-            ProcessingContext ctx) {
-        super(subscriber, siteId);
+    public WorkflowMessageBuilder(JahiaUser subscriber,
+            List<NotificationEvent> events, ProcessingContext ctx) {
+        super(subscriber, events);
         this.ctx = ctx;
         jobName = (String) ctx.getAttribute(BackgroundJob.class.getName()
                 + "_name");
@@ -76,17 +80,26 @@ public class WorkflowMessageBuilder extends MessageBuilder {
 
     @Override
     protected String getTemplateHtmlPart() {
-        return lookupTemplate("notifications/workflow/body.html");
+        return lookupTemplate("notifications/events/"
+                + getEvents().get(0).getEventType() + "/body.html",
+                "notifications/events/workflow/body.html",
+                "notifications/events/body.html");
     }
 
     @Override
     protected String getTemplateMailScript() {
-        return lookupTemplate("notifications/workflow/email.groovy");
+        return lookupTemplate("notifications/events/"
+                + getEvents().get(0).getEventType() + "/email.groovy",
+                "notifications/events/workflow/email.groovy",
+                "notifications/events/email.groovy");
     }
 
     @Override
     protected String getTemplateTextPart() {
-        return lookupTemplate("notifications/workflow/body.txt");
+        return lookupTemplate("notifications/events/"
+                + getEvents().get(0).getEventType() + "/body.txt",
+                "notifications/events/workflow/body.txt",
+                "notifications/events/body.txt");
     }
 
     @Override
@@ -99,4 +112,5 @@ public class WorkflowMessageBuilder extends MessageBuilder {
                 .getUser()), MailHelper.getFullName(ctx.getUser()), null, ctx
                 .getUser()));
     }
+
 }

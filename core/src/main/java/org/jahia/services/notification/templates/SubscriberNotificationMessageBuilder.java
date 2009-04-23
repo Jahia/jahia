@@ -41,66 +41,51 @@ import java.util.List;
 import java.util.Set;
 
 import org.jahia.services.notification.NotificationEvent;
-import org.jahia.services.notification.Subscription;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
- * Creates MIME notifications messages for sending to users based on Groovy
- * templates.
+ * Creates messages for sending to users based on Groovy templates.
  * 
  * @author Sergiy Shyrkov
  */
-public class NotificationMessageBuilder extends
-        SubscriptionConfirmationMessageBuilder {
+public class SubscriberNotificationMessageBuilder extends MessageBuilder {
 
     private List<NotificationEvent> events;
 
-    /**
-     * Initializes an instance of this class.
-     * 
-     * @param events
-     *            the list of notification event objects
-     * @param subscription
-     *            the subscription object
-     * @param subscriber
-     *            subscriber information
-     * @param subscriberEmail
-     *            subscriber e-mail address
-     */
-    public NotificationMessageBuilder(List<NotificationEvent> events,
-            Subscription subscription, JahiaUser subscriber,
-            String subscriberEmail) {
-        super(subscriber, subscriberEmail, subscription);
+    public SubscriberNotificationMessageBuilder(JahiaUser subscriber,
+            List<NotificationEvent> events) {
+        super(subscriber, events.get(0).getSiteId());
         this.events = events;
+    }
+
+    protected List<NotificationEvent> getEvents() {
+        return events;
     }
 
     @Override
     protected String getTemplateHtmlPart() {
-        String objectType = getObjectType();
-        return lookupTemplate(objectType != null ? "notifications/events/"
-                + subscription.getEventType() + "/" + objectType + "/body.html"
-                : objectType, "notifications/events/"
-                + subscription.getEventType() + "/body.html",
+        return lookupTemplate("notifications/events/"
+                + events.get(0).getEventType() + "/body.html",
                 "notifications/events/body.html");
     }
 
     @Override
     protected String getTemplateMailScript() {
-        String objectType = getObjectType();
-        return lookupTemplate(objectType != null ? "notifications/events/"
-                + subscription.getEventType() + "/" + objectType
-                + "/email.groovy" : null, "notifications/events/"
-                + subscription.getEventType() + "/email.groovy",
+        return lookupTemplate("notifications/events/"
+                + events.get(0).getEventType() + "/email.groovy",
                 "notifications/events/email.groovy");
     }
 
     @Override
     protected String getTemplateTextPart() {
-        String objectType = getObjectType();
-        return lookupTemplate(objectType != null ? "notifications/events/"
-                + subscription.getEventType() + "/" + objectType + "/body.txt"
-                : null, "notifications/events/" + subscription.getEventType()
-                + "/body.txt", "notifications/events/body.txt");
+        return lookupTemplate("notifications/events/"
+                + events.get(0).getEventType() + "/body.txt",
+                "notifications/events/body.txt");
+    }
+
+    @Override
+    protected Link getUnsubscribeLink() {
+        return null;
     }
 
     protected List<Link> getUpdatedPages() {
@@ -122,10 +107,11 @@ public class NotificationMessageBuilder extends
     protected void populateBinding(Binding binding) {
         super.populateBinding(binding);
         binding.setVariable("events", events);
+        binding.setVariable("eventType", events.get(0).getEventType());
         List<Link> pages = getUpdatedPages();
         binding.setVariable("targetPages", pages);
-        if (!pages.isEmpty()) {
-            binding.setVariable("targetPage", pages.get(0));
-        }
+        binding.setVariable("targetPage", !pages.isEmpty() ? pages.get(0)
+                : null);
     }
+
 }

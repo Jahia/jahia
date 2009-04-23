@@ -33,8 +33,11 @@
 
 package org.jahia.services.notification;
 
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -78,20 +81,26 @@ public class NotificationEvent extends JahiaEvent {
 
     private String siteTitle;
 
+    private Set<Principal> subscribers;
+
     private String title;
 
     private String url;
 
     /**
      * Initializes an instance of this class.
-     * @param objectKey the source of the event 
-     * @param eventType the type of the event
+     * 
+     * @param objectKey
+     *            the source of the event
+     * @param eventType
+     *            the type of the event
      */
     public NotificationEvent(String objectKey, String eventType) {
         super(objectKey, null, null);
         this.objectKey = objectKey;
         this.eventType = eventType;
         extraInfo = new HashMap<String, Object>(1);
+        subscribers = new HashSet<Principal>();
     }
 
     public boolean containsExtraInfo(String key) {
@@ -168,6 +177,10 @@ public class NotificationEvent extends JahiaEvent {
 
     public String getSiteTitle() {
         return siteTitle;
+    }
+
+    public Set<Principal> getSubscribers() {
+        return subscribers;
     }
 
     public String getTitle() {

@@ -149,10 +149,10 @@ public class SubscriptionConfirmationMessageBuilder extends MessageBuilder {
     @Override
     protected void populateBinding(Binding binding) {
         super.populateBinding(binding);
+        binding.setVariable("eventType", subscription.getEventType());
         binding.setVariable("subscription", subscription);
         binding.setVariable("confirmationLink", getConfirmationLink());
         binding.setVariable("cancellationLink", getCancellationLink());
-        binding.setVariable("unsubscribeLink", getUnsubscribeLink());
         binding.setVariable("watchedContentLink", getWatchedContentLink());
     }
 }

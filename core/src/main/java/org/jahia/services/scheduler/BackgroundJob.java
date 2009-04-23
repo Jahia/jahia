@@ -162,8 +162,6 @@ public abstract class BackgroundJob implements StatefulJob {
             context.setAttribute(BackgroundJob.class.getName() + "_name", jobDetail.getName());
             context.setAttribute(BackgroundJob.class.getName() + "_group", jobDetail.getGroup());
             executeJahiaJob(jobExecutionContext, context);
-            context.removeAttribute(BackgroundJob.class.getName() + "_name");
-            context.removeAttribute(BackgroundJob.class.getName() + "_group");
             status = data.getString(BackgroundJob.JOB_STATUS);
             if ( !(BackgroundJob.STATUS_ABORTED.equals(status) ||
                     BackgroundJob.STATUS_FAILED.equals(status) ||
@@ -176,6 +174,8 @@ public abstract class BackgroundJob implements StatefulJob {
             throw new JobExecutionException(e);
         } finally {
             ServicesRegistry.getInstance().getJahiaEventService().fireAggregatedEvents();
+            context.removeAttribute(BackgroundJob.class.getName() + "_name");
+            context.removeAttribute(BackgroundJob.class.getName() + "_group");
 
             try {
                 releaseAllLocks(context, jobDetail);

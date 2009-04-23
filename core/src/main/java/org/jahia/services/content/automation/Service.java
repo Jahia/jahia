@@ -54,6 +54,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.ExternalWorkflow;
@@ -83,6 +84,7 @@ public class Service {
     private static Service instance;
 
     private Service() {
+        super();
     }
 
     public static synchronized Service getInstance() {
@@ -331,17 +333,76 @@ public class Service {
     
     public void notify(NodeWrapper node, String eventType,
             KnowledgeHelper drools) {
-        User user = (User) drools.getWorkingMemory().getGlobal("user");
+        notify(node, eventType, (User) drools.getWorkingMemory().getGlobal(
+                "user"), null);
+    }
+
+    public void notify(NodeWrapper node, String eventType, Principal subscriber,
+            KnowledgeHelper drools) {
+        if (subscriber != null) {
+            Set<Principal> subscribers = new HashSet(1);
+            subscribers.add(subscriber);
+            notify(node, eventType, subscribers, drools);
+        }
+    }
+
+    public void notifyUser(NodeWrapper node, String eventType, String user,
+            KnowledgeHelper drools) {
+        JahiaUser jahiaUser = lookupUser(user);
+        if (jahiaUser != null) {
+            Set<Principal> subscribers = new HashSet(1);
+            subscribers.add(jahiaUser);
+            notify(node, eventType, subscribers, drools);
+        } else {
+            logger.warn("Unable to lookup user '" + user
+                    + "'. Ignore notification event.");
+        }
+    }
+
+    public void notifyGroup(NodeWrapper node, String eventType, String group,
+            KnowledgeHelper drools) {
+        Node jcrNode = node.getNode();
+        int siteId = jcrNode instanceof JahiaContentNodeImpl ? ((JahiaContentNodeImpl) jcrNode)
+                .getContentObject().getSiteID()
+                : ServicesRegistry.getInstance().getJahiaSitesService()
+                        .getDefaultSite().getID();
+        JahiaGroup jahiaGroup = lookupGroup(
+                group,
+                siteId);
+        if (jahiaGroup != null) {
+            Set<Principal> subscribers = new HashSet(1);
+            subscribers.add(jahiaGroup);
+            notify(node, eventType, subscribers, drools);
+        } else {
+            logger.warn("Unable to lookup group '" + group
+                    + "' for the site with ID '" + siteId
+                    + "'. Ignore notification event.");
+        }
+    }
+
+    public void notify(NodeWrapper node, String eventType,
+            Set<Principal> subscribers, KnowledgeHelper drools) {
+        if (subscribers != null && !subscribers.isEmpty()) {
+            notify(node, eventType, (User) drools.getWorkingMemory().getGlobal(
+                    "user"), subscribers);
+        }
+    }
+
+    private void notify(NodeWrapper node, String eventType,
+            User eventInitiator, Set<Principal> subscribers) {
         Node jcrNode = node.getNode();
         try {
             NotificationEvent event = new NotificationEvent(JCRContentUtils
                     .getContentNodeName(jcrNode), eventType);
-            event.setAuthor(user.getName());
+            event.setAuthor(eventInitiator.getName());
             event.setObjectPath(JCRContentUtils.getContentObjectPath(jcrNode));
             if (jcrNode instanceof JahiaContentNodeImpl) {
                 JahiaContentNodeImpl contentNode = (JahiaContentNodeImpl) jcrNode;
                 event.setSiteId(contentNode.getContentObject().getSiteID());
                 event.setPageId(contentNode.getContentObject().getPageID());
+            }
+            if (subscribers != null && !subscribers.isEmpty()) {
+                event.getSubscribers().addAll(subscribers);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug(event);
@@ -352,15 +413,7 @@ public class Service {
             logger.warn(e.getMessage(), e);
         }
     }
-
-    public void notify(NodeWrapper node, String eventType, Principal user,
-            KnowledgeHelper drools) {
-    }
-
-    public void notify(NodeWrapper node, String eventType, Set<Principal> users,
-            KnowledgeHelper drools) {
-    }
-
+    
     public Set<Principal> getWorkflowNextStepPrincipals(NodeWrapper node, String languageCode) {
         WorkflowService workflowService = WorkflowService.getInstance();
         try {
@@ -476,4 +529,11 @@ public class Service {
     }
 
 
+    private static JahiaUser lookupUser(String username) {
+        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);        
+    }
+
+    private static JahiaGroup lookupGroup(String group, int siteId) {
+        return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, group);        
+    }
 }

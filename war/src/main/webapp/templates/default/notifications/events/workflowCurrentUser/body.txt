@@ -1,5 +1,4 @@
-<% /*
-
+====
     
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
     Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
@@ -30,22 +29,16 @@
     in accordance with the terms contained in a separate written agreement
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
+====
 
-*/ %><html>
-<head>
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<title>${i18n.get("notifications.events.default.subject", "Notification alert")}</title>
-</head>
-<body>
-<h2>${i18n.get("notifications.events.default.subject", "Notification alert")}</h2>
-<p>${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},</p>
-<% msg = 'an event {0} occurred on the following page:' %>
-<p>${i18n.getFormatted("notifications.events.default.eventOccurred", msg, eventType)} <a href="${targetPage.absoluteUrl}">${targetPage.title}</a></p>
+${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
 
-<p>${i18n.get("notifications.common.farewell", "Sincerely Yours")}<br>${i18n.get("notifications.common.farewell.signature", "Portal Team")}</p>
+<% if (jobUser.getUser().equals(subscriber.getUser())) { %>${i18n.get("notifications.workflow.job.triggeredBy.sameUser", "the workflow job, triggered by you")}<% } else { %>${i18n.get("notifications.workflow.job.triggeredBy.otherUser", "the workflow job, triggered by")} ${jobUser.fullName}<% } %>${i18n.get("notifications.workflow.job.executionFinished", ", has finished its execution.")}
+${i18n.get("notifications.workflow.details.link", "Please check the details by clicking on the link:")} ${jobReportLink.absoluteUrl}
 
-<hr>
-<p><% if (unsubscribeLink != null) { %>${i18n.get("notifications.events.common.unsubscribe", "To unsubscribe from notifications for this content, please use the")} <a href="${unsubscribeLink.absoluteUrl}">${i18n.get("notifications.common.unsubscribeLink", "unsubscribe service")}</a><br><% } %>
-${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")} <a href="${subscriptionManagementLink.absoluteUrl}">${i18n.get("notifications.common.updateProfileLink", "here")}</a></p>
-</body>
-</html>
+${i18n.get("notifications.common.farewell", "Sincerely Yours")}
+${i18n.get("notifications.common.farewell.signature", "Portal Team")}
+
+---
+${i18n.get("notifications.common.updateProfile", "To update your profile or to stop receiving customized e-mail, please click")}
+${subscriptionManagementLink.absoluteUrl}

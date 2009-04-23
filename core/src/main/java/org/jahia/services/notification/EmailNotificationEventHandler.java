@@ -33,13 +33,15 @@
 
 package org.jahia.services.notification;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.mail.MailHelper;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.Subscription.Channel;
-import org.jahia.services.notification.templates.NotificationMessageBuilder;
+import org.jahia.services.notification.templates.SubscriberNotificationMessageBuilder;
+import org.jahia.services.notification.templates.SubscriptionNotificationMessageBuilder;
 import org.jahia.services.notification.templates.TemplateUtils;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -72,14 +74,81 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
         // add conditions: 1) e-mail service active 2) channel is e-mail 3) all
         // conditions specified as the constructor parameter
         insertCondition(new Condition() {
+            private boolean isMailServiceEnabled() {
+                boolean enabled = mailService.isEnabled();
+                if (!enabled) {
+                    logger
+                            .info("Mail service is not enabled. Skip sending notification");
+                }
+                return enabled;
+            }
+
+            public boolean matches(Principal subscriber,
+                    List<NotificationEvent> events) {
+                return isMailServiceEnabled();
+            }
+
             public boolean matches(Subscription subscription,
                     List<NotificationEvent> events) {
-                return mailService.isEnabled();
+                return isMailServiceEnabled();
             }
+
         }, new Condition() {
+            public boolean matches(Principal subscriber,
+                    List<NotificationEvent> events) {
+                return true;
+            }
+
             public boolean matches(Subscription subscription,
                     List<NotificationEvent> events) {
                 return subscription.getChannel() == Channel.EMAIL;
+            }
+        }, new Condition() {
+            private boolean checkUser(JahiaUser user) {
+                boolean matches = false;
+                String emailAddress = MailHelper.getEmailAddress(user);
+                if (emailAddress != null) {
+                    if (!MailHelper.areEmailNotificationsDisabled(user)) {
+                        matches = true;
+                    } else if (logger.isDebugEnabled()) {
+                        logger.debug("The user '" + user.getUsername()
+                                + "' has disabled e-mail notifications."
+                                + " Skip sending notification.");
+                    }
+                } else if (logger.isDebugEnabled()) {
+                    logger.debug("The user '" + user.getUsername()
+                            + "' has not provided an e-mail address."
+                            + " Skip sending notification.");
+                }
+
+                return matches;
+            }
+
+            public boolean matches(Principal subscriber,
+                    List<NotificationEvent> events) {
+                boolean matches = false;
+                if (subscriber instanceof JahiaUser) {
+                    matches = checkUser((JahiaUser) subscriber);
+                } else {
+                    logger
+                            .warn("Subscriber is not an instace of the JahiaUser. Do not know, how to deal with the type: "
+                                    + subscriber
+                                    + ". Skip sending notification.");
+                }
+                return matches;
+            }
+
+            public boolean matches(Subscription subscription,
+                    List<NotificationEvent> events) {
+                boolean matches = false;
+                JahiaUser user = TemplateUtils.getSubscriber(subscription);
+                if (user != null) {
+                    matches = checkUser(user);
+                } else {
+                    logger.warn("Cannot find user for the subscription: "
+                            + subscription + ". Skip sending notification.");
+                }
+                return matches;
             }
         });
     }
@@ -89,32 +158,40 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
     }
 
     @Override
+    protected void handleEvents(Principal subscriber,
+            List<NotificationEvent> events) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Handling " + events.size() + " notification events: "
+                    + events + " for subscriber: " + subscriber);
+        } else {
+            logger.info("Handling " + events.size()
+                    + " notification event(s) for subscriber "
+                    + subscriber.getName());
+        }
+
+        getMailService().sendTemplateMessage(
+                new SubscriberNotificationMessageBuilder(
+                        (JahiaUser) subscriber, events));
+    }
+
+    @Override
     protected void handleEvents(Subscription subscription,
             List<NotificationEvent> events) {
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Handling notification events: " + events
-                    + " for subscriber: " + subscription);
+            logger.debug("Handling  " + events.size()
+                    + " notification event(s): " + events
+                    + " for subscription: " + subscription);
+        } else {
+            logger.info("Handling " + events.size()
+                    + " notification event(s) for subscription "
+                    + subscription.getUsername());
         }
 
         JahiaUser user = TemplateUtils.getSubscriber(subscription);
-        if (user != null) {
-            final String emailAddress = MailHelper.getEmailAddress(user);
-            if (emailAddress != null
-                    && !MailHelper.areEmailNotificationsDisabled(user)) {
-                getMailService().sendTemplateMessage(
-                        new NotificationMessageBuilder(events, subscription,
-                                user, emailAddress));
-            } else {
-                logger.info("The user '" + user.getUsername()
-                        + "' has either disabled e-mail notifications "
-                        + "or has not provided an e-mail address."
-                        + " Skip sending notification.");
-            }
-        } else {
-            logger.warn("Cannot find user for the subscription: "
-                    + subscription + ". Skip sending notification.");
-        }
+        getMailService().sendTemplateMessage(
+                new SubscriptionNotificationMessageBuilder(events,
+                        subscription, user, MailHelper.getEmailAddress(user)));
     }
 
     public void setMailService(MailService mailService) {

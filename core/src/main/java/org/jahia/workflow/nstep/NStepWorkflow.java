@@ -797,9 +797,9 @@ public class NStepWorkflow implements ExternalWorkflow {
                     .entrySet()) {
                 RecipientInfo recipient = entry.getKey();
                 if (entry.getValue() instanceof List) {
-                    mailService.sendTemplateMessage(new WorkflowMessageBuilder(
-                            recipient.getRecipient(), recipient.getSiteId(),
-                            processingContext));
+//                    mailService.sendTemplateMessage(new WorkflowMessageBuilder(
+//                            recipient.getRecipient(), recipient.getSiteId(),
+//                            processingContext));
                 }
             }
         }

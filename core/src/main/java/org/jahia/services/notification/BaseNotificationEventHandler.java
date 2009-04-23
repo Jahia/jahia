@@ -33,7 +33,10 @@
 
 package org.jahia.services.notification;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -47,6 +50,19 @@ public abstract class BaseNotificationEventHandler implements
         NotificationEventHandler {
 
     public interface Condition {
+        /**
+         * Returns <code>true</code> if the condition is satisfied and
+         * processing can be continued.
+         * 
+         * @param subscriber
+         *            the subscriber information
+         * @param events
+         *            list of event matching the subscription
+         * @return <code>true</code> if the condition is satisfied and
+         *         processing can be continued
+         */
+        boolean matches(Principal subscriber, List<NotificationEvent> events);
+
         /**
          * Returns <code>true</code> if the condition is satisfied and
          * processing can be continued.
@@ -76,11 +92,20 @@ public abstract class BaseNotificationEventHandler implements
     }
 
     public void addCondition(Condition... conditions) {
-        this.conditions = (Condition[]) ArrayUtils.addAll(this.conditions, conditions);
+        this.conditions = (Condition[]) ArrayUtils.addAll(this.conditions,
+                conditions);
     }
 
-    public void insertCondition(Condition... conditions) {
-        this.conditions = (Condition[]) ArrayUtils.addAll(conditions, this.conditions);
+    private boolean areConditionsMatched(Principal subscriber,
+            List<NotificationEvent> events) {
+        boolean matches = true;
+        for (Condition condition : conditions) {
+            if (!condition.matches(subscriber, events)) {
+                matches = false;
+                break;
+            }
+        }
+        return matches;
     }
 
     private boolean areConditionsMatched(Subscription subscription,
@@ -95,6 +120,14 @@ public abstract class BaseNotificationEventHandler implements
         return matches;
     }
 
+    public final void handle(Principal subscriber,
+            List<NotificationEvent> events) {
+        if (!areConditionsMatched(subscriber, events)) {
+            return;
+        }
+        handleEvents(subscriber, events);
+    }
+
     public final void handle(Subscription subscription,
             List<NotificationEvent> events) {
         if (!areConditionsMatched(subscription, events)) {
@@ -103,7 +136,91 @@ public abstract class BaseNotificationEventHandler implements
         handleEvents(subscription, events);
     }
 
+    protected abstract void handleEvents(Principal subscriber,
+            List<NotificationEvent> events);
+
     protected abstract void handleEvents(Subscription subscription,
             List<NotificationEvent> events);
+
+    public void insertCondition(Condition... conditions) {
+        this.conditions = (Condition[]) ArrayUtils.addAll(conditions,
+                this.conditions);
+    }
+
+    public void setIgnoreEventTypes(final Set<String> ignoreEventTypes) {
+        if (ignoreEventTypes != null && !ignoreEventTypes.isEmpty()) {
+            addCondition(new Condition() {
+                public boolean matches(Principal subscriber,
+                        List<NotificationEvent> events) {
+                    return !ignoreEventTypes.contains(events.get(0)
+                            .getEventType());
+                }
+
+                public boolean matches(Subscription subscription,
+                        List<NotificationEvent> events) {
+                    return !ignoreEventTypes.contains(events.get(0)
+                            .getEventType());
+                }
+            });
+        }
+    }
+
+    public void setIgnoreEventTypesPattern(String ignoreEventTypesPattern) {
+        if (ignoreEventTypesPattern != null
+                && ignoreEventTypesPattern.length() != 0) {
+            final Pattern pattern = Pattern.compile(ignoreEventTypesPattern);
+            addCondition(new Condition() {
+                public boolean matches(Principal subscriber,
+                        List<NotificationEvent> events) {
+                    return !pattern.matcher(events.get(0).getEventType())
+                            .matches();
+                }
+
+                public boolean matches(Subscription subscription,
+                        List<NotificationEvent> events) {
+                    return !pattern.matcher(events.get(0).getEventType())
+                            .matches();
+                }
+            });
+        }
+    }
+
+    public void setProcessEventTypes(final List<String> processEventTypes) {
+        if (processEventTypes != null && !processEventTypes.isEmpty()) {
+            addCondition(new Condition() {
+                public boolean matches(Principal subscriber,
+                        List<NotificationEvent> events) {
+                    return processEventTypes.contains(events.get(0)
+                            .getEventType());
+                }
+
+                public boolean matches(Subscription subscription,
+                        List<NotificationEvent> events) {
+                    return processEventTypes.contains(events.get(0)
+                            .getEventType());
+                }
+            });
+        }
+    }
+
+    public void setProcessEventTypesPattern(String processEventTypesPattern) {
+        if (processEventTypesPattern != null
+                && processEventTypesPattern.length() != 0) {
+            final Pattern pattern = Pattern.compile(processEventTypesPattern);
+            addCondition(new Condition() {
+                public boolean matches(Principal subscriber,
+                        List<NotificationEvent> events) {
+                    return pattern.matcher(events.get(0).getEventType())
+                            .matches();
+                }
+
+                public boolean matches(Subscription subscription,
+                        List<NotificationEvent> events) {
+                    return pattern.matcher(events.get(0).getEventType())
+                            .matches();
+                }
+            });
+        }
+    }
 
 }

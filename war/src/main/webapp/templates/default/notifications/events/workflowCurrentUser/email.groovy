@@ -20,9 +20,9 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
+ * http://www.jahia.com/license
  * 
  * Commercial and Supported Versions of the program
  * Alternatively, commercial and supported versions of the program may be used
@@ -31,35 +31,7 @@
  * for your use, please contact the sales department at sales@jahia.com.
  */
 
-package org.jahia.services.notification;
+//text = ""
+//html = ""
+subject = i18n.get("notifications.workflow.subject", "[Jahia] Workflow operation report")
 
-import java.security.Principal;
-import java.util.List;
-
-/**
- * Defines handler behavior for notification type events.
- * 
- * @author Sergiy Shyrkov
- */
-public interface NotificationEventHandler {
-
-    /**
-     * Notifies specified subscriber about occurred notification events.
-     * 
-     * @param subscription
-     *            the subscriber information
-     * @param events
-     *            list of event matching the subscription
-     */
-    void handle(Principal subscriber, List<NotificationEvent> events);
-
-    /**
-     * Notifies specified subscriber about occurred notification events.
-     * 
-     * @param subscription
-     *            the subscriber information
-     * @param events
-     *            list of event matching the subscription
-     */
-    void handle(Subscription subscription, List<NotificationEvent> events);
-}

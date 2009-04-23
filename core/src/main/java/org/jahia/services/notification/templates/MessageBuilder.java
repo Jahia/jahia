@@ -254,6 +254,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return text;
     }
 
+    protected abstract Link getUnsubscribeLink();
+
     protected Link getWatchedContentLink(String objectKey) {
         Link lnk = null;
         ContentObject watchedObject = null;
@@ -313,6 +315,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         binding.setVariable("i18n", new JahiaResourceBundle(getPreferredLocale(), templatePackageName));
         binding.setVariable("subscriptionManagementLink",
                 getSubscriptionManagementLink());
+        binding.setVariable("unsubscribeLink", getUnsubscribeLink());
     }
 
     public void prepare(MimeMessage mimeMessage) throws MessagingException,
@@ -394,5 +397,4 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
                 .substringAfter(mailTemplate, templatesPath) : mailTemplate,
                 binding);
     }
-
 }

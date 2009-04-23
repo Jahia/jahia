@@ -33,11 +33,15 @@
 
 package org.jahia.services.notification;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.OrderedMap;
@@ -50,6 +54,7 @@ import org.jahia.data.events.JahiaEventListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.usermanager.JahiaGroup;
 
 /**
  * Jahia service implementation for firing notification events and calling
@@ -118,6 +123,33 @@ public class NotificationService extends JahiaService {
         return subscriptionService.getActiveSubscriptions(event);
     }
 
+    private Map<Principal, Map<String, List<NotificationEvent>>> groupByPrincipalAndEventType(
+            Collection<NotificationEvent> events) {
+        Map<Principal, Map<String, List<NotificationEvent>>> groupedEvents = LazyMap
+                .decorate(
+                        new HashMap<Principal, Map<String, List<NotificationEvent>>>(),
+                        new Factory() {
+                            public Object create() {
+                                return LazyMap
+                                        .decorate(
+                                                new HashMap<String, List<NotificationEvent>>(),
+                                                new Factory() {
+                                                    public Object create() {
+                                                        return new LinkedList<NotificationEvent>();
+                                                    }
+                                                });
+                            }
+                        });
+
+        for (NotificationEvent evt : events) {
+            for (Principal principal : evt.getSubscribers()) {
+                groupedEvents.get(principal).get(evt.getEventType()).add(evt);
+            }
+        }
+
+        return groupedEvents;
+    }
+
     /**
      * Propagates specified notification events to the handlers.
      * 
@@ -129,14 +161,40 @@ public class NotificationService extends JahiaService {
             return;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Found " + events.size()
-                    + " notification event(s) to be handled: " + events);
-        } else {
-            logger.info("Found " + events.size()
-                    + " notification event(s) to be handled.");
+        // let's split events which have predefined subscribers and not
+        List<NotificationEvent> eventsWithPredefinedSubscribers = new LinkedList<NotificationEvent>(
+                events);
+        List<NotificationEvent> eventsForSubscriptions = new LinkedList<NotificationEvent>();
+        for (Iterator<NotificationEvent> iterator = eventsWithPredefinedSubscribers
+                .iterator(); iterator.hasNext();) {
+            NotificationEvent evt = iterator.next();
+            if (evt.getSubscribers().isEmpty()) {
+                iterator.remove();
+                eventsForSubscriptions.add(evt);
+            }
         }
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("Found " + events.size() + " notification event(s). "
+                    + eventsWithPredefinedSubscribers.size()
+                    + " notification event(s) with predefined subscribers: "
+                    + eventsWithPredefinedSubscribers + " and "
+                    + eventsForSubscriptions.size()
+                    + " notification event(s) for subscriptions: "
+                    + eventsForSubscriptions);
+        } else {
+            logger.info("Found " + events.size() + " notification event(s). "
+                    + eventsWithPredefinedSubscribers.size()
+                    + " notification event(s) with predefined subscribers and "
+                    + eventsForSubscriptions.size()
+                    + " notification event(s) for subscriptions.");
+        }
+
+        handleEventsWithPredefinedSubscribers(eventsWithPredefinedSubscribers);
+        handleEventsForSubscriptions(eventsForSubscriptions);
+    }
+
+    private void handleEventsForSubscriptions(List<NotificationEvent> events) {
         Map<Subscription, Map<String, List<NotificationEvent>>> subscriptionEvents = LazyMap
                 .decorate(
                         new HashMap<Subscription, Map<String, List<NotificationEvent>>>(),
@@ -153,6 +211,7 @@ public class NotificationService extends JahiaService {
                             }
                         });
 
+        // group by subscription and event type
         for (NotificationEvent event : events) {
             // get list of subscribers
             for (Subscription evtSubscription : getSubscriptions(event)) {
@@ -177,6 +236,43 @@ public class NotificationService extends JahiaService {
         }
     }
 
+    private void handleEventsWithPredefinedSubscribers(
+            List<NotificationEvent> events) {
+
+        // 1) aggregate subscribers by event type and object key
+        Map<String, NotificationEvent> aggregatedEvents = new HashMap<String, NotificationEvent>();
+        for (NotificationEvent notificationEvent : events) {
+            String key = notificationEvent.getEventType()
+                    + notificationEvent.getObjectKey();
+            if (!aggregatedEvents.containsKey(key)) {
+                aggregatedEvents.put(key, notificationEvent);
+            } else {
+                aggregatedEvents.get(key).getSubscribers().addAll(
+                        notificationEvent.getSubscribers());
+            }
+        }
+        // 2) resolve principals
+        resolvePrincipals(aggregatedEvents.values());
+        // 3) group by principal and event type
+        Map<Principal, Map<String, List<NotificationEvent>>> eventsByPrincipalAndEventType = groupByPrincipalAndEventType(aggregatedEvents
+                .values());
+
+        // notify handlers
+        for (Map.Entry<Principal, Map<String, List<NotificationEvent>>> eventsByPrincipal : eventsByPrincipalAndEventType
+                .entrySet()) {
+            for (Map.Entry<String, List<NotificationEvent>> eventsByEventType : eventsByPrincipal
+                    .getValue().entrySet()) {
+                if (!eventsByEventType.getValue().isEmpty()) {
+                    for (NotificationEventHandler handler : (Collection<NotificationEventHandler>) handlers
+                            .values()) {
+                        handler.handle(eventsByPrincipal.getKey(),
+                                eventsByEventType.getValue());
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Returns <code>true</code> if the notification service is started.
      * Otherwise returns <code>false</code> (this is normally the case or a
@@ -189,6 +285,23 @@ public class NotificationService extends JahiaService {
      */
     public boolean isStarted() {
         return started;
+    }
+
+    private void resolvePrincipals(Collection<NotificationEvent> events) {
+        for (NotificationEvent evt : events) {
+            Set<Principal> subscribers = evt.getSubscribers();
+            Set<Principal> resolvedSubscribers = new HashSet<Principal>();
+            for (Principal principal : subscribers) {
+                if (principal instanceof JahiaGroup) {
+                    resolvedSubscribers.addAll(((JahiaGroup) principal)
+                            .getRecursiveUserMembers());
+                } else {
+                    resolvedSubscribers.add(principal);
+                }
+            }
+            evt.getSubscribers().clear();
+            evt.getSubscribers().addAll(resolvedSubscribers);
+        }
     }
 
     public void setHandlers(List<NotificationEventHandler> eventHandlers) {

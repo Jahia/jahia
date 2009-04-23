@@ -265,4 +265,6 @@ stretcherToOpen   = 0; %>
             </span>
           </span>
         </div>
-      </div><%@include file="/admin/include/footer.inc" %>
+
+      </div>
+<%@include file="/admin/include/footer.inc" %>

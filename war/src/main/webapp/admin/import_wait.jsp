@@ -80,16 +80,16 @@
             watcher.currentlyExecuting=true;
             loadFirstPage();
         } else {
-    
+
             waitCounter += 1;
             var divElement = document.getElementById('msg');
             divElement.innerHTML = "<internal:message key='org.jahia.waitingForImport.button'/>" + " (" + waitCounter + ")...";
         }
     }
-      function openReadmeFile() {
-           var params = "width=1100,height=500,left=0,top=0,resizable=yes,scrollbars=yes,status=no";
-           window.open('<%=readmefilePath%>', 'Readme', params);
-      }
+    function openReadmeFile() {
+        var params = "width=1100,height=500,left=0,top=0,resizable=yes,scrollbars=yes,status=no";
+        window.open('<%=readmefilePath%>', 'Readme', params);
+    }
     // failure case
     function stopping(request) {
         document.write=request.responseText;
@@ -97,22 +97,22 @@
         loadFirstPage();
     }
     function loadFirstPage() {
-	
-	
-
-    var divElement = document.getElementById('msg');
-            divElement.innerHTML = "<internal:message key='org.jahia.waitingForImport.button'/>" + " (" + waitCounter + ")...";
 
 
-<%
-StringBuffer hostUrl = new StringBuffer(request.getScheme()).append("://").append(request.getServerName());
-int port = request.getServerPort();
-if (port != 80) {
-    hostUrl.append(":").append(Integer.toString(port));
-}
-%>
-    location.href = "<%=hostUrl%>";
-}
+
+        var divElement = document.getElementById('msg');
+        divElement.innerHTML = "<internal:message key='org.jahia.waitingForImport.button'/>" + " (" + waitCounter + ")...";
+
+
+    <%
+    StringBuffer hostUrl = new StringBuffer(request.getScheme()).append("://").append(request.getServerName());
+    int port = request.getServerPort();
+    if (port != 80) {
+        hostUrl.append(":").append(Integer.toString(port));
+    }
+    %>
+        location.href = "<%=hostUrl%>";
+    }
     monitor();
     watch();
     loadFirstPage();
@@ -125,14 +125,14 @@ if (port != 80) {
 
 <%if(!isConfigWizard){%>
 <div id="topTitle">
-<h1>Jahia</h1>
-<h2 class="edit">
-<%if(!isConfigWizard){%>
-      <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
-      <%}else{%>
-      <internal:message key="org.jahia.createSite.siteFactory"/>
-      <%}%>
-</h2>
+    <h1>Jahia</h1>
+    <h2 class="edit">
+        <%if(!isConfigWizard){%>
+        <fmt:message key="org.jahia.admin.site.ManageSites.manageVirtualSites.label"/>
+        <%}else{%>
+        <internal:message key="org.jahia.createSite.siteFactory"/>
+        <%}%>
+    </h2>
 </div>
 <% } %>
 
@@ -140,38 +140,45 @@ if (port != 80) {
 
 <div id="main">
     <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
-       <tbody>
-            <tr>
-                <td style="vertical-align: top;" align="left" height="100%">
-                    <div class="dex-TabPanelBottom-full">
-                        <div id="content" class="full">
-                            <div class="head">
-                                <div class="object-title">
-                                    <internal:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.congratulationsItWork.label"/>
-                                </div>
+        <tbody>
+        <tr>
+            <td style="vertical-align: top;" align="left" height="100%">
+                <div class="dex-TabPanelBottom-full">
+                    <div id="content" class="full">
+                        <div class="head">
+                            <div class="object-title">
+                                <internal:message key="org.jahia.bin.JahiaConfigurationWizard.congratulations.congratulationsItWork.label"/>
                             </div>
-    <p>
-        <internal:message
-                key="org.jahia.bin.JahiaConfigurationWizard.congratulations.readme.label"/>&nbsp;<a href="javascript:openReadmeFile();">Readme</a>.
-    </p>
+                        </div>
+                        <p>
+                            <internal:message
+                                    key="org.jahia.bin.JahiaConfigurationWizard.congratulations.readme.label"/>&nbsp;<a href="javascript:openReadmeFile();">Readme</a>.
+                        </p>
 
 
-    <% if (allowedDays != null) { %>
-    <h5><internal:message name="allowedDaysMsg"/></h5>
-    <% } %>
-
-<div id="actionBar">
+                        <% if (allowedDays != null) { %>
+                        <h5><internal:message name="allowedDaysMsg"/></h5>
+                        <% } %>
+                        <div id="actionBar">
   <span class="dex-PushButton" id="connectButtonDiv">
     <span class="first-child" id='msg'>
       <a class="ico-next" href='javascript:loadFirstPage();'><internal:message key='org.jahia.connect.button'/></a>
     </span>
   </span>
+                        </div>
+                    </div>
+
+
+                    <%if (isConfigWizard) {%>
+                    <script type="text/javascript">
+                        openReadmeFile();
+                    </script>
+
+                    <%}%>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
-
-<%if (isConfigWizard) {%>
-<script type="text/javascript">
-    openReadmeFile();
-</script>
-<%}%>
-
 <%@include file="/admin/include/footer.inc"%>

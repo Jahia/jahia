@@ -109,7 +109,7 @@
                        size="<%=input%>" maxlength="250" onfocus="this.select();"/>
             </td>
         </tr>
-        <tr>
+        <!--tr>
             <td headers="t5" class="t5">
                 <fmt:message
                         key="org.jahia.bin.JahiaConfigurationWizard.advsettings.useExistingDb.label"/>
@@ -123,7 +123,7 @@
                 />&nbsp;<label for="useExistingDb"><fmt:message key="org.jahia.configurationWizard.checkForTrue.label" /></label>
             </td>
             
-        </tr>
+        </tr-->
         
 
     </table>

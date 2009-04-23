@@ -61,7 +61,7 @@ serverHomeDiskPath                                     =
 ######################################################################
 # The following disk paths configure where Jahia will store data on disk,
 # such as temporary files or content files, or even in some cases where
-# it will retrieve additionnal configuration from.
+# it will retrieve additional configuration from.
 
 jahiaJspDiskPath                                       =   /
 jahiaEnginesDiskPath                                   =   /engines/
@@ -170,8 +170,8 @@ defaultURIEncoding                                     =   UTF-8
 # WEB-INF/etc/spring/applicationcontext-hibernate.xml configuration
 # file.
 #
-# The entry allow you to specify the amount of free memory you wnat to keep in your jvm
-# If we reach this limit jahia will remove entries of his cahce until if get under this limit
+# The entry allow you to specify the amount of free memory you want to keep in your jvm
+# If we reach this limit jahia will remove entries of his cache until if get under this limit
 # this limit must be express in MB size
 freeMemoryLimit = 64MB
 
@@ -188,7 +188,7 @@ cacheClusterUnderlyingImplementation = jahiaReferenceCache
 # groups are limited in numbers of 20000, with an LRU (least recently used)
 # algorithm for removing a group. When a group is removed, so are all the
 # cache entries. If you see a lot of messages warning that groups were being
-# flushed and that you Jahia installation has sufficient runtime memory,
+# flushed and that your Jahia installation has sufficient runtime memory,
 # you should set this value higher. In installations with little memory
 # available, you should keep this value as low as possible.
 cacheMaxGroups = 20000
@@ -203,7 +203,7 @@ maxAggregatedEvents                                    =   5000
 ######################################################################
 ### HTML Container Output cache  #####################################
 ######################################################################
-# The HTML container cache is an embedded fragment cache, that caches
+# The HTML container cache is an embedded fragment cache, those caches
 # automatically (or specifically using the <container-cache> tag)
 # the output of <container> tags. This cache is very efficient for
 # highly dynamic sites with lots of content, users and personalization
@@ -308,7 +308,7 @@ webapps.dispatcher.inheritJahiaSessionAttributes       =   false
 ######################################################################
 ### WebApps Preparing war  ##############################################
 ######################################################################
-# In 'manager portlet' view, when you click on 'prepar war', it's saved in the filemanger
+# In 'manager portlet' view, when you click on 'prepare war', it's saved in the filemanager
 # The following value specifies where it's saved.
 prepare.portlet.jcr.path       =   /content/shared/files
 
@@ -402,17 +402,17 @@ jetspeedConfig                                         =   WEB-INF/etc/jetspeed/
 jetspeedDeploymentDirectory                            =   $context/WEB-INF/etc/jetspeed/deploy
 
 ######################################################################
-### Authentification pipeline ########################################
+### Authentication pipeline ########################################
 ######################################################################
 #
-# Jahia now uses a pipeline mechanism to process user authentification, which
-# allows developers to extend the system for custom authentification back-ends.
+# Jahia now uses a pipeline mechanism to process user authentication, which
+# allows developers to extend the system for custom authentication back-ends.
 #
 # You might want to modify the pipeline if you want to extend Jahia's
-# authentification system, for example by adding a JAASAuthValve or something
+# authentication system, for example by adding a JAASAuthValve or something
 # else.
 #
-# Name of the file containing the valve configuration for the authentification
+# Name of the file containing the valve configuration for the authentication
 # pipeline
 authPipelineFileName                                   =   /WEB-INF/etc/config/auth-pipeline.xml
 # Class name for the pipeline implementation to use when creating the
@@ -461,14 +461,14 @@ pageGenerationWaitTimeOnStartup                        = 10000
 suggestedRetryTimeAfterTimeoutOnStartup                = 15
 
 ######################################################################
-### Cookie authentification valve config #############################
+### Cookie authentication valve config #############################
 ######################################################################
 #
-# The cookie authentification valve is a system that uses cookies to store
+# The cookie authentication valve is a system that uses cookies to store
 # an identifier corresponding to a specific Jahia user, when he selects the
 # "remember me" option in the login engine.
 #
-# Should we use cookie authentification for login ?
+# Should we use cookie authentication for login ?
 cookieAuthActivated                                    =   true
 #
 # length of cookie identifier key for user. This is the actual value
@@ -698,9 +698,9 @@ workflowNotifyAdminOnMaxNotificationReached             = true
 workflowMaxNotificationReachedTemplate                  = workflow_maxnotif.groovy
 # If set to 'true' the workflow status icons will also be displayed for pages with linked
 # workflow type.
-# This option does not apply to oter content objects (containers and container lists).
+# This option does not apply to other content objects (containers and container lists).
 # Workflow state icon for containers and container lists will only be shown in case they
-# have an independent worklfow type.    
+# have an independent workflow type.    
 workflowDisplayStatusForLinkedPages                     = true
 
 ######################################################################
@@ -853,13 +853,13 @@ userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
 ### Pdisplay #########################################################
 ######################################################################
 # "Pdisplay" is a part of the top bar . It allows users with write ACL
-# on the page monitoring jobs. The folowing property allows to set the
-# refresh time value in in milliseconds. -1 means that pdisplay is
+# on the page monitoring jobs. The following property allows to set the
+# refresh time value in milliseconds. -1 means that pdisplay is
 # refreshed only "on mouseover".
 pdisplay.timer.refresh = 5000
 
 ######################################################################
-### Nb Max Content Alias Name alloweded    ###########################
+### Nb Max Content Alias Name allowed      ###########################
 ######################################################################
 nbMaxContentAliasName = 10
 
@@ -893,7 +893,7 @@ wrapperBufferFlushingAlsoForPortlets = true
 # ded for this purpose.
 # To get data from the google analytics server, the site should have
 # a preregistered properties such as the gmail account and password
-# used when the google analyitcs account has been created.
+# used when the google analytics account has been created.
 # The following setting controls whether the gmail password will be
 # exported when a site export is triggered.
 # By default, it is set to true, if turned to false then the password

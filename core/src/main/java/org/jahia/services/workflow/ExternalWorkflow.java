@@ -37,7 +37,6 @@ package org.jahia.services.workflow;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import org.jahia.content.ContentObject;
@@ -47,11 +46,10 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.ActivationTestResults;
 
 /**
- * Created by IntelliJ IDEA.
+ * Interface for defining external workflow functionality. 
  * User: toto
  * Date: May 26, 2003
  * Time: 2:51:22 PM
- * To change this template use Options | File Templates.
  */
 public interface ExternalWorkflow {
 
@@ -141,9 +139,7 @@ public interface ExternalWorkflow {
 
     String getParameterForm(String processName, String actionName, ProcessingContext jParams);
 
-    boolean sendAction(String processName, String objectKey, String languageCode, String actionName, ProcessingContext jParams, ActivationTestResults activationTestResults, Map<RecipientInfo, Object> userNotifData);
-
-    void sendResults(ProcessingContext processingContext, ActivationTestResults activationTestResults, Map<RecipientInfo, Object> userNotifData);
+    boolean sendAction(String processName, String objectKey, String languageCode, String actionName, ProcessingContext jParams, ActivationTestResults activationTestResults);
 
     boolean isUserAuthorizedForWorkflow(String processName, ContentObject objectKey, JahiaUser user);
 

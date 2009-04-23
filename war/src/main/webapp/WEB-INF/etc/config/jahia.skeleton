@@ -682,20 +682,6 @@ ehcache.jahia.file = ehcache-jahia.xml
 ######################################################################
 # Do we use external (n-step) workflow by default?
 workflowUseExternalByDefault							= true
-# The following setting sets the maximum number of
-# notification emails to send when a workflow occurs. This
-# will limit spamming. Of course this means only a subset of
-# the users will actually be notified. As this might be a problem,
-# the second setting (workflowNotifyAdminOnMaxNotificationReached)
-# specifies whether the Jahia administrator should be notified
-# when this limit is reached.
-workflowMaxNotificationEmails                           = 20
-workflowNotifyAdminOnMaxNotificationReached             = true
-# The following setting configures the template used to build
-# the mail sent to the Jahia administrator if the maximum limit
-# of mails has been reached and if the maximum reached
-# notification setting is activated
-workflowMaxNotificationReachedTemplate                  = workflow_maxnotif.groovy
 # If set to 'true' the workflow status icons will also be displayed for pages with linked
 # workflow type.
 # This option does not apply to other content objects (containers and container lists).

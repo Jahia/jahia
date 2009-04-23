@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -33,9 +33,6 @@
 
 package org.jahia.services.workflow;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,15 +44,11 @@ import org.jahia.data.fields.FieldTypes;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLException;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.fields.ContentField;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.ActivationTestResults;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
@@ -88,7 +81,6 @@ public abstract class AbstractActivationJob extends BackgroundJob {
                                                final String action,
                                                final Set<String> languageCodes,
                                                final JahiaSaveVersion saveVersion,
-                                               Map<RecipientInfo, Object> userNotifData,
                                                String comment,
                                                ActivationTestResults activationTestResults, StateModificationContext stateModifContext)
             throws JahiaException {
@@ -105,8 +97,6 @@ public abstract class AbstractActivationJob extends BackgroundJob {
         boolean canAdmin = object.checkAdminAccess(jParams.getUser());
 
         final int mode = service.getInheritedMode(object);
-        boolean isMailServiceEnabled = ServicesRegistry.getInstance()
-                .getMailService().isEnabled();
 
         try {
             ContentObject contentObject = (ContentObject) ContentObject.getInstance(key, true);
@@ -189,9 +179,6 @@ public abstract class AbstractActivationJob extends BackgroundJob {
                     logger.error("Cannot change Jahia Page staging status", je);
                 }
 
-                if (isMailServiceEnabled) {
-                    updateUserNotifData(pageNotifData, object, jParams, userNotifData, action);
-                }
             } else if (mode == WorkflowService.EXTERNAL) {
                 String wfName = service.getInheritedExternalWorkflowName((ContentObjectKey) key);
                 externalWorkflow = service.getExternalWorkflow(wfName);
@@ -201,8 +188,7 @@ public abstract class AbstractActivationJob extends BackgroundJob {
                     jParams.setAttribute("nstepcomment", comment);
                     if (externalWorkflow.isProcessStarted(processId, key.toString(), language)) {
                         boolean result = externalWorkflow.sendAction(processId, key.toString(), language,
-                                action, jParams, activationTestResults,
-                                userNotifData);
+                                action, jParams, activationTestResults);
                         if (!result) {
                             if (action.equals(PUBLISH_PENDING_PAGES) && canAdmin) {
                                 try {
@@ -249,69 +235,6 @@ public abstract class AbstractActivationJob extends BackgroundJob {
                     JahiaException.CRITICAL_SEVERITY, e);
         }
         return externalWorkflow;
-    }
-
-    protected void updateUserNotifData(PageNotifData pageNotifData, ContentObject object, ProcessingContext jParams, Map<RecipientInfo, Object> userNotifData, String action) {
-        if (pageNotifData != null) {
-            // new system, per user messaging
-        	Set<RecipientInfo> recipients = getRecipients(object, 0x3, jParams);
-            for (final RecipientInfo recipient : recipients) {
-                Map<String, Set<PageNotifData>> operationMap = (Map<String, Set<PageNotifData>>)userNotifData.get(recipient);
-                if (operationMap == null) {
-                    operationMap = new HashMap<String, Set<PageNotifData>>();
-                }
-
-                Set<PageNotifData> pageList = operationMap.get(action);
-                if (pageList == null) {
-                    pageList = new HashSet<PageNotifData>();
-                }
-                pageList.add(pageNotifData);
-                operationMap.put(action, pageList);
-                userNotifData.put(recipient, operationMap);
-            }
-        }
-    }
-
-
-    protected Set<RecipientInfo> getRecipients(ContentObject contentObject, int access, ProcessingContext ctx) {
-        Set<RecipientInfo> result = new HashSet<RecipientInfo>();
-
-        // result.add(new RecipientInfo(ServicesRegistry.getInstance().getMailService().defaultRecipient()));
-
-        /**
-         * todo we could optimize this if we retrieved really only the list
-         * of users that have write and admin accesses instead of retrieving
-         * all users in the ACL.
-         */
-        JahiaBaseACL pageACL = contentObject.getACL();
-        try {
-            List<String> users = pageACL.getUsernameListAlsoGroupUsers(null, true);
-
-            for (int i = 0; i < users.size(); i++) {
-                JahiaUser user = ServicesRegistry.getInstance().
-                        getJahiaUserManagerService().lookupUserByKey(users.get(i));
-                if (user == null)
-                    continue;
-                String email = MailHelper.getEmailAddress(user);
-                if (email != null && !MailHelper.areEmailNotificationsDisabled(user)) {
-                    boolean shouldCheckWriteAccess = (access & 0x01) != 0;
-                    boolean shouldCheckAdminAccess = (access & 0x02) != 0;
-                    if (shouldCheckWriteAccess &&
-                            contentObject.checkWriteAccess(user, true) ||
-                            shouldCheckAdminAccess &&
-                                    contentObject.checkAdminAccess(user, true)) {
-                        result.add(new RecipientInfo(user, ctx.getSiteID()));
-                    }
-                }
-            }
-        } catch (JahiaACLException jae) {
-            logger.error("Error while retrieving users from ACL", jae);
-        }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Using email recipient list :" + result);
-        }
-        
-        return result;
     }
 
 

@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -84,8 +84,6 @@ public class NotifyAllJob extends AbstractActivationJob {
                 getSiteSaveVersion(jParams.getSiteID());
         final Map<ExternalWorkflow, ExternalWorkflow> externalWorkflows = new HashMap<ExternalWorkflow, ExternalWorkflow>();
         final ActivationTestResults activationTestResults = new ActivationTestResults();
-        final Map<RecipientInfo, Object> userNotifData = new HashMap<RecipientInfo, Object>();
-        try {
             List<ObjectKey> allKeys = new ArrayList<ObjectKey>();
             for (String key : allStagingAndWaitingObjects) {
                 final ObjectKey objectKey = ObjectKey.getInstance(key);
@@ -144,7 +142,7 @@ public class NotifyAllJob extends AbstractActivationJob {
                 final StateModificationContext stateModifContext = new StateModificationContext(objectKey, languageCodes);
                 stateModifContext.addModifiedObjects(allKeys);
 
-                final ExternalWorkflow externalWorkflow = processWorkflow(jParams, objectKey, actionName, languageCodes, saveVersion, userNotifData, comment, activationTestResults, stateModifContext);
+                final ExternalWorkflow externalWorkflow = processWorkflow(jParams, objectKey, actionName, languageCodes, saveVersion, comment, activationTestResults, stateModifContext);
                 if (externalWorkflow != null) {
                     externalWorkflows.put(externalWorkflow, externalWorkflow);
                 }
@@ -153,15 +151,6 @@ public class NotifyAllJob extends AbstractActivationJob {
                 lockRegistry.release(lockKey, jParams.getUser(), jParams.getUser().getUserKey());
             }
 
-        } finally {
-            if (externalWorkflows.size() > 0) {
-                final Iterator<ExternalWorkflow> it = externalWorkflows.keySet().iterator();
-                while (it.hasNext()) {
-                    final ExternalWorkflow externalWorkflow = it.next();
-                    externalWorkflow.sendResults(jParams, activationTestResults, userNotifData);
-                }
-            }
-        }
         jobDataMap.put(ACTIONS, actions);
         jobDataMap.put(RESULT, activationTestResults);
     }

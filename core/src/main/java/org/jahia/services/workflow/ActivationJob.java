@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -34,10 +34,8 @@
 package org.jahia.services.workflow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.jahia.content.ContentObjectKey;
@@ -64,8 +62,6 @@ public class ActivationJob extends AbstractActivationJob {
 
         List<WorkflowAction> actions = (List<WorkflowAction>) jobDataMap.get(ACTIONS);
 
-        final Map<RecipientInfo, Object> userNotifData = new HashMap<RecipientInfo, Object>();
-
         final Set<ExternalWorkflow> externalWorkflows = new HashSet<ExternalWorkflow>();
 
         JahiaSaveVersion saveVersion = ServicesRegistry.getInstance().getJahiaVersionService().
@@ -80,7 +76,6 @@ public class ActivationJob extends AbstractActivationJob {
             allkeys.add(key);
         }
 
-        try {
             for (WorkflowAction action : actions) {
                 Set<String> langs = action.getLangs();
                 ContentObjectKey key = action.getKey();
@@ -89,21 +84,12 @@ public class ActivationJob extends AbstractActivationJob {
                 stateModifContext.addModifiedObjects(allkeys);
 
                 ExternalWorkflow externalWorkflow = processWorkflow(processingContext,  key ,action.getAction(), langs,
-                        saveVersion, userNotifData, action.getComment(), results, stateModifContext);
+                        saveVersion, action.getComment(), results, stateModifContext);
                 if (externalWorkflow != null) {
                     externalWorkflows.add(externalWorkflow);
                 }
 
             }
-        } finally {
-            if (externalWorkflows.size() > 0) {
-                for (ExternalWorkflow externalWorkflow : externalWorkflows) {
-                    externalWorkflow.sendResults(processingContext, results, userNotifData);
-                }
-            } else {
-//                ActivationJob.sendMail(processingContext, action.getComment(), userNotifData);
-            }
-        }
 
         jobDataMap.put(RESULT, results);
 

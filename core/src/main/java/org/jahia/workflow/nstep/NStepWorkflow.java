@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  *
@@ -33,9 +33,6 @@
 
 package org.jahia.workflow.nstep;
 
-import groovy.lang.Binding;
-import groovy.util.GroovyScriptEngine;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,7 +40,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -60,27 +56,17 @@ import org.jahia.content.ContentObject;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
 import org.jahia.content.ObjectKey;
-import org.jahia.data.fields.FieldTypes;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.containers.ContentContainer;
-import org.jahia.services.containers.ContentContainerList;
-import org.jahia.services.fields.ContentField;
 import org.jahia.services.importexport.ProductionJob;
 import org.jahia.services.lock.LockPrerequisites;
-import org.jahia.services.mail.GroovyMimeMessagePreparator;
-import org.jahia.services.mail.MailHelper;
-import org.jahia.services.mail.MailService;
-import org.jahia.services.notification.templates.WorkflowMessageBuilder;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.SiteLanguageSettings;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.ActivationTestResults;
 import org.jahia.services.version.ContentObjectEntryState;
@@ -91,10 +77,8 @@ import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.workflow.ExternalWorkflow;
 import org.jahia.services.workflow.ExternalWorkflowHistoryEntry;
 import org.jahia.services.workflow.ExternalWorkflowInstanceCurrentInfos;
-import org.jahia.services.workflow.RecipientInfo;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.workflow.nstep.model.Workflow;
 import org.jahia.workflow.nstep.model.WorkflowHistoryEntry;
 import org.jahia.workflow.nstep.model.WorkflowInstance;
@@ -670,10 +654,9 @@ public class NStepWorkflow implements ExternalWorkflow {
      * @param actionName
      * @param jParams
      * @param activationTestResults
-     * @param userNotifData
-     * @return true if sendAction is successfull false otherwise
+     * @return true if sendAction is successful false otherwise
      */
-    public boolean sendAction(final String processName, final String objectKey, final String languageCode, final String actionName, final ProcessingContext jParams, final ActivationTestResults activationTestResults, final Map<RecipientInfo, Object> userNotifData) {
+    public boolean sendAction(final String processName, final String objectKey, final String languageCode, final String actionName, final ProcessingContext jParams, final ActivationTestResults activationTestResults) {
         try {
 //            transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 //                protected void doInTransactionWithoutResult(TransactionStatus status) {
@@ -773,36 +756,11 @@ public class NStepWorkflow implements ExternalWorkflow {
                     return false;
                 }
             }
-            // Send email
-            if (instance != null) {
-                addActionToMailQueue(jParams, actionName, objectKey, languageCode, comment, isStartStep, isFinished, instance, userNotifData);
-            }
         } catch (Exception e) {
             log.warn("Error during workflow of object " + objectKey + " in language " + languageCode + " with process " + processName, e);
             return false;
         }
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void sendResults(ProcessingContext processingContext, ActivationTestResults activationTestResults, Map<RecipientInfo, Object> userNotifData) {
-        final MailService mailService = ServicesRegistry.getInstance().getMailService();
-        if (!mailService.isEnabled()) {
-            return;
-        }
-        if (!userNotifData.isEmpty()) {
-            for (Map.Entry<RecipientInfo, Object> entry : userNotifData
-                    .entrySet()) {
-                RecipientInfo recipient = entry.getKey();
-                if (entry.getValue() instanceof List) {
-//                    mailService.sendTemplateMessage(new WorkflowMessageBuilder(
-//                            recipient.getRecipient(), recipient.getSiteId(),
-//                            processingContext));
-                }
-            }
-        }
     }
 
     public boolean isUserAuthorizedForWorkflow(final String processName, final ContentObject object, final JahiaUser user) {
@@ -960,49 +918,6 @@ public class NStepWorkflow implements ExternalWorkflow {
         return testResults;
     }
 
-    private MailInfo getKey(final String key, WorkflowInstance workflow, ProcessingContext jParams, final String displayName, String comment, String authorName, WorkflowStep curStep, WorkflowStep nextStep, ContentObject contentObject, Locale locale, boolean isStartStep, boolean isFinished, boolean isDeleted, boolean isAdvanced, boolean isRollbacked) {
-
-        String processName = workflow.getWorkflow().getName();
-        int pageID = 0;
-        if (contentObject instanceof ContentPage) {
-            pageID = contentObject.getID();
-        } else if (contentObject instanceof ContentContainer) {
-            pageID = ((ContentContainer) contentObject).getPageID();
-        } else if (contentObject instanceof ContentContainerList) {
-            pageID = ((ContentContainerList) contentObject).getPageID();
-        } else if (contentObject instanceof ContentField) {
-            ContentField contentField = (ContentField) contentObject;
-            if (contentField.getType() != FieldTypes.PAGE) {
-                pageID = contentField.getPageID();
-            }
-        }
-        String pageLink = "";
-        String pageTitle = null;
-        if (pageID > 0) {
-            String useLanguage = null;
-            try {
-                useLanguage = jParams.getSite().getLanguageSettings(true).size() > 1 ? locale.toString() : null;
-            } catch (JahiaException e) {
-                log.warn("Unable to retrieve active languages for site with key '" + jParams.getSiteKey() + "'", e);
-            }
-            pageLink = jParams.getSiteURL(jParams.getSite(), pageID, false, isFinished ? ProcessingContext.NORMAL : ProcessingContext.EDIT, useLanguage, true);
-            try {
-                ContentPage page = ContentPage.getPage(pageID, false, true);
-                if (page != null) {
-                    pageTitle = (String) page.getTitles(true).get(locale.toString());
-                }
-            } catch (JahiaException e) {
-                log.warn("Unable to retrieve page title for page '" + pageID, e);
-            }
-        }
-
-        String currentStepLabel = curStep != null ? "process." + processName + ".step." + curStep.getName() : "";
-
-        String nextStepLabel = nextStep != null ? "process." + processName + ".step." + nextStep.getName() : "";
-
-        return new MailInfo(key, processName, jParams.getUser().getUsername(), displayName, comment, authorName, locale, pageID, pageLink, currentStepLabel, nextStepLabel, isStartStep, isFinished, isDeleted, isAdvanced, isRollbacked, pageTitle);
-    }
-
     private void initializeWorkflows() throws JahiaException {
         String workflowNamesList = properties.getProperty("workflowsName", "");
         String[] workflowNamesArray = workflowNamesList.split(",");
@@ -1078,116 +993,6 @@ public class NStepWorkflow implements ExternalWorkflow {
         return results;
     }
 
-
-    private void addActionToMailQueue(ProcessingContext jParams, String actionName, String objectKey, String languageCode, String comment, boolean startStep, boolean finished, WorkflowInstance workflow, Map<RecipientInfo, Object> userNotifData) throws JahiaException, ClassNotFoundException {
-        if (!ServicesRegistry.getInstance().getMailService().isEnabled()) {
-            return;
-        }
-//        ResourceBundle bundle = ResourceBundle.getBundle("nstep-workflowResources", LanguageCodeConverters.languageCodeToLocale(languageCode));
-        Locale locale = LanguageCodeConverters.languageCodeToLocale(languageCode);
-        final WorkflowService workflowService = ServicesRegistry.getInstance().getWorkflowService();
-        org.jahia.workflow.nstep.model.WorkflowStep nextStep = null;
-        WorkflowStep curStep;
-        curStep = workflow.getStep();
-        if (!finished) {
-            nextStep = workflow.getWorkflow().getSteps().get(workflow.getWorkflow().getSteps().indexOf(curStep) + 1);
-        }
-        final ContentObject contentObjectInstance = ContentObject.getContentObjectInstance(ObjectKey.getInstance(objectKey));
-        MailInfo mailBody;
-
-        if (jParams.getContentPage() == null && jParams.getPage() != null) {
-            jParams.setContentPage(jParams.getPage().getContentPage());
-        }
-
-// Is workflow over ?
-        final String displayName = contentObjectInstance.getDisplayName(jParams);
-        final JahiaUser author = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getAuthorEmail());
-        final String username = author.getUsername();
-        String processName = workflow.getWorkflow().getName();
-        String email = MailHelper.getEmailAddress(author);
-        email = !MailHelper.areEmailNotificationsDisabled(author) ? email : null;
-        if (startStep) {
-            // Send an email to the author that the modification have been refused
-            if (email != null) {
-                mailBody = getKey("process." + processName + ".mail.body.rollback.to.author", workflow, jParams, displayName, comment, username, nextStep, null, contentObjectInstance, locale, true, false, false, false, false);
-                addMailInfoToQueue(new RecipientInfo(author,jParams.getSiteID()), mailBody, userNotifData);
-            }
-        } else {
-            JahiaGroup group;
-            if (actionName.equals(ROLLBACK_ACTION_NAME)) {
-                mailBody = getKey("process." + processName + ".mail.body.rollback", workflow, jParams, displayName, comment, username, nextStep, null, contentObjectInstance, locale, false, false, false, false, true);
-// Send mail to group who refuse to validate
-                group = workflowService.getRoleGroup(contentObjectInstance, nextStep.getName(), true);
-                sendMails(group, mailBody, jParams, userNotifData, contentObjectInstance);
-            } else if (finished) {
-                if (contentObjectInstance.hasActiveEntries()) {
-                    mailBody = getKey("process." + processName + ".mail.body.finish.published", workflow, jParams, displayName, comment, username, curStep, nextStep, contentObjectInstance, locale, false, true, false, false, false);
-                } else {
-                    mailBody = getKey("process." + processName + ".mail.body.finish.deleted", workflow, jParams, displayName, comment, username, curStep, nextStep, contentObjectInstance, locale, false, false, true, false, false);
-                }
-                List<WorkflowStep> steps = workflow.getWorkflow().getSteps();
-                for (int i = 0; i < steps.size(); i++) {
-                    org.jahia.workflow.nstep.model.WorkflowStep step = steps.get(i);
-                    group = workflowService.getRoleGroup(contentObjectInstance, step.getName(), true);
-                    sendMails(group, mailBody, jParams, userNotifData, contentObjectInstance);
-                }
-            } else {
-                mailBody = getKey("process." + processName + ".mail.body.step.advance", workflow, jParams, displayName, comment, username, curStep, nextStep, contentObjectInstance, locale, false, false, false, true, false);
-                group = workflowService.getRoleGroup(contentObjectInstance, nextStep.getName(), true);
-                sendMails(group, mailBody, jParams, userNotifData, contentObjectInstance);
-            }
-            if (email != null) {
-                addMailInfoToQueue(new RecipientInfo(author, jParams.getSiteID()), mailBody, userNotifData);
-            }
-        }
-    }
-
-    private void addMailInfoToQueue(RecipientInfo recipient, MailInfo mailBody, Map<RecipientInfo, Object> userNotifData) {
-        List<MailInfo> collection = (List<MailInfo>)userNotifData.get(recipient);
-        if (collection == null) {
-            collection = new ArrayList<MailInfo>(32);
-            userNotifData.put(recipient, (List<MailInfo>)collection);
-        }
-        if (!collection.contains(mailBody)) collection.add(mailBody);
-    }
-
-    private void sendMails(JahiaGroup group, MailInfo mailBody, ProcessingContext processingContext, Map<RecipientInfo, Object> userNotifData, ContentObject contentObjectInstance) {
-        final MailService mailService = ServicesRegistry.getInstance().getMailService();
-        if (!mailService.isEnabled()) {
-            return;
-        }
-        Set<?> users = group.getRecursiveUserMembers();
-        if (users.size() == 0) {
-            return;
-        }
-
-        if (users.size() > processingContext.settings().getWorkflowMaxNotificationEmails()) {
-            GroovyScriptEngine groovyScriptEngine = (GroovyScriptEngine) SpringContextSingleton.getInstance().getContext().getBean("groovyScriptEngine");
-            GroovyMimeMessagePreparator adminMessageMimePreparator = new GroovyMimeMessagePreparator();
-            adminMessageMimePreparator.setGroovyScriptEngine(groovyScriptEngine);
-            Binding binding = new Binding();
-            binding.setVariable("processingContext", processingContext);
-            binding.setVariable("from", mailService.defaultSender());
-            binding.setVariable("to", mailService.defaultRecipient());
-            binding.setVariable("limit", Integer.toString(processingContext.settings().getWorkflowMaxNotificationEmails()));
-            binding.setVariable("originalSubject", "N-Step workflow notification");
-            binding.setVariable("targetObjects", "");
-
-            adminMessageMimePreparator.setBinding(binding);
-            adminMessageMimePreparator.setTemplatePath(processingContext.settings().getWorkflowMaxNotificationReachedTemplate());
-            mailService.sendTemplateMessage(adminMessageMimePreparator);
-        }
-
-        Iterator<?> iterator = users.iterator();
-        int userCount = 0;
-        while (iterator.hasNext() && (userCount < processingContext.settings().getWorkflowMaxNotificationEmails())) {
-            JahiaUser user = (JahiaUser) iterator.next();
-            String email = MailHelper.getEmailAddress(user);
-            if (email != null && !MailHelper.areEmailNotificationsDisabled(user) && contentObjectInstance.checkReadAccess(user)) {
-                addMailInfoToQueue(new RecipientInfo(user, processingContext.getSiteID()), mailBody, userNotifData);
-            }
-        }
-    }
 
     /* (non-Javadoc)
      * @see org.jahia.services.workflow.ExternalWorkflow#needToRestartProcess(java.lang.String, java.lang.String, java.lang.String)

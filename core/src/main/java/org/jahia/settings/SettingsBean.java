@@ -261,10 +261,6 @@ public class SettingsBean {
 
     private String jetspeedDeploymentDirectory;
 
-    private int workflowMaxNotificationEmails = 20;
-    private boolean workflowNotifyAdminOnMaxNotificationReached = true;
-    private String workflowMaxNotificationReachedTemplate;
-
     private String freeMemoryLimit= new Double((Runtime.getRuntime().maxMemory()*0.2)/ (1024*1024)).longValue() + "MB";
 
     private int clusterCacheMaxBatchSize = 100000;
@@ -635,9 +631,6 @@ public class SettingsBean {
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
-            workflowMaxNotificationEmails = getInt("workflowMaxNotificationEmails", 20);
-            workflowNotifyAdminOnMaxNotificationReached = getBoolean("workflowNotifyAdminOnMaxNotificationReached", true);
-            workflowMaxNotificationReachedTemplate = JahiaTools.convertContexted (getString("workflowMaxNotificationReachedTemplate", "workflow_maxnotif.groovy"), pathResolver);
             workflowDisplayStatusForLinkedPages = getBoolean("workflowDisplayStatusForLinkedPages", true);
             workflowUseExternalByDefault = getBoolean("workflowUseExternalByDefault", true);
 
@@ -1584,30 +1577,6 @@ public class SettingsBean {
 
     public void setPropertiesFileName(String propertiesFileName) {
         this.propertiesFileName = propertiesFileName;
-    }
-
-    public int getWorkflowMaxNotificationEmails() {
-        return workflowMaxNotificationEmails;
-    }
-
-    public void setWorkflowMaxNotificationEmails(int workflowMaxNotificationEmails) {
-        this.workflowMaxNotificationEmails = workflowMaxNotificationEmails;
-    }
-
-    public boolean isWorkflowNotifyAdminOnMaxNotificationReached() {
-        return workflowNotifyAdminOnMaxNotificationReached;
-    }
-
-    public void setWorkflowNotifyAdminOnMaxNotificationReached(boolean workflowNotifyAdminOnMaxNotificationReached) {
-        this.workflowNotifyAdminOnMaxNotificationReached = workflowNotifyAdminOnMaxNotificationReached;
-    }
-
-    public String getWorkflowMaxNotificationReachedTemplate() {
-        return workflowMaxNotificationReachedTemplate;
-    }
-
-    public void setWorkflowMaxNotificationReachedTemplate(String workflowMaxNotificationReachedTemplate) {
-        this.workflowMaxNotificationReachedTemplate = workflowMaxNotificationReachedTemplate;
     }
 
     public int getSiteURLPortOverride() {

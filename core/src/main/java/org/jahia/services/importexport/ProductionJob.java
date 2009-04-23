@@ -138,10 +138,12 @@ public class ProductionJob extends BackgroundJob {
                     if (logger.isDebugEnabled())
                         logger.debug("Delete ProductionJob for site " + site.getSiteKey() + " " + jobDetail.getFullName());
                     //remove the job
-                    jobExecutionContext.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
+                    try {
+                        jobExecutionContext.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
+                    } catch (SchedulerException e) {
+                        failed(result, e, targetName, sitename, "org.jahia.engines.importexport.export.productionFailed.label", jobDataMap);
+                    }
                 }
-            } catch (SchedulerException e) {
-                failed(result, e, targetName, sitename, "org.jahia.engines.importexport.export.productionFailed.label", jobDataMap);
             } catch (JahiaException e) {
                 failed(result, e, targetName, sitename, "org.jahia.engines.importexport.export.productionFailed.label", jobDataMap);
             }
@@ -149,14 +151,15 @@ public class ProductionJob extends BackgroundJob {
         }
     }
 
-    private void failed(TreeOperationResult result, Throwable e, String targetName, String sitename, String msgKey, Map jobDataMap) {
-        jobDataMap.put(RESULT, STATUS_FAILED);
+    private void failed(TreeOperationResult result, Throwable e, String targetName, String sitename, String msgKey, Map jobDataMap) throws JobExecutionException {
         result.setStatus(TreeOperationResult.FAILED_OPERATION_STATUS);
         result.appendError(new NodeOperationResult(null,null,null,new EngineMessage(msgKey, new Object[0])));
-        if (e != null) {
-            logger.error("Production job execute fail for site " + sitename + " to target " + targetName,e);
-        } else {
-            logger.error("Production job execute fail for site " + sitename + " to target " + targetName);
-        }
+        jobDataMap.put(RESULT, result);
+        throw new JobExecutionException(e);
+//        if (e != null) {
+//            logger.error("Production job execute fail for site " + sitename + " to target " + targetName,e);
+//        } else {
+//            logger.error("Production job execute fail for site " + sitename + " to target " + targetName);
+//        }
     }
 }

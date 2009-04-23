@@ -208,16 +208,17 @@ public abstract class BackgroundJob implements StatefulJob {
                 logger.error("Cannot get triggers for job",e);
             }
 
-            if (nextFireTime != null) {
-                status = STATUS_POOLED;
-                data.putAsString(JOB_SCHEDULED,nextFireTime.getTime());
-            }
             if (status == STATUS_FAILED) {
                 try {
                     boolean ramScheduler = this instanceof RamJob;
                     ServicesRegistry.getInstance().getSchedulerService().unscheduleJob(jobDetail, ramScheduler);
                 } catch (JahiaException e) {
                     logger.error("Cannot unschedule job",e);
+                }
+            } else {
+                if (nextFireTime != null) {
+                    status = STATUS_POOLED;
+                    data.putAsString(JOB_SCHEDULED,nextFireTime.getTime());
                 }
             }
             data.put(JOB_STATUS, status);

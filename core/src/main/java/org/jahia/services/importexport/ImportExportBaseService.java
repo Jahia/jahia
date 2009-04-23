@@ -1659,6 +1659,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     } else {
                         logger.debug("delete previous production  job" + ProductionJob.JOB_NAME_PREFIX + site.getID() + "_" + targetSite);
                         schedulerService.deleteJob(jobDetail.getName(), jobDetail.getGroup());
+
+                        jobDetail = BackgroundJob.createJahiaJob(ProductionJob.JOB_NAME_PREFIX, ProductionJob.class, jParams);
+                        jobDetail.setName(ProductionJob.JOB_NAME_PREFIX + site.getID() + "_" + targetSite);
+                        jobDetail.setRequestsRecovery(true);
                     }
 
                     JobDataMap jobDataMap = jobDetail.getJobDataMap();

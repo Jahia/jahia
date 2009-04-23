@@ -60,8 +60,9 @@ public class ProcessDisplayPanel extends TriPanelBrowserViewport {
             getResource("pd_status_executing"),
             getResource("pd_status_failed"),
             getResource("pd_status_partial"),
-            getResource("pd_status_successful")};
-    public static final String[] STATUS_OPTIONS_VALUES = {"waiting","executing", "failed", "partial", "successful"};
+            getResource("pd_status_successful"),
+            getResource("pd_status_pooled")};
+    public static final String[] STATUS_OPTIONS_VALUES = {"waiting","executing", "failed", "partial", "successful", "pooled"};
     public static final String[] OWNER_OPTIONS_NAMES = {
             getResource("pd_owner_currentuser")};
     public static final String[] OWNER_OPTIONS_VALUES = {"1"};

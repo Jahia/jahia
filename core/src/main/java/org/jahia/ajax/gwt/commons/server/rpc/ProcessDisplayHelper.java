@@ -125,7 +125,7 @@ public class ProcessDisplayHelper {
         TreeOperationResult treeOperationResult = (TreeOperationResult) currentJobDataMap.get(BackgroundJob.RESULT);
 
         // job: status
-        if (treeOperationResult != null) {
+        if (treeOperationResult != null && !"pooled".equals(currentJobStatus)) {
             switch (treeOperationResult.getStatus()) {
                 case TreeOperationResult.FAILED_OPERATION_STATUS:
                     currentJobStatus = "failed";

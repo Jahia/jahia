@@ -276,6 +276,9 @@ public class JahiaPreferencesService extends JahiaService {
      */
     public void setGenericPreferenceValue(String prefName, String prefValue, ProcessingContext jParams) {
         try {
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
             JahiaPreferencesProvider<GenericJahiaPreference> basicProvider = getGenericPreferencesProvider();
 
             // create generic preference key
@@ -314,6 +317,9 @@ public class JahiaPreferencesService extends JahiaService {
      */
     public void setPagePreferenceValue(String prefName, String prefValue, ProcessingContext jParams) {
         try {
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
             JahiaPreferencesProvider<PageJahiaPreference> pageProvider = getPagePreferencesProvider();
 
             // create generic preference key
@@ -342,6 +348,9 @@ public class JahiaPreferencesService extends JahiaService {
      */
     public void deleteGenericPreferenceValue(String prefName, ProcessingContext jParams) {
         try {
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
             // create generic preference key
             JahiaPreference<GenericJahiaPreference> preference = getGenericPreferencesProvider().createJahiaPreferenceNode(jParams);
             preference.getNode().setPrefName(prefName);
@@ -358,6 +367,10 @@ public class JahiaPreferencesService extends JahiaService {
      */
     public void deletePagePreferenceValue(String prefName, ProcessingContext jParams) {
         try {
+            if (jParams.getUser().getUsername().equals("guest")) {
+                return;
+            }
+
             // create generic preference key
             JahiaPreference<PageJahiaPreference> preference = getPagePreferencesProvider().createJahiaPreferenceNode(jParams);
             ContentPage page = ServicesRegistry.getInstance().getJahiaPageService().lookupContentPage(jParams.getPageID(), false);

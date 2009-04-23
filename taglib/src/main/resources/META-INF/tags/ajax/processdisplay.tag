@@ -102,6 +102,8 @@
                             aliasResourceName="pd_status_partial"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.status.wainting"
                             aliasResourceName="pd_status_wainting"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.status.pooled"
+                            aliasResourceName="pd_status_pooled"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.column.created"
                             aliasResourceName="pd_column_created"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.processDisplay.column.type"

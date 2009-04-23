@@ -87,6 +87,12 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
         GroupingStore<GWTReportElement> store = new GroupingStore<GWTReportElement>();
 
         if (enableExpander && errorsAndWarnings != null) {
+            if (errorsAndWarnings.containsKey(null) && errorsAndWarnings.get(null).containsKey(null)) {
+                GWTJahiaNodeOperationResult res = errorsAndWarnings.get(null).get(null);
+                for (GWTJahiaNodeOperationResultItem err : res.getErrorsAndWarnings()) {
+                    store.add(new GWTReportElement("", err.getMessage(), "", "", "", ""));
+                }
+            }
             for (String action : actions.keySet()) {
                 for (GWTJahiaProcessJobAction gwtaction : actions.get(action)) {
                     Map<String, GWTJahiaNodeOperationResult> errorsAndWarningsForThisKey = errorsAndWarnings.get(gwtaction.getKey());

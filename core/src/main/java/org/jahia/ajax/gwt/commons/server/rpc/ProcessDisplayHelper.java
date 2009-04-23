@@ -248,8 +248,8 @@ public class ProcessDisplayHelper {
             for (Object o : errList) {
                 try {
                     NodeOperationResult nodeOperationResult = (NodeOperationResult) o;
-                    if (nodeOperationResult.getNodeKey() != null) {
-                        String k = nodeOperationResult.getNodeKey().toString();
+//                    if (nodeOperationResult.getNodeKey() != null) {
+                        String k = nodeOperationResult.getNodeKey() != null ? nodeOperationResult.getNodeKey().toString() : null;
                         if (!logs.containsKey(k)) {
                             logs.put(k, new HashMap<String, GWTJahiaNodeOperationResult>());
                         }
@@ -275,7 +275,7 @@ public class ProcessDisplayHelper {
                         if (message != null) {
                             logsForObjectAndLang.addErrorOrWarning(new GWTJahiaNodeOperationResultItem(type, message));
                         }
-                    }
+//                    }
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }

@@ -58,6 +58,7 @@ import org.jahia.services.content.textextraction.TextExtractorJob;
 import org.jahia.params.ParamBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 
 import java.util.*;
 
@@ -351,11 +352,17 @@ public class ProcessDisplayServiceImpl extends AbstractJahiaGWTServiceImpl imple
 
 
     public static List<JobDetail> getAllJobsDetails() throws JahiaException {
+         if(schedulerIsShutdown()){
+            return new ArrayList<JobDetail>();
+        }
         List<JobDetail> jobs = SCHEDULER_SERVICE.getAllJobsDetails();
         return jobs;
     }
 
     public static List<JobDetail> getAllActiveJobsDetails() throws JahiaException {
+        if(schedulerIsShutdown()){
+            return new ArrayList<JobDetail>();
+        }
         List<JobDetail> jobs = SCHEDULER_SERVICE.getAllActiveJobsDetails();
         return jobs;
     }
@@ -514,6 +521,15 @@ public class ProcessDisplayServiceImpl extends AbstractJahiaGWTServiceImpl imple
             }
         }
         return jobDetails;
+    }
+
+    private static boolean schedulerIsShutdown(){
+        try {
+            return SCHEDULER_SERVICE.getScheduler().isShutdown();
+        } catch (SchedulerException e) {
+            logger.error(e,e);
+            return false;
+        }
     }
 
 

@@ -162,7 +162,7 @@ public class ProcessJobTopBar extends TopBar {
      */
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
         GWTJahiaProcessJob jahiaProcessJob = (GWTJahiaProcessJob) topTableSelection;
-        if (jahiaProcessJob != null && jahiaProcessJob.isJobStatusFailed()) {
+        if (jahiaProcessJob != null && jahiaProcessJob.getJobType().equalsIgnoreCase("waiting")) {
             deleteItem.setEnabled(true);
         } else {
             deleteItem.setEnabled(false);

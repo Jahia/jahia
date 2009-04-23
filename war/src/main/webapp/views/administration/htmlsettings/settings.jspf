@@ -17,7 +17,7 @@
             <input type="checkbox" name="markupFiltering" id="markupFiltering" ${markupFilteringEnabled ? 'checked="checked"' : ''}/>&nbsp;
             <input type="text" name="markupFilteringTags" id="markupFilteringTags" style="width: 90%" value="${markupFilteringTags}"/>
             <c:set var="info"><fmt:message key="org.jahia.admin.htmlsettings.markupFiltering.info"/></c:set>
-            <a href="#preview" onclick="jahia.alert(null, '${info}'); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="preview"/></a>
+            <a href="#preview" onclick="jahia.alert(null, '${info}'); return false;"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"/></a>
           </td>
       </tr>
   </tbody>

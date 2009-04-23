@@ -153,6 +153,8 @@ function testSettingsFailure(text, code, statusText) {
                                                 <input class="input" type="text" name="host" size="<%=inputSize%>"
                                                        maxlength="250"
                                                        value="<c:out value='${jahiaMailSettings.host}'/>"/>
+                                                &nbsp;
+                                                <a href="http://jira.jahia.org/browse/JKB-17" target="_blank"><img src="${pageContext.request.contextPath}/engines/images/about.gif" alt="info"/></a>
                                             </td>
                                         </tr>
                                         <tr>

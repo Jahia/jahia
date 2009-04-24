@@ -43,20 +43,20 @@
     <resource-bundle>jahiatemplates.Core_templates</resource-bundle>
     <definitions-file>definitions.cnd</definitions-file>
     <common-pages>
-        <my-settings>mysettings.jsp</my-settings>
-        <search-results>searchresult.jsp</search-results>
+        <my-settings>tpl.mysettings.jsp</my-settings>
+        <search-results>tpl.searchresult.jsp</search-results>
     </common-pages>
     <properties>
         <property key="boxes.onError" value="full"/>
     </properties>
     <templates default="Simple" homepage="Home">
-        <template name="Home" display-name="Home page" filename="home.jsp" page-type="core_templates:home" />
-        <template name="Simple" display-name="Simple" filename="simple.jsp" page-type="core_templates:simple" />
-        <template name="Double" display-name="Double" filename="double.jsp" page-type="core_templates:double" />
-        <template name="FAQ" display-name="FAQ" filename="faq.jsp" page-type="core_templates:faq" />
-        <template name="News" display-name="News" filename="news.jsp" page-type="core_templates:news" />
-        <template name="Full" display-name="Full" filename="full.jsp" page-type="core_templates:full" />
-        <template name="LayoutManager" display-name="Layout Manager" filename="layoutManager.jsp" page-type="core_templates:layoutmanager" />
+        <template name="Home" display-name="Home page" filename="tpl.home.jsp" page-type="core_templates:home" />
+        <template name="Simple" display-name="Simple" filename="tpl.simple.jsp" page-type="core_templates:simple" />
+        <template name="Double" display-name="Double" filename="tpl.double.jsp" page-type="core_templates:double" />
+        <template name="FAQ" display-name="FAQ" filename="tpl.faq.jsp" page-type="core_templates:faq" />
+        <template name="News" display-name="News" filename="tpl.news.jsp" page-type="core_templates:news" />
+        <template name="Full" display-name="Full" filename="tpl.full.jsp" page-type="core_templates:full" />
+        <template name="LayoutManager" display-name="Layout Manager" filename="tpl.layoutManager.jsp" page-type="core_templates:layoutmanager" />
     </templates>
 </template-set>
 

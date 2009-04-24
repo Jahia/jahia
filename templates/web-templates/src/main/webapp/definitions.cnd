@@ -198,7 +198,7 @@ containerList columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="w
 [web_templates:full] > jnt:page,web_templates:navigation
 containerList maincontent (jnt:mainContentContainer)
 containerList portlet (jnt:portletContainer [addMixin="jmix:skinnable"])
-containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:IframeBox,jnt:lastNewsBox,jnt:portletsBox,jnt:peopleBox,jnt:fileContentBox,jnt:videoBox"])
+containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:IframeBox,jnt:lastNewsBox,jnt:portletsBox,jnt:peopleBox,jnt:flashBox,jnt:fileContentBox,jnt:videoBox"])
 
 [web_templates:layoutManager] > jnt:page,web_templates:navigation, web_templates:introduction
 containerList columnA_box (jnt:box [addMixin="jmix:skinnable,web_templates:layoutmanagerBoxExtraFields", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox"])

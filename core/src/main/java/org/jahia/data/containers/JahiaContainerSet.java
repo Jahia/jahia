@@ -198,9 +198,11 @@ public class JahiaContainerSet implements Map<String, JahiaContainerList> {
                 n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(pageTemplateID))
                         .getNodeType().getName();
             } else if (pageID > 0) {
-                n = JahiaPageDefinition.getContentDefinitionInstance(
-                        new PageDefinitionKey(ContentPage.getPage(pageID).getPageTemplateID(
-                                processingContext.getEntryLoadRequest()))).getNodeType().getName();
+                int defID = ContentPage.getPage(pageID).getPageTemplateID(processingContext.getEntryLoadRequest());
+                if (defID == -1) {
+                    return null;
+                }
+                n = JahiaPageDefinition.getContentDefinitionInstance(new PageDefinitionKey(defID)).getNodeType().getName();
             }
             n = n.replace(':', '_') + "_";
             if (!containerName.startsWith(n)) {

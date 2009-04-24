@@ -95,7 +95,7 @@
                         <%--captcha = <input name="captcha" />--%>
                 </fieldset>
 
-                <p class="form-help"><fmt:message key="omments.help"/></p>
+                <p class="form-help"><fmt:message key="comments.help"/></p>
                 <fieldset>
 
                     <p class="c_button">

@@ -63,7 +63,7 @@ public abstract class JahiaFacetingService extends JahiaService {
             ProcessingContext jParams) throws JahiaException;
 
     public abstract Map<FacetValueBean, Integer> getHitsPerFacetValue(
-            FacetBean facetBean, String facetValueName, BitSet mainQueryBits,
+            FacetBean facetBean, List<FacetValueBean> facetValues, BitSet mainQueryBits,
             ContainerQueryContext queryContext, ProcessingContext jParams)
             throws JahiaException;
 

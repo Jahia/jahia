@@ -46,17 +46,18 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.search.facets.AppliedFacetFilters;
 import org.jahia.services.search.facets.FacetValueBean;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.JahiaTools;
 
 @SuppressWarnings("serial")
 public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
 
     private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
-            .getLogger(GetHitsPerFacetValueTag.class);
+        .getLogger(GetHitsPerFacetValueTag.class);
 
     private String filterQueryParamName;
     private String appliedFacetsId;
-    
+    private boolean display = true;
+    private String removeDisplayResource;
+
     public int doStartTag() throws JspException {
         int eval = super.doStartTag();
         getFacetFilters();
@@ -69,63 +70,43 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
         // pooling.
 
         setFilterQueryParamName(null);
+        setAppliedFacetsId(null);
+        setDisplay(true);
+        setRemoveDisplayResource(null);
         return result;
     }
 
     private void getFacetFilters() {
         final ServletRequest request = pageContext.getRequest();
         final JahiaData jData = (JahiaData) request
-                .getAttribute("org.jahia.data.JahiaData");
+            .getAttribute("org.jahia.data.JahiaData");
         final ProcessingContext jParams = jData.getProcessingContext();
         final JspWriter out = pageContext.getOut();
+        StringBuffer buff = new StringBuffer();
         try {
-            StringBuffer buff = new StringBuffer();
-            String queryString = jParams.getQueryString();
-            if (queryString != null) {
-                int index = queryString.indexOf(getFilterQueryParamName());
-                if (index > -1) {
-                    queryString = queryString.substring(0, index);
-                    index = jParams.getQueryString().indexOf("&", index);
-                    if (index > -1) {
-                        queryString += jParams.getQueryString()
-                                .substring(index);
-                    }
-                }
-            }
-            List<AppliedFacetFilters> allAppliedFacetFilters = ServicesRegistry.getInstance().getJahiaFacetingService()
-                    .getAppliedFacetFilters(jParams.getParameter(getFilterQueryParamName()));
+            List<AppliedFacetFilters> allAppliedFacetFilters = ServicesRegistry
+                .getInstance().getJahiaFacetingService()
+                .getAppliedFacetFilters(
+                    jParams.getParameter(getFilterQueryParamName()));
             for (AppliedFacetFilters appliedFacetFilters : allAppliedFacetFilters) {
                 for (FacetValueBean facetValueBean : appliedFacetFilters
-                        .getFacetValueBeans()) {
-                    buff.append(JahiaTools.getExpandedValue(facetValueBean.getValue(),
-                            facetValueBean.getValueArguments(), jParams, jParams.getLocale()));
+                    .getFacetValueBeans()) {
+                    buff.append(facetValueBean.getTitle());
                     buff.append("&nbsp;<a href=\"").append(
-                            jParams.getPage().getURL(jParams));
-                    String forwardedFilter = jParams
-                            .getParameter(getFilterQueryParamName());
-                    if (forwardedFilter != null) {
-                        String remainingFilter = forwardedFilter
-                                .replace(
-                                        appliedFacetFilters.getFacetBean()
-                                                .hashCode()
-                                                + "_"
-                                                + facetValueBean.hashCode()
-                                                + "_", "");
-                        if (queryString != null && queryString.length() > 0 || remainingFilter.length() > 0) {
-                            buff.append("?");    
-                        }
-                        buff.append(queryString != null && queryString.length() > 0 ? queryString + "&": "");                        
-                        if (remainingFilter.length() > 0) {
-                            buff.append(getFilterQueryParamName()).append("=")
-                                    .append(remainingFilter);
-                        }
-                    }
-                    buff.append("\">remove</a>&nbsp;");
+                        Functions.getDeleteFacetUrl(appliedFacetFilters
+                            .getFacetBean(), facetValueBean,
+                            getFilterQueryParamName()));
+                    buff
+                        .append("\">")
+                        .append(
+                            getRemoveDisplayResource() != null ? getRemoveDisplayResource()
+                                    : "remove").append("</a>&nbsp;");
                 }
             }
             out.print(buff.toString());
             if (getAppliedFacetsId() != null) {
-                pageContext.setAttribute(getAppliedFacetsId(), allAppliedFacetFilters, PageContext.REQUEST_SCOPE);
+                pageContext.setAttribute(getAppliedFacetsId(),
+                    allAppliedFacetFilters, PageContext.REQUEST_SCOPE);
             }
             if (getBodyContent() != null) {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -150,5 +131,21 @@ public class GetAppliedFacetFiltersTag extends AbstractJahiaTag {
 
     public String getAppliedFacetsId() {
         return appliedFacetsId;
+    }
+
+    public void setDisplay(boolean display) {
+        this.display = display;
+    }
+
+    public boolean isDisplay() {
+        return display;
+    }
+
+    public void setRemoveDisplayResource(String removeDisplayResource) {
+        this.removeDisplayResource = removeDisplayResource;
+    }
+
+    public String getRemoveDisplayResource() {
+        return removeDisplayResource;
     }
 }

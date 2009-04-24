@@ -89,6 +89,14 @@ public class CreateFacetFilterTag extends ContainerQueryTag implements ParamPare
         try {
             JahiaFacetingService facetingService = ServicesRegistry.getInstance().getJahiaFacetingService();
             FacetBean facetBean = null;
+            List<FacetValueBean> createdFacetValue = null;
+            if (getFacetValueBeanId() != null) {
+                createdFacetValue = (List<FacetValueBean>)pageContext.findAttribute(getFacetValueBeanId());
+                if (createdFacetValue == null) {
+                    createdFacetValue = new ArrayList<FacetValueBean>();                
+                }
+            }
+           
             if (getPropertyName() != null) {
                 ContainerQueryContext context = getQueryBean(jData).getQueryContext();
                 if (context.getContainerDefinitionNames().isEmpty() && getTargetContainerListName() != null) {
@@ -96,22 +104,23 @@ public class CreateFacetFilterTag extends ContainerQueryTag implements ParamPare
                             .getPageTemplateID(), 0, jParams));
                     context.getContainerDefinitionsIncludingType(true);
                 }
-                facetBean = facetingService.createFacetFilter(getFacetName(), getPropertyName(), getValueTitle(), context, jParams, null);
+                facetBean = facetingService.createFacetFilter(getFacetName(),
+                    getPropertyName(), getValueTitle(), context, jParams,
+                    createdFacetValue);
             } else if (getQueryBean(jData) != null && getQueryBean(jData).getFilter() != null) {
                 if (getValueTitle().indexOf(" ") == -1) {
                     setValueTitle(ResourceBundleMarker.drawMarker(
                             getResourceBundle(), getValueTitle(),
                             getValueTitle()));
                 }
-                List<FacetValueBean> createdFacetValue = new ArrayList<FacetValueBean>();
                 facetBean = facetingService.createFacetFilter(getFacetName(),
                         getValueTitle(), params.toArray(),
                         getQueryBean(jData).getFilter(), getQueryBean(jData)
                                 .getQueryContext(), jParams, createdFacetValue);
-                if (getFacetValueBeanId() != null) {
-                    pageContext.setAttribute(getFacetValueBeanId(), createdFacetValue.get(0), PageContext.REQUEST_SCOPE);
-                }                
             }
+            if (getFacetValueBeanId() != null) {
+                pageContext.setAttribute(getFacetValueBeanId(), createdFacetValue, PageContext.REQUEST_SCOPE);
+            }                            
             if (getFacetBeanId() != null) {
                 pageContext.setAttribute(getFacetBeanId(), facetBean, PageContext.REQUEST_SCOPE);
             }

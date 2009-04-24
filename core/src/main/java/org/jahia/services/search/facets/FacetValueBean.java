@@ -35,6 +35,10 @@ package org.jahia.services.search.facets;
 
 import java.io.Serializable;
 
+import org.jahia.bin.Jahia;
+import org.jahia.params.ProcessingContext;
+import org.jahia.utils.JahiaTools;
+
 public class FacetValueBean implements Serializable {
 
     private static final long serialVersionUID = 7376877535833721067L;
@@ -81,6 +85,12 @@ public class FacetValueBean implements Serializable {
     }
     public String getLanguageCode() {
         return languageCode;
+    }
+    
+    public String getTitle() {
+        ProcessingContext jParams = Jahia.getThreadParamBean();
+        return JahiaTools.getExpandedValue(getValue(),
+            getValueArguments(), jParams, jParams.getLocale());
     }
     
 }

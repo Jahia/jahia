@@ -829,7 +829,13 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
-        </attribute>          
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the List of FacetValueBeans to process is set</description>
+            <name>facetValueBeanId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>   
         <attribute>
             <description>The ID of a query bean to compare its results with the results of the facet.</description>
             <name>mainQueryBeanId</name>
@@ -837,14 +843,21 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The id of the facet value to print the hits.</description>
-            <name>facetValueId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>   
-        <attribute>
             <description>The query parameter name for the filter to be created in the URL for drilldown.</description>
             <name>filterQueryParamName</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>       
+        <attribute>
+            <description>Set true if the tag should create HTML directly</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The name of the request scope parameter, where the returned list of HitsPerFacetValueBean objects will be set</description>
+            <name>hitsPerFacetBeanId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
@@ -865,7 +878,20 @@
             <name>appliedFacetsId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <description>Should the tag create HTML or just return the result in a list of beans.</description>
+            <name>display</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>The resource (text/image) which will be backed for the link if display is true</description>
+            <name>removeDisplayResource</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>                
     </tag>    
     
     <function>
@@ -879,4 +905,34 @@
             &lt;c:if test="${query:isFacetApplied(eventDateFacet, appliedFacets}"&gt;
         </example>
     </function>    
+    
+    <function>
+        <description>Create the drill down URL for a facet value</description>
+        <name>getFacetDrillDownUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String getFacetDrillDownUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueBeanId="eventDateFacetValue" filterQueryParamName="filter" hitsPerFacetBeanId="hitsPerEventFacetValues" display="false"/"&gt;        
+            &lt;c:forEach var="hitsPerEventFacetValue" items="${hitsPerEventFacetValues}"&gt;
+              &lt;a href="${query:getDeleteFacetUrl(eventDateFacet, hitsPerEventFacetValue.facetValue, 'filter')}"&gt;hitsPerEventFacetValue.facetValue.title&lt;/a&gt; (hitsPerEventFacetValue.numberOfHits)
+            &lt;/c:forEach"&gt;
+        </example>
+    </function>  
+    
+    <function>
+        <description>Create the URL to remove the facet from value the filter</description>
+        <name>getDeleteFacetUrl</name>
+        <function-class>org.jahia.taglibs.query.Functions</function-class>
+        <function-signature>String getDeleteFacetUrl(org.jahia.services.search.facets.FacetBean, org.jahia.services.search.facets.FacetValueBean, java.lang.String)
+        </function-signature>
+        <example>
+            &lt;query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets" display="false"/"&gt;        
+            &lt;c:forEach var="appliedFacetFilter" items="${appliedFacets}"&gt;
+              &lt;c:forEach var="facetValue" items="${appliedFacetsFilter.facetValueBeans}"&gt;
+                &lt;a href="${query:getDeleteFacetUrl(appliedFacetFilter.facetBean, facetValue, 'filter')}"&gt;remove&lt;/a&gt;
+              &lt;/c:forEach"&gt;                
+            &lt;/c:forEach"&gt;
+        </example>
+    </function>  
 </taglib>

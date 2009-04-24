@@ -96,7 +96,7 @@
 </c:choose>
 
 <query:createFacetFilter facetName="defaultCategoryFacet" 
-    propertyName="defaultCategory" facetBeanId="defaultCategoryFacet"/>
+    propertyName="defaultCategory" facetBeanId="defaultCategoryFacet" facetValueBeanId="categoryFacetValue"/>
 <query:createFacetFilter facetName="eventTypeFacet" targetContainerListName="events" 
     propertyName="eventsType" facetBeanId="eventTypeFacet" valueTitle="Unknown"/>
 
@@ -117,7 +117,6 @@
         <query:greaterThanOrEqualTo numberValue="false" propertyName="endDate" value="${beginMonth.time}"/>
         <query:lessThanOrEqualTo numberValue="false" propertyName="startDate" value="${endMonth.time}"/>        
     </query:createFacetFilter>
-    <c:set var="facetValueIds" value="${facetValueIds},${eventDateFacetValue.id}"/>    
 </c:forTokens>  
    
 
@@ -141,7 +140,7 @@
 <query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/>
 <c:if test='${!query:isFacetApplied(defaultCategoryFacet, appliedFacets)}'>
     <br/>Categories:<br/>
-    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="defaultCategoryFacet" filterQueryParamName="filter"/>
+    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="defaultCategoryFacet" facetValueBeanId="categoryFacetValue" filterQueryParamName="filter"/>
 </c:if>
 <c:if test='${!query:isFacetApplied(eventTypeFacet, appliedFacets)}'>
     <br/>Event types:<br/>
@@ -149,7 +148,5 @@
 </c:if>
 <c:if test='${!query:isFacetApplied(eventDateFacet, appliedFacets)}'>
     <br/>Next 4 months:<br/>
-    <c:forTokens var="facetValueId" items="${facetValueIds}" delims=",">
-        <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueId="${facetValueId}" filterQueryParamName="filter"/>
-    </c:forTokens>
+    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueBeanId="eventDateFacetValue" filterQueryParamName="filter"/>
 </c:if>    

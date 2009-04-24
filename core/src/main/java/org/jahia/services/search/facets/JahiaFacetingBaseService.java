@@ -35,7 +35,7 @@ package org.jahia.services.search.facets;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -307,26 +307,25 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
     }
 
     @Override
-    public Map<FacetValueBean, Integer> getHitsPerFacetValue(FacetBean facetBean, String facetValueId,
-            BitSet mainQueryBits, ContainerQueryContext queryContext, ProcessingContext jParams) throws JahiaException {
-        Map<FacetValueBean, Integer> result = new HashMap<FacetValueBean, Integer>();
+    public Map<FacetValueBean, Integer> getHitsPerFacetValue(
+            FacetBean facetBean, List<FacetValueBean> facetValues,
+            BitSet mainQueryBits, ContainerQueryContext queryContext,
+            ProcessingContext jParams) throws JahiaException {
+        Map<FacetValueBean, Integer> result = new LinkedHashMap<FacetValueBean, Integer>();
 
         ContainerSearcher searcher = getSearcher(queryContext, jParams);
-        int wantedFacetValueId = 0;
-        if (facetValueId != null) {
-            wantedFacetValueId = Integer.parseInt(facetValueId);
-        }
-        for (FacetValueBean facetValue : facetBean.getFacetValueBeans()) {
-            if (wantedFacetValueId == 0 || wantedFacetValueId == facetValue.hashCode()) {
-                JahiaSearchResult sr = searcher.search(facetValue.getFilterQuery(), jParams);
-                int matchingHits = sr.getHitCount();
-                if (mainQueryBits != null) {
-                    BitSet queryBitSet = (BitSet) mainQueryBits.clone();
-                    queryBitSet.and(sr.bits());
-                    matchingHits = queryBitSet.cardinality();
-                }
-                result.put(facetValue, matchingHits);
+
+        for (FacetValueBean facetValue : facetValues != null ? facetValues
+                : facetBean.getFacetValueBeans()) {
+            JahiaSearchResult sr = searcher.search(facetValue.getFilterQuery(),
+                    jParams);
+            int matchingHits = sr.getHitCount();
+            if (mainQueryBits != null) {
+                BitSet queryBitSet = (BitSet) mainQueryBits.clone();
+                queryBitSet.and(sr.bits());
+                matchingHits = queryBitSet.cardinality();
             }
+            result.put(facetValue, matchingHits);
         }
         return result;
     }

@@ -33,13 +33,14 @@
 
 package org.jahia.taglibs.query;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
@@ -47,18 +48,22 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.containers.ContainerQueryBean;
 import org.jahia.services.search.facets.FacetBean;
 import org.jahia.services.search.facets.FacetValueBean;
+import org.jahia.services.search.facets.HitsPerFacetValueBean;
+import org.jahia.services.search.facets.JahiaFacetingService;
 import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.utils.JahiaTools;
 
 @SuppressWarnings("serial")
 public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
 
-    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(GetHitsPerFacetValueTag.class);
+    private static org.apache.log4j.Logger logger = org.apache.log4j.Logger
+        .getLogger(GetHitsPerFacetValueTag.class);
 
     private String mainQueryBeanId;
-    private String facetValueId;
+    private String facetValueBeanId;
     private String facetBeanId;
     private String filterQueryParamName;
+    private boolean display = true;
+    private String hitsPerFacetBeanId;
 
     public int doStartTag() throws JspException {
         int eval = super.doStartTag();
@@ -72,89 +77,98 @@ public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
         // pooling.
         setMainQueryBeanId(null);
         setFacetBeanId(null);
-        setFacetValueId(null);       
+        setFacetValueBeanId(null);
         setFilterQueryParamName(null);
+        setHitsPerFacetBeanId(null);
+        setDisplay(true);
         return result;
     }
 
     private void processFaceting() {
         final ServletRequest request = pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+        final JahiaData jData = (JahiaData) request
+            .getAttribute("org.jahia.data.JahiaData");
         final ProcessingContext jParams = jData.getProcessingContext();
-        final JspWriter out = pageContext.getOut();
         try {
-            FacetBean facetBean = (FacetBean) pageContext.findAttribute(getFacetBeanId());
+            FacetBean facetBean = (FacetBean) pageContext
+                .findAttribute(getFacetBeanId());
             ContainerQueryBean mainQueryBean = getMainQueryBeanId() != null ? (ContainerQueryBean) pageContext
-                    .findAttribute(getMainQueryBeanId()) : null;
+                .findAttribute(getMainQueryBeanId())
+                    : null;
             if (mainQueryBean != null) {
-                StringBuffer buff = new StringBuffer();
-                String queryString = jParams.getQueryString();
-                if (queryString != null) {
-                    int index = queryString.indexOf(getFilterQueryParamName());
-                    if (index > -1) {
-                        queryString = queryString.substring(0, index);
-                        index = jParams.getQueryString().indexOf("&", index);
-                        if (index > -1) {
-                            queryString += jParams.getQueryString().substring(
-                                    index);
-                        }
-                    }
-                }
+                StringBuffer buff = isDisplay() ? new StringBuffer() : null;
                 BitSet mainQueryFilter = null;
-                BitSet facetedFilter = null;                
+                BitSet facetedFilter = null;
                 if (mainQueryBean.getFilter() != null) {
                     mainQueryFilter = mainQueryBean.getFilter().bits();
                 }
-                if (mainQueryFilter == null && mainQueryBean.getSorter() != null) {
+                if (mainQueryFilter == null
+                        && mainQueryBean.getSorter() != null) {
                     List<Integer> result = mainQueryBean.getSorter().result();
                     mainQueryFilter = new BitSet();
                     for (Integer bitIndex : result) {
                         mainQueryFilter.set(bitIndex);
                     }
-                }                
+                }
+                JahiaFacetingService facetingService = ServicesRegistry
+                    .getInstance().getJahiaFacetingService();
                 if (mainQueryBean.getQueryContext().getFacetedFilterResult() != null) {
                     facetedFilter = mainQueryBean.getQueryContext()
-                            .getFacetedFilterResult();
+                        .getFacetedFilterResult();
                 } else {
                     facetedFilter = mainQueryBean.getQueryContext()
-                            .getFacetFilterQueryParamName() != null ? ServicesRegistry
-                            .getInstance().getJahiaFacetingService()
-                            .applyFacetFilters(
-                                    null,
-                                    jParams.getParameter(mainQueryBean
-                                            .getQueryContext()
-                                            .getFacetFilterQueryParamName()),
-                                    mainQueryBean.getQueryContext(), jParams)
+                        .getFacetFilterQueryParamName() != null ? facetingService
+                        .applyFacetFilters(null, jParams
+                            .getParameter(mainQueryBean.getQueryContext()
+                                .getFacetFilterQueryParamName()), mainQueryBean
+                            .getQueryContext(), jParams)
                             : null;
                 }
                 if (mainQueryFilter != null && facetedFilter != null) {
-                    mainQueryFilter = (BitSet)mainQueryFilter.clone();
+                    mainQueryFilter = (BitSet) mainQueryFilter.clone();
                     mainQueryFilter.and(facetedFilter);
                 } else if (mainQueryFilter == null) {
                     mainQueryFilter = facetedFilter;
                 }
-                for (Map.Entry<FacetValueBean, Integer> hitsForFacetValue : ServicesRegistry.getInstance()
-                        .getJahiaFacetingService().getHitsPerFacetValue(facetBean, getFacetValueId(),
-                                mainQueryFilter, mainQueryBean.getQueryContext(), jParams).entrySet()) {
-                    int matchingHits = hitsForFacetValue.getValue();
-                    if (getFilterQueryParamName() != null) {
-                        buff.append("<a href=\"").append(jParams.getPage().getURL(jParams)).append("?").append(queryString != null && queryString.length() > 0 ? queryString + "&": "").append(
-                                getFilterQueryParamName()).append("=");
-                        Object forwardedFilter = jParams.getParameter(getFilterQueryParamName());
-                        if (forwardedFilter != null) {
-                            buff.append(forwardedFilter);
+                List<HitsPerFacetValueBean> hitsPerFacetValue = new ArrayList<HitsPerFacetValueBean>();
+                for (Map.Entry<FacetValueBean, Integer> hitsForFacetValue : facetingService
+                    .getHitsPerFacetValue(
+                        facetBean,
+                        getFacetValueBeanId() != null ? (List<FacetValueBean>) pageContext
+                            .findAttribute(getFacetValueBeanId())
+                                : null, mainQueryFilter,
+                        mainQueryBean.getQueryContext(), jParams).entrySet()) {
+
+                    HitsPerFacetValueBean bean = new HitsPerFacetValueBean(
+                        hitsForFacetValue.getKey(), hitsForFacetValue
+                            .getValue());
+
+                    if (isDisplay()) {
+                        String drilldownUrl = getFilterQueryParamName() != null ? Functions
+                            .getFacetDrillDownUrl(facetBean, bean
+                                .getFacetValue(), getFilterQueryParamName())
+                                : null;
+                        if (drilldownUrl != null) {
+                            buff.append("<a href=\"").append(drilldownUrl);
                         }
-                        buff.append(facetBean.hashCode()).append("_").append(hitsForFacetValue.getKey().hashCode())
-                                .append("_").append("\">");
-                    }
-                    buff.append(JahiaTools.getExpandedValue(hitsForFacetValue.getKey().getValue(), hitsForFacetValue.getKey().getValueArguments(), jParams, jParams.getLocale()));
-                    if (getFilterQueryParamName() != null) {
-                        buff.append("</a>");
+                        buff.append(bean.getFacetValue().getTitle());
+                        if (drilldownUrl != null) {
+                            buff.append("</a>");
+                        }
+
+                        buff.append("&nbsp;(").append(bean.getNumberOfHits())
+                            .append(")<br/>");
                     }
 
-                    buff.append("&nbsp;(").append(matchingHits).append(")<br/>");
+                    hitsPerFacetValue.add(bean);
                 }
-                out.print(buff.toString());
+                if (getHitsPerFacetBeanId() != null) {
+                    pageContext.setAttribute(getHitsPerFacetBeanId(),
+                        hitsPerFacetValue, PageContext.REQUEST_SCOPE);
+                }
+                if (buff != null) {
+                    pageContext.getOut().print(buff.toString());
+                }
             }
             if (getBodyContent() != null) {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -181,12 +195,12 @@ public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
         return facetBeanId;
     }
 
-    public void setFacetValueId(String facetValueId) {
-        this.facetValueId = facetValueId;
+    public void setFacetValueBeanId(String facetValueBeanId) {
+        this.facetValueBeanId = facetValueBeanId;
     }
 
-    public String getFacetValueId() {
-        return facetValueId;
+    public String getFacetValueBeanId() {
+        return facetValueBeanId;
     }
 
     public void setFilterQueryParamName(String filterQueryParamName) {
@@ -195,5 +209,21 @@ public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
 
     public String getFilterQueryParamName() {
         return filterQueryParamName;
+    }
+
+    public void setDisplay(boolean display) {
+        this.display = display;
+    }
+
+    public boolean isDisplay() {
+        return display;
+    }
+
+    public void setHitsPerFacetBeanId(String hitsPerFacetBeanId) {
+        this.hitsPerFacetBeanId = hitsPerFacetBeanId;
+    }
+
+    public String getHitsPerFacetBeanId() {
+        return hitsPerFacetBeanId;
     }
 }

@@ -730,8 +730,12 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 </table>
 </td>
 </tr>
+<% } else { %>
+<input id="directPageRadio" type="hidden" name="operation"
+       value="<%=Page_Field.UPDATE_PAGE%>" checked="checked">
+<input  type="hidden" name="template_id"
+       value="<%=pageBean.getPageTemplateID()%>" checked="checked">
 <% } %>
-
 </table>
 
 <script type="text/javascript">

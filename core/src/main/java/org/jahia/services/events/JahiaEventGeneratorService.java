@@ -58,7 +58,7 @@ public abstract class JahiaEventGeneratorService extends JahiaService {
 
     public abstract void fireAggregatedEvents();
 
-    public abstract void fireAggregatedEventsFlush();
+    public abstract void fireAggregatedEventsFlush(JahiaEvent theEvent);
 
     public abstract void fireSiteAdded (JahiaEvent theEvent) throws JahiaException;
 

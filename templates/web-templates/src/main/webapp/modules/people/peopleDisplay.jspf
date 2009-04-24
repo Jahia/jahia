@@ -12,10 +12,11 @@
             <p class="peopleBusinessUnit"><template:field name="peopleBusinessUnit"/></p>
 
                 <template:field name="peopleEmail" display="false" var="email"/>
-				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail"/></a></p>
+				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail" inlineEditingActivated="false"/></a></p>
 
 				<div class="peopleAction">
-<a class="peopleDownload" href="${peoplePicture.file.downloadUrl}" rel="facebox">View full size</a>
+<a class="peopleDownload" href="${peoplePicture.file.downloadUrl}" rel="facebox" alt="<template:field name='peopleLastname' inlineEditingActivated="false"/>"><fmt:message
+                            key='web_templates_peopleContainer.peopleViewFullSize'/></a>
 <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><fmt:message
                             key='web_templates_peopleContainer.peopleBiography'/></a>
 				</div>

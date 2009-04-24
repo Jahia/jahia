@@ -76,7 +76,7 @@ public class JahiaUserRequestWrapper extends HttpServletRequestWrapper {
         if (entryPointInstance == null) {
             return false;
         }
-        return entryPointInstance.isUserInRole(jahiaUser, role);        
+        return entryPointInstance.isUserInRole(jahiaUser, role);
     }
 
 }

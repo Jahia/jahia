@@ -366,7 +366,7 @@
 <internal:gwtResourceBundle resourceName="org.jahia.engines.users.SelectUG_Engine.newGroups.label"
                             aliasResourceName="um_addgroup"/>
 
-<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.mashups.label"
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.portletdef.label"
                             aliasResourceName="mw_mashups"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.portletdef.label"
                             aliasResourceName="mw_select_portlet_def"/>

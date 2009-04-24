@@ -150,7 +150,7 @@ public class PlutoDispatchingProvider implements DispatchingProvider {
 
         // Create portal servlet request and response to wrap the original
         // HTTP servlet request and response.
-        PortalServletRequest portalRequest = new JahiaPortalServletRequest(jParams.getUser(), (HttpServletRequest) jParams.getRealRequest(), window);
+        PortalServletRequest portalRequest = new JahiaPortalServletRequest(entryPointInstance,jParams.getUser(), (HttpServletRequest) jParams.getRealRequest(), window);
         // todo we should only add these if we are dispatching in the same context as Jahia.
         copyAttribute("org.jahia.data.JahiaData", jParams, portalRequest, window);
         copyAttribute("currentRequest", jParams, portalRequest, window);

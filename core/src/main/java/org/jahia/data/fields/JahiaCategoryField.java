@@ -228,33 +228,45 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
 
         Map<String, List<String>> tempValues = new HashMap<String, List<String>>();
         List<String> fieldRawValues = new ArrayList<String>();
-        String[] strVals = getValue() != null && Category_Field.NOSELECTION_MARKER.equals(getValue()) ? EMPTY_STRING_ARRAY : this.getValues();
+        String[] strVals = getValue() != null
+                && Category_Field.NOSELECTION_MARKER.equals(getValue()) ? EMPTY_STRING_ARRAY
+                : this.getValues();
         if (strVals != null) {
             fieldRawValues.addAll(Arrays.asList(strVals));
         }
 
         for (String curFieldRawValue : fieldRawValues) {
-            JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(this.getJahiaID());
-            List<SiteLanguageSettings> siteLanguageSettings = site.getLanguageSettings();
-            if (siteLanguageSettings != null) {
-                for (SiteLanguageSettings curSetting : siteLanguageSettings) {
-                    if (curSetting.isActivated()) {
-                        Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(curSetting.getCode());
-                        Category curCategory = Category.getCategory(curFieldRawValue, null);
-                        if (curCategory == null) {
-                            logger.warn("Couldn't find category " + curFieldRawValue + " when indexing field, ignoring entry...");
-                            continue;
+            if (curFieldRawValue.trim().length() > 0) {
+                JahiaSite site = ServicesRegistry.getInstance()
+                    .getJahiaSitesService().getSite(this.getJahiaID());
+                List<SiteLanguageSettings> siteLanguageSettings = site
+                    .getLanguageSettings();
+                if (siteLanguageSettings != null) {
+                    for (SiteLanguageSettings curSetting : siteLanguageSettings) {
+                        if (curSetting.isActivated()) {
+                            Locale tempLocale = LanguageCodeConverters
+                                .languageCodeToLocale(curSetting.getCode());
+                            Category curCategory = Category.getCategory(
+                                curFieldRawValue, null);
+                            if (curCategory == null) {
+                                logger
+                                    .warn("Couldn't find category "
+                                            + curFieldRawValue
+                                            + " when indexing field, ignoring entry...");
+                                continue;
+                            }
+                            String value = curCategory.getTitle(tempLocale);
+                            if (value == null || value.length() == 0) {
+                                value = curCategory.getKey();
+                            }
+                            List<String> vals = tempValues.get(tempLocale
+                                .toString());
+                            if (vals == null) {
+                                vals = new ArrayList<String>();
+                            }
+                            vals.add(value);
+                            tempValues.put(tempLocale.toString(), vals);
                         }
-                        String value = curCategory.getTitle(tempLocale);
-                        if (value == null || value.length() == 0) {
-                            value = curCategory.getKey();
-                        }
-                        List<String> vals = tempValues.get(tempLocale.toString());
-                        if (vals == null) {
-                            vals = new ArrayList<String>();
-                        }
-                        vals.add(value);
-                        tempValues.put(tempLocale.toString(), vals);
                     }
                 }
             }
@@ -283,19 +295,23 @@ public class JahiaCategoryField extends JahiaField implements JahiaAllowApplyCha
             fieldRawValues.addAll(Arrays.asList(strVals));
         }
 
-        Locale tempLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
+        Locale tempLocale = LanguageCodeConverters
+            .languageCodeToLocale(languageCode);
         List<String> vals = new ArrayList<String>();
         for (String val : fieldRawValues) {
-            Category curCategory = Category.getCategory(val, null);
-            if (curCategory == null) {
-                logger.warn("Couldn't find category " + val + " when indexing field, ignoring entry...");
-                continue;
+            if (val.trim().length() > 0) {
+                Category curCategory = Category.getCategory(val, null);
+                if (curCategory == null) {
+                    logger.warn("Couldn't find category " + val
+                            + " when indexing field, ignoring entry...");
+                    continue;
+                }
+                val = curCategory.getTitle(tempLocale);
+                if (val == null || val.length() == 0) {
+                    val = curCategory.getKey();
+                }
+                vals.add(val);
             }
-            val = curCategory.getTitle(tempLocale);
-            if (val == null || val.length() == 0) {
-                val = curCategory.getKey();
-            }
-            vals.add(val);
         }
       
         return vals.toArray(new String[vals.size()]);

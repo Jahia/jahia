@@ -74,13 +74,6 @@ if (elh != null) {
       <% if ((readOnlyMode && results.getReadOnlyTabs().contains(LockPrerequisites.EXPORT) || results.getReadOnlyTabs().contains(LockPrerequisites.ALL_LEFT)) && ! ((Boolean) engineMap.get("hasActiveEntries")).booleanValue()) { %>
         <fmt:message key="org.jahia.engines.importexport.export.unavailable.label"/>
       <% } else { %>
-        <div class="content-body padded">
-          <span class="dex-PushButton">
-            <span class="first-child">
-              <a class="ico-export" href="#" onclick="doExport(); return false;" title="<fmt:message key="org.jahia.engines.include.actionSelector.Export.label"/>"><fmt:message key="org.jahia.engines.include.actionSelector.Export.label"/></a>
-            </span>
-          </span>
-        </div>
         <table class="formTable" cellpadding="0" cellspacing="1" border="0" width="100%">
           <tr>
             <th><fmt:message key="org.jahia.engines.importexport.export.type.label"/></th>
@@ -109,6 +102,13 @@ if (elh != null) {
             </td>
           </tr>
         </table>
+        <div class="content-body padded">
+          <span class="dex-PushButton">
+            <span class="first-child">
+              <a class="ico-export" href="#" onclick="doExport(); return false;" title="<fmt:message key="org.jahia.engines.include.actionSelector.Export.label"/>"><fmt:message key="org.jahia.engines.include.actionSelector.Export.label"/></a>
+            </span>
+          </span>
+        </div>        
       <% } %>
     </div>
   </div>

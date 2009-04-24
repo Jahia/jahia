@@ -66,7 +66,7 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setFile(Boolean.FALSE);
     }
 
-    public GWTJahiaNode(String uuid, String name,String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
         super();
         setUUID(uuid);
         setName(name);
@@ -77,6 +77,7 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setDate(date);
         setNodeTypes(nodetypes);
         setInheritedNodeTypes(inheritedTypes);
+        setAclContext(aclContext);
         setFile(Boolean.FALSE);
         setWriteable(writeable);
         setLockable(lockable);
@@ -86,8 +87,8 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
         setThumbnailsMap(new HashMap<String, String>());
     }
 
-    public GWTJahiaNode(String uuid, String name,String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, Long size, String ext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
-        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, writeable, lockable, locked, lockOwner);
+    public GWTJahiaNode(String uuid, String name, String description, String path, String url, Date date, List<String> nodetypes, List<String> inheritedTypes, String aclContext, Long size, String ext, boolean writeable, boolean lockable, boolean locked, String lockOwner) {
+        this(uuid, name,description, path, url, date, nodetypes, inheritedTypes, aclContext, writeable, lockable, locked, lockOwner);
         setSize(size);
         setFile(Boolean.TRUE);
         setExt(ext);
@@ -224,6 +225,14 @@ public class GWTJahiaNode extends BaseTreeModel<GWTJahiaNode> implements Seriali
 
     public void setInheritedNodeTypes(List<String> nodeTypes) {
         set("inheritedNodeTypes", nodeTypes);
+    }
+
+    public String getAclContext() {
+        return get("aclContext");
+    }
+
+    public void setAclContext(String aclContext) {
+        set("aclContext", aclContext);
     }
 
     public List<String> getInheritedNodeTypes() {

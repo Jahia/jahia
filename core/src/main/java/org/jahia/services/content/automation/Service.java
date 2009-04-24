@@ -194,6 +194,7 @@ public class Service {
                 jobDataMap.put(ImportJob.URI, uri);
                 jobDataMap.put(ImportJob.CONTENT_TYPE,"application/zip");
                 jobDataMap.put(BackgroundJob.JOB_TYPE, ProductionJob.PRODUCTION_TYPE);
+//                jobDataMap.put(ProductionJob.JOB_TITLE, fr);
 
                 jobDataMap.put(ImportJob.PUBLISH_ALL_AT_END, new Boolean(uri.indexOf("AndPublish")>-1));
                 schedulerServ.scheduleJobNow(jobDetail);

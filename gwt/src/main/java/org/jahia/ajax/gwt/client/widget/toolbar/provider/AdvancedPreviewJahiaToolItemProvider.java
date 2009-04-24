@@ -116,7 +116,7 @@ public class AdvancedPreviewJahiaToolItemProvider extends AbstractJahiaToolItemP
                     public void addGroups(List<GWTJahiaGroup> groups) {
                         // we are not interested in groups
                     }
-                }, UserGroupSelect.VIEW_USERS, false, true);
+                }, UserGroupSelect.VIEW_USERS, "currentSite", true);
             }
         };
         aliasingName.setTriggerStyle("um-user");

@@ -86,4 +86,28 @@ public class GWTJahiaGroup extends BaseModelData implements Serializable {
         set("displaymembers", displaymembers) ;
     }
 
+    public void setSiteName (String serverName) {
+        set("siteName",serverName);
+    }
+
+    public String getSiteName(){
+        return get("siteName");
+    }
+
+    public void setSiteId (Integer siteId) {
+        set("siteId",siteId);
+    }
+
+    public Integer getSiteId(){
+        return get("siteId");
+    }
+
+    public void setProvider (String provider) {
+        set("provider",provider);
+    }
+
+    public String getProvider(){
+        return get("provider");
+    }
+
 }

@@ -647,6 +647,7 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
                 GWTJahiaSite gwtJahiaSite = new GWTJahiaSite();
                 gwtJahiaSite.setSiteId(jahiaSite.getID());
                 gwtJahiaSite.setSiteName(jahiaSite.getServerName());
+                gwtJahiaSite.setSiteKey(jahiaSite.getSiteKey());
                 returnedSites.add(gwtJahiaSite);
             }
         } catch (JahiaException e) {

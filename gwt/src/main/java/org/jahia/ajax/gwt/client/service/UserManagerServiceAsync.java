@@ -51,7 +51,11 @@ public interface UserManagerServiceAsync {
 
     void searchUsers (String match, int offset, int limit, List<Integer> siteIds, AsyncCallback<PagingLoadResult<GWTJahiaUser>> async);
 
-    void searchGroups(String match, int offset, int limit, AsyncCallback<PagingLoadResult<GWTJahiaGroup>> async);
+    void searchUsersInContext (String match, int offset, int limit, String context, AsyncCallback<PagingLoadResult<GWTJahiaUser>> async);
+
+    void searchGroups(String match, int offset, int limit, List<Integer> siteIds, AsyncCallback<PagingLoadResult<GWTJahiaGroup>> async);
+
+    void searchGroupsInContext (String match, int offset, int limit, String context, AsyncCallback<PagingLoadResult<GWTJahiaGroup>> async);
 
     void getFormattedPrincipal(String userkey, char type, String[] textpattern, AsyncCallback<String[]> async);
 }

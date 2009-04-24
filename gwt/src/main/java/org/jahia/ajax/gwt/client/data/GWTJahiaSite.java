@@ -33,6 +33,8 @@
 
 package org.jahia.ajax.gwt.client.data;
 
+import com.extjs.gxt.ui.client.data.BaseModelData;
+
 import java.io.Serializable;
 
 /**
@@ -42,23 +44,28 @@ import java.io.Serializable;
  * Time: 16:43:36
  * To change this template use File | Settings | File Templates.
  */
-public class GWTJahiaSite implements Serializable {
-    private int siteId;
-    private String siteName;
-
+public class GWTJahiaSite extends BaseModelData implements Serializable {
     public int getSiteId () {
-        return siteId;
+        return (Integer) get("siteId");
     }
 
     public void setSiteId (int siteId) {
-        this.siteId = siteId;
+        set("siteId", new Integer(siteId));
     }
 
     public String getSiteName () {
-        return siteName;
+        return get("siteName");
     }
 
     public void setSiteName (String siteName) {
-        this.siteName = siteName;
+        set("siteName",siteName);
+    }
+
+    public String getSiteKey () {
+        return get("siteKey");
+    }
+
+    public void setSiteKey (String siteKey) {
+        set("siteKey",siteKey);
     }
 }

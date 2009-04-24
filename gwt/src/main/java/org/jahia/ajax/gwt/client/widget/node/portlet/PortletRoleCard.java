@@ -95,7 +95,7 @@ public class PortletRoleCard extends MashupWizardCard {
     }
 
     private void initAclEditor(GWTJahiaNodeACL acl) {
-        aclEditor = new AclEditor(getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl(), false);
+        aclEditor = new AclEditor(getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl(), getPortletWizardWindow().getParentNode().getAclContext());
         aclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
         aclEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_roles_adduser", "Add rode-user permission"));
         aclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_roles_addgroup", "Add rode-group permission"));

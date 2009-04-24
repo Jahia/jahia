@@ -243,7 +243,7 @@ public class CategoryDetails extends BottomRightComponent {
 
 
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
-                        aclEditor = new AclEditor(gwtJahiaNodeACL, true);
+                        aclEditor = new AclEditor(gwtJahiaNodeACL, "siteSelector");
                         final TextToolItem saveButton = aclEditor.getSaveButton();
 
                         // add selection lister on save button

@@ -68,7 +68,12 @@ public interface UserManagerService extends RemoteService  {
 
     public PagingLoadResult<GWTJahiaUser> searchUsers (String match, int offset, int limit, List<Integer> siteIds);
 
-    public PagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit);
+    public PagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds);
+
+    public PagingLoadResult<GWTJahiaUser> searchUsersInContext (String match, int offset, int limit, String context);
+
+    public PagingLoadResult<GWTJahiaGroup> searchGroupsInContext (String match, int offset, int limit, String context);
+
 
     public String[] getFormattedPrincipal(String key, char type, String[] textpattern);
 

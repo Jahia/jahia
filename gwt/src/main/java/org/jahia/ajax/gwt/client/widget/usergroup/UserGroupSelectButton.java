@@ -155,7 +155,7 @@ public class UserGroupSelectButton extends InlineHTML {
                                     .getUsername());
                         }
                     }
-                }, getViewMode(), showSiteSelector, singleSelectionMode);
+                }, getViewMode(), "currentSite", singleSelectionMode);
             }
         });
     }

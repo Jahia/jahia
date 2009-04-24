@@ -81,6 +81,9 @@
     boolean newAcl = (Boolean) engineMap.get("newAcl");
     String sessionId = (String) engineMap.get("sessionIdentifier");
 
+    String aclContext = (String) engineMap.get("aclContext");
+    if (aclContext == null) aclContext = "currentSite";
+
     Boolean readOnly = (Boolean) engineMap.get("readOnly");
     if (readOnly ==  null ) {
         readOnly = false;
@@ -168,7 +171,7 @@
             }
         </script>
         <internal:gwtImport module="org.jahia.ajax.gwt.module.acleditor.ACLEditor" />
-        <internal:aclEditor aclId="<%= aclId %>" newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionId %>" readOnly="<%= readOnly %>"/>
+        <internal:aclEditor aclId="<%= aclId %>" newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionId %>" readOnly="<%= readOnly %>" aclContext="<%=aclContext%>" />
 
     </div>
   </div>

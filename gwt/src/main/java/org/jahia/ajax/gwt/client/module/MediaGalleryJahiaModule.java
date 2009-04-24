@@ -65,7 +65,7 @@ public class MediaGalleryJahiaModule extends JahiaModule {
                 BrowserLinker linker = new BrowserLinker() ;
                 final ThumbView view = new ThumbView(ManagerConfigurationFactory.getConfiguration(conf, linker)) ;
                 linker.registerComponents(null, view, null, null, null); ;
-                final GWTJahiaNode directory = new GWTJahiaNode(null,null, null, path, null, null, null, null, false, false, false, null);
+                final GWTJahiaNode directory = new GWTJahiaNode(null,null, null, path, null, null, null, null, null, false, false, false, null);
                 view.setContent(directory);
                 panel.add(view.getComponent());
             }

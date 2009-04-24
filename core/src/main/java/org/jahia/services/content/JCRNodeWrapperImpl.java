@@ -145,6 +145,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
         if (localPath.equals("/")) {
+            if (provider.getMountPoint().equals("/")) {
+                throw new ItemNotFoundException();
+            }
             return (Node) session.getItem(StringUtils.substringBeforeLast(provider.getMountPoint(),"/"));
         } else {
             return provider.getNodeWrapper(objectNode.getParent(), session);

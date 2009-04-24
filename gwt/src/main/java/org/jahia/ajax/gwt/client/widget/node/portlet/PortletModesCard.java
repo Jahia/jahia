@@ -94,7 +94,7 @@ public class PortletModesCard extends MashupWizardCard {
     }
 
     private void initModeMappingEditor(GWTJahiaNodeACL acl) {
-        modeMappingEditor = new AclEditor(acl, false);
+        modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
         modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_modes_adduser", "Add mode-user permission"));
         modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_modes_addgroup", "Add mode-group permission"));

@@ -72,7 +72,7 @@ public class AclEditor {
     private GWTJahiaNodeACL acl;
     private Map<String, GWTJahiaNodeACE> aceMap;
     private GWTJahiaNodeACL originalAcl;
-    private final boolean showSiteSelector;
+    private final String context;
     private List<String> items;
     private SaveButton saveButton;
     private RestoreButton restoreButton;
@@ -87,9 +87,9 @@ public class AclEditor {
     private String addUsersLabel = getResource("um_adduser");
     private String addGroupsLabel = getResource("um_addgroup");
 
-    public AclEditor(GWTJahiaNodeACL acl, boolean showSiteSelector) {
+    public AclEditor(GWTJahiaNodeACL acl, String aclContext) {
         this.originalAcl = acl;
-        this.showSiteSelector = showSiteSelector;
+        this.context = aclContext;
         this.acl = originalAcl.cloneObject();
         saveButton = new SaveButton();
         restoreButton = new RestoreButton();
@@ -97,8 +97,8 @@ public class AclEditor {
     }
 
 
-    public AclEditor(GWTJahiaNodeACL acl, boolean showSiteSelector, boolean displayInheritanceColumn) {
-        this(acl, showSiteSelector);
+    public AclEditor(GWTJahiaNodeACL acl, String aclContext, boolean displayInheritanceColumn) {
+        this(acl, aclContext);
         this.displayInheritanceColumn = displayInheritanceColumn;
     }
 
@@ -360,7 +360,7 @@ public class AclEditor {
         addUsersToolItem.setEnabled(!readOnly);
         addUsersToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
-                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, showSiteSelector);
+                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, context);
             }
         });
         toolBar.add(addUsersToolItem);
@@ -369,7 +369,7 @@ public class AclEditor {
         addUsersToolItem.setEnabled(!readOnly);
         addUsersToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
             public void componentSelected(ComponentEvent event) {
-                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, showSiteSelector);
+                new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, context);
             }
         });
         toolBar.add(addUsersToolItem);

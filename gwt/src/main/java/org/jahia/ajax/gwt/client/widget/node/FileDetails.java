@@ -515,7 +515,7 @@ public class FileDetails extends BottomRightComponent {
                      */
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
-                        roleAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
+                        roleAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext(), false);
                         roleAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_roles", "Add group-role mapping"));
                         roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles", "Add user-role mapping"));
                         roleAclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
@@ -558,7 +558,7 @@ public class FileDetails extends BottomRightComponent {
                      */
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
-                        modeAclEditor = new AclEditor(gwtJahiaNodeACL, false, false);
+                        modeAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext(), false);
                         modeAclEditor.setAddGroupsLabel(Messages.getNotEmptyResource("fm_addgroup_modes", "Add group-mode mapping"));
                         modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes", "Add user-mode mapping"));
                         modeAclEditor.setAclGroup(JCRClientUtils.MODES_ACL);
@@ -602,7 +602,7 @@ public class FileDetails extends BottomRightComponent {
                      */
                     public void onSuccess(final GWTJahiaNodeACL gwtJahiaNodeACL) {
                         // auth. editor
-                        authAclEditor = new AclEditor(gwtJahiaNodeACL, false);
+                        authAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext());
                         authAclEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
                         authAclEditor.setCanBreakInheritance(false);
                         authAclEditor.setReadOnly(!selectedNode.isWriteable());

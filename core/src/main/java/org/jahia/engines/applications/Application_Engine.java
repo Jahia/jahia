@@ -250,6 +250,7 @@ public class Application_Engine implements JahiaEngine {
             toolBox.loadLogData(jParams, JahiaObjectTool.APPLICATION_TYPE, engineMap);
         } else if (theScreen.equals("rightsMgmt")) {
             if (engineMap.get(ADMIN_ACCESS_STR) != null) {
+                engineMap.put("aclContext","siteSelector");
                 ManageRights.getInstance().handleActions(jParams, mode, engineMap, theApplication.getAclID(), null, null);
             } else {
                 throw new JahiaForbiddenAccessException();

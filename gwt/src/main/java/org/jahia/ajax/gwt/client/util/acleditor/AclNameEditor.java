@@ -229,13 +229,13 @@ public class AclNameEditor {
             addUser.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     Log.debug("add");
-                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, false);
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, "currentSite");
                 }
             });
             addGroup.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     Log.debug("add");
-                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, false);
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, "currentSite");
                 }
             });
         }

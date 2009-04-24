@@ -92,7 +92,7 @@ public class UserGroupSelectEntryPoint {
                     });
                 }
             }
-        },viewMode,false);
+        },viewMode,"currentSite");
     }
 
 

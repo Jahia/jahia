@@ -536,8 +536,19 @@ public class FileManagerWorker {
         } catch (RepositoryException e) {
             logger.debug("Unable to get description property for node " + f.getName(), e);
         }
+
+        String aclContext = "sharedOnly";
+        Node i = f;
+        try {
+            while ( !i.isNode() || !i.isNodeType("jnt:virtualsite") ) {
+                i = i.getParent();
+            }
+            aclContext = "site:"+i.getName();
+        } catch (RepositoryException e) {
+        }
+
         if (f.isFile() || f.isPortlet()) {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, f.getFileContent().getContentLength(), new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), f.getNodeTypes(), inherited, aclContext, f.getFileContent().getContentLength(), new StringBuilder("icon-").append(FileUtils.getFileIcon(f.getName())).toString(), f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
             if (f.isPortlet()) {
                 try {
                     JCRPortletNode portletNode = new JCRPortletNode(f);
@@ -551,7 +562,7 @@ public class FileManagerWorker {
                 }
             }
         } else {
-            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
+            n = new GWTJahiaNode(uuid, f.getName(), description, f.getProvider().decodeInternalName(f.getPath()), f.getUrl(), f.getLastModifiedAsDate(), list, inherited, aclContext, f.isWriteable(), f.isLockable(), f.isLocked(), f.getLockOwner());
             boolean hasChildren = false;
             boolean hasFolderChildren = false;
             if (f instanceof JCRMountPointNode) {

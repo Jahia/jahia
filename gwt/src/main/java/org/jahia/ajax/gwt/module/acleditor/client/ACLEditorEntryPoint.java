@@ -68,6 +68,7 @@ public class ACLEditorEntryPoint {
             String acl = DOM.getElementAttribute(panel.getElement(), "aclid");
             newAcl = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "newAcl"));
             sessionIdentifier = DOM.getElementAttribute(panel.getElement(), "sessionIdentifier");
+            final String aclContext = DOM.getElementAttribute(panel.getElement(), "aclContext");
             final boolean readOnly = Boolean.parseBoolean(DOM.getElementAttribute(panel.getElement(), "readOnly"));
 
             aclId = Integer.parseInt(acl);
@@ -78,7 +79,7 @@ public class ACLEditorEntryPoint {
                 }
 
                 public void onSuccess(GWTJahiaNodeACL result) {
-                    aclEditor = new AclEditor(result, false);
+                    aclEditor = new AclEditor(result, aclContext!=null?aclContext:"currentSite");
                     aclEditor.setCanBreakInheritance(true);
                     aclEditor.setReadOnly(readOnly);
                     final Widget saveButton = aclEditor.getSaveButton();

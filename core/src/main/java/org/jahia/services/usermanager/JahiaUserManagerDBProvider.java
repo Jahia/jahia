@@ -441,9 +441,13 @@ public class JahiaUserManagerDBProvider extends JahiaUserManagerProvider impleme
             String curUserKey = (String) userKeyEnum.next ();
             JahiaUser user = lookupUserByKey(curUserKey);
             if (user == null) continue;
-            JahiaUser member = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(siteID, user.getUsername());
-            if (member != null && member.getUserKey().equals(user.getUserKey())) {
+            if (siteID == 0) {
                 result.add (user);
+            } else {
+                JahiaUser member = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMember(siteID, user.getUsername());
+                if (member != null && member.getUserKey().equals(user.getUserKey())) {
+                    result.add (user);
+                }
             }
         }
 

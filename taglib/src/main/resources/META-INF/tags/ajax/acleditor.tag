@@ -40,10 +40,11 @@
 <%@ attribute name="newAcl" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
 <%@ attribute name="sessionIdentifier" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="readOnly" required="false" rtexprvalue="true" type="java.lang.Boolean" description="text" %>
+<%@ attribute name="aclContext" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 
 <template:gwtJahiaModule id="gwtacleditor" jahiaType="gwtacleditor" aclid="<%= aclId %>"
                          readOnly="<%= readOnly != null ? readOnly : Boolean.FALSE.toString() %>"
-                         newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionIdentifier %>" templateUsage="false"/>
+                         newAcl="<%= newAcl %>" sessionIdentifier="<%= sessionIdentifier %>" templateUsage="false" aclContext="<%=aclContext%>"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.rights.ManageRights.principal.label"
                             aliasResourceName="ae_principal"/>

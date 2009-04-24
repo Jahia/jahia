@@ -227,7 +227,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
     }
 
     public void mount(String path, String target, String root) throws GWTJahiaServiceException {
-        FileManagerWorker.mount(path, target, root, getUser());
+        FileManagerWorker.mount(target, root, getUser());
     }
 
 

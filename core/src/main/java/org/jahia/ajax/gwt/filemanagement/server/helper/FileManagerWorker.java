@@ -1307,47 +1307,59 @@ public class FileManagerWorker {
         }
     }
 
-    public static void mount(String parentPath, String name, String root, JahiaUser user) throws GWTJahiaServiceException {
-        List<JCRNodeWrapper> userFolders = jcr.getUserFolders(null, user);
-        if (userFolders.size() == 1) {
-            JCRNodeWrapper parent = jcr.getFileNode("/content", user);
-            JCRNodeWrapper mounts = jcr.getFileNode(parent.getPath() + "/mounts", user);
-            if (!mounts.isValid()) {
+    public static void mount(String name, String root, JahiaUser user) throws GWTJahiaServiceException {
+        if (user.isAdminMember(0)) {
+            JCRSessionWrapper session = null;
+            try {
+                session = jcr.getSystemSession(user.getName());
+                JCRNodeWrapper parent = session.getNode("/content");
+                JCRNodeWrapper mounts = null;
                 try {
-                    mounts = parent.createCollection("mounts");
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                    throw new GWTJahiaServiceException("Could not create 'mounts' folder");
-                }
-            } else if (!mounts.isCollection()) {
-                throw new GWTJahiaServiceException("A file already exists with name 'mounts'");
-            }
-
-            JCRMountPointNode childNode = null;
-            if (mounts.isValid() && !mounts.isFile() && mounts.isWriteable()) {
-                try {
-                    childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:vfsMountPoint");
-                    childNode.setProperty("j:root", root);
-
-                    boolean valid = childNode.checkValidity();
-                    if (!valid) {
-                        childNode.remove();
-                        throw new GWTJahiaServiceException("Invalid path");
+                    mounts = (JCRNodeWrapper) parent.getNode("mounts");
+                } catch (PathNotFoundException nfe) {
+                    try {
+                        mounts = parent.addNode("mounts", "jnt:systemFolder");
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                        throw new GWTJahiaServiceException("Could not create 'mounts' folder");
                     }
-                } catch (RepositoryException e) {
-                    logger.error("Exception", e);
+                }
+
+                JCRMountPointNode childNode = null;
+                if (mounts.isValid() && !mounts.isFile()) {
+                    try {
+                        childNode = (JCRMountPointNode) mounts.addNode(name, "jnt:vfsMountPoint");
+                        childNode.setProperty("j:root", root);
+
+                        boolean valid = childNode.checkValidity();
+                        if (!valid) {
+                            childNode.remove();
+                            throw new GWTJahiaServiceException("Invalid path");
+                        }
+                    } catch (RepositoryException e) {
+                        logger.error("Exception", e);
+                        throw new GWTJahiaServiceException("Folder creation failed");
+                    }
+                    try {
+                        parent.save();
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                        throw new GWTJahiaServiceException("Folder creation failed");
+                    }
+                }
+                if (childNode == null || !childNode.isValid()) {
                     throw new GWTJahiaServiceException("Folder creation failed");
                 }
-                try {
-                    parent.save();
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                    throw new GWTJahiaServiceException("Folder creation failed");
-                }
-            }
-            if (childNode == null || !childNode.isValid()) {
+            } catch (RepositoryException e) {
+                logger.error("Folder creation failed", e);
                 throw new GWTJahiaServiceException("Folder creation failed");
+            } finally {
+                if (session != null) {
+                    session.logout();
+                }
             }
+        } else {
+            throw new GWTJahiaServiceException("Only root can mount folders");            
         }
     }
 

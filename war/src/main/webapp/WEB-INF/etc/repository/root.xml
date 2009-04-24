@@ -32,7 +32,7 @@
 
     <referencesKeeper jcr:primaryType="jnt:referencesKeeper" />
 
-    <mounts jcr:primaryType="jnt:folder" >
+    <mounts jcr:primaryType="jnt:systemfolder" >
         <j:acl jcr:primaryType="jnt:acl">
             <GRANT_jcr_read_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:read" j:aceType="GRANT"/>
             <GRANT_jcr_write_g_users j:protected="false" jcr:primaryType="jnt:ace" j:principal="g:users" j:privileges="jcr:write" j:aceType="GRANT"/>

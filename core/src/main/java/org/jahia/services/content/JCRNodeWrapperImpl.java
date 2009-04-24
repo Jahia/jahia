@@ -185,10 +185,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return false;
         }
+        if (isNodeType("jnt:mountPoint")) {
+            return getUser().isAdminMember(0);
+        }
         JCRStoreProvider jcrStoreProvider = getProvider();
         if (jcrStoreProvider.isDynamicallyMounted()) {
             try {
-                return ((JCRNodeWrapper) session.getItem(jcrStoreProvider.getMountPoint())).isWriteable();
+                return ((JCRNodeWrapper) session.getItem(jcrStoreProvider.getMountPoint())).hasPermission(WRITE);
             } catch (RepositoryException e) {
                 logger.error("Cannot get node",e);
                 return false;

@@ -781,7 +781,7 @@ cite {
 a.bottomanchor {
     float: right;
     margin: 10px 10px 0 0;
-    font: 0.8em;
+    font:0.8em;
     background-image: url( "../images/fleche_orange.gif" );
     padding-left: 15px;
     background-repeat: no-repeat;

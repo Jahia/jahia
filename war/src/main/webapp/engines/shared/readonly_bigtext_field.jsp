@@ -56,7 +56,7 @@
 <utility:setBundle basename="JahiaInternalResources"/>
 <fieldset>
     <legend>
-        &nbsp;<b><fmt:message key="org.jahia.engines.value.label"/></b>&nbsp;
+        &nbsp;<fmt:message key="org.jahia.engines.value.label"/>&nbsp;
     </legend>
     <%= (value == null || value.length() == 0) ? "&nbsp;" : value %>
 </fieldset>

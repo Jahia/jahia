@@ -552,7 +552,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-pageproperties-min"
                         max="gwt-toolbar-ItemsGroup-icons-pageproperties-normal"/>
             <description-resourcebundle-key key="button.pageSettings"/>
-            <visibility mode="edit"/>
+            <visibility mode="edit" permission="write"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="pageproperties"/>

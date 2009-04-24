@@ -112,10 +112,7 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
     }
 
     public void fireAggregatedEvents() {
-        logger.debug("Flushing events ..");
-
-        fireAggregatedEventsFlush();
-
+        logger.debug("Firing aggregated events ..");
         List<MethodWithEvent> events = tlevents.get();
         if (events != null) {
             for (; !events.isEmpty(); ) {
@@ -140,15 +137,15 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
                 }
             }
         }
-    }
-
-    public void fireAggregatedEventsFlush() {
-
-        List<MethodWithEvent> events = tlevents.get();
+        logger.debug("Flushing events ..");
         if ( events != null ){
             JahiaEvent event = new JahiaEvent(this,null,events);
-            listenersRegistry.wakeupListeners ("aggregatedEventsFlush",event);
-        }
+            fireAggregatedEventsFlush(event);
+        }    
+    }
+
+    public void fireAggregatedEventsFlush(JahiaEvent theEvent) {
+        listenersRegistry.wakeupListeners ("aggregatedEventsFlush", theEvent);
     }
 
     public void fireSiteAdded (JahiaEvent theEvent) throws JahiaException {

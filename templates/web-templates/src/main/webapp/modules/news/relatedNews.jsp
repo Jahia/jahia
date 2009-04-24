@@ -42,6 +42,7 @@
             <query:descendantNode selectorName="newsRelated" path="${currentSite.JCRPath}"/>
             <query:equalTo propertyName="${queryConstants.CATEGORY_LINKS}" value="${param.categories}"
                            multiValue="true" metadata="true"/>
+             <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="5" />
             <query:sortBy propertyName="newsDate" order="${queryConstants.ORDER_DESCENDING}"/>
         </query:containerQuery>
         <div class="box2 box2-style1"><!--start box 2 style1 -->

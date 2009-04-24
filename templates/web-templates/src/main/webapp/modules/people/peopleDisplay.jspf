@@ -15,7 +15,7 @@
 				<p class="peopleEmail"><a href='mailto:${email}'><template:field name="peopleEmail" inlineEditingActivated="false"/></a></p>
 
 				<div class="peopleAction">
-<a class="peopleDownload" href="${peoplePicture.file.downloadUrl}" rel="facebox" alt="<template:field name='peopleLastname' inlineEditingActivated="false"/>"><fmt:message
+<a class="peopleDownload" href="${peoplePicture.file.downloadUrl}" rel="facebox" alt="<template:field name='peopleLastname' inlineEditingActivated='false'/>"><fmt:message
                             key='web_templates_peopleContainer.peopleViewFullSize'/></a>
 <a class="peopleBiographiy" href="javascript:;" onclick="ShowHideLayer(${peopleContainer.ID});"><fmt:message
                             key='web_templates_peopleContainer.peopleBiography'/></a>

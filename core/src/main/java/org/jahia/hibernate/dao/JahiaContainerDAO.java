@@ -1106,7 +1106,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             parameters.put("contentType", ContentContainerKey.CONTAINER_TYPE);
         }
 
-        buff.append(" SELECT f.comp_id.id, f.comp_id.workflowState, f.comp_id.versionId, f.metadataOwnerId, f.containerId FROM JahiaFieldsData f ");
+        buff.append(" SELECT f.comp_id.id, f.comp_id.workflowState, f.comp_id.versionId, f.metadataOwnerId, f.containerId FROM JahiaFieldsData f, JahiaContainer c  ");
         boolean addSiteParam = false;
         boolean addContainerDefinitionNameParam = false;
         boolean addContainerListIdParam = false;
@@ -1115,15 +1115,12 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
                 addSiteParam = true;
             }
             if (ctnDefIDs != null && !ctnDefIDs.isEmpty()) {
-                buff.append(", JahiaContainer c ");
                 addContainerDefinitionNameParam = true;
             }
         } else {
             if (ctnDefIDs != null && !ctnDefIDs.isEmpty()) {
-                buff.append(", JahiaContainer c ");
                 addContainerDefinitionNameParam = true;
             } else if (ctListId != null && ctListId > 0) {
-                buff.append(", JahiaContainer c ");
                 parameters.put("ctListId", ctListId);
                 addContainerListIdParam = true;
             }
@@ -1154,7 +1151,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             buff.append(" AND c.listid= :ctListId ");
         }
         if (addSiteParam) {
-            buff.append(" AND c.siteId IN (:siteIds) ");
+            buff.append(" AND f.siteId IN (:siteIds) ");
         }
         if (sortByMetadata) {
             buff.append(" AND c.comp_id.id=f.metadataOwnerId ");
@@ -1264,7 +1261,7 @@ public class JahiaContainerDAO extends AbstractGeneratorDAO {
             buff.append(" AND c.listid= :ctListId ");
         }
         if (addSiteParam) {
-            buff.append(" AND c.siteId IN (:siteIds) ");
+            buff.append(" AND f.siteId IN (:siteIds) ");
         }
 
         appendFieldMultilangAndWorkflowParams(buff, parameters, loadRequest,

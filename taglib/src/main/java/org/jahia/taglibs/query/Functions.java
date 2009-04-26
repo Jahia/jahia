@@ -49,13 +49,18 @@ import org.jahia.services.search.facets.FacetValueBean;
  */
 public class Functions {
 
-    public static boolean isFacetApplied(FacetBean facet,
-            List<AppliedFacetFilters> appliedFacets) {
+    public static boolean isFacetApplied(FacetBean facet, List<AppliedFacetFilters> appliedFacets) {
         boolean facetApplied = false;
         if (appliedFacets != null) {
             for (AppliedFacetFilters appliedFacetFilters : appliedFacets) {
                 if (appliedFacetFilters.getFacetBean().equals(facet)) {
-                    facetApplied = true;
+                    if (facet.isMultiple()) {
+                        if (appliedFacetFilters.getFacetValueBeans().containsAll(facet.getFacetValueBeans())) {
+                            facetApplied = true;
+                        }
+                    } else {
+                        facetApplied = true;
+                    }
                     break;
                 }
             }

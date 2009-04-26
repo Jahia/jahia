@@ -43,13 +43,14 @@ public class FacetBean implements Serializable {
     private static final long serialVersionUID = 827940036254584574L;
 
     public enum FacetType {
-        FIELD_FACET, QUERY_FACET;
+        FIELD_FACET, QUERY_FACET, CATEGORY_FACET;
     }
     
     private String name;
 
     private String propertyName;
     private FacetType facetType;
+    private boolean multiple;
     
     private Map<String, FacetValueBean> facetValueBeans = new HashMap<String, FacetValueBean>();
 
@@ -102,6 +103,14 @@ public class FacetBean implements Serializable {
     @Override
     public int hashCode() {
         return Math.abs(getName().hashCode());
+    }
+
+    public void setMultiple(boolean multiple) {
+        this.multiple = multiple;
+    }
+
+    public boolean isMultiple() {
+        return multiple;
     }    
    
 }

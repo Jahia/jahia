@@ -37,19 +37,22 @@ import java.io.Serializable;
 
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
+import org.jahia.services.categories.Category;
 import org.jahia.utils.JahiaTools;
 
 public class FacetValueBean implements Serializable {
 
     private static final long serialVersionUID = 7376877535833721067L;
     
+    private FacetBean facetBean;
     private String value;
     private Object[] valueArguments;    
     private String filterQuery;    
     private String languageCode;    
     
-    public FacetValueBean(String value, Object[] valueArguments, String filterQuery, String languageCode) {
+    public FacetValueBean(FacetBean facetBean, String value, Object[] valueArguments, String filterQuery, String languageCode) {
         super();
+        this.facetBean = facetBean;        
         this.value = value;
         this.setValueArguments(valueArguments);
         this.filterQuery = filterQuery;        
@@ -89,8 +92,16 @@ public class FacetValueBean implements Serializable {
     
     public String getTitle() {
         ProcessingContext jParams = Jahia.getThreadParamBean();
-        return JahiaTools.getExpandedValue(getValue(),
-            getValueArguments(), jParams, jParams.getLocale());
+
+        String title = "";
+        if (facetBean.getFacetType() == FacetBean.FacetType.CATEGORY_FACET) {
+            Category category = ((Category) getValueArguments()[0]);
+            title = category.getTitle(jParams.getLocale(), category.getKey());
+        } else {
+            title = JahiaTools.getExpandedValue(getValue(), getValueArguments(), jParams, jParams.getLocale());
+        }
+
+        return title;
     }
-    
+
 }

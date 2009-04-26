@@ -121,13 +121,15 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
         return facetBean;
     }
 
-    private FacetBean getFacetBeanByName(String facetName, String propertyName) {
+    private FacetBean getFacetBeanByName(String facetName, String propertyName, JahiaFieldDefinition fieldDef) {
         if (facetName == null || facetName.length() == 0) {
             facetName = propertyName;
         }
         FacetBean facetBean = getFacetBeanFromCache(String.valueOf(Math.abs(facetName.hashCode())));
         if (facetBean == null) {
-            facetBean = new FacetBean(facetName, propertyName, FacetBean.FacetType.FIELD_FACET);
+            facetBean = new FacetBean(facetName, propertyName,
+                    fieldDef.getType() == FieldTypes.CATEGORY ? FacetBean.FacetType.CATEGORY_FACET
+                            : FacetBean.FacetType.FIELD_FACET);
             addFacetBeanToCache(facetBean);
         }
         return facetBean;
@@ -136,11 +138,15 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
     @Override
     public FacetBean createFacetFilter(String facetName, String propertyName, String facetNameForNoValue,
             ContainerQueryContext queryContext, ProcessingContext jParams, List<FacetValueBean> createdFacets) throws JahiaException {
-        FacetBean facetBean = getFacetBeanByName(facetName, propertyName);
-
         JahiaFieldDefinition fieldDef = QueryModelTools.getFieldDefinitionForPropertyName(propertyName, queryContext
-                .getContainerDefinitionNames(), jParams);
+                .getContainerDefinitionNames(), jParams);        
+        FacetBean facetBean = null;
+
         if (fieldDef != null) {
+            facetBean = getFacetBeanByName(facetName, propertyName, fieldDef);
+            
+            facetBean.setMultiple(fieldDef.getPropertyDefinition().isMultiple());
+            
             String fieldName = QueryModelTools.getFieldNameForSearchEngine(propertyName, false, queryContext
                     .getContainerDefinitionNames(), jParams, QueryModelTools.FACETING_TYPE);
             String languageCode = LanguageCodeConverters.localeToLanguageTag(jParams.getLocale());
@@ -155,7 +161,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
                             categoryTitle = category.getKey();
                         }
                         String filterQuery = fieldName + ":(\"" + QueryParser.escape(categoryTitle) + "\")";
-                        FacetValueBean facetValueBean = new FacetValueBean(category.getKey(), null, filterQuery, languageCode);
+                        FacetValueBean facetValueBean = new FacetValueBean(facetBean, category.getKey(), new Object[] {category}, filterQuery, languageCode);
                         if (createdFacets != null) {
                             createdFacets.add(facetValueBean);
                         }                                            
@@ -165,7 +171,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
             } else {
                 for (String value : fieldDef.getPropertyDefinition().getValueConstraints()) {
                     String filterQuery = fieldName + ":(\"" + QueryParser.escape(value) + "\")";
-                    FacetValueBean facetValueBean = new FacetValueBean(value, null, filterQuery, languageCode);
+                    FacetValueBean facetValueBean = new FacetValueBean(facetBean, value, null, filterQuery, languageCode);
                     if (createdFacets != null) {
                         createdFacets.add(facetValueBean);
                     }                    
@@ -176,7 +182,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
                 String filterQuery = fieldName.replace(JahiaSearchConstant.CONTAINER_FIELD_FACET_PREFIX,
                         JahiaSearchConstant.CONTAINER_EMPTY_FIELD_FACET_PREFIX)
                         + ":(no)";
-                FacetValueBean facetValueBean = new FacetValueBean(facetNameForNoValue, null, filterQuery, languageCode);
+                FacetValueBean facetValueBean = new FacetValueBean(facetBean, facetNameForNoValue, null, filterQuery, languageCode);
                 if (createdFacets != null) {
                     createdFacets.add(facetValueBean);
                 }
@@ -203,7 +209,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
         if (query.length() == 0) {
             query = containerFilters.getQuery();
         }
-        FacetValueBean facetValueBean = new FacetValueBean(facetValueName, dynamicNameArguments, query, languageCode);
+        FacetValueBean facetValueBean = new FacetValueBean(facetBean, facetValueName, dynamicNameArguments, query, languageCode);
         if (createdFacets != null) {
             createdFacets.add(facetValueBean);
         }        
@@ -310,22 +316,22 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
     public Map<FacetValueBean, Integer> getHitsPerFacetValue(
             FacetBean facetBean, List<FacetValueBean> facetValues,
             BitSet mainQueryBits, ContainerQueryContext queryContext,
-            ProcessingContext jParams) throws JahiaException {
+            String appliedFilters, ProcessingContext jParams) throws JahiaException {
         Map<FacetValueBean, Integer> result = new LinkedHashMap<FacetValueBean, Integer>();
 
         ContainerSearcher searcher = getSearcher(queryContext, jParams);
 
-        for (FacetValueBean facetValue : facetValues != null ? facetValues
-                : facetBean.getFacetValueBeans()) {
-            JahiaSearchResult sr = searcher.search(facetValue.getFilterQuery(),
-                    jParams);
-            int matchingHits = sr.getHitCount();
-            if (mainQueryBits != null) {
-                BitSet queryBitSet = (BitSet) mainQueryBits.clone();
-                queryBitSet.and(sr.bits());
-                matchingHits = queryBitSet.cardinality();
+        for (FacetValueBean facetValue : facetValues != null ? facetValues : facetBean.getFacetValueBeans()) {
+            if (appliedFilters == null || !appliedFilters.contains(facetBean.hashCode() + "_" + facetValue.hashCode())) {
+                JahiaSearchResult sr = searcher.search(facetValue.getFilterQuery(), jParams);
+                int matchingHits = sr.getHitCount();
+                if (mainQueryBits != null) {
+                    BitSet queryBitSet = (BitSet) mainQueryBits.clone();
+                    queryBitSet.and(sr.bits());
+                    matchingHits = queryBitSet.cardinality();
+                }
+                result.put(facetValue, matchingHits);
             }
-            result.put(facetValue, matchingHits);
         }
         return result;
     }

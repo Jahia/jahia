@@ -131,13 +131,13 @@ public class GetHitsPerFacetValueTag extends AbstractJahiaTag {
                     mainQueryFilter = facetedFilter;
                 }
                 List<HitsPerFacetValueBean> hitsPerFacetValue = new ArrayList<HitsPerFacetValueBean>();
-                for (Map.Entry<FacetValueBean, Integer> hitsForFacetValue : facetingService
-                    .getHitsPerFacetValue(
+                for (Map.Entry<FacetValueBean, Integer> hitsForFacetValue : facetingService.getHitsPerFacetValue(
                         facetBean,
                         getFacetValueBeanId() != null ? (List<FacetValueBean>) pageContext
-                            .findAttribute(getFacetValueBeanId())
-                                : null, mainQueryFilter,
-                        mainQueryBean.getQueryContext(), jParams).entrySet()) {
+                                .findAttribute(getFacetValueBeanId()) : null, mainQueryFilter,
+                        mainQueryBean.getQueryContext(),
+                        getFilterQueryParamName() != null ? jParams.getParameter(getFilterQueryParamName()) : null,
+                        jParams).entrySet()) {
 
                     HitsPerFacetValueBean bean = new HitsPerFacetValueBean(
                         hitsForFacetValue.getKey(), hitsForFacetValue

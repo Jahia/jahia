@@ -64,7 +64,7 @@ public abstract class JahiaFacetingService extends JahiaService {
 
     public abstract Map<FacetValueBean, Integer> getHitsPerFacetValue(
             FacetBean facetBean, List<FacetValueBean> facetValues, BitSet mainQueryBits,
-            ContainerQueryContext queryContext, ProcessingContext jParams)
+            ContainerQueryContext queryContext, String appliedFilters, ProcessingContext jParams)
             throws JahiaException;
 
     public abstract String[] getFacetFilterQueries(String filtersToApply)

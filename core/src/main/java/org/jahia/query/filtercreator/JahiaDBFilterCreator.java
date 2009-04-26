@@ -125,10 +125,10 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
         if ( operator == null ){
             return null;
         }
-        if (op1.getPropertyName().equals(FilterCreator.CONTENT_DEFINITION_NAME)){
+        if (FilterCreator.CONTENT_DEFINITION_NAME.equals(propertyName)){
             filter = new ContainerFilterByContainerDefinitions(values,
                 context.getEntryLoadRequest());
-        } else if (op1.getPropertyName().equals(JahiaQueryObjectModelConstants.CATEGORY_LINKS)){
+        } else if (JahiaQueryObjectModelConstants.CATEGORY_LINKS.equals(propertyName)){
             values = getCategoryIncludingChilds(values,context);
             Set<Category> categories = getCategories(values);
             ContainerFilterByCategories filterBean = new ContainerFilterByCategories(categories,
@@ -442,8 +442,17 @@ public class JahiaDBFilterCreator extends AbstractFilterCreator {
                 ((FullTextSearchImpl) c).isMetadata(), queryContext.getContainerDefinitionNames(), context, QueryModelTools.NO_TYPE);
 
         if (fieldName != null) {
-            searchExpression = fieldName + ":" + openParenthesis
-                    + searchExpression + closeParenthesis;
+            String luceneSearchExpression = fieldName + ":" + openParenthesis + searchExpression + closeParenthesis;
+
+            if (((FullTextSearchImpl) c).getAliasNames() != null) {
+                luceneSearchExpression = "(" + luceneSearchExpression;
+                for (String aliasName : ((FullTextSearchImpl) c).getAliasNames()) {
+                    luceneSearchExpression += " OR " + JahiaSearchConstant.CONTAINER_FIELD_ALIAS_PREFIX
+                            + aliasName.toLowerCase() + ":" + openParenthesis + searchExpression + closeParenthesis;
+                }
+                luceneSearchExpression += ")";
+            }
+            searchExpression = luceneSearchExpression;
             prefixedQuery = true;
         }
         

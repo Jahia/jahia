@@ -53,6 +53,7 @@ public class PropertyValueImpl extends DynamicOperandImpl implements PropertyVal
     private String numberFormat;
     private String valueProviderClass;
     private boolean isMetadata;
+    private String[] aliasNames;    
 
     public PropertyValueImpl(String selectorName,String propertyName) {
         this.selectorName = selectorName;
@@ -115,6 +116,14 @@ public class PropertyValueImpl extends DynamicOperandImpl implements PropertyVal
         this.valueProviderClass = valueProviderClass;
     }
 
+    public String[] getAliasNames() {
+        return aliasNames;
+    }
+
+    public void setAliasNames(String[] aliasNames) {
+        this.aliasNames = aliasNames;
+    }
+        
     public void accept(QueryObjectModelInterpreter interpreter) throws JahiaException {
         interpreter.accept(this);
     }

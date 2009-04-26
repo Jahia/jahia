@@ -59,6 +59,7 @@ public class SortByTag extends AbstractJahiaTag {
     private String numberValue;
     private String valueProviderClass;
     private String isMetadata;
+    private String aliasNames;    
 
     private String order;
     private String localeSensitive = "false";
@@ -72,7 +73,7 @@ public class SortByTag extends AbstractJahiaTag {
             return EVAL_BODY_BUFFERED;
         }
         try {
-            this.queryModelDefTag.addOrdering(getPropertyName(), "true".equals(getNumberValue()), getNumberFormat(), "true".equals(getMetadata()), getValueProviderClass(), getOrder(), "true".equals(getLocaleSensitive()));
+            this.queryModelDefTag.addOrdering(getPropertyName(), "true".equals(getNumberValue()), getNumberFormat(), "true".equals(getMetadata()), getValueProviderClass(), getOrder(), "true".equals(getLocaleSensitive()), getAliasNames());
         } catch ( Exception t ){
             logger.debug("Error creating ordering clause",t);
             throw new JspException("Error creating Ordering node in SortBy Tag",t);
@@ -90,6 +91,7 @@ public class SortByTag extends AbstractJahiaTag {
         valueProviderClass = null;
         order = null;
         localeSensitive = null;
+        aliasNames = null;        
         return EVAL_PAGE;
     }
 
@@ -147,6 +149,14 @@ public class SortByTag extends AbstractJahiaTag {
 
     public void setLocaleSensitive(String localeSensitive) {
         this.localeSensitive = localeSensitive;
+    }
+
+    public void setAliasNames(String aliasNames) {
+        this.aliasNames = aliasNames;
+    }
+
+    public String getAliasNames() {
+        return aliasNames;
     }
 
 }

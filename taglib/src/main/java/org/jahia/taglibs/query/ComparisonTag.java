@@ -37,6 +37,7 @@ import org.jahia.query.qom.JahiaQueryObjectModelConstants;
 import org.jahia.query.qom.LiteralImpl;
 import org.jahia.query.qom.PropertyValueImpl;
 import org.jahia.query.qom.QueryModelTools;
+import org.jahia.utils.JahiaTools;
 
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Comparison;
 import org.apache.jackrabbit.spi.commons.query.jsr283.qom.Constraint;
@@ -59,6 +60,7 @@ public class ComparisonTag extends ConstraintTag  {
     private Comparison comparison;
 
     private String propertyName;
+    private String aliasNames;        
     private String numberFormat;
     private String numberValue;
     private String isMetadata;
@@ -78,6 +80,7 @@ public class ComparisonTag extends ConstraintTag  {
         operator = JahiaQueryObjectModelConstants.OPERATOR_EQUAL_TO;
         value = null;
         propertyName = null;
+        aliasNames = null;
         numberFormat = null;
         numberValue = null;
         isMetadata= null;
@@ -94,6 +97,14 @@ public class ComparisonTag extends ConstraintTag  {
     public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
+    
+    public void setAliasNames(String aliasNames) {
+        this.aliasNames = aliasNames;
+    }
+
+    public String getAliasNames() {
+        return aliasNames;
+    }    
 
     public int getOperator() {
         return operator;
@@ -189,6 +200,10 @@ public class ComparisonTag extends ConstraintTag  {
         propValue.setMetadata("true".equals(this.getMetadata()));
         propValue.setNumberFormat(this.getNumberFormat());
         propValue.setValueProviderClass(this.getValueProviderClass());
+        String[] aliasNames = JahiaTools.getTokens(this.getAliasNames(),",");
+        if (aliasNames != null){
+            propValue.setAliasNames(aliasNames);
+        }         
         LiteralImpl literal = (LiteralImpl)this.getQueryFactory()
                 .literal(this.getValueFactory().createValue(this.getValue()));
         literal.setMultiValueANDLogic("true".equals(this.getMultiValueANDLogic()));

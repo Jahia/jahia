@@ -160,7 +160,7 @@ public class ContainerQueryTag extends QueryDefinitionTag  {
                         String
                                 .valueOf(JahiaQueryObjectModelConstants.ORDER_DESCENDING);
                         addOrdering(sortFieldDef.getName(), numberValue, null,
-                                sortFieldDef.getIsMetadata(), null, order, true);
+                                sortFieldDef.getIsMetadata(), null, order, true, null);
                     }
                 }
             } catch (RepositoryException e) {

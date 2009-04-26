@@ -48,10 +48,19 @@ public class FullTextSearchImpl extends ConstraintImpl implements FullTextSearch
 
     private String fullTextSearchExpression;
     private String propertyName;
+    private String[] aliasNames;    
     private String selectorName;
 
     private boolean isMetadata;
 
+    public FullTextSearchImpl(String selectorName, String propertyName,
+            String fullTextSearchExpression, String[] aliasNames) {
+        this.fullTextSearchExpression = fullTextSearchExpression;
+        this.propertyName = propertyName;
+        this.selectorName = selectorName;
+        this.aliasNames = aliasNames;
+    }    
+    
     public FullTextSearchImpl(String selectorName,
                               String propertyName,String fullTextSearchExpression) {
         this.fullTextSearchExpression = fullTextSearchExpression;
@@ -63,6 +72,12 @@ public class FullTextSearchImpl extends ConstraintImpl implements FullTextSearch
         this.fullTextSearchExpression = fullTextSearchExpression;
         this.propertyName = propertyName;
     }
+    
+    public FullTextSearchImpl(String propertyName,String fullTextSearchExpression, String[] aliasNames) {
+        this.fullTextSearchExpression = fullTextSearchExpression;
+        this.propertyName = propertyName;
+        this.aliasNames = aliasNames;        
+    }  
 
     public String getPropertyName() {
         return propertyName;
@@ -106,6 +121,14 @@ public class FullTextSearchImpl extends ConstraintImpl implements FullTextSearch
         buffer.append("propertyName=").append(propertyName).append(" searchExpression=")
                 .append(this.fullTextSearchExpression);
         return buffer.toString();
+    }
+    
+    public String[] getAliasNames() {
+        return aliasNames;
+    }
+
+    public void setAliasNames(String[] aliasNames) {
+        this.aliasNames = aliasNames;
     }
 
 }

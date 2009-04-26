@@ -59,6 +59,7 @@ import org.jahia.query.qom.QueryObjectModelFactoryImpl;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.utils.JahiaTools;
 import org.jahia.query.qom.QOMBuilder;
 
 /**
@@ -234,7 +235,7 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
 
     public void addOrdering(String propertyName, boolean numberValue,
             String numberFormat, boolean metadata, String valueProviderClass,
-            String order, boolean localeSensitive) throws RepositoryException {
+            String order, boolean localeSensitive, String aliasNames) throws RepositoryException {
         Ordering ordering = null;
         QueryObjectModelFactory queryFactory = getQueryFactory();
         PropertyValueImpl propValue = (PropertyValueImpl) queryFactory
@@ -243,6 +244,8 @@ public class QueryDefinitionTag extends AbstractJahiaTag {
         propValue.setMetadata(metadata);
         propValue.setNumberFormat(numberFormat);
         propValue.setValueProviderClass(valueProviderClass);
+        propValue.setAliasNames(JahiaTools.getTokens(aliasNames,","));
+                   
         if (queryFactory instanceof QueryObjectModelFactoryImpl) {
             QueryObjectModelFactoryImpl ourQueryFactory = (QueryObjectModelFactoryImpl) queryFactory;
             if (order != null

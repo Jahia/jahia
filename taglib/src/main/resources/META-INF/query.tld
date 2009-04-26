@@ -113,6 +113,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a ChildNode Constraint</description>
@@ -191,6 +200,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a Greater Than Constraint</description>
@@ -237,6 +255,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a Greater Than Or Equal To Constraint</description>
@@ -283,6 +310,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a Less Than Constraint</description>
@@ -329,6 +365,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a Less Than Or Equal To Constraint</description>
@@ -375,6 +420,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a Like Constraint</description>
@@ -421,6 +475,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a Not Equal To Constraint</description>
@@ -467,6 +530,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
     </tag>
     <tag>
         <description>Used to define a full text search Constraint</description>
@@ -524,6 +596,15 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description><![CDATA[
+                <p>If the selector does not specify a unique container definition, then the aliasNames (delimited by commas) may be used to make a search in documents of different container definitions.</p>
+                ]]>
+            </description>        
+            <name>aliasNames</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>            
         <attribute>
             <name>localeSensitive</name>
             <required>false</required>

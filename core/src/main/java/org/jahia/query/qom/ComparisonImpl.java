@@ -93,6 +93,9 @@ public class ComparisonImpl extends ConstraintImpl implements Comparison, Constr
         buffer.append("operand1=");
         if ( this.operand1 != null ){
             buffer.append(this.operand1.getPropertyName());
+            if ( this.operand1.getAliasNames() != null && this.operand1.getAliasNames().length > 0){
+                buffer.append(" (alias=").append(this.operand1.getAliasNames().toString()).append(")");
+            }            
         } else {
             buffer.append("unknownProperty");
         }

@@ -219,8 +219,10 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
 
         PropertyValueImpl op1 = (PropertyValueImpl)c.getOperand1();
         String propertyName = null;
+        String[] aliasNames = null;
         if (op1 !=null){
             propertyName = op1.getPropertyName();
+            aliasNames = op1.getAliasNames();                        
         }
         if (propertyName != null){
             int fieldType = -1;
@@ -260,8 +262,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
             buff.append(value).append(" ");
         }
         String searchExpression = buff.toString();
-        FullTextSearchImpl fullTextSearch = new FullTextSearchImpl(((PropertyValueImpl)c.getOperand1())
-                .getPropertyName(),searchExpression);
+        FullTextSearchImpl fullTextSearch = new FullTextSearchImpl(propertyName, searchExpression, aliasNames);
         fullTextSearch.setMetadata(((PropertyValueImpl)c.getOperand1()).isMetadata());
         return getFilter(fullTextSearch,queryModel,queryContext,context);
     }
@@ -383,7 +384,7 @@ public class JahiaSearchFilterCreator extends JahiaDBFilterCreator {
             searchExpression.append("]");
         }
         FullTextSearchImpl fullTextSearch = new FullTextSearchImpl(operand.getPropertyName(),
-                searchExpression.toString());
+                searchExpression.toString(), operand.getAliasNames());
         fullTextSearch.setMetadata(operand.isMetadata());
         return getFilter(fullTextSearch,queryModel,queryContext,context);
     }

@@ -103,7 +103,7 @@ function testSettingsFailure(text, code, statusText) {
   </p>
   <table summary="<fmt:message key="org.jahia.mailSettings.label"/>">
     <caption>
-      <fmt:message key="org.jahia.mailSettings.label"/>:
+      <fmt:message key="org.jahia.mailSettings.label"/>&nbsp;<a href="http://jira.jahia.org/browse/JKB-17" target="_blank"><img src="${pageContext.request.contextPath}/configuration_wizard/images/about.gif" alt="info"/></a>:
     </caption>
     <tr>
       <th id="t1">
@@ -123,8 +123,6 @@ function testSettingsFailure(text, code, statusText) {
       </td>
       <td headers="t2" class="t6">
         <input class="inputtype" type="text" name="host" value='<%=values.get("mail_server")%>' size="<%=input%>" maxlength="250" />
-        &nbsp;
-        <a href="http://jira.jahia.org/browse/JKB-17" target="_blank"><img src="${pageContext.request.contextPath}/configuration_wizard/images/about.gif" alt="info"/></a>
       </td>
     </tr>
     <tr>

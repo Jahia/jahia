@@ -45,3 +45,6 @@
     <div class="box2-bottomright"></div>
     <div class="box2-bottomleft"></div>
 <div class="clear"> </div></div>
+
+<%--remove boxTitle for reuse in boxes--%>
+<c:remove var="boxTitle" scope="request"/>

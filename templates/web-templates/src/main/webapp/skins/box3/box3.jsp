@@ -44,3 +44,6 @@
     <div class="box3-bottomright"></div>
     <div class="box3-bottomleft"></div>
 </div>
+
+<%--remove boxTitle for reuse in boxes--%>
+<c:remove var="boxTitle" scope="request"/> 

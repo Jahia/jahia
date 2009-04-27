@@ -49,3 +49,6 @@
     <template:includeContent/>
 </div>
 <div class="clear"> </div>
+
+<%--remove boxTitle for reuse in boxes--%>
+<c:remove var="boxTitle" scope="request"/> 

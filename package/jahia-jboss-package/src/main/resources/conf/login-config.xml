@@ -134,6 +134,14 @@ $Revision: 64598 $
       </authentication>
     </application-policy>
 
+    
+    <application-policy name="Jackrabbit">
+       <authentication>
+          <login-module code = "org.jahia.jaas.JahiaLoginModule"
+             flag = "required" />
+       </authentication>
+    </application-policy>    
+    
     <!-- The default login configuration used by any security domain that
     does not have a application-policy entry with a matching name
     -->
@@ -154,13 +162,6 @@ $Revision: 64598 $
              flag = "required" />
        </authentication>
     </application-policy>
-    
-    <application-policy name="Jackrabbit">
-       <authentication>
-          <login-module code = "org.jahia.jaas.JahiaLoginModule"
-             flag = "required" />
-       </authentication>
-    </application-policy>    
 
 </policy>
 

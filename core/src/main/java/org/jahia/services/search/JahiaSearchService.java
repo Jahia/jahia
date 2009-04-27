@@ -123,6 +123,10 @@ public abstract class JahiaSearchService extends JahiaService {
     public abstract void setFilterCacheConfig(Properties filterCacheConfig);    
 
     public abstract boolean isDisabled();
+    
+    public abstract boolean isLocalIndexing();    
+    
+    public abstract String getServerId();    
 
     public abstract Pipeline getSearchIndexProcessPipeline();
 

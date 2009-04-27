@@ -327,12 +327,18 @@ public class ManageSearch extends AbstractAdministrationModule {
 
         // check if the index exists yet for the current site.
         SearchHandler searchHandler = searchServ.getSearchHandler(site.getID ());
+        JahiaSearchService searchService = ServicesRegistry.getInstance()
+        .getJahiaSearchService();
+        
         boolean indexExists = (searchHandler != null);
 
         values.put ("operation", operation);
 
         request.setAttribute ("operation", operation);
         request.setAttribute ("indexExists", Boolean.valueOf(indexExists));
+        request.setAttribute("indexingDisabled", Boolean.valueOf(searchService
+            .isDisabled()));
+        request.setAttribute("localIndexing", Boolean.valueOf(searchService.isLocalIndexing()));
         doRedirect (request, response, JSP + "operations");
     }
 
@@ -563,78 +569,76 @@ public class ManageSearch extends AbstractAdministrationModule {
     public static List<JobDetail> getJobsDetails(int siteId, boolean activeOnly)
             throws JahiaException {
         JahiaSitesService siteServ = ServicesRegistry.getInstance()
-                .getJahiaSitesService();
+            .getJahiaSitesService();
         JahiaSite site = siteServ.getSite(siteId);
         List<JobDetail> jobDetails = new LinkedList<JobDetail>();
         Properties settings = site.getSettings();
-        for (Iterator<?> it = settings.keySet().iterator(); it.hasNext();) {
-            String key = (String) it.next();
-            int pos = key.indexOf(JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME);
-            if (pos != -1) {
-                String serverId = key.substring(0, pos);
-                JobDetail jobDetail = new JobDetail(settings.getProperty(key, ""),
-                        JahiaSiteIndexingJob.JOB_GROUP_NAME,
-                        JahiaSiteIndexingJob.class);
-                JobDataMap data = jobDetail.getJobDataMap();
-                // data.setMutable(true); commented for quartz 1.6.0
-                // compatibility
-                String value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_STATUS, "");
-                if (activeOnly
-                        && !(BackgroundJob.STATUS_POOLED.equals(value)
-                                || BackgroundJob.STATUS_RUNNING.equals(value)
-                                || BackgroundJob.STATUS_WAITING.equals(value) || BackgroundJob.STATUS_INTERRUPTED
-                                .equals(value))) {
-                    continue;
-                }
-                TreeOperationResult result = new TreeOperationResult();
-                if (BackgroundJob.STATUS_FAILED.equals(value)
-                        || BackgroundJob.STATUS_ABORTED.equals(value)
-                        || BackgroundJob.STATUS_INTERRUPTED.equals(value)) {
-                    String jobResult = settings.getProperty(serverId
-                            + BackgroundJob.RESULT, "");
-                    String localeCode = Locale.getDefault().toString();
-                    if (Jahia.getThreadParamBean() != null) {
-                        localeCode = Jahia.getThreadParamBean().getLocale()
-                                .getDisplayName();
-                    }
-                    NodeOperationResult nodeOperationResult = new NodeOperationResult(
-                            null, localeCode, jobResult);
-                    result.appendError(nodeOperationResult);
-                    data.put(BackgroundJob.RESULT, result);
-                } else if (BackgroundJob.STATUS_SUCCESSFUL.equals(value)) {
-                    data.put(BackgroundJob.RESULT, result);
-                }
-                data.put(BackgroundJob.JOB_SERVER, serverId.substring(0,
-                        serverId.length() - 1));
-                data.put(BackgroundJob.JOB_STATUS, value);
-                value = settings.getProperty(
-                        serverId + BackgroundJob.JOB_BEGIN, "");
-                data.put(BackgroundJob.JOB_BEGIN, value);
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_CREATED, "");
-                data.put(BackgroundJob.JOB_CREATED, value);
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_DURATION, "");
-                data.put(BackgroundJob.JOB_DURATION, value);
-                value = settings.getProperty(serverId + BackgroundJob.JOB_END,
-                        "");
-                data.put(BackgroundJob.JOB_END, value);
-                data.put(BackgroundJob.JOB_SITEKEY, site.getSiteKey());
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_SCHEDULED, "");
-                data.put(BackgroundJob.JOB_SCHEDULED, value);
-                value = settings.getProperty(serverId
-                        + BackgroundJob.JOB_USERKEY, "");
-                data.put(BackgroundJob.JOB_USERKEY, value);
-                data.put(BackgroundJob.JOB_TYPE,
-                        JahiaSiteIndexingJob.SITE_INDEXATION_JOB_TYPE);
-                data.put(JahiaSiteIndexingJob.INTERRUPT_STATUS,
-                        site.getSettings().getProperty(
-                        serverId + JahiaSiteIndexingJob.INTERRUPT_STATUS, ""));
-                jobDetails.add(jobDetail);
+        String serverId = ServicesRegistry.getInstance()
+            .getJahiaSearchService().getServerId() + "_";
+        String jobName = (String) settings.get(serverId
+                + JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME);
+        if (jobName != null) {
+            JobDetail jobDetail = new JobDetail(jobName,
+                JahiaSiteIndexingJob.JOB_GROUP_NAME, JahiaSiteIndexingJob.class);
+            JobDataMap data = jobDetail.getJobDataMap();
+            // data.setMutable(true); commented for quartz 1.6.0
+            // compatibility
+            String value = settings.getProperty(serverId
+                    + BackgroundJob.JOB_STATUS, "");
+            if (activeOnly
+                    && !(BackgroundJob.STATUS_POOLED.equals(value)
+                            || BackgroundJob.STATUS_RUNNING.equals(value)
+                            || BackgroundJob.STATUS_WAITING.equals(value) || BackgroundJob.STATUS_INTERRUPTED
+                        .equals(value))) {
+                return jobDetails;
             }
+            TreeOperationResult result = new TreeOperationResult();
+            if (BackgroundJob.STATUS_FAILED.equals(value)
+                    || BackgroundJob.STATUS_ABORTED.equals(value)
+                    || BackgroundJob.STATUS_INTERRUPTED.equals(value)) {
+                String jobResult = settings.getProperty(serverId
+                        + BackgroundJob.RESULT, "");
+                String localeCode = Locale.getDefault().toString();
+                if (Jahia.getThreadParamBean() != null) {
+                    localeCode = Jahia.getThreadParamBean().getLocale()
+                        .getDisplayName();
+                }
+                NodeOperationResult nodeOperationResult = new NodeOperationResult(
+                    null, localeCode, jobResult);
+                result.appendError(nodeOperationResult);
+                data.put(BackgroundJob.RESULT, result);
+            } else if (BackgroundJob.STATUS_SUCCESSFUL.equals(value)) {
+                data.put(BackgroundJob.RESULT, result);
+            }
+            data.put(BackgroundJob.JOB_SERVER, serverId.substring(0, serverId
+                .length() - 1));
+            data.put(BackgroundJob.JOB_STATUS, value);
+            value = settings
+                .getProperty(serverId + BackgroundJob.JOB_BEGIN, "");
+            data.put(BackgroundJob.JOB_BEGIN, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_CREATED,
+                "");
+            data.put(BackgroundJob.JOB_CREATED, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_DURATION,
+                "");
+            data.put(BackgroundJob.JOB_DURATION, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_END, "");
+            data.put(BackgroundJob.JOB_END, value);
+            data.put(BackgroundJob.JOB_SITEKEY, site.getSiteKey());
+            value = settings.getProperty(
+                serverId + BackgroundJob.JOB_SCHEDULED, "");
+            data.put(BackgroundJob.JOB_SCHEDULED, value);
+            value = settings.getProperty(serverId + BackgroundJob.JOB_USERKEY,
+                "");
+            data.put(BackgroundJob.JOB_USERKEY, value);
+            data.put(BackgroundJob.JOB_TYPE,
+                JahiaSiteIndexingJob.SITE_INDEXATION_JOB_TYPE);
+            data.put(JahiaSiteIndexingJob.INTERRUPT_STATUS, site.getSettings()
+                .getProperty(serverId + JahiaSiteIndexingJob.INTERRUPT_STATUS,
+                    ""));
+            jobDetails.add(jobDetail);
         }
+
         return jobDetails;
     }
 

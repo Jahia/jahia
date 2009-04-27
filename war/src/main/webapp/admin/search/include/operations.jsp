@@ -38,6 +38,7 @@
 <%@taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="url" class="java.lang.String" scope="request" />
 <% // http files path. %>
@@ -47,23 +48,33 @@
 <% // Map containing values. %>
 <jsp:useBean id="operation" class="java.lang.String" scope="request" />
 <% // The selected operation. %>
-<%
-Boolean isLynx = (Boolean) request.getAttribute("isLynx"); // Linx.
-Boolean indexExists = (Boolean) request.getAttribute("indexExists"); // Does the index exist or not. %>
-<% if ( !indexExists.booleanValue() ) { %>
+<c:choose>
+<c:when test="${indexExists == false}">
 <p class="errorBold">
     <fmt:message key="org.jahia.admin.search.ManageSearch.indexNotExist.label" />
 </p>
-<% } else { %>
+</c:when>
+<c:otherwise>
 <jsp:include page="processing.jsp" flush="true" />
-<% } %>
+</c:otherwise>
+</c:choose>
 <div class="head headtop">
     <div class="object-title">
         <fmt:message key="org.jahia.admin.search.ManageSearch.availableOperation.label" />
     </div>
 </div>
-<ul style="list-style-type: none">
+<c:choose>
+<c:when test="${indexingDisabled}">
+  <fmt:message key="org.jahia.admin.search.ManageSearch.indexingDisabled.label"/>
+</c:when>
+<c:when test="${localIndexing == false}">
+  <fmt:message key="org.jahia.admin.search.ManageSearch.noLocalIndexing.label"/>
+</c:when>
+<c:otherwise>
+  <ul style="list-style-type: none">
     <li>
         <input type="radio" name="operation" value="doindex"<% if (operation.equals("doindex")) { %> checked<%} %>><fmt:message key="org.jahia.admin.search.ManageSearch.reIndexAndOptimize.label"/>
     </li>
-</ul>
+  </ul>
+</c:otherwise>
+</c:choose>

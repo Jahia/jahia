@@ -349,8 +349,8 @@ public class JahiaSearchBaseService extends JahiaSearchService
         }
 
         val = getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_LOCAL_INDEXING);
-        localIndexing = !((val != null && "0".equals(val.trim())));
-        if (!localIndexing) {
+        setLocalIndexing(!((val != null && "0".equals(val.trim()))));
+        if (!isLocalIndexing()) {
             logger
                     .info("This node will not perfom search indexation, just search.");
         }
@@ -434,7 +434,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
         logger.info("Shutting down search service...");
 
-        this.localIndexing = false;
+        this.setLocalIndexing(false);
         this.indexationDisabled = Boolean.TRUE;
         if (backgroundIndexingThread != null) {
             backgroundIndexingThread.interrupt();
@@ -528,7 +528,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
      * @param job
      */
     public void synchronizedIndexation(JahiaIndexingJob job){
-        if (this.isDisabled() || !this.localIndexing){
+        if (this.isDisabled() || !this.isLocalIndexing()){
             return;
         }
         final List<RemovableDocument> toRemove = new ArrayList<RemovableDocument>();
@@ -549,11 +549,11 @@ public class JahiaSearchBaseService extends JahiaSearchService
     }
 
     public void run(){
-        serverId = clusterNodeSettings.getProperty("serverId");
+        setServerId(clusterNodeSettings.getProperty("serverId"));
         boolean processedStartupLatencyTime = false;
         SpringContextSingleton instance = SpringContextSingleton.getInstance();
         Session session = null;
-        while ( !this.isDisabled() && this.localIndexing ){
+        while ( !this.isDisabled() && this.isLocalIndexing() ){
             if ( ! processedStartupLatencyTime ){
                 try {
                     Thread.sleep(JahiaTools.getTimeAsLong(
@@ -570,7 +570,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 } catch ( InterruptedException inte ){
                 }
             }
-            if ( this.isDisabled() || !this.localIndexing ){
+            if ( this.isDisabled() || !this.isLocalIndexing() ){
                 continue;
             }
             try {
@@ -584,7 +584,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 SessionFactory factory = (SessionFactory)instance.getContext().getBean("sessionFactory");
                 List<JahiaIndexingJob> jobsList = null;
                 if ( getLastIndexingJobTime()==0 ){
-                    JahiaIndexJobServer indexJobServer = indJobMgr.getServerLastIndexedJob(serverId);
+                    JahiaIndexJobServer indexJobServer = indJobMgr.getServerLastIndexedJob(getServerId());
                     if ( indexJobServer != null ){
                         setLastIndexingJobTime(indexJobServer.getDate().longValue());
                     }
@@ -593,9 +593,9 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 Calendar cal = Calendar.getInstance(TimeZone.getDefault());
                 int hourOfDay = cal.get(Calendar.HOUR_OF_DAY);
                 int minutes = cal.get(Calendar.MINUTE);
-                List<JahiaIndexingJob> avJobsList = indJobMgr.getIndexingJobs(time,true,hourOfDay,minutes,serverId);
+                List<JahiaIndexingJob> avJobsList = indJobMgr.getIndexingJobs(time,true,hourOfDay,minutes,getServerId());
                 if ( this.multipleIndexingServer ){
-                    jobsList = IndexingJobTools.resolveIndexingJobs(avJobsList, serverId);
+                    jobsList = IndexingJobTools.resolveIndexingJobs(avJobsList, getServerId());
                 } else {
                     jobsList = IndexingJobTools.resolveIndexingJobs(avJobsList, null);
                 }
@@ -685,7 +685,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             time = job.getDate().longValue();
                             setLastIndexingJobTime(time);
                             if ( this.multipleIndexingServer ) {
-                                JahiaIndexJobServer jobServer = new JahiaIndexJobServer(new JahiaIndexJobServerPK(job.getId(),serverId),job.getDate());
+                                JahiaIndexJobServer jobServer = new JahiaIndexJobServer(new JahiaIndexJobServerPK(job.getId(),getServerId()),job.getDate());
                                 indJobMgr.saveIndexJobServer(jobServer);
                             } else {
                                 indJobMgr.delete(job.getId());
@@ -885,7 +885,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 config.putAll(this.getIndexationConfig());
                 config.setProperty("indexDirectory", this.getSearchIndexRootDir()
                         + File.separator + site.getSiteKey());
-                if ( this.localIndexing ){
+                if ( this.isLocalIndexing() ){
                     config.setProperty("readOnly", "false");
                 } else {
                     config.setProperty("readOnly", "true");
@@ -950,7 +950,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
             String keyAsString = null;
             long diff = 0;
             if ( job instanceof JahiaFieldIndexingJob ){
-                job.setEnabledIndexingServers(serverId);
+                job.setEnabledIndexingServers(getServerId());
                 key.append(job.getClassName())
                     .append(((JahiaFieldIndexingJob)job).getFieldId());
                 keyAsString = key.toString();
@@ -1058,14 +1058,14 @@ public class JahiaSearchBaseService extends JahiaSearchService
     private void triggerImmediateExecutionOnAllNodes (JahiaIndexingJob job) {
         boolean notifyCluster = true;
         String indexingServerID = getIndexationConfig().getProperty(JahiaSearchConfigConstant.SEARCH_INDEXER_SERVER_ID);
-        if (this.localIndexing && !this.multipleIndexingServer){
+        if (this.isLocalIndexing() && !this.multipleIndexingServer){
             notifyCluster = false;
         }
         if (notifyCluster){
             SynchronizedIndexationRequestMessage msg = new SynchronizedIndexationRequestMessage(job);
             SearchClusterMessage clusterMsg = new SearchClusterMessage(msg);
             if ( indexingServerID != null && !"".equals(indexingServerID.trim())
-                    && !this.serverId.equals(indexingServerID) ) {
+                    && !this.getServerId().equals(indexingServerID) ) {
                 SynchronizedIndexationTask task = new SynchronizedIndexationTask(job,indexingServerID,
                         this.synchronizedIndexationWaitDelay);
                 synchronized(this.synchronizedIndexationTask){
@@ -1081,7 +1081,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 this.clusterService.sendMessage(clusterMsg);
             }
         }
-        if (this.localIndexing){
+        if (this.isLocalIndexing()){
             ServicesRegistry.getInstance().getJahiaSearchService().synchronizedIndexation(job);
             if (this.multipleIndexingServer){
                 indJobMgr.save(job);
@@ -1097,7 +1097,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
             long time = job.getDate().longValue();
             setLastIndexingJobTime(time);
             if ( this.multipleIndexingServer ) {
-                JahiaIndexJobServer jobServer = new JahiaIndexJobServer(new JahiaIndexJobServerPK(job.getId(),serverId),
+                JahiaIndexJobServer jobServer = new JahiaIndexJobServer(new JahiaIndexJobServerPK(job.getId(),getServerId()),
                         job.getDate());
                 indJobMgr.saveIndexJobServer(jobServer);
             } else {
@@ -1184,7 +1184,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                SearchClusterMessage msg = new SearchClusterMessage(job);
                clusterService.sendMessage(msg);
            }
-           if ( !this.localIndexing ){
+           if ( !this.isLocalIndexing() ){
                return;
            }
            RemovableDocumentImpl doc =
@@ -1482,7 +1482,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     SearchClusterMessage msg = new SearchClusterMessage(indJob);
                     clusterService.sendMessage(msg);
                 }
-                if (! this.localIndexing ){
+                if (! this.isLocalIndexing() ){
                     return;
                 }
                 indJob = new JahiaContainerIndexingJob(ctnId, System.currentTimeMillis());
@@ -1616,7 +1616,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     SearchClusterMessage msg = new SearchClusterMessage(indJob);
                     clusterService.sendMessage(msg);
                 }
-                if (! this.localIndexing ){
+                if (! this.isLocalIndexing() ){
                     return;
                 }
                 JahiaSite site = sitesService.getSite(contentPage.getSiteID());
@@ -1749,7 +1749,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     SearchClusterMessage msg = new SearchClusterMessage(indJob);
                     clusterService.sendMessage(msg);
                 }
-                if (! this.localIndexing ){
+                if (! this.isLocalIndexing() ){
                     return;
                 }
                 JahiaSite site = sitesService.getSite(contentField.getSiteID());
@@ -1985,7 +1985,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
     //-------------------------------------------------------------------------
 
     protected void launchSiteReindexation(){
-        if ( this.isDisabled() || !this.localIndexing ){
+        if ( this.isDisabled() || !this.isLocalIndexing() ){
             return;
         }
         try {
@@ -1994,11 +1994,11 @@ public class JahiaSearchBaseService extends JahiaSearchService
             while ( sites.hasNext() ){
                 JahiaUser user = null;
                 JahiaSite site = sites.next();
-                String value = site.getSettings().getProperty(serverId + "_" +
+                String value = site.getSettings().getProperty(getServerId() + "_" +
                         BackgroundJob.JOB_STATUS,"");
                 try {
                     String userKey = site.getSettings().getProperty(
-                           serverId + "_" + BackgroundJob.JOB_USERKEY);
+                           getServerId() + "_" + BackgroundJob.JOB_USERKEY);
                     if ( userKey == null ){
                         continue;
                     }
@@ -2008,9 +2008,9 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     continue;
                 }
 
-                String jobName = site.getSettings().getProperty(serverId + "_"
+                String jobName = site.getSettings().getProperty(getServerId() + "_"
                         + JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME,"");
-                String interruptStatus = site.getSettings().getProperty(serverId + "_" +
+                String interruptStatus = site.getSettings().getProperty(getServerId() + "_" +
                         JahiaSiteIndexingJob.INTERRUPT_STATUS,"");
                 if ( BackgroundJob.STATUS_ABORTED.equals(interruptStatus) ){
                     continue;
@@ -2024,35 +2024,25 @@ public class JahiaSearchBaseService extends JahiaSearchService
                         logger.debug("Exception occured when interrupting indexing job " + jobName,t);
                     }
                     Properties newSettings = new Properties();
-                    newSettings.setProperty(serverId + "_" +
+                    newSettings.setProperty(getServerId() + "_" +
                             JahiaSiteIndexingJob.INTERRUPT_STATUS,BackgroundJob.STATUS_ABORTED);
-                    newSettings.setProperty(serverId + "_" +
+                    newSettings.setProperty(getServerId() + "_" +
                             BackgroundJob.RESULT,BackgroundJob.STATUS_ABORTED);
-                    newSettings.setProperty(serverId + "_" +
+                    newSettings.setProperty(getServerId() + "_" +
                             BackgroundJob.JOB_STATUS,BackgroundJob.STATUS_ABORTED);
                     ServicesRegistry.getInstance().getJahiaSitesService().updateSiteProperties(site, newSettings);
                     
                     List<String> settingsToRemove = new ArrayList<String>();
-                    settingsToRemove.add(serverId + "_" + JahiaSiteIndexingJob.LAST_INDEXED_PAGE);
+                    settingsToRemove.add(getServerId() + "_" + JahiaSiteIndexingJob.LAST_INDEXED_PAGE);
                     ServicesRegistry.getInstance().getJahiaSitesService().removeSiteProperties(site, settingsToRemove);
                     continue;
                 }
-                if ( BackgroundJob.STATUS_POOLED.equals(value)
-                        || BackgroundJob.STATUS_RUNNING.equals(value)
-                        || BackgroundJob.STATUS_WAITING.equals(value)){
-                    JobDetail jobDetail = schedulerServ.getJobDetail(jobName,JahiaSiteIndexingJob.JOB_GROUP_NAME,true);
-                    if ( jobDetail == null ){
-                        // have to start reindexation
-                        String startingPage = site.getSettings().getProperty(serverId + "_" +
-                                JahiaSiteIndexingJob.LAST_INDEXED_PAGE,"0");
-                        this.indexSite(site.getID(),user,Integer.parseInt(startingPage));
-                    }
-                } else if ( BackgroundJob.STATUS_INTERRUPTED.equals(value)
+                    if ( BackgroundJob.STATUS_INTERRUPTED.equals(value)
                         && JahiaSiteIndexingJob.INTERRUPT_STATUS_RESUME_REQUESTED.equals(interruptStatus) ){
                     //JobDetail jobDetail = schedulerServ.getJobDetail(jobName,JahiaSiteIndexingJob.JOB_GROUP_NAME,true);
                     //if ( jobDetail == null ){
                         // have to start reindexation
-                        String startingPage = site.getSettings().getProperty(serverId + "_" +
+                        String startingPage = site.getSettings().getProperty(getServerId() + "_" +
                                 JahiaSiteIndexingJob.LAST_INDEXED_PAGE,"0");
                         this.indexSite(site.getID(),user,Integer.parseInt(startingPage));
                     //}
@@ -2097,21 +2087,21 @@ public class JahiaSearchBaseService extends JahiaSearchService
         JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteId);
         Properties settings = site.getSettings();
         Properties newSettings = new Properties();        
-        if ( this.localIndexing ){
-            String jobName = settings.getProperty(serverId + "_" + JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME,"");
+        if ( this.isLocalIndexing() ){
+            String jobName = settings.getProperty(getServerId() + "_" + JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME,"");
             SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();
             schedulerServ.deleteRamJob(jobName, JahiaSiteIndexingJob.JOB_GROUP_NAME);
             
             if ( startingPage != 0 ){
-                newSettings.setProperty(serverId + "_"
+                newSettings.setProperty(getServerId() + "_"
                         + JahiaSiteIndexingJob.LAST_INDEXED_PAGE,String.valueOf(startingPage));
             } else {
                 List<String> settingsToRemove = new ArrayList<String>();
-                settingsToRemove.add(serverId + "_" + JahiaSiteIndexingJob.LAST_INDEXED_PAGE);
+                settingsToRemove.add(getServerId() + "_" + JahiaSiteIndexingJob.LAST_INDEXED_PAGE);
                 ServicesRegistry.getInstance().getJahiaSitesService().removeSiteProperties(site, settingsToRemove);                
             }
             
-            newSettings.setProperty(serverId + "_" + BackgroundJob.JOB_STATUS,
+            newSettings.setProperty(getServerId() + "_" + BackgroundJob.JOB_STATUS,
                     BackgroundJob.STATUS_WAITING);
 
             ProcessingContext jParams = Jahia.getThreadParamBean();
@@ -2132,11 +2122,11 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 jobDetail.getJobDataMap().put(BackgroundJob.JOB_OPMODE, ParamBean.EDIT);
             }
 
-            newSettings.setProperty(serverId + "_" + JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME,
+            newSettings.setProperty(getServerId() + "_" + JahiaSiteIndexingJob.SITE_INDEXATION_JOBNAME,
                     jobDetail.getName());
-            newSettings.setProperty(serverId + "_" + JahiaSiteIndexingJob.JOB_USERKEY,
+            newSettings.setProperty(getServerId() + "_" + JahiaSiteIndexingJob.JOB_USERKEY,
                     user.getUserKey());
-            newSettings.setProperty(serverId + "_" + JahiaSiteIndexingJob.INTERRUPT_STATUS,"");
+            newSettings.setProperty(getServerId() + "_" + JahiaSiteIndexingJob.INTERRUPT_STATUS,"");
             ServicesRegistry.getInstance().getJahiaSitesService().updateSiteProperties(site, newSettings);
             /*
             JobDetail jobDetail =
@@ -2155,11 +2145,11 @@ public class JahiaSearchBaseService extends JahiaSearchService
             schedulerServ.deleteRamJob(jobDetail.getName(), JahiaSiteIndexingJob.JOB_GROUP_NAME);
             schedulerServ.scheduleRamJob(jobDetail, trigger);
         } else {
-            newSettings.setProperty(serverId + "_" + BackgroundJob.JOB_STATUS,
+            newSettings.setProperty(getServerId() + "_" + BackgroundJob.JOB_STATUS,
                     BackgroundJob.STATUS_POOLED);
-            newSettings.setProperty(serverId + "_"
+            newSettings.setProperty(getServerId() + "_"
                     + BackgroundJob.JOB_USERKEY,user.getUserKey());
-            newSettings.setProperty(serverId + "_" + JahiaSiteIndexingJob.INTERRUPT_STATUS,"");
+            newSettings.setProperty(getServerId() + "_" + JahiaSiteIndexingJob.INTERRUPT_STATUS,"");
             ServicesRegistry.getInstance().getJahiaSitesService().updateSiteProperties(site, newSettings);
         }
         return true;
@@ -2672,7 +2662,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                         (SynchronizedIndexationResponseMessage) clusterMessage.getObject();
                 this.notifySynchronizedIndexationTasks(synchIndexMsg);
             } else if ( msg instanceof JahiaIndexingJob ){
-                if (localIndexing) {
+                if (isLocalIndexing()) {
                     JahiaIndexingJob job = (JahiaIndexingJob) msg;
                     job.execute(null);
                 }
@@ -2684,7 +2674,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
         JahiaIndexingJob indexingJob = msg.getIndexingJob();
         this.synchronizedIndexation(indexingJob);
         SynchronizedIndexationResponseMessage responseMsg = new SynchronizedIndexationResponseMessage(indexingJob,
-                this.serverId);
+                this.getServerId());
         SearchClusterMessage clusterMsg = new SearchClusterMessage(responseMsg);
         this.clusterService.sendMessage(clusterMsg);
     }
@@ -2792,7 +2782,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
      */
     public void indexFileRepository(int siteId, JahiaUser user)
     throws JahiaException {
-        if (! this.localIndexing || !Boolean.parseBoolean(getConfig().getProperty(JahiaSearchConfigConstant.ENABLE_FILE_INDEXING))){
+        if (! this.isLocalIndexing() || !Boolean.parseBoolean(getConfig().getProperty(JahiaSearchConfigConstant.ENABLE_FILE_INDEXING))){
             return;
         }
     }
@@ -3457,7 +3447,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 JahiaSite site = sitesService.getSite(siteId);
                 searchManager.unregisterHandler(site.getSiteKey());
                 
-                if (!this.localIndexing) {
+                if (!this.isLocalIndexing()) {
                     return;
                 }
 
@@ -3475,5 +3465,21 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     "Error when trying to delete the search index for site-Id: "
                             + siteId, ex);
         }
+    }
+
+    public boolean isLocalIndexing() {
+        return localIndexing;
+    }
+
+    private void setLocalIndexing(boolean localIndexing) {
+        this.localIndexing = localIndexing;
+    }
+
+    private void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
+
+    public String getServerId() {
+        return serverId;
     }
 }

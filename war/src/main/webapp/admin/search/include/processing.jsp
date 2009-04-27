@@ -167,7 +167,7 @@
             long difsec1 = difsec % 60;
             long difmin = diftime / 60000;
             if (difmin < 60) {
-                return difmin + " minutes " + difsec1 + " sec " + getRessourceForTime(".today.postfix", l);
+                return difmin + " " + getRessourceForTime(".minutes", l)+ " " + difsec1 + " " + getRessourceForTime(".seconds", l) + " " + getRessourceForTime(".today.postfix", l);
             } else {
                 String pref = getRessourceForTime(".today.prefix", l);
                 return pref + "&nbsp;" + sd.format(date);
@@ -216,7 +216,7 @@
                 long difmin = dif / 60000;
                 if (difmin < 60) {
                     String pref = getRessourceForTime(".today.futurerangeprefix", l);
-                    return pref + "&nbsp;" + difmin + " minutes " + difsec1 + " sec";
+                    return pref + "&nbsp;" + difmin + " " + getRessourceForTime(".minutes", l) + " " + difsec1 + " " + getRessourceForTime(".seconds", l) + " ";
                 } else {
                     String pref = getRessourceForTime(".today.prefix", l);
                     return pref + "&nbsp;" + sd.format(new Date(time));
@@ -1026,6 +1026,8 @@
     // to erase del from GET request
     if (window.location.search.indexOf("del=") != -1) {
         window.location = window.location.pathname;
+    } else if (window.location.search.indexOf("sub=doindex") != -1) {
+    	window.location = window.location.pathname + "?do=search&sub=display";
     }
 </script>
 <%

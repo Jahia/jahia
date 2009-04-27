@@ -78,7 +78,7 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
                 boolean enabled = mailService.isEnabled();
                 if (!enabled) {
                     logger
-                            .info("Mail service is not enabled. Skip sending notification");
+                            .info("Mail service is disabled. Skip sending notification.");
                 }
                 return enabled;
             }

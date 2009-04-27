@@ -130,7 +130,7 @@ function sendFormCancel()
 
 function sendForm(method,params)
 {
-    workInProgressOverlay.launch();
+	if (typeof workInProgressOverlay != 'undefined') workInProgressOverlay.launch();
     document.mainForm.method.value = "POST";
     document.mainForm.action = "<%=actionURL%>&engineview=<%=engineView%>&method=" + method;
     if ( params.charAt(0) == "&" ){

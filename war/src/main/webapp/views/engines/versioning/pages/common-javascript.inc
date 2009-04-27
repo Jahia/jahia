@@ -41,7 +41,7 @@ function handleLanguageChange(lang) {
 }   
 
 function sendForm(method, params) {
-    workInProgressOverlay.launch();
+	if (typeof workInProgressOverlay != 'undefined') workInProgressOverlay.launch();
     document.mainForm.method.value = method;
     document.mainForm.action = "<%=actionURL%>";
     document.mainForm.screen.value = "<%=theScreen%>";

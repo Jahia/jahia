@@ -39,10 +39,12 @@
 <%@ page import="org.jahia.services.lock.LockPrerequisites" %>
 <%@ page import="org.jahia.services.lock.LockPrerequisitesResult" %>
 <%@ page import="java.util.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt"%>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <jsp:useBean id="confirmRestoreNav" class="java.lang.String" scope="request"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
+<utility:setBundle basename="JahiaInternalResources"/>
 <%
 final ProcessingContext jParams = (ProcessingContext) request.getAttribute("org.jahia.params.ParamBean");
 Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
@@ -90,7 +92,7 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
     <% if ("locks".equals(engineName)) { %>
       <span class="dex-PushButton">
         <span class="first-child">
-          <a href="javascript:sendFormApply();" class="ico-ok" title="<fmt:message key="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
+          <a href="javascript:sendFormApply();" class="ico-ok" title='<fmt:message key="org.jahia.altApplyWithoutClose.label"/>' onclick="setWaitingCursor(1);">
             <fmt:message key="org.jahia.button.ok"/></a>
         </span>
       </span>
@@ -98,7 +100,7 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
       <% if (results == null) { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="javascript:sendFormSave();" class="ico-ok" title="<fmt:message key="org.jahia.altApplyAndClose.label"/>" onclick="setWaitingCursor(1);">
+            <a href="javascript:sendFormSave();" class="ico-ok" title='<fmt:message key="org.jahia.altApplyAndClose.label"/>' onclick="setWaitingCursor(1);">
               <fmt:message key="org.jahia.button.ok"/></a>
           </span>
         </span>
@@ -114,7 +116,7 @@ LockKey engineLockKey = (LockKey)engineMap.get("lock");
       <% } else { %>
         <span class="dex-PushButton">
           <span class="first-child">
-            <a href="javascript:sendFormApply();" class="ico-apply" title="<fmt:message key="org.jahia.altApplyWithoutClose.label"/>" onclick="setWaitingCursor(1);">
+            <a href="javascript:sendFormApply();" class="ico-apply" title='<fmt:message key="org.jahia.altApplyWithoutClose.label"/>' onclick="setWaitingCursor(1);">
               <fmt:message key="org.jahia.button.apply"/></a>
           </span>
         </span>

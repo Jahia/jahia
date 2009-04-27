@@ -153,7 +153,7 @@ jahia.config = {
 var submittedCount = 0;
 
 function teleportCaptainFlam(what) {
-    workInProgressOverlay.launch();
+	if (typeof workInProgressOverlay != 'undefined') workInProgressOverlay.launch();
     if (submittedCount == 0) {
         submittedCount++;
         document.mainForm.submit();
@@ -228,7 +228,7 @@ function setWaitingCursor(showWaitingImage) {
 }
 
 function sendForm(method, params) {
-    workInProgressOverlay.launch();
+	if (typeof workInProgressOverlay != 'undefined') workInProgressOverlay.launch();
     document.mainForm.method.value = method;
     document.mainForm.screen.value = "<%=theScreen%>";
     document.mainForm.engineview.value = "<%=engineView%>";

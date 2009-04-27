@@ -35,7 +35,7 @@
 
 <%@ include file="../../common/declarations.jspf" %>
 <!--start collapsible loginFormTop-->
-<div id="peoplebox0" class="collapsible">
+<%--<div id="peoplebox0" class="collapsible">
     <div class="boxloginFormTop"><!--start box 4 default-->
         <div class="boxloginFormTop-topright"></div>
         <div class="boxloginFormTop-topleft"></div>
@@ -63,5 +63,5 @@
     </div>
     <div class="clear"> </div>
     <!--stop box 4 default-->
-</div>
+</div>--%>
 <!--stop collapsible loginFormTop-->

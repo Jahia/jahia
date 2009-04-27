@@ -81,7 +81,7 @@ public class WorkflowTable extends TopRightComponent {
     private ContentPanel m_component ;
     private PagingToolBar pagingToolBar ;
     private int depth = 3 ;
-    private int pageSize = 15 ;
+    private int pageSize = 20 ;
     private Table m_table ;
     private List<String> languageCodes = null ;
     private Map<TableItem, GWTJahiaWorkflowElement> container = new HashMap<TableItem, GWTJahiaWorkflowElement>() ;

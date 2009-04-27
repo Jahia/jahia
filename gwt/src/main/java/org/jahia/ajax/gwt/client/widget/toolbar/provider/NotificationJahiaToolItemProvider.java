@@ -113,7 +113,13 @@ public class NotificationJahiaToolItemProvider extends AbstractJahiaToolItemProv
                             // current user job ended
                             if (currentGWTJahiaStateInfo.isCurrentUserJobEnded()) {
                                 String alertMessage = "<a href=\"#\" onclick=\"window.open('" + currentGWTJahiaStateInfo.getGwtProcessJobInfo().getJobReportUrl() + "','report','width=700,height=500')\">" + currentGWTJahiaStateInfo.getAlertMessage() + "</a>";
-                                InfoConfig infoConfig = new InfoConfig(currentGWTJahiaStateInfo.getGwtProcessJobInfo().getJobType() + " (" + currentGWTJahiaStateInfo.getGwtProcessJobInfo().getLastTitle() + ")", alertMessage);
+                                String title = currentGWTJahiaStateInfo.getGwtProcessJobInfo().getLastTitle() ;
+                                if (title == null || title.length() == 0) {
+                                    title = "" ;
+                                } else {
+                                    title = " (" + title + ")" ;
+                                }
+                                InfoConfig infoConfig = new InfoConfig(currentGWTJahiaStateInfo.getGwtProcessJobInfo().getJobType() + title, alertMessage);
                                 infoConfig.display = 9000;
                                 infoConfig.height = 75;
                                 infoConfig.listener = new Listener() {

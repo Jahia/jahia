@@ -262,7 +262,6 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
     /***
      * gets all definitions of a page template in the registry
      *
-     * @param        pageDefID       the page definition id
      * @return       a JahiaContainerDefinition object; null if not found
      * @see          org.jahia.data.containers.JahiaContainerDefinition
      *
@@ -572,7 +571,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
                         || (props != null && declaredProps != null && !props.equals(declaredProps)));
                 boolean ctnTypeHasChanged = (containerType != null && !containerType.equals(aDef.getCtnType())) || (containerType == null && aDef.getCtnType() != null);
                 if (propsHaveChanged || ctnTypeHasChanged) {
-                    if (aDef.getType() != fieldType && aDef.getType() != -1) {
+                    if (aDef.getType() != fieldType) {
                         boolean someChanges = false;
                         logger.warn("Definition for field " + fieldName + " (in " + containerName + ") has changed. ");
                         if (propsHaveChanged) {

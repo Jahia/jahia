@@ -579,11 +579,11 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <!-- Create a new page -->
         <input id="directPageRadio" type="radio" name="operation"
                value="<%=Page_Field.CREATE_PAGE%>"<% if (Page_Field.CREATE_PAGE.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> onfocus="disableUrlKey(false);">&nbsp;
+               checked="checked"<% } %> onchange="disableUrlKey(false);">&nbsp;
         <% } else { %>
         <input id="directPageRadio" type="radio" name="operation"
                value="<%=Page_Field.UPDATE_PAGE%>"<% if (Page_Field.UPDATE_PAGE.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> onfocus="disableUrlKey(false);">&nbsp;
+               checked="checked"<% } %> onchange="disableUrlKey(false);">&nbsp;
         <% } %>
     </td>
     <td>
@@ -689,7 +689,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     <td valign="top">
         <input id="remoteURLRadio" type="radio" name="operation"
                value="<%=Page_Field.LINK_URL%>" <% if (Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>
-               checked="checked"<% } %> <% if (!isNewPage) { %> onfocus="setPageURL();" <% } %>
+               checked="checked"<% } %> <% if (!isNewPage) { %> onchange="setPageURL();" <% } %>
                onclick="disableUrlKey(true);">&nbsp;
     </td>
     <td>
@@ -707,7 +707,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
 <tr>
     <td valign="top">
         <input id="noValueRadio" type="radio" name="operation"
-               onfocus="document.mainForm.page_title.value = '';disableUrlKey(true);"
+               onchange="document.mainForm.page_title.value = '';disableUrlKey(true);"
                value="<%=Page_Field.RESET_LINK%>"<%if (Page_Field.RESET_LINK.equals(pageBean.getOperation())) {%>
                checked="checked"<% } %>>
     </td>

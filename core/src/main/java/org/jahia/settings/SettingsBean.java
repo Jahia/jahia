@@ -274,7 +274,6 @@ public class SettingsBean {
     private boolean showTimeBasedPublishingIcons;
     private boolean developmentMode = true;
     private boolean readOnlyMode = false;
-    private boolean waiAutoAddMissingAttributes;
     private int connectionTimeoutForProductionJob;
 
     //flags for aes
@@ -656,7 +655,6 @@ public class SettingsBean {
             maxAggregatedEvents = getInt("maxAggregatedEvents", 5000);
 
             useFlatFileManager = getBoolean("useFlatFileManager", true);
-            waiAutoAddMissingAttributes = getBoolean("waiAutoAddMissingAttributes", true);
             showTimeBasedPublishingIcons = getBoolean("showTimeBasedPublishingIcons", true);
             localAccessUri = getString("localAccessUri", "http://localhost:8080");
             developmentMode = getBoolean("developmentMode",true);
@@ -1637,10 +1635,6 @@ public class SettingsBean {
 
     public boolean isUseFlatFileManager() {
         return useFlatFileManager;
-    }
-
-    public boolean isWaiAutoAddMissingAttributes() {
-        return waiAutoAddMissingAttributes;
     }
 
     public boolean showTimeBasedPublishingIcons() {

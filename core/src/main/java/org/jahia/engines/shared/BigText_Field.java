@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -243,17 +243,9 @@ public class BigText_Field implements FieldSubEngine {
                 }
             }
 
-            // Display or ignore WAI enforcment warnings
+            // Display or ignore WAI enforcement warnings
             if (site.isWAIComplianceCheckEnabled() && doCheckFieldValue) {
-                final WAIValidator wAIValidator = WAIValidator.getInstance();
-                final EngineValidationHelper evh = wAIValidator.validate(theField.getValue());
-                if (org.jahia.settings.SettingsBean.getInstance().isWaiAutoAddMissingAttributes()) {
-                    theField.setValue(wAIValidator.getModifiedInputHTML());
-                    theField.setRawValue(wAIValidator.getModifiedInputHTML());
-                }
-
-                final EngineMessages warningMessages = toEngineMessages(evh);
-
+                final EngineMessages warningMessages = toEngineMessages(WAIValidator.getInstance().validate(theField.getValue()));
                 if (!warningMessages.isEmpty()) {
                     warningMessages.saveMessages(theField.getID() + ".WAIwarning.", ((ParamBean) jParams).getRequest());
                     if (logger.isDebugEnabled())
@@ -516,14 +508,7 @@ public class BigText_Field implements FieldSubEngine {
             }
 
             if (site.isWAIComplianceCheckEnabled()) {
-                final WAIValidator wAIValidator = WAIValidator.getInstance();
-                final EngineValidationHelper evh = wAIValidator.validate(theField.getValue());
-                if (org.jahia.settings.SettingsBean.getInstance().isWaiAutoAddMissingAttributes()) {
-                    theField.setValue(wAIValidator.getModifiedInputHTML());
-                    theField.setRawValue(wAIValidator.getModifiedInputHTML());
-                }
-
-                final EngineMessages warningMessages = toEngineMessages(evh);
+                final EngineMessages warningMessages = toEngineMessages(WAIValidator.getInstance().validate(theField.getValue()));
 
                 if (!warningMessages.isEmpty()) {
                     warningMessages.saveMessages(theField.getID() + ".WAIwarning.", ((ParamBean) jParams).getRequest());

@@ -93,6 +93,7 @@ import org.jahia.query.qom.ConstraintItem;
 import org.jahia.query.qom.ContainerQueryBuilder;
 import org.jahia.query.qom.DescendantNodeImpl;
 import org.jahia.query.qom.JahiaQueryObjectModelConstants;
+import org.jahia.query.qom.LiteralImpl;
 import org.jahia.query.qom.QueryObjectModelImpl;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
 import org.jahia.registries.JahiaListenersRegistry;
@@ -2542,10 +2543,12 @@ public class JahiaContainersBaseService extends JahiaContainersService {
                     String[] definitionsAr = (String[]) definitions
                             .toArray(new String[] {});
                     String definitionNamesStr = JahiaTools
-                            .getStringArrayToString(definitionsAr, ",");
+                        .getStringArrayToString(definitionsAr,
+                            JahiaQueryObjectModelConstants.MULTI_VALUE_SEP);
                     Value val = valueFactory.createValue(definitionNamesStr);
                     try {
                         Literal literal = queryFactory.literal(val);
+                        ((LiteralImpl) literal).setMultiValueANDLogic(false);
                         PropertyValue prop = queryFactory
                                 .propertyValue(FilterCreator.CONTENT_DEFINITION_NAME);
                         Constraint constraint = queryFactory

@@ -178,7 +178,7 @@ public class CacheEventListener extends JahiaEventListener {
             } catch (ClassNotFoundException e) {
                 logger.error(e);
             } catch (JahiaException e) {
-                logger.error(e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -245,7 +245,7 @@ public class CacheEventListener extends JahiaEventListener {
     }
 
     public void contentObjectUpdated(JahiaEvent je) {
-        //for time base publishnig event this is very dirty we need a specific event for that I think
+        //for time base publishing event this is very dirty we need a specific event for that I think
         if (je.getSource() instanceof JahiaObjectManager) {
             ContentObject container = (ContentObject) je.getObject();
             Set<String> languageCodes = getLanguageCodes(je.getProcessingContext().getLocale().toString(), container);
@@ -438,9 +438,9 @@ public class CacheEventListener extends JahiaEventListener {
             }
             informCluster(ClusterCacheMessage.KEYGENERATOR_ACLUPDATE_EVENT);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         } catch (JahiaException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -449,7 +449,7 @@ public class CacheEventListener extends JahiaEventListener {
             ServicesRegistry.getInstance().getCacheKeyGeneratorService().rightsUpdated();
             informCluster(ClusterCacheMessage.KEYGENERATOR_ACLUPDATE_EVENT);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -458,7 +458,7 @@ public class CacheEventListener extends JahiaEventListener {
             ServicesRegistry.getInstance().getCacheKeyGeneratorService().rightsUpdated();
             informCluster(ClusterCacheMessage.KEYGENERATOR_ACLUPDATE_EVENT);
         } catch (JahiaInitializationException e) {
-            logger.error(e);
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -635,12 +635,16 @@ public class CacheEventListener extends JahiaEventListener {
     }
 
     private void invalidate(ContentObjectKey object, String mode, String locale) {
-        logger.debug("Invalide container " + object + " in mode " + mode + " for language " + locale);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Invalide container " + object + " in mode " + mode + " for language " + locale);
+        }
         getChtmlCache().invalidateContainerEntries(object != null ? object.toString() : null, mode, locale);
     }
 
     private void invalidateSkeleton(ContentObjectKey object, String mode, String locale) {
-        logger.debug("Invalide skeleton " + object + " in mode " + mode + " for language " + locale);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Invalide skeleton " + object + " in mode " + mode + " for language " + locale);
+        }
         getSkeletonCache().invalidateSkeletonEntries(object != null ? object.toString() : null, mode, locale);
     }
 }

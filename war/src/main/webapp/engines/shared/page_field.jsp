@@ -737,6 +737,9 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
        value="<%=Page_Field.UPDATE_PAGE%>" checked="checked">
 <input  type="hidden" name="template_id"
        value="<%=pageBean.getPageTemplateID()%>" checked="checked">
+<script type="text/javascript">
+	disableUrlKey(false);
+</script>
 <% } %>
 </table>
 

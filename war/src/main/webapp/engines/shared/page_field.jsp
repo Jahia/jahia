@@ -252,6 +252,7 @@ final boolean canChangeType = pageBean.getID() != jParams.getPageID() ||
     function disableUrlKey(doDisable) {
         if (typeof document.mainForm.pageURLKey != 'undefined') {
         	document.mainForm.pageURLKey.disabled = doDisable;
+        	document.getElementById('pageURLKeyRow').style.display = doDisable ? 'none' : ''; 
         }
     }
 
@@ -286,6 +287,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         if (document.getElementById('noValueRadio')) {
             if (document.getElementById('noValueRadio').checked) {
                 document.mainForm.operation[0].checked = true;
+                disableUrlKey(false);
             }
         }
     }
@@ -492,7 +494,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     }
 
     if (displayURLKeyInput && isDirectPage) { %>
-<tr>
+<tr id="pageURLKeyRow" <% if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>style="display:none" <% } %>>
     <th>
         <%if (localeList.size() > 1) { %>
         <fmt:message key="org.jahia.engines.pages.PageProperties_Engine.pageURLKeyShared.label"/><br/>
@@ -502,7 +504,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
     </th>
     <td>
         <input type="text" size="80" name="pageURLKey" value="<%=pageURLKey%>"
-               <% if (!canDisplayTemplateSelection || Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation())) { %>disabled="disabled" <% } %>/>
+               <% if (Page_Field.LINK_JAHIA_PAGE.equals(pageBean.getOperation()) || Page_Field.LINK_URL.equals(pageBean.getOperation())) { %>disabled="disabled" <% } %>/>
     </td>
 </tr>
 <% } %>
@@ -593,7 +595,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
             <% } %>
         </label>
         <br/>
-        <select name="template_id" onfocus="if (operation[0]) operation[0].checked = true;">
+        <select name="template_id" onfocus="if (operation[0]) operation[0].checked = true; disableUrlKey(false);">
             <% while (templateList.hasNext()) {
                 JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateList.next();
                 pageContext.setAttribute("pageTemplate", theTemplate);
@@ -695,7 +697,7 @@ pageBean.getParentID(), pageBean.getID(), "setPid", jParams.getSiteID(), -1)%>
         <br/>
         <!-- option 1 if linkonly page, 3 if page does not exist. -->
         <input <% if (isNewPage) { %>
-                onfocus="operation[<%= !isDirectPage ? 1 : 3 %>].checked = true;"<% } %> type="text"
+                onfocus="operation[<%= !isDirectPage ? 1 : 3 %>].checked = true; disableUrlKey(true);"<% } %> type="text"
                 name="remote_url" size="50" value="<%=remoteURL%>" maxlength="250">
         <!-- Reset the link -->
     </td>

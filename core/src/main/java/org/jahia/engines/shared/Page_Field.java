@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  *
@@ -518,11 +518,11 @@ public class Page_Field implements FieldSubEngine {
             pageBean.sharedTitle(false);
         }
 
+        final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
         if (CREATE_PAGE.equals(operation) || UPDATE_PAGE.equals(operation)) {
             int templateID = Integer.parseInt(jParams.getParameter("template_id"));
             pageBean.setPageTemplateID(templateID);
             pageBean.setPageType(JahiaPage.TYPE_DIRECT);
-            final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
             if (aclService.getSiteActionPermission(LockPrerequisites.URLKEY, jParams.getUser(),
                     JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) {
                 result = setPageURLKeyIfValidAndNotEmpty(jParams, engineMap);
@@ -531,11 +531,6 @@ public class Page_Field implements FieldSubEngine {
                 } else {
                     engineMap.remove("focus");
                 }
-            }
-
-            if (aclService.getSiteActionPermission(LockPrerequisites.HIDE_FROM_NAVIGATION_MENU, jParams.getUser(),
-                    JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) {
-                setHideFromNavigationMenu(jParams, engineMap);
             }
 
         } else if (LINK_URL.equals(operation)) {
@@ -605,6 +600,12 @@ public class Page_Field implements FieldSubEngine {
         } else if (RESET_LINK.equals(operation)) {
             theField.setHasChanged(true);
         }
+        if (!RESET_LINK.equals(operation)) {
+            if (aclService.getSiteActionPermission(LockPrerequisites.HIDE_FROM_NAVIGATION_MENU, jParams.getUser(),
+                    JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0) {
+                setHideFromNavigationMenu(jParams, engineMap);
+            }
+        }
         // Verify if the page title is shared
         if ("true".equals(sharedTitle) && title != null && title.length() > 0) {
             // Set the same title to all languages
@@ -657,6 +658,7 @@ public class Page_Field implements FieldSubEngine {
         }
         boolean contentPageUpdated = true;
         boolean pageKeyHasChanged = false;
+        boolean hideFromNavMenuHasChanged = false;
         String operation = pageBean.getOperation();
         if (CREATE_PAGE.equals(operation) ||
                 LINK_JAHIA_PAGE.equals(operation) ||
@@ -687,9 +689,6 @@ public class Page_Field implements FieldSubEngine {
                 if (urlKey != null && urlKey.length() > 0) {
                     jahiaPage.getContentPage().setPageKey(urlKey);
                 }
-
-                final boolean hideFromNavigationMenu = pageBean.isHideFromNavigationMenu();
-                jahiaPage.getContentPage().setProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU, String.valueOf(hideFromNavigationMenu));
 
 //                if (CREATE_PAGE.equals(operation)) {
 //                    jahiaPage = ServicesRegistry.getInstance().getJahiaPageService().
@@ -727,6 +726,12 @@ public class Page_Field implements FieldSubEngine {
                 }
                 contentPage.setPageType(pageBean.getPageType(), jParams.getEntryLoadRequest());
             }
+            String oldHideFromNavigationMenuValue = jahiaPage.getProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU);
+            if (oldHideFromNavigationMenuValue == null || pageBean.isHideFromNavigationMenu() != Boolean.valueOf(oldHideFromNavigationMenuValue)) {
+                jahiaPage.getContentPage().setProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU, String.valueOf(pageBean.isHideFromNavigationMenu()));
+                hideFromNavMenuHasChanged = true;
+            }
+            
             theField.setValue(Integer.toString(jahiaPage.getID()));
             theField.setObject(jahiaPage);
             theField.save(jParams);
@@ -758,6 +763,7 @@ public class Page_Field implements FieldSubEngine {
             final boolean oldHideFromNavigationMenu = Boolean.valueOf(jahiaPage.getProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU));
             if (hideFromNavigationMenu != oldHideFromNavigationMenu) {
                 jahiaPage.getContentPage().setProperty(PageProperty.HIDE_FROM_NAVIGATION_MENU, String.valueOf(hideFromNavigationMenu));
+                hideFromNavMenuHasChanged = true;
             }
 
             contentPage = ServicesRegistry.getInstance().getJahiaPageService().
@@ -860,7 +866,7 @@ public class Page_Field implements FieldSubEngine {
                 retRule = null;
             }
 
-            // 0. Flush moved page cache to garantize to have the last staged.
+            // 0. Flush moved page cache to guarantee to have the last staged.
             ServicesRegistry.getInstance().getJahiaPageService().invalidatePageCache(movedPageID);
 
             // 1. Relink the parent page to the new one, this also marks for
@@ -1111,7 +1117,7 @@ public class Page_Field implements FieldSubEngine {
                 }
             }
 
-            if (contentPageUpdated || titleHasChanged || pageKeyHasChanged) {
+            if (contentPageUpdated || titleHasChanged || pageKeyHasChanged || hideFromNavMenuHasChanged) {
                 contentPage.commitChanges(true, true, jParams.getUser());
 
                 JahiaEvent objectCreatedEvent = new JahiaEvent(this, jParams, contentPage);
@@ -1276,14 +1282,14 @@ public class Page_Field implements FieldSubEngine {
      * Validate and set page URL key if its present.
      * To be valid, the key must :
      * - not be a jahia reserved word
-     * - be composed of caracters in 0 to 9, a to z or A to Z, length min 2 max 250
+     * - be composed of characters in 0 to 9, a to z or A to Z, length min 2 max 250
      * - not be used by another page on current jahia site
      * <p/>
      * The validation stops as soon as one error condition is encountered. Higher cost validation is performed last in the chain.
      *
      * @param jParams   ProcessingContext
      * @param engineMap engineMap
-     * @return true if the key is valid and was setted, false if empty or not valid.
+     * @return true if the key is valid and was set, false if empty or not valid.
      */
     private boolean setPageURLKeyIfValidAndNotEmpty(final ProcessingContext jParams,
                                                     final Map engineMap) throws JahiaException {

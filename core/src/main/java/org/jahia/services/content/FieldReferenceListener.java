@@ -49,7 +49,6 @@ import org.jahia.data.fields.JahiaBigTextField;
 import org.jahia.engines.filemanager.URLUtil;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
-import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.hibernate.model.JahiaFieldXRef;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.fields.ContentBigTextField;
@@ -57,7 +56,7 @@ import org.jahia.services.fields.ContentField;
 import org.jahia.services.version.EntryLoadRequest;
 
 /**
- * Listener implementation used to upadte field references when a node is moved/renamed.
+ * Listener implementation used to update field references when a node is moved/renamed.
  * User: toto
  * Date: Jul 21, 2008
  * Time: 2:36:05 PM
@@ -66,9 +65,6 @@ public class FieldReferenceListener extends DefaultEventListener {
     private static Logger logger = Logger.getLogger (FieldReferenceListener.class);
 
     private JahiaFieldXRefManager fieldXRefManager = null;
-
-    public FieldReferenceListener() {
-    }
 
     public int getEventTypes() {
         return Event.NODE_ADDED;
@@ -113,11 +109,10 @@ public class FieldReferenceListener extends DefaultEventListener {
 
 
     public void move (String uuid, String sourceUri, String destinationUri) {
+        if (sourceUri == null || destinationUri == null || sourceUri.equals(destinationUri)) {
+            return;
+        }
         try {
-            if (fieldXRefManager == null) {
-                fieldXRefManager = (JahiaFieldXRefManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaFieldXRefManager.class.getName());
-            }
-
             Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE+provider.getKey()+":"+uuid);
 
             for (JahiaFieldXRef jahiaFieldXRef : c) {
@@ -169,5 +164,9 @@ public class FieldReferenceListener extends DefaultEventListener {
                 }
             }
         }
+    }
+
+    public void setFieldXRefManager(JahiaFieldXRefManager fieldXRefManager) {
+        this.fieldXRefManager = fieldXRefManager;
     }
 }

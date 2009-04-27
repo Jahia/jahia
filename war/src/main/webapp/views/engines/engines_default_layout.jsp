@@ -421,6 +421,7 @@ window.onload = windowOnload;
     </div>
   </div>
 </div>
+<internal:gwtGenerateDictionary/>
 </body>
 </html>
 <% out.flush(); %>

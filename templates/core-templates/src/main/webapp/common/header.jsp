@@ -55,7 +55,7 @@
             <ui:navigationMenu cssClassName="menu" kind="topTabs" labelKey="pages.add" requiredTitle="true"/>
         </div>
         <div class="right">
-            <template:include page="common/links/imageLinksDisplay.jsp">
+            <template:include page="modules/links/imageLinksDisplay.jsp">
                 <template:param name="cssClassName" value="shortcuts"/>
             </template:include>
         </div>

@@ -35,7 +35,7 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <template:containerList name="faq" id="faqList" actionMenuNamePostFix="faqs" actionMenuNameLabelKey="faqs.add">
     <template:container id="faqContainer" cacheKey="onlyQuestions" actionMenuNamePostFix="faq"
                         actionMenuNameLabelKey="faq.update">

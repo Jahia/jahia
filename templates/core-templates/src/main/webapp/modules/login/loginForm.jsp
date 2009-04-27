@@ -35,18 +35,30 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../declarations.jspf" %>
-<template:containerList name="basicLink${param.id}" id="links" displayActionMenu="false">
-    <ul class="${param.cssClassName}">
-        <template:container id="linkContainer" displayActionMenu="false">
-            <li>
-                <ui:actionMenu contentObjectName="linkContainer" namePostFix="link" labelKey="link.update">
-                    <template:field name="link" maxChar="20"/>
-                </ui:actionMenu>
-            </li>
-        </template:container>
-        <c:if test="${requestScope.currentRequest.editMode}">
-            <li><ui:actionMenu contentObjectName="links" namePostFix="links" labelKey="links.add"/></li>
-        </c:if>
-    </ul>
-</template:containerList>
+<%@ include file="../../common/declarations.jspf" %>
+<!-- login -->
+<ui:loginArea>
+    <div class="loginform">
+        <fieldset>
+            <legend>&nbsp;<fmt:message key='login'/>&nbsp;</legend>
+            <p>
+                <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username"/>
+            </p>
+
+            <p>
+                <ui:loginPassword labelCssClassName="left" cssClassName="field" labelKey="password"/>
+            </p>
+
+            <p>
+                <ui:loginRememberMe labelCssClassName="left" cssClassName="field" labelKey="rememberme"/>
+            </p>
+
+            <p>
+                <ui:loginButton cssClassName="button" labelKey="loginbutton"/>
+            </p>
+
+            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
+
+        </fieldset>
+    </div>
+</ui:loginArea>

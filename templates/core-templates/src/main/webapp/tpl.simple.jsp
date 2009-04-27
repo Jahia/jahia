@@ -53,7 +53,7 @@
                 <div id="columnB">
                     <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}"/></h2>
 
-                    <template:include page="common/maincontent/maincontentDisplay.jsp"/>
+                    <template:include page="modules/maincontent/maincontentDisplay.jsp"/>
 
                     <template:include page="common/box/box.jsp">
                         <template:param name="name" value="columnB_box"/>

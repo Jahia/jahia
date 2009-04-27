@@ -48,7 +48,7 @@
         <div id="pagecontent">
             <div class="content3cols">
                 <div id="columnA">
-                    <template:include page="common/loginForm.jsp"/>
+                    <template:include page="modules/login/loginForm.jsp"/>
 
                     <template:include page="common/box/box.jsp">
                         <template:param name="name" value="columnA_box"/>
@@ -56,7 +56,7 @@
                 </div>
 
                 <div id="columnC">
-                    <template:include page="common/searchForm.jsp"/>
+                    <template:include page="modules/search/searchForm.jsp"/>
 
                     <!-- in HomePage we display site main properties -->
                     <div class="properties">
@@ -69,7 +69,7 @@
 
                 <div id="columnB">
                     <!--news-->
-                    <template:include page="common/news/newsDisplay.jsp"/>
+                    <template:include page="modules/news/newsDisplay.jsp"/>
 
                     <div>
                         <a class="bottomanchor" href="#pagetop"><fmt:message key='pageTop'/></a>

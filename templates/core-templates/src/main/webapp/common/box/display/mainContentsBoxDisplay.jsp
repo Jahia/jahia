@@ -38,5 +38,5 @@
 <%@ include file="../../declarations.jspf" %>
 <template:containerList name="${boxID}_mainContentContainer" id="maincontentList"
                        actionMenuNamePostFix="mainContents" actionMenuNameLabelKey="mainContents.add">
-    <%@ include file="../../maincontent/maincontentDisplay.jspf" %>
+    <%@ include file="../../../modules/maincontent/maincontentDisplay.jspf" %>
 </template:containerList>

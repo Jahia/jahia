@@ -54,7 +54,7 @@
                     <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}"/></h2>
 
                     <!--news-->
-                    <template:include page="common/news/newsSearcherFilterDisplay.jsp"/>
+                    <template:include page="modules/news/newsSearcherFilterDisplay.jsp"/>
 
                     <div>
                         <a class="bottomanchor" href="#pagetop"><fmt:message key='pageTop'/></a>

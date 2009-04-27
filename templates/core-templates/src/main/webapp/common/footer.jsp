@@ -39,7 +39,7 @@
 <div class="content">
     <div class="padding">
         <div class="right">
-            <template:include page="common/links/basicLinksDisplay.jsp">
+            <template:include page="modules/links/basicLinksDisplay.jsp">
                 <template:param name="cssClassName" value="links"/>
             </template:include>
         </div>

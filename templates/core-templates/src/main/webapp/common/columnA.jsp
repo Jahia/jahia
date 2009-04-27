@@ -38,16 +38,16 @@
 <%@ include file="declarations.jspf" %>
 <ui:navigationMenu kind="sideMenu" labelKey="pages.add" usePageIdForCacheKey="true" requiredTitle="true"/>
 
-<template:include page="common/loginForm.jsp"/>
+<template:include page="modules/login/loginForm.jsp"/>
 
 <div class="properties">
     <utility:displayPageProperties/>
 </div>
 
-<template:include page="common/searchForm.jsp"/>
+<template:include page="modules/search/searchForm.jsp"/>
 
 <template:include page="common/box/box.jsp">
     <template:param name="name" value="columnA_box"/>
 </template:include>
 
-<template:include page="common/note/noteDisplay.jsp"/>
+<template:include page="modules/note/noteDisplay.jsp"/>

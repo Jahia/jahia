@@ -1,4 +1,4 @@
-<%@ include file="../declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <template:container id="newsContainer" encapsulatingDivCssClassName="news" actionMenuNamePostFix="news"
                    actionMenuNameLabelKey="news.update">
     <h3>

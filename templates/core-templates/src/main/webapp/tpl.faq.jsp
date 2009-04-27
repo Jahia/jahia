@@ -53,7 +53,7 @@
                 <div id="columnB">
                     <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}"/></h2>
 
-                    <template:include page="common/faq/faqDisplay.jsp"/>
+                    <template:include page="modules/faq/faqDisplay.jsp"/>
 
                     <div>
                         <a class="bottomanchor" href="#pagetop"><fmt:message key='pageTop'/></a>

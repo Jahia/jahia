@@ -35,30 +35,15 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="declarations.jspf" %>
-<!-- login -->
-<ui:loginArea>
-    <div class="loginform">
-        <fieldset>
-            <legend>&nbsp;<fmt:message key='login'/>&nbsp;</legend>
-            <p>
-                <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username"/>
-            </p>
-
-            <p>
-                <ui:loginPassword labelCssClassName="left" cssClassName="field" labelKey="password"/>
-            </p>
-
-            <p>
-                <ui:loginRememberMe labelCssClassName="left" cssClassName="field" labelKey="rememberme"/>
-            </p>
-
-            <p>
-                <ui:loginButton cssClassName="button" labelKey="loginbutton"/>
-            </p>
-
-            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
-
-        </fieldset>
-    </div>
-</ui:loginArea>
+<%@ include file="../../common/declarations.jspf" %>
+<div class="newslist">
+    <template:containerList name="news${param.id}" id="newsList" actionMenuNamePostFix="newss"
+                           actionMenuNameLabelKey="newss.add">
+        <query:containerQuery>
+            <query:selector nodeTypeName="jnt:newsContainer" selectorName="news"/>
+            <query:childNode path="${newsList.JCRPath}" selectorName="news"/>
+            <query:sortBy propertyName="newsDate" order="${queryConstants.ORDER_DESCENDING}"/>
+        </query:containerQuery>
+        <%@ include file="newsDisplay.jspf" %>
+    </template:containerList>
+</div>

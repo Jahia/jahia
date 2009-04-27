@@ -62,10 +62,10 @@
   <jsp:include page="../../common/displayContainerWithSub.jsp" flush="true"/>
 </template:containerList>
 
-<template:include page="common/maincontent/maincontentDisplay.jsp">
+<template:include page="modules/maincontent/maincontentDisplay.jsp">
     <template:param name="id" value="NoWf"/>
 </template:include>
 
-<template:include page="common/maincontent/maincontentDisplay.jsp">
+<template:include page="modules/maincontent/maincontentDisplay.jsp">
     <template:param name="id" value="Nstep"/>
 </template:include>

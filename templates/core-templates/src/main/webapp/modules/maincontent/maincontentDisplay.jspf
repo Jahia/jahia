@@ -1,4 +1,4 @@
-<%@ include file="../declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <template:container id="mainContent" actionMenuNamePostFix="mainContent" actionMenuNameLabelKey="mainContent.update">
     <h3><template:field name='mainContentTitle'/></h3>
 

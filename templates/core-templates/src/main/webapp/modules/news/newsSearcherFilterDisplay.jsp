@@ -35,7 +35,7 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <c:set var="params" value="${paramValues.listCategories}" scope="request"/>
 <c:set var="listCategories" value="${fn:join(params, ',')}" scope="request"/>
 <c:set var="dateFilter" value="${param.dateFilter}" scope="request"/>

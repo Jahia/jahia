@@ -35,15 +35,18 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../declarations.jspf" %>
-<div class="newslist">
-    <template:containerList name="news${param.id}" id="newsList" actionMenuNamePostFix="newss"
-                           actionMenuNameLabelKey="newss.add">
-        <query:containerQuery>
-            <query:selector nodeTypeName="jnt:newsContainer" selectorName="news"/>
-            <query:childNode path="${newsList.JCRPath}" selectorName="news"/>
-            <query:sortBy propertyName="newsDate" order="${queryConstants.ORDER_DESCENDING}"/>
-        </query:containerQuery>
-        <%@ include file="newsDisplay.jspf" %>
-    </template:containerList>
-</div>
+<%@ include file="../../common/declarations.jspf" %>
+<template:containerList name="basicLink${param.id}" id="links" displayActionMenu="false">
+    <ul class="${param.cssClassName}">
+        <template:container id="linkContainer" displayActionMenu="false">
+            <li>
+                <ui:actionMenu contentObjectName="linkContainer" namePostFix="link" labelKey="link.update">
+                    <template:field name="link" maxChar="20"/>
+                </ui:actionMenu>
+            </li>
+        </template:container>
+        <c:if test="${requestScope.currentRequest.editMode}">
+            <li><ui:actionMenu contentObjectName="links" namePostFix="links" labelKey="links.add"/></li>
+        </c:if>
+    </ul>
+</template:containerList>

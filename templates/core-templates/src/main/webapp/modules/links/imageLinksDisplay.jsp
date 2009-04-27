@@ -35,7 +35,7 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../declarations.jspf" %>
+<%@ include file="../../common/declarations.jspf" %>
 <template:containerList name="imageLink${param.id}" id="links" displayActionMenu="false">
     <ul class="${param.cssClassName}">
         <template:container id="linkContainer" displayActionMenu="false">

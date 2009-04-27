@@ -35,12 +35,10 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../declarations.jspf" %>
-<template:containerList name="note${param.id}" id="noteList" actionMenuNamePostFix="notes"
-                       actionMenuNameLabelKey="notes.add">
-    <template:container id="note" encapsulatingDivCssClassName="note" actionMenuNamePostFix="note"
-                       actionMenuNameLabelKey="note.update">
-        <h4><template:field name='noteTitle'/></h4>
-        <template:field name="noteBody"/>
-    </template:container>
-</template:containerList>
+<%@ include file="../../common/declarations.jspf" %>
+<div class="maincontentList">
+    <template:containerList name="maincontent${param.id}" id="maincontentList" actionMenuNamePostFix="mainContents"
+                           actionMenuNameLabelKey="mainContents.add">
+        <%@ include file="maincontentDisplay.jspf" %>
+    </template:containerList>
+</div>

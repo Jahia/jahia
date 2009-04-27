@@ -47,7 +47,7 @@
                 <query:descendantNode selectorName="newsList" path="${currentSite.JCRPath}"/>
                 <query:sortBy propertyName="newsDate" order="${queryConstants.ORDER_DESCENDING}"/>
             </query:containerQuery>
-            <%@ include file="../../news/newsDisplay.jspf" %>
+            <%@ include file="../../../modules/news/newsDisplay.jspf" %>
         </template:containerList>
     </template:container>
 </template:containerList>

@@ -53,7 +53,7 @@
                 <div id="columnC">
                     <h2>&nbsp;</h2>
 
-                    <template:include page="common/maincontent/maincontentDisplay.jsp">
+                    <template:include page="modules/maincontent/maincontentDisplay.jsp">
                         <template:param name="id" value="columnC"/>
                     </template:include>
 
@@ -64,7 +64,7 @@
                 <div id="columnB">
                     <h2><c:out value="${requestScope.currentPage.highLightDiffTitle}"/></h2>
 
-                    <template:include page="common/maincontent/maincontentDisplay.jsp">
+                    <template:include page="modules/maincontent/maincontentDisplay.jsp">
                         <template:param name="id" value="columnB"/>
                     </template:include>
 

@@ -35,10 +35,15 @@
 
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 
-<%@ include file="../declarations.jspf" %>
-<div class="maincontentList">
-    <template:containerList name="maincontent${param.id}" id="maincontentList" actionMenuNamePostFix="mainContents"
-                           actionMenuNameLabelKey="mainContents.add">
-        <%@ include file="maincontentDisplay.jspf" %>
-    </template:containerList>
+<%@ include file="../../common/declarations.jspf" %>
+<%@taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%-- search --%>
+<div class="searchform">
+    <s:form>
+        <fieldset>
+            <legend>&nbsp;<fmt:message key='search'/>&nbsp;</legend>
+            <p><s:term class="field"/></p>
+            <p><input type="submit" name="submit" class="button" value="<fmt:message key='search'/>"/></p>
+        </fieldset>
+    </s:form>
 </div>

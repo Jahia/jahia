@@ -37,4 +37,4 @@
 <%@ include file="declarations.jspf"%>
 <ui:navigationMenu kind="sideMenu" startLevel="1" labelKey="pages.add" usePageIdForCacheKey="true" requiredTitle="true"/>
 
-<template:include page="common/loginForm.jsp"/>
+<template:include page="modules/login/loginForm.jsp"/>

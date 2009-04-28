@@ -2538,17 +2538,19 @@ public class ProcessingContext {
      */
     public static boolean isPortletRequest(final HttpServletRequest req) {
         String pathInfo = req.getPathInfo();
-        StringTokenizer st = new StringTokenizer(pathInfo, "/", false);
-        while (st.hasMoreTokens()) {
-        	String token = st.nextToken();
-            // remder/resource url
-           if (token.startsWith(PLUTO_PREFIX + PLUTO_RESOURCE)) {
-               return true;
-           }
-        	// actionUrl
-        	else if (token.startsWith(PLUTO_PREFIX + PLUTO_ACTION)) {
-        		return true;
-        	}
+        if(pathInfo != null){
+            StringTokenizer st = new StringTokenizer(pathInfo, "/", false);
+            while (st.hasMoreTokens()) {
+                String token = st.nextToken();
+                // remder/resource url
+               if (token.startsWith(PLUTO_PREFIX + PLUTO_RESOURCE)) {
+                   return true;
+               }
+                // actionUrl
+                else if (token.startsWith(PLUTO_PREFIX + PLUTO_ACTION)) {
+                    return true;
+                }
+            }
         }
         return false;
 

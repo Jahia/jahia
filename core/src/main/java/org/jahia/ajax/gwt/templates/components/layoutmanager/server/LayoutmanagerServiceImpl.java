@@ -128,7 +128,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
                     for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
                         nodeWrapper.remove();
                     }
-                } else {                                              load default one
+                } else {
                     // update layoutNode
                     layoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("j:layout", Constants.JAHIANT_LAYOUT));
                     layoutNode.setPage(currentContentPage.getUUID());

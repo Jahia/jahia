@@ -133,8 +133,6 @@
                                                     </td>
                                                     <td>
                                                         <select id="selectTmplSet" name="selectTmplSet" onChange="submitForm('change');">
-                                                            <option value="">
-                                                                ---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                                                             <c:forEach items="${tmplSets}" var="tmplPack">
                                                                 <c:set var="displayName" value="" scope="request"/>
                                                                 <c:forEach items="${tmplPack.invertedHierarchy}"

@@ -204,7 +204,6 @@ stretcherToOpen   = 0; %>
                               <td>
                                 <select name="<%=siteKey + "templates"%>">
 
-                                <option value="">---------&nbsp;&nbsp;<fmt:message key="org.jahia.admin.site.ManageSites.pleaseChooseTemplateSet.label"/>&nbsp;&nbsp;---------&nbsp;</option>
                                 <% if (tpls != null)
                                 for (Iterator iterator1 = tpls.iterator(); iterator1.hasNext();) {
                                 JahiaTemplatesPackage pack = (JahiaTemplatesPackage) iterator1.next();

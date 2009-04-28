@@ -135,6 +135,7 @@ public class WorkflowTable extends TopRightComponent {
                     }
                 }
                 super.onLoadSuccess(pagingLoadConfig, gwtJahiaWorkflowElementPagingLoadResult);
+                binder.setSelection(binder.getStore().getAt(0));
                 ((WorkflowToolbar)getLinker().getTopObject()).setAvailableAction(availableActionsInTable);
                 m_component.layout() ;
             }

@@ -35,6 +35,7 @@
 
 import java.util.*;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 
@@ -96,7 +97,7 @@ public class ParsedObjectImpl implements ParsedObject {
     }
 
     /**
-     * Return an hastable of fieldname/values pair of information as they were
+     * Return an hashtable of fieldname/values pair of information as they were
      * stored through the search service
      *
      * the key is the field name and the values is an array of string values
@@ -125,7 +126,7 @@ public class ParsedObjectImpl implements ParsedObject {
             values = (String[])getFields().get(fieldName);
         }
         if ( values == null ){
-            values = new String[0];
+            values = ArrayUtils.EMPTY_STRING_ARRAY;
         }
         return values;
     }

@@ -65,6 +65,7 @@ public class OnPortletRemoved extends SelectionListener<ComponentEvent> {
             public void handleEvent(ComponentEvent ce) {
                 Dialog dialog = (Dialog) ce.component;
                 Button btn = dialog.getButtonPressed();
+                Log.debug("Clicked button: "+btn.getText());
                 if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
                     close();
                 }
@@ -72,7 +73,7 @@ public class OnPortletRemoved extends SelectionListener<ComponentEvent> {
         };
 
 
-        box.setButtons(MessageBox.YESNOCANCEL);
+        box.setButtons(MessageBox.OKCANCEL);
         box.setIcon(MessageBox.QUESTION);
         box.setTitle(jahiaPortlet.getHeading());
         box.addCallback(confirmBoxListener);

@@ -88,6 +88,8 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("mw_roles_description",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"));
             addGwtDictionaryMessage("mw_finish",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.finish.label"));
             addGwtDictionaryMessage("mw_save_as",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
+            addGwtDictionaryMessage("ae_principal",getJahiaInternalResourceValue("org.jahia.engines.rights.ManageRights.principal.label"));
+            
 
         } catch (IOException e) {
             logger.error(e, e);

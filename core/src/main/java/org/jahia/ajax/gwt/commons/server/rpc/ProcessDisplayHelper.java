@@ -261,7 +261,7 @@ public class ProcessDisplayHelper {
                         }
                         GWTJahiaNodeOperationResult logsForObjectAndLang = logsForObject.get(lang);
                         EngineMessage currentEngineMessage = nodeOperationResult.getMsg();
-                        String localeKeyValue = getLocaleJahiaEnginesResource(jParams.getLocale(), currentEngineMessage.getKey());
+                        String localeKeyValue = currentEngineMessage.isResource() ? getLocaleJahiaEnginesResource(jParams.getLocale(), currentEngineMessage.getKey()) : currentEngineMessage.getKey();
                         String message = null;
                         if (localeKeyValue != null) {
                             if (currentEngineMessage.getValues() != null) {

@@ -220,8 +220,8 @@ public class ValidationHelper {
             ProcessingContext ctx, int level, int type) throws JahiaException {
         
         GWTJahiaNodeOperationResultItem gwtOperationResultItem = new GWTJahiaNodeOperationResultItem();
-        gwtOperationResultItem.setMessage(MessageFormat.format(JahiaResourceBundle.getMessageResource(operationResult.getMsg().getKey(),
-                ctx.getLocale()), operationResult.getMsg().getValues()));
+        gwtOperationResultItem.setMessage(operationResult.getMsg().isResource() ? MessageFormat.format(JahiaResourceBundle.getMessageResource(operationResult.getMsg().getKey(),
+                ctx.getLocale()), operationResult.getMsg().getValues()) : operationResult.getMsg().getKey());
         gwtOperationResultItem.setComment(operationResult.getComment());
 
         try {

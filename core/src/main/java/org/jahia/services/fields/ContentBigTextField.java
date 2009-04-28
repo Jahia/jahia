@@ -532,8 +532,11 @@ public class ContentBigTextField extends ContentField {
                     }
 
                     for (ValidationError error : evh.getErrors()) {
-                        final EngineMessage msg = new EngineMessage(
-                                error.getRessourceBundleProp(), error.getValues());
+                        final EngineMessage msg = error
+                                .getRessourceBundleProp() != null ? new EngineMessage(
+                                error.getRessourceBundleProp(), error
+                                        .getValues())
+                                : new EngineMessage(error.getMsgError(), false);
                         if (logger.isDebugEnabled()) {
                             logger.debug("Adding 1 error: " + msg);
                         }

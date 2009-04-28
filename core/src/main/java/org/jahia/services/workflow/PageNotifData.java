@@ -156,7 +156,7 @@ public class PageNotifData implements Comparable {
                     "org.jahia.engines.workflow.activationResultMessage",
                     locale);
                 EngineMessage message = validationResult.getMsg();
-                String keyValue = JahiaResourceBundle.getMessageResource(message.getKey(), locale);
+                String keyValue = message.isResource() ? JahiaResourceBundle.getMessageResource(message.getKey(), locale) : message.getKey();
                 String s = validationResult.getComment();
                 if (keyValue != null) {
                     s = keyValue;

@@ -61,6 +61,8 @@
 [consequence][]Import the node=service.importNode(node,drools);
 [consequence][]Log {message}= logger.debug({message});
 [consequence][]Fire {eventType} notification event for {node}=service.notify({node}, "{eventType}", drools);
+[consequence][]Fire {eventType} notification event to user {targetUser}=service.notifyUser(node, "{eventType}", {targetUser}, drools);
+[consequence][]Fire {eventType} notification event to group {targetGroup}=service.notifyGroup(node, "{eventType}", {targetGroup}, drools);
 [consequence][]Fire {eventType} notification event to the current user=service.notify(node, "{eventType}", user.getJahiaUser(), drools);
 [consequence][]Fire {eventType} notification event to the users involved in the next step=service.notify(node, "{eventType}", service.getWorkflowNextStepPrincipals(node,language), drools);
 [consequence][]Fire {eventType} notification event to the last user that did "{action}"=service.notify(node, "{eventType}", service.getLastUserForAction(node,language,"{action}"), drools);

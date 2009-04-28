@@ -338,8 +338,8 @@ public class Service {
                 "user"), null);
     }
 
-    public void notify(NodeWrapper node, String eventType, Principal subscriber,
-            KnowledgeHelper drools) {
+    public void notify(NodeWrapper node, String eventType,
+            Principal subscriber, KnowledgeHelper drools) {
         if (subscriber != null) {
             Set<Principal> subscribers = new HashSet(1);
             subscribers.add(subscriber);
@@ -351,9 +351,7 @@ public class Service {
             KnowledgeHelper drools) {
         JahiaUser jahiaUser = lookupUser(user);
         if (jahiaUser != null) {
-            Set<Principal> subscribers = new HashSet(1);
-            subscribers.add(jahiaUser);
-            notify(node, eventType, subscribers, drools);
+            notify(node, eventType, jahiaUser, drools);
         } else {
             logger.warn("Unable to lookup user '" + user
                     + "'. Ignore notification event.");
@@ -367,13 +365,9 @@ public class Service {
                 .getContentObject().getSiteID()
                 : ServicesRegistry.getInstance().getJahiaSitesService()
                         .getDefaultSite().getID();
-        JahiaGroup jahiaGroup = lookupGroup(
-                group,
-                siteId);
+        JahiaGroup jahiaGroup = lookupGroup(group, siteId);
         if (jahiaGroup != null) {
-            Set<Principal> subscribers = new HashSet(1);
-            subscribers.add(jahiaGroup);
-            notify(node, eventType, subscribers, drools);
+            notify(node, eventType, jahiaGroup, drools);
         } else {
             logger.warn("Unable to lookup group '" + group
                     + "' for the site with ID '" + siteId

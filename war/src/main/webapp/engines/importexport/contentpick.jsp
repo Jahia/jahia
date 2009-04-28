@@ -21,7 +21,7 @@
     As a special exception to the terms and conditions of version 2.0 of
     the GPL (or any later version), you may redistribute this Program in connection
     with Free/Libre and Open Source Software ("FLOSS") applications as described
-    in Jahia's FLOSS exception. You should have recieved a copy of the text
+    in Jahia's FLOSS exception. You should have received a copy of the text
     describing the FLOSS exception, and it is also available here:
     http://www.jahia.com/license
     
@@ -64,6 +64,7 @@
 <%@ page import="org.jahia.services.pages.ContentPage" %>
 <%@ page import="org.jahia.services.version.EntryLoadRequest" %>
 <%@ page import="org.jahia.utils.TextHtml" %>
+<%@ page import="org.jahia.engines.importexport.ManageContentPicker" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://jsptags.com/tags/navigation/pager" prefix="pg" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -264,8 +265,8 @@ String objectType = (String) engineMap.get("objecttype");
 String orderBy = (String) engineMap.get("orderby");
 logger.debug("enginemap orderby=" + orderBy);
 if (orderBy == null || orderBy.equalsIgnoreCase("")) {
-    logger.debug("set order to def score");
-    orderBy = "score";
+    logger.debug("set order to def title");
+    orderBy = "title";
 }
 // # of virtual sites
 int sitecount = 0;
@@ -396,10 +397,10 @@ for (int z = 2; z < 5; z++) {
     sb.append("<select name=\"condition");
     sb.append(z);
     sb.append("\" onchange=\"goSearch(this.name)\">");
-    sb.append("<option value=\"creator\" ");
-    if (z == 2 && smode2.equalsIgnoreCase("creator")) sb.append("selected=\"selected\"");
-    if (z == 3 && smode3.equalsIgnoreCase("creator")) sb.append("selected=\"selected\"");
-    if (z == 4 && smode4.equalsIgnoreCase("creator")) sb.append("selected=\"selected\"");
+    sb.append("<option value=\"createdby\" ");
+    if (z == 2 && smode2.equalsIgnoreCase("createdby")) sb.append("selected=\"selected\"");
+    if (z == 3 && smode3.equalsIgnoreCase("createdby")) sb.append("selected=\"selected\"");
+    if (z == 4 && smode4.equalsIgnoreCase("createdby")) sb.append("selected=\"selected\"");
     sb.append(">");
     sb.append(bundle.getString(bundle_prefix + ".condition.author.label"));
     sb.append("</option>");
@@ -444,9 +445,9 @@ for (int z = 2; z < 5; z++) {
     sb.append(z);
     sb.append(1);
     sb.append("\" class=\"contvis");
-    if ((z == 2 && smode2.equalsIgnoreCase("creator"))
-            || (z == 3 && smode3.equalsIgnoreCase("creator"))
-            || (z == 4 && smode4.equalsIgnoreCase("creator"))
+    if ((z == 2 && smode2.equalsIgnoreCase("createdby"))
+            || (z == 3 && smode3.equalsIgnoreCase("createdby"))
+            || (z == 4 && smode4.equalsIgnoreCase("createdby"))
             ) sb.append("1\">");
     else
         sb.append("\">");
@@ -460,7 +461,7 @@ for (int z = 2; z < 5; z++) {
     sb.append(z);
     sb.append(1);
     sb.append("\" onchange=\"goSearch(this.name)\">");
-    sb.append("<option value=\"creator\" >");
+    sb.append("<option value=\"createdby\" >");
     sb.append(bundle.getString(bundle_prefix + ".condition.creator.label"));
     sb.append("</option>");
     sb.append("<option value=\"contributor\" >");
@@ -1174,41 +1175,41 @@ for (int z = 2; z < 5; z++) {
             <thead>
               <tr valign="top">
                 <th>
-                  <% if (orderBy.equalsIgnoreCase("score")) { %>
+                  <% if (orderBy.equalsIgnoreCase("title")) { %>
                     <%=bundle.getString(bundle_prefix + ".results.name.label")%>
                     <a href="javascript:ascorder('<%=asc%>');"><img src="<%= sortIcon %>" border="0"></a>
                   <% } else { %>
-                    <a href="javascript:orderby('score');"><%=bundle.getString(bundle_prefix + ".results.name.label")%></a>
+                    <a href="javascript:orderby('title');"><%=bundle.getString(bundle_prefix + ".results.name.label")%></a>
                   <% } %>
                 </th>
                 <th>
                   <%=bundle.getString(bundle_prefix + ".results.infos.label")%>
                 </th>
                 <th>
-                  <% if (orderBy.equalsIgnoreCase("creator")) { %>
+                  <% if (orderBy.equalsIgnoreCase("createdby")) { %>
                     <%=bundle.getString(bundle_prefix + ".results.author.label")%>
                     <a href="javascript:ascorder('<%=asc%>');"><img src="<%= sortIcon %>" border="0"></a>
                   <% } else { %>
-                    <a href="javascript:orderby('creator');"><%=bundle.getString(bundle_prefix + ".results.author.label")%></a>
+                    <a href="javascript:orderby('createdby');"><%=bundle.getString(bundle_prefix + ".results.author.label")%></a>
                   <% } %>
                 </th>
                 <th>
-                  <% if (orderBy.equalsIgnoreCase("lastcontributor")) { %>
+                  <% if (orderBy.equalsIgnoreCase("lastmodifiedby")) { %>
                     <%=bundle.getString(bundle_prefix + ".results.contributor.label")%>
                     <a href="javascript:ascorder('<%=asc%>');"><img src="<%= sortIcon %>" border="0"></a>
                   <% } else { %>
-                    <a href="javascript:orderby('lastcontributor');"><%=bundle.getString(bundle_prefix + ".results.contributor.label")%></a>
+                    <a href="javascript:orderby('lastmodifiedby');"><%=bundle.getString(bundle_prefix + ".results.contributor.label")%></a>
                   <% } %>
                 </th>
                 <th>
                   <%=bundle.getString(bundle_prefix + ".results.usage.label")%>
                 </th>
                 <th>
-                  <% if (orderBy.equalsIgnoreCase("creationdate")) { %>
+                  <% if (orderBy.equalsIgnoreCase("created")) { %>
                     <%=bundle.getString(bundle_prefix + ".results.creationdate.label")%>
                     <a href="javascript:ascorder('<%=asc%>');"><img src="<%= sortIcon %>" border="0"></a>
                   <% } else { %>
-                    <a href="javascript:orderby('creationdate');"><%=bundle.getString(bundle_prefix + ".results.creationdate.label")%></a>
+                    <a href="javascript:orderby('created');"><%=bundle.getString(bundle_prefix + ".results.creationdate.label")%></a>
                   <% } %>
                 </th>
                 <th>
@@ -1294,12 +1295,12 @@ for (int z = 2; z < 5; z++) {
                 logger.error("error", e);
                 continue;
               }
-              String cdate = printFriendlyDate(thisHit, "creationdate", request.getLocale());
+              String cdate = printFriendlyDate(thisHit, "created", request.getLocale());
               String pdate = printFriendlyDate(thisHit, "lastpublishingdate", request.getLocale());
               //object info
               String pageId = "" + thisHit.getPageId();
               String pagepath=getPagePath( (ContentPage) ContentPage.getChildInstance(pageId),jParams,elh.getPreviousEntryLoadRequest(),0);
-              String pagetitle= thisHit.getTeaser();
+              String pagetitle= ManageContentPicker.getTitle(thisHit);
               //out.println("pagetitle="+pagetitle+"xxx");
               pagetitle=pagetitle.replaceAll("<!--","");
               pagetitle=pagetitle.replaceAll("-->","");
@@ -1402,10 +1403,10 @@ for (int z = 2; z < 5; z++) {
                   sb.append("<b>").append(bundle.getString(bundle_prefix + ".results.keywords.label")).append("</b>:");
               sb.append(keywords);
               sb.append("</td><td class=\"text\">");
-              String creator = thisHit.getParsedObject().getValue("creator");
+              String creator = thisHit.getParsedObject().getValue("createdby");
               sb.append(creator != null && creator.length() > 0 ? creator : "&nbsp");
               sb.append("</td><td class=\"text\">");
-              String lastContributor = thisHit.getParsedObject().getValue("lastcontributor");
+              String lastContributor = thisHit.getParsedObject().getValue("lastmodifiedby");
               sb.append(lastContributor != null && lastContributor.length() > 0 ? lastContributor : "&nbsp");
               sb.append("</td><td class=\"text\"><center>");
               if (pickersUsage > 0) {

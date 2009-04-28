@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  * 
@@ -94,7 +94,36 @@ public class ManageContentPicker {
     private static JahiaSitesService siteService;
     private static JahiaPageService pgService;
 
+    public static String getTitle(JahiaSearchHit hit) {
+        String title = hit.getTeaser();
+        title = title.replaceAll("<!--", "");
+        title = title.replaceAll("-->", "");
+        String[] words = title.split(" ");
+        int offset = 0;
+        int maxWord = 12;// max word length,please change this as you want
+        boolean toCut = false;
+        for (int j = 0; j < words.length; j++) {
+
+            if (words[j].length() > maxWord) {
+                toCut = true;
+                break;
+            }
+            offset = offset + words[j].length() + 1;
+        }
+        if (toCut) {
+            // out.print("offset:"+offset);
+            if (offset == 0) {
+                title = title.substring(offset, maxWord - 4) + "...";
+            } else {
+                title = title.substring(0, offset - 1) + "...";
+            }
+        }
+
+        return title;
+    }
+    
     private ManageContentPicker() {
+        super();
     }
 
     /**
@@ -1048,9 +1077,9 @@ public class ManageContentPicker {
              * @return int value
              */
             public int compare(Object o1, Object o2) {
-                String metadata1 = ((JahiaSearchHit) o1).getParsedObject().getValue(key);
+                String metadata1 = "title".equals(key) ? getTitle((JahiaSearchHit) o1) : ((JahiaSearchHit) o1).getParsedObject().getValue(key);
                 float sc1 = ((JahiaSearchHit) o1).getScore();
-                String metadata2 = ((JahiaSearchHit) o2).getParsedObject().getValue(key);
+                String metadata2 = "title".equals(key) ? getTitle((JahiaSearchHit) o2) : ((JahiaSearchHit) o2).getParsedObject().getValue(key);
                 float sc2 = ((JahiaSearchHit) o2).getScore();
                 int o = 1;
                 if (!order) o = -1;
@@ -1064,7 +1093,7 @@ public class ManageContentPicker {
                         return (-1 * o); //opposite
                 }
 
-                //comparaison
+                //comparison
                 if (metadata1.equalsIgnoreCase(metadata2)) {
                     //equality case (use the score)
                     if (sc1 <= sc2)

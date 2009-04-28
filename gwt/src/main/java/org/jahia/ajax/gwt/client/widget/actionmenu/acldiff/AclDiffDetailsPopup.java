@@ -76,12 +76,16 @@ public class AclDiffDetailsPopup extends Window {
             rightsList.add(new UserRights(principal, details.getRights().get(principal), details.getInheritedRights().get(principal)));
         }
         add(rights);
-        Button item = new Button("Edit") ;
-        item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent componentEvent) {
-                EngineOpener.openEngine(details.getUrl());
-            }
-        }) ;
+        Button item = new Button("Open engine") ;
+        if (details.getUrl() != null) {
+            item.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent componentEvent) {
+                    EngineOpener.openEngine(details.getUrl());
+                }
+            }) ;
+        } else {
+            item.setEnabled(false);
+        }
         ButtonBar bar = new ButtonBar() ;
         bar.add(item) ;
         setButtonBar(bar);

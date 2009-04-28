@@ -38,6 +38,8 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.fields.ContentField;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.ajax.usersession.userSettings;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
@@ -48,6 +50,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
 import org.jahia.params.ProcessingContext;
 import org.jahia.content.ContentObject;
+import org.jahia.registries.ServicesRegistry;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -104,7 +107,7 @@ public class AclDiffHelper {
 
             // only check for write rights, no admi rights required to display state / popup
             if (aclDifferenceParam) {
-                aclDifferenceParam = obj.checkWriteAccess(jParams.getUser())  ;
+                aclDifferenceParam = obj.checkWriteAccess(jParams.getUser()) && ServicesRegistry.getInstance().getJahiaACLManagerService().getSiteActionPermission(LockPrerequisites.RIGHTS, jParams.getUser(), JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) > 0 ;
             }
 
             if (aclDifferenceParam && !objectKey.equals("ContentPage_" + jParams.getSite().getHomePageID()) && (!obj.isAclSameAsParent() &&  (!obj.getACL().getACL().getEntries().isEmpty() || obj.getACL().getInheritance() == 1 ))) {
@@ -201,18 +204,18 @@ public class AclDiffHelper {
                 }
 
                 String url = null ;
-                if (obj instanceof ContentContainerList) {
-                    url = ActionMenuServiceHelper.drawContainerListPropertiesLauncher(jParams, (ContentContainerList) obj, false, 0, "rightsMgmt");
-                } else if (obj instanceof ContentContainer) {
-                    url = ActionMenuServiceHelper.drawUpdateContainerLauncher(jParams, (ContentContainer) obj, false, 0, "rightsMgmt");
-                } else if (obj instanceof ContentPage) {
-                    url = ActionMenuServiceHelper.drawPagePropertiesLauncher(jParams, false, obj.getID(), "rightsMgmt");
-                } else if (obj instanceof ContentField) {
-                    url = ActionMenuServiceHelper.drawUpdateFieldLauncher(jParams, (ContentField) obj, "rightsMgmt");
+                if (obj.checkAdminAccess(jParams.getUser())) { // user can open engine only if admin access is allowed
+                    if (obj instanceof ContentContainerList) {
+                        url = ActionMenuServiceHelper.drawContainerListPropertiesLauncher(jParams, (ContentContainerList) obj, false, 0, "rightsMgmt");
+                    } else if (obj instanceof ContentContainer) {
+                        url = ActionMenuServiceHelper.drawUpdateContainerLauncher(jParams, (ContentContainer) obj, false, 0, "rightsMgmt");
+                    } else if (obj instanceof ContentPage) {
+                        url = ActionMenuServiceHelper.drawPagePropertiesLauncher(jParams, false, obj.getID(), "rightsMgmt");
+                    } else if (obj instanceof ContentField) {
+                        url = ActionMenuServiceHelper.drawUpdateFieldLauncher(jParams, (ContentField) obj, "rightsMgmt");
+                    }
                 }
-                if (url != null) {
-                    return new GWTJahiaAclDiffDetails(url, rights, inheritedRights) ;
-                }
+                return new GWTJahiaAclDiffDetails(url, rights, inheritedRights) ;
             } catch (final JahiaException je) {
                 logger.error(je, je);
             } catch (ClassNotFoundException e) {

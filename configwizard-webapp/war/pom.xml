@@ -294,19 +294,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>store-build-number</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                            <echo message="Adding build numbering"/>
-                            <echo message="${buildNumber}" file="${project.build.directory}/${project.build.finalName}/configuration_wizard/jahia-buildnumber.txt"/>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>zip-gwt</id>
                         <phase>process-resources</phase>
                         <configuration>

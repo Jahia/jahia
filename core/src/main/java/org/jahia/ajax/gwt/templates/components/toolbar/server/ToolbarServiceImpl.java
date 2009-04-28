@@ -57,7 +57,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
 import org.jahia.services.preferences.JahiaPreference;
-import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.preferences.toolbar.ToolbarJahiaPreference;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;

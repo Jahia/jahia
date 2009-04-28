@@ -120,7 +120,7 @@ public class NotificationJahiaToolItemProvider extends AbstractJahiaToolItemProv
                                     title = " (" + title + ")" ;
                                 }
                                 InfoConfig infoConfig = new InfoConfig(currentGWTJahiaStateInfo.getGwtProcessJobInfo().getJobType() + title, alertMessage);
-                                infoConfig.display = 9000;
+                                infoConfig.display = currentGWTJahiaStateInfo.getDisplayTime();
                                 infoConfig.height = 75;
                                 infoConfig.listener = new Listener() {
                                     public void handleEvent(BaseEvent event) {

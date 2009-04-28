@@ -46,6 +46,7 @@ public class GWTJahiaStateInfo implements Serializable {
     private String text;
     private String alertMessage;
     private String refreshMessage;
+    private int displayTime = 15000 ;
     private long lastViewTime;
     private boolean needRefresh;
     private boolean currentUserJobEnded;
@@ -137,5 +138,13 @@ public class GWTJahiaStateInfo implements Serializable {
 
     public void setCurrentUserJobEnded(boolean currentUserJobEnded) {
         this.currentUserJobEnded = currentUserJobEnded;
+    }
+
+    public int getDisplayTime() {
+        return displayTime;
+    }
+
+    public void setDisplayTime(int displayTime) {
+        this.displayTime = displayTime;
     }
 }

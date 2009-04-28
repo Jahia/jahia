@@ -23,14 +23,15 @@ new File(project.basedir,'src/main/webapp/WEB-INF/var/db/').eachFileMatch(p) {
             int separatorPos = it.indexOf(".");
             String tableName = it.substring(0, separatorPos);
             final String dbSequenceName = tableName.replace("jahia", "seq");
-            println dbSequenceName
             hibProps.setProperty(SequenceStyleGenerator.SEQUENCE_PARAM, dbSequenceName);
             hibProps.setProperty(SequenceStyleGenerator.INITIAL_PARAM, "1");
             hibProps.setProperty(SequenceStyleGenerator.OPT_PARAM, "pooled");
             hibProps.setProperty(SequenceStyleGenerator.INCREMENT_PARAM, "20");
             final Dialect dialect = Class.forName(properties.getProperty("jahia.database.hibernate.dialect")).newInstance();
             generator.configure(new LongType(), hibProps, dialect);
-            final String[] sqls = generator.sqlCreateStrings(dialect);
+            String[] sqls = generator.sqlDropStrings(dialect);
+            sqls.each {outputFile.write (it+";\n")}
+            sqls = generator.sqlCreateStrings(dialect);
             sqls.each {outputFile.write (it+";\n")}
         }
     }

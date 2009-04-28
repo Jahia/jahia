@@ -130,6 +130,10 @@ public class Visibility {
             return Boolean.getBoolean(value);
         } else {
             try {
+                if(jData == null){
+                    logger.error("ParamBean is not set. The item will not be displayed ");
+                    return false;
+                }
                 // resolver is more "important" than attributes
                 if (classResolver != null) {
                     VisibilityResolver resolver = (VisibilityResolver) Class.forName(classResolver).newInstance();

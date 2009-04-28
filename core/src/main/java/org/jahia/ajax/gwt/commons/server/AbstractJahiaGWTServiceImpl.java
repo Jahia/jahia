@@ -221,10 +221,21 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
      * @return
      */
     private JahiaData buildJahiaData(int pid, String mode) {
+        return buildJahiaData(pid, mode, false);
+    }
+
+    /**
+     * build JahiaData
+     *
+     * @param pid
+     * @param mode
+     * @return
+     */
+    private JahiaData buildJahiaData(int pid, String mode, boolean doBuildData) {
         ProcessingContext jParams = retrieveParamBean(pid, mode);
         JahiaData jData = null;
         try {
-            jData = new JahiaData(jParams, true);
+            jData = new JahiaData(jParams, doBuildData);
         } catch (JahiaException e) {
             logger.error(e, e);
         }
@@ -481,9 +492,8 @@ public class AbstractJahiaGWTServiceImpl extends RemoteServiceServlet {
         return message.getValues() == null ? JahiaResourceBundle
                 .getMessageResource(message.getKey(), getLocale())
                 : MessageFormat.format(JahiaResourceBundle.getMessageResource(message.getKey(),
-                        getLocale()),message.getValues());
+                getLocale()), message.getValues());
     }
-
 
 
     /**

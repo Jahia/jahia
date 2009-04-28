@@ -96,7 +96,7 @@ public class JahiaResourceBundle extends ResourceBundle {
         Object o = null;
         if (basename != null) {
             try {
-            o = ResourceBundle.getBundle(basename, locale, templatesRBLoader).getString(s);
+            o = (templatesRBLoader != null ? ResourceBundle.getBundle(basename, locale, templatesRBLoader) : ResourceBundle.getBundle(basename, locale)).getString(s);
             } catch (MissingResourceException e) {
                 logger.debug("Not found '" + s
                         + "' in the base resource bundle '" + basename + "'");
@@ -135,13 +135,20 @@ public class JahiaResourceBundle extends ResourceBundle {
      */
     public Enumeration<String> getKeys() {
         final JahiaTemplatesRBLoader templatesRBLoader = getClassLoader();
-        final ResourceBundle resourceBundle = ResourceBundle.getBundle(basename, locale, templatesRBLoader);
+        final ResourceBundle resourceBundle = templatesRBLoader != null ? ResourceBundle.getBundle(basename, locale, templatesRBLoader) : ResourceBundle.getBundle(basename, locale);
         return resourceBundle.getKeys();
     }
 
     private JahiaTemplatesRBLoader getClassLoader() {
-        return JahiaTemplatesRBLoader.getInstance(Thread.currentThread().getContextClassLoader(),
-                templatesPackage != null ? templatesPackage.getName() : Jahia.getThreadParamBean().getSite().getTemplatePackageName());
+        String templatesPackageName = templatesPackage != null ? templatesPackage
+                .getName()
+                : (Jahia.getThreadParamBean() != null
+                        && Jahia.getThreadParamBean().getSite() != null ? Jahia
+                        .getThreadParamBean().getSite()
+                        .getTemplatePackageName() : null);
+        return templatesPackageName != null ? JahiaTemplatesRBLoader
+                .getInstance(Thread.currentThread().getContextClassLoader(),
+                        templatesPackageName) : null;
     }
 
     /**

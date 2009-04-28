@@ -20,7 +20,7 @@
  * As a special exception to the terms and conditions of version 2.0 of
  * the GPL (or any later version), you may redistribute this Program in connection
  * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * in Jahia's FLOSS exception. You should have received a copy of the text
  * describing the FLOSS exception, and it is also available here:
  * http://www.jahia.com/license"
  *
@@ -34,6 +34,7 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -47,11 +48,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Created by IntelliJ IDEA.
+ * Used to set the resource bundle to be used in the page by &lt;fmt:message/&gt; tags.
  * User: rincevent
  * Date: 26 févr. 2009
  * Time: 16:34:03
- * To change this template use File | Settings | File Templates.
  */
 @SuppressWarnings("serial")
 public class SetBundleTag extends TagSupport {
@@ -76,9 +76,17 @@ public class SetBundleTag extends TagSupport {
     public int doStartTag() throws JspException {
         // Position localisationContext
         if (basename != null && !"".equals(basename)) {
-            final ProcessingContext context = Utils.getProcessingContext(pageContext, true);
-            final Locale locale = context.getLocale();
-            ResourceBundle resourceBundle = new JahiaResourceBundle(basename, locale, context.getSite().getTemplatePackageName());
+            ProcessingContext context = null;
+            try {
+                context = Utils.getProcessingContext(pageContext, true);
+            } catch (JahiaBadRequestException e) {
+                logger.warn(e.getMessage(), e);
+            }
+            final Locale locale = context != null ? context.getLocale() : pageContext.getRequest().getLocale();
+            ResourceBundle resourceBundle = new JahiaResourceBundle(basename,
+                    locale,
+                    context != null && context.getSite() != null ? context
+                            .getSite().getTemplatePackageName() : null);
             LocalizationContext locCtxt = new LocalizationContext(resourceBundle, locale);
             if (var != null) {
                 pageContext.setAttribute(var, locCtxt, scope);

@@ -56,12 +56,10 @@ public class OperationModeVisibilityResolver implements VisibilityResolver {
     private static final String EDIT = "edit";
     private static final String ALL = "all";
 
-    //processingContext attr
-
 
     public boolean isVisible(JahiaData jData, String type) {
         // type unknown
-        if (type == null) {
+        if (type == null || jData == null) {
             return false;
         }
 

@@ -128,7 +128,7 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
                     for (JCRNodeWrapper nodeWrapper : nodeWrappers) {
                         nodeWrapper.remove();
                     }
-                } else {
+                } else {                                              load default one
                     // update layoutNode
                     layoutNode = new JCRLayoutNode(layoutmanagerNode.addNode("j:layout", Constants.JAHIANT_LAYOUT));
                     layoutNode.setPage(currentContentPage.getUUID());
@@ -348,10 +348,10 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
             JahiaPreference<JCRLayoutNode> layoutmanagerNode = getLayoutManagerJahiaPreferencesProvider().getJahiaPreference(getRemoteJahiaUser(), JahiaPreferencesXpathHelper.getLayoutmanagerXpath(jahiaPageContext.getPid()));
 
             if (layoutmanagerNode != null) {
-                logger.error("Layoutmanager config found for user [" + getRemoteUser() + "]");
+                logger.debug("Layoutmanager config found for user [" + getRemoteUser() + "]");
                 return fillGWTLayoutItems(jahiaPageContext, (JCRLayoutNode) layoutmanagerNode.getNode());
             } else {
-                logger.error("Layoutmanager for user [" + getRemoteUser() + "] not found --> load default one");
+                logger.debug("Layoutmanager for user [" + getRemoteUser() + "] not found --> load default one");
                 return getDefaultLayoutItems(jahiaPageContext);
             }
         } catch (RepositoryException e) {

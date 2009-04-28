@@ -740,6 +740,15 @@
         <servlet-class>org.jahia.bin.ImageCaptchaServlet</servlet-class>
         <load-on-startup>11</load-on-startup>
     </servlet>
+    <!-- ====================================================================== -->
+    <!-- T O K E N   G E N E R A T O R                                       -->
+    <!-- ====================================================================== -->
+    <servlet>
+        <servlet-name>tokenGenerator</servlet-name>
+        <servlet-class>org.jahia.bin.TokenGeneratorServlet</servlet-class>
+        <load-on-startup>12</load-on-startup>
+    </servlet>
+
 
     <!-- [INSERT FRAGMENT HERE] -->
 
@@ -925,6 +934,11 @@
     <servlet-mapping>
         <servlet-name>jcaptcha</servlet-name>
         <url-pattern>/jcaptcha</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>tokenGenerator</servlet-name>
+        <url-pattern>/tokenGenerator</url-pattern>
     </servlet-mapping>
     
     <!-- Session timeout value is set in minutes. Comment this section out

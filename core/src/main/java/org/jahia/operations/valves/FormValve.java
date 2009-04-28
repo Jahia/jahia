@@ -43,6 +43,7 @@ import com.octo.captcha.service.CaptchaServiceException;
 public class FormValve implements Valve {
     private static Map<String,FormAction> tokens = new HashMap<String, FormAction>();
     private static Map<FormAction,String> reverseTokens = new HashMap<FormAction,String>();
+    private static Map<String,String> userTokens = new HashMap<String, String>();
 
     public void initialize() {          
         //To change body of implemented methods use File | Settings | File Templates.
@@ -52,7 +53,8 @@ public class FormValve implements Valve {
         if (context instanceof ParamBean) {
             ParamBean jParams = (ParamBean) context;
             String token = jParams.getParameter("formToken");
-            if (tokens.containsKey(token)) {
+            String userToken = jParams.getParameter("formUserToken");
+            if (tokens.containsKey(token) && userTokens.containsKey(userToken) && userTokens.get(userToken).equals(token)) {
                 FormAction action = tokens.get(token);
                 if (Boolean.TRUE.equals(action.getParams().get("checkCaptcha"))) {
                     boolean captchaOk = false;
@@ -66,6 +68,7 @@ public class FormValve implements Valve {
                     }
                 }
                 String type = action.getActionType();
+                userTokens.remove(userToken);
                 try {
                     JahiaUser jahiaUser = jParams.getUser();
                     if (Boolean.TRUE.equals(action.getParams().get("ignoreAcl"))) {
@@ -83,6 +86,7 @@ public class FormValve implements Valve {
                     } else if (type.equals("sendMail")) {
 
                     }
+
                 } catch (RepositoryException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
@@ -100,6 +104,12 @@ public class FormValve implements Valve {
         String key = UUID.randomUUID().toString();
         tokens.put(key, formAction);
         reverseTokens.put(formAction, key);
+        return key;
+    }
+
+    public static String createNewUserToken(String token) {
+        String key = UUID.randomUUID().toString();
+        userTokens.put(key, token);
         return key;
     }
 

@@ -13,6 +13,7 @@ import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.operations.valves.FormValve;
+import org.jahia.bin.Jahia;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.JspException;
@@ -122,9 +123,16 @@ public class ContainerFormTag extends AbstractJahiaTag {
             if (inContainer) {
                 params.put("target",ancestorContainer.getContainer().getContentContainer().getUUID());
                 token = FormValve.createNewToken("updateNode", params);
+                if (name.equals("name")) {
+                    name = "C" + ancestorContainer.getContainer().getContentContainer().getID();
+                }
             } else {
                 params.put("target",ancestorContainerList.getContainerList().getContentContainerList().getUUID());
                 token = FormValve.createNewToken("createNode", params);
+                if (name.equals("name")) {
+                    name = "CL" + ancestorContainerList.getContainerList().getContentContainerList().getID();
+                }
+
             }
 
             List<ExtendedItemDefinition> items = nodeType.getItems();
@@ -155,8 +163,52 @@ public class ContainerFormTag extends AbstractJahiaTag {
 
             }
 
-            String pageUrl = page.getURL(jData.getProcessingContext());
+            boolean isJSLoaded = Boolean.parseBoolean((String) request.getAttribute("ajaxFormLoaded"));
             JspWriter out = pageContext.getOut();
+            StringBuilder buffJS = new StringBuilder();
+            if (!isJSLoaded) {
+                buffJS.append("<script type=\"text/javascript\">\n" +
+                        "        function ");
+                buffJS.append("jahiaAjaxFormToken");
+                buffJS.append("(userToken,token)\n" +
+                        "        {\n" +
+                        "            var xhr = null;\n" +
+                        "            // Creation de l'objet XMLHttpRequest\n" +
+                        "            if (window.XMLHttpRequest) {\n" +
+                        "                xhr = new XMLHttpRequest();\n" +
+                        "            }\n" +
+                        "            else if (window.ActiveXOject) {\n" +
+                        "                try {\n" +
+                        "                    xhr = new ActiveXObject(\"Msxml2.XMLHTTP\");\n" +
+                        "                }\n" +
+                        "                catch(e) {\n" +
+                        "                    try {\n" +
+                        "                        xhr = new ActiveXObject(\"Microsoft.XMLHTTP\");\n" +
+                        "                    }\n" +
+                        "                    catch(el) {\n" +
+                        "                        xhr = null;\n" +
+                        "                    }\n" +
+                        "                }\n" +
+                        "            }\n" +
+                        "            else {\n" +
+                        "                alert(\"Your browser does not support XMLHTTPRequest\\nplease upgrade\");\n" +
+                        "                return;\n" +
+                        "            }\n" +
+                        "            xhr.onreadystatechange = function()\n" +
+                        "            {\n" +
+                        "                if (xhr.readyState == 4 && xhr.status == 200)\n" +
+                        "                {\n userToken.value = xhr.responseText;\n" +
+                        "                }\n" +
+                        "            }\n" +
+                        "            xhr.open(\"GET\",\"");
+                        buffJS.append(Jahia.getContextPath());
+                        buffJS.append("/tokenGenerator?formToken=\" + token, true);\n" +
+                        "            xhr.setRequestHeader('Content-Type', 'x-www-form-urlencoded');\n" +
+                        "            xhr.send(\"\");\n" +
+                        "            }\n" +
+                        "            </script>");
+                request.setAttribute("ajaxFormLoaded", "true");
+            }
             StringBuilder buff = new StringBuilder("<form name=\"");
             buff.append(this.name);
             if (action != null) {
@@ -171,6 +223,8 @@ public class ContainerFormTag extends AbstractJahiaTag {
             buff.append("><input type=\"hidden\" name=\"formToken\" value=\"");
             buff.append(token);
             buff.append("\">");
+            buff.append("<input type=\"hidden\" name=\"formUserToken\" value=\"\">");
+            out.print(buffJS.toString()); 
             out.print(buff.toString());
         } catch (IOException ioe) {
             logger.error("error",ioe);
@@ -183,6 +237,13 @@ public class ContainerFormTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         try {
             JspWriter out = pageContext.getOut();
+            out.print(" <script type=\"text/javascript\">\n");
+            out.print("\tjahiaAjaxFormToken(document.");
+            out.print(name);
+            out.print(".formUserToken,\"");
+            out.print(token);
+            out.print("\")\n");
+            out.print("</script>");
             out.print("</form>");
         } catch (IOException ioe) {
             logger.error("error",ioe);

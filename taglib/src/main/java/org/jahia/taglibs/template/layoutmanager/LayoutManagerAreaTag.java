@@ -72,7 +72,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             out.print("<div id='layout'  style='display:none;'>\n");
 
             // add resouces bundels
-            addGwtDictionaryMessage("mw_mashups",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.mashups.label"));
+            addGwtDictionaryMessage("mw_mashups",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
             addGwtDictionaryMessage("mw_select_portlet_def",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.portletdef.label"));
             addGwtDictionaryMessage("mw_ok",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.ok.label"));
             addGwtDictionaryMessage("mw_params",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.parameters.label"));

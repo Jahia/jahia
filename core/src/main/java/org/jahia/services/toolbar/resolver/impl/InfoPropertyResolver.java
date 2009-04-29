@@ -61,8 +61,7 @@ public class InfoPropertyResolver implements PropertyResolver {
               LicensePackage licensePackage = LicenseManager.getInstance().
               getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
 
-              Limit daysLeftLimit = licensePackage.
-                      getLicense("org.jahia.actions.server.admin.sites.ManageSites").
+              Limit daysLeftLimit = licensePackage.getLicense(LicenseConstants.CORE_COMPONENT).
                       getLimit("maxUsageDays");
               if (daysLeftLimit != null) {
               	CommonDaysLeftValidator daysLeftValidator = (CommonDaysLeftValidator)
@@ -71,34 +70,40 @@ public class InfoPropertyResolver implements PropertyResolver {
               	long expirationTime = daysLeftValidator.
                   	getCommonInstallDate().getTime() +
                   	1000L * 60L * 60L * 24L * maxDays;
-              	Date expirationDate = new Date(expirationTime);            	
-              	SimpleDateFormat sf = new SimpleDateFormat("dd-MMM-yyyy");
+              	Date expirationDate = new Date(expirationTime);     
+        	  		String format = JahiaResourceBundle.getMessageResource("jahia.toolbar.license.dateformat", jData.getProcessingContext().getLocale());
+        	  		if(format == null || format.length() < 5)
+        	  			format = "dd-MMM-yyyy";
+        	  		SimpleDateFormat sf = new SimpleDateFormat(format);              	
               	//JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", getLocale());
             	  return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + " "  + sf.format(expirationDate);
               }
               else
               {
-                Limit dateLimit = licensePackage.
-                getLicense("org.jahia.actions.server.admin.sites.ManageSites").
-                getLimit("date");
+                Limit dateLimit = licensePackage.getLicense(LicenseConstants.CORE_COMPONENT).
+                			getLimit("date");
             	  if(dateLimit != null)
             	  {
             	  	String enddate = dateLimit.getValueStr();
-            	  	int year = Integer.parseInt(enddate.substring(0, 4));
-            	  	int month = Integer.parseInt(enddate.substring(5, 7));
-            	  	int day = Integer.parseInt(enddate.substring(8, 10));
+            	  	int year = Integer.parseInt(enddate.substring(6, 10));
+            	  	int month = Integer.parseInt(enddate.substring(3, 5));
+            	  	int day = Integer.parseInt(enddate.substring(0, 2));
             	  	Calendar cal = new GregorianCalendar(year, month-1, day);
             	  	Calendar cal1 = new GregorianCalendar(year, month-1, day);
             	  	cal1.add(Calendar.DATE, -10);
             	  	if(cal1.getTime().before(new Date(System.currentTimeMillis())))
             	  	{
-            	  		SimpleDateFormat sf1 = new SimpleDateFormat("dd-MMM-yyyy");
-            	  		return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + " " + sf1.format(cal.getTime());
+            	  		String format = JahiaResourceBundle.getMessageResource("jahia.toolbar.license.dateformat", jData.getProcessingContext().getLocale());
+            	  		if(format == null || format.length() < 5)
+            	  			format = "dd-MMM-yyyy";
+            	  		SimpleDateFormat sf1 = new SimpleDateFormat(format);
+            	  		return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + "&nbsp;<b>" + sf1.format(cal.getTime()) + "</b>";
             	  	}
             	  }
               }
               }catch(Exception ex)
-              {}
+              {
+              }
             }
         }
         return "";

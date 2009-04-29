@@ -1,10 +1,11 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
-    "http://www.springframework.org/dtd/spring-beans.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
 
 
-<beans>
-    <bean id="queryLastFirstPublishedContents" class="org.jahia.services.audit.LastFirstPublishedContent" singleton="false">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+    <bean id="queryLastFirstPublishedContents" class="org.jahia.services.audit.LastFirstPublishedContent"
+          scope="prototype">
         <property name="objectTypes">
             <list>
                 <value type="java.lang.Integer">2</value><!-- containers -->
@@ -12,14 +13,15 @@
             </list>
         </property>                    
     </bean>
-    <bean id="queryLastFirstPublishedContainers" class="org.jahia.services.audit.LastFirstPublishedContent" singleton="false">
+    <bean id="queryLastFirstPublishedContainers" class="org.jahia.services.audit.LastFirstPublishedContent"
+          scope="prototype">
         <property name="objectTypes">
             <list>
                 <value type="java.lang.Integer">2</value>
             </list>
         </property>                    
     </bean>
-    <bean id="queryLastFirstPublishedPages" class="org.jahia.services.audit.LastFirstPublishedContent" singleton="false">
+    <bean id="queryLastFirstPublishedPages" class="org.jahia.services.audit.LastFirstPublishedContent" scope="prototype">
         <property name="objectTypes">
             <list>
                 <value type="java.lang.Integer">4</value>
@@ -27,7 +29,7 @@
         </property>                    
     </bean>
 
-    <bean id="queryLastPublishedContents" class="org.jahia.services.audit.LastPublishedContent" singleton="false">
+    <bean id="queryLastPublishedContents" class="org.jahia.services.audit.LastPublishedContent" scope="prototype">
         <property name="objectTypes">
             <list>
                 <value type="java.lang.Integer">2</value><!-- containers -->
@@ -36,7 +38,7 @@
         </property>                    
     </bean>
 
-    <bean id="queryLastPublishedContainers" class="org.jahia.services.audit.LastPublishedContent" singleton="false">
+    <bean id="queryLastPublishedContainers" class="org.jahia.services.audit.LastPublishedContent" scope="prototype">
         <property name="objectTypes">
             <list>
                 <value type="java.lang.Integer">2</value><!-- containers -->

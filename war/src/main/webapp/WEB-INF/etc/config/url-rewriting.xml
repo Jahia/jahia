@@ -1,5 +1,4 @@
-
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <rewrite-rules>
   <!-- This file allows the definition of URL rewriting rules.
        For the moment it is only use in the parsing of URLs in

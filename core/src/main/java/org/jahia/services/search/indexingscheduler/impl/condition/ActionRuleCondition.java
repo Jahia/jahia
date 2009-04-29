@@ -37,6 +37,7 @@ public class ActionRuleCondition implements RuleCondition {
     public static final String UPDATE_ENGINE    = "UPDATE_ENGINE";
     public static final String DELETE_ENGINE    = "DELETE_ENGINE";
     public static final String STORE_FORM_IN_TEMPLATE = "STORE_FORM_IN_TEMPLATE";    
+    public static final String COPY_JOB         = "COPY_JOB";    
     public static final String MANUAL_ACTION    = "MANUAL_ACTION";
 
     public static final List<String> ALL_ACTIONS_LIST;

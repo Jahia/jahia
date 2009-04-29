@@ -259,6 +259,7 @@
                             <value>ADD_ENGINE</value>
                             <value>UPDATE_ENGINE</value>
                             <value>STORE_FORM_IN_TEMPLATE</value>
+                            <value>COPY_JOB</value>
                         </list>
                     </property>
                 </bean>

@@ -80,7 +80,9 @@ public class JahiaSearchListener extends JahiaEventListener {
         return;
     }
 
-    public void beforeContainerActivation( JahiaEvent je ){ return; }
+    public void beforeContainerActivation( JahiaEvent je ){ 
+        return;
+    }
 
     public void addContainerEngineBeforeSave( JahiaEvent je ) {
         return;
@@ -88,7 +90,7 @@ public class JahiaSearchListener extends JahiaEventListener {
     public void addContainerEngineAfterInit( JahiaEvent je ) {
         startRecordActionEvent(je);
     }
-
+    
     public void updateContainerEngineBeforeSave( JahiaEvent je ) { return; }
 
     public void updateContainerEngineAfterInit( JahiaEvent je ) {
@@ -442,6 +444,8 @@ public class JahiaSearchListener extends JahiaEventListener {
             actionPerformed = ActionRuleCondition.DELETE_ENGINE;
         } else if (je.getSource().getClass().getName().toLowerCase().indexOf("form") > -1){
             actionPerformed = ActionRuleCondition.STORE_FORM_IN_TEMPLATE;
+        } else if (je.getSource().getClass().getName().toLowerCase().indexOf("copy") > -1) {
+            actionPerformed = ActionRuleCondition.COPY_JOB;
         }
         return actionPerformed;
     }
@@ -455,5 +459,13 @@ public class JahiaSearchListener extends JahiaEventListener {
 
     private boolean isInActionEvent(){
         return (this.actionEvent.get() != null);
+    }
+    
+    public void beforeContentCopy(JahiaEvent theEvent) {
+        startRecordActionEvent(theEvent);
+    }
+
+    public void beforeFormHandling(JahiaEvent theEvent) {
+        startRecordActionEvent(theEvent);
     }
 }

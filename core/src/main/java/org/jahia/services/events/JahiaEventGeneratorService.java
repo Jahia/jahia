@@ -261,4 +261,8 @@ public abstract class JahiaEventGeneratorService extends JahiaService {
      *            the fired notification event
      */
     public abstract void fireNotification(NotificationEvent theEvent);
+    
+    public abstract void fireBeforeContentCopy(JahiaEvent theEvent) throws JahiaException;
+
+    public abstract void fireBeforeFormHandling(JahiaEvent theEvent) throws JahiaException;    
 }

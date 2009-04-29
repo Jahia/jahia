@@ -18,6 +18,7 @@
 
 import org.jahia.content.ContentObject;
 import org.jahia.content.ObjectKey;
+import org.jahia.data.events.JahiaEvent;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -58,6 +59,7 @@ public class CopyJob extends BackgroundJob {
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
 
+        
         ContentObject source = ContentObject.getContentObjectInstance(ObjectKey.getInstance((String) jobDataMap.get(SOURCE)));
         ContentObject dest = ContentObject.getContentObjectInstance(ObjectKey.getInstance((String) jobDataMap.get(DEST)));
         String link = (String) jobDataMap.get(LINK);
@@ -72,22 +74,24 @@ public class CopyJob extends BackgroundJob {
             loadrequest = EntryLoadRequest.CURRENT;
         }
 
+        // fire event
+        final JahiaEvent theEvent = new JahiaEvent(this, context, source);        
+        ServicesRegistry.getInstance().getJahiaEventService().fireBeforeContentCopy(theEvent);        
+        
         ContentObject imported = ServicesRegistry.getInstance().getImportExportService().copy(source, dest, context, loadrequest, link, actions, result);
 
         if (imported != null) {
             LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + imported.getObjectKey().getType(), imported.getID(), imported.getID());
-            ((Set)jobDataMap.get(JOB_LOCKS)).add(lock);
+            ((Set<LockKey>)jobDataMap.get(JOB_LOCKS)).add(lock);
         }
 
         jobDataMap.put(ACTIONS, actions);
         jobDataMap.put(RESULT, result);
     }
 
-    private Set getSiteLanguages(JahiaSite site) throws JahiaException {
-        Set languages = new HashSet();
-        List v = site.getLanguageSettings(true);
-        for (Iterator iterator = v.iterator(); iterator.hasNext();) {
-            SiteLanguageSettings sls = (SiteLanguageSettings) iterator.next();
+    private Set<String> getSiteLanguages(JahiaSite site) throws JahiaException {
+        Set<String> languages = new HashSet<String>();
+        for (SiteLanguageSettings sls : site.getLanguageSettings(true)) {
             languages.add(sls.getCode());
         }
 
@@ -95,10 +99,9 @@ public class CopyJob extends BackgroundJob {
     }
 
 
-    private void activateAll(ContentObject o, Set languageCodes, boolean versioningActive, JahiaSaveVersion saveVersion, JahiaUser user, ProcessingContext jParams, StateModificationContext stateModifContext) throws JahiaException {
-        List l = o.getChilds(null,null);
-        for (Iterator iterator = l.iterator(); iterator.hasNext();) {
-            ContentObject child = (ContentObject) iterator.next();
+    private void activateAll(ContentObject o, Set<String> languageCodes, boolean versioningActive, JahiaSaveVersion saveVersion, JahiaUser user, ProcessingContext jParams, StateModificationContext stateModifContext) throws JahiaException {
+        List<? extends ContentObject> l = o.getChilds(null,null);
+        for (ContentObject child : l) {
             activateAll(child, languageCodes, versioningActive, saveVersion, user, jParams, stateModifContext);
         }
         o.activate(languageCodes, versioningActive, saveVersion, user, jParams, stateModifContext);

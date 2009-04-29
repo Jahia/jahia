@@ -547,4 +547,16 @@ public class JahiaEventGeneratorBaseService extends JahiaEventGeneratorService {
         addAggregableEvent("notification", theEvent);
         listenersRegistry.wakeupListeners("notification", theEvent);
     }
+
+
+    @Override
+    public void fireBeforeContentCopy(JahiaEvent theEvent) throws JahiaException {
+        listenersRegistry.wakeupListeners ("beforeContentCopy", theEvent);
+    }
+
+
+    @Override
+    public void fireBeforeFormHandling(JahiaEvent theEvent) throws JahiaException {
+        listenersRegistry.wakeupListeners ("beforeFormHandling", theEvent);
+    }
 }

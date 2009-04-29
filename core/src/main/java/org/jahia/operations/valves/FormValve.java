@@ -19,35 +19,23 @@ package org.jahia.operations.valves;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.pipelines.PipelineException;
-import org.jahia.content.ContentObject;
+import org.jahia.data.events.JahiaEvent;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.SelectorType;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.captcha.CaptchaService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaAdminUser;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.filemanagement.server.helper.Utils;
-import org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet;
-import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
-import javax.jcr.Value;
-import javax.servlet.ServletRequest;
 import java.util.*;
 import java.io.IOException;
-
-import com.octo.captcha.service.CaptchaServiceException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -90,7 +78,17 @@ public class FormValve implements Valve {
                     if (Boolean.TRUE.equals(action.getParams().get("ignoreAcl"))) {
                         jahiaUser = JahiaAdminUser.getAdminUser(jParams.getSiteID());
                     }
+                    if (type.equals("createNode") || type.equals("updateNode")) {
+                        try {
+                            final JahiaEvent theEvent = new JahiaEvent(this, jParams, null);
+                            ServicesRegistry.getInstance().getJahiaEventService().fireBeforeFormHandling(theEvent);
+                        } catch (JahiaException e) {
+                            e.printStackTrace(); 
+                        }
+                    }
+                    
                     if (type.equals("createNode")) {
+                        // fire event
                         Node parent = JCRStoreService.getInstance().getNodeByUUID((String) action.getParams().get("target"), jahiaUser);
                         Node child = parent.addNode("node" + System.currentTimeMillis(), (String) action.getParams().get("nodeType"));
                         setProperties(child, jParams, token);
@@ -135,10 +133,10 @@ public class FormValve implements Valve {
             for (String key : parameters.keySet()) {
                 String hash = Integer.toString(tok.hashCode());
                 if (key.endsWith(hash) && parameters.get(key) instanceof List) {
-                    List values = (List) parameters.get(key);
+                    List<String> values = (List<String>) parameters.get(key);
                     if (values.size()>0) {
                         String name = key.substring(0,key.length() - hash.length());
-                        n.setProperty(name, (String) values.get(0));
+                        n.setProperty(name, values.get(0));
                     }
                 }
             }

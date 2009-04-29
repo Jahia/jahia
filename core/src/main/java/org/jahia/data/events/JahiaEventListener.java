@@ -368,4 +368,12 @@ public class JahiaEventListener implements JahiaEventListenerInterface {
     public void notification(NotificationEvent evt) {
         log("notification", evt);
     }
+
+    public void beforeContentCopy(JahiaEvent theEvent) {
+        log("beforeContentCopy", theEvent);
+    }
+
+    public void beforeFormHandling(JahiaEvent theEvent) {
+        log("beforeFormHandling", theEvent);
+    }
 }

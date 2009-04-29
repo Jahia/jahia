@@ -1,5 +1,4 @@
-<%@ page contentType="application/rss+xml;charset=UTF-8"
-%><% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0"); response.setHeader("Pragma", "No-Cache"); response.setDateHeader("Expires", 295075800000L); %>
+<%@ page contentType="application/rss+xml;charset=UTF-8" %><% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0"); response.setHeader("Pragma", "No-Cache"); response.setDateHeader("Expires", 295075800000L); %>
 
 <%--
 

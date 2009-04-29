@@ -175,7 +175,7 @@ public class CompassSearchHandler extends SearchHandlerImpl {
        return searchResult;
     }
 
-    public void notifyIndexUpdate(){
+    public void notifyIndexUpdate(boolean waitForNewSearcher){
         // nothing to do yet.
     }
 

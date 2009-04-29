@@ -107,7 +107,7 @@ public abstract class SearchHandler implements Shutdownable {
     /**
      * used to notify the search handler that the index has been changed
      */
-    public abstract void notifyIndexUpdate();
+    public abstract void notifyIndexUpdate(boolean waitForNewSearcher);
 
     public abstract Iterator<String> getTerms(final String query);
 

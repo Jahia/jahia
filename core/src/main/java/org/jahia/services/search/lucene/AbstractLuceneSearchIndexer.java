@@ -301,7 +301,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
 
             if (indexOrderCount > 0) {
                 SearchHandler searchHandler = getSearchHandler();
-                searchHandler.notifyIndexUpdate();
+                searchHandler.notifyIndexUpdate(true);
                 if (logger.isInfoEnabled()) {    
                     long indexingElapsedTime = System.currentTimeMillis() - indexingStartTime;
                     logger.info("Finished synchronized processing " + indexOrderCount
@@ -385,7 +385,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
 
                 if ( (this.localIndexing && indexer.optimizeIndex(this.optimizationInterval)) || indexOrderCount > 0) {
                     SearchHandler searchHandler = getSearchHandler();
-                    searchHandler.notifyIndexUpdate();
+                    searchHandler.notifyIndexUpdate(false);
                     if (logger.isInfoEnabled()) {
                         long indexingElapsedTime = System.currentTimeMillis() - indexingStartTime;
                         logger.info("Finished processing " + indexOrderCount

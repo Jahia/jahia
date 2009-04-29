@@ -77,10 +77,10 @@ public class ACLServiceImpl extends AbstractJahiaGWTServiceImpl implements ACLSe
                 JahiaContainer jahiaContainer = ((JahiaContainer) engineMap.get("theContainer"));
                 setRightsEvent = new JahiaEvent(jahiaContainer, bean, acl);
             } else if (engineMap.containsKey("theContainerList")) {
-                    JahiaContainerList jahiaContainerList = ((JahiaContainerList) engineMap.get("theContainerList"));
+                JahiaContainerList jahiaContainerList = ((JahiaContainerList) engineMap.get("theContainerList"));
                 setRightsEvent = new JahiaEvent(jahiaContainerList, bean, acl);
             }
-            if(setRightsEvent!=null) {
+            if (setRightsEvent!=null) {
                 ServicesRegistry.getInstance ().getJahiaEventService ().fireSetRights(setRightsEvent);
             }
         } catch (JahiaException e) {

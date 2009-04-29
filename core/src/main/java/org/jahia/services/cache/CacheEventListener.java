@@ -330,20 +330,16 @@ public class CacheEventListener extends JahiaEventListener {
                         ContentObject parent = object.getParent(EntryLoadRequest.STAGED);
                         for (Locale languageSetting : languageSettings) {
                             final String s = languageSetting.toString();
-                            chtmlCache.invalidateContainerEntriesInAllModes((new ContentContainerKey(parent.getID())).toString(),
-                                                                            s);
-                            skeletonCache
-                                    .invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(),
-                                                                         s);
+                            getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(parent.getID())).toString(), s);
+                            getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(), s);
                         }
                         Set<ContentObject> pickerObjects = parent.getPickerObjects();
                         if (pickerObjects != null && pickerObjects.size() > 0) {
                             for (ContentObject pickerObject : pickerObjects) {
                                 for (Locale languageSetting : languageSettings) {
                                     final String s = languageSetting.toString();
-                                    chtmlCache.invalidateContainerEntriesInAllModes((new ContentContainerKey(
-                                            pickerObject.getID())).toString(), s);
-                                    skeletonCache.invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
+                                    getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(), s);
+                                    getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
                                 }
                             }
                         }
@@ -363,13 +359,8 @@ public class CacheEventListener extends JahiaEventListener {
                                                                       parentContainerListID);
                             for (Locale languageSetting : languageSettings) {
                                 final String s = languageSetting.toString();
-                                chtmlCache
-                                        .invalidateContainerEntriesInAllModes((new ContentContainerListKey(
-                                                parentContainerListID)).toString(), s);
-
-                                skeletonCache
-                                        .invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(),
-                                                                             s);
+                                getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerListKey(parentContainerListID)).toString(), s);
+                                getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(), s);
                             }
                         }
                         Set<ContentObject> pickerObjects = jahiaContainer.getContentContainer().getPickerObjects();
@@ -377,9 +368,8 @@ public class CacheEventListener extends JahiaEventListener {
                             for (ContentObject pickerObject : pickerObjects) {
                                 for (Locale languageSetting : languageSettings) {
                                     final String s = languageSetting.toString();
-                                    chtmlCache.invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(),
-                                                                                    s);
-                                    skeletonCache.invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
+                                    getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(), s);
+                                    getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
                                 }
                             }
                         }
@@ -396,23 +386,17 @@ public class CacheEventListener extends JahiaEventListener {
                             int pageID = ctnList.getPageID();
                             for (Locale languageSetting : languageSettings) {
                                 final String s = languageSetting.toString();
-                                chtmlCache.invalidateContainerEntriesInAllModes(contentContainer.getObjectKey().toString(),
-                                                                                s);
-                                chtmlCache.invalidateContainerEntriesInAllModes(ctnList.getObjectKey().toString(),
-                                                                                s);
-                                skeletonCache
-                                        .invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(),
-                                                                             s);
+                                getChtmlCache().invalidateContainerEntriesInAllModes(contentContainer.getObjectKey().toString(), s);
+                                getChtmlCache().invalidateContainerEntriesInAllModes(ctnList.getObjectKey().toString(), s);
+                                getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pageID)).toString(), s);
                             }
                             Set<ContentObject> pickerObjects = contentContainer.getPickerObjects();
                             if (pickerObjects != null && pickerObjects.size() > 0) {
                                 for (ContentObject pickerObject : pickerObjects) {
                                     for (Locale languageSetting : languageSettings) {
                                         final String s = languageSetting.toString();
-                                        chtmlCache
-                                                .invalidateContainerEntriesInAllModes((new ContentContainerKey(
-                                                        pickerObject.getID())).toString(), s);
-                                        skeletonCache.invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
+                                        getChtmlCache().invalidateContainerEntriesInAllModes((new ContentContainerKey(pickerObject.getID())).toString(), s);
+                                        getSkeletonCache().invalidateSkeletonEntriesInAllModes((new ContentPageKey(pickerObject.getPageID())).toString(), s);
                                     }
                                 }
                             }

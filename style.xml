@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<additionalHeaders>
+    <dynascript_style>
+        <firstLine><![CDATA[<%--EOL]]></firstLine>
+        <beforeEachLine>    </beforeEachLine>
+        <endLine><![CDATA[EOL--%>]]></endLine>
+        <skipLine><![CDATA[(\s|\t)*((<%@)|(<!DOCTYPE)|(%>)).*]]></skipLine>
+        <firstLineDetectionPattern><![CDATA[(\s|\t)*<%--.*$]]></firstLineDetectionPattern>
+        <lastLineDetectionPattern><![CDATA[.*--%>]]></lastLineDetectionPattern>
+    </dynascript_style>
+</additionalHeaders>

@@ -20,6 +20,7 @@
 
 <%@ include file="../common/declarations.jspf" %>
 <template:include page="common/calendar/calendar.jsp"/>
+<template:include page="modules/events/eventsFacetedSearch.jsp"/>
 <template:include page="common/box/box.jsp">
     <template:param name="name" value="columnB_box"/>
 </template:include>

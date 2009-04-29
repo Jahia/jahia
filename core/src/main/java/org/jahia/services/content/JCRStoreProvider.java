@@ -288,7 +288,7 @@ public class JCRStoreProvider {
                             try {
                                 session.refresh(false);
                             } catch (RepositoryException e) {
-                                logger.error(e.getMessage(), e);
+                                if (logger != null) logger.error(e.getMessage(), e);
                             }
                             try {
                                 Thread.sleep(5000);
@@ -296,7 +296,7 @@ public class JCRStoreProvider {
                                 // ignore
                             }
                         }
-                        logger.info("System session closed, deregister listeners");
+                        if (logger != null) logger.info("System session closed, deregister listeners");
                     }
                 };
                 t.start();

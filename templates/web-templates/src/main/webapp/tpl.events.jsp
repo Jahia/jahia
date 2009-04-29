@@ -34,7 +34,7 @@
 <jsp:include page="positioning.jsp">
     <jsp:param name="position" value="position2"/>    
     <jsp:param name="mainArea" value="areas/introduction_eventslist.jsp"/>
-    <jsp:param name="areaB" value="areas/calendar_boxes.jsp"/>
+    <jsp:param name="areaB" value="areas/calendar_faceted_boxes.jsp"/>
     <jsp:param name="footerNav" value="true"/>
     <jsp:param name="useGWT" value="true"/>
 </jsp:include>

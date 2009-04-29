@@ -26,7 +26,7 @@ public class ResolvePathTag extends TagSupport {
 
     @Override
     public int doStartTag() throws JspException {
-        JahiaBean jahiaBean = (JahiaBean) pageContext.getAttribute("jahia");
+        JahiaBean jahiaBean = (JahiaBean) pageContext.getRequest().getAttribute("jahia");
         try {
             this.pageContext.getOut().write(jahiaBean.getIncludes().getWebPath().get(value));
         } catch (IOException e) {

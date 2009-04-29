@@ -14,6 +14,13 @@
  *
  * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
+
+package org.jahia.utils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
 public class Version implements Comparable<Version> {
 
     private static org.apache.log4j.Logger logger =

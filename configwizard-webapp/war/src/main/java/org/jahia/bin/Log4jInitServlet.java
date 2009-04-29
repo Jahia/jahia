@@ -14,6 +14,20 @@
  *
  * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
+
+package org.jahia.bin;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.InputStream;
+import java.util.Properties;
+import java.lang.RuntimeException;
+
+import org.apache.log4j.xml.*;
+import org.apache.log4j.PropertyConfigurator;
+
 public class Log4jInitServlet extends HttpServlet {
 
     public void init () {

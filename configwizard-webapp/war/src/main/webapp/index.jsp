@@ -1,5 +1,4 @@
-<%@ page language="java"
-%><% request.getSession(true); response.sendRedirect(request.getContextPath() + "/installation"); %>
+<%@ page language="java" %><% request.getSession(true); response.sendRedirect(request.getContextPath() + "/installation"); %>
 
 <%--
 

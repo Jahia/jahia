@@ -1,7 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"
-%><%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"
-%><%-- We reuse the search results page --%><s:resultsPageUrl var="resultsPage"/><c:import url="${resultsPage}"/>
-
 <%--
 
     
@@ -36,3 +32,7 @@
     for your use, please contact the sales department at sales@jahia.com.
 
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%-- We reuse the search results page --%>
+<s:resultsPageUrl var="resultsPage"/><c:import url="${resultsPage}"/>

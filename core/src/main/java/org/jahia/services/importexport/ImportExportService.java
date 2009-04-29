@@ -35,6 +35,7 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.containers.ContentContainer;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.w3c.dom.Document;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -102,19 +103,19 @@ public interface ImportExportService {
 
     // Export
 
-    void exportAll(OutputStream out, Map params, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
+    void exportAll(OutputStream out, Map<String, Object> params, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
 
-    void exportSites(OutputStream outputStream, Map params, ProcessingContext processingContext, List sites) throws JahiaException, IOException, SAXException;
+    void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, IOException, SAXException;
 
-    void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map params) throws JahiaException, SAXException, IOException;
+    void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params) throws JahiaException, SAXException, IOException;
 
-    Document exportDocument(ContentObject object, String languageCode, ProcessingContext jParams, Map params) throws JahiaException, SAXException;
+    Document exportDocument(ContentObject object, String languageCode, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException;
 
-    void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map params) throws JahiaException, SAXException, IOException;
+    void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException;
 
-    void exportZip(ContentObject object, Set languageCodes, OutputStream out, ProcessingContext jParams, Map params) throws JahiaException, SAXException, IOException;
+    void exportZip(ContentObject object, Set<String> languageCodes, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException;
 
-    void export(ContentObject object, String languageCodes, ContentHandler h, Set files, ProcessingContext jParams, Map params) throws JahiaException, SAXException;
+    void export(ContentObject object, String languageCodes, ContentHandler h, Set<JCRNodeWrapper> files, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException;
 
     void exportCategories(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException;
 
@@ -134,7 +135,7 @@ public interface ImportExportService {
 
     ContentObject copy(ContentObject source, ContentObject parentDest, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
 
-    ContentObject copy(ContentObject source, ContentObject parentDest, Set languages, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
+    ContentObject copy(ContentObject source, ContentObject parentDest, Set<String> languages, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result);
 
     boolean isCompatible(JahiaContainerDefinition dest, JahiaContainerDefinition source);
 
@@ -142,7 +143,7 @@ public interface ImportExportService {
 
     boolean isPicker(ContentObject object) throws JahiaException;
 
-    void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set files) throws JahiaException;
+    void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set<JCRNodeWrapper> files) throws JahiaException;
 
     void ensureFile(String path, InputStream inputStream, String type, ProcessingContext jParams, JahiaSite destSite, Map<String,String> pathMapping);
 

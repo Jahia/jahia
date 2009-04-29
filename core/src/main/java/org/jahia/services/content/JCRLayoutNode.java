@@ -17,7 +17,6 @@
 package org.jahia.services.content;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.Node;
 import java.util.List;
 import java.util.ArrayList;
 

@@ -71,7 +71,7 @@ public class SelecUnselectFile extends DAVAbstractAction {
             // fileName
             final String key = getXmlNodeValue(request, KEY);
             final HttpSession session = request.getSession();
-            final Map engineMap = (Map) request.getSession().getAttribute("jahia_session_engineMap");
+            final Map<String, Object> engineMap = (Map) request.getSession().getAttribute("jahia_session_engineMap");
             final String currentFileName = engineMap.get("filename").toString();
             final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
             final JahiaField theField = (JahiaField) engineMap.get(fieldsEditCallingEngineName + ".theField");

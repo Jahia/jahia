@@ -1,19 +1,36 @@
 /**
- * Jahia Enterprise Edition v6
- *
- * Copyright (C) 2002-2009 Jahia Solutions Group. All rights reserved.
- *
- * Jahia delivers the first Open Source Web Content Integration Software by combining Enterprise Web Content Management
- * with Document Management and Portal features.
- *
- * The Jahia Enterprise Edition is delivered ON AN "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR
- * IMPLIED.
- *
- * Jahia Enterprise Edition must be used in accordance with the terms contained in a separate license agreement between
- * you and Jahia (Jahia Sustainable Enterprise License - JSEL).
- *
- * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
+ * 
+ * This file is part of Jahia: An integrated WCM, DMS and Portal Solution
+ * Copyright (C) 2002-2009 Jahia Limited. All rights reserved.
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * 
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have recieved a copy of the text
+ * describing the FLOSS exception, and it is also available here:
+ * http://www.jahia.com/license"
+ * 
+ * Commercial and Supported Versions of the program
+ * Alternatively, commercial and supported versions of the program may be used
+ * in accordance with the terms contained in a separate written agreement
+ * between you and Jahia Limited. If you are unsure which license is appropriate
+ * for your use, please contact the sales department at sales@jahia.com.
  */
+
 package org.jahia.engines.shared;
 
 import org.jahia.data.constants.JahiaConstants;
@@ -79,7 +96,7 @@ public class DAVFile_Field implements FieldSubEngine {
      * @return true if everything went okay, false if not
      * @see org.jahia.engines.JahiaEngine
      */
-    public boolean handleField(final ProcessingContext jParams, final Integer modeInt, final Map engineMap)
+    public boolean handleField(final ProcessingContext jParams, final Integer modeInt, final Map<String, Object> engineMap)
             throws JahiaException {
         int mode = modeInt.intValue();
         final String fieldsEditCallingEngineName = (String) engineMap.get("fieldsEditCallingEngineName");
@@ -118,7 +135,7 @@ public class DAVFile_Field implements FieldSubEngine {
      * @param theField  the field we are working on
      * @return true if everything went okay, false if not
      */
-    private boolean getFormData(final ProcessingContext jParams, final Map engineMap, final JahiaField theField) {
+    private boolean getFormData(final ProcessingContext jParams, final Map<String, Object> engineMap, final JahiaField theField) {
         boolean out = true;
 
         final String fileID = TableEntry.javascriptDecode(jParams.getParameter("file_id"));
@@ -161,7 +178,7 @@ public class DAVFile_Field implements FieldSubEngine {
 
 //        String fixRights = jParams.getParameter("fixrights");
 //        if (fixRights != null && fixRights.equals("on")) {
-        final Set uris = new HashSet();
+        final Set<String> uris = new HashSet<String>();
         final String[] users = jParams.getParameterValues("user");
         if (users != null) {
             for (int i = 0; i < users.length; i++) {
@@ -192,7 +209,7 @@ public class DAVFile_Field implements FieldSubEngine {
 
         if (jParams.getParameter("ignoreWarnings") == null) {
             if (engineMap.containsKey("deniedUsers") && ! "cancel".equals(jParams.getParameter("screen"))) {
-                final Set deniedUsers = (Set) engineMap.get("deniedUsers");
+                final Set<String> deniedUsers = (Set<String>) engineMap.get("deniedUsers");
                 if (deniedUsers.size() > 0) {
                     composeFileField(jParams, engineMap, theField);
                     final EngineLanguageHelper elh = (EngineLanguageHelper)
@@ -244,7 +261,7 @@ public class DAVFile_Field implements FieldSubEngine {
      * @param theField  the field we are working on
      * @return true if everything went okay, false if not
      */
-    private boolean composeEngineMap(final ProcessingContext jParams, final Map engineMap, final JahiaField theField)
+    private boolean composeEngineMap(final ProcessingContext jParams, final Map<String, Object> engineMap, final JahiaField theField)
             throws JahiaException {
 
 //        List list = checkRights(jParams, theField);
@@ -266,7 +283,7 @@ public class DAVFile_Field implements FieldSubEngine {
         } else {
             final FieldsEditHelper feh = (FieldsEditHelper) engineMap.get(fieldsEditCallingEngineName + "."
                     + FieldsEditHelperAbstract.FIELDS_EDIT_HELPER_CONTEXTID);
-            final Map ctnListFieldAcls = feh.getCtnListFieldAcls();
+            final Map<Integer, Integer> ctnListFieldAcls = feh.getCtnListFieldAcls();
             int fieldId = theField.getID();
             if (theContainer.getListID() != 0 && ctnListFieldAcls != null && ctnListFieldAcls.size() > 0) {
                 final JahiaBaseACL acl = JahiaEngineTools.getCtnListFieldACL(ctnListFieldAcls, fieldId);
@@ -300,8 +317,6 @@ public class DAVFile_Field implements FieldSubEngine {
         if  (logger.isDebugEnabled()) {
             logger.debug("select-file: " + jParams.getParameter("select-file"));
         }
-
-        final List hiddenEntries = new ArrayList();
 
         String viewType = jParams.getParameter("viewtype");
         if (viewType != null) {
@@ -345,7 +360,7 @@ public class DAVFile_Field implements FieldSubEngine {
      * @return the page object
      */
     private JahiaFileField composeFileField(final ProcessingContext jParams,
-                                            final Map engineMap, final JahiaField theField) {
+                                            final Map<String, Object> engineMap, final JahiaField theField) {
 
         JahiaFileField fField = (JahiaFileField) theField.getObject();
         final String movedFrom = (String) jParams.getSessionState().getAttribute(jParams.getSiteID() + "-movedfrom");

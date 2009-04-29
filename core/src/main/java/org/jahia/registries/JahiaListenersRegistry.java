@@ -155,8 +155,8 @@ public class JahiaListenersRegistry {
     public void wakeupListeners (String methodName, JahiaEvent theEvent) {
         for (JahiaEventListenerInterface theListener : getListeners()) {
             try {
-                Class theClass = theListener.getClass();
-                Class eventClass = theEvent.getClass();
+                Class<? extends JahiaEventListenerInterface> theClass = theListener.getClass();
+                Class<? extends JahiaEvent> eventClass = theEvent.getClass();
                 Method theMethod = theClass.getMethod(methodName, new Class[] { eventClass });
                 if (theMethod != null) {
                     Monitor listenerMonitor = null;

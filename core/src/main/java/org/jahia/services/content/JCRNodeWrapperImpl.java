@@ -212,11 +212,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * @return Returns the Set of denied users (Read Rights) in comparison with the permision of the field
      */
-    public Set comparePermsWithField(final JahiaField theField, final JahiaContainer theContainer) {
-        return new HashSet();
+    public Set<String> comparePermsWithField(final JahiaField theField, final JahiaContainer theContainer) {
+        return new HashSet<String>();
     }
 
-    public void alignPermsWithField(JahiaField theField, Set users) {
+    public void alignPermsWithField(JahiaField theField, Set<String> users) {
     }
 
     public boolean changePermissions (String user, String perm) {

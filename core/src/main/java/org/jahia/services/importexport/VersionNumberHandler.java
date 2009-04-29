@@ -18,6 +18,7 @@
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jahia.services.version.EntryLoadRequest;
@@ -33,21 +34,21 @@ import org.xml.sax.helpers.DefaultHandler;
  * To change this template use File | Settings | File Templates.
  */
 public class VersionNumberHandler extends DefaultHandler {
-    private Map uuidToVersions = new HashMap();
-    private List locales;
+    private Map<String, EntryLoadRequest> uuidToVersions = new HashMap<String, EntryLoadRequest>();
+    private List<Locale> locales;
 
-    public VersionNumberHandler(List locales) {
+    public VersionNumberHandler(List<Locale> locales) {
         this.locales = locales;
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         String value = attributes.getValue("jahia:lastImportedVersion");
         if (value != null) {
-            uuidToVersions.put(attributes.getValue("jahia:originalUuid"), new EntryLoadRequest(EntryLoadRequest.VERSIONED_WORKFLOW_STATE, Integer.parseInt(value), (List) locales));
+            uuidToVersions.put(attributes.getValue("jahia:originalUuid"), new EntryLoadRequest(EntryLoadRequest.VERSIONED_WORKFLOW_STATE, Integer.parseInt(value), locales));
         }
     }
 
-    public Map getUuidToVersions() {
+    public Map<String, EntryLoadRequest> getUuidToVersions() {
         return uuidToVersions;
     }
 }

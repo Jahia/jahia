@@ -47,10 +47,10 @@ import java.util.*;
  */
 public class CategoriesImportHandler extends DefaultHandler {
     private static Logger logger = Logger.getLogger(CategoriesImportHandler.class);
-    private Stack cats = new Stack();
+    private Stack<Category> cats = new Stack<Category>();
     private CategoryService cs ;
     private JahiaSite site;
-    private List uuidProps = new ArrayList();
+    private List<String[]> uuidProps = new ArrayList<String[]>();
 
     public CategoriesImportHandler(ProcessingContext jParams) {
         site = jParams.getSite();
@@ -66,14 +66,14 @@ public class CategoriesImportHandler extends DefaultHandler {
                     c = cs.getRootCategory();
                 } else {
                     c =  cs.getCategory(key);
-                    Category parent = ((Category) cats.peek());
+                    Category parent = cats.peek();
                     if (c == null) {
                         c = Category.createCategory(key,parent);
                     } else {
-                        List parents = c.getParentObjectKeys();
+                        List<ObjectKey> parents = c.getParentObjectKeys();
                         if (!parents.contains(parent.getObjectKey())) {
                             parent.addChildObjectKey(c.getObjectKey());
-                            for (Iterator iterator = parents.iterator(); iterator.hasNext();) {
+                            for (Iterator<ObjectKey> iterator = parents.iterator(); iterator.hasNext();) {
                                 ObjectKey k = (ObjectKey) iterator.next();
                                 ((Category)Category.getChildInstance(k,null)).removeChildObjectKey(c.getObjectKey());
                             }
@@ -96,10 +96,10 @@ public class CategoriesImportHandler extends DefaultHandler {
                 String key = attributes.getValue(ImportExportBaseService.JAHIA_URI, "key");
                 String value = attributes.getValue(ImportExportBaseService.JAHIA_URI, "value");
                 if (!cats.empty()) {
-                    Category c = (Category) cats.peek();
+                    Category c = cats.peek();
                     if (key != null && value != null) {
                         if (key.startsWith("homepage")) {
-                            List l = findPage(value);
+                            List<ContentPage> l = findPage(value);
                             if (!l.isEmpty()) {
                                 value = "" + ((ContentPage) l.iterator().next()).getID();
                             } else {
@@ -173,19 +173,19 @@ public class CategoriesImportHandler extends DefaultHandler {
         }
     }
 
-    public List getUuidProps() {
+    public List<String[]> getUuidProps() {
         return uuidProps;
     }
 
-    public void setUuidProps(List p) {
+    public void setUuidProps(List<String[]> p) {
         if (p == null) {
             return;
         }
-        for (Iterator iterator = p.iterator(); iterator.hasNext();) {
+        for (Iterator<String[]> iterator = p.iterator(); iterator.hasNext();) {
             try {
                 String[] s = (String[]) iterator.next();
                 Category c = Category.getCategory(s[0]);
-                List l = findPage(s[2]);
+                List<ContentPage> l = findPage(s[2]);
                 if (!l.isEmpty()) {
                     String value = "" + ((ContentPage) l.iterator().next()).getID();
                     c.setProperty(s[1], value);
@@ -196,8 +196,8 @@ public class CategoriesImportHandler extends DefaultHandler {
         }
     }
 
-    private List findPage(String v) throws JahiaException {
-        List l;
+    private List<ContentPage> findPage(String v) throws JahiaException {
+        List<ContentPage> l;
 //        if (v.indexOf('/')>0) {
 //            l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')));
 //            l.addAll(ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')+1)));

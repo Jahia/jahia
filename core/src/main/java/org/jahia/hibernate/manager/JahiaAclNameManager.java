@@ -49,9 +49,9 @@ public class JahiaAclNameManager {
     private JahiaAclDAO aclDao = null;
     private JahiaAclNamesDAO aclNamesDao = null;
 
-    private Map aclNamesDefaultEntries;
+    private Map<String, Map<String, String>> aclNamesDefaultEntries;
 
-    private Cache cache;
+    private Cache<String, JahiaAclName> cache;
 
     private void checkCache() {
         if (cache == null) cache = ServicesRegistry.getInstance().getCacheService().getCache(JAHIA_ACL_NAMES);
@@ -70,7 +70,7 @@ public class JahiaAclNameManager {
         this.aclNamesDao = aclNamesDao;
     }
 
-    public void setAclNamesDefaultEntries(Map aclNamesDefaultEntries) {
+    public void setAclNamesDefaultEntries(Map<String, Map<String, String>> aclNamesDefaultEntries) {
         this.aclNamesDefaultEntries = aclNamesDefaultEntries;
     }
 
@@ -93,7 +93,7 @@ public class JahiaAclNameManager {
                 if (!"".equals(aclName)) {
                     checkCache();
 
-                    JahiaAclName aclNameResult = (JahiaAclName) cache.get(aclName);
+                    JahiaAclName aclNameResult = cache.get(aclName);
                     if (aclNameResult != null) {
                         return aclNameResult;
                     }
@@ -157,12 +157,12 @@ public class JahiaAclNameManager {
                     acl.setParent(null);
                     acl.setInheritance(new Integer(ACLInfo.INHERITANCE));
                     // todo : we still have to insert default entries here.
-                    Map defaultEntries = (Map) aclNamesDefaultEntries.get(curAclName);
-                    Map userAclEntries = new HashMap();
-                    Map groupAclEntries = new HashMap();
-                    Iterator entryIterator = defaultEntries.entrySet().iterator();
+                    Map<String, String> defaultEntries = aclNamesDefaultEntries.get(curAclName);
+                    Map<String, JahiaAclEntry> userAclEntries = new HashMap<String, JahiaAclEntry>();
+                    Map<String, JahiaAclEntry> groupAclEntries = new HashMap<String, JahiaAclEntry>();
+                    Iterator<Map.Entry<String, String>> entryIterator = defaultEntries.entrySet().iterator();
                     while (entryIterator.hasNext()) {
-                        Map.Entry curEntry = (Map.Entry) entryIterator.next();
+                        Map.Entry<String, String> curEntry = (Map.Entry<String, String>) entryIterator.next();
                         String key = (String) curEntry.getKey();
                         Integer userType = null;
                         String principalName = null;
@@ -226,7 +226,7 @@ public class JahiaAclNameManager {
                 if (!"".equals(aclName)) {
                     checkCache();
 
-                    JahiaAclName aclNameResult = (JahiaAclName) cache.get(aclName);
+                    JahiaAclName aclNameResult = cache.get(aclName);
                     if (aclNameResult != null) {
                         return aclNameResult;
                     }
@@ -244,7 +244,7 @@ public class JahiaAclNameManager {
         throw new ObjectRetrievalFailureException(JahiaAcl.class, aclName);
     }
 
-    public List findJahiaAclNamesStartingWith(String aclName) {
+    public List<JahiaAclName> findJahiaAclNamesStartingWith(String aclName) {
         if (aclName != null) {
             try {
                 if (!"".equals(aclName)) {

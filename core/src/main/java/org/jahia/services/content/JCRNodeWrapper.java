@@ -80,9 +80,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     boolean hasPermission(String perm);
 
-    Set comparePermsWithField(JahiaField theField, JahiaContainer theContainer);
+    Set<String> comparePermsWithField(JahiaField theField, JahiaContainer theContainer);
 
-    void alignPermsWithField(JahiaField theField, Set users);
+    void alignPermsWithField(JahiaField theField, Set<String> users);
 
     boolean changePermissions (String user, String perms);
 

@@ -60,7 +60,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
 
         String pickerKey = (String) jobDataMap.get(PICKER);
         ContentObject picker = ContentObject.getContentObjectInstance(ObjectKey.getInstance(pickerKey));
-        Set langs = (Set) jobDataMap.get(LANGS);
+        Set<String> langs = (Set<String>) jobDataMap.get(LANGS);
 
 //        DataWriter dw = new DataWriter(new OutputStreamWriter(System.out, "UTF-8"));
 
@@ -68,7 +68,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
 
         if (!langs.isEmpty()) {
             // change the workflow state of the target to STAGING
-            Set langCodes = new HashSet(langs);
+            Set<String> langCodes = new HashSet<String>(langs);
             langCodes.add(ContentObject.SHARED_LANGUAGE);
             try {
                 StateModificationContext stateModifContext = new StateModificationContext(
@@ -88,7 +88,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
         List<ImportAction> actions = new ArrayList<ImportAction>();
         ExtendedImportResult result = new ExtendedImportResult();
 
-        Set files = new HashSet();
+        Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
         JahiaUser oldUser = jParams.getUser();
         try {
             JahiaSite destSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(picker.getSiteID());
@@ -97,10 +97,10 @@ public class ActivationContentPickerJob extends BackgroundJob {
             Map<String,String> pathMapping = new HashMap<String,String>();
             checkFilesInChildren(pickedObject, jParams, ie, destSite, langs, pathMapping);
 
-            for (Iterator iterator2 = langs.iterator(); iterator2.hasNext();) {
-                String lang = (String) iterator2.next();
+            for (Iterator<String> iterator2 = langs.iterator(); iterator2.hasNext();) {
+                String lang = iterator2.next();
 
-                Map froms = new HashMap();
+                Map<String, EntryLoadRequest> froms = new HashMap<String, EntryLoadRequest>();
                 getFroms(froms, lang, picker, jParams);
 
                 long now = System.currentTimeMillis() / 1000;
@@ -112,7 +112,7 @@ public class ActivationContentPickerJob extends BackgroundJob {
                 // avoid cache issue
                 pickedObject = (ContentObject) ContentObject.getInstance(pickedObject.getObjectKey());
 
-                Map params = new HashMap();
+                Map<String, Object> params = new HashMap<String, Object>();
                 params.put(ImportExportService.LINK, StructuralRelationship.ACTIVATION_PICKER_LINK);
                 params.put(ImportExportService.FROM, froms);
                 params.put(ImportExportService.TO, toLoadRequest);
@@ -132,13 +132,13 @@ public class ActivationContentPickerJob extends BackgroundJob {
         jobDataMap.put(RESULT, result);
     }
 
-    private void checkFilesInChildren(ContentObject source, ProcessingContext context, ImportExportService ie, JahiaSite destSite, Set langs,Map<String,String> pathMapping) throws JahiaException {
-        Set f = new HashSet();
-        for (Iterator iterator = langs.iterator(); iterator.hasNext();) {
-            String lang = (String) iterator.next();
+    private void checkFilesInChildren(ContentObject source, ProcessingContext context, ImportExportService ie, JahiaSite destSite, Set<String> langs,Map<String,String> pathMapping) throws JahiaException {
+        Set<JCRNodeWrapper> f = new HashSet<JCRNodeWrapper>();
+        for (Iterator<String> iterator = langs.iterator(); iterator.hasNext();) {
+            String lang = iterator.next();
             ie.getFilesForField(source, context, lang, EntryLoadRequest.CURRENT, f);
         }
-        for (Iterator iterator = f.iterator(); iterator.hasNext();) {
+        for (Iterator<JCRNodeWrapper> iterator = f.iterator(); iterator.hasNext();) {
             JCRNodeWrapper fileNode = (JCRNodeWrapper) iterator.next();
             if (fileNode.isValid()) {
                 InputStream inputStream = fileNode.getFileContent().downloadFile();
@@ -146,8 +146,8 @@ public class ActivationContentPickerJob extends BackgroundJob {
                 ie.ensureFile(fileNode.getPath(), inputStream, type, context, destSite,pathMapping);
             }
         }
-        List childs = source.getChilds(null,context.getEntryLoadRequest());
-        for (Iterator iterator1 = childs.iterator(); iterator1.hasNext();) {
+        List<? extends ContentObject> childs = source.getChilds(null,context.getEntryLoadRequest());
+        for (Iterator<? extends ContentObject> iterator1 = childs.iterator(); iterator1.hasNext();) {
             ContentObject child = (ContentObject) iterator1.next();
             checkFilesInChildren(child, context, ie, destSite, langs,pathMapping);
         }
@@ -172,9 +172,9 @@ public class ActivationContentPickerJob extends BackgroundJob {
     }
 
 
-    private void getFroms (Map m, String lang, ContentObject o, ProcessingContext jParams) throws JahiaException {
-        List l = o.getChilds(null, EntryLoadRequest.STAGED);
-        for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+    private void getFroms (Map<String, EntryLoadRequest> m, String lang, ContentObject o, ProcessingContext jParams) throws JahiaException {
+        List<? extends ContentObject> l = o.getChilds(null, EntryLoadRequest.STAGED);
+        for (Iterator<? extends ContentObject> iterator = l.iterator(); iterator.hasNext();) {
             ContentObject child = (ContentObject) iterator.next();
             getFroms(m, lang, child, jParams);
         }

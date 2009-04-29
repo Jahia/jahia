@@ -46,7 +46,7 @@ public class UsersImportHandler  extends DefaultHandler {
     private JahiaSiteUserManagerService su;
     private JahiaSiteGroupManagerService sg;
     private JahiaSite site;
-    private List uuidProps = new ArrayList();
+    private List<String[]> uuidProps = new ArrayList<String[]>();
 
     private JahiaGroup currentGroup = null;
     private boolean member = false;
@@ -82,7 +82,7 @@ public class UsersImportHandler  extends DefaultHandler {
                         } else if (k.equals("password")) {
                             pass = v;
                         } else if (k.equals("user_homepage")) {
-                            List l = findPage(v);
+                            List<ContentPage> l = findPage(v);
                             if (!l.isEmpty()) {
                                 p.put(k, ""+((ContentPage) l.iterator().next()).getID());
                             } else {
@@ -114,7 +114,7 @@ public class UsersImportHandler  extends DefaultHandler {
                         if (k.equals("name")) {
                             //
                         } else if (k.equals("group_homepage")) {
-                            List l = findPage(v);
+                            List<ContentPage> l = findPage(v);
                             if (!l.isEmpty()) {
                                 p.put(k, ""+((ContentPage) l.iterator().next()).getID());
                             } else {
@@ -159,19 +159,19 @@ public class UsersImportHandler  extends DefaultHandler {
     }
 
 
-    public List getUuidProps() {
+    public List<String[]> getUuidProps() {
         return uuidProps;
     }
 
-    public void setUuidProps(List p) {
+    public void setUuidProps(List<String[]> p) {
         if (p == null) {
             return;
         }
 
-        for (Iterator iterator = p.iterator(); iterator.hasNext();) {
+        for (Iterator<String[]> iterator = p.iterator(); iterator.hasNext();) {
             try {
                 String[] s = (String[]) iterator.next();
-                List l = findPage(s[2]);
+                List<ContentPage> l = findPage(s[2]);
                 if (!l.isEmpty()) {
                     int id = ((ContentPage) l.iterator().next()).getID();
                     if (s[1].equals("user_homepage")) {
@@ -188,8 +188,8 @@ public class UsersImportHandler  extends DefaultHandler {
         }
     }
 
-    private List findPage(String v) throws JahiaException {
-        List l;
+    private List<ContentPage> findPage(String v) throws JahiaException {
+        List<ContentPage> l;
 //        if (v.indexOf('/')>0) {
 //            l = ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')));
 //            l.addAll(ServicesRegistry.getInstance().getJahiaPageService().findPagesByPropertyNameAndValue("originalUuid", v.substring(0,v.indexOf('/')+1)));

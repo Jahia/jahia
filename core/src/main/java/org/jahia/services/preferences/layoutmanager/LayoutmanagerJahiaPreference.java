@@ -16,7 +16,6 @@
  */
 package org.jahia.services.preferences.layoutmanager;
 
-import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRLayoutNode;
 import org.jahia.services.content.JCRLayoutItemNode;
@@ -33,7 +32,6 @@ import java.util.List;
  */
 public class LayoutmanagerJahiaPreference extends JCRNodeDecorator {
     public static String PROVIDER_TYPE = "layoutmanager";
-    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(LayoutmanagerJahiaPreference.class);
 
     public LayoutmanagerJahiaPreference(JCRNodeWrapper node) {
         super(node);

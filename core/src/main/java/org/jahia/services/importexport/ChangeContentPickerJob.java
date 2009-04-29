@@ -49,7 +49,7 @@ public class ChangeContentPickerJob extends BackgroundJob {
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger(ChangeContentPickerJob.class);
 
-    private static ThreadLocal isInContentPickJob = new ThreadLocal();
+    private static ThreadLocal<Boolean> isInContentPickJob = new ThreadLocal<Boolean>();
 
     public synchronized void executeJahiaJob(JobExecutionContext jobExecutionContext, ProcessingContext context) throws Exception {
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
@@ -69,10 +69,10 @@ public class ChangeContentPickerJob extends BackgroundJob {
                 return;
             }
 
-            Set pickers = source.getPickerObjects("");
+            Set<ContentObject> pickers = source.getPickerObjects("");
 
             if (!pickers.isEmpty()) {
-                for (Iterator iterator = pickers.iterator(); iterator.hasNext();) {
+                for (Iterator<ContentObject> iterator = pickers.iterator(); iterator.hasNext();) {
                     ContentObject picker = (ContentObject) iterator.next();
 
                     Map<String,String> pathMapping = new HashMap<String,String>();
@@ -83,7 +83,6 @@ public class ChangeContentPickerJob extends BackgroundJob {
                         isInContentPickJob.set(Boolean.TRUE);
                         try {
                             if (source instanceof ContentFileField) {
-                                JahiaSite sourceSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(source.getSiteID());
                                 String path = ((ContentFileField)source).getValue(context, EntryLoadRequest.STAGED);
                                 JCRNodeWrapper sourceFile = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(path, context.getUser());
                                 if (sourceFile.isValid()) {
@@ -110,10 +109,10 @@ public class ChangeContentPickerJob extends BackgroundJob {
                                 ImportHandler handler = new ImportHandler(picker,context, language, destSite, actions, result);
                                 handler.setUpdateOnly(true);
                                 handler.setPathMapping(pathMapping);
-                                Set included = new HashSet();
+                                Set<ContentObject> included = new HashSet<ContentObject>();
                                 included.add(source);
 
-                                Map params = new HashMap();
+                                Map<String, Object> params = new HashMap<String, Object>();
                                 params.put(ImportExportService.LINK, StructuralRelationship.CHANGE_PICKER_LINK);
                                 params.put(ImportExportService.TO, EntryLoadRequest.STAGED);
                                 params.put(ImportExportService.INCLUDED, included);
@@ -131,9 +130,9 @@ public class ChangeContentPickerJob extends BackgroundJob {
             } else if (!source.isMarkedForDelete()) {
                 ContentObject parent = source.getParent(null,null,null);
                 if (parent != null) {
-                    Set parentPicks = parent.getPickerObjects("");
+                    Set<ContentObject> parentPicks = parent.getPickerObjects("");
                     if (!parentPicks.isEmpty()) {
-                        for (Iterator iterator = parentPicks.iterator(); iterator.hasNext();) {
+                        for (Iterator<ContentObject> iterator = parentPicks.iterator(); iterator.hasNext();) {
                             ContentObject picker = (ContentObject) iterator.next();
                             Map<String,String> pathMapping = new HashMap<String,String>();
                             if (picker != null) {
@@ -145,7 +144,7 @@ public class ChangeContentPickerJob extends BackgroundJob {
                                     ImportHandler handler = new ImportHandler(picker,context, language, destSite, actions, result);
                                     handler.setCopyUuid(true);
 
-                                    Map params = new HashMap();
+                                    Map<String, Object> params = new HashMap<String, Object>();
                                     params.put(ImportExportService.LINK, StructuralRelationship.CHANGE_PICKER_LINK);
                                     params.put(ImportExportService.TO, EntryLoadRequest.STAGED);
 
@@ -217,8 +216,8 @@ public class ChangeContentPickerJob extends BackgroundJob {
                 ie.ensureFile(sourceFile.getPath(), inputStream, type, context, destSite, pathMapping);
             }
         }
-        List childs = source.getChilds(null,context.getEntryLoadRequest());
-        for (Iterator iterator1 = childs.iterator(); iterator1.hasNext();) {
+        List<? extends ContentObject> childs = source.getChilds(null,context.getEntryLoadRequest());
+        for (Iterator<? extends ContentObject> iterator1 = childs.iterator(); iterator1.hasNext();) {
             ContentObject child = (ContentObject) iterator1.next();
             checkFilesInChildren(child, context, ie, destSite,pathMapping);
         }

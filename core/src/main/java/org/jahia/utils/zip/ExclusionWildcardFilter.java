@@ -28,9 +28,9 @@ import org.apache.commons.io.FilenameUtils;
  */
 public class ExclusionWildcardFilter implements PathFilter {
 
-    private List excludedResources;
+    private List<String> excludedResources;
 
-    public ExclusionWildcardFilter(List excludedResources) {
+    public ExclusionWildcardFilter(List<String> excludedResources) {
         super();
         this.excludedResources = excludedResources;
     }
@@ -46,7 +46,7 @@ public class ExclusionWildcardFilter implements PathFilter {
         }
 
         boolean accept = true;
-        for (Iterator iterator = excludedResources.iterator(); iterator
+        for (Iterator<String> iterator = excludedResources.iterator(); iterator
                 .hasNext();) {
             String excludePattern = (String) iterator.next();
             if (FilenameUtils.wildcardMatch(path, excludePattern)) {

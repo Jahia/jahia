@@ -69,11 +69,11 @@ public class JahiaACLManagerService extends JahiaService {
     // the ACL Tree cache name.
     public static final String ACL_TREE_CACHE = "ACLTreeCache";
 
-    private Cache mACLCache;
+    private Cache<Integer, JahiaAcl> mACLCache;
 
-    private Cache mPreloadedContainerACLsByPageCache;
+    private Cache<String, String> mPreloadedContainerACLsByPageCache;
 
-    private Cache mPreloadedFieldACLsByPageCache;
+    private Cache<String, String> mPreloadedFieldACLsByPageCache;
 
     private CacheService cacheService;
 
@@ -86,8 +86,8 @@ public class JahiaACLManagerService extends JahiaService {
     protected JahiaAclManager manager;
     protected JahiaAclNameManager nameManager;
 
-    protected Map sitePermissionsMap;
-    protected Map serverPermissionsMap;
+    protected Map<String, List<String>> sitePermissionsMap;
+    protected Map<String, List<String>> serverPermissionsMap;
 
     public void setAclManager(JahiaAclManager manager) {
         this.manager = manager;
@@ -215,7 +215,7 @@ public class JahiaACLManagerService extends JahiaService {
      */
     public JahiaAcl lookupACL(int aclID)
             throws ACLNotFoundException {
-        JahiaAcl result = (JahiaAcl) mACLCache.get(new Integer(aclID));
+        JahiaAcl result = mACLCache.get(new Integer(aclID));
         if (result == null) {
             // not found in cache, let's try to load it from the database.
             try {
@@ -386,7 +386,7 @@ public class JahiaACLManagerService extends JahiaService {
      * @return JahiaDOMObject a DOM representation of this object
      * @throws JahiaException
      */
-    public JahiaDOMObject getAclsAsDOM(List ids, boolean withParents)
+    public JahiaDOMObject getAclsAsDOM(List<Integer> ids, boolean withParents)
             throws JahiaException {
         return null;
     }
@@ -399,7 +399,7 @@ public class JahiaACLManagerService extends JahiaService {
      * @return JahiaDOMObject a DOM representation of this object
      * @throws JahiaException
      */
-    public JahiaDOMObject getAclEntriesAsDOM(List ids)
+    public JahiaDOMObject getAclEntriesAsDOM(List<Integer> ids)
             throws JahiaException {
         return null;
     }
@@ -504,7 +504,7 @@ public class JahiaACLManagerService extends JahiaService {
                 userAliasing, permission, siteID, true);
     }
 
-    public List getAclNamesStartingWith(String startWithStr) {
+    public List<JahiaAclName> getAclNamesStartingWith(String startWithStr) {
         return nameManager.findJahiaAclNamesStartingWith(startWithStr);
     }
 
@@ -520,7 +520,7 @@ public class JahiaACLManagerService extends JahiaService {
      *                           permissions to check for existence. If a star character "*" is encountered, it
      *                           will be replaced with the value of the site ID.
      */
-    public void setSitePermissionsMap(Map sitePermissionsMap) {
+    public void setSitePermissionsMap(Map<String, List<String>> sitePermissionsMap) {
         this.sitePermissionsMap = sitePermissionsMap;
     }
 
@@ -534,7 +534,7 @@ public class JahiaACLManagerService extends JahiaService {
     * @param serverPermissionsMap a list of String values that are the names of the
     * permissions to check for existence.
     */
-    public void setServerPermissionsMap(Map serverPermissionsMap) {
+    public void setServerPermissionsMap(Map<String, List<String>> serverPermissionsMap) {
         this.serverPermissionsMap = serverPermissionsMap;
     }
 
@@ -553,11 +553,11 @@ public class JahiaACLManagerService extends JahiaService {
         if (sitePermissionsMap.size() == 0) {
             return;
         }
-        Iterator permissionGroupIter = sitePermissionsMap.entrySet().iterator();
+        Iterator<Map.Entry<String, List<String>>> permissionGroupIter = sitePermissionsMap.entrySet().iterator();
         while (permissionGroupIter.hasNext()) {
-            Map.Entry permissionGroupEntry = (Map.Entry) permissionGroupIter.next();
-            List permissionGroupList = (List) permissionGroupEntry.getValue();
-            Iterator permissionNameIter = permissionGroupList.iterator();
+            Map.Entry<String, List<String>> permissionGroupEntry = (Map.Entry<String, List<String>>) permissionGroupIter.next();
+            List<String> permissionGroupList = permissionGroupEntry.getValue();
+            Iterator<String> permissionNameIter = permissionGroupList.iterator();
             while (permissionNameIter.hasNext()) {
                 String curPermissionName = (String) permissionNameIter.next();
                 String processedPermissionName = curPermissionName.replaceAll("\\*", Integer.toString(siteID));
@@ -581,11 +581,11 @@ public class JahiaACLManagerService extends JahiaService {
         if (serverPermissionsMap.size() == 0) {
             return;
         }
-        Iterator permissionGroupIter = serverPermissionsMap.entrySet().iterator();
+        Iterator<Map.Entry<String, List<String>>> permissionGroupIter = serverPermissionsMap.entrySet().iterator();
         while (permissionGroupIter.hasNext()) {
-            Map.Entry permissionGroupEntry = (Map.Entry) permissionGroupIter.next();
-            List permissionGroupList = (List) permissionGroupEntry.getValue();
-            Iterator permissionNameIter = permissionGroupList.iterator();
+            Map.Entry<String, List<String>> permissionGroupEntry = permissionGroupIter.next();
+            List<String> permissionGroupList = permissionGroupEntry.getValue();
+            Iterator<String> permissionNameIter = permissionGroupList.iterator();
             while (permissionNameIter.hasNext()) {
                 String curPermissionName = (String) permissionNameIter.next();
                 JahiaAclName jahiaAclName = nameManager.findOrCreateJahiaAclNameByName(curPermissionName, 0);
@@ -604,24 +604,24 @@ public class JahiaACLManagerService extends JahiaService {
      * @param siteID    the site on which to retrieve the group
      * @return a List of JahiaAclName objects
      */
-    public List getSitePermissionsGroup(String groupName, int siteID) {
+    public List<JahiaAclName> getSitePermissionsGroup(String groupName, int siteID) {
         if (groupName == null) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
         if (sitePermissionsMap == null) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
         if (sitePermissionsMap.size() == 0) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
-        List permissionList = (List) sitePermissionsMap.get(groupName);
+        List<String> permissionList = sitePermissionsMap.get(groupName);
         if ("languages".equals(groupName)) {
             // build languages permission list based on the current site languages  
             try {
                 List<Locale> locales = (List<Locale>) ServicesRegistry
                         .getInstance().getJahiaSitesService().getSite(siteID)
                         .getLanguageSettingsAsLocales(false);
-                permissionList = new ArrayList(locales.size());
+                permissionList = new ArrayList<String>(locales.size());
                 for (Locale locale : locales) {
                     permissionList
                             .add(ManageSitePermissions.SITE_PERMISSIONS_PREFIX
@@ -629,23 +629,23 @@ public class JahiaACLManagerService extends JahiaService {
                 }
             } catch (JahiaException e) {
                 logger.warn("Unable to retrieve site language settings", e);
-                permissionList = (List) sitePermissionsMap.get(groupName);
+                permissionList = sitePermissionsMap.get(groupName);
             }
         }
         if ("toolbars".equals(groupName)) {
             // build toolbars permission list based on the current site toolbars
             List<Toolbar> toolbars = ServicesRegistry.getInstance().getJahiaToolbarService().getToolbars();
-            permissionList = new ArrayList(toolbars.size());
+            permissionList = new ArrayList<String>(toolbars.size());
             for (Toolbar toolbar : toolbars) {
                 permissionList.add(ManageSitePermissions.SITE_PERMISSIONS_PREFIX + "*." + toolbar.getVisibility().getSiteActionPermission());
             }
 
         }
         if (permissionList == null) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
-        List result = new ArrayList();
-        Iterator permissionNameIter = permissionList.iterator();
+        List<JahiaAclName> result = new ArrayList<JahiaAclName>();
+        Iterator<String> permissionNameIter = permissionList.iterator();
         while (permissionNameIter.hasNext()) {
             String permissionName = (String) permissionNameIter.next();
             permissionName = JahiaTools.replacePattern(permissionName, "*", Integer.toString(siteID));
@@ -666,22 +666,22 @@ public class JahiaACLManagerService extends JahiaService {
      *                  "administration"
      * @return a List of JahiaAclName objects.
      */
-    public List getServerPermissionsGroup(String groupName) {
+    public List<JahiaAclName> getServerPermissionsGroup(String groupName) {
         if (groupName == null) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
         if (serverPermissionsMap == null) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
         if (serverPermissionsMap.size() == 0) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
-        List permissionList = (List) serverPermissionsMap.get(groupName);
+        List<String> permissionList = serverPermissionsMap.get(groupName);
         if (permissionList == null) {
-            return new ArrayList();
+            return new ArrayList<JahiaAclName>();
         }
-        List result = new ArrayList();
-        Iterator permissionNameIter = permissionList.iterator();
+        List<JahiaAclName> result = new ArrayList<JahiaAclName>();
+        Iterator<String> permissionNameIter = permissionList.iterator();
         while (permissionNameIter.hasNext()) {
             String permissionName = (String) permissionNameIter.next();
             JahiaAclName jahiaAclName = nameManager.findJahiaAclNameByName(permissionName);
@@ -714,7 +714,7 @@ public class JahiaACLManagerService extends JahiaService {
         final List<SiteLanguageSettings> siteLangs = jParams.getSite().getLanguageSettings(true);
         boolean result = true;
         for (Iterator<SiteLanguageSettings> it = siteLangs.iterator(); it.hasNext();) {
-            final String languageCode = ((SiteLanguageSettings) it.next()).getCode();
+            final String languageCode = it.next().getCode();
             result = result && getSiteActionPermission("engines.languages." +
                     languageCode,
                     jParams.getUser(),

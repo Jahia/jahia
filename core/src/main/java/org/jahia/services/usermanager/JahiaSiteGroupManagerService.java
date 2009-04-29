@@ -89,7 +89,7 @@ public abstract class JahiaSiteGroupManagerService extends JahiaService {
      *
      * @author Khue Ng
      */
-    public abstract Map getGroups (int siteID) throws JahiaException;
+    public abstract Map<String, String> getGroups (int siteID) throws JahiaException;
 
 
     //--------------------------------------------------------------------------

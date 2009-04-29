@@ -1017,7 +1017,7 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                   fsWriter.setUseCompoundFile(true);
                   fsWriter.optimize();
               } catch ( Throwable t ){
-                  logger.debug(t);
+                  logger.debug(t.getMessage(), t);
               }
            } catch (Throwable t) {
                logger.debug("Error on optimizing the index", t);

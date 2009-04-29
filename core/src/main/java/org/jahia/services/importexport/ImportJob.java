@@ -20,6 +20,7 @@ import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -96,7 +97,7 @@ public class ImportJob extends BackgroundJob {
 
                 if (Boolean.TRUE.equals(jobDataMap.get(PUBLISH_ALL_AT_END)) ) {
                     if (result.getErrors().isEmpty()) {
-                        Class jobClass = PublishAllJob.class;
+                        Class<? extends BackgroundJob> jobClass = PublishAllJob.class;
                         JobDetail publishjobDetail = BackgroundJob.createJahiaJob("ActivatingAll", jobClass, context);
                         JobDataMap publishjobDataMap = publishjobDetail.getJobDataMap();
                         publishjobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, context.getSiteKey());
@@ -113,7 +114,7 @@ public class ImportJob extends BackgroundJob {
 
                         JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
                                 .lookupGroup(context.getSiteID(), JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME);
-                        Set members = adminGroup.getRecursiveUserMembers();
+                        Set<Principal> members = adminGroup.getRecursiveUserMembers();
 
                         String recipientEmail = mailService.defaultRecipient();
                         if ( members.iterator().hasNext() ){
@@ -147,7 +148,7 @@ public class ImportJob extends BackgroundJob {
         try {
             if (imported != null) {
                 LockKey lock = LockKey.composeLockKey(LockKey.IMPORT_ACTION + "_" + imported.getObjectKey().getType(), imported.getID());
-                ((Set)jobDataMap.get(JOB_LOCKS)).add(lock);
+                ((Set<LockKey>)jobDataMap.get(JOB_LOCKS)).add(lock);
             }
         } catch (Exception e) {
         }

@@ -16,7 +16,6 @@
  */
 package org.jahia.services.preferences.generic;
 
-import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRNodeDecorator;
 

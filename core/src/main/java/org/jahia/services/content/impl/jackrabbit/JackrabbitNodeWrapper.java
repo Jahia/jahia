@@ -25,14 +25,12 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Created by IntelliJ IDEA.

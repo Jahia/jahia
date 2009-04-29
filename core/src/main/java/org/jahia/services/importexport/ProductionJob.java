@@ -35,7 +35,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -134,7 +133,7 @@ public class ProductionJob extends BackgroundJob {
         }
     }
 
-    private void failed(TreeOperationResult result, Throwable e, String targetName, String sitename, String msgKey, Map jobDataMap) throws JobExecutionException {
+    private void failed(TreeOperationResult result, Throwable e, String targetName, String sitename, String msgKey, JobDataMap jobDataMap) throws JobExecutionException {
         result.setStatus(TreeOperationResult.FAILED_OPERATION_STATUS);
         result.appendError(new NodeOperationResult(null,null,null,new EngineMessage(msgKey, new Object[0])));
         jobDataMap.put(RESULT, result);

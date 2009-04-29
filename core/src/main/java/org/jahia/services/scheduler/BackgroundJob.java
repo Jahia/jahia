@@ -92,7 +92,7 @@ public abstract class BackgroundJob implements StatefulJob {
     public static final String STATUS_ABORTED = "aborted";
     public static final String STATUS_INTERRUPTED = "interrupted";
 
-    public static JobDetail createJahiaJob(String desc, Class jobClass, ProcessingContext jParams) {
+    public static JobDetail createJahiaJob(String desc, Class<? extends BackgroundJob> jobClass, ProcessingContext jParams) {
         long now = System.currentTimeMillis();
         // jobdetail is non-volatile,durable,non-recoverable
         JobDetail jobDetail = new JobDetail("BackgroundJob-" + idGen.nextIdentifier(),
@@ -121,7 +121,7 @@ public abstract class BackgroundJob implements StatefulJob {
         return jobDetail;
     }
 
-    public static String getGroupName(Class c) {
+    public static String getGroupName(Class<? extends BackgroundJob> c) {
         String name = c.getName();
         return name.substring(name.lastIndexOf('.')+1);
     }
@@ -265,10 +265,10 @@ public abstract class BackgroundJob implements StatefulJob {
 
     private void updateAllLocks(JobDetail jobDetail) {
         LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
-        Set locks = (Set) jobDetail.getJobDataMap().get(JOB_LOCKS);
+        Set<LockKey> locks = (Set<LockKey>) jobDetail.getJobDataMap().get(JOB_LOCKS);
         if (locks != null) {
-            for (Iterator iterator = locks.iterator(); iterator.hasNext();) {
-                LockKey lockKey = (LockKey) iterator.next();
+            for (Iterator<LockKey> iterator = locks.iterator(); iterator.hasNext();) {
+                LockKey lockKey = iterator.next();
                 lockRegistry.setServerId(lockKey, jobDetail.getName());
             }
         }
@@ -276,10 +276,10 @@ public abstract class BackgroundJob implements StatefulJob {
 
     private void releaseAllLocks(ProcessingContext processingContext, JobDetail jobDetail) {
         LockService lockRegistry = ServicesRegistry.getInstance().getLockService();
-        Set locks = (Set) jobDetail.getJobDataMap().get(JOB_LOCKS);
+        Set<LockKey> locks = (Set<LockKey>) jobDetail.getJobDataMap().get(JOB_LOCKS);
         if (locks != null) {
-            for (Iterator iterator = locks.iterator(); iterator.hasNext();) {
-                LockKey lockKey = (LockKey) iterator.next();
+            for (Iterator<LockKey> iterator = locks.iterator(); iterator.hasNext();) {
+                LockKey lockKey = iterator.next();
                 lockRegistry.release(lockKey, processingContext.getUser(),jobDetail.getName());
             }
         }

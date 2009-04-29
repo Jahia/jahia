@@ -19,7 +19,6 @@ package org.jahia.services.importexport;
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import org.apache.axis.encoding.Base64;
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpURL;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -193,10 +192,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         public void update(Observable observable, Object args) {
             synchronized (args) {
-                List files = (List) args;
+                List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
                     JCRNodeWrapper dest = ServicesRegistry.getInstance().getJCRStoreService().getFileNode("/content/imports", JahiaAdminUser.getAdminUser(0));
-                    for (Iterator iterator = files.iterator(); iterator.hasNext();) {
+                    for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
                         try {
                             File file = (File) iterator.next();
                             dest.uploadFile(file.getName(), new FileInputStream(file), Jahia.getStaticServletConfig().getServletContext().getMimeType(file.getName()));
@@ -209,7 +208,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     } catch (RepositoryException e) {
                         logger.error("error", e);
                     }
-                    for (Iterator iterator = files.iterator(); iterator.hasNext();) {
+                    for (Iterator<File> iterator = files.iterator(); iterator.hasNext();) {
                         File file = (File) iterator.next();
                         file.delete();
                     }
@@ -253,9 +252,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         this.exporters = exporters;
     }
 
-    public void exportAll(OutputStream outputStream, Map params, ProcessingContext processingContext) throws JahiaException, IOException, SAXException {
-        Iterator en = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
-        List l = new ArrayList();
+    public void exportAll(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext) throws JahiaException, IOException, SAXException {
+        Iterator<JahiaSite> en = ServicesRegistry.getInstance().getJahiaSitesService().getSites();
+        List<JahiaSite> l = new ArrayList<JahiaSite>();
         while (en.hasNext()) {
             JahiaSite jahiaSite = (JahiaSite) en.next();
             l.add(jahiaSite);
@@ -263,7 +262,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportSites(outputStream, params, processingContext, l);
     }
 
-    public void exportSites(OutputStream outputStream, Map params, ProcessingContext processingContext, List sites) throws JahiaException, IOException, SAXException {
+    public void exportSites(OutputStream outputStream, Map<String, Object> params, ProcessingContext processingContext, List<JahiaSite> sites) throws JahiaException, IOException, SAXException {
         ZipOutputStream zout = new ZipOutputStream(outputStream);
 
         ZipEntry anEntry = new ZipEntry("export.properties");
@@ -282,8 +281,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         JahiaSite s = processingContext.getSite();
 
-        for (Iterator iterator = sites.iterator(); iterator.hasNext();) {
-            JahiaSite jahiaSite = (JahiaSite) iterator.next();
+        for (Iterator<JahiaSite> iterator = sites.iterator(); iterator.hasNext();) {
+            JahiaSite jahiaSite = iterator.next();
             anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
             zout.putNextEntry(anEntry);
             exportSite(jahiaSite, zout, processingContext, params);
@@ -299,7 +298,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportServerPermissions(dw);
 
         // export shared files -->
-        Set files = new HashSet();
+        Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
         files.add(ServicesRegistry.getInstance().getJCRStoreService().getFileNode("/content", processingContext.getUser()));
 
         zout.putNextEntry(new ZipEntry("shared.zip"));
@@ -315,11 +314,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    public void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map params) throws JahiaException, SAXException, IOException {
+    public void exportSite(JahiaSite jahiaSite, OutputStream out, ProcessingContext processingContext, Map<String, Object> params) throws JahiaException, SAXException, IOException {
         ContentPage home = jahiaSite.getHomeContentPage();
-        List locs = jahiaSite.getLanguageSettingsAsLocales(true);
-        Set langs = new HashSet();
-        for (Iterator iterator = locs.iterator(); iterator.hasNext();) {
+        List<Locale> locs = jahiaSite.getLanguageSettingsAsLocales(true);
+        Set<String> langs = new HashSet<String>();
+        for (Iterator<Locale> iterator = locs.iterator(); iterator.hasNext();) {
             Locale locale = (Locale) iterator.next();
             langs.add(locale.toString());
         }
@@ -330,16 +329,16 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exportZip(home, langs, out, processingContext, params);
     }
 
-    public Document exportDocument(ContentObject object, String languageCodes, ProcessingContext jParams, Map params) throws JahiaException, SAXException {
+    public Document exportDocument(ContentObject object, String languageCodes, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException {
         DocumentImpl doc = new DocumentImpl();
         DOMBuilder db = new DOMBuilder(doc, doc);
-        export(object, languageCodes, db, new HashSet(), jParams, params);
+        export(object, languageCodes, db, new HashSet<JCRNodeWrapper>(), jParams, params);
         return doc;
     }
 
-    public void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map params) throws JahiaException, SAXException, IOException {
+    public void exportFile(ContentObject object, String languageCode, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException {
         DataWriter dw = new DataWriter(new OutputStreamWriter(out, "UTF-8"));
-        export(object, languageCode, dw, new HashSet(), jParams, params);
+        export(object, languageCode, dw, new HashSet<JCRNodeWrapper>(), jParams, params);
     }
 
     public void exportCategories(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException {
@@ -349,7 +348,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void exportVersions(OutputStream out, ProcessingContext jParams) throws JahiaException, SAXException, IOException {
 
-        Map m = ServicesRegistry.getInstance().getJahiaPageService().getVersions(jParams.getSiteID(), jParams.getLocale().toString());
+        Map<String, String> m = ServicesRegistry.getInstance().getJahiaPageService().getVersions(jParams.getSiteID(), jParams.getLocale().toString());
         m.putAll(ServicesRegistry.getInstance().getJahiaContainersService().getVersions(jParams.getSiteID()));
         m.putAll(ServicesRegistry.getInstance().getJahiaFieldService().getVersions(jParams.getSiteID(), jParams.getLocale().toString()));
 
@@ -362,7 +361,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         attr.addAttribute(NS_URI, "jahia", "xmlns:jahia", "CDATA", JAHIA_URI);
         ch.startElement(JAHIA_URI, "versions", "jahia:versions", attr);
-        for (Iterator iterator = m.keySet().iterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
             String s = (String) iterator.next();
             String v = (String) m.get(s);
             attr = new AttributesImpl();
@@ -377,13 +376,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    public void exportZip(ContentObject object, Set languageCodes, OutputStream out, ProcessingContext jParams, Map params) throws JahiaException, SAXException, IOException {
+    public void exportZip(ContentObject object, Set<String> languageCodes, OutputStream out, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException, IOException {
         Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
 
         ZipOutputStream zout = new ZipOutputStream(out);
 
-        for (Iterator iterator = languageCodes.iterator(); iterator.hasNext();) {
-            String l = (String) iterator.next();
+        for (Iterator<String> iterator = languageCodes.iterator(); iterator.hasNext();) {
+            String l = iterator.next();
 
             ZipEntry anEntry = new ZipEntry("export_" + l + ".xml");
             zout.putNextEntry(anEntry);
@@ -513,8 +512,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Stack<String> stack = new Stack<String>();
         stack.push("/content");
-        for (Iterator iterator = files.iterator(); iterator.hasNext();) {
-            JCRNodeWrapper file = (JCRNodeWrapper) iterator.next();
+        for (Iterator<JCRNodeWrapper> iterator = files.iterator(); iterator.hasNext();) {
+            JCRNodeWrapper file = iterator.next();
             exportFileInfo(file, ch, stack, prefixes, typesToIgnore);
         }
         while (!stack.isEmpty()) {
@@ -563,9 +562,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     }
 
                     AttributesImpl attrs = new AttributesImpl();
-                    Map props = file.getPropertiesAsString();
+                    Map<String, String> props = file.getPropertiesAsString();
 
-                    Iterator propsIterator = props.keySet().iterator();
+                    Iterator<String> propsIterator = props.keySet().iterator();
                     while (propsIterator.hasNext()) {
                         String key = (String) propsIterator.next();
                         String prefix = null;
@@ -587,8 +586,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     ch.startElement("", encodedName, encodedName, attrs);
                     stack.push(path);
                 }
-                List l = file.getChildren();
-                for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+                List<JCRNodeWrapper> l = file.getChildren();
+                for (Iterator<JCRNodeWrapper> iterator = l.iterator(); iterator.hasNext();) {
                     JCRNodeWrapper c = (JCRNodeWrapper) iterator.next();
                     exportFileInfo(c, ch, stack, prefixes, typesToIgnore);
                 }
@@ -613,39 +612,39 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         if (cntProfile != null) {
             p.setProperty("profileCnt_" + s.getSiteKey(), cntProfile);
         }
-        Iterator it = s.getSettings().keySet().iterator();
+        Iterator<Object> it = s.getSettings().keySet().iterator();
         while (it.hasNext()) {
-            String key = (String) it.next();
+            String key = (String)it.next();
             if (key.startsWith("jahiaGAprofile")) {
-                String jahiaProfileName = (String) s.getSettings().get(key);
+                String jahiaProfileName = (String)s.getSettings().get(key);
                 p.setProperty(key, jahiaProfileName);
-                Iterator it2 = s.getSettings().keySet().iterator();
+                Iterator<Object> it2 = s.getSettings().keySet().iterator();
                 while (it2.hasNext()) {
-                    String gaProp = (String) it2.next();
+                    String gaProp = (String)it2.next();
                     if (gaProp.startsWith(jahiaProfileName)) {
                         if (gaProp.endsWith("gaPassword")) {
                             if (jParams.settings().isGmailPasswordExported()) {
-                                p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
+                                p.setProperty(gaProp, (String)s.getSettings().get(gaProp));
                             } else {
                                 p.setProperty(gaProp, "");
                             }
                         }
-                        p.setProperty(gaProp, (String) s.getSettings().get(gaProp));
+                        p.setProperty(gaProp, (String)s.getSettings().get(gaProp));
                     }
                 }
             }
         }
 
         try {
-            List v = s.getLanguageSettings(true);
-            for (Iterator iterator = v.iterator(); iterator.hasNext();) {
+            List<SiteLanguageSettings> v = s.getLanguageSettings(true);
+            for (Iterator<SiteLanguageSettings> iterator = v.iterator(); iterator.hasNext();) {
                 SiteLanguageSettings sls = (SiteLanguageSettings) iterator.next();
                 p.setProperty("language." + sls.getCode() + ".activated", "" + sls.isActivated());
                 p.setProperty("language." + sls.getCode() + ".mandatory", "" + sls.isMandatory());
                 p.setProperty("language." + sls.getCode() + ".rank", "" + sls.getRank());
             }
-            List l = s.getLanguageMappings();
-            for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+            List<SiteLanguageMapping> l = s.getLanguageMappings();
+            for (Iterator<SiteLanguageMapping> iterator = l.iterator(); iterator.hasNext();) {
                 SiteLanguageMapping slm = (SiteLanguageMapping) iterator.next();
                 p.setProperty("languageMapping." + slm.getFromLanguageCode(), slm.getToLanguageCode());
             }
@@ -654,8 +653,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Properties settings = s.getSettings();
 
-        for (Iterator iterator = settings.keySet().iterator(); iterator.hasNext();) {
-            String s1 = (String) iterator.next();
+        for (Iterator<Object> iterator = settings.keySet().iterator(); iterator.hasNext();) {
+            String s1 = (String)iterator.next();
             if (JahiaSite.PROPERTY_ENFORCE_PASSWORD_POLICY.equals(s1)
                     || ThemeValve.THEME_ATTRIBUTE_NAME.equals(s1)
                     || s1.startsWith("prod_") || s1.startsWith("html_")
@@ -705,7 +704,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    public void export(ContentObject object, String languageCode, ContentHandler h, Set files, ProcessingContext jParams, Map params) throws JahiaException, SAXException {
+    public void export(ContentObject object, String languageCode, ContentHandler h, Set<JCRNodeWrapper> files, ProcessingContext jParams, Map<String, Object> params) throws JahiaException, SAXException {
         String format = (String) params.get(EXPORT_FORMAT);
         if (format == null) {
             format = LEGACY_EXPORTER;
@@ -713,7 +712,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         exporters.get(format).export(object, languageCode, h, files, jParams, params);
     }
 
-    public void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set files) throws JahiaException {
+    public void getFilesForField(ContentObject object, ProcessingContext jParams, String language, EntryLoadRequest loadRequest, Set<JCRNodeWrapper> files) throws JahiaException {
         exporters.get(LEGACY_EXPORTER).getFilesForField(object, jParams, language, loadRequest, files);
     }
 
@@ -733,8 +732,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public ContentObject importFile(ContentObject parent, final ProcessingContext jParams, File file, boolean setUuid, List<ImportAction> actions, ExtendedImportResult result) throws IOException {
         CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler(jParams);
         UsersImportHandler usersImportHandler = new UsersImportHandler(jParams.getSite());
-        List catProps = null;
-        List userProps = null;
+
+        List<String[]> catProps = null;        
+        List<String[]> userProps = null;        
 
         Map<String, Integer> sizes = new HashMap<String, Integer>();
         List<String> fileList = new ArrayList<String>();
@@ -835,14 +835,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 Properties p = new Properties();
                 p.load(zis);
                 zis.closeEntry();
-                Set keys = p.keySet();
+                Set<Object> keys = p.keySet();
 
-                Map m = new HashMap();
-                Set old = new HashSet();
+                Map<String, SiteLanguageSettings> m = new HashMap<String, SiteLanguageSettings>();
+                Set<String> old = new HashSet<String>();
 
                 try {
-                    List languageSettings = site.getLanguageSettings(false);
-                    for (Iterator iterator = languageSettings.iterator(); iterator.hasNext();) {
+                    List<SiteLanguageSettings> languageSettings = site.getLanguageSettings(false);
+                    for (Iterator<SiteLanguageSettings> iterator = languageSettings.iterator(); iterator.hasNext();) {
                         SiteLanguageSettings setting = (SiteLanguageSettings) iterator.next();
                         m.put(setting.getCode(), setting);
                         old.add(setting.getCode());
@@ -852,7 +852,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 boolean isMultiLang = LicenseActionChecker.isAuthorizedByLicense("org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages", 0);
                 boolean siteSettings = false;
-                for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
+                for (Iterator<Object> iterator = keys.iterator(); iterator.hasNext();) {
                     String property = (String) iterator.next();
                     String value = p.getProperty(property);
                     StringTokenizer st = new StringTokenizer(property, ".");
@@ -879,7 +879,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 continue;
                             }
                         } else {
-                            set = (SiteLanguageSettings) m.get(lang);
+                            set = m.get(lang);
                         }
                         if ("rank".equals(t)) {
                             set.setRank(Integer.parseInt(value));
@@ -925,9 +925,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
 
                 JahiaSiteLanguageListManager listManager = (JahiaSiteLanguageListManager) SpringContextSingleton.getInstance().getContext().getBean(JahiaSiteLanguageListManager.class.getName());
-                for (Iterator iterator = m.keySet().iterator(); iterator.hasNext();) {
-                    String code = (String) iterator.next();
-                    SiteLanguageSettings set = (SiteLanguageSettings) m.get(code);
+                for (Iterator<String> iterator = m.keySet().iterator(); iterator.hasNext();) {
+                    String code = iterator.next();
+                    SiteLanguageSettings set = m.get(code);
                     if (old.contains(code)) {
                         listManager.updateSiteLanguageSettings(set);
                     } else {
@@ -1155,8 +1155,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         AttributesImpl attr = new AttributesImpl();
         attr.addAttribute(JAHIA_URI, "key", "jahia:key", CDATA, c.getKey());
         ((JahiaLegacyExporter) exporters.get(LEGACY_EXPORTER)).exportAcl(c.getACL(), "acl", attr, false, false);
-        Map titles = categoryService.getTitlesForCategory(c);
-        for (Iterator iterator = titles.keySet().iterator(); iterator.hasNext();) {
+        Map<String, String> titles = categoryService.getTitlesForCategory(c);
+        for (Iterator<String> iterator = titles.keySet().iterator(); iterator.hasNext();) {
             String lang = (String) iterator.next();
             String value = (String) titles.get(lang);
             if (value != null) {
@@ -1168,7 +1168,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         ch.startElement(JAHIA_URI, "category", "jahia:category", attr);
 
-        for (Iterator iterator = p.keySet().iterator(); iterator.hasNext();) {
+        for (Iterator<Object> iterator = p.keySet().iterator(); iterator.hasNext();) {
             String k = (String) iterator.next();
             String property = p.getProperty(k);
             if (XMLChar.isValidNCName(k) && property != null) {
@@ -1192,8 +1192,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        List children = c.getChildCategories(user);
-        for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+        List<Category> children = c.getChildCategories(user);
+        for (Iterator<Category> iterator = children.iterator(); iterator.hasNext();) {
             Category child = (Category) iterator.next();
             exportCategories(ch, child, user);
         }
@@ -1215,14 +1215,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         ch.startElement(JAHIA_URI, "users", "jahia:users", attr);
 
-        List l = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserList("jahia_db");
-        for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+        List<String> l = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserList("jahia_db");
+        for (Iterator<String> iterator = l.iterator(); iterator.hasNext();) {
             String userkey = (String) iterator.next();
             JahiaDBUser jahiaUser = (JahiaDBUser) userManagerService.lookupUserByKey(userkey);
             if (JahiaUserManagerService.isNotGuest(jahiaUser)) {
                 Properties p = jahiaUser.getUserProperties().getProperties();
                 attr = new AttributesImpl();
-                for (Iterator iterator1 = p.keySet().iterator(); iterator1.hasNext();) {
+                for (Iterator<Object> iterator1 = p.keySet().iterator(); iterator1.hasNext();) {
                     String k = (String) iterator1.next();
                     if (k.equals("user_homepage")) {
                         try {
@@ -1260,14 +1260,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         ch.startElement(JAHIA_URI, "users", "jahia:users", attr);
 
-        List l = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMembers(site.getID());
-        for (Iterator iterator = l.iterator(); iterator.hasNext();) {
+        List<Principal> l = ServicesRegistry.getInstance().getJahiaSiteUserManagerService().getMembers(site.getID());
+        for (Iterator<Principal> iterator = l.iterator(); iterator.hasNext();) {
             JahiaDBUser jahiaUser = (JahiaDBUser) iterator.next();
             jahiaUser = (JahiaDBUser) userManagerService.lookupUserByKey(jahiaUser.getUserKey());
             if (JahiaUserManagerService.isNotGuest(jahiaUser)) {
                 Properties p = jahiaUser.getUserProperties().getProperties();
                 attr = new AttributesImpl();
-                for (Iterator iterator1 = p.keySet().iterator(); iterator1.hasNext();) {
+                for (Iterator<Object> iterator1 = p.keySet().iterator(); iterator1.hasNext();) {
                     String k = (String) iterator1.next();
                     if (k.equals("user_homepage")) {
                         try {
@@ -1290,15 +1290,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 ch.endElement(JAHIA_URI, "user", "jahia:user");
             }
         }
-        Collection c = ServicesRegistry.getInstance().getJahiaSiteGroupManagerService().getGroups(site.getID()).values();
-        for (Iterator iterator = c.iterator(); iterator.hasNext();) {
+        Collection<String> c = ServicesRegistry.getInstance().getJahiaSiteGroupManagerService().getGroups(site.getID()).values();
+        for (Iterator<String> iterator = c.iterator(); iterator.hasNext();) {
             String n = (String) iterator.next();
             JahiaGroup g = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(site.getID(), n);
             if (g.getSiteID() != 0 && !g.getGroupname().equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
                     !g.getGroupname().equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
                 Properties p = g.getProperties();
                 attr = new AttributesImpl();
-                for (Iterator iterator1 = p.keySet().iterator(); iterator1.hasNext();) {
+                for (Iterator<Object> iterator1 = p.keySet().iterator(); iterator1.hasNext();) {
                     String k = (String) iterator1.next();
                     if (k.equals("group_homepage")) {
                         try {
@@ -1318,9 +1318,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 attr.addAttribute(JAHIA_URI, "name", "jahia:name", CDATA, g.getGroupname());
                 ch.startElement(JAHIA_URI, "group", "jahia:group", attr);
 
-                Iterator en = new EnumerationIterator(g.members());
-                while (en.hasNext()) {
-                    Principal principal = (Principal) en.next();
+                Enumeration<Principal> en = g.members();
+                while (en.hasMoreElements()) {
+                    Principal principal = (Principal) en.nextElement();
                     attr = new AttributesImpl();
                     if (principal instanceof JahiaUser) {
                         attr.addAttribute(JAHIA_URI, "name", "jahia:name", CDATA, ((JahiaUser) principal).getUsername());
@@ -1358,9 +1358,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         ch.startElement(JAHIA_URI, nodeName + "s", "jahia:" + nodeName + "s", attr);
 
-        List list = ServicesRegistry.getInstance().getJahiaACLManagerService().getAclNamesStartingWith(prefix);
+        List<JahiaAclName> list = ServicesRegistry.getInstance().getJahiaACLManagerService().getAclNamesStartingWith(prefix);
         JahiaSitesService siteService = ServicesRegistry.getInstance().getJahiaSitesService();
-        for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+        for (Iterator<JahiaAclName> iterator = list.iterator(); iterator.hasNext();) {
             attr = new AttributesImpl();
             JahiaAclName jahiaAclName = (JahiaAclName) iterator.next();
 
@@ -1369,8 +1369,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             String perms = "";
             JahiaAcl acl = jahiaAclName.getAcl();
-            Collection entries = acl.getEntries();
-            for (Iterator iterator1 = entries.iterator(); iterator1.hasNext();) {
+            Collection<JahiaAclEntry> entries = acl.getEntries();
+            for (Iterator<JahiaAclEntry> iterator1 = entries.iterator(); iterator1.hasNext();) {
                 JahiaAclEntry ace = (JahiaAclEntry) iterator1.next();
                 if (ace.getPermission(JahiaBaseACL.READ_RIGHTS) == JahiaAclEntry.ACL_YES) {
                     if (ace.getComp_id().getType().intValue() == 1) {
@@ -1430,7 +1430,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         handleImport(is, new FilesAclImportHandler(jParams));
     }
 
-    private List importCategoriesAndGetUuidProps(InputStream is, CategoriesImportHandler importHandler) {
+    private List<String[]> importCategoriesAndGetUuidProps(InputStream is, CategoriesImportHandler importHandler) {
         handleImport(is, importHandler);
         return importHandler.getUuidProps();
     }
@@ -1439,7 +1439,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         importCategoriesAndGetUuidProps(is, new CategoriesImportHandler(jParams));
     }
 
-    private List importUsersAndGetUuidProps(InputStream is, UsersImportHandler importHandler) {
+    private List<String[]> importUsersAndGetUuidProps(InputStream is, UsersImportHandler importHandler) {
         handleImport(is, importHandler);
         return importHandler.getUuidProps();
     }
@@ -1482,23 +1482,23 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
-    public ContentObject copy(ContentObject source, ContentObject parentDest, Set languages, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result) {
+    public ContentObject copy(ContentObject source, ContentObject parentDest, Set<String> languages, ProcessingContext jParams, EntryLoadRequest loadRequest, String link, List<ImportAction> actions, ExtendedImportResult result) {
         JahiaUser oldUser = jParams.getUser();
         try {
             JahiaSite destSite = sitesService.getSite(parentDest.getSiteID());
             JahiaUser user = JahiaAdminUser.getAdminUser(destSite.getID());
             jParams.setTheUser(user);
 
-            Set files = new HashSet();
+            Set<JCRNodeWrapper> files = new HashSet<JCRNodeWrapper>();
             Map<String, String> pathMapping = new HashMap<String, String>();
             if (source.getSiteID() != parentDest.getSiteID()) {
                 logger.debug("Copying files from site " + source.getSiteID() + " to " + parentDest.getSiteID());
-                for (Iterator iterator = languages.iterator(); iterator.hasNext();) {
-                    String lang = (String) iterator.next();
+                for (Iterator<String> iterator = languages.iterator(); iterator.hasNext();) {
+                    String lang = iterator.next();
                     exporters.get(LEGACY_EXPORTER).getFiles(source, lang, files, jParams, null, loadRequest);
                 }
-                for (Iterator fiterator = files.iterator(); fiterator.hasNext();) {
-                    JCRNodeWrapper file = (JCRNodeWrapper) fiterator.next();
+                for (Iterator<JCRNodeWrapper> fiterator = files.iterator(); fiterator.hasNext();) {
+                    JCRNodeWrapper file = fiterator.next();
                     //if (file.isValid()) {
                     InputStream inputStream = file.getFileContent().downloadFile();
                     String type = file.getFileContent().getContentType();
@@ -1507,10 +1507,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
 
-            Iterator iterator = languages.iterator();
-            String lang = (String) iterator.next();
+            Iterator<String> iterator = languages.iterator();
+            String lang = iterator.next();
 
-            Map params = new HashMap();
+            Map<String, Object> params = new HashMap<String, Object>();
             boolean copyReadAccessOnly = false;
             params.put(LINK, link);
             params.put(TO, loadRequest);
@@ -1525,18 +1525,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             handler.setCopyReadAccessOnly(copyReadAccessOnly);
             handler.setRestoreAcl(false);
             handler.setPathMapping(pathMapping);
-            export(source, lang, handler, new HashSet(), jParams, params);
+            export(source, lang, handler, new HashSet<JCRNodeWrapper>(), jParams, params);
             ContentObject main = handler.getLastObject();
             String topAcl = handler.getTopAcl();
             for (; iterator.hasNext();) {
-                String nextLang = (String) iterator.next();
+                String nextLang = iterator.next();
                 handler = new ImportHandler(main, jParams, nextLang, actions, result);
                 handler.setUpdateOnly(true);
                 handler.setCopyUuid(true);
                 handler.setCopyReadAccessOnly(copyReadAccessOnly);
                 handler.setRestoreAcl(false);
                 handler.setPathMapping(pathMapping);
-                export(source, nextLang, handler, new HashSet(), jParams, params);
+                export(source, nextLang, handler, new HashSet<JCRNodeWrapper>(), jParams, params);
             }
             handler.restoreAcl(topAcl, main);
             if (StructuralRelationship.ACTIVATION_PICKER_LINK.equals(link)) {
@@ -1735,9 +1735,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        SortedSet<WebdavResource> set = new TreeSet<WebdavResource>(new Comparator() {
-            public int compare(Object o1, Object o2) {
-                return (int) (((WebdavResource) o1).getGetLastModified() - ((WebdavResource) o2).getGetLastModified());
+        SortedSet<WebdavResource> set = new TreeSet<WebdavResource>(new Comparator<WebdavResource>() {
+            public int compare(WebdavResource o1, WebdavResource o2) {
+                return (int) (o1.getGetLastModified() - o2.getGetLastModified());
             }
         });
         WebdavResource[] resources = folderRes.listWebdavResources();
@@ -1768,7 +1768,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         EntryLoadRequest toLoadRequest = new EntryLoadRequest(EntryLoadRequest.VERSIONED_WORKFLOW_STATE, new Long(System.currentTimeMillis() / 1000).intValue(), languageSettingsAsLocales);
         toLoadRequest.setWithDeleted(true);
-        Map params = new HashMap();
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put(TO, toLoadRequest);
         params.put(VIEW_VERSION, Boolean.TRUE);
         params.put(INCLUDE_FILES, Boolean.TRUE);
@@ -1793,9 +1793,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 //        }
 
 
-        Map froms = new HashMap();
-        for (Iterator iterator = languageSettingsAsLocales.iterator(); iterator.hasNext();) {
-            Locale locale = (Locale) iterator.next();
+        Map<String, Map<String, EntryLoadRequest>> froms = new HashMap<String, Map<String, EntryLoadRequest>>();
+        for (Iterator<Locale> iterator = languageSettingsAsLocales.iterator(); iterator.hasNext();) {
+            Locale locale = iterator.next();
             logger.info("Getting " + targetName + " status for " + locale);
 //            URL exportUrl = new URL(targetName + "/" + contextname + servletname + "/engineName/export/site/" + sitename + "/op/edit/lang/" + locale + "/export.xml?exporttype=staging&exportformat=xml&viewVersion=true&viewMetadata=false&viewContent=false&viewAcl=false&enforceLanguage=true&lock="+name);
             URL exportUrl = new URL(targetName + "/engineName/export/site/" + sitename + "/op/edit/lang/" + locale + "/export.xml?exportformat=versions&enforceLanguage=true&lock=" + name);
@@ -1812,7 +1812,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 VersionNumberHandler handler = new VersionNumberHandler(languageSettingsAsLocales);
                 parser.parse(st, handler);
-                Map uuidToVersions = handler.getUuidToVersions();
+                Map<String, EntryLoadRequest> uuidToVersions = handler.getUuidToVersions();
                 if (uuidToVersions.isEmpty()) {
                     // first call
                     ContentObjectEntryState es = (ContentObjectEntryState) homeContentPage.getEntryStates().first();
@@ -1884,10 +1884,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         mailService.sendTemplateMessage(adminMessageMimePreparator);
     }
 
-    private Set getSiteLanguages(JahiaSite site) throws JahiaException {
-        Set languages = new HashSet();
-        List v = site.getLanguageSettings(true);
-        for (Iterator iterator = v.iterator(); iterator.hasNext();) {
+    private Set<String> getSiteLanguages(JahiaSite site) throws JahiaException {
+        Set<String> languages = new HashSet<String>();
+        List<SiteLanguageSettings> v = site.getLanguageSettings(true);
+        for (Iterator<SiteLanguageSettings> iterator = v.iterator(); iterator.hasNext();) {
             SiteLanguageSettings sls = (SiteLanguageSettings) iterator.next();
             languages.add(sls.getCode());
         }
@@ -1895,7 +1895,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return languages;
     }
 
-    public void setExcludedResources(final List resources) {
+    public void setExcludedResources(final List<String> resources) {
         excludedResourcesFilter = new ExclusionWildcardFilter(resources);
     }
 
@@ -1911,10 +1911,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         this.overwriteResourcesByImport = overwrtiteResourcesByImport;
     }
 
-    private List importUsers(File file, UsersImportHandler usersImportHandler)
+    private List<String[]> importUsers(File file, UsersImportHandler usersImportHandler)
             throws IOException {
         NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file));
-        List userProps = null;
+        List<String[]>userProps = null;
         while (true) {
             ZipEntry zipentry = zis.getNextEntry();
             if (zipentry == null)
@@ -1935,12 +1935,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return userProps;
     }
 
-    public List importUsers(File file)
+    public List<String[]> importUsers(File file)
             throws IOException {
         return importUsersAndGetUuidProps(new FileInputStream(file), new UsersImportHandler());
     }
 
-    public List importUsers(File file, JahiaSite site)
+    public List<String[]> importUsers(File file, JahiaSite site)
             throws IOException {
         return importUsers(file, new UsersImportHandler(site));
     }

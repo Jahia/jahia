@@ -120,16 +120,4 @@
     <%@ include file="eventsDisplay.jspf" %>
 </template:containerList>
 
-<query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/>
-<c:if test='${!query:isFacetApplied(defaultCategoryFacet, appliedFacets)}'>
-    <br/>Categories:<br/>
-    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="defaultCategoryFacet" facetValueBeanId="categoryFacetValue" filterQueryParamName="filter"/>
-</c:if>
-<c:if test='${!query:isFacetApplied(eventTypeFacet, appliedFacets)}'>
-    <br/>Event types:<br/>
-    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventTypeFacet" filterQueryParamName="filter"/>
-</c:if>
-<c:if test='${!query:isFacetApplied(eventDateFacet, appliedFacets)}'>
-    <br/>Next 4 months:<br/>
-    <query:getHitsPerFacetValue mainQueryBeanId="eventsQuery" facetBeanId="eventDateFacet" facetValueBeanId="eventDateFacetValue" filterQueryParamName="filter"/>
-</c:if>    
+

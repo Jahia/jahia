@@ -606,26 +606,24 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             if (job instanceof JahiaDeleteIndexJob) {
                                 deleteIndexForSite(job.getSiteId(), user, false);
                             } else {
-                                job.prepareBatchIndexation(toRemove, toAdd,
-                                        user);
+                                SearchHandler searchHandler = getSearchHandler(job.getSiteId());
+                                if (searchHandler != null) {
+                                    job.prepareBatchIndexation(toRemove, toAdd, user);
 
-                                List<RemovableDocument> removeDocsList = sitesToRemove
-                                        .get(job.getSiteId());
-                                if (removeDocsList == null) {
-                                    removeDocsList = new ArrayList<RemovableDocument>();
-                                    sitesToRemove.put(job.getSiteId(),
-                                            removeDocsList);
-                                }
-                                removeDocsList.addAll(toRemove);
+                                    List<RemovableDocument> removeDocsList = sitesToRemove.get(job.getSiteId());
+                                    if (removeDocsList == null) {
+                                        removeDocsList = new ArrayList<RemovableDocument>();
+                                        sitesToRemove.put(job.getSiteId(), removeDocsList);
+                                    }
+                                    removeDocsList.addAll(toRemove);
 
-                                List<IndexableDocument> addDocsList = sitesToAdd
-                                        .get(job.getSiteId());
-                                if (addDocsList == null) {
-                                    addDocsList = new ArrayList<IndexableDocument>();
-                                    sitesToAdd
-                                            .put(job.getSiteId(), addDocsList);
+                                    List<IndexableDocument> addDocsList = sitesToAdd.get(job.getSiteId());
+                                    if (addDocsList == null) {
+                                        addDocsList = new ArrayList<IndexableDocument>();
+                                        sitesToAdd.put(job.getSiteId(), addDocsList);
+                                    }
+                                    addDocsList.addAll(toAdd);
                                 }
-                                addDocsList.addAll(toAdd);
                             }
                         }
                     }
@@ -898,7 +896,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 if ( searchHandler == null ){
                     synchronized(loadedSiteSearchHandlers){
                         boolean alreadyLoaded = loadedSiteSearchHandlers.contains(new Integer(siteId));
-                        if ( !alreadyLoaded ){
+                        if ( !alreadyLoaded && !shutdownables.containsKey(site.getSiteKey())){
                             this.createSearchHandler(siteId);
                             loadedSiteSearchHandlers.add(new Integer(siteId));
                             searchHandler = searchManager.getSearchHandler(site.getSiteKey());
@@ -1308,10 +1306,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
         }
 
         try {
-            ContentObject contentObject = null;
-            if (ctx != null){
-                contentObject = ctx.getContentObject();
-            }
+            ContentObject contentObject = ctx != null ? ctx.getContentObject() : null;
             if (contentObject == null){
                 contentObject = ContentObject.getContentObjectInstance(objectKey);
                 if (ctx!=null){
@@ -1348,13 +1343,10 @@ public class JahiaSearchBaseService extends JahiaSearchService
     public void indexContentObject(ContentObject contentObject,
                                    JahiaUser user,
                                    boolean notifyCluster, boolean allowQueuing, RuleEvaluationContext ctx) {
-        if (this.isDisabled()) {
+        if (this.isDisabled() || contentObject == null) {
             return;
         }
 
-        if (contentObject == null) {
-            return;
-        }
         if (contentObject instanceof ContentContainer) {
             indexContainer(contentObject.getID(), user, notifyCluster, allowQueuing,ctx);
         } else if (contentObject instanceof ContentPage) {
@@ -1468,12 +1460,15 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 if (! this.isLocalIndexing() ){
                     return;
                 }
-                indJob = new JahiaContainerIndexingJob(ctnId, System.currentTimeMillis());
-                List<IndexableDocument> toAdd = new ArrayList<IndexableDocument>();
-                List<RemovableDocument> toRemove = new ArrayList<RemovableDocument>();
-                indJob.prepareBatchIndexation(toRemove,toAdd,user);
-                JahiaSite site = sitesService.getSite(contentContainer.getSiteID());
-                this.getSearchHandler(site.getID()).batchIndexing(toRemove,toAdd);
+                SearchHandler sh = this.getSearchHandler(contentContainer.getSiteID());
+                if (sh != null) {
+                    indJob = new JahiaContainerIndexingJob(ctnId, System.currentTimeMillis());
+                    List<IndexableDocument> toAdd = new ArrayList<IndexableDocument>();
+                    List<RemovableDocument> toRemove = new ArrayList<RemovableDocument>();
+                    indJob.prepareBatchIndexation(toRemove, toAdd, user);
+
+                    sh.batchIndexing(toRemove, toAdd);
+                }
             } else {
                 this.addIndexingJob(indJob,ctx);
             }
@@ -1602,11 +1597,11 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 if (! this.isLocalIndexing() ){
                     return;
                 }
-                JahiaSite site = sitesService.getSite(contentPage.getSiteID());
-                List<IndexableDocument> docs = getIndexableDocumentsForPage(pageId,user);
-                for (IndexableDocument doc : docs){
-                    this.getSearchHandler(site.getID())
-                            .addDocument(doc);
+                SearchHandler sh = this.getSearchHandler(contentPage.getSiteID());
+                if (sh != null) {
+                    for (IndexableDocument doc : getIndexableDocumentsForPage(pageId, user)) {
+                        sh.addDocument(doc);
+                    }
                 }
             } else {
                 this.addIndexingJob(indJob,ctx);
@@ -1735,11 +1730,11 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 if (! this.isLocalIndexing() ){
                     return;
                 }
-                JahiaSite site = sitesService.getSite(contentField.getSiteID());
-                List<IndexableDocument> docs = getIndexableDocumentsForField(fieldID,user,false);
-                for (IndexableDocument doc : docs ){
-                    this.getSearchHandler(site.getID())
-                            .addDocument(doc);
+                SearchHandler sh = this.getSearchHandler(contentField.getSiteID());
+                if (sh != null) {
+                    for (IndexableDocument doc : getIndexableDocumentsForField(fieldID, user, false)) {
+                        sh.addDocument(doc);
+                    }
                 }
             } else {
                 this.addIndexingJob(indJob,ctx);
@@ -1829,19 +1824,18 @@ public class JahiaSearchBaseService extends JahiaSearchService
      */
     protected void indexContainer(JahiaContainer container,
                                   ProcessingContext context) {
-        if (this.isDisabled()) {
+        if (this.isDisabled() || container == null) {
             return;
         }
 
-        if (container == null)
+        SearchHandler sh = this.getSearchHandler(container.getSiteID());        
+        if (sh == null)
             return;
-        List<IndexableDocument> newDocs = null;
         try {
-            newDocs = getIndexableDocuments(container, context);
+            List<IndexableDocument> newDocs = getIndexableDocuments(container, context);
             if (newDocs != null) {
                 for (IndexableDocument doc : newDocs) {
-                    this.getSearchHandler(container.getSiteID()).addDocument(
-                            doc);
+                    sh.addDocument(doc);
                 }
             }
         } catch (Exception t) {
@@ -1885,17 +1879,18 @@ public class JahiaSearchBaseService extends JahiaSearchService
     protected void indexPage(JahiaPage page,
                              EntryLoadRequest loadRequest,
                              ProcessingContext context) {
-        if (this.isDisabled()) {
+        if (this.isDisabled() || page == null) {
             return;
         }
-
-        if (page == null)
+        SearchHandler sh = this.getSearchHandler(page.getJahiaID());
+        if (sh == null) {
             return;
+        }
         try {
             List<IndexableDocument> docs = getIndexableDocuments(page,loadRequest,context);
             if (docs != null) {
                 for (IndexableDocument doc : docs) {
-                    this.getSearchHandler(page.getJahiaID()).addDocument(doc);
+                    sh.addDocument(doc);
                 }
             }
         } catch (Exception t) {
@@ -3424,7 +3419,9 @@ public class JahiaSearchBaseService extends JahiaSearchService
                 triggerImmediateExecutionOnAllNodes(job);
             } else {
                 SearchHandler searchHandler = this.getSearchHandler(siteId);
-                searchHandler.shutdown();
+                if (searchHandler != null) {
+                    searchHandler.shutdown();
+                }
                 loadedSiteSearchHandlers.remove(new Integer(siteId));
                 
                 JahiaSite site = sitesService.getSite(siteId);

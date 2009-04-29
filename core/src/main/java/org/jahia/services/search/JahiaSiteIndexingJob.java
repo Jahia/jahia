@@ -406,9 +406,11 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
                 }
             }
 
-            ServicesRegistry.getInstance()
-                .getJahiaSearchService().getSearchHandler(siteId).batchIndexing(remList,addList);
-            this.concurrentJobs.clear();
+            SearchHandler sh = ServicesRegistry.getInstance().getJahiaSearchService().getSearchHandler(siteId);
+            if (sh != null) {
+                sh.batchIndexing(remList, addList);
+                this.concurrentJobs.clear();
+            }
         }
     }
 

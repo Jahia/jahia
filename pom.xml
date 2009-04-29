@@ -124,6 +124,7 @@
                             <mapping>
                                 <tag>DYNASCRIPT_STYLE</tag>
                                 <inc>DYNASCRIPT_STYLE</inc>
+                                <jspf>DYNASCRIPT_STYLE</jspf>
                             </mapping>
                             <useDefaultMapping>true</useDefaultMapping>
                             <properties>

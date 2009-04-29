@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <!DOCTYPE configuration SYSTEM "http://jackrabbit.apache.org/dtd/indexing-configuration-1.0.dtd">
 <configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
 

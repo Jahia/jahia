@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <jahia:page xmlns:jahia="http://www.jahia.org/" xmlns:jcr="http://www.jcp.org/jcr/1.0" jahia:template="TestUnitHome"
             jcr:primaryType="test_templates:home" jahia:title="Welcome to localhost"
             jcr:lastModified="2009-02-11T15:50:32"

@@ -113,8 +113,13 @@
                                 <include>src/**/*.java</include>
                                 <include>src/**/*.tag</include>
                                 <include>src/**/*.jsp</include>
+                                <include>src/**/*.jspf</include>
                                 <include>src/**/*.inc</include>
                             </includes>
+                            <excludes>
+                                <exclude>src/main/java/org/apache/**</exclude>
+                                <exclude>src/main/java/org/compass/**</exclude>
+                            </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <mapping>
                                 <tag>DYNASCRIPT_STYLE</tag>

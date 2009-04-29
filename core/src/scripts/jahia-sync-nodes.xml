@@ -1,3 +1,4 @@
+
 <project name="JahiaCluster" default="sync-nodes" basedir=".">
   <description>
       This script is used to synchronize the contents of two Tomcat installations. This

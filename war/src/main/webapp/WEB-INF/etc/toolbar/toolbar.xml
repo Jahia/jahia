@@ -1,3 +1,4 @@
+
 <toolbars id="org.jahia.toolbars.default">
     <display>
         <toolbar name="switchingmode" ref-type="org.jahia.toolbar.switchingmode" state="top" draggable="false"

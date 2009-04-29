@@ -161,6 +161,7 @@
     <module>templates</module>
     <module>war</module>
     <!--<module>ear</module>-->
+    <module>configwizard-webapp</module>
   </modules>
 
     <distributionManagement>

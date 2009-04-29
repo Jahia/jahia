@@ -1,3 +1,6 @@
+<%@page contentType="text/html; charset=UTF-8"
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
 <%--
 
     
@@ -31,8 +34,7 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%><%@page contentType="text/html; charset=UTF-8"
-%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+--%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <%@page import = "java.util.*"%>

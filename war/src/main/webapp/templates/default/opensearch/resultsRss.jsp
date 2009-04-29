@@ -1,8 +1,7 @@
-<%@ page contentType="application/rss+xml;charset=UTF-8" %><%
-    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0");
-    response.setHeader("Pragma", "No-Cache");
-    response.setDateHeader("Expires", 295075800000L);
-%><%--
+<%@ page contentType="application/rss+xml;charset=UTF-8"
+%><% response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, proxy-revalidate, max-age=0"); response.setHeader("Pragma", "No-Cache"); response.setDateHeader("Expires", 295075800000L); %>
+
+<%--
 
     
     This file is part of Jahia: An integrated WCM, DMS and Portal Solution
@@ -35,5 +34,7 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%><%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" 
+--%>
+
+<%@ taglib prefix="s" uri="http://www.jahia.org/tags/search"
 %><s:results><s:rssFeedView/></s:results>

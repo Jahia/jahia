@@ -1,3 +1,6 @@
+<%@ page language="java"
+%><% request.getSession(true); response.sendRedirect(request.getContextPath() + "/installation"); %>
+
 <%--
 
 
@@ -31,7 +34,4 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%><%@ page language="java" 
-%><% request.getSession(true);
-response.sendRedirect(request.getContextPath() + "/installation");
-%>
+--%>

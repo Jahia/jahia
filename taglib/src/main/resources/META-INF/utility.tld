@@ -269,18 +269,27 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <description>Resolves the Web path to the specified resource considering template set inheritance (the same way,
+            the ${jahia.includes.webPath[]} works).
+        </description>
+        <name>resolvePath</name>
+        <tag-class>org.jahia.taglibs.utility.ResolvePathTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The resource path to be resolved.</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
     <tag-file>
         <description>add declaration of GWT common application resource bundles</description>
         <name>applicationResources</name>
         <path>/META-INF/tags/ajax/applicationresources.tag</path>
     </tag-file>
 
-    <tag-file>
-        <description>Resolves the Web path to the specified resource considering template set inheritance (the same way,
-            the ${jahia.includes.webPath[]} works).
-        </description>
-        <name>resolvePath</name>
-        <path>/META-INF/tags/resolvePath.tag</path>
-    </tag-file>
 
 </taglib>

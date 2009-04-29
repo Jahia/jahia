@@ -1299,6 +1299,8 @@ body {
     display: inline
 }
 
+
+
 #bodywrapper .box p {
     margin: 0;
 }
@@ -1357,6 +1359,10 @@ body {
 #bodywrapper h3.box2-header span {
     padding: 6px;
     display: block;
+}
+
+#bodywrapper .box2 h4 {
+ padding: 10px 12px 0 0;
 }
 
 #bodywrapper .box2-topleft,
@@ -1424,6 +1430,7 @@ body {
     background: #404d6c url( ../img/box2-style1-header.png ) repeat-x left top;
     color: #ffffff;
 }
+
 
 /******************************************************************************
 * Box 3 layout

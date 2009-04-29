@@ -44,6 +44,8 @@ import org.jahia.services.search.lucene.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -199,6 +201,15 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
                 for (int i = 0; i < filterQueries.length; i++ ) {
                    logger.debug("filterQuery " + i + ":" + filterQueries[i]);
                 }   
+            }
+            if (sort != null) {
+                SortField[] sortFields = sort.getSort();
+                if (sortFields != null && sortFields.length > 0) {
+                    logger.debug("Sort: ");
+                    for (SortField sortField : sortFields) {
+                        logger.debug(sortField.toString());
+                    }
+                }
             }
         }    
         
@@ -389,7 +400,11 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
 
     public void notifyIndexUpdate() {
         try {
-            coreSearcher.getSearcher(true, false, null);
+            Future<Object>[] waitSearcher = new Future[]{null};
+            coreSearcher.getSearcher(true, false, waitSearcher);
+            if (waitSearcher[0] != null) {
+                waitSearcher[0].get(3, TimeUnit.SECONDS);
+            }
         } catch (Exception e) {
             logger.warn("Failed to reopen index searcher/reader", e);
         }

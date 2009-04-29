@@ -83,13 +83,6 @@ stretcherToOpen   = 0; %>
                 <p>
                   &nbsp;&nbsp;<fmt:message key="org.jahia.admin.serverpermissions.introduction.label"/>
                 </p>
-                <div class="buttonList" style="text-align:right; padding:10px">
-                    <span class="dex-PushButton">
-                        <span class="first-child">
-                            <a class="ico-ok" href="#ok" onclick="document.jahiaAdmin.submit(); return false;"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
-                        </span>
-                    </span>
-                </div>
                 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="permissions">
                 <c:forEach items="${aclNameList}" var="curAclName" varStatus="status">
                   <tr>

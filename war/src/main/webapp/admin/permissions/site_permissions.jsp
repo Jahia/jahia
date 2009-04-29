@@ -170,13 +170,6 @@
         </li>
     </ul>
 </div>
-<div class="buttonList" style="text-align:right; padding:10px">
-                    <span class="dex-PushButton">
-                        <span class="first-child">
-                          <a class="ico-ok" href="javascript:saveContent();"><fmt:message key="org.jahia.admin.saveChanges.label"/></a>
-                        </span>
-                    </span>
-</div>
 <div style="clear:both">
     <table cellpadding="0" cellspacing="0" border="0" width="100%" class="permissions">
     <c:forEach items="${aclNameList}" var="curAclName" varStatus="status">

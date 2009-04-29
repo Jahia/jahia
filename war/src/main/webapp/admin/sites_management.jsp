@@ -31,7 +31,8 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%><%@include file="/admin/include/header.inc" %>
+--%>
+<%@include file="/admin/include/header.inc" %>
 <%@page import="org.jahia.bin.JahiaAdministration" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.services.pages.ContentPage" %>

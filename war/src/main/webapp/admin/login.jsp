@@ -31,9 +31,10 @@
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
 
---%><%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" 
-%><c:set var="jahiaAdministrationLogin" value="true" 
-/><%@include file="/admin/include/header.inc" %>
+--%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="jahiaAdministrationLogin" value="true" />
+<%@include file="/admin/include/header.inc" %>
 <%@page import="java.net.URLEncoder" %>
 <%
 String  jahiaLoginUsername   = (String) request.getAttribute("jahiaLoginUsername");

@@ -28,7 +28,8 @@
     in accordance with the terms contained in a separate written agreement
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
---%><%@ page import="org.jahia.services.usermanager.JahiaUserManagerProvider" %>
+--%>
+<%@ page import="org.jahia.services.usermanager.JahiaUserManagerProvider" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Iterator" %>

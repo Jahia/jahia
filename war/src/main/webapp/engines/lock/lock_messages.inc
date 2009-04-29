@@ -28,7 +28,8 @@
     in accordance with the terms contained in a separate written agreement
     between you and Jahia Limited. If you are unsure which license is appropriate
     for your use, please contact the sales department at sales@jahia.com.
---%><%@ page import="org.jahia.services.lock.LockKey" %>
+--%>
+<%@ page import="org.jahia.services.lock.LockKey" %>
 <%if (blockingLockKey.getType().startsWith(LockKey.WORKFLOW_ACTION)) {%>
   <fmt:message key="org.jahia.engines.lock.theObject.label"/> <%=blockingLockKey.getName()%> [ID: <b><%=blockingLockKey.getId()%></b>]
   <fmt:message key="org.jahia.engines.lock.lockedByWorkflow.label"/>

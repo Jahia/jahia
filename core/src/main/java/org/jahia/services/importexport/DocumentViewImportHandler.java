@@ -17,6 +17,7 @@
 package org.jahia.services.importexport;
 
 import org.apache.jackrabbit.util.ISO9075;
+import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -46,6 +47,7 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class DocumentViewImportHandler extends DefaultHandler {
+    private static Logger logger = Logger.getLogger(DocumentViewImportHandler.class);
 
     private ProcessingContext jParams;
 
@@ -65,6 +67,8 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
     private String ignorePath = null;
 
+    private int error = 0;
+
     public DocumentViewImportHandler(ProcessingContext jParams, File archive, List<String> fileList) {
         this.jParams = jParams;
 
@@ -77,10 +81,16 @@ public class DocumentViewImportHandler extends DefaultHandler {
     }
 
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+        if (error > 0) {
+            error ++;
+            return;
+        }
+
+        String decodedLocalName = ISO9075.decode(localName);
+        String decodedQName = qName.replace(localName, decodedLocalName);
+        pathes.push(pathes.peek() + "/" + decodedQName);
+
         try {
-            String decodedLocalName = ISO9075.decode(localName);
-            String decodedQName = qName.replace(localName, decodedLocalName);
-            pathes.push(pathes.peek() + "/" + decodedQName);
 
             if (ignorePath != null) {
                 nodes.push(null);
@@ -199,6 +209,9 @@ public class DocumentViewImportHandler extends DefaultHandler {
 
             nodes.push(child);
 
+        } catch (RepositoryException re) {
+            logger.error("Cannot import "+ pathes.pop(),re);
+            error++;
         } catch (Exception re) {
             throw new SAXException(re);
         }
@@ -232,6 +245,11 @@ public class DocumentViewImportHandler extends DefaultHandler {
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
+        if (error > 0) {
+            error --;
+            return;
+        }
+
         JCRNodeWrapper w = nodes.pop();
         pathes.pop();
 

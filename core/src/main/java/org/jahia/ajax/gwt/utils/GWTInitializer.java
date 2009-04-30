@@ -23,6 +23,9 @@ import org.jahia.params.AdvPreviewSettings;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.acl.JahiaBaseACL;
+import org.jahia.services.acl.JahiaACLException;
+import org.jahia.services.pages.JahiaPage;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.apache.log4j.Logger;
 
@@ -86,6 +89,17 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.OPERATION_MODE, processingContext.getOperationMode());
             params.put(JahiaGWTParameters.PATH_INFO, processingContext.getPathInfo());
             params.put(JahiaGWTParameters.QUERY_STRING, processingContext.getQueryString());
+            try {
+                JahiaPage page = processingContext.getPage();
+                if (page != null) {
+                    JahiaBaseACL jahiaBaseACL = page.getACL();
+                    if (jahiaBaseACL != null && jahiaBaseACL.getPermission(processingContext.getUser(), JahiaBaseACL.WRITE_RIGHTS)) {
+                        params.put(JahiaGWTParameters.PAGE_WRITE, "true");
+                    }
+                }
+            } catch (Exception e) {
+                logger.error(e, e);
+            }
         } else {
             params.put(JahiaGWTParameters.PID, String.valueOf(session.getAttribute(ParamBean.SESSION_LAST_REQUESTED_PAGE_ID)));
             params.put(JahiaGWTParameters.OPERATION_MODE, String.valueOf(session.getAttribute(ParamBean.SESSION_JAHIA_RUNNING_MODE)));

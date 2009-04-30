@@ -70,6 +70,8 @@ public class GoogleGadgetPortlet extends GenericPortlet {
     }
 
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
+        renderResponse.setContentType("text/html");
+        
         EntryPointInstance epi  = (EntryPointInstance) renderRequest.getAttribute("EntryPointInstance");
         if (epi != null ) {
             try {

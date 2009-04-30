@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutManagerConfig;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
 import java.util.List;
 
@@ -35,6 +34,8 @@ public interface LayoutmanagerServiceAsync {
 
     public void saveAsDefault(GWTJahiaPageContext pageContext, AsyncCallback async);
 
+    public void restoreDefault(GWTJahiaPageContext pageContext, AsyncCallback async);
+    
     public void removeLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem gwtLayoutItem, AsyncCallback async);
 
     public void saveLayoutItems(GWTJahiaPageContext pageContext, List<GWTJahiaLayoutItem> gwtLayoutItems, AsyncCallback async);

@@ -64,6 +64,8 @@ public class JahiaRSSPortlet extends GenericPortlet {
      * @throws IOException
      */
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
+        renderResponse.setContentType("text/html");
+        
         String url = (String) renderRequest.getAttribute("url");
         Long nbFeed = (Long) renderRequest.getAttribute("entriesCount");
         if (nbFeed == null || nbFeed < 0) {

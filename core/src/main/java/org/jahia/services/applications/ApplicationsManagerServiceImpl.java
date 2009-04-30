@@ -550,8 +550,13 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                     entryPointInstanceByID.setExpirationTime(node.getProperty("j:expirationTime").getLong());
                 }
                 entryPointCache.put(ENTRY_POINT_INSTANCE+epInstanceID,entryPointInstanceByID);
-            } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (javax.jcr.ItemNotFoundException e) {
+                // user can't not access to portlet instance: intance doen't exist or user has no reqs ACL
+                logger.debug("User " + Jahia.getThreadParamBean().getUser().getName() + " could not load the portlet instance :" + epInstanceID);                
+                return null;
+            }             
+            catch (RepositoryException e) {
+                e.printStackTrace(); 
             }
         }
         return entryPointInstanceByID;

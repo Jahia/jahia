@@ -18,6 +18,9 @@ package org.jahia.ajax.gwt.client.widget.layoutmanager;
 
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
@@ -27,9 +30,11 @@ import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.templates.TemplatesDOMUtil;
 import org.jahia.ajax.gwt.client.service.layoutmanager.LayoutmanagerService;
 import org.jahia.ajax.gwt.client.data.layoutmanager.GWTJahiaLayoutItem;
@@ -59,6 +64,7 @@ public class JahiaPortalManager extends ContentPanel {
     private JahiaPortalConfig portalConfig;
     private TextToolItem portletPickerButton;
     private TextToolItem saveAsDefaultButton;
+    private TextToolItem restoreDefaultButton;
     private TextToolItem configPortalButton;
     private static JahiaPortletFactory portletFactory = new JahiaPortletFactory();
     private GWTJahiaLayoutManagerConfig gwtPortalConfig;
@@ -120,15 +126,65 @@ public class JahiaPortalManager extends ContentPanel {
         saveAsDefaultButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             @Override
             public void componentSelected(ComponentEvent ce) {
-                LayoutmanagerService.App.getInstance().saveAsDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
-                    public void onSuccess(Object o) {
-                        Log.debug("Current config saved as default config.");
-                    }
+                final MessageBox box = new MessageBox();
+                final Listener confirmBoxListener = new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent ce) {
+                        Dialog dialog = (Dialog) ce.component;
+                        Button btn = dialog.getButtonPressed();
+                        if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
+                            LayoutmanagerService.App.getInstance().saveAsDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
+                                public void onSuccess(Object o) {
+                                   Log.debug("Save as defaut");
+                                }
 
-                    public void onFailure(Throwable throwable) {
-                        Log.error("Unable to save current config as default config.", throwable);
+                                public void onFailure(Throwable throwable) {
+                                    Log.error("Unable to restore default.", throwable);
+                                }
+                            });
+                        }
                     }
-                });
+                };
+
+
+                box.setButtons(MessageBox.OKCANCEL);
+                box.setIcon(MessageBox.QUESTION);
+                box.setTitle("Restore");
+                box.addCallback(confirmBoxListener);
+                box.setMessage("Do you really want to restore dafault?");
+                box.show();
+            }
+        });
+
+        restoreDefaultButton = new TextToolItem(Messages.getNotEmptyResource("p_restore_default", "Restore default"));
+        restoreDefaultButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+            @Override
+            public void componentSelected(ComponentEvent ce) {
+                final MessageBox box = new MessageBox();
+                final Listener confirmBoxListener = new Listener<ComponentEvent>() {
+                    public void handleEvent(ComponentEvent ce) {
+                        Dialog dialog = (Dialog) ce.component;
+                        Button btn = dialog.getButtonPressed();
+                        if (btn.getText().equalsIgnoreCase(MessageBox.OK)) {
+                            LayoutmanagerService.App.getInstance().restoreDefault(JahiaPageEntryPoint.getJahiaGWTPage(), new AsyncCallback() {
+                                public void onSuccess(Object o) {
+                                    refreshPortal();
+                                }
+
+                                public void onFailure(Throwable throwable) {
+                                    Log.error("Unable to restore default.", throwable);
+                                }
+                            });
+                        }
+                    }
+                };
+
+
+                box.setButtons(MessageBox.OKCANCEL);
+                box.setIcon(MessageBox.QUESTION);
+                box.setTitle("Restore");
+                box.addCallback(confirmBoxListener);
+                box.setMessage("Do you really want to restore dafault?");
+                box.show();
             }
         });
 
@@ -161,7 +217,11 @@ public class JahiaPortalManager extends ContentPanel {
         bar.add(new FillToolItem());
         bar.add(portletPickerButton);
         bar.add(new SeparatorToolItem());
-        bar.add(saveAsDefaultButton);
+        if (JahiaGWTParameters.hasWriteAccess()) {
+            bar.add(saveAsDefaultButton);
+            bar.add(new SeparatorToolItem());
+        }
+        bar.add(restoreDefaultButton);
         bar.add(new SeparatorToolItem());
         bar.add(configPortalButton);
         setTopComponent(bar);
@@ -300,7 +360,7 @@ public class JahiaPortalManager extends ContentPanel {
                         Log.error("error when loading widget instance with id[" + gwtLayoutItem.getPortlet() + "]", e);
 
                     }
-                }else{
+                } else {
                     Log.error("Found a null layout item.");
                 }
             }

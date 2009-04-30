@@ -62,6 +62,8 @@ public interface LayoutmanagerService extends RemoteService {
 
     public void saveAsDefault(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException;
 
+    public void restoreDefault(GWTJahiaPageContext jahiaPageContext) throws GWTJahiaServiceException;
+
     public void removeLayoutItem(GWTJahiaPageContext pageContext, GWTJahiaLayoutItem draggableWidgetPreferences) throws GWTJahiaServiceException;
 
     public void saveLayoutItems(GWTJahiaPageContext pageContext, List<GWTJahiaLayoutItem> layoutItems) throws GWTJahiaServiceException;

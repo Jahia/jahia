@@ -62,7 +62,8 @@ public class HTMLMashupPortlet extends GenericPortlet {
     }
 
     public void doView(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException, IOException {
-
+        renderResponse.setContentType("text/html");
+        System.err.println("Is user in role"+renderRequest.isUserInRole("role1"));
         EntryPointInstance epi  = (EntryPointInstance) renderRequest.getAttribute("EntryPointInstance");
         if (epi != null ) {
             try {
@@ -72,7 +73,7 @@ public class HTMLMashupPortlet extends GenericPortlet {
                 PrintWriter pw = renderResponse.getWriter();
                 pw.print(html);
             } catch (RepositoryException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
 
         }

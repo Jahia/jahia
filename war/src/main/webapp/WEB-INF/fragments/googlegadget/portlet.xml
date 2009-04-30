@@ -10,7 +10,7 @@
     <portlet>
         <description>This portlet will render a remote Google Gadget</description>
         <portlet-name>JahiaGoogleGadget</portlet-name>
-        <display-name>Jahia Google Gadget</display-name>
+        <display-name>Google Gadget</display-name>
         <portlet-class>org.jahia.portlets.GoogleGadgetPortlet</portlet-class>
         <init-param>
             <name>rootPath</name>

@@ -48,7 +48,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements Proper
         try {
             this.localPath = property.getPath();
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            
         }
 
     }

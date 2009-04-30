@@ -97,7 +97,7 @@ public class ErrorLoggingFilter implements Filter {
             if (lastMailedException != null && t != null
                     && t.toString().equals(lastMailedException.toString())) {
                 lastMailedExceptionOccurences++;
-                if (lastMailedExceptionOccurences < 500) {
+                if (lastMailedExceptionOccurences < SettingsBean.getInstance().getMail_maxRegroupingOfPreviousException()) {
                     return;
                 }
             }

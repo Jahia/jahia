@@ -31,7 +31,6 @@ import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sites.SiteLanguageSettings;
 import org.jahia.services.toolbar.bean.Toolbar;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -76,12 +75,6 @@ public class JahiaACLManagerService extends JahiaService {
     private Cache<String, String> mPreloadedFieldACLsByPageCache;
 
     private CacheService cacheService;
-
-    private JahiaSitesService siteService;
-
-    public void setSiteService(JahiaSitesService siteService) {
-        this.siteService = siteService;
-    }
 
     protected JahiaAclManager manager;
     protected JahiaAclNameManager nameManager;
@@ -131,7 +124,7 @@ public class JahiaACLManagerService extends JahiaService {
             long startTime = System.currentTimeMillis();
             logger.info("Preloading ACLs from the database...");
             manager.preloadACLs(mACLCache);
-            logger.info("Preloading ACLs from the database took "
+            logger.info("Preloading " + mACLCache.size() + " ACLs from the database took "
                     + (System.currentTimeMillis() - startTime) + " ms");
         }
     }

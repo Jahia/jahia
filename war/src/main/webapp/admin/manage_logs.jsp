@@ -60,12 +60,14 @@
                                         <div id="operationMenu" style="border-bottom:0">
                                             <% if (logEnabled.booleanValue()) { %>
                                             <input type="hidden" size="6" name="maxlogs" value="<%=maxLogs%>">
+                <%-- 
                 <span class="dex-PushButton"> 
                     <span class="first-child">
                     <a class="ico-log-disable"
                        href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=disable")%>'><fmt:message key="org.jahia.admin.audit.ManageLogs.disableLogs.label"/></a>
                     </span> 
                 </span>
+                --%>
                 <span class="dex-PushButton"> 
                     <span class="first-child">
                     <a class="ico-log-view"
@@ -80,12 +82,14 @@
                     </span> 
                 </span>
                                             <%} else {%>
+                                            <%--
                 <span class="dex-PushButton"> 
                     <span class="first-child">
                     <a class="ico-log-enable"
                        href='<%=JahiaAdministration.composeActionURL(request,response,"logs","&sub=enable")%>'><fmt:message key="org.jahia.admin.audit.ManageLogs.enableLogs.label"/></a>
                     </span> 
                 </span>
+                --%>
                                             <% } %>
                                         </div>
                                     </form>

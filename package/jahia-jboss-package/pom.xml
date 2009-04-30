@@ -6,7 +6,7 @@
         <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jahia-jboss</artifactId>
+    <artifactId>jahia-jboss-package</artifactId>
     <name>Jahia JBoss Package</name>
     <packaging>pom</packaging>
     <dependencies>

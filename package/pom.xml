@@ -10,7 +10,8 @@
     <name>Jahia Install</name>
     <packaging>pom</packaging>
     <modules>
-        <module>jahia-tgz-package</module>
-        <module>jahia-qa-package</module>
+        <module>jahia-tgz-package</module>        
+        <module>jahia-jboss-package</module>
+				<module>jahia-qa-package</module>
     </modules>
 </project>

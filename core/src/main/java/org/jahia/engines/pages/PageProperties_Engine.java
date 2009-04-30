@@ -85,6 +85,7 @@ import org.jahia.services.pages.PageProperty;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.views.engines.versioning.actions.ContentVersioningAction;
+import org.jahia.operations.valves.ThemeValve;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -608,6 +609,17 @@ public class PageProperties_Engine implements JahiaEngine {
                         thePage.getContentPage().setPageKey(null);
                         engineMap.put(PageProperty.PAGE_URL_KEY_PROPNAME, pageKey);
                     }
+                    String themePropertyName = ThemeValve.THEME_ATTRIBUTE_NAME + "_" + jParams.getSiteID();
+                    String oldTheme = thePage.getProperty(themePropertyName);
+                    String newTheme= ((String[]) jParams.getCustomParameters().get("jahiaThemeSelector"))[0];
+                    changed |= (oldTheme == null && (newTheme != null && newTheme.length() > 0)) || (oldTheme != null && (newTheme == null
+                            || !newTheme.equals(oldTheme)));
+                    if(newTheme==null || "".equals(newTheme)) {
+                        thePage.removeProperty(themePropertyName);
+                    } else if((oldTheme==null && !"".equals(newTheme))|| !oldTheme.equals(newTheme)) {
+                        thePage.setProperty(themePropertyName,newTheme);
+                    }
+
                     if (changed) {
                         thePage.getContentPage().setUnversionedChanged();
                     }

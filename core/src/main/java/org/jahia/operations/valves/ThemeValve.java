@@ -60,13 +60,13 @@ public class ThemeValve implements Valve {
                     }
                 } else if (request.getParameter("jahiathemeSelectorScope").equals("user")) {
                     if (JahiaUserManagerService.isGuest(jParams.getUser())) {
-                        if (selectedTheme == null || selectedTheme.equals("")) {
+                        if (selectedTheme.equals("")) {
                             state.removeAttribute(THEME_ATTRIBUTE_NAME +"_"+theSite.getID());
                         } else {
                             state.setAttribute(THEME_ATTRIBUTE_NAME +"_"+theSite.getID(), selectedTheme);
                         }
                     } else {
-                        if (selectedTheme == null || selectedTheme.equals("")) {
+                        if (selectedTheme.equals("")) {
                             jParams.getUser().removeProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID());
                         } else {
                             jParams.getUser().setProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID(), selectedTheme);
@@ -80,8 +80,14 @@ public class ThemeValve implements Valve {
                 jahiaThemeCurrent = (String) state.getAttribute(THEME_ATTRIBUTE_NAME +"_"+theSite.getID());
             } else if (jParams.getUser().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID()) != null) {
                 jahiaThemeCurrent = jParams.getUser().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID());
-            } else if (theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME) != null) {
-                jahiaThemeCurrent = theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME);
+            } else try {
+                if (jParams.getPage().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID()) != null) {
+                    jahiaThemeCurrent = jParams.getPage().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID());
+                } else if (theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME) != null) {
+                    jahiaThemeCurrent = theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME);
+                }
+            } catch (JahiaException e) {
+                logger.error(e);
             }
             if (jahiaThemeCurrent == null || "".equals(jahiaThemeCurrent.trim())) {
                 jahiaThemeCurrent = "default";

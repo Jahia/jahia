@@ -30,6 +30,7 @@
 <%@ taglib uri="http://struts.apache.org/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://www.jahia.org/tags/utilityLib" prefix="utility" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <utility:setBundle basename="JahiaInternalResources"/>
 <jsp:useBean id="jspSource" class="java.lang.String" scope="request"/>
 
@@ -222,6 +223,10 @@
                       <td>
                         <input type="text" name="pageURLKey" value="<%=pageURLKey%>"/>
                       </td>
+                    </tr>
+                    <tr>
+                        <th><fmt:message key="org.jahia.engines.pages.PageProperties_Engine.themeSettings.label"/></th>
+                        <td><ui:themeSelector scope="page"/></td>
                     </tr>
                   <% } %>
                 </table>

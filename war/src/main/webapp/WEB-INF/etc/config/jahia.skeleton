@@ -309,8 +309,6 @@ tidyConfig                                             =   tidy.properties
 ######################################################################
 ### Content Object titles ############################################
 ######################################################################
-# Specifies the size of the titles we should display in site maps
-siteMapTitlesLength                                    =   20
 # Specifies the size of the titles we should display in the workflow
 workflowTitlesLength                                   =   20
 

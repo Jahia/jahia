@@ -242,10 +242,6 @@ public class SettingsBean {
     private boolean aclDisp;
     private boolean pdispDisp=true;
 
-    // Title size display
-    private int siteMapTitlesLength;
-    private int workflowTitlesLength;
-
     // hibernate batchloading
     private boolean batchLoadingEnabled = true;
     private int batchLoadingSize = 20;
@@ -601,8 +597,6 @@ public class SettingsBean {
             chatDisp =getBoolean("chat_display",false);
             pdispDisp =getBoolean("process_display",true);
             connectionTimeoutForProductionJob = getInt("connectionTimeoutForProductionJob",60000);
-            siteMapTitlesLength = getInt("siteMapTitlesLength", 25);
-            workflowTitlesLength = getInt("workflowTitlesLength", 25);
 
             // hibernate batchloading
             batchLoadingEnabled = getBoolean("batchLoadingEnabled",true);
@@ -1541,14 +1535,6 @@ public class SettingsBean {
 
     public boolean isPdispDisp() {
         return pdispDisp;
-    }
-
-    public int getSiteMapTitlesLength() {
-        return siteMapTitlesLength;
-    }
-
-    public int getWorkflowTitlesLength() {
-        return workflowTitlesLength;
     }
 
     public boolean isBatchLoadingEnabled() {

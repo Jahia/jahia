@@ -210,18 +210,6 @@
                 validate="false">
         </action>
 
-        <action path="/GetChildPages"
-            type="org.jahia.ajax.sitemap.GetChildPages"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetChildPagesEntryPoint"
-            type="org.jahia.ajax.sitemap.GetChildPagesEntryPoint"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/GetWorkflowState"
             type="org.jahia.ajax.actionmenus.GetWorkflowState"
                 parameter="method"

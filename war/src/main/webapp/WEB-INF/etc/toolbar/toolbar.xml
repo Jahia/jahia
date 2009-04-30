@@ -489,7 +489,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-filemanager-min"
                         max="gwt-toolbar-ItemsGroup-icons-filemanager-normal"/>
             <description-resourcebundle-key key="button.filemanager"/>
-            <visibility mode="edit,preview,compare"/>
+            <visibility mode="edit,preview,compare" site-action-permission="engines.filemanager"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtfilemanager"/>
@@ -502,7 +502,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-mashupmanager-min"
                         max="gwt-toolbar-ItemsGroup-icons-mashupmanager-normal"/>
             <description-resourcebundle-key key="button.filemanager"/>
-            <visibility mode="edit,preview,compare"/>
+            <visibility mode="edit,preview,compare" site-action-permission="engines.mashupmanager"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtmashupmanager"/>

@@ -369,6 +369,8 @@ FRAG2(frag_size=60000)</value>
                                 <!--<value>org.jahia.actions.sites.*.engines.contentdefinition.ContentDefinitionEngine</value>-->
                                 <value>org.jahia.actions.sites.*.engines.workflow.ManageWorkflow</value>
                                 <value>org.jahia.actions.sites.*.engines.audit.ManageLogs_Engine</value>
+                                <value>org.jahia.actions.sites.*.engines.filemanager</value>
+                                <value>org.jahia.actions.sites.*.engines.mashupmanager</value>
                             </list>
                         </entry>
                         <entry key="actions">

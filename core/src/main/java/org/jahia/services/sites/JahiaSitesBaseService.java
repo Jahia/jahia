@@ -50,7 +50,6 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
 import org.jahia.services.workflow.WorkflowInfo;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.acl.JahiaBaseACL;
@@ -104,7 +103,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     private boolean started = false;
 
     protected JahiaGroupManagerService groupService;
-    protected JahiaWebAppsDeployerService webAppsDeployerService;
     protected JahiaFileWatcherService fileWatcherService;
     protected JahiaACLManagerService jahiaAclService;
 
@@ -130,10 +128,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
 
     public void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
-    }
-
-    public void setWebAppsDeployerService(JahiaWebAppsDeployerService webAppsDeployerService) {
-        this.webAppsDeployerService = webAppsDeployerService;
     }
 
     public void setFileWatcherService(JahiaFileWatcherService fileWatcherService) {
@@ -666,7 +660,6 @@ public class JahiaSitesBaseService extends JahiaSitesService {
     protected void loadSitesInCache (SettingsBean settingsBean) throws JahiaException {
 
         List<JahiaSite> sites = siteManager.getSites();
-        JahiaSiteTools.startWebAppsObserver (settingsBean, this,webAppsDeployerService, fileWatcherService);
         if (sites != null) {
             int size = sites.size ();
             for (int i = 0; i < size; i++) {

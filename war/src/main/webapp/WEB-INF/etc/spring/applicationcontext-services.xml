@@ -541,7 +541,6 @@ FRAG2(frag_size=60000)</value>
                 <property name="cacheService" ref="JahiaCacheService" />
                 <property name="siteManager" ref="org.jahia.hibernate.manager.JahiaSiteManager" />
                 <property name="sitePropertyManager" ref="org.jahia.hibernate.manager.JahiaSitePropertyManager" />
-                <property name="webAppsDeployerService" ref="JahiaWebAppsDeployerService" />
                 <property name="fileWatcherService" ref="JahiaFileWatcherService" />
                 <property name="jahiaAclService" ref="JahiaACLManagerService" />
             </bean>

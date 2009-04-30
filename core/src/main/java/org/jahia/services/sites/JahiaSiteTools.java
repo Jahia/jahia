@@ -28,16 +28,12 @@ import java.io.File;
 
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.deamons.filewatcher.JahiaFileWatcherService;
-import org.jahia.services.deamons.filewatcher.webappobserver.WebAppsObserver;
 import org.jahia.services.templates_deployer.JahiaTemplatesDeployerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteUserManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService;
-import org.jahia.settings.SettingsBean;
 
 
 /**
@@ -193,80 +189,6 @@ public final class JahiaSiteTools {
 
         return path;
 
-    }
-
-    /**
-     * Create a web apps repository used to store new webapps for a site.
-     *
-     * @return boolean false on error
-     */
-    private static boolean createSiteNewWebAppsFolder(JahiaWebAppsDeployerService wads) {
-
-        if (wads == null) {
-            return false;
-        }
-
-        String path = JahiaWebAppsDeployerService.getNewWebAppsPath ();
-        if (path == null) {
-            return false;
-        }
-
-        StringBuffer buff = new StringBuffer (path);
-
-        File f = new File (buff.toString ());
-
-        if (!f.isDirectory ()) {
-            return f.mkdirs ();
-        }
-        return true;
-    }
-
-
-    /**
-     * Start a file watcher to watch a site's new web apps folder
-     *
-     * @return boolean false on error
-     *
-     */
-    public static boolean startWebAppsObserver(SettingsBean settingsBean,
-            JahiaSitesService ss,
-            JahiaWebAppsDeployerService wads,
-            JahiaFileWatcherService fileWatcherService) {
-
-        if (wads == null) {
-            return false;
-        }
-
-        StringBuffer buff = new StringBuffer (JahiaWebAppsDeployerService.getNewWebAppsPath ());
-        File f = new File (buff.toString ());
-
-        boolean success = true;
-
-        if (!f.isDirectory ()) {
-            // try to create it
-            success = createSiteNewWebAppsFolder (wads);
-        }
-
-        if (success) {
-            long interval = settingsBean.getWebAppsObserverInterval();
-            if (interval == -1) {
-                return false;
-            }
-
-            boolean fileOnly = true;
-            boolean checkDate = false;
-
-            try {
-                new WebAppsObserver (JahiaWebAppsDeployerService.getNewWebAppsPath (),
-                        checkDate,
-                        interval,
-                        fileOnly, ss, fileWatcherService, wads);
-                return true;
-            } catch (JahiaException je) {
-                logger.error ("exception with FilesObserver", je);
-            }
-        }
-        return false;
     }
 
 

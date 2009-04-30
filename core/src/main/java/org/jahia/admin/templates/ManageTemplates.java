@@ -24,34 +24,25 @@
 
 package org.jahia.admin.templates;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaAdministration;
 import org.jahia.data.JahiaData;
 import org.jahia.data.events.JahiaEvent;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.security.license.License;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
@@ -59,9 +50,7 @@ import org.jahia.services.pages.JahiaPageService;
 import org.jahia.services.pages.JahiaPageTemplateService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates_deployer.JahiaTemplatesDeployerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.utils.JahiaTools;
 import org.jahia.utils.properties.PropertiesManager;
 import org.jahia.admin.AbstractAdministrationModule;
 
@@ -86,7 +75,7 @@ public class ManageTemplates extends AbstractAdministrationModule {
     private static final String     CLASS_NAME          =  JahiaAdministration.CLASS_NAME;
     private static final String     JSP_PATH            =  JahiaAdministration.JSP_PATH;
 
-    private static ServletContext   context;
+//    private static ServletContext   context;
 
     private JahiaSite site;
     private JahiaUser user;
@@ -162,15 +151,15 @@ public class ManageTemplates extends AbstractAdministrationModule {
             if(operation.equals("display")) {
                 displayTemplateList( request, response, session );
             } else if(operation.equals("displaynewlist")) {
-                displayNewTemplateList( request, response, session );
+//                displayNewTemplateList( request, response, session );
             } else if(operation.equals("details")) {
-                displayNewTemplateDetail( request, response, session );
+//                displayNewTemplateDetail( request, response, session );
             } else if(operation.equals("edit")) {
                 editTemplate( request, response, session );
             } else if(operation.equals("options")) {
                 editTemplateOption( request, response, session );
             } else if(operation.equals("add")) {
-                addTemplate( request, response, session );
+//                addTemplate( request, response, session );
             } else if(operation.equals("swap")) {
                 processSwap( request, response, session );
             }
@@ -277,8 +266,8 @@ public class ManageTemplates extends AbstractAdministrationModule {
             JahiaPageTemplateService pageTempServ =
             sReg.getJahiaPageTemplateService();
 
-            JahiaTemplatesDeployerService tempDepServ =
-            sReg.getJahiaTemplatesDeployerService();
+//            JahiaTemplatesDeployerService tempDepServ =
+//            sReg.getJahiaTemplatesDeployerService();
 
             JahiaSitesService sitesServ =
             sReg.getJahiaSitesService();
@@ -287,7 +276,7 @@ public class ManageTemplates extends AbstractAdministrationModule {
             sReg.getJahiaPageService();
 
             if ( pageTempServ == null
-                || tempDepServ == null
+//                || tempDepServ == null
                 || sitesServ == null
                 || pageServ == null ){
                 throw new JahiaException(	"Unavailable Services",
@@ -324,7 +313,7 @@ public class ManageTemplates extends AbstractAdministrationModule {
                         String undeploy = (String)request.getParameter("undeploy");
 
                         if ( undeploy != null ){
-                            tempDepServ.undeploy(templ);
+//                            tempDepServ.undeploy(templ);
                         }
 
                         pageTempServ.deletePageTemplate(templ.getID());
@@ -517,377 +506,377 @@ public class ManageTemplates extends AbstractAdministrationModule {
     } // end editTemplateOption
 
 
-    //-------------------------------------------------------------------------
-    /**
-     * Display the list of new templates.
-     *
-     * @author  NK
-     * @param   request         Servlet request.
-     * @param   response        Servlet response.
-     * @param   session         HttpSession object.
-     */
-    private void displayNewTemplateList( HttpServletRequest   request,
-                                       HttpServletResponse  response,
-                                       HttpSession          session )
-    throws IOException, ServletException
-    {
-
-      JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-      ProcessingContext jParams = null;
-      if (jData != null) {
-          jParams = jData.getProcessingContext();
-      }
-        try {
-
-            JahiaTemplatesDeployerService tempDepServ =
-            sReg.getJahiaTemplatesDeployerService();
-
-
-            if ( tempDepServ == null ){
-                throw new JahiaException(	"Unavailable Services",
-                                            "Unavailable Services",
-                                            JahiaException.SERVICE_ERROR,
-                                            JahiaException.ERROR_SEVERITY );
-            }
-
-            // get the list of new web apps
-            Iterator enumeration = tempDepServ.getTemplatesPackages(site.getSiteKey());
-            List vec = new ArrayList();
-
-            JahiaTemplatesPackage aPackage = null;
-
-            while (enumeration.hasNext()){
-
-                aPackage = (JahiaTemplatesPackage)enumeration.next();
-
-                if ( aPackage != null ){
-                    vec.add(aPackage);
-                } else {
-                    //System.out.println("displayNewTemplateList packages is null");
-                }
-            }
-
-            request.setAttribute("packagesList", vec.iterator());
-            JahiaAdministration.doRedirect( request,
-                                            response,
-                                            session,
-                                            JSP_PATH + "new_templates.jsp" );
-        } catch ( JahiaException je ){
-          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams.getLocale());
-          request.setAttribute("jahiaDisplayMessage", dspMsg);
-            JahiaAdministration.doRedirect( request,
-                                            response,
-                                            session,
-                                            JSP_PATH + "menu.jsp" );
-        }
-
-    }
-
-
-
-    //-------------------------------------------------------------------------
-    /**
-     * Display informations about a new template
-     *
-     * @author  NK
-     * @param   request         Servlet request.
-     * @param   response        Servlet response.
-     * @param   session         HttpSession object.
-     */
-    private void displayNewTemplateDetail( HttpServletRequest   request,
-                                            HttpServletResponse  response,
-                                            HttpSession          session )
-    throws IOException, ServletException
-    {
-
-      JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-      ProcessingContext jParams = null;
-      if (jData != null) {
-          jParams = jData.getProcessingContext();
-      }
-        try {
-
-            JahiaTemplatesDeployerService tempDepServ =
-            sReg.getJahiaTemplatesDeployerService();
-
-            JahiaPageTemplateService pageTempServ =
-            sReg.getJahiaPageTemplateService();
-
-
-            if ( tempDepServ == null || pageTempServ == null ){
-                throw new JahiaException(	"Unavailable Services",
-                                            "Unavailable Services",
-                                            JahiaException.SERVICE_ERROR,
-                                            JahiaException.ERROR_SEVERITY );
-            }
-
-            // get the new template package
-            String packageName = (String)request.getParameter("package_name");
-            JahiaTemplatesPackage aPackage =
-            (JahiaTemplatesPackage)tempDepServ.getTemplatesPackage(site.getSiteKey()
-                                                                    + "_"
-                                                                    + packageName);
-
-            // check for license limitation
-            int nbTemplates = pageTempServ.getNbPageTemplates(site.getID());
-
-            boolean canDeploy = ( ( Jahia.getTemplateLimit() == -1 )
-                                    || !(nbTemplates + aPackage.getTemplates().size() > Jahia.getTemplateLimit()) );
-
-            request.setAttribute("templateLimit", new Integer(Jahia.getTemplateLimit()) );
-            request.setAttribute("canDeploy", Boolean.valueOf(canDeploy) );
-
-
-            String subAction =(String)request.getParameter("subaction");
-            if ( subAction == null ){
-                request.setAttribute("aPackage", aPackage);
-            } else if ( subAction.equals("deploy") && canDeploy){
-                try {
-                    if (tempDepServ.deploy( site,
-                                            aPackage.getRootFolder(),
-                                            aPackage.getFilePath(),true)){
-
-                        // Register package in Jahia
-                        tempDepServ.registerTemplates(site, aPackage);
-
-                        // delete the package
-                        tempDepServ.deletePackage(site,aPackage.getFilePath());
-
-                        displayNewTemplateList(request,response,session);
-                        return;
-                    } else {
-                      String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
-                                                         jParams.getLocale());
-                      session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                        request.setAttribute("aPackage", aPackage);
-                    }
-                } catch ( JahiaException je ){
-                    request.setAttribute("aPackage", aPackage);
-                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
-                                                       jParams.getLocale());
-                    session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                }
-            } else if ( subAction.equals("delete") ){
-
-                try {
-                    if (tempDepServ.deletePackage(site,aPackage.getFilePath())){
-                        displayNewTemplateList(request,response,session);
-                        return;
-                    } else {
-                        request.setAttribute("aPackage", aPackage);
-                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
-                                                           jParams.getLocale());
-                        session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                    }
-                } catch ( IOException ioe ){
-                  String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
-                                                     jParams.getLocale());
-                  session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
-                }
-            }
-
-             JahiaAdministration.doRedirect( request,
-                                             response,
-                                             session,
-                                             JSP_PATH + "new_template_detail.jsp" );
-        } catch ( JahiaException je ){
-          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams.getLocale());
-          request.setAttribute("jahiaDisplayMessage", dspMsg);
-            JahiaAdministration.doRedirect( request,
-                                            response,
-                                            session,
-                                            JSP_PATH + "menu.jsp" );
-        }
-
-    }
-
-
-    //-------------------------------------------------------------------------
-    /**
-     * Handle all the process of manually adding a new template
-     *
-     * @author  NK
-     * @param   request         Servlet request.
-     * @param   response        Servlet response.
-     * @param   session         HttpSession object.
-     */
-    private void addTemplate( 	HttpServletRequest   request,
-                                HttpServletResponse  response,
-                                HttpSession          session )
-
-    throws IOException, ServletException
-    {
-
-
-      JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-      ProcessingContext jParams = null;
-      if (jData != null) {
-          jParams = jData.getProcessingContext();
-      }
-        try {
-
-            JahiaTemplatesDeployerService tempDepServ =
-            sReg.getJahiaTemplatesDeployerService();
-
-            JahiaPageTemplateService pageTempServ =
-            sReg.getJahiaPageTemplateService();
-
-            if ( tempDepServ == null || pageTempServ == null ){
-                throw new JahiaException(	"Unavailable Services",
-                                            "Unavailable Services",
-                                            JahiaException.SERVICE_ERROR,
-                                            JahiaException.ERROR_SEVERITY );
-            }
-
-            // check for license limitation
-            int nbTemplates = pageTempServ.getNbPageTemplates(site.getID());
-
-            boolean canAddNew = ( (Jahia.getTemplateLimit() == -1)
-                                    || (nbTemplates < Jahia.getTemplateLimit()) );
-
-            request.setAttribute("templateLimit", new Integer(Jahia.getTemplateLimit()) );
-            request.setAttribute("canAddNew", Boolean.valueOf(canAddNew) );
-
-
-            PropertiesManager properties =  new PropertiesManager( Jahia.getJahiaPropertiesFileName() );
-
-            request.setAttribute("warningMsg","");
-
-            JahiaSite site = (JahiaSite)request.getAttribute("site");
-
-            String subAction 	= (String)request.getParameter("subaction");
-            String templName 	= (String)request.getParameter("templName");
-            String rootFolder 	= (String)request.getParameter("rootFolder");
-            if ( rootFolder == null ){
-                rootFolder = File.separator;
-            }
-
-            String fileName 	= (String)request.getParameter("fileName");
-            String isAvailable 	= (String)request.getParameter("isAvailable");
-            String pageType 	= (String)request.getParameter("pageType");
-
-            ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_PAGE);
-            ExtendedNodeType[] types = t.getSubtypes();
-            Map m = new HashMap();
-            for (int i = 0; i < types.length; i++) {
-                m.put(types[i].getName(), types[i].getLabel(jParams.getLocale()));
-            }
-
-            request.setAttribute("types", types);
-            request.setAttribute("templName",JahiaTools.replaceNullString(templName,""));
-            request.setAttribute("rootFolder",JahiaTools.replaceNullString(rootFolder,""));
-            request.setAttribute("fileName",JahiaTools.replaceNullString(fileName,""));
-
-            if ( isAvailable != null ){
-                request.setAttribute("isAvailable",new Integer(1));
-            } else {
-                request.setAttribute("isAvailable",new Integer(0));
-            }
-
-            if ( subAction != null && subAction.equals("save") && canAddNew ){
-                if ( templName == null || (templName.length()<=0)
-                     || fileName == null || (fileName.length()<=0) ) {
-                  String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.completeRequestInfo.label",
-                                                     jParams.getLocale());
-                  request.setAttribute("warningMsg", dspMsg);
-                } else {
-
-                    // save definition in db
-                    String path = ManageTemplates.context.getRealPath(properties.getProperty("jahiaTemplatesDiskPath") );
-
-                    while ( rootFolder.startsWith("/")
-                            || rootFolder.startsWith("\\")
-                            || rootFolder.startsWith(".") ){
-                        rootFolder = rootFolder.substring(1,rootFolder.length());
-                    }
-
-                    while ( rootFolder.endsWith("/")
-                            || rootFolder.endsWith("\\") ){
-                        rootFolder = rootFolder.substring(0,rootFolder.length()-1);
-                    }
-
-                    // check if the file really exist
-                    StringBuffer tempFullPath = new StringBuffer (1024);
-                    tempFullPath.append(path);
-                    tempFullPath.append(File.separator);
-                    tempFullPath.append(site.getSiteKey());
-                    tempFullPath.append(File.separator);
-                    tempFullPath.append(rootFolder);
-                    tempFullPath.append(File.separator) ;
-                    tempFullPath.append(fileName) ;
-
-                    if ( !JahiaTools.checkFileNameCaseSensitive(tempFullPath.toString()) ){
-                      String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.noFile.label",
-                                                         jParams.getLocale());
-                      warningMsg += " " + fileName + " ";
-                      warningMsg += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.inFolder.label",
-                                                         jParams.getLocale());
-                      warningMsg += " " + rootFolder;
-                      request.setAttribute("warningMsg", warningMsg);
-                    } else if ( rootFolder.startsWith(".") ){
-                      String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.invalidTemplateFolder.label",
-                                                         jParams.getLocale());
-                        request.setAttribute("warningMsg",warningMsg);
-                    } else {
-                        StringBuffer buff = new StringBuffer (1024);
-                        buff.append(properties.getProperty("jahiaTemplatesDiskPath"));
-                        buff.append(site.getSiteKey());
-                        buff.append("/") ;
-                        if ( !rootFolder.equals("") ){
-                            buff.append(rootFolder);
-                            buff.append("/") ;
-                        }
-                        buff.append(fileName) ;
-                        String sourcePath = JahiaTools.replacePattern(buff.toString(),"\\","/");
-
-                        JahiaPageDefinition def = pageTempServ.getPageTemplateBySourcePath(site.getID(),sourcePath);
-                        if ( def == null || !def.getSourcePath().equals(sourcePath) ){
-
-                            pageTempServ.createPageTemplate (
-
-                                        site.getID(),
-                                        templName,
-                                        sourcePath,
-                                        (isAvailable != null),
-                                        pageType,
-                                        null,
-                                        "",      	// no image
-                                        site.getAclID() );
-
-                            String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.template.label",
-                                jParams.getLocale());
-                            warningMsg += " " + fileName + " ";
-                            warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.templateAdded.label",
-                                jParams.getLocale());
-                            request.setAttribute("warningMsg",warningMsg);
-                        } else {
-                            request.setAttribute("warningMsg",
-                            "This template is already registered in Jahia");
-                        }
-                    }
-                }
-
-            }
-
-            JahiaAdministration.doRedirect(request,response,session,JSP_PATH + "template_add.jsp");
-
-        } catch ( NoSuchNodeTypeException e ) {
-            logger.error("Node type not found",e);
-        } catch ( JahiaException je ) {
-          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
-                                             jParams.getLocale());
-          request.setAttribute("jahiaDisplayMessage", dspMsg);
-            JahiaAdministration.doRedirect( request,
-                                            response,
-                                            session,
-                                            JSP_PATH + "menu.jsp" );
-        }
-
-
-    } // end addTemplate
-
+//    //-------------------------------------------------------------------------
+//    /**
+//     * Display the list of new templates.
+//     *
+//     * @author  NK
+//     * @param   request         Servlet request.
+//     * @param   response        Servlet response.
+//     * @param   session         HttpSession object.
+//     */
+//    private void displayNewTemplateList( HttpServletRequest   request,
+//                                       HttpServletResponse  response,
+//                                       HttpSession          session )
+//    throws IOException, ServletException
+//    {
+//
+//      JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+//      ProcessingContext jParams = null;
+//      if (jData != null) {
+//          jParams = jData.getProcessingContext();
+//      }
+//        try {
+//
+//            JahiaTemplatesDeployerService tempDepServ =
+//            sReg.getJahiaTemplatesDeployerService();
+//
+//
+//            if ( tempDepServ == null ){
+//                throw new JahiaException(	"Unavailable Services",
+//                                            "Unavailable Services",
+//                                            JahiaException.SERVICE_ERROR,
+//                                            JahiaException.ERROR_SEVERITY );
+//            }
+//
+//            // get the list of new web apps
+//            Iterator enumeration = tempDepServ.getTemplatesPackages(site.getSiteKey());
+//            List vec = new ArrayList();
+//
+//            JahiaTemplatesPackage aPackage = null;
+//
+//            while (enumeration.hasNext()){
+//
+//                aPackage = (JahiaTemplatesPackage)enumeration.next();
+//
+//                if ( aPackage != null ){
+//                    vec.add(aPackage);
+//                } else {
+//                    //System.out.println("displayNewTemplateList packages is null");
+//                }
+//            }
+//
+//            request.setAttribute("packagesList", vec.iterator());
+//            JahiaAdministration.doRedirect( request,
+//                                            response,
+//                                            session,
+//                                            JSP_PATH + "new_templates.jsp" );
+//        } catch ( JahiaException je ){
+//          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+//                                             jParams.getLocale());
+//          request.setAttribute("jahiaDisplayMessage", dspMsg);
+//            JahiaAdministration.doRedirect( request,
+//                                            response,
+//                                            session,
+//                                            JSP_PATH + "menu.jsp" );
+//        }
+//
+//    }
+
+
+
+//    //-------------------------------------------------------------------------
+//    /**
+//     * Display informations about a new template
+//     *
+//     * @author  NK
+//     * @param   request         Servlet request.
+//     * @param   response        Servlet response.
+//     * @param   session         HttpSession object.
+//     */
+//    private void displayNewTemplateDetail( HttpServletRequest   request,
+//                                            HttpServletResponse  response,
+//                                            HttpSession          session )
+//    throws IOException, ServletException
+//    {
+//
+//      JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+//      ProcessingContext jParams = null;
+//      if (jData != null) {
+//          jParams = jData.getProcessingContext();
+//      }
+//        try {
+//
+//            JahiaTemplatesDeployerService tempDepServ =
+//            sReg.getJahiaTemplatesDeployerService();
+//
+//            JahiaPageTemplateService pageTempServ =
+//            sReg.getJahiaPageTemplateService();
+//
+//
+//            if ( tempDepServ == null || pageTempServ == null ){
+//                throw new JahiaException(	"Unavailable Services",
+//                                            "Unavailable Services",
+//                                            JahiaException.SERVICE_ERROR,
+//                                            JahiaException.ERROR_SEVERITY );
+//            }
+//
+//            // get the new template package
+//            String packageName = (String)request.getParameter("package_name");
+//            JahiaTemplatesPackage aPackage =
+//            (JahiaTemplatesPackage)tempDepServ.getTemplatesPackage(site.getSiteKey()
+//                                                                    + "_"
+//                                                                    + packageName);
+//
+//            // check for license limitation
+//            int nbTemplates = pageTempServ.getNbPageTemplates(site.getID());
+//
+//            boolean canDeploy = ( ( Jahia.getTemplateLimit() == -1 )
+//                                    || !(nbTemplates + aPackage.getTemplates().size() > Jahia.getTemplateLimit()) );
+//
+//            request.setAttribute("templateLimit", new Integer(Jahia.getTemplateLimit()) );
+//            request.setAttribute("canDeploy", Boolean.valueOf(canDeploy) );
+//
+//
+//            String subAction =(String)request.getParameter("subaction");
+//            if ( subAction == null ){
+//                request.setAttribute("aPackage", aPackage);
+//            } else if ( subAction.equals("deploy") && canDeploy){
+//                try {
+//                    if (tempDepServ.deploy( site,
+//                                            aPackage.getRootFolder(),
+//                                            aPackage.getFilePath(),true)){
+//
+//                        // Register package in Jahia
+//                        tempDepServ.registerTemplates(site, aPackage);
+//
+//                        // delete the package
+//                        tempDepServ.deletePackage(site,aPackage.getFilePath());
+//
+//                        displayNewTemplateList(request,response,session);
+//                        return;
+//                    } else {
+//                      String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
+//                                                         jParams.getLocale());
+//                      session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
+//                        request.setAttribute("aPackage", aPackage);
+//                    }
+//                } catch ( JahiaException je ){
+//                    request.setAttribute("aPackage", aPackage);
+//                    String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deployingPackageError.label",
+//                                                       jParams.getLocale());
+//                    session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
+//                }
+//            } else if ( subAction.equals("delete") ){
+//
+//                try {
+//                    if (tempDepServ.deletePackage(site,aPackage.getFilePath())){
+//                        displayNewTemplateList(request,response,session);
+//                        return;
+//                    } else {
+//                        request.setAttribute("aPackage", aPackage);
+//                        String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
+//                                                           jParams.getLocale());
+//                        session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
+//                    }
+//                } catch ( IOException ioe ){
+//                  String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.deletingPackageError.label",
+//                                                     jParams.getLocale());
+//                  session.setAttribute(CLASS_NAME + "jahiaDisplayMessage", dspMsg);
+//                }
+//            }
+//
+//             JahiaAdministration.doRedirect( request,
+//                                             response,
+//                                             session,
+//                                             JSP_PATH + "new_template_detail.jsp" );
+//        } catch ( JahiaException je ){
+//          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+//                                             jParams.getLocale());
+//          request.setAttribute("jahiaDisplayMessage", dspMsg);
+//            JahiaAdministration.doRedirect( request,
+//                                            response,
+//                                            session,
+//                                            JSP_PATH + "menu.jsp" );
+//        }
+//
+//    }
+
+
+//    //-------------------------------------------------------------------------
+//    /**
+//     * Handle all the process of manually adding a new template
+//     *
+//     * @author  NK
+//     * @param   request         Servlet request.
+//     * @param   response        Servlet response.
+//     * @param   session         HttpSession object.
+//     */
+//    private void addTemplate( 	HttpServletRequest   request,
+//                                HttpServletResponse  response,
+//                                HttpSession          session )
+//
+//    throws IOException, ServletException
+//    {
+//
+//
+//      JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+//      ProcessingContext jParams = null;
+//      if (jData != null) {
+//          jParams = jData.getProcessingContext();
+//      }
+//        try {
+//
+//            JahiaTemplatesDeployerService tempDepServ =
+//            sReg.getJahiaTemplatesDeployerService();
+//
+//            JahiaPageTemplateService pageTempServ =
+//            sReg.getJahiaPageTemplateService();
+//
+//            if ( tempDepServ == null || pageTempServ == null ){
+//                throw new JahiaException(	"Unavailable Services",
+//                                            "Unavailable Services",
+//                                            JahiaException.SERVICE_ERROR,
+//                                            JahiaException.ERROR_SEVERITY );
+//            }
+//
+//            // check for license limitation
+//            int nbTemplates = pageTempServ.getNbPageTemplates(site.getID());
+//
+//            boolean canAddNew = ( (Jahia.getTemplateLimit() == -1)
+//                                    || (nbTemplates < Jahia.getTemplateLimit()) );
+//
+//            request.setAttribute("templateLimit", new Integer(Jahia.getTemplateLimit()) );
+//            request.setAttribute("canAddNew", Boolean.valueOf(canAddNew) );
+//
+//
+//            PropertiesManager properties =  new PropertiesManager( Jahia.getJahiaPropertiesFileName() );
+//
+//            request.setAttribute("warningMsg","");
+//
+//            JahiaSite site = (JahiaSite)request.getAttribute("site");
+//
+//            String subAction 	= (String)request.getParameter("subaction");
+//            String templName 	= (String)request.getParameter("templName");
+//            String rootFolder 	= (String)request.getParameter("rootFolder");
+//            if ( rootFolder == null ){
+//                rootFolder = File.separator;
+//            }
+//
+//            String fileName 	= (String)request.getParameter("fileName");
+//            String isAvailable 	= (String)request.getParameter("isAvailable");
+//            String pageType 	= (String)request.getParameter("pageType");
+//
+//            ExtendedNodeType t = NodeTypeRegistry.getInstance().getNodeType(Constants.JAHIANT_PAGE);
+//            ExtendedNodeType[] types = t.getSubtypes();
+//            Map m = new HashMap();
+//            for (int i = 0; i < types.length; i++) {
+//                m.put(types[i].getName(), types[i].getLabel(jParams.getLocale()));
+//            }
+//
+//            request.setAttribute("types", types);
+//            request.setAttribute("templName",JahiaTools.replaceNullString(templName,""));
+//            request.setAttribute("rootFolder",JahiaTools.replaceNullString(rootFolder,""));
+//            request.setAttribute("fileName",JahiaTools.replaceNullString(fileName,""));
+//
+//            if ( isAvailable != null ){
+//                request.setAttribute("isAvailable",new Integer(1));
+//            } else {
+//                request.setAttribute("isAvailable",new Integer(0));
+//            }
+//
+//            if ( subAction != null && subAction.equals("save") && canAddNew ){
+//                if ( templName == null || (templName.length()<=0)
+//                     || fileName == null || (fileName.length()<=0) ) {
+//                  String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.completeRequestInfo.label",
+//                                                     jParams.getLocale());
+//                  request.setAttribute("warningMsg", dspMsg);
+//                } else {
+//
+//                    // save definition in db
+//                    String path = ManageTemplates.context.getRealPath(properties.getProperty("jahiaTemplatesDiskPath") );
+//
+//                    while ( rootFolder.startsWith("/")
+//                            || rootFolder.startsWith("\\")
+//                            || rootFolder.startsWith(".") ){
+//                        rootFolder = rootFolder.substring(1,rootFolder.length());
+//                    }
+//
+//                    while ( rootFolder.endsWith("/")
+//                            || rootFolder.endsWith("\\") ){
+//                        rootFolder = rootFolder.substring(0,rootFolder.length()-1);
+//                    }
+//
+//                    // check if the file really exist
+//                    StringBuffer tempFullPath = new StringBuffer (1024);
+//                    tempFullPath.append(path);
+//                    tempFullPath.append(File.separator);
+//                    tempFullPath.append(site.getSiteKey());
+//                    tempFullPath.append(File.separator);
+//                    tempFullPath.append(rootFolder);
+//                    tempFullPath.append(File.separator) ;
+//                    tempFullPath.append(fileName) ;
+//
+//                    if ( !JahiaTools.checkFileNameCaseSensitive(tempFullPath.toString()) ){
+//                      String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.noFile.label",
+//                                                         jParams.getLocale());
+//                      warningMsg += " " + fileName + " ";
+//                      warningMsg += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.inFolder.label",
+//                                                         jParams.getLocale());
+//                      warningMsg += " " + rootFolder;
+//                      request.setAttribute("warningMsg", warningMsg);
+//                    } else if ( rootFolder.startsWith(".") ){
+//                      String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.invalidTemplateFolder.label",
+//                                                         jParams.getLocale());
+//                        request.setAttribute("warningMsg",warningMsg);
+//                    } else {
+//                        StringBuffer buff = new StringBuffer (1024);
+//                        buff.append(properties.getProperty("jahiaTemplatesDiskPath"));
+//                        buff.append(site.getSiteKey());
+//                        buff.append("/") ;
+//                        if ( !rootFolder.equals("") ){
+//                            buff.append(rootFolder);
+//                            buff.append("/") ;
+//                        }
+//                        buff.append(fileName) ;
+//                        String sourcePath = JahiaTools.replacePattern(buff.toString(),"\\","/");
+//
+//                        JahiaPageDefinition def = pageTempServ.getPageTemplateBySourcePath(site.getID(),sourcePath);
+//                        if ( def == null || !def.getSourcePath().equals(sourcePath) ){
+//
+//                            pageTempServ.createPageTemplate (
+//
+//                                        site.getID(),
+//                                        templName,
+//                                        sourcePath,
+//                                        (isAvailable != null),
+//                                        pageType,
+//                                        null,
+//                                        "",      	// no image
+//                                        site.getAclID() );
+//
+//                            String warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.template.label",
+//                                jParams.getLocale());
+//                            warningMsg += " " + fileName + " ";
+//                            warningMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.warningMsg.templateAdded.label",
+//                                jParams.getLocale());
+//                            request.setAttribute("warningMsg",warningMsg);
+//                        } else {
+//                            request.setAttribute("warningMsg",
+//                            "This template is already registered in Jahia");
+//                        }
+//                    }
+//                }
+//
+//            }
+//
+//            JahiaAdministration.doRedirect(request,response,session,JSP_PATH + "template_add.jsp");
+//
+//        } catch ( NoSuchNodeTypeException e ) {
+//            logger.error("Node type not found",e);
+//        } catch ( JahiaException je ) {
+//          String dspMsg = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.JahiaDisplayMessage.requestProcessingError.label",
+//                                             jParams.getLocale());
+//          request.setAttribute("jahiaDisplayMessage", dspMsg);
+//            JahiaAdministration.doRedirect( request,
+//                                            response,
+//                                            session,
+//                                            JSP_PATH + "menu.jsp" );
+//        }
+//
+//
+//    } // end addTemplate
+//
 
 
 

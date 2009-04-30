@@ -57,7 +57,6 @@ import org.jahia.services.sitemap.JahiaSiteMapService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.sso.CasService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates_deployer.JahiaTemplatesDeployerService;
 import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.services.toolbar.JahiaToolbarService;
 import org.jahia.services.urlrewriting.URLRewritingService;
@@ -144,10 +143,6 @@ public class ServicesRegistry {
 
     // Jahia Fetcher Service
     private static final String JAHIA_FETCHER_SERVICE = "JahiaFetcherService";
-
-    // Jahia Templates Deployer Service
-    private static final String JAHIA_TEMPLATES_DEPLOYER_SERVICE =
-            "JahiaTemplatesDeployerService";
 
     // Jahia WebApps Deployer Service
     private static final String JAHIA_WEBAPPS_DEPLOYER_SERVICE =
@@ -374,13 +369,6 @@ public class ServicesRegistry {
      */
     public JahiaFetcherService getJahiaFetcherService() {
         return (JahiaFetcherService) getService(JAHIA_FETCHER_SERVICE);
-    }
-
-    /**
-     * NK 20.01.2001
-     */
-    public JahiaTemplatesDeployerService getJahiaTemplatesDeployerService() {
-        return (JahiaTemplatesDeployerService) getService(JAHIA_TEMPLATES_DEPLOYER_SERVICE);
     }
 
     /**

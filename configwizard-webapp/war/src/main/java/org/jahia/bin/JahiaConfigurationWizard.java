@@ -1867,14 +1867,11 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         properties.setProperty("release", release);
         properties.setProperty("server", (String) serverInfos.get("type"));
         properties.setProperty("serverHomeDiskPath", (String) values.get("server_home"));
-        properties.setProperty("jahiaFilesDiskPath", (String) values.get("server_jahiafiles"));
         properties.setProperty("jahiaEtcDiskPath", values.get("server_jahiafiles") + "/etc/");
         properties.setProperty("jahiaVarDiskPath", values.get("server_jahiafiles") + "/var/");
         properties.setProperty("jahiaFilesBigTextDiskPath", values.get("server_jahiafiles") + "/var/content/bigtext/");
         properties.setProperty("slideContentDiskPath", values.get("server_jahiafiles") + "/var/content/slide/");
         properties.setProperty("tmpContentDiskPath", values.get("server_jahiafiles") + "/var/content/tmp/");
-        properties.setProperty("jahiaFilesTemplatesDiskPath", values.get("server_jahiafiles") + "/var/templates/");
-        properties.setProperty("jahiaNewTemplatesDiskPath", values.get("server_jahiafiles") + "/var/new_templates/");
         properties.setProperty("jahiaNewWebAppsDiskPath", values.get("server_jahiafiles") + "/var/new_webapps/");
         properties.setProperty("jahiaImportsDiskPath", values.get("server_jahiafiles") + "/var/imports/");
         properties.setProperty("jahiaSharedTemplatesDiskPath", values.get("server_jahiafiles") + "/var/shared_templates/");

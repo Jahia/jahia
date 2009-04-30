@@ -168,11 +168,6 @@
                  type="org.jahia.services.fetchers.JahiaFetcherService">
   </mbean>
 
-  <mbean         name="JahiaTemplatesDeployerService"
-          description="Template deployer service"
-                 type="org.jahia.services.templates_deployer.JahiaTemplatesDeployerService">
-  </mbean>
-
   <mbean         name="JahiaWebAppsDeployerService"
           description="Web application deployer service"
                  type="org.jahia.services.webapps_deployer.JahiaWebAppsDeployerService">

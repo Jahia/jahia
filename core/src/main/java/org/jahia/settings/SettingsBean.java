@@ -89,14 +89,12 @@ public class SettingsBean {
     private String jahiaEtcDiskPath;
     private String jahiaVarDiskPath;
     private String jahiaFilesBigTextDiskPath;
-    private String jahiaFilesTemplatesDiskPath;
     private String jahiaCasDiskPath;
     private String jahiaHostHttpPath;
     private String jahiaTemplatesHttpPath;
     private String jahiaEnginesHttpPath;
     private String jahiaWebAppsDeployerBaseURL;
     private String jahiaJavaScriptDiskPath;
-    private String jahiaNewTemplatesDiskPath;
     private String jahiaPreparePortletJCRPath;
     private String jahiaNewWebAppsDiskPath;
     private String jahiaImportsDiskPath;
@@ -351,9 +349,7 @@ public class SettingsBean {
             jahiaVarDiskPath = JahiaTools.convertContexted (getString("jahiaVarDiskPath"), pathResolver);
             jahiaFilesBigTextDiskPath = JahiaTools.convertContexted (getString("jahiaFilesBigTextDiskPath"), pathResolver);
             tmpContentDiskPath = JahiaTools.convertContexted (getString("tmpContentDiskPath"), pathResolver);
-            jahiaFilesTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaFilesTemplatesDiskPath"), pathResolver);
             jahiaCasDiskPath = JahiaTools.convertContexted (getString("jahiaCasDiskPath"), pathResolver);
-            jahiaNewTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaNewTemplatesDiskPath"), pathResolver);
             jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
@@ -1089,16 +1085,6 @@ public class SettingsBean {
     } // end getJahiaFilesDataDiskPath
 
     /**
-     * Used to get the templates jahiafiles disk path.
-     *
-     * @return  The templates jahiafiles disk path.
-     */
-    public String getJahiaFilesTemplatesDiskPath() {
-        return jahiaFilesTemplatesDiskPath;
-    } // end getJahiaFilesTemplatesDiskPath
-
-
-    /**
      * Used to get the CAS configuration directory disk path.
      *
      * @return  The Cas configuration disk path.
@@ -1106,16 +1092,6 @@ public class SettingsBean {
     public String getJahiaCasDiskPath() {
         return jahiaCasDiskPath;
     } // end getJahiaCasDiskPath
-
-    /**
-     * Used to get the new templates disk path.
-     *
-     * @return  The new templates disk path.
-     */
-    public String getJahiaNewTemplatesDiskPath() {
-        return jahiaNewTemplatesDiskPath;
-    } // end getJahiaNewTemplatesDiskPath
-
 
     /**
      * Used to get the shared templates disk path.
@@ -1368,7 +1344,8 @@ public class SettingsBean {
     }
 
     public String getJetspeedDeploymentDirectory() {
-        throw new UnsupportedOperationException("jetspeedDeploymentDirectory no longer supported!");
+        return null;
+        //throw new UnsupportedOperationException("jetspeedDeploymentDirectory no longer supported!");
     }
 
     public String getPropertiesFileName() {

@@ -24,11 +24,8 @@
 
 package org.jahia.services.sites;
 
-import java.io.File;
-
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.templates_deployer.JahiaTemplatesDeployerService;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaSiteGroupManagerService;
@@ -43,9 +40,6 @@ import org.jahia.services.usermanager.JahiaUser;
  * @version 1.0
  */
 public final class JahiaSiteTools {
-
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger (JahiaSiteTools.class);
 
     /**
      * Create a new membership for a user
@@ -112,83 +106,6 @@ public final class JahiaSiteTools {
         }
 
         return jgms.getAdministratorGroup (site.getID ());
-    }
-
-
-    /**
-     * Create the template directory for a gived site
-     *
-     * @param site  the site reference
-     * @deprecated due to changes in the template deployment
-     */
-    public static boolean createTemplateDir (JahiaSite site) {
-
-        if (site == null) {
-            return false;
-        }
-
-        JahiaTemplatesDeployerService jtds =
-                ServicesRegistry.getInstance ()
-                .getJahiaTemplatesDeployerService ();
-        if (jtds == null) {
-            return false;
-        }
-
-        // get the root folder for all templates
-        String jahiaTemplatesRootPath = jtds.getTemplateRootPath ();
-        if (jahiaTemplatesRootPath == null) {
-            return false;
-        }
-
-        // compose the full template path for this site
-        StringBuffer buff = new StringBuffer (jahiaTemplatesRootPath);
-        buff.append (File.separator);
-        buff.append (site.getSiteKey ());
-
-        logger.debug (" start creating the template path " + buff.toString ());
-
-        // create the folder
-        File f = new File (buff.toString ());
-        if (!f.isDirectory ()) {
-            return f.mkdirs ();
-        } else {
-            return true;
-        }
-
-    }
-
-
-    /**
-     * Return the full path to a site's template root folder
-     *
-     * @param site  the site reference
-     *
-     * @return String
-     * @deprecated due to changes in the template deployment
-     */
-    public static String getSiteTemplateFolder (JahiaSite site) throws JahiaException {
-
-        if (site == null) {
-            return null;
-        }
-
-        String templateRootPath = ServicesRegistry.getInstance ()
-                .getJahiaTemplatesDeployerService ()
-                .getTemplateRootPath ();
-
-        String templateContext = ServicesRegistry.getInstance ()
-                .getJahiaTemplatesDeployerService ()
-                .getTemplatesContext ();
-
-        if (templateRootPath == null || templateContext == null) {
-            return null;
-        }
-
-
-        String path = templateRootPath + File.separator + site.getSiteKey ();
-
-        return path;
-
     }
 
 

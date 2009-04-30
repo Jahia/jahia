@@ -314,41 +314,6 @@ tidyConfig                                             =   tidy.properties
 displayMarkedForDeletedContentObjects                  =   true
 
 ######################################################################
-### Authentication pipeline ########################################
-######################################################################
-#
-# Jahia now uses a pipeline mechanism to process user authentication, which
-# allows developers to extend the system for custom authentication back-ends.
-#
-# You might want to modify the pipeline if you want to extend Jahia's
-# authentication system, for example by adding a JAASAuthValve or something
-# else.
-#
-# Name of the file containing the valve configuration for the authentication
-# pipeline
-authPipelineFileName                                   =   /WEB-INF/etc/config/auth-pipeline.xml
-# Class name for the pipeline implementation to use when creating the
-# authorization pipeline.
-authPipelineClassName                                  =   org.jahia.pipelines.impl.GenericPipeline
-
-######################################################################
-### Process pipeline #################################################
-######################################################################
-#
-# Jahia now uses a pipeline mechanism to process requests, which
-# allows developers to extend the system for custom processing.
-#
-# You might want to modify the pipeline if you want to extend Jahia's
-# processing system
-#
-# Name of the file containing the valve configuration for the processing
-# pipeline
-processPipelineFileName                                   =   /WEB-INF/etc/config/process-pipeline.xml
-# Class name for the pipeline implementation to use when creating the
-# request processing pipeline.
-processPipelineClassName                                  =   org.jahia.pipelines.impl.GenericPipeline
-
-######################################################################
 ### Concurrent processing options ####################################
 ######################################################################
 #

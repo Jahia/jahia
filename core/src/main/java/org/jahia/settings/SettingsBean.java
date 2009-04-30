@@ -200,12 +200,6 @@ public class SettingsBean {
     private boolean cookieAuthRenewalActivated;
     private boolean cookieAuthActivated;
 
-    private String authPipelineFileName;
-    private String authPipelineClassName;
-
-    private String processPipelineClassName;
-    private String processPipelineFileName;
-
     private String tmpContentDiskPath;
     private long templatesObserverInterval;
     private String schedulerConfigFile;
@@ -549,11 +543,6 @@ public class SettingsBean {
             cookieAuthMaxAgeInSeconds = getInt("cookieAuthMaxAgeInSeconds", 60*60*24*30 /* 30 days expiration */);
             cookieAuthRenewalActivated = getBoolean("cookieAuthRenewalActivated", true);
 
-            authPipelineFileName = getString("authPipelineFileName", "/WEB-INF/etc/config/auth-pipeline.xml");
-            authPipelineClassName = getString("authPipelineClassName", "org.jahia.pipelines.impl.GenericPipeline");
-
-            processPipelineFileName = getString("processPipelineFileName", "/WEB-INF/etc/config/process-pipeline.xml");
-            processPipelineClassName = getString("processPipelineClassName", "org.jahia.pipelines.impl.GenericPipeline");
             schedulerConfigFile = JahiaTools.convertContexted (getString("schedulerConfigFile", "$context/WEB-INF/etc/config/quartz.properties"), pathResolver);
             ramSchedulerConfigFile = JahiaTools.convertContexted (getString("ramSchedulerConfigFile", "$context/WEB-INF/etc/config/quartz-ram.properties"), pathResolver);
             isProcessingServer = getBoolean("processingServer", true);
@@ -1369,18 +1358,6 @@ public class SettingsBean {
     }
     public boolean isCookieAuthRenewalActivated() {
         return cookieAuthRenewalActivated;
-    }
-    public String getAuthPipelineFileName() {
-        return authPipelineFileName;
-    }
-    public String getAuthPipelineClassName() {
-        return authPipelineClassName;
-    }
-    public String getProcessPipelineClassName() {
-        return processPipelineClassName;
-    }
-    public String getProcessPipelineFileName() {
-        return processPipelineFileName;
     }
     public PathResolver getPathResolver() {
         return pathResolver;

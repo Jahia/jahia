@@ -122,6 +122,14 @@ integer         maxNews = 10 indexed=no
 sharedSmallText display (choicelist) = medium indexed=no < large,medium,small
 category        filter (category[autoSelectParent=false]) indexed=no
 
+[web_templates:lastPagesContainer] > jnt:container
+integer         maxPages = 10 indexed=no
+sharedSmallText display (choicelist) = published indexed=no < published,created,updated
+category        filter (category[nodeTypes=nt:folder]) indexed=no
+
+[web_templates:mediaGalleryContainer] > jnt:container
+file pictFolder (file[folder])
+
 // Web templates content extensions
 
 [web_templates:paragraphContainer] > jnt:mainContentContainer
@@ -141,6 +149,10 @@ smallText      abstract (text[multiline])
 
 // Web templates Box
 
+[web_templates:lastPagesBox] > jnt:box
+ singleContainer lastPagesContainer (web_templates:lastPagesContainer)
+
+
 [web_templates:lastNewsBox] > jnt:box
  singleContainer lastNewsContainer (web_templates:lastNewsContainer)
 
@@ -155,7 +167,7 @@ singleContainer banner (web_templates:bannerContainer)
 containerList   promo (web_templates:promoAdvancedContainer)
 containerList   promoLarge (web_templates:promoAdvancedContainer)
 containerList   columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="jnt:IframeBox,web_templates:lastNewsBox,jnt:textsBox,web_templates:filesBox"])
-containerList   columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:flashBox,web_templates:lastNewsBox,jnt:fileContentBox,jnt:videoBox"])
+containerList   columnB_box (jnt:box [addMixin="jmix:skinnable", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox,jnt:rssBox,jnt:flashBox,web_templates:lastNewsBox,jnt:fileContentBox,jnt:videoBox,web_templates:lastPagesBox"])
 containerList   basicLinkHeader (web_templates:basicLinkContainer)
 singleContainer footerContainerList (web_templates:footerContentContainer)
 containerList   basicLinkFooter (web_templates:basicLinkContainer)
@@ -203,3 +215,5 @@ containerList columnA_box (jnt:box [addMixin="jmix:skinnable", availableTypes="w
 [web_templates:layoutManager] > jnt:page,web_templates:navigation, web_templates:introduction
 containerList columnA_box (jnt:box [addMixin="jmix:skinnable,web_templates:layoutmanagerBoxExtraFields", availableTypes="web_templates:filesBox,jnt:textsBox,jnt:linksBox"])
 
+[web_templates:mediaGallery] > jnt:page,web_templates:navigation, web_templates:introduction
+singleContainer pictures (web_templates:mediaGalleryContainer)

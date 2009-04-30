@@ -69,10 +69,10 @@
                           so.addParam("quality", "${qualityFlash}");
                     </c:if>
                     <c:if test="${not empty alignFlash}">
-                          so.addParam("align", "${alignFlash.defaultValue}");
+                          so.addParam("align", "${alignFlash.value}");
                     </c:if>
                     <c:if test="${not empty salignFlash}">
-                          so.addParam("salign", "${salignFlash.defaultValue}");
+                          so.addParam("salign", "${salignFlash.value}");
                     </c:if>
                     <c:if test="${not empty baseFlash}">
                           so.addParam("base", "${baseFlash}");

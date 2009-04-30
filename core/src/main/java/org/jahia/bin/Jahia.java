@@ -784,11 +784,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             if (ParamBean.getDefaultSite() == null) {
                 JahiaSitesService jahiaSitesService = ServicesRegistry.getInstance().getJahiaSitesService();
                 if (jahiaSitesService.getNbSites() > 0) {
-                    JahiaSite jahiaSite = jahiaSitesService.getSiteByKey(org.jahia.settings.SettingsBean.getInstance().getDefaultSite());
-                    if (jahiaSite == null) {
-                        jahiaSite = (JahiaSite) jahiaSitesService.getSites().next();
-                    }
-                    jahiaSitesService.setDefaultSite(jahiaSite);
+                    jahiaSitesService.setDefaultSite(jahiaSitesService.getSites().next());
                 } else {
                     Cookie[] cookies = request.getCookies();
                     if (cookies != null) {

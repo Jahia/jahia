@@ -151,9 +151,6 @@ public class SettingsBean {
     // Default language code for multi-language system
     private String defaultLanguageCode;
 
-    // Default site
-    private String defaultSite;
-
     private boolean aclPreloadActive = true;
 
     // the (optional) url the user will be redirected after logout
@@ -481,8 +478,6 @@ public class SettingsBean {
             // load mime types
             initDtdEntityResolver ();
             loadMimeTypes ();
-
-            defaultSite = getString("defautSite");
 
             // load MaxCached values (max_cached_*)
             maxCachedValues = new HashMap<String, Long>();
@@ -1339,9 +1334,6 @@ public class SettingsBean {
     }
     public String getDefaultURIEncoding() {
         return defaultURIEncoding;
-    }
-    public String getDefaultSite() {
-        return defaultSite;
     }
 
     public int getCookieAuthIDLength() {

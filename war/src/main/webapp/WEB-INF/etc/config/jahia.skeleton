@@ -398,13 +398,6 @@ schedulerConfigFile                                    =   $context/WEB-INF/etc/
 ramSchedulerConfigFile                                 =   $context/WEB-INF/etc/config/quartz-ram.properties
 
 ######################################################################
-### Default site #####################################################
-######################################################################
-# This setting is configured by Jahia, to know which is the default
-# site to display.
-defautSite                                             =
-
-######################################################################
 ### Site serverName testing config ###################################
 ######################################################################
 # The following configuration parameters mostly concern the generation of the

@@ -17,7 +17,6 @@
 
 package org.jahia.engines.shared;
 
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.data.containers.JahiaContainer;
 import org.jahia.data.fields.FieldsEditHelper;
 import org.jahia.data.fields.FieldsEditHelperAbstract;
@@ -152,7 +151,7 @@ public class DAVFile_Field implements FieldSubEngine {
             engineMap.put("canAdmin", Boolean.valueOf(object.hasPermission(JCRNodeWrapper.MANAGE)));
             jParams.setParameter("select-file",object.getPath());
         } else {
-            jParams.setParameter("select-file", JahiaConstants.NULL_STRING_MARKER);
+            jParams.setParameter("select-file", JahiaField.NULL_STRING_MARKER);
             engineMap.remove("deniedUsers");
             engineMap.remove("canAdmin");
         }
@@ -293,7 +292,7 @@ public class DAVFile_Field implements FieldSubEngine {
             engineMap.put("canAdmin", Boolean.valueOf(rm.hasPermission(JCRNodeWrapper.MANAGE)));
             jParams.setParameter("select-file", rm.getPath());
         } else {
-            jParams.setParameter("select-file", JahiaConstants.NULL_STRING_MARKER);
+            jParams.setParameter("select-file", JahiaField.NULL_STRING_MARKER);
             engineMap.remove("deniedUsers");
             engineMap.remove("canAdmin");
         }

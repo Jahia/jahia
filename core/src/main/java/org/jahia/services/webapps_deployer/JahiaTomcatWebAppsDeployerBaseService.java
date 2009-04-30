@@ -27,14 +27,12 @@ package org.jahia.services.webapps_deployer;
 
 import org.apache.commons.io.FileUtils;
 import org.jahia.data.applications.ApplicationBean;
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.data.webapps.*;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.webapps_deployer.tomcat.TomcatWebAppsDeployer;
 import org.jahia.services.webapps_deployer.tomcat.Tomcat_Users_Xml;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.PathResolver;
 import org.jahia.utils.keygenerator.JahiaKeyGen;
 
 import java.io.File;
@@ -92,8 +90,6 @@ public class JahiaTomcatWebAppsDeployerBaseService extends
      */
     private boolean m_TomcatInitErr = false;
 
-    private PathResolver pathResolver = null;
-
     private String jetspeedDeploymentDirectory;
 
     /**
@@ -125,8 +121,6 @@ public class JahiaTomcatWebAppsDeployerBaseService extends
             throws JahiaInitializationException {
 
         super.start();
-
-        this.pathResolver = settingsBean.getPathResolver();
 
         m_JahiaWebAppsDeployerBaseURL = settingsBean.
                 getJahiaWebAppsDeployerBaseURL();
@@ -712,23 +706,12 @@ public class JahiaTomcatWebAppsDeployerBaseService extends
                 m_TomcatUserName,
                 m_TomcatUserPassword
         );
-        /*
-         boolean doStop		 = ( m_ServerType.endsWith(JahiaConstants.SERVER_TOMCAT4_BETA2)
-         || m_ServerType.endsWith(JahiaConstants.SERVER_TOMCAT4_BETA3)
-         || m_ServerType.endsWith(JahiaConstants.SERVER_TOMCAT4_BETA6) );
-         */
-        boolean doStop = (!m_ServerType.endsWith(JahiaConstants.
-                SERVER_TOMCAT4_BETA1));
 
         if (context.startsWith("/")) {
-            if (doStop) {
-                deployer.stop(context);
-            }
+            deployer.stop(context);
             return deployer.undeploy(context);
         } else {
-            if (doStop) {
-                deployer.stop("/" + context);
-            }
+            deployer.stop("/" + context);
             return deployer.undeploy("/" + context);
         }
 

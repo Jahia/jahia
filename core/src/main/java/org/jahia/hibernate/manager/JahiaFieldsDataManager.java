@@ -29,7 +29,6 @@ import org.jahia.content.ContentFieldKey;
 import org.jahia.content.ContentObject;
 import org.jahia.content.CrossReferenceManager;
 import org.jahia.content.ObjectKey;
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
@@ -668,7 +667,7 @@ public class JahiaFieldsDataManager {
                 if (value == null) {
                     // this ugly hack is necessary because Oracle is incapable of
                     // distinguishing between NULL and empty string values.
-                    value = JahiaConstants.NULL_STRING_MARKER;
+                    value = JahiaField.NULL_STRING_MARKER;
                 }
                 activeValues.put(entryState, value);
             }
@@ -764,7 +763,7 @@ public class JahiaFieldsDataManager {
             if (value == null) {
                 // this ugly hack is necessary because Oracle is incapable of
                 // distinguishing between NULL and empty string values.
-                value = JahiaConstants.NULL_STRING_MARKER;
+                value = JahiaField.NULL_STRING_MARKER;
             }
             activeValues.put(entryState, value);
             oldData = data;
@@ -810,7 +809,7 @@ public class JahiaFieldsDataManager {
                 if (value == null) {
                     // this ugly hack is necessary because Oracle is incapable of
                     // distinguishing between NULL and empty string values.
-                    value = JahiaConstants.NULL_STRING_MARKER;
+                    value = JahiaField.NULL_STRING_MARKER;
                 }
                 activeValues.put(entryState, value);
             }
@@ -1098,7 +1097,7 @@ public class JahiaFieldsDataManager {
                 if (value == null) {
                     // this ugly hack is necessary because Oracle is incapable of
                     // distinguishing between NULL and empty string values.
-                    value = JahiaConstants.NULL_STRING_MARKER;
+                    value = JahiaField.NULL_STRING_MARKER;
                 }
                 activeValues.put(entryState, value);
                 fieldId = data.getComp_id().getId();
@@ -1213,7 +1212,7 @@ public class JahiaFieldsDataManager {
                 if (value == null) {
                     // this ugly hack is necessary because Oracle is incapable of
                     // distinguishing between NULL and empty string values.
-                    value = JahiaConstants.NULL_STRING_MARKER;
+                    value = JahiaField.NULL_STRING_MARKER;
                 }
                 activeValues.put(entryState, value);
                 oldData = data;

@@ -23,7 +23,6 @@ import java.util.GregorianCalendar;
 
 
 import org.jahia.data.JahiaData;
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.gui.GuiBean;
 import org.jahia.security.license.CommonDaysLeftValidator;
 import org.jahia.security.license.LicenseConstants;
@@ -32,7 +31,6 @@ import org.jahia.security.license.LicensePackage;
 import org.jahia.security.license.Limit;
 import org.jahia.services.toolbar.resolver.PropertyResolver;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.utils.i18n.ResourceBundleMarker;
 
 
 

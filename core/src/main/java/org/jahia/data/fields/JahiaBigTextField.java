@@ -33,7 +33,6 @@ import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 import org.jahia.bin.Jahia;
 import org.jahia.data.FormDataManager;
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
@@ -190,7 +189,7 @@ public class JahiaBigTextField extends JahiaField implements
             logger.debug("InvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsiInvalidateEsi");
 
         String value = getValue();
-        if (value != null && !value.equals(JahiaConstants.NULL_STRING_MARKER)) {
+        if (value != null && !value.equals(JahiaField.NULL_STRING_MARKER)) {
             value = cleanUpHardCodedLinks(value, jParams, jParams.getLocale(), sessionAttribute);
         }
         setRawValue(value);

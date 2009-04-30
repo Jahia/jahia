@@ -23,7 +23,6 @@
 package org.jahia.services.webapps_deployer.tomcat;
 
 
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.utils.JahiaTools;
 
 import java.io.BufferedReader;
@@ -52,9 +51,6 @@ public class TomcatWebAppsDeployer {
 
     private static org.apache.log4j.Logger logger =
             org.apache.log4j.Logger.getLogger (TomcatWebAppsDeployer.class);
-
-    /** The Tomcat Version * */
-    private static String m_TomcatVersion = JahiaConstants.SERVER_TOMCAT;
 
     /** The Tomcat user name * */
     private static String m_TomcatUserName = "Jahia";
@@ -103,7 +99,6 @@ public class TomcatWebAppsDeployer {
                                   ) {
 
 
-        m_TomcatVersion = tomcatVersion;
         m_JahiaWebAppsDeployerBaseURL = m_WebAppsDeployerBaseURL;
         m_TomcatUserName = username;
         m_TomcatUserPassword = password;
@@ -114,12 +109,6 @@ public class TomcatWebAppsDeployer {
             logger.error ("Error in URL http://localhost:8080", mue);
         }
 
-        /*
-        logger.debug("TomcatWebAppsDeployer, using username=" +
-                             m_TomcatUserName + " and password=" +
-                             m_TomcatUserPassword);
-        */
-
         //default
         m_ListUrlBase = m_JahiaWebAppsDeployerBaseURL + "/list?";
         m_DeployUrlBase = m_JahiaWebAppsDeployerBaseURL + "/deploy?";
@@ -127,11 +116,6 @@ public class TomcatWebAppsDeployer {
         m_ReloadUrlBase = m_JahiaWebAppsDeployerBaseURL + "/reload?";
         m_StartUrlBase = m_JahiaWebAppsDeployerBaseURL + "/start?";
         m_StopUrlBase = m_JahiaWebAppsDeployerBaseURL + "/stop?";
-
-        if (m_TomcatVersion.endsWith (JahiaConstants.SERVER_TOMCAT4_BETA1)) { // the server is tomcatb1...
-            m_DeployUrlBase = m_JahiaWebAppsDeployerBaseURL + "/install?";
-            m_UnDeployUrlBase = m_JahiaWebAppsDeployerBaseURL + "/remove?";
-        }
 
         m_DeployUrlBase = m_JahiaWebAppsDeployerBaseURL + "/install?";
         m_UnDeployUrlBase = m_JahiaWebAppsDeployerBaseURL + "/remove?";

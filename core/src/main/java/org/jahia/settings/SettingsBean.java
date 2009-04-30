@@ -37,7 +37,7 @@ package org.jahia.settings;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
 import org.jahia.admin.database.DatabaseScripts;
-import org.jahia.data.constants.JahiaConstants;
+import org.jahia.services.templates.JahiaTemplatesPackageHandler;
 import org.jahia.tools.files.MimeTypesFromWebAppXmlFile;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
@@ -429,10 +429,7 @@ public class SettingsBean {
             File jahiaContextFolder = new File (pathResolver.resolvePath("." + File.separator));
             File parent = jahiaContextFolder.getAbsoluteFile().getParentFile ();
 
-            if (server.indexOf (JahiaConstants.SERVER_TOMCAT4_BETA1) != -1) {         // the server is tomcatb1...
-                jahiaHomeDiskPath = jahiaContextFolder.getAbsolutePath ();
-                jahiaWebAppsDiskPath = parent.getAbsolutePath () + File.separator;
-            } else if (server.indexOf (JahiaConstants.SERVER_TOMCAT) != -1) {      // the server is tomcat
+            if (server.indexOf ("Tomcat") != -1) {      // the server is tomcat
                 jahiaHomeDiskPath = parent.getAbsolutePath ();
                 // look in the properties file. If not found guess from jahiaContextFolder
                 jahiaWebAppsDiskPath = properties.getProperty("jahiaWebAppsDiskPath");
@@ -966,26 +963,17 @@ public class SettingsBean {
      */
     private void initDtdEntityResolver () {
 
-        mResolver = new DtdEntityResolver ();
+        mResolver = new DtdEntityResolver();
         String diskPath = this.jahiaEtcDiskPath;
 
         // register local DTD
-        //System.out.println(diskPath + JahiaConstants.WEB_DTD_RESOURCE_PATH_22);
-        File resourceFile = new File (diskPath, JahiaConstants.WEB_DTD_RESOURCE_PATH_22);
-        mResolver.registerDTD (JahiaConstants.WEB_DTD_PUBLICID_22, resourceFile);
+        mResolver.registerDTD(
+                "-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN",
+                new File(diskPath, "xml_dtd/application_1_2.dtd"));
 
-        //System.out.println(diskPath + JahiaConstants.WEB_DTD_RESOURCE_PATH_23);
-        resourceFile = new File (diskPath, JahiaConstants.WEB_DTD_RESOURCE_PATH_23);
-        mResolver.registerDTD (JahiaConstants.WEB_DTD_PUBLICID_23, resourceFile);
-
-        //System.out.println(diskPath + JahiaConstants.J2EE_APP_DTD_RESOURCE_PATH_12);
-        resourceFile = new File (diskPath, JahiaConstants.J2EE_APP_DTD_RESOURCE_PATH_12);
-        mResolver.registerDTD (JahiaConstants.J2EE_APP_DTD_PUBLICID_12, resourceFile);
-
-        mResolver
-                .registerSchema(JahiaConstants.TEMPLATES_DESCRIPTOR_20_URI,
-                        new File(diskPath,
-                                JahiaConstants.TEMPLATES_DESCRIPTOR_20_PATH));
+        mResolver.registerSchema(
+                JahiaTemplatesPackageHandler.TEMPLATES_DESCRIPTOR_20_URI,
+                new File(diskPath, "xml_dtd/templates_2_0.xsd"));
     }
 
     //--------------------------------------------------------------------------

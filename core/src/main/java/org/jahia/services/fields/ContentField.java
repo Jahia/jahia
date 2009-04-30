@@ -1473,8 +1473,8 @@ public abstract class ContentField extends ContentObject
             if(theResult!=null) {
                 loadedDBValues.put (objectEntryState, theResult);
             } else {
-                loadedDBValues.put (objectEntryState, org.jahia.data.constants.JahiaConstants.NULL_STRING_MARKER);
-                return org.jahia.data.constants.JahiaConstants.NULL_STRING_MARKER;
+                loadedDBValues.put (objectEntryState, org.jahia.data.fields.JahiaField.NULL_STRING_MARKER);
+                return org.jahia.data.fields.JahiaField.NULL_STRING_MARKER;
             }
         }
         return theResult;

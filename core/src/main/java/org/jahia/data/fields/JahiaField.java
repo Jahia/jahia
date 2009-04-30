@@ -86,6 +86,8 @@ public abstract class JahiaField implements Cloneable, Serializable,
     // used as comparable
     private int order;
 
+    public static final String NULL_STRING_MARKER = "<empty>";
+
     protected JahiaField(Integer ID,
                          Integer jahiaID,
                          Integer pageID,

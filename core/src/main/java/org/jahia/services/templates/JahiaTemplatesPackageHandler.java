@@ -29,7 +29,6 @@ import static org.jahia.services.templates.TemplateDeploymentDescriptorHelper.TE
 import java.io.File;
 import java.io.IOException;
 
-import org.jahia.data.constants.JahiaConstants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaTemplateServiceException;
@@ -49,8 +48,10 @@ public class JahiaTemplatesPackageHandler {
 
     static final String NS_URI_JAHIA = "http://www.jahia.org/jahia/templates";
     
+    public static final String TEMPLATES_DESCRIPTOR_20_URI = "http://www.jahia.org/shemas/templates_2_0.xsd";
+    
     static final String SCHEMA_LOCATION = NS_URI_JAHIA + " "
-            + JahiaConstants.TEMPLATES_DESCRIPTOR_20_URI;
+            + TEMPLATES_DESCRIPTOR_20_URI;
 
     /**
      * The full path to the Template Jar File *

@@ -105,7 +105,12 @@ public class SitemapTag extends AbstractJahiaTag {
 
                 if (startPid < 1) {
                     startPage = jParams.getSite().getHomePage() ;
-                    startPid = startPage.getID() ;
+                    if (startPage == null) {
+                        return(SKIP_BODY);
+                    }
+                    else {
+                        startPid = startPage.getID() ;
+                    }
                 } else {
                     startPage = ServicesRegistry.getInstance().getJahiaPageService().lookupPage(startPid, jParams) ;
                 }

@@ -450,16 +450,19 @@ public class NavigationMenuTag extends AbstractJahiaTag {
             if (navMenuItemBean.isMarkedForDelete()) {
                 aCssString += "markedForDelete";
             }
-
+            // Start item
             out.append("<li class=\"item_").append(navMenuItemBean.getItemCount());
             if (cssClassName != null) {
                 out.append(" ").append(cssClassName);
             }
+            // Display css arguments
             out.append(" ").append(liCssString).append("\">");
+            // display title if menu list is not set
             if (!navMenuItemBean.isActionMenuOnly()) {
-                            if (displayActionMenuBeforeLink && editMode) {
+                    if (displayActionMenuBeforeLink && editMode) {
                     out.append(navMenuItemBean.getActionMenu());
                 }
+                // If an URL is set display link
                 if (navMenuItemBean.getUrl() != null && navMenuItemBean.getUrl().length() > 0) {
                     out.append("<a class=\"").append(aCssString).append("\" href=\"").append(navMenuItemBean.getUrl()).append("\">");
                 }
@@ -605,6 +608,9 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         String title = link.getTitle();
                         // don't display the link if undisplayable and in non edit mode
                         if (!editMode && (title == null || title.equals(""))) {
+                            if (navMenuItemBean.isFirstInLevel()) {
+                                begin = true;
+                            }
                             continue;
                         }
                         int linkID = link.getID();
@@ -649,13 +655,24 @@ public class NavigationMenuTag extends AbstractJahiaTag {
                         if (separator != null && separator.getValue().length() > 0) {
                             navMenuItemBean.setTitle(separator.getValue());
                             navMenuItemBean.setDisplayLink(separator.getValue());
+                             navMenuItemsBean.add(navMenuItemBean);
                         }
                         else {
                         // add an empty navItemBean to show the action menu if needed
                             navMenuItemBean.setTitle(getMessage("noPageSet", "n/d"));
                             navMenuItemBean.setDisplayLink(getMessage("noPageSet", "n/d"));
+                            navMenuItemBean.setNoPageSet(true);
+                            if (editMode && linkContainer.checkWriteAccess(jData.getProcessingContext().getUser())) {
+                                 navMenuItemsBean.add(navMenuItemBean);
+                            }
+                            else {
+                                if (navMenuItemBean.isFirstInLevel()) {
+                                    begin = true;
+                                }
+                                
+                            }
                         }
-                        navMenuItemsBean.add(navMenuItemBean);
+
                     }
                 }
             }
@@ -771,9 +788,17 @@ public class NavigationMenuTag extends AbstractJahiaTag {
         private String displayLink = "";
         private int itemCount=0;
         private boolean actionMenuOnly = false;
-
+        private boolean noPageSet = false;
         public String getSeparator() {
             return separator;
+        }
+
+        public boolean isNoPageSet() {
+            return noPageSet;
+        }
+
+        public void setNoPageSet(boolean noPageSet) {
+            this.noPageSet = noPageSet;
         }
 
         public void setSeparator(String separator) {

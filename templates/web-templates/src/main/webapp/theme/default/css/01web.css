@@ -605,6 +605,7 @@ body {
 
 #bodywrapper #languages span table {
     display: inline;
+	vertical-align:bottom;
 }
 
 /******************************************************************************

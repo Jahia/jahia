@@ -44,7 +44,7 @@
 
     <appender name="Console" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d: %-5p [%c] - %m%n"></param>
+            <param name="ConversionPattern" value="%d: %-5p [%c{1}] - %m%n"></param>
             <!-- another useful pattern to see date time,class, lines
             BUT cpu intensive
             -->

@@ -44,6 +44,7 @@ import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.jahia.bin.Jahia;
 import org.jahia.data.fields.ExpressionMarker;
+import org.jahia.data.fields.JahiaField;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.TokenAuthValveImpl;
@@ -315,7 +316,10 @@ public class JahiaTools {
         if (str == null) {
             result = new String[]{};
         } else {
-            result = str.split(sep);
+            if(sep.equals(JahiaField.MULTIPLE_VALUES_SEP))
+                result=str.split("\\$\\$\\$");
+            else
+                result = str.split(sep);
         }
         return result;
     }

@@ -218,7 +218,7 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
     public void saveProperty(JahiaUserProp prop) {
         HibernateTemplate hibernateTemplate = getHibernateTemplate();
         hibernateTemplate.setFlushMode(HibernateTemplate.FLUSH_AUTO);
-        hibernateTemplate.save(prop);
+        hibernateTemplate.saveOrUpdate(prop);
     }
 
     public void updateProperty(JahiaUserProp prop) {

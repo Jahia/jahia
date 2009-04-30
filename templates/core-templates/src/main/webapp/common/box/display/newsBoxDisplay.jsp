@@ -22,6 +22,6 @@
 <div class="newslist">
     <template:containerList name="${boxID}_newsContainer" id="newsList"
                            actionMenuNamePostFix="newss" actionMenuNameLabelKey="newss.add">
-        <%@ include file="../../news/newsDisplay.jspf" %>
+        <%@ include file="../../../modules/news/newsDisplay.jspf" %>
     </template:containerList>
 </div>

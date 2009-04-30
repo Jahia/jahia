@@ -314,14 +314,6 @@ tidyConfig                                             =   tidy.properties
 displayMarkedForDeletedContentObjects                  =   true
 
 ######################################################################
-### Jetspeed Portal   ################################################
-######################################################################
-# Configuration for the integrated Jetspeed JSR-168 compatible
-# portal server.
-jetspeedConfig                                         =   WEB-INF/etc/jetspeed/conf/jetspeed.properties
-jetspeedDeploymentDirectory                            =   $context/WEB-INF/etc/jetspeed/deploy
-
-######################################################################
 ### Authentication pipeline ########################################
 ######################################################################
 #

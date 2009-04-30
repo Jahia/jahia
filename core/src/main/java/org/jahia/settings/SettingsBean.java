@@ -207,8 +207,6 @@ public class SettingsBean {
 
     private boolean isSiteErrorEnabled;
 
-    private String jetspeedDeploymentDirectory;
-
     private String freeMemoryLimit= new Double((Runtime.getRuntime().maxMemory()*0.2)/ (1024*1024)).longValue() + "MB";
 
     private int clusterCacheMaxBatchSize = 100000;
@@ -535,8 +533,6 @@ public class SettingsBean {
 
             workflowDisplayStatusForLinkedPages = getBoolean("workflowDisplayStatusForLinkedPages", true);
             workflowDefaultType = getString("workflowDefaultType", "two_validation_step_workflow");
-
-            jetspeedDeploymentDirectory = JahiaTools.convertContexted (getString("jetspeedDeploymentDirectory", "$context/WEB-INF/deploy"), pathResolver);
 
             // the (optional) url the user will be redirected after logout
             logoutRedirectUrl = getString("logoutRedirectUrl", null);
@@ -1372,11 +1368,7 @@ public class SettingsBean {
     }
 
     public String getJetspeedDeploymentDirectory() {
-        return jetspeedDeploymentDirectory;
-    }
-
-    public void setJetspeedDeploymentDirectory(String jetspeedDeploymentDirectory) {
-        this.jetspeedDeploymentDirectory = jetspeedDeploymentDirectory;
+        throw new UnsupportedOperationException("jetspeedDeploymentDirectory no longer supported!");
     }
 
     public String getPropertiesFileName() {

@@ -47,10 +47,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.content.JCRJahiaContentNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * User: jahia
@@ -239,20 +236,22 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 int warns = 0;
                 int errors = 0;
                 List<GWTJahiaNodeOperationResultItem> vals = new ArrayList<GWTJahiaNodeOperationResultItem>();
+                Set<String> msgs = new HashSet<String>();
                 GWTJahiaNodeOperationResult validation = val.get(processingContext.getCurrentLocale().toString());
                 if (validation != null)  {
                     vals.addAll(validation.getErrorsAndWarnings());
                     for (GWTJahiaNodeOperationResultItem resultItem : vals) {
-                        if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.WARNING) {
+                        if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.WARNING && !msgs.contains(resultItem.getMessage())) {
                             warns++;
-                        } else if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.ERROR) {
+                        } else if (resultItem.getLevel() == GWTJahiaNodeOperationResultItem.ERROR && !msgs.contains(resultItem.getMessage())) {
                             errors++;
                         }
+                        msgs.add(resultItem.getMessage());
                     }
                 }
                 if (warns>0) {
                     GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-                    gwtToolbarItem.setTitle(vals.size()+" warnings");
+                    gwtToolbarItem.setTitle(warns+" warnings");
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
                     
@@ -265,7 +264,7 @@ public class JahiaItemsGroupFactoryImpl implements ItemsGroupFactory {
                 }
                 if (errors>0) {
                     GWTJahiaToolbarItem gwtToolbarItem = new GWTJahiaToolbarItem();
-                    gwtToolbarItem.setTitle(vals.size()+" errors");
+                    gwtToolbarItem.setTitle(errors+" errors");
                     gwtToolbarItem.setDisplayTitle(true);
                     gwtToolbarItem.setMinIconStyle("gwt-toolbar-ItemsGroup-icons-workflow-warn");
 

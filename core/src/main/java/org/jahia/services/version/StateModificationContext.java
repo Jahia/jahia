@@ -80,6 +80,8 @@ public class StateModificationContext {
     public StateModificationContext(final ObjectKey startObject, final Set languageCodes) {
         this();
         currentTreePath.push(startObject);
+        allModifiedObjects.add(startObject);
+
         if (languageCodes != null) {
             this.languageCodes = languageCodes;
         } else {

@@ -558,15 +558,6 @@ public abstract class ContentField extends ContentObject
                 isPickedValidForActivation(activateLanguageCodes, stateModifContext));
         }
 
-        /* FIXME NK : should we really abort the activation if there are only warning ?
-         * In case of page field (LINK) created initially without any link, the page field will fail activate
-         * because there is a warning stating that the Content Page is not valid for activation 
-         */
-        if ( getType() == org.jahia.data.fields.FieldTypes.PAGE &&
-        				activationResults.getStatus() != ActivationTestResults.COMPLETED_OPERATION_STATUS) {
-            return activationResults;
-        }
-
         if (activationResults.getStatus () == ActivationTestResults.FAILED_OPERATION_STATUS) {
             return activationResults;
         }
@@ -1090,27 +1081,6 @@ public abstract class ContentField extends ContentObject
     }
 
     /**
-     * Returns the workflow state of all the languages contained in this fields
-     * content object. This is used for example to get the internal state of
-     * page objects.
-     * In this class we provide a default implementation as most fields that
-     * are not shared will not need to do this. Ideally we might want to have
-     * seperate interfaces for shared and non-shared fields or something like
-     * this.
-     * This returns the state of both the active and staged languages, the
-     * staging version taking priority over the active for a given language.
-     *
-     * @param entryState the field entry state for which to retrieve the
-     *                   content language states.
-     *
-     * @return an Map that contains the language code String as the key,
-     *         and the current workflow state of the language is the value
-     */
-    protected Map<String, Integer> getContentLanguageStates (ContentObjectEntryState entryState) {
-        return new HashMap<String, Integer>();
-    }
-
-    /**
      * Called when marking a language for deletion on a field. This is done
      * first to allow field implementation to provide a custom behavior when
      * marking fields for deletion. It isn't abstract because most fields will
@@ -1594,14 +1564,6 @@ public abstract class ContentField extends ContentObject
                         new Integer (entryState.getWorkflowState ()));
             }
 
-        // now let's ask all the different field implementations to provide
-        // their internal language status.
-            Map<String, Integer> contentLanguageStates = getContentLanguageStates(entryState);
-            if (contentLanguageStates != null) {
-                for (Map.Entry<String, Integer> curLanguage : contentLanguageStates.entrySet()) {
-                    languageStates.put(curLanguage.getKey(), curLanguage.getValue());
-                }
-            }
         }
 
         return languageStates;

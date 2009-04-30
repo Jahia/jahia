@@ -115,23 +115,14 @@ public class SettingsBean {
 
     private String jahiaJavaScriptHttpPath;
     private String classDiskPath;
-    private String componentsDiskPath;
     private String localAccessUri;
-
-    // directory to output cache configuration file
-    private String jahiaOutputCacheConfigDiskPath;
 
     // map containing all max_cached_*...
     private Map<String, Long> maxCachedValues;
     // map containing all max_cachedgroups_*...
     private Map<String, Long> maxCachedGroupsValues;
 
-
-    // this is the list of jahia.properties autodeployer values...
-    private int jahiaWebAppsAutoDeploy;
-
     // this is the list of jahia.properties files values...
-    private String jahiaFileRepositoryDiskPath;
     private long jahiaFileUploadMaxSize;
 
     // Characters encoding
@@ -168,11 +159,6 @@ public class SettingsBean {
     private String defaultSite;
 
     private boolean aclPreloadActive = true;
-
-    // should the webdav filenames be converted into full-ascii
-    private boolean transformFilenames;
-
-    private boolean transformDirnames;
 
     private boolean preloadFolders;
 
@@ -212,7 +198,6 @@ public class SettingsBean {
     private String jmxRMISSLServerSocketFactoryKeyManagerPassword = null;
     private String defaultResponseBodyEncoding;
     private String defaultURIEncoding;
-    private int preloadCountForPageProperties;
     private boolean jmxActivated;
 
     private int cookieAuthIDLength;
@@ -230,7 +215,6 @@ public class SettingsBean {
 
     private String tmpContentDiskPath;
     private long templatesObserverInterval;
-    private long webAppsObserverInterval;
     private String schedulerConfigFile;
     private String ramSchedulerConfigFile;
 
@@ -253,7 +237,6 @@ public class SettingsBean {
 
     private int maxAggregatedEvents = 5000;
 
-    private boolean useFlatFileManager;
     private boolean showTimeBasedPublishingIcons;
     private boolean developmentMode = true;
     private boolean readOnlyMode = false;
@@ -398,7 +381,6 @@ public class SettingsBean {
             jahiaEnginesDiskPath = pathResolver.resolvePath (getString("jahiaEnginesDiskPath"));
             jahiaJavaScriptDiskPath = pathResolver.resolvePath (getString("jahiaJavaScriptDiskPath"));
             classDiskPath = pathResolver.resolvePath (getString("classDiskPath"));
-            componentsDiskPath = pathResolver.resolvePath (getString("componentsDiskPath"));
             jahiaFilesDiskPath = JahiaTools.convertContexted (getString("jahiaFilesDiskPath"), pathResolver);
             jahiaEtcDiskPath = JahiaTools.convertContexted (getString("jahiaEtcDiskPath"), pathResolver);
             jahiaVarDiskPath = JahiaTools.convertContexted (getString("jahiaVarDiskPath"), pathResolver);
@@ -410,7 +392,6 @@ public class SettingsBean {
             jahiaNewWebAppsDiskPath = JahiaTools.convertContexted (getString("jahiaNewWebAppsDiskPath"), pathResolver);
             jahiaImportsDiskPath = JahiaTools.convertContexted (getString("jahiaImportsDiskPath"), pathResolver);
             jahiaSharedTemplatesDiskPath = JahiaTools.convertContexted (getString("jahiaSharedTemplatesDiskPath"), pathResolver);
-            jahiaOutputCacheConfigDiskPath = JahiaTools.convertContexted (getString("jahiaOutputCacheConfigDiskPath"), pathResolver);
             jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
 
             jahiaHostHttpPath = getString("jahiaHostHttpPath");
@@ -451,16 +432,10 @@ public class SettingsBean {
             }
 
             // autodeployer...
-            String webappAutoDeploy = getString("jahiaWebAppsAutoDeploy");
-            if (webappAutoDeploy != null) {
-                jahiaWebAppsAutoDeploy = Integer.parseInt (webappAutoDeploy);
-            }
             templatesObserverInterval = getLong("templates.observer.interval", 5000);
-            webAppsObserverInterval = getLong("webapps.observer.interval", 5000);
 
             // files...
-            jahiaFileRepositoryDiskPath = JahiaTools.convertContexted (getString("jahiaFileRepositoryDiskPath"), pathResolver);
-            jahiaFileUploadMaxSize = Long.parseLong (getString("jahiaFileUploadMaxSize"));
+            jahiaFileUploadMaxSize = getLong("jahiaFileUploadMaxSize");
 
             // chars encoding
             utf8Encoding = getBoolean("utf8Encoding");
@@ -497,8 +472,6 @@ public class SettingsBean {
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
             aclPreloadActive = getBoolean("org.jahia.acl.preload_active", true);
-
-            preloadCountForPageProperties = getInt("org.jahia.pages.properties.preload_count", 2000);
 
             // mail settings...
             mail_service_activated = getBoolean("mail_service_activated", false);
@@ -585,8 +558,6 @@ public class SettingsBean {
             }
 
             // webdav settings
-            transformFilenames = getBoolean("transformFilenames", false);
-            transformDirnames  = getBoolean("transformDirnames", true);
             preloadFolders  = getBoolean("preloadFolders", false);
 
             cookieAuthActivated = getBoolean("cookieAuthActivated", true);
@@ -634,7 +605,6 @@ public class SettingsBean {
 
             maxAggregatedEvents = getInt("maxAggregatedEvents", 5000);
 
-            useFlatFileManager = getBoolean("useFlatFileManager", true);
             showTimeBasedPublishingIcons = getBoolean("showTimeBasedPublishingIcons", true);
             localAccessUri = getString("localAccessUri", "http://localhost:8080");
             developmentMode = getBoolean("developmentMode",true);
@@ -1054,12 +1024,6 @@ public class SettingsBean {
         this.useRelativeSiteURLs = val;
     }
 
-
-    public boolean isAppInheritingJahiaSessionAttributes () {
-        return appInheritJahiaSessionAttributes;
-    }
-
-
     public String getJahiaWebAppsDeployerBaseURL () {
         return jahiaWebAppsDeployerBaseURL;
     }
@@ -1203,16 +1167,6 @@ public class SettingsBean {
     } // end getJahiaCasDiskPath
 
     /**
-     * Returns the disk path to the output cache configuration directory
-     * @return a String containing the disk path to the output cache configuration
-     * directory
-     */
-
-    public String getJahiaOutputCacheConfigDiskPath() {
-        return jahiaOutputCacheConfigDiskPath;
-    }
-
-    /**
      * Used to get the new templates disk path.
      *
      * @return  The new templates disk path.
@@ -1231,15 +1185,6 @@ public class SettingsBean {
         return jahiaSharedTemplatesDiskPath;
     }
 
-
-    /**
-     * Used to get the components disk path.
-     *
-     * @return  The components disk path.
-     */
-    public String getComponentsDiskPath() {
-        return componentsDiskPath;
-    } // end getComponentsDiskPath
 
     /**
      * Url to make a local jahia request
@@ -1300,7 +1245,7 @@ public class SettingsBean {
      */
     public String getTemplatesContext() {
         return templatesContext;
-    } // end getTemplatesContext
+    }
 
     /**
      * Used to get the engines context.
@@ -1309,7 +1254,7 @@ public class SettingsBean {
      */
     public String getEnginesContext() {
         return enginesContext;
-    } // end getEnginesContext(
+    }
 
     /**
      * Used to get the javascript context.
@@ -1318,31 +1263,10 @@ public class SettingsBean {
      */
     public String getJavascriptContext() {
         return javascriptContext;
-    } // end getJavascriptContext(
-
-    /**
-     * Used to get the webapps autodeployer flag.
-     *
-     * @return  The webapps autodeployer flag.
-     */
-    public int getJahiaWebAppsAutoDeploy() {
-        return jahiaWebAppsAutoDeploy;
-    } // end getJahiaWebAppsAutoDeploy
-
-    /*
-    public ServletConfig getConfig() {
-        return config;
     }
-    public ServletContext getContext() {
-        return context;
-    }
-    */
 
     public String getClassDiskPath() {
         return classDiskPath;
-    }
-    public String getJahiaFileRepositoryDiskPath() {
-        return jahiaFileRepositoryDiskPath;
     }
     public String getJahiaFilesBigTextDiskPath() {
         return jahiaFilesBigTextDiskPath;
@@ -1450,17 +1374,7 @@ public class SettingsBean {
     public String getDefaultSite() {
         return defaultSite;
     }
-    public int getPreloadCountForPageProperties() {
-        return preloadCountForPageProperties;
-    }
 
-    public boolean isTransformFilenames() {
-        return transformFilenames;
-    }
-
-    public boolean isTransformDirnames() {
-        return transformDirnames;
-    }
     public boolean isPreloadFolders() {
         return preloadFolders;
     }
@@ -1508,9 +1422,7 @@ public class SettingsBean {
     public long getTemplatesObserverInterval() {
         return templatesObserverInterval;
     }
-    public long getWebAppsObserverInterval() {
-        return webAppsObserverInterval;
-    }
+
     public String getSchedulerConfigFile() {
         return schedulerConfigFile;
     }
@@ -1602,10 +1514,6 @@ public class SettingsBean {
 
     public void setClusterCacheMaxBatchSize(int clusterCacheMaxBatchSize) {
         this.clusterCacheMaxBatchSize = clusterCacheMaxBatchSize;
-    }
-
-    public boolean isUseFlatFileManager() {
-        return useFlatFileManager;
     }
 
     public boolean showTimeBasedPublishingIcons() {

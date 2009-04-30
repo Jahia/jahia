@@ -53,10 +53,7 @@ jahiaWebAppsDiskPath                                   =
 
 jahiaCasDiskPath                                       =   $context/WEB-INF/etc/cas/
 
-jahiaOutputCacheConfigDiskPath                         =   $context/WEB-INF/etc/outputcache/
-
 classDiskPath                                          =   /WEB-INF/classes/
-componentsDiskPath                                     =   /WEB-INF/classes/components/
 
 
 ######################################################################
@@ -235,8 +232,6 @@ templates.boxes.onError                             	= full
 ### Filemanager  #####################################################
 ######################################################################
 # Configuration of the file manager that uses Slide as a back-end.
-jahiaFileRepositoryDiskPath                             =
-useFlatFileManager									    =  false
 jahiaFileUploadMaxSize                                  =  104857600
 
 ######################################################################
@@ -250,28 +245,14 @@ jahiaFileUploadMaxSize                                  =  104857600
 templates.observer.interval                            =   60000
 
 ######################################################################
-### WebApps Observer  ################################################
+### WebApps Deployment  ##############################################
 ######################################################################
-# The following section configured the service that checks for new
-# web applications (portlets) to deploy.
-jahiaWebAppsAutoDeploy                                 =   1
-# Time in milliseconds between checks in the new_webapps directory for new
-# webapps to deploy. Set to -1 to deactivate file watching completely.
-webapps.observer.interval                              =   60000
-webapps.observer.checkmode                             =   ALL
 # This setting is configured by the configuration wizard to use the
 # appropriate web applications deployer according to the application
 # server platform which Jahia is running on. We recommend you do not
 # modify this value unless it is false. Also currently only the Tomcat
 # implementation is fully tested and supported.
 JahiaWebAppsDeployerService                            =
-
-######################################################################
-### WebApps Dispatcher  ##############################################
-######################################################################
-# If you set this to true then the portlet applications will be able
-# to access session attributes set by the templates.
-webapps.dispatcher.inheritJahiaSessionAttributes       =   false
 
 ######################################################################
 ### WebApps Preparing war  ##############################################
@@ -318,13 +299,6 @@ preloadDBGroupMembersActivated                         = true
 checkAclInPagePath                                     = true
 
 ######################################################################
-### Page properties ##################################################
-######################################################################
-# Specifies the number of page IDs to pre-load upon Jahia's page
-# service startup
-org.jahia.pages.properties.preload_count               =   2000
-
-######################################################################
 ### Tidy Configuration file ##########################################
 ######################################################################
 # Tidy is an HTML parser that is one of the multiple ones that is
@@ -335,13 +309,6 @@ tidyConfig                                             =   tidy.properties
 ######################################################################
 ### WebDAV processing options ########################################
 ######################################################################
-# Specifies whether we should transform file names because of compatibility
-# problems with Windows WebDAV implementation.
-transformFilenames                                     =   false
-# Same option for directories, set to true by default because there are
-# serious bugs in Windows' WebDAV implementation when using non ISO-8859-1
-# characters.
-transformDirnames                                      =   true
 
 # preload folders when displaying tree
 preloadFolders                                         =   false

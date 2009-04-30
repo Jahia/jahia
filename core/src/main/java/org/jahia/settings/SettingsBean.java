@@ -131,9 +131,6 @@ public class SettingsBean {
     // Lock activation
     private boolean locksActivated;
 
-    // flat view activation
-    private boolean enableSelectPageFlatView;
-
     private boolean outputContainerCacheActivated = false;
 
     // Activation / deactivation of site ID in URLs
@@ -338,10 +335,6 @@ public class SettingsBean {
         return propertiesManager.getPropertiesObject ();
     } // end readJahiaPropertiesFile
 
-    public boolean isEnableSelectPageFlatView() {
-        return enableSelectPageFlatView;
-    }
-
     /**
      * This method load and convert properties from the jahia.properties file,
      * and set some variables used by the SettingsBean class.
@@ -383,7 +376,6 @@ public class SettingsBean {
             htmlEditorsContext = getString("jahiaHtmlEditorsDiskPath");
             enginesContext = getString("jahiaEnginesDiskPath");
             javascriptContext = getString("jahiaJavaScriptDiskPath");
-            enableSelectPageFlatView = getBoolean("enableSelectPageFlatView", true);
             displayMarkedForDeletedContentObjects = getBoolean("displayMarkedForDeletedContentObjects", false);
 
             // jahia real path...

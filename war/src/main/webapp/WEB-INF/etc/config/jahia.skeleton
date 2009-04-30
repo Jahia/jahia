@@ -607,13 +607,10 @@ aclDiff_display											= false
 # This is only available for smalltext and bigtext fields.
 inlineEditingActivated                                  = true
 ######################################################################
-### Deprecated settings ##############################################
+### Locking ##########################################################
 ######################################################################
-# The following settings are deprecated, and will be removed in a future
-# version of Jahia. We recommend you do not modify them, as it will either
-# have no effect or will have adverse effects.
+# Use locking during editing/workflow operations?
 locksActivated                                          =  true
-### End of deprecated settings #######################################
 
 ######################################################################
 ### Wizard-inserted properties  ######################################
@@ -656,15 +653,6 @@ preloadedItemsForPagination                               = 100
 # Below you can change the default window size for the automatic pagination
 # of lists displayed in templates using the *containerList tags
 paginationWindowSize                                      = 100
-
-######################################################################
-### select page engine view    #######################################
-######################################################################
-# Enable or disable the flat view of the Select page engine. If there
-# is a lot (>10'000) pages, the flat view should be disabled for
-# performance reasons. Use the AJAXed tree view instead.
-#
-enableSelectPageFlatView                                = true
 
 ######################################################################
 ### Session settings #################################################

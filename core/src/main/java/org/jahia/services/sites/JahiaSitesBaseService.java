@@ -496,6 +496,11 @@ public class JahiaSitesBaseService extends JahiaSitesService {
                             .setWorkflowMode(page.getContentPage(),
                                     wfInfo.getMode(), wfInfo.getWorkflowName(),
                                     wfInfo.getProcessId(), jParams);
+                } else if (WorkflowService.INACTIVE == wfInfo.getMode()) {
+                    ServicesRegistry.getInstance().getWorkflowService()
+                            .setWorkflowMode(page.getContentPage(),
+                                    WorkflowService.INACTIVE, null, null,
+                                    jParams);
                 }
                 
                 jParams.setSubstituteEntryLoadRequest(savedEntryLoadRequest);

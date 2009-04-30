@@ -19,7 +19,7 @@ release                                                =
 server                                                 =
 # The server home disk path is application server specific, and is used
 # to deploy and configure new portlets, as well as other specific
-# adjusments such as Tomcat's in-memory realm automatic updating
+# adjustments such as Tomcat's in-memory realm automatic updating
 # (tomcat-users.xml files).
 serverHomeDiskPath                                     =
 
@@ -41,7 +41,6 @@ jahiaFilesDiskPath                                     =   $context/WEB-INF
 jahiaEtcDiskPath                                       =
 jahiaVarDiskPath                                       =
 jahiaFilesBigTextDiskPath                              =
-slideContentDiskPath                                   =   $context/WEB-INF/var/content/slide/
 tmpContentDiskPath                                     =   $context/WEB-INF/var/content/tmp/
 jahiaFilesTemplatesDiskPath                            =
 
@@ -492,10 +491,15 @@ processingServer                                       =   true
 # address ranges that are properly routed by the network hardware. The
 # default values comply with the IANA address space
 # (http://www.iana.org/assignments/multicast-addresses).
-# Check out the assignement ranges to see if they may conflict with
+# Check out the assignment ranges to see if they may conflict with
 # something that might be present on your network.
 
 # Here a default configuration for UDP Clustering
+# You will have to comment the TCP configuration and uncomment the UDP settings in the
+# following files :
+#../spring/applicationcontext-dao.xml, ../spring/applicationcontext-hibernate.xml,
+# ../spring/applicationcontext-services.xml
+
 
 cluster.service.multicast.ip_address                   = 231.12.21.130
 cluster.service.multicast.port                         = 45000
@@ -503,11 +507,6 @@ cluster.hibernate.multicast.ip_address                 = 231.12.21.134
 cluster.hibernate.multicast.port                       = 45050
 
 # Here a default configuration for TCP Clustering
-# You will have to comment the UDP configuration and uncomment the tcp ones int the
-# following files :
-#../spring/applicationcontext-dao.xml, ../spring/applicationcontext-hibernate.xml,
-# ../spring/applicationcontext-services.xml
-
 # The example below uses two-nodes cluster: 192.168.1.100 and 192.168.1.200
 # Current node is 192.168.1.100
 #
@@ -546,8 +545,9 @@ ehcache.jahia.file = ehcache-jahia.xml
 ######################################################################
 ### Workflow settings  ###############################################
 ######################################################################
-# Do we use external (n-step) workflow by default?
-workflowUseExternalByDefault							= true
+# What is the default workflow type?
+# Possible values are: inactive, two_validation_step_workflow, three_validation_step_workflow, four_validation_step_workflow
+workflowDefaultType										= two_validation_step_workflow
 # If set to 'true' the workflow status icons will also be displayed for pages with linked
 # workflow type.
 # This option does not apply to other content objects (containers and container lists).

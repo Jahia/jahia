@@ -23,7 +23,10 @@ package org.jahia.services.workflow;
  */
 public class WorkflowInfo {
 
-    public static final WorkflowInfo STANDARD = new WorkflowInfo(
+    static final WorkflowInfo INACTIVE = new WorkflowInfo(
+            WorkflowService.INACTIVE);
+
+    static final WorkflowInfo STANDARD = new WorkflowInfo(
             WorkflowService.JAHIA_INTERNAL);
 
     private int mode;

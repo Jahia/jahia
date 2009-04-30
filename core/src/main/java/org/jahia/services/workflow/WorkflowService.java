@@ -1779,14 +1779,17 @@ public class WorkflowService extends JahiaService {
     public WorkflowInfo getDefaultWorkflowEntry() {
 
         WorkflowInfo workflowEntry = null;
+        String defType = getSettingsBean().getWorkflowDefaultType();
 
-        // get the first available external workflow
-        if (externals != null
+        if ("standard".equals(defType)) {
+            workflowEntry = WorkflowInfo.STANDARD;
+        } else if ("inactive".equals(defType)) {
+            workflowEntry = WorkflowInfo.INACTIVE;
+        } else if (externals != null
                 && !externals.isEmpty()
-                && getSettingsBean().isWorkflowUseExternalByDefault()
                 && LicenseActionChecker.isAuthorizedByLicense(
                         "org.jahia.engines.workflow.ExternalWorkflows", 0)) {
-            
+
             Map.Entry<String, ExternalWorkflow> defaultWokflow = externals
                     .entrySet().iterator().next();
             // create workflow entry
@@ -1794,7 +1797,8 @@ public class WorkflowService extends JahiaService {
             ExternalWorkflow workflow = defaultWokflow.getValue();
             Collection<String> processes = workflow.getAvailableProcesses();
             if (!processes.isEmpty()) {
-                String processId = processes.iterator().next();
+                String processId = processes.contains(defType) ? defType
+                        : processes.iterator().next();
                 workflowEntry = new WorkflowInfo(WorkflowService.EXTERNAL,
                         name, processId);
             }

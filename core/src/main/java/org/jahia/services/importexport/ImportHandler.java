@@ -1713,10 +1713,8 @@ public class ImportHandler extends DefaultHandler {
                     service.setWorkflowMode(object, wfInfo.getMode(), wfInfo
                             .getWorkflowName(), wfInfo.getProcessId(), jParams);
                 } else {
-                    service
-                            .setWorkflowMode(object,
-                                    WorkflowService.JAHIA_INTERNAL, null, null,
-                                    jParams);
+                    service.setWorkflowMode(object, wfInfo.getMode(), null,
+                            null, jParams);
                 }
             } else if ("external".equals(wf)) {
                 String name = atts.getValue(ImportExportService.JAHIA_URI, "workflowName");

@@ -255,7 +255,7 @@ public class SettingsBean {
 
     private boolean workflowDisplayStatusForLinkedPages;
 
-    private boolean workflowUseExternalByDefault;
+    private String workflowDefaultType;
 
     private boolean displayMarkedForDeletedContentObjects;
 
@@ -534,7 +534,7 @@ public class SettingsBean {
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
             workflowDisplayStatusForLinkedPages = getBoolean("workflowDisplayStatusForLinkedPages", true);
-            workflowUseExternalByDefault = getBoolean("workflowUseExternalByDefault", true);
+            workflowDefaultType = getString("workflowDefaultType", "two_validation_step_workflow");
 
             jetspeedDeploymentDirectory = JahiaTools.convertContexted (getString("jetspeedDeploymentDirectory", "$context/WEB-INF/deploy"), pathResolver);
 
@@ -1643,12 +1643,12 @@ public class SettingsBean {
         this.workflowDisplayStatusForLinkedPages = workflowDisplayStatusForLinkedPages;
     }
 
-    public boolean isWorkflowUseExternalByDefault() {
-        return workflowUseExternalByDefault;
+    public String getWorkflowDefaultType() {
+        return workflowDefaultType;
     }
 
-    public void setWorkflowUseExternalByDefault(boolean workflowUseExternalByDefault) {
-        this.workflowUseExternalByDefault = workflowUseExternalByDefault;
+    public void setWorkflowDefaultType(String workflowDefaultType) {
+        this.workflowDefaultType = workflowDefaultType;
     }
 
     public boolean isInlineEditingActivated() {

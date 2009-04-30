@@ -420,7 +420,7 @@ public abstract class FieldsEditHelperAbstract implements FieldsEditHelper {
                 if (!field.getDefinition().getItemDefinition().isProtected()) {
                     if (this.getContainerEditView().getFieldGroupByFieldName(field.getDefinition().getName()) != null) {
                         if (getEditedLanguages().contains(field.getLanguageCode())) {
-                            final ValidationError ve = field.validate();
+                            final ValidationError ve = field.validate(jahiaContentContainerFacade, elh, jParams);
                             if (ve != null) {
                                 evh.addError(ve);
                                 ve.setLanguageCode(field.getLanguageCode());

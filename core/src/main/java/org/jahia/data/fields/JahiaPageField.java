@@ -24,15 +24,24 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+import org.apache.struts.util.MessageResources;
+import org.apache.struts.validator.Resources;
 import org.jahia.content.ContentContainerKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
 import org.jahia.data.FormDataManager;
+import org.jahia.data.containers.ContainerFacadeInterface;
+import org.jahia.data.containers.DynaContainerValidatorBase;
 import org.jahia.data.events.JahiaEvent;
+import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.login.Login_Engine;
 import org.jahia.engines.logout.Logout_Engine;
+import org.jahia.engines.validation.JahiaFieldChecks;
+import org.jahia.engines.validation.ValidationError;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
+import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.fields.ContentField;
@@ -53,8 +62,7 @@ public class JahiaPageField extends JahiaField {
 
     private static final long serialVersionUID = -8931526637297593990L;
     
-    final private static org.apache.log4j.Logger logger = org.apache.log4j.Logger.
-            getLogger(JahiaPageField.class);
+    final private static Logger logger = Logger.getLogger(JahiaPageField.class);
 
     /**
      * constructor
@@ -448,4 +456,31 @@ public class JahiaPageField extends JahiaField {
         return values;
     }
 
+    @Override
+    public ValidationError validate(
+            ContainerFacadeInterface jahiaContentContainerFacade,
+            EngineLanguageHelper elh, ProcessingContext ctx)
+            throws JahiaException {
+        ValidationError result = super.validate(jahiaContentContainerFacade,
+                elh, ctx);
+        if (result != null)
+            return result;
+
+        boolean valid = JahiaFieldChecks
+                .validateMandatoryTitleIfLinkValid(
+                        new DynaContainerValidatorBase(
+                                jahiaContentContainerFacade, ctx),
+                        getDefinition().getName(), ctx);
+
+        ValidationError error = null;
+        if (!valid) {
+            MessageResources resources = Resources
+                    .getMessageResources(((ParamBean) ctx).getRequest());
+            error = new ValidationError(this, resources.getMessage(elh
+                    .getCurrentLocale(), "errors.required", resources
+                    .getMessage(elh.getCurrentLocale(), "label.title")));
+        }
+
+        return error;
+    }
 }

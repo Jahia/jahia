@@ -161,29 +161,8 @@ public class JahiaFieldChecks extends FieldChecks {
     public static boolean validateMandatoryTitleIfLinkValid(Object bean,
             ValidatorAction va, Field field, ActionMessages errors,
             HttpServletRequest request) {
-        boolean fieldValid = false;
-        String value = (String) getPropertyValue(bean, field.getProperty());
-        if (value != null) {
-            fieldValid = true;
-        } else {
-            ProcessingContext jParams = Jahia.getThreadParamBean();
-            Map pageBeans = null;
-            if (jParams != null) {
-                pageBeans = (Map) jParams.getSessionState().getAttribute(
-                    "Page_Field.PageBeans");
-            }
-            if (pageBeans == null) {
-                pageBeans = new HashMap();
-            }
-
-            JahiaPageEngineTempBean pageBean = (JahiaPageEngineTempBean) pageBeans
-                .get(field.getProperty());
-
-            if (pageBean == null || Page_Field.RESET_LINK.equals(pageBean.getOperation())) {
-                fieldValid = true;
-            }
-        }
-        return fieldValid;
+        return validateMandatoryTitleIfLinkValid(bean, field.getProperty(),
+                Jahia.getThreadParamBean());
     }    
     
 
@@ -326,6 +305,42 @@ public class JahiaFieldChecks extends FieldChecks {
             logger.error("unable to get property value " + property, ex);
         }
         return value;
+    }
+
+    /**
+     * Checks if title of a page field is set, only when the selected option
+     * is not "No link" or "Reset link"
+     * 
+     * @param bean
+     * @param fieldName
+     * @param ctx
+     * @return true if text in all languages is given, false if not
+     */
+    public static boolean validateMandatoryTitleIfLinkValid(Object bean,
+            String fieldName, ProcessingContext ctx) {
+        boolean fieldValid = false;
+        String value = (String) getPropertyValue(bean, fieldName);
+        if (value != null) {
+            fieldValid = true;
+        } else {
+            Map pageBeans = null;
+            if (ctx != null) {
+                pageBeans = (Map) ctx.getSessionState().getAttribute(
+                        "Page_Field.PageBeans");
+            }
+            if (pageBeans == null) {
+                pageBeans = new HashMap();
+            }
+
+            JahiaPageEngineTempBean pageBean = (JahiaPageEngineTempBean) pageBeans
+                    .get(fieldName);
+
+            if (pageBean == null
+                    || Page_Field.RESET_LINK.equals(pageBean.getOperation())) {
+                fieldValid = true;
+            }
+        }
+        return fieldValid;
     }
 
 }

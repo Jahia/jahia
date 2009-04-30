@@ -20,6 +20,7 @@
 package org.jahia.data.fields;
 
 import org.jahia.data.ConnectionTypes;
+import org.jahia.data.containers.ContainerFacadeInterface;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
@@ -30,8 +31,8 @@ import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.EntrySaveRequest;
 import org.jahia.sharing.FieldSharingManager;
+import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.validation.ValidationError;
-import org.jahia.bin.Jahia;
 import org.apache.lucene.document.DateTools;
 
 import java.util.*;
@@ -262,22 +263,29 @@ public class JahiaDateField extends JahiaField implements JahiaAllowApplyChangeT
         return new String[]{val};
     }
 
-    public ValidationError validate() throws JahiaException {
-        final ValidationError result = super.validate();
-        if (result != null) return result;
+    @Override
+    public ValidationError validate(
+            ContainerFacadeInterface jahiaContentContainerFacade,
+            EngineLanguageHelper elh,
+            ProcessingContext ctx) throws JahiaException {
+        final ValidationError result = super.validate(
+                jahiaContentContainerFacade, elh, ctx);
+        if (result != null)
+            return result;
 
-        final ProcessingContext jParams = Jahia.getThreadParamBean();
         final String fieldValue = getValue();
         if (fieldValue != null && fieldValue.length() > 0) {
-            final String dateFormat = this.getDefinition().getDefaultValue(
-            );
+            final String dateFormat = this.getDefinition().getDefaultValue();
             try {
-                final SimpleDateFormat fmt = JahiaDateFieldUtil.getDateFormatForParsing(dateFormat, jParams.getLocale());
+                final SimpleDateFormat fmt = JahiaDateFieldUtil
+                        .getDateFormatForParsing(dateFormat, elh.getCurrentLocale());
                 fmt.parse(fieldValue);
-                
+
             } catch (final ParseException ex) {
-                return new ValidationError(this, "The date you typed is not in the right format",
-                        "org.jahia.data.fields.JahiaDateField.unparsableDate", new String[]{fieldValue, dateFormat});
+                return new ValidationError(this,
+                        "The date you typed is not in the right format",
+                        "org.jahia.data.fields.JahiaDateField.unparsableDate",
+                        new String[] { fieldValue, dateFormat });
             }
         }
         return null;

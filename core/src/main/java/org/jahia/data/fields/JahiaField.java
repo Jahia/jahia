@@ -16,8 +16,12 @@
  */
 package org.jahia.data.fields;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.PropertiesInterface;
+import org.jahia.data.containers.ContainerFacadeInterface;
+import org.jahia.engines.EngineLanguageHelper;
 import org.jahia.engines.validation.ValidationError;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
@@ -48,6 +52,10 @@ public abstract class JahiaField implements Cloneable, Serializable,
     public static final String MULTIPLE_VALUES_SEP = "$$$";
     
     public static final String[] EMPTY_STRING_ARRAY = new String[]{""};
+    
+    private static Logger logger = Logger.getLogger(JahiaField.class);
+
+    
     
     protected int ID;
     protected int jahiaID;
@@ -670,12 +678,17 @@ public abstract class JahiaField implements Cloneable, Serializable,
         return result;
     }
 
-    public ValidationError validate() throws JahiaException {
-        boolean required = this.getDefinition().getItemDefinition().isMandatory();
-        if (required && (this.getValue() == null || "".equals(this.getValue().trim()))) {
-            return new ValidationError(this, "Value required");
-        }
-        return null;
+    protected boolean isMandatory() throws JahiaException {
+        return getDefinition().getItemDefinition().isMandatory();
+    }
+
+    public ValidationError validate(
+            ContainerFacadeInterface jahiaContentContainerFacade,
+            EngineLanguageHelper elh,
+            ProcessingContext jParams) throws JahiaException {
+        return isMandatory() && StringUtils.isBlank(this.getValue()) ? new ValidationError(
+                this, "Value required")
+                : null;
     }
 
     public boolean isForComparisonOnly() {
@@ -686,8 +699,4 @@ public abstract class JahiaField implements Cloneable, Serializable,
         this.forComparisonOnly = forComparisonOnly;
     }
 
-    private static org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(JahiaField.class);
-
-
-} // end JahiaField
+}

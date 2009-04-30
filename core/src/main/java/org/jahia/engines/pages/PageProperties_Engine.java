@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentPageKey;
@@ -1025,7 +1026,7 @@ public class PageProperties_Engine implements JahiaEngine {
     private boolean updatePageData(final ProcessingContext jParams, final Map engineMap,
                                    final String languageCode) throws JahiaException {
         final EngineMessages engineMessages = new EngineMessages();
-        boolean setPageTitleSuccessfull = setPageTitleIfNecessary(jParams, languageCode, engineMap);
+        boolean setPageTitleSuccessfull = setPageTitleIfNecessary(jParams, languageCode, engineMessages, engineMap);
         boolean setPageURLKeySuccessfull = setPageURLKeyIfValidAndNotEmpty(jParams, engineMessages, engineMap);
         setPageTemplateIDInEngineMapIfNecessary(jParams, engineMap);
         saveMessagesIfNotEmpty(engineMessages, jParams);
@@ -1116,7 +1117,7 @@ public class PageProperties_Engine implements JahiaEngine {
      * Validate and set page URL key if its present.
      * To be valid, the key must :
      * - not be a jahia reserved word
-     * - be composed of caracters in 0 to 9, a to z or A to Z, length min 2 max 250
+     * - be composed of characters in 0 to 9, a to z or A to Z, length min 2 max 250
      * - not be used by another page on current jahia site
      * <p/>
      * The validation stops as soon as one error condition is encountered. Higher cost validation is performed last in the chain.
@@ -1124,7 +1125,7 @@ public class PageProperties_Engine implements JahiaEngine {
      * @param jParams
      * @param engineMessages
      * @param engineMap
-     * @return true if the key is valid and was setted, false if empty or not valid.
+     * @return true if the key is valid and was set, false if empty or not valid.
      */
     private boolean setPageURLKeyIfValidAndNotEmpty(ProcessingContext jParams, EngineMessages engineMessages, Map engineMap) throws JahiaException {
         final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
@@ -1160,17 +1161,21 @@ public class PageProperties_Engine implements JahiaEngine {
      *
      * @param jParams
      * @param languageCode
+     * @param engineMessages
      * @param engineMap
-     * @return true if page title was successfully setted, false if empty
+     * @return true if page title was successfully set, false if empty
      */
-    private boolean setPageTitleIfNecessary(ProcessingContext jParams, String languageCode, Map engineMap) {
+    private boolean setPageTitleIfNecessary(ProcessingContext jParams, String languageCode, EngineMessages engineMessages, Map engineMap) {
         String pageTitle = jParams.getParameter("pageTitle");
-        if (pageTitle == null) return false;
         JahiaPageEngineTempBean pageTempBean = (JahiaPageEngineTempBean) engineMap.get("pageTempBean");
         pageTempBean.setTitle(languageCode, pageTitle);
+        engineMap.put("dataPageTitle", pageTitle);
         engineMap.put("validate", Boolean.valueOf(jParams.getParameter("validate") != null));
+        if (StringUtils.isBlank(pageTitle)) {
+            engineMessages.add("pageTitle", new EngineMessage("org.jahia.engines.pages.PageProperties_Engine.pageTitle.required.label"));
+            return false;
+        }
         return true;
-
     }
 
     /**

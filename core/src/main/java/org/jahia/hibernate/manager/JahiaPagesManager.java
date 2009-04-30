@@ -257,20 +257,6 @@ public class JahiaPagesManager {
         return dao.getAllAclId((siteID));
     }
 
-    public List<Integer> getFirstNPageIDs(int preloadCountForPageProperties) {
-        List<Integer> allIds = dao.getAllIds();
-        List<Integer> retVal;
-        if (allIds.size() > preloadCountForPageProperties) {
-            FastArrayList tempList = new FastArrayList(preloadCountForPageProperties);
-            tempList.addAll(allIds.subList(0, preloadCountForPageProperties));
-            tempList.setFast(true);
-            retVal = tempList;
-        } else {
-            retVal = allIds;
-        }
-        return retVal;
-    }
-
     public synchronized int getNbPages(int siteId) {
         if (siteId != -1) {
             return dao.getNbPages((siteId));

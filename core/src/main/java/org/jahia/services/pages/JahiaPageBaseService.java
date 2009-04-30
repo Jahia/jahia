@@ -1455,9 +1455,6 @@ public class JahiaPageBaseService extends JahiaPageService {
 
         if (templateService != null) {
             logger.debug("   ** Page Service successfully initialized!");
-
-                pageManager.getFirstNPageIDs(settingsBean.getPreloadCountForPageProperties());
-
         } else {
             // invalidate the previous initializations
             templateService = null;

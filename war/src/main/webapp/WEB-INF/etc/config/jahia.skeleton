@@ -499,10 +499,6 @@ processingServer                                       =   true
 
 cluster.service.multicast.ip_address                   = 231.12.21.130
 cluster.service.multicast.port                         = 45000
-cluster.idgenerator.multicast.ip_address               = 231.12.21.150
-cluster.idgenerator.multicast.port                     = 45020
-cluster.esicontentids.multicast.ip_address             = 231.12.21.133
-cluster.esicontentids.multicast.port                   = 45021
 cluster.hibernate.multicast.ip_address                 = 231.12.21.134
 cluster.hibernate.multicast.port                       = 45050
 

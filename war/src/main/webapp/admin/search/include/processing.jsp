@@ -1009,8 +1009,6 @@
     // to erase del from GET request
     if (window.location.search.indexOf("del=") != -1) {
         window.location = window.location.pathname;
-    } else if (window.location.search.indexOf("sub=doindex") != -1) {
-    	window.location = window.location.pathname + "?do=search&sub=display";
     }
 </script>
 <%

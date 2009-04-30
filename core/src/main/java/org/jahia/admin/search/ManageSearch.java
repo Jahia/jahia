@@ -289,7 +289,7 @@ public class ManageSearch extends AbstractAdministrationModule {
         //            + (request.getServerPort()!=80?":" + request.getServerPort():"");
         String refreshURL = JahiaAdministration.composeActionURL(request,response,"search","&sub=display");
 
-        response.setHeader("Refresh", "20;" + refreshURL);
+        response.setHeader("Refresh", "20; URL=" + refreshURL);
 
                 // set the default action
         request.setAttribute ("subAction", "chooseoperation");

@@ -975,7 +975,9 @@ public class ContainerSorterBean implements Serializable,
     }
 
     // --------------------------------------------------------------------------
-    protected static class StringComparator extends NumericStringComparator {
+    protected static class StringComparator extends NumericStringComparator<Object> {
+        private static final long serialVersionUID = 7401196544376498949L;
+        
         boolean ASC_Ordering = true;
 
         public StringComparator(boolean ASC_Ordering) {
@@ -998,6 +1000,7 @@ public class ContainerSorterBean implements Serializable,
     }
 
     protected static class NumberComparator implements Comparator<DataBean>,Serializable {
+        private static final long serialVersionUID = -5906577481847647850L;
         boolean ASC_Ordering = true;
         String numberFormat = "";
         public NumberComparator(boolean ASC_Ordering,String numberFormat) {

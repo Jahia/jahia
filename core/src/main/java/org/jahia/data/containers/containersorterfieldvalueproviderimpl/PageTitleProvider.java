@@ -32,6 +32,8 @@ import org.jahia.services.version.EntryLoadRequest;
  */
 public class PageTitleProvider implements ContainerSorterFieldValueProvider {
 
+    private static final long serialVersionUID = -1184905505819430500L;
+
     /**
      * Returns the page name of a file within a jahiaField
      *

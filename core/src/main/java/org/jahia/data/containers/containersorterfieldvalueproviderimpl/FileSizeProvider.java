@@ -34,6 +34,8 @@ import org.jahia.bin.Jahia;
  */
 public class FileSizeProvider implements ContainerSorterFieldValueProvider {
 
+    private static final long serialVersionUID = 4481815135117154813L;
+
     /**
      * Returns the file size of a file within a JahiaFieldFieldWrapper
      *

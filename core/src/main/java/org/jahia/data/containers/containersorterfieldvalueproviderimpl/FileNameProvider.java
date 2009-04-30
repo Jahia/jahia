@@ -34,6 +34,7 @@ import org.jahia.bin.Jahia;
  */
 public class FileNameProvider implements ContainerSorterFieldValueProvider {
 
+    private static final long serialVersionUID = -1528971944790506208L;
     private boolean withFullPath;
 
     /**

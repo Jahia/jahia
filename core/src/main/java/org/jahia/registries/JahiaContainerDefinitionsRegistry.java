@@ -19,7 +19,6 @@
 
 package org.jahia.registries;
 
-import org.apache.commons.collections.set.ListOrderedSet;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.containers.JahiaContainerDefinition;
@@ -49,6 +48,7 @@ import org.jahia.utils.JahiaTools;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -434,7 +434,7 @@ public class JahiaContainerDefinitionsRegistry implements CacheListener {
             logger.error("No types found for " + containerName);
             return 0;
         }
-        Set<ExtendedItemDefinition> items = new ListOrderedSet();
+        Set<ExtendedItemDefinition> items = new LinkedHashSet<ExtendedItemDefinition>();
 
         if (types.size() > 1) {
             for (ExtendedNodeType currentType : types) {

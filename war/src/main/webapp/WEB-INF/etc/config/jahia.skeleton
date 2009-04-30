@@ -307,12 +307,6 @@ checkAclInPagePath                                     = true
 tidyConfig                                             =   tidy.properties
 
 ######################################################################
-### Content Object titles ############################################
-######################################################################
-# Specifies the size of the titles we should display in the workflow
-workflowTitlesLength                                   =   20
-
-######################################################################
 ### Marked for deletion Content Object ###############################
 ######################################################################
 # Set to true if you want marked for deleted content objects to be

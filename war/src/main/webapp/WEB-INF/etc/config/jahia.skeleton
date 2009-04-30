@@ -307,13 +307,6 @@ checkAclInPagePath                                     = true
 tidyConfig                                             =   tidy.properties
 
 ######################################################################
-### WebDAV processing options ########################################
-######################################################################
-
-# preload folders when displaying tree
-preloadFolders                                         =   false
-
-######################################################################
 ### Content Object titles ############################################
 ######################################################################
 # Specifies the size of the titles we should display in site maps

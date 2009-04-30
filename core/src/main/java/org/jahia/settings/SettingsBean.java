@@ -148,10 +148,6 @@ public class SettingsBean {
     // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
     private boolean useRelativeSiteURLs;
 
-    // Flag that indicates whether applications can inherit from Jahia session
-    // attributes.
-    private boolean appInheritJahiaSessionAttributes;
-
     // Default language code for multi-language system
     private String defaultLanguageCode;
 
@@ -159,9 +155,6 @@ public class SettingsBean {
     private String defaultSite;
 
     private boolean aclPreloadActive = true;
-
-    private boolean preloadFolders;
-
 
     // the (optional) url the user will be redirected after logout
     public String logoutRedirectUrl;
@@ -459,10 +452,6 @@ public class SettingsBean {
             // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);
 
-            // Flag that indicates whether applications can inherit from Jahia session
-            // attributes.
-            appInheritJahiaSessionAttributes =getBoolean ("webapps.dispatcher.inheritJahiaSessionAttributes", false);
-
             // base URL (schema, host, port) to call the web apps deployer service.
             jahiaWebAppsDeployerBaseURL = getString ("jahiaWebAppsDeployerBaseURL", "http://127.0.0.1:8080/manager");
 
@@ -556,9 +545,6 @@ public class SettingsBean {
                     }
                 }
             }
-
-            // webdav settings
-            preloadFolders  = getBoolean("preloadFolders", false);
 
             cookieAuthActivated = getBoolean("cookieAuthActivated", true);
             cookieAuthIDLength = getInt("cookieAuthIDLength", 30);
@@ -1375,9 +1361,6 @@ public class SettingsBean {
         return defaultSite;
     }
 
-    public boolean isPreloadFolders() {
-        return preloadFolders;
-    }
     public int getCookieAuthIDLength() {
         return cookieAuthIDLength;
     }

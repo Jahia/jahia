@@ -222,18 +222,6 @@
                 validate="false">
         </action>
 
-        <action path="/GetChildren"
-                type="org.jahia.ajax.webdav.GetChildren"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetChildrenEntryPoint"
-                type="org.jahia.ajax.webdav.GetChildrenEntryPoint"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/GetWorkflowState"
             type="org.jahia.ajax.actionmenus.GetWorkflowState"
                 parameter="method"
@@ -252,18 +240,6 @@
                 validate="false">
         </action>
 
-        <action path="/GetFileManagerToolBar"
-                type="org.jahia.ajax.webdav.GetFileManagerToolBar"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/GetFileManagerToolbarAfterSelect"
-                type="org.jahia.ajax.webdav.GetFileManagerToolbarAfterSelect"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/GetCategories"
                 type="org.jahia.ajax.categories.GetCategories"
                 parameter="method"
@@ -278,12 +254,6 @@
 
         <action path="/GetQuotedPrintable"
                 type="org.jahia.ajax.GetQuotedPrintableStringAction"
-                parameter="method"
-                validate="false">
-        </action>
-
-        <action path="/SelecUnselectFile"
-                type="org.jahia.ajax.webdav.SelecUnselectFile"
                 parameter="method"
                 validate="false">
         </action>

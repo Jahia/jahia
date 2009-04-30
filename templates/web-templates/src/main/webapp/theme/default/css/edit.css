@@ -21,6 +21,32 @@
 #bodywrapper .markedForDelete {
     text-decoration: line-through !important;
 }
+
+/******************************************************************************
+* navigationN1
+******************************************************************************/
+#bodywrapper #navigationN1 li {
+	  padding-top:9px;
+    position:relative;
+    height:33px;
+}
+
+#bodywrapper #navigationN1 li .action-menu-icons {
+    position:absolute;
+    top:0;
+    right:0;
+}
+
+#bodywrapper #navigationN1 li .ContentContainerList {
+    position:relative;
+    margin-top:-9px ;
+    margin-left:1px;
+}
+
+#bodywrapper #navigationN1 li.last a {
+	background:transparent url(../img/navigationN1-separator.png) no-repeat scroll 100% 50%;
+}
+
 /******************************************************************************
 * navigationN2
 ******************************************************************************/

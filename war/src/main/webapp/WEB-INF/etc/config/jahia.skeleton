@@ -646,8 +646,6 @@ batchLoadingSize		                                  = 20
 ######################################################################
 ### container list pagination settings    ############################
 ######################################################################
-#
-#
 preloadedItemsForPagination                               = 100
 
 # Below you can change the default window size for the automatic pagination
@@ -690,20 +688,6 @@ userManagementUserNamePattern                           = [0-9a-z_A-Z\\-\\{\\}\\
 userManagementGroupNamePattern                          = [0-9a-z_A-Z\\-\\{\\}]+
 
 ######################################################################
-### Pdisplay #########################################################
-######################################################################
-# "Pdisplay" is a part of the top bar . It allows users with write ACL
-# on the page monitoring jobs. The following property allows to set the
-# refresh time value in milliseconds. -1 means that pdisplay is
-# refreshed only "on mouseover".
-pdisplay.timer.refresh = 5000
-
-######################################################################
-### Nb Max Content Alias Name allowed      ###########################
-######################################################################
-nbMaxContentAliasName = 10
-
-######################################################################
 ### Portlets #########################################################
 ######################################################################
 # the following parameter activates AJAX rendering of portlets. This
@@ -721,9 +705,6 @@ portletAJAXRenderingActivated = true
 # if this control is not necessary, but we introduced it in order to
 # control this behavior at deployment time.
 wrapperBufferFlushingActivated = true
-# Controls whether the above behavior applies only to Jahia internally
-# or also for wrappers used around portlets.
-wrapperBufferFlushingAlsoForPortlets = true
 
 ######################################################################
 ### Google analytics settings ########################################

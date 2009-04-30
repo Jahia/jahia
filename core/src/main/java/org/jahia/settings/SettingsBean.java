@@ -257,18 +257,12 @@ public class SettingsBean {
 
     private boolean workflowUseExternalByDefault;
 
-    // pdisplay
-    private String pdisplayTimerRefresh;
-
-    private int nbMaxContentAliasName = 10;
-
     private boolean displayMarkedForDeletedContentObjects;
 
     private boolean deprecatedNonContainerFieldsUsed = false;
 
     // Settings to control servlet response wrapper flushing
     private boolean wrapperBufferFlushingActivated = true;
-    private boolean wrapperBufferFlushingAlsoForPortlets = true;
 
 
     // ESI, default expiration age in seconds
@@ -592,12 +586,7 @@ public class SettingsBean {
 
             dBMaxElementsForInClause = getInt("db_max_elements_for_in_clause", dBMaxElementsForInClause);
 
-            pdisplayTimerRefresh = getString("pdisplay.timer.refresh","5000");
-
-            nbMaxContentAliasName = getInt("nbMaxContentAliasName",nbMaxContentAliasName);
-
             wrapperBufferFlushingActivated = getBoolean("wrapperBufferFlushingActivated", true);
-            wrapperBufferFlushingAlsoForPortlets = getBoolean("wrapperBufferFlushingAlsoForPortlets", true);
 
             containerCacheDefaultExpirationDelay = getLong("containerCacheDefaultExpirationDelay",3600*4); //4 hours
 
@@ -1604,22 +1593,6 @@ public class SettingsBean {
         return preloadDBGroupMembersActivated;
     }
 
-    public String getPdisplayTimerRefresh() {
-        return pdisplayTimerRefresh;
-    }
-
-    /**
-     * Return the number max of alias name.
-     * @return
-     */
-    public int getNbMaxContentAliasName() {
-        return nbMaxContentAliasName;
-    }
-
-    public void setNbMaxContentAliasName(int nbMaxContentAliasName) {
-        this.nbMaxContentAliasName = nbMaxContentAliasName;
-    }
-
     public boolean isDisplayMarkedForDeletedContentObjects() {
         return displayMarkedForDeletedContentObjects;
     }
@@ -1643,14 +1616,6 @@ public class SettingsBean {
 
     public void setWrapperBufferFlushingActivated(boolean wrapperBufferFlushingActivated) {
         this.wrapperBufferFlushingActivated = wrapperBufferFlushingActivated;
-    }
-
-    public boolean isWrapperBufferFlushingAlsoForPortlets() {
-        return wrapperBufferFlushingAlsoForPortlets;
-    }
-
-    public void setWrapperBufferFlushingAlsoForPortlets(boolean wrapperBufferFlushingAlsoForPortlets) {
-        this.wrapperBufferFlushingAlsoForPortlets = wrapperBufferFlushingAlsoForPortlets;
     }
 
     public long getContainerCacheDefaultExpirationDelay() {

@@ -18,6 +18,7 @@ package org.jahia.ajax.gwt.client.util.category;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.i18n.client.impl.DateRecord;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.extjs.gxt.ui.client.Style;
@@ -230,6 +231,27 @@ public abstract class CategoriesManagerActions {
             w.layout();
             w.show();
 
+        } else {
+            com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
+            w.setModal(true);
+            w.setResizable(false);
+            w.setBodyBorder(false);
+            w.setLayout(new FillLayout());
+            if (newCategory) {
+                w.setHeading(getResource("cat_create"));
+            } else {
+                w.setHeading(getResource("cat_update"));
+            }
+            w.setWidth(400);
+            GWTJahiaCategoryNode jahiaCategoryNode = new GWTJahiaCategoryNode();
+        jahiaCategoryNode.setParentKey(null);
+        jahiaCategoryNode.setName("root");
+        jahiaCategoryNode.setKey("root");
+        jahiaCategoryNode.setPath("/root");
+            w.add(new InfoEditor(linker, w, jahiaCategoryNode, newCategory));
+            w.setScrollMode(Style.Scroll.AUTO);
+            w.layout();
+            w.show();
         }
     }
 

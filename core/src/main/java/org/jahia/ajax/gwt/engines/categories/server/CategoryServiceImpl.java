@@ -60,7 +60,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             if (gwtJahiaCategoryNode == null) {
                 // load root
                 parentCategory = Category.getRootCategory(currentUser);
-                childrenCategories.add(parentCategory);
+                childrenCategories = parentCategory.getChildCategories(currentUser);
             } else {
                 logger.debug("load category with key[" + gwtJahiaCategoryNode.getKey() + "].");
                 parentCategory = Category.getCategory(gwtJahiaCategoryNode.getKey(), currentUser);

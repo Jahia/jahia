@@ -182,7 +182,9 @@ public class CategoriesTree extends ContentPanel {
             protected boolean doSelect (Store store, ModelData parent, ModelData record, String property, String filter) {
                 if (record instanceof GWTJahiaCategoryNode) {
                     GWTJahiaCategoryNode node = (GWTJahiaCategoryNode) record;
-                    if(node.getName().toLowerCase().startsWith(filter.toLowerCase())) return true;
+                    String s = node.getName().toLowerCase();
+                    if(s.startsWith("(") && s.endsWith(")")) s = s.substring(1);
+                    if(s.startsWith(filter.toLowerCase())) return true;
                 }
                 return false;
             }

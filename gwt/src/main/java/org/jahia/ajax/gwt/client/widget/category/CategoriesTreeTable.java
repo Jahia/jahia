@@ -114,16 +114,18 @@ public class CategoriesTreeTable extends TopRightComponent {
         treeTableBinder.setCaching(true);
         treeTableBinder.setDisplayProperty("name");
 
-        m_treeTable.addListener(Events.SelectionChange, new Listener() {
-            public void handleEvent(BaseEvent event) {
+        m_treeTable.addListener(Events.CellClick, new Listener() {
+            public void handleEvent(BaseEvent baseEvent) {
                 TreeItem newSelection = m_treeTable.getSelectedItem();
-                if (lastSelection != newSelection) {
+                if (lastSelection == newSelection) {
+                    lastSelection = null;
+                    m_treeTable.setSelectedItem(m_treeTable.getRootItem());
+                }else {
                     lastSelection = newSelection;
                     getLinker().onTableItemSelected();
                 }
             }
         });
-
         m_component.add(m_treeTable);
     }
 

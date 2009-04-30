@@ -135,7 +135,7 @@ public class CategoriesTopBar extends TopBar {
         topTableMultipleSelectionButtons.add(cut);
         topTableMultipleSelectionButtons.add(remove);
 
-        topTableSingleSelectionButtons.add(newCategory);
+//        topTableSingleSelectionButtons.add(newCategory);
         topTableSingleSelectionButtons.add(updateInfo);
         topTableSingleSelectionButtons.add(updateACL);
 

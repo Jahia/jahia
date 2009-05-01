@@ -1867,6 +1867,7 @@ if(serverType != null && serverType.equalsIgnoreCase("Tomcat")){
         properties.setProperty("release", release);
         properties.setProperty("server", (String) serverInfos.get("type"));
         properties.setProperty("serverHomeDiskPath", (String) values.get("server_home"));
+        properties.setProperty("jahiaFilesDiskPath", (String) values.get("server_jahiafiles"));
         properties.setProperty("jahiaEtcDiskPath", values.get("server_jahiafiles") + "/etc/");
         properties.setProperty("jahiaVarDiskPath", values.get("server_jahiafiles") + "/var/");
         properties.setProperty("jahiaFilesBigTextDiskPath", values.get("server_jahiafiles") + "/var/content/bigtext/");

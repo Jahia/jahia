@@ -417,14 +417,14 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         siteStats.setEditable(false);
         siteStats.setTriggerAction(ComboBox.TriggerAction.ALL);
         siteStats.setSimpleValue(StatSiteType.VISITS);
-        siteStats.setWidth(12);
+        //siteStats.setWidth(12);
 
         final SimpleComboBox<StatPageType> pageStats = new SimpleComboBox<StatPageType>();
         pageStats.add(Arrays.asList(StatPageType.values()));
         pageStats.setEditable(false);
         pageStats.setTriggerAction(ComboBox.TriggerAction.ALL);
         pageStats.setSimpleValue(StatPageType.PAGEVIEWS);
-        pageStats.setWidth(12);
+        //pageStats.setWidth(12);
 
         LabelToolItem languageSelection_Label = new LabelToolItem("Select a language");
         final SimpleComboBox<String> siteLanguages = new SimpleComboBox<String>();

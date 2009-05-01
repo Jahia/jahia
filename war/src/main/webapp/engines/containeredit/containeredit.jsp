@@ -132,6 +132,7 @@ if (contextualContainerListId==null){
 final Map fieldErrors = new HashMap();
 final boolean fieldAlone = theField != null && (theField.getType() == FieldTypes.BIGTEXT || theField.getType() == FieldTypes.PAGE || theField.getType() == FieldTypes.FILE || theField.getType() == FieldTypes.APPLICATION || theField.getType() == FieldTypes.CATEGORY);
 %>
+<div class="dex-TabPanelBottom">
 <% if (fieldID != null) { %>
   <input type="hidden" name="editfid" value="<%=fieldID.intValue()%>"/>
   <input type="hidden" name="lastfid" value="<%=fieldID.intValue()%>"/>
@@ -141,8 +142,7 @@ final boolean fieldAlone = theField != null && (theField.getType() == FieldTypes
   <input type="hidden" name="cpid" value="<%=theContainer.getPageID()%>"/>
   <input type="hidden" name="contextualContainerListId"  value="<%=String.valueOf(contextualContainerListId.intValue())%>"/>
 <% } %>
-<input type="hidden" name="cparentid" value="<%=engineMap.get("containerParentID")%>"/>
-<div class="dex-TabPanelBottom">
+  <input type="hidden" name="cparentid" value="<%=engineMap.get("containerParentID")%>"/>
   <div class="tabContent">
     <%@ include file="containereditmenu.inc" %>
     <div id="content" class="fit w2">

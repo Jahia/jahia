@@ -363,7 +363,7 @@ public class FileManagerWorker {
 
     public static List<GWTJahiaNode> search(String searchString, int limit, ProcessingContext context) throws GWTJahiaServiceException {
         try {
-            Query q = createQuery(searchString, context);
+            Query q = createQuery(new StringBuilder("*").append(searchString).append("*").toString(), context);
             return executeQuery(q, new String[0], new String[0], new String[0], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -372,12 +372,14 @@ public class FileManagerWorker {
     }
 
     public static List<GWTJahiaNode> search(String searchString, int limit, String nodeTypes, String mimeTypes, String filters, ProcessingContext context) throws GWTJahiaServiceException {
-        if (nodeTypes == null) nodeTypes = JCRClientUtils.FILE_NODETYPES;
+        if (nodeTypes == null) {
+            nodeTypes = JCRClientUtils.FILE_NODETYPES;
+        }
         String[] nodeTypesToApply = getFiltersToApply(nodeTypes);
         String[] mimeTypesToMatch = getFiltersToApply(mimeTypes);
         String[] filtersToApply = getFiltersToApply(filters);
         try {
-            Query q = createQuery(searchString, context);
+            Query q = createQuery(new StringBuilder("*").append(searchString).append("*").toString(), context);
             return executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply, context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

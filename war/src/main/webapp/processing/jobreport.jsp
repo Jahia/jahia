@@ -23,7 +23,7 @@
 <html>
 <head>
     <internal:gwtInit standalone="true"/>
-    <title><fmt:message key="org.jahia.engines.processDisplay.jobresult.label"/></title>
+    <title><internal:message key="org.jahia.engines.processDisplay.jobresult.label"/></title>
 </head>
 <body>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.jobreport.JobReport"/>

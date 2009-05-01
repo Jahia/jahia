@@ -37,6 +37,7 @@ jahiaTemplatesDiskPath                                 =   /templates/
 jahiaHtmlEditorsDiskPath                               =   /htmleditors/
 jahiaJavaScriptDiskPath                                =   /javascript/
 
+jahiaFilesDiskPath                                     =   $context/WEB-INF
 jahiaEtcDiskPath                                       =
 jahiaVarDiskPath                                       =
 jahiaFilesBigTextDiskPath                              =

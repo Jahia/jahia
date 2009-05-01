@@ -39,7 +39,7 @@
 
     // selected categories
     final List selectedCategories = (List) engineMap.get(theField.getDefinition().getName() + Category_Field.SELECTEDCATEGORIES_ENGINEMAPKEY);
-
+    final String startCategory = (String)engineMap.get(Category_Field.START_CATEGORY);
 
     // read only default value
     boolean readOnly = false;

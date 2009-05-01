@@ -68,6 +68,7 @@ public class Category_Field implements FieldSubEngine {
 
     public static final String NOSELECTION_MARKER = "$$$NO_SELECTION_MARKER$$$";
     public static final String CATEGORIESUPDATED_ENGINEMAPKEY = "categoriesUpdated";
+    public static final String START_CATEGORY = "startCategory";
 
     public static synchronized Category_Field getInstance() {
         if (theObject == null) {
@@ -253,8 +254,8 @@ public class Category_Field implements FieldSubEngine {
             engineMap.put("NoCategories", "NoCategories");
             return false;
         }
-        logger.debug("startCategory: " + startCategory.getKey());
-        engineMap.put("startCategory", startCategory.getKey());
+        logger.debug(START_CATEGORY+": " + startCategory.getKey());
+        engineMap.put(START_CATEGORY, startCategory.getKey());
         engineMap.remove("NoCategories");
 
         if (selectedCategories == null) {

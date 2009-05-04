@@ -111,7 +111,7 @@ public class QueryService extends JahiaService {
     public List<FilterCreator> getFilterCreators(List<String> orderedNames){
         List<FilterCreator> orderedFilterCreators = new ArrayList<FilterCreator>();
         for (String filterCreatorName : orderedNames){
-            FilterCreator filterCreator = (FilterCreator)this.filterCreators.get(filterCreatorName);
+            FilterCreator filterCreator = (FilterCreator)this.filterCreators.get(filterCreatorName.trim());
             if (filterCreator != null){
                 orderedFilterCreators.add(filterCreator);
             }

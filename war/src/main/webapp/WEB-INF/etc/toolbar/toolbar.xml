@@ -662,7 +662,7 @@
                         max="gwt-toolbar-ItemsGroup-icons-acldiff-normal"/>
             <description-resourcebundle-key key="button.acldiff"/>
             <visibility authentication="true" mode="edit"/>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="acldiff.activated"/>
             <property name="toggle" value="true"/>
             <property name="onSuccess" value="refresh"/>
@@ -678,7 +678,7 @@
                         max="gwt-toolbar-ItemsGroup-icons-timebasepublishing-normal"/>
             <description-resourcebundle-key key="button.timebasepublishing"/>
             <visibility authentication="true" mode="edit"/>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="timebasepublishing.activated"/>
             <property name="toggle" value="true"/>
             <property name="onSuccess" value="refresh"/>
@@ -694,7 +694,7 @@
                         max="gwt-toolbar-ItemsGroup-icons-inlineediting-normal"/>
             <description-resourcebundle-key key="button.inlineediting"/>
             <visibility authentication="true" mode="edit"/>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="inlineediting.activated"/>
             <property name="toggle" value="true"/>
             <property name="flushPageCache" value="true" />
@@ -712,7 +712,7 @@
             <visibility>
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.IntegrityVisibilityResolver"/>
             </visibility>
-            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.JahiaPreferenceResolver"
+            <selected-resolver class="org.jahia.services.toolbar.resolver.impl.AdvancedEditModeSettingsResolver"
                                input="integrity.activated"/>
             <property name="toggle" value="true"/>
             <property name="onSuccess" value="refresh"/>

@@ -61,13 +61,13 @@ public final class UserPreferencesHelper {
 
     private static Logger logger = Logger.getLogger(UserPreferencesHelper.class);
     
-    private static final String DISPLAY_ACL_DIFF_STATE = "acldiff.activated";
+    public static final String DISPLAY_ACL_DIFF_STATE = "acldiff.activated";
 
-    private static final String DISPLAY_INTEGRITY_STATE = "integrity.activated";
+    public static final String DISPLAY_INTEGRITY_STATE = "integrity.activated";
 
-    private static final String DISPLAY_TBP_STATE = "timebasepublishing.activated";
+    public static final String DISPLAY_TBP_STATE = "timebasepublishing.activated";
 
-    private static final String ENABLE_INLINE_EDITING = "inlineediting.activated";
+    public static final String ENABLE_INLINE_EDITING = "inlineediting.activated";
 
     private static JahiaPreferencesService getPrefsService() {
         return ServicesRegistry.getInstance().getJahiaPreferencesService();

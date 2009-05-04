@@ -194,7 +194,7 @@ public class JahiaConsole {
                 .append(
                         " . . .\n"
                                 + "\n\n"
-                                + "   Copyright 2002-2008 - Jahia Ltd. http://www.jahia.org - All Rights Reserved\n"
+                                + "   Copyright 2002-2009 - Jahia Ltd. http://www.jahia.org - All Rights Reserved\n"
                                 + "\n\n"
                                 + " *******************************************************************************\n"
                                 + " * The contents of this software, or the files included with this software,    *\n"

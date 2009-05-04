@@ -13,6 +13,7 @@
 - startDate,
 - endDate,
 - location,
+- eventsType,
 - body
 
 [web_templates:jobContainer]

@@ -19,6 +19,7 @@ package org.jahia.ajax.gwt.client.util.nodes.actions;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import com.extjs.gxt.ui.client.GXT;
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -592,7 +593,7 @@ public class ManagerConfigurationFactory {
                 }
 
                 public void enableOnConditions(boolean treeSelection, boolean tableSelection, boolean writable, boolean parentWritable, boolean singleFile, boolean singleFolder, boolean pasteAllowed, boolean lockable, boolean isZip, boolean isImage, boolean isMount) {
-                    setEnabled(true);
+                    setEnabled("root".equals(JahiaGWTParameters.getCurrentUser())); // TODO dirty code (to refactor using server side configuration and roles)
                 }
             };
             return mount;

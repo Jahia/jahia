@@ -339,6 +339,7 @@ public class FileDetails extends BottomRightComponent {
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
                         item.setIconStyle("gwt-icons-save");
+                        item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
 
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
@@ -359,6 +360,8 @@ public class FileDetails extends BottomRightComponent {
                         toolBar.add(item);
                         item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
                         item.setIconStyle("gwt-icons-restore");
+                        item.setEnabled( selectedNode.isWriteable() && !selectedNode.isLocked() );
+
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 propertiesEditor.resetForm();
@@ -381,13 +384,17 @@ public class FileDetails extends BottomRightComponent {
                     getLinker().loading("collecting properties...");
                 }
                 List<String> nodeTypes = new ArrayList<String>();
+
+                boolean writeable = true;
                 for (GWTJahiaNode selectedNode : selectedNodes) {
                     for (String nodeType : selectedNode.getNodeTypes()) {
                         if (!nodeTypes.contains(nodeType)) {
                             nodeTypes.add(nodeType);
                         }
                     }
+                    writeable &= selectedNode.isWriteable() && !selectedNode.isLocked() ;
                 }
+                final boolean w = writeable;
                 cDefService.getNodeTypes(nodeTypes, new AsyncCallback<List<GWTJahiaNodeType>>() {
                     public void onFailure(Throwable throwable) {
                         Log.debug("Cannot get properties", throwable);
@@ -398,6 +405,7 @@ public class FileDetails extends BottomRightComponent {
 
                         ToolBar toolBar = (ToolBar) propertiesEditor.getTopComponent();
                         TextToolItem item = new TextToolItem(Messages.getResource("fm_save"), "fm-save");
+                        item.setEnabled(w);
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 JahiaNodeService.App.getInstance().saveProperties(selectedNodes, propertiesEditor.getProperties(), new AsyncCallback() {
@@ -415,6 +423,7 @@ public class FileDetails extends BottomRightComponent {
                         });
                         toolBar.add(item);
                         item = new TextToolItem(Messages.getResource("fm_restore"), "fm-restore");
+                        item.setEnabled(w);
                         item.addSelectionListener(new SelectionListener<ComponentEvent>() {
                             public void componentSelected(ComponentEvent event) {
                                 propertiesEditor.resetForm();

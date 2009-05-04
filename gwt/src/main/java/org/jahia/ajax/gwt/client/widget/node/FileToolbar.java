@@ -134,7 +134,7 @@ public class FileToolbar extends TopBar {
         List<GWTJahiaNode> topTableSelection = (List<GWTJahiaNode>) topTableSelectionEl;
 
         boolean isTreeSelection = leftTreeSelection != null ;
-        boolean isParentWriteable = (isTreeSelection) ? ((GWTJahiaNode) leftTreeSelection).isWriteable() : false;
+        boolean isParentWriteable = (isTreeSelection) ? (((GWTJahiaNode) leftTreeSelection).isWriteable() && !((GWTJahiaNode) leftTreeSelection).isLocked()) : false;
         boolean isWritable = false;
         boolean isLockable = false;
         boolean isSingleFile = false;
@@ -152,7 +152,7 @@ public class FileToolbar extends TopBar {
             isWritable = true;
             isLockable = true;
             for (GWTJahiaNode gwtJahiaNode : topTableSelection) {
-                isWritable &= gwtJahiaNode.isWriteable();
+                isWritable &= gwtJahiaNode.isWriteable() && !gwtJahiaNode.isLocked();
                 isLockable &= gwtJahiaNode.isLockable();
             }
             if (topTableSelection.size() == 1) {

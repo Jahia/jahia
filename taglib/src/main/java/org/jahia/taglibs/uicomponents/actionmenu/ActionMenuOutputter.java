@@ -26,24 +26,22 @@ import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
 import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuLabelProvider;
-import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.ActionMenuServiceHelper;
 import org.jahia.ajax.gwt.client.widget.actionmenu.actions.ActionMenuIcon;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.exceptions.JahiaException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.jsp.PageContext;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for rendering action menu.
  *
  * @author rfelden
  * @version 11 f�vr. 2008 - 17:50:53
@@ -235,21 +233,7 @@ public class ActionMenuOutputter {
         }
 
         // workflow stuff
-        boolean isDevMode = org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode() ;
-        HttpServletRequest theRequest = (HttpServletRequest)pageContext.getRequest() ;
-        Boolean displayWorkflowStates = ActionMenuServiceHelper.getUserInitialSettingForDevMode(theRequest, userSettings.WF_VISU_ENABLED, isDevMode);
-        if (!isDevMode) {
-            try {
-                String value = (String) theRequest.getSession().getAttribute(userSettings.WF_VISU_ENABLED);
-                displayWorkflowStates = value != null ? Boolean.valueOf(value) : null;
-                if (displayWorkflowStates == null) {
-                    displayWorkflowStates = org.jahia.settings.SettingsBean.getInstance().isWflowDisp();
-                }
-            } catch (final IllegalStateException e) {
-                logger.error(e, e);
-            }
-        }
-        final boolean showWorkflow = displayWorkflowStates && contentObject.isIndependantWorkflow();
+        final boolean showWorkflow = UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser()) && contentObject.isIndependantWorkflow();
         String wfKey = null ;
         if (showWorkflow && (!PageBean.TYPE.equals(contentType))) {
             String wfKeyTemp = objectKey ;

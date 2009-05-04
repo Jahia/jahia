@@ -19,7 +19,6 @@ package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 import java.util.*;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.content.ContentObject;
 import org.jahia.data.containers.JahiaContainerDefinition;
 import org.jahia.data.containers.JahiaContainerList;
@@ -52,8 +51,10 @@ import org.jahia.services.fields.ContentPageField;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.settings.SettingsBean;
 
 /**
  * Created by IntelliJ IDEA.
@@ -345,7 +346,7 @@ public class ActionMenuURIFormatter {
      * @throws JahiaException sthg bad happened
      */
     public static String drawContainerSourcePageReferenceUrl(ProcessingContext processingContext, final ContentContainer theContainer) throws JahiaException {
-        if (theContainer.getPageID() != processingContext.getPageID() && (!(ServicesRegistry.getInstance().getWorkflowService().getWorkflowMode(theContainer) != WorkflowService.LINKED) || !(org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode() || processingContext.getSessionState().getAttribute(userSettings.WF_VISU_ENABLED) != null || org.jahia.settings.SettingsBean.getInstance().isWflowDisp()))) {
+        if (theContainer.getPageID() != processingContext.getPageID() && (!(ServicesRegistry.getInstance().getWorkflowService().getWorkflowMode(theContainer) != WorkflowService.LINKED) || !(SettingsBean.getInstance().isDevelopmentMode() || UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser())))) {
             return processingContext.composePageUrl(theContainer.getPageID(), processingContext.getLocale().toString());
         } else {
             return null ;
@@ -425,7 +426,7 @@ public class ActionMenuURIFormatter {
      * @throws JahiaException sthg bad happened
      */
     public static String drawFieldSourcePageReferenceUrl(final ContentField theField, ProcessingContext processingContext) throws JahiaException {
-        if (theField.getPageID() != processingContext.getPageID() && (!(ServicesRegistry.getInstance().getWorkflowService().getWorkflowMode(theField) != WorkflowService.LINKED) || !(org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode() || processingContext.getSessionState().getAttribute(userSettings.WF_VISU_ENABLED) != null || org.jahia.settings.SettingsBean.getInstance().isWflowDisp()))) {
+        if (theField.getPageID() != processingContext.getPageID() && (!(ServicesRegistry.getInstance().getWorkflowService().getWorkflowMode(theField) != WorkflowService.LINKED) || !(SettingsBean.getInstance().isDevelopmentMode() || UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser())))) {
             return processingContext.composePageUrl(theField.getPageID(), processingContext.getLocale().toString());
         } else {
             return null ;

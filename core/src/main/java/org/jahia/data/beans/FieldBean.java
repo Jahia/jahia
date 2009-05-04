@@ -35,11 +35,11 @@ import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.InsertionSortedMap;
-import org.jahia.ajax.usersession.userSettings;
-import org.jahia.bin.Jahia;
 
 import java.util.*;
 
@@ -422,14 +422,12 @@ public class FieldBean extends ContentBean {
                 actionURIs.put(curActionURIBean.getName(), curActionURIBean);
             }
 
-            // If the field is displayed as an absolute, add a link to the source page where it has beed declared
+            // If the field is displayed as an absolute, add a link to the source page where it has been declared
             // unless the workflow icon is already displayed next to it
             if (theField.getPageID() != processingContext.getPageID()
-                    && (!isIndependantWorkflow() || !(org.jahia.settings.SettingsBean.getInstance()
+                    && (!isIndependantWorkflow() || !(SettingsBean.getInstance()
                             .isDevelopmentMode()
-                            || processingContext.getSessionState()
-                                    .getAttribute(userSettings.WF_VISU_ENABLED) != null || Jahia
-                            .getSettings().isWflowDisp()))) {
+                            || UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser())))) {
                 curURL = processingContext.composePageUrl(theField.getPageID(),
                         processingContext.getLocale().toString());
                 final StringBuffer buff = new StringBuffer();

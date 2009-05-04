@@ -19,7 +19,6 @@ package org.jahia.ajax.gwt.templates.components.actionmenus.server.helper;
 import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingState;
 import org.jahia.ajax.gwt.client.data.actionmenu.timebasedpublishing.GWTJahiaTimebasedPublishingDetails;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.ParamBean;
 import org.jahia.data.beans.ContentBean;
@@ -34,6 +33,7 @@ import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.timebasedpublishing.BaseRetentionRule;
 import org.jahia.services.timebasedpublishing.TimeBasedPublishingService;
 import org.jahia.services.timebasedpublishing.RetentionRule;
@@ -71,11 +71,10 @@ public class TimebasedPublishingHelper {
      *
      * @param therequest current request
      * @param jParams processing context
-     * @param isDevMode development mode enabled
      * @param objectKey the content object key
      * @return the parameters to display the icon
      */
-    public static GWTJahiaTimebasedPublishingState getTimebasePublishingState(HttpServletRequest therequest, ProcessingContext jParams, boolean isDevMode, String objectKey) {
+    public static GWTJahiaTimebasedPublishingState getTimebasePublishingState(HttpServletRequest therequest, ProcessingContext jParams, String objectKey) {
         ContentBean contentBean = null;
         try {
             contentBean = JahiaObjectCreator.getContentBeanFromObjectKey(objectKey, jParams);
@@ -100,18 +99,7 @@ public class TimebasedPublishingHelper {
         }
 
         // display options
-        Boolean displayTimeBasedPublishing = ActionMenuServiceHelper.getUserInitialSettingForDevMode(therequest, userSettings.TBP_VISU_ENABLED, isDevMode);
-        if (!isDevMode) {
-            try {
-                String value = (String) therequest.getSession().getAttribute(userSettings.TBP_VISU_ENABLED);
-                displayTimeBasedPublishing = value != null ? Boolean.valueOf(value) : null;
-                if (displayTimeBasedPublishing == null) {
-                    displayTimeBasedPublishing = org.jahia.settings.SettingsBean.getInstance().isTbpDisp();
-                }
-            } catch (final IllegalStateException e) {
-                logger.error(e, e);
-            }
-        }
+        Boolean displayTimeBasedPublishing = UserPreferencesHelper.isDisplayTbpState(jParams.getUser());
 
         // no display required, abort
         if (!displayTimeBasedPublishing) {

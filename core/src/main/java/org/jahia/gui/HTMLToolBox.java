@@ -28,7 +28,6 @@ package org.jahia.gui;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.codec.binary.Base64;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.ContentPageKey;
@@ -64,13 +63,13 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.JahiaPageDefinition;
 import org.jahia.services.pages.PageInfoInterface;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.settings.SettingsBean;
 import org.jahia.hibernate.manager.JahiaObjectDelegate;
 import org.jahia.hibernate.manager.JahiaObjectManager;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -1499,19 +1498,6 @@ public class HTMLToolBox {
         return !(parentContentObject != null && parentContentObject.isPicker());
     }
 
-    protected Boolean getUserInitialSettingForDevMode(HttpServletRequest therequest,
-                                                      String settingName) {
-        final boolean isDevMode = org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        String settingValue = (String) therequest.getSession().getAttribute(settingName);
-        Boolean result = Boolean.valueOf(isDevMode);
-        if (settingValue != null) {
-            result = Boolean.valueOf(settingValue);
-        } else if (isDevMode) {
-            therequest.getSession().setAttribute(settingName, result.toString());
-        }
-        return result;
-    }
-
     /**
      * Generates the HTML for the start of the action menu.
      *
@@ -1583,39 +1569,13 @@ public class HTMLToolBox {
         final int parentID = (parent == null) ? 0 : parent.getID();
         final int definitionID = contentObject.getDefinitionID();
         final int pageID = jParams.getPageID();
-        final HttpServletRequest therequest = ((ParamBean) jParams).getRequest();
-        final String contextPath = Jahia.getContextPath();
 
-        // to get flags to enable workflow and tbpublishing visu and checks
-        // if dev mode is actived so all modules and semaphores are actived
-        final boolean isDevMode = org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        Boolean displayWorkflowStates = getUserInitialSettingForDevMode(therequest, userSettings.WF_VISU_ENABLED);
-        Boolean displayTimeBasedPublishing = getUserInitialSettingForDevMode(therequest, userSettings.TBP_VISU_ENABLED);
-        Boolean aclDifferenceParam = getUserInitialSettingForDevMode(therequest, userSettings.ACL_VISU_ENABLED);
-        if (!isDevMode) {
-            try {
-                String value = (String) therequest.getSession().getAttribute(userSettings.WF_VISU_ENABLED);
-                displayWorkflowStates = value != null ? Boolean.valueOf(value) : null;
-                if (displayWorkflowStates == null) {
-                    displayWorkflowStates = Boolean.valueOf(org.jahia.settings.SettingsBean.getInstance().isWflowDisp());
-                }
-                value = (String) therequest.getSession().getAttribute(userSettings.TBP_VISU_ENABLED);
-                displayTimeBasedPublishing = value != null ? Boolean.valueOf(value) : null;
-                if (displayTimeBasedPublishing == null) {
-                    displayTimeBasedPublishing = Boolean.valueOf(org.jahia.settings.SettingsBean.getInstance().isTbpDisp());
-                }
-                value = (String) therequest.getSession().getAttribute(userSettings.ACL_VISU_ENABLED);
-                aclDifferenceParam = value != null ? Boolean.valueOf(value) : null;
-                if (aclDifferenceParam == null) {
-                    aclDifferenceParam = Boolean.valueOf(org.jahia.settings.SettingsBean.getInstance().isAclDisp());
-                }
-            } catch (final IllegalStateException e) {
-                logger.error(e, e);
-            }
-        }
-        //logger.debug("flagWorkFlowVisibitlity:"+flagWorkFlowVisibitlity+" flagTBPVisibitlity:"+flagTBPVisibitlity);
+        // to get flags to enable workflow and tbpublishing and checks
+        Boolean displayWorkflowStates = UserPreferencesHelper.isDisplayWorkflowState(jParams.getUser());
+        Boolean displayTimeBasedPublishing = UserPreferencesHelper.isDisplayTbpState(jParams.getUser());
+        Boolean aclDifferenceParam = UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser());
 
-        final StringBuffer buff = new StringBuffer(100);
+        final StringBuilder buff = new StringBuilder(100);
 
         final String picto = actionIcon == null ?
                 buff.append(getURLImageContext()).append("/action.gif").toString() :
@@ -1633,7 +1593,7 @@ public class HTMLToolBox {
         boolean showWorkflow = false;
 
         if (displayWorkflowStates.booleanValue()) {
-            boolean workflowDisplayStatusForLinkedPages = org.jahia.settings.SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages();
+            boolean workflowDisplayStatusForLinkedPages = SettingsBean.getInstance().isWorkflowDisplayStatusForLinkedPages();
 
             // if linked workflow status display is enabled -> always display for pages
             // and in any case for objects with standalone workflow
@@ -1697,7 +1657,7 @@ public class HTMLToolBox {
                     out.append("tbpState_");
                     out.append(realObjectKey);
                     out.append("\" border=\"0\" src=\"");
-                    out.append(contextPath);
+                    out.append(jParams.getContextPath());
                     out.append("/ajaxaction/GetWorkflowState?params=/op/edit/pid/");
                     out.append(jParams.getPageID());
                     out.append("&key=");
@@ -1779,7 +1739,7 @@ public class HTMLToolBox {
             //logger.debug("displaying TBP state");
 
             //todo port the code in ajax action here
-            final String actionURL = contextPath + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
+            final String actionURL = jParams.getContextPath() + "/ajaxaction/GetTimeBasedPublishingState?params=/op/edit/pid/" +
                     jParams.getPageID() + "&key=" + tbpObjectKey;
 
             String serverURL = actionURL + "&displayDialog=true";

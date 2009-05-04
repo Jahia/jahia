@@ -31,7 +31,6 @@ import javax.servlet.jsp.jstl.core.Config;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.data.JahiaData;
 import org.jahia.data.beans.JahiaBean;
 import org.jahia.data.beans.PageBean;
@@ -54,7 +53,7 @@ public class EngineRenderer {
 
     private static Logger logger = Logger.getLogger (EngineRenderer.class);
 
-    private static final org.apache.log4j.Logger monitorLogger = org.apache.log4j.Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
+    private static final Logger monitorLogger = Logger.getLogger(SilentJamonPerformanceMonitorInterceptor.class);
 
     public static final String FORM_TOKEN = "<!--ENGINE_CONTENT-->";
     private static final EngineRenderer instance = new EngineRenderer ();
@@ -221,8 +220,6 @@ public class EngineRenderer {
                     " using render type " + renderType + "...");
             }
 
-            userSettings.initSessionSettingForDevMode(request);
-            
             Monitor listenerMonitor = null;
             if (monitorLogger.isDebugEnabled()) listenerMonitor = MonitorFactory.start(fileName);
             if (renderType.intValue () == JahiaEngine.RENDERTYPE_INCLUDE) {

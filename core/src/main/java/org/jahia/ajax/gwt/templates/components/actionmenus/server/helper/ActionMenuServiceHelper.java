@@ -32,10 +32,8 @@ import org.jahia.engines.updatecontainer.UpdateContainer_Engine;
 import org.jahia.engines.pages.PageProperties_Engine;
 import org.jahia.engines.updatefield.UpdateField_Engine;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for action menus.
  *
  * @author rfelden
  * @version 26 f�vr. 2008 - 17:27:33
@@ -46,25 +44,6 @@ public class ActionMenuServiceHelper {
     //    COMMON METHODS
     // ================================================================
     
-    /**
-     * Retrieve initial setting concerning a given property.
-     *
-     * @param therequest the current request
-     * @param settingName the property name
-     * @param isDevMode dev mode enabled
-     * @return the setting value
-     */
-    public static boolean getUserInitialSettingForDevMode(final HttpServletRequest therequest, final String settingName, final boolean isDevMode) {
-        boolean ret = isDevMode ;
-        String settingValue = (String) therequest.getSession().getAttribute(settingName);
-        if (settingValue != null) {
-            ret = Boolean.valueOf(settingValue);
-        } else if (ret) {
-            therequest.getSession().setAttribute(settingName, String.valueOf(ret));
-        }
-        return true ; //ret; TODO remove this useless "devmode" status for action menu display
-    }
-
     /**
      *
      *

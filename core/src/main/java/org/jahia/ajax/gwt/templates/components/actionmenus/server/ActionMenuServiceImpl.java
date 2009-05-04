@@ -29,16 +29,14 @@ import org.jahia.ajax.gwt.templates.components.actionmenus.server.helper.*;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * Implementaiton of GWT servoce for action menus and extras such as ACL, workflow and timebased publishing.
+ * Implementation of GWT service for action menus and extras such as ACL, workflow and time-based publishing.
  *
  * @author rfelden
  * @version 22 janv. 2008 - 12:00:25
@@ -46,7 +44,6 @@ import java.util.*;
 public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implements ActionMenuService {
 
     private final static Logger logger = Logger.getLogger(ActionMenuServiceImpl.class) ;
-    private static final JahiaPreferencesService JAHIA_PREFERENCES_SERVICE = ServicesRegistry.getInstance().getJahiaPreferencesService();
 
     public GWTJahiaGlobalState getGlobalStateForObject(GWTJahiaPageContext page, String objectKey, String wfKey, String languageCode) {
         final ProcessingContext jParams = retrieveParamBean(page) ;
@@ -55,17 +52,17 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
             wf = getWorkflowStateForObject(page, objectKey, wfKey,  languageCode) ;
         }
         GWTJahiaAclDiffState acl = null ;
-        boolean aclDiff = JAHIA_PREFERENCES_SERVICE.getGenericPreferenceBooleanValue("acldiff.activated", false, jParams) ;
+        boolean aclDiff = UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser()) ;
         if (aclDiff) {
             acl = getAclDiffState(page, objectKey) ;
         }
         GWTJahiaTimebasedPublishingState tbp = null ;
-        boolean timebasepublishing = JAHIA_PREFERENCES_SERVICE.getGenericPreferenceBooleanValue("timebasepublishing.activated", false, jParams) ;
+        boolean timebasepublishing = UserPreferencesHelper.isDisplayTbpState(jParams.getUser()) ;
         if (timebasepublishing) {
             tbp = getTimebasedPublishingState(page, objectKey) ;
         }
         GWTJahiaIntegrityState integrityState = null ;
-        boolean integrity = JAHIA_PREFERENCES_SERVICE.getGenericPreferenceBooleanValue("integrity.activated", false, jParams) ;
+        boolean integrity = UserPreferencesHelper.isDisplayIntegrityState(jParams.getUser()) ;
         if (integrity) {
             integrityState = getIntegrityState(page, objectKey) ;
         }
@@ -95,11 +92,7 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     }
 
     public GWTJahiaTimebasedPublishingState getTimebasedPublishingState(GWTJahiaPageContext page, String objectKey) {
-        // parameters for submethod calls
-        final boolean isDevMode = true ;//org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        final HttpServletRequest request = getThreadLocalRequest() ;
-        final ProcessingContext jParams = retrieveParamBean(page) ;
-        return TimebasedPublishingHelper.getTimebasePublishingState(request, jParams, isDevMode, objectKey) ;
+        return TimebasedPublishingHelper.getTimebasePublishingState(getThreadLocalRequest(), retrieveParamBean(page), objectKey) ;
     }
 
     public GWTJahiaTimebasedPublishingDetails getTimebasedPublishingDetails(GWTJahiaPageContext page, GWTJahiaTimebasedPublishingState state) {
@@ -107,24 +100,23 @@ public class ActionMenuServiceImpl extends AbstractJahiaGWTServiceImpl implement
     }
 
     public GWTJahiaAclDiffState getAclDiffState(GWTJahiaPageContext page, String objectKey) {
-        final boolean isDevMode = true ;//org.jahia.settings.SettingsBean.getInstance().isDevelopmentMode();
-        final HttpServletRequest request = getThreadLocalRequest() ;
-        final ProcessingContext jParams = retrieveParamBean(page) ;
+        GWTJahiaAclDiffState state = null;
         try {
-            return AclDiffHelper.getAclDiffState(request, jParams, isDevMode, objectKey) ;
+            state = AclDiffHelper.getAclDiffState(getThreadLocalRequest(), retrieveParamBean(page), objectKey) ;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return null ;
         }
+        return state ;
     }
 
     public GWTJahiaAclDiffDetails getAclDiffDetails(GWTJahiaPageContext page, String objectKey) {
+        GWTJahiaAclDiffDetails details = null;
         try {
-            return AclDiffHelper.getAclDiffDetails(retrieveParamBean(page), objectKey) ;
+            details = AclDiffHelper.getAclDiffDetails(retrieveParamBean(page), objectKey) ;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return null ;
         }
+        return details ;
     }
 
     public String isActionMenuAvailable(GWTJahiaPageContext page, String objectKey, String bundleName, String labelKey) {

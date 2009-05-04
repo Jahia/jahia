@@ -59,6 +59,7 @@ import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.bookmarks.BookmarksJahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.version.JahiaSaveVersion;
@@ -570,10 +571,9 @@ public class JahiaServiceImpl extends AbstractJahiaGWTServiceImpl implements Jah
     }
 
     public Boolean isInlineEditingAllowed(Integer containerID, Integer fieldID) {
-        logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
+        if (logger.isDebugEnabled()) logger.debug("isInlineEditingAllowed called for containerID=" + containerID + " fieldID=" + fieldID);
         ProcessingContext jParams = retrieveParamBean();
-        final boolean inlineEditingActivatedPreference = ServicesRegistry.getInstance().getJahiaPreferencesService().
-                getGenericPreferenceBooleanValue("inlineediting.activated", false, jParams);
+        final boolean inlineEditingActivatedPreference = UserPreferencesHelper.isEnableInlineEditing(jParams.getUser());
         if (!inlineEditingActivatedPreference) {
             return false;
         }

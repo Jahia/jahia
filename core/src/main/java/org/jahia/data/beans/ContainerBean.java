@@ -17,8 +17,6 @@
 package org.jahia.data.beans;
 
 import org.apache.log4j.Logger;
-import org.jahia.ajax.usersession.userSettings;
-import org.jahia.bin.Jahia;
 import org.jahia.content.ContentObject;
 import org.jahia.content.JahiaObject;
 import org.jahia.content.PropertiesInterface;
@@ -44,9 +42,11 @@ import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 import org.jahia.services.workflow.WorkflowService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.InsertionSortedMap;
 
 import java.util.*;
@@ -651,11 +651,9 @@ public class ContainerBean extends ContentBean implements PropertiesInterface {
             // If the container is displayed as an absolute reference, add a link to the source page where it has been declared
             // unless the workflow icon is already displayed next to it
             if (theContainer.getPageID() != processingContext.getPageID()
-                    && (!isIndependantWorkflow() || !(org.jahia.settings.SettingsBean.getInstance()
+                    && (!isIndependantWorkflow() || !(SettingsBean.getInstance()
                             .isDevelopmentMode()
-                            || processingContext.getSessionState()
-                                    .getAttribute(userSettings.WF_VISU_ENABLED) != null || Jahia
-                            .getSettings().isWflowDisp()))) {
+                            || UserPreferencesHelper.isDisplayWorkflowState(processingContext.getUser())))) {
                 curURL = processingContext.composePageUrl(theContainer
                         .getPageID(), processingContext.getLocale().toString());
                 final StringBuffer url = new StringBuffer();

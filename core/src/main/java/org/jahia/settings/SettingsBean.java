@@ -222,9 +222,8 @@ public class SettingsBean {
     //flags for aes
     private boolean tbpDisp;
     private boolean wflowDisp;
-    private boolean chatDisp;
     private boolean aclDisp;
-    private boolean pdispDisp=true;
+    private boolean integrityDisp;    
 
     // hibernate batchloading
     private boolean batchLoadingEnabled = true;
@@ -556,8 +555,7 @@ public class SettingsBean {
             tbpDisp = getBoolean("timebased_display",false);
             aclDisp = getBoolean("aclDiff_display",false);
             wflowDisp =getBoolean("workflow_display",false);
-            chatDisp =getBoolean("chat_display",false);
-            pdispDisp =getBoolean("process_display",true);
+            integrityDisp =getBoolean("integrityChecks_display",false);
             connectionTimeoutForProductionJob = getInt("connectionTimeoutForProductionJob",60000);
 
             // hibernate batchloading
@@ -1448,14 +1446,6 @@ public class SettingsBean {
         return wflowDisp;
     }
 
-    public boolean isChatDisp() {
-        return chatDisp;
-    }
-
-    public boolean isPdispDisp() {
-        return pdispDisp;
-    }
-
     public boolean isBatchLoadingEnabled() {
         return batchLoadingEnabled;
     }
@@ -1666,5 +1656,13 @@ public class SettingsBean {
 
     public void setJahiaPreparePortletJCRPath(String jahiaPreparePortletJCRPath) {
         this.jahiaPreparePortletJCRPath = jahiaPreparePortletJCRPath;
+    }
+
+    public boolean isIntegrityDisp() {
+        return integrityDisp;
+    }
+
+    public void setIntegrityDisp(boolean integrityDisp) {
+        this.integrityDisp = integrityDisp;
     }
 }

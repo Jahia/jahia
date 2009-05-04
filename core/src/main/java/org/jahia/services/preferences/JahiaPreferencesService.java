@@ -20,10 +20,8 @@ package org.jahia.services.preferences;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.JahiaService;
-import org.jahia.services.content.JCRJahiaContentNode;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
@@ -39,6 +37,7 @@ import java.util.Map;
 import java.util.Iterator;
 
 /**
+ * Preference service for Jahia.
  * User: jahia
  * Date: 19 mars 2008
  * Time: 11:39:09
@@ -201,9 +200,20 @@ public class JahiaPreferencesService extends JahiaService {
      * @return the value
      */
     public String getGenericPreferenceValue(String key, ProcessingContext jParams) {
+        return getGenericPreferenceValue(key, jParams.getUser());
+    }
+
+    /**
+     * Return the value associated with the given key using the generic preference provider.
+     *
+     * @param key     the key
+     * @param principal current principal
+     * @return the value
+     */
+    public String getGenericPreferenceValue(String key, Principal principal) {
         try {
 
-            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(jParams.getUser(), JahiaPreferencesXpathHelper.getSimpleXpath(key));
+            JahiaPreference preference = getGenericPreferencesProvider().getJahiaPreference(principal, JahiaPreferencesXpathHelper.getSimpleXpath(key));
             if (preference != null) {
                 try {
                     return ((GenericJahiaPreference) preference.getNode()).getPrefValue();
@@ -221,12 +231,24 @@ public class JahiaPreferencesService extends JahiaService {
      * Return the value associated with the given key using the generic preference provider.
      *
      * @param key          the key
-     * @param defaultValue the default value to be returned in te preference was not found
+     * @param defaultValue the default value to be returned in the preference was not found
      * @param jParams      the processing context
      * @return the value
      */
     public boolean getGenericPreferenceBooleanValue(String key, boolean defaultValue, ProcessingContext jParams) {
-        String value = getGenericPreferenceValue(key, jParams);
+        return getGenericPreferenceBooleanValue(key, defaultValue, jParams.getUser());
+    }
+
+    /**
+     * Return the value associated with the given key using the generic preference provider.
+     *
+     * @param key          the key
+     * @param defaultValue the default value to be returned in the preference was not found
+     * @param principal current principal
+     * @return the value
+     */
+    public boolean getGenericPreferenceBooleanValue(String key, boolean defaultValue, Principal principal) {
+        String value = getGenericPreferenceValue(key, principal);
         return value != null ? Boolean.parseBoolean(value) : defaultValue;
     }
 

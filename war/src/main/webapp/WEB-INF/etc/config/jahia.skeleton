@@ -587,22 +587,22 @@ readOnlyMode                                            = false
 ######################################################################
 ### AES (Advanced Edition Settings) ##################################
 ######################################################################
-# These settings control Javascript controls that are displayed on
-# pages. Each one of these will add additional features that will
-# slow-down page generation but show more information about the
-# current status of the page or the status of the server. The
-# default settings are a good balance between features and
-# performance.
-timebased_display                                       = false
-workflow_display                                        = true
-chat_display                                            = true
-process_display                                         = true
+# Enable/disable the information icons about current state of the
+# content object.
+# These are the default values, which can be changed by each user
+# in the "Advanced edit mode" menu of the toolbar.   
+# Do we show icon, if the rights of the object differ from its parent?
 aclDiff_display											= false
-
 # The following setting controls an inline edition feature that
 # allows users in edit mode to modify content directly in the HTML.
 # This is only available for smalltext and bigtext fields.
-inlineEditingActivated                                  = true
+inlineEditingActivated                                  = false
+# Show integrity violation indicator?
+integrityChecks_display                                 = false
+# Show time-based publishing state?
+timebased_display                                       = false
+# Show workflow state information?
+workflow_display                                        = true
 ######################################################################
 ### Locking ##########################################################
 ######################################################################

@@ -20,11 +20,11 @@ import org.apache.log4j.Logger;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.fields.ContentField;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffState;
 import org.jahia.ajax.gwt.client.data.actionmenu.acldiff.GWTJahiaAclDiffDetails;
 import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by IntelliJ IDEA.
+ * Helper class for rendering ACL difference information.
  *
  * @author rfelden
  * @version 28 f�vr. 2008 - 16:03:35
@@ -62,23 +62,11 @@ public class AclDiffHelper {
      *
      * @param therequest the current request
      * @param jParams the processing context
-     * @param isDevMode development mode enabled
      * @param objectKey the current object key
      * @return the acl diff state (or null if no particular state)
      */
-    public static GWTJahiaAclDiffState getAclDiffState(HttpServletRequest therequest, ProcessingContext jParams, boolean isDevMode, String objectKey) {
-        Boolean aclDifferenceParam = ActionMenuServiceHelper.getUserInitialSettingForDevMode(therequest, userSettings.ACL_VISU_ENABLED, isDevMode);
-        if (!isDevMode) {
-            try {
-                String value = (String) therequest.getSession().getAttribute(userSettings.ACL_VISU_ENABLED);
-                aclDifferenceParam = value != null ? Boolean.valueOf(value) : null;
-                if (aclDifferenceParam == null) {
-                    aclDifferenceParam = org.jahia.settings.SettingsBean.getInstance().isAclDisp();
-                }
-            } catch (final IllegalStateException e) {
-                logger.error(e, e);
-            }
-        }
+    public static GWTJahiaAclDiffState getAclDiffState(HttpServletRequest therequest, ProcessingContext jParams, String objectKey) {
+        Boolean aclDifferenceParam = UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser());
         try {
             ContentObject obj = JahiaObjectCreator.getContentObjectFromString(objectKey) ;
 

@@ -20,15 +20,15 @@ import org.jahia.data.containers.JahiaContainer;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.params.ProcessingContext;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.ajax.usersession.userSettings;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ObjectKey;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.settings.SettingsBean;
 
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
+ * The implementation of the container HTML cache service. 
  * User: Serge Huber
  * Date: 26 mars 2007
  * Time: 12:09:55
@@ -208,61 +208,25 @@ public class ContainerHTMLCache<K, V> extends Cache<GroupCacheKey, ContainerHTML
      */
     public static String appendAESMode(ProcessingContext jParams, String cacheKey) {
         short mode = 0 ;
-        String wfVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.WF_VISU_ENABLED) ;
-        boolean wfVisu = wfVisuParam != null && wfVisuParam.equals("true") ;
-        boolean wfVisuAes = wfVisuParam != null ;
-
-        String aclVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.ACL_VISU_ENABLED) ;
-        boolean aclVisu = aclVisuParam != null && aclVisuParam.equals("true") ;
-        boolean aclVisuAes = aclVisuParam != null ;
-
-        String tbpVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.TBP_VISU_ENABLED) ;
-        boolean tbpVisu = tbpVisuParam != null && tbpVisuParam.equals("true") ;
-        boolean tbpVisuAes = tbpVisuParam != null ;
-
-        String chatVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.CHAT_VISU_ENABLED) ;
-        boolean chatVisu = chatVisuParam != null && chatVisuParam.equals("true") ;
-        boolean chatVisuAes = chatVisuParam != null ;
-
-        String pdispVisuParam = (String) jParams.getSessionState().getAttribute(userSettings.MONITOR_VISU_ENABLED) ;
-        boolean pdispVisu = pdispVisuParam != null && pdispVisuParam.equals("true") ;
-        boolean pdispVisuAes = pdispVisuParam != null ;
-
-        short settingsMode = 0 ;
-        if (org.jahia.settings.SettingsBean.getInstance().isWflowDisp()) {
-            settingsMode += 1 ;
+        if (ProcessingContext.EDIT.equals(jParams.getOperationMode())) {
+            SettingsBean settings = SettingsBean.getInstance();
+            
+            if (settings.isWflowDisp() != UserPreferencesHelper.isDisplayWorkflowState(jParams.getUser())) {
+                mode += 1;
+            }
+            if (settings.isAclDisp() != UserPreferencesHelper.isDisplayAclDiffState(jParams.getUser())) {
+                mode += 2;
+            }
+            if (settings.isTbpDisp() != UserPreferencesHelper.isDisplayTbpState(jParams.getUser())) {
+                mode += 4;
+            }
+            if (settings.isInlineEditingActivated() != UserPreferencesHelper.isEnableInlineEditing(jParams.getUser())) {
+                mode += 8;
+            }
         }
-        if (org.jahia.settings.SettingsBean.getInstance().isAclDisp()) {
-            settingsMode += 2 ;
-        }
-        if (org.jahia.settings.SettingsBean.getInstance().isTbpDisp()) {
-            settingsMode += 4 ;
-        }
-        if (org.jahia.settings.SettingsBean.getInstance().isChatDisp()) {
-            settingsMode += 8 ;
-        }
-        if (org.jahia.settings.SettingsBean.getInstance().isPdispDisp()) {
-            settingsMode += 16 ;
-        }
-
-        if ((wfVisuAes && wfVisu) || (!wfVisuAes && org.jahia.settings.SettingsBean.getInstance().isWflowDisp())) {
-            mode += 1 ;
-        }
-        if ((aclVisuAes && aclVisu) || (!aclVisuAes && org.jahia.settings.SettingsBean.getInstance().isAclDisp())) {
-            mode += 2 ;
-        }
-        if ((tbpVisuAes && tbpVisu) || (!tbpVisuAes && org.jahia.settings.SettingsBean.getInstance().isTbpDisp())) {
-            mode += 4 ;
-        }
-        if ((chatVisuAes && chatVisu) || (!chatVisuAes && org.jahia.settings.SettingsBean.getInstance().isChatDisp())) {
-            mode += 8 ;
-        }
-        if ((pdispVisuAes && pdispVisu) || (!pdispVisuAes && org.jahia.settings.SettingsBean.getInstance().isPdispDisp())) {
-            mode += 16 ;
-        }
-
-        if (settingsMode == mode) { // don't append anything if mode corresponds to settings
-            return new StringBuilder(cacheKey != null ? cacheKey : "").toString() ;
+        
+        if (mode == 0) { // don't append anything if mode corresponds to settings
+            return cacheKey != null ? cacheKey : "" ;
         } else {
             return new StringBuilder(cacheKey != null ? cacheKey : "").append("_").append(mode).toString() ;
         }

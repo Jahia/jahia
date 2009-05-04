@@ -198,12 +198,6 @@
                 validate="false">
         </action>
 
-        <action path="/usersettings"
-                type="org.jahia.ajax.usersession.userSettings"
-                parameter="method"
-                validate="false">
-        </action>
-
         <action path="/PDisp"
                 type="org.jahia.ajax.monitors.PDisplayAction"
                 parameter="method"

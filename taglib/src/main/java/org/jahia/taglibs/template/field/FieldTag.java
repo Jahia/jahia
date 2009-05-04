@@ -41,6 +41,7 @@ import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.jahia.services.categories.Category;
 import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.pages.PageInfoInterface;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.JahiaTools;
 
@@ -666,14 +667,12 @@ public class FieldTag extends AbstractFieldTag {
             logger.warn("ProcessingContext is null, ignoring contentEditable feature. ");
             return resultingValue;
         }
-        if (!resultingValue.startsWith("<jahia-")) {
-            if (theField.getType() == FieldTypes.BIGTEXT ||
-                    theField.getType() == FieldTypes.SMALLTEXT ||
-                    theField.getType() == FieldTypes.SMALLTEXT_SHARED_LANG) {
-                if (processingContext.settings().isInlineEditingActivated() &&
-                        ParamBean.EDIT.equals(processingContext.getOperationMode()) &&
-                        inlineEditingActivated &&
-                        theField.checkWriteAccess(processingContext.getUser())) {
+        if (inlineEditingActivated && (theField.getType() == FieldTypes.BIGTEXT ||
+                theField.getType() == FieldTypes.SMALLTEXT ||
+                theField.getType() == FieldTypes.SMALLTEXT_SHARED_LANG) && !resultingValue.startsWith("<jahia-")) {
+                if (ParamBean.EDIT.equals(processingContext.getOperationMode()) &&
+                        UserPreferencesHelper.isEnableInlineEditing(processingContext.getUser())
+                        && theField.checkWriteAccess(processingContext.getUser())) {
                     resultingValue = "<div class=\"editableContent\" onclick=\"onClickEditableContent(this, '" +
                             theField.getctnid() + "', '" + theField.getID() +
                             "')\" onblur=\"onBlurEditableContent(this, '" + theField.getctnid() + "', '" + theField.getID() + "')\">" +
@@ -684,7 +683,6 @@ public class FieldTag extends AbstractFieldTag {
                             JahiaType.JAHIA_TYPE + "=\"" + JahiaType.INLINE_EDITING + "\">" + resultingValue + "</div>";
                     */
                 }
-            }
         }
         return resultingValue;
     }

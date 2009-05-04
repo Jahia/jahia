@@ -22,6 +22,7 @@ import groovy.util.GroovyScriptEngine;
 import groovy.util.ResourceException;
 import groovy.util.ScriptException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -44,8 +45,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.SpringContextSingleton;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.notification.Subscription;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -66,6 +67,45 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return pageId > 0 ? getSiteUrl(site) + "/"
                 + ProcessingContext.PAGE_ID_PARAMETER + "/" + pageId
                 : getSiteUrl(site);
+    }
+
+    /**
+     * Returns the e-mail address with the personal name of the current user (or
+     * the system's default one).
+     * 
+     * @param ctx
+     *            current processing context with the user information
+     * @return the e-mail address with the personal name of the current user (or
+     *         the system's default one)
+     */
+    public static String getSenderEmailAddress(ProcessingContext ctx) {
+        String email = ServicesRegistry.getInstance().getMailService()
+                .defaultSender();
+        if (email.contains("<")) {
+            return email;
+        }
+        JahiaUser user = ctx != null ? ctx.getUser() : null;
+        if (user != null) {
+            String name = UserPreferencesHelper.getPersonalName(user);
+            JahiaSite site = ctx.getSite();
+            if (site != null) {
+                name = name != null ? name + " (" + site.getTitle() + ")"
+                        : site.getTitle();
+            }
+            try {
+                email = new InternetAddress(email, name, SettingsBean
+                        .getInstance().getDefaultResponseBodyEncoding())
+                        .toString();
+            } catch (UnsupportedEncodingException e) {
+                logger.warn(e.getMessage(), e);
+                try {
+                    email = new InternetAddress(email, name).toString();
+                } catch (UnsupportedEncodingException e2) {
+                    // ignore
+                }
+            }
+        }
+        return email;
     }
 
     public static String getServerUrl(int siteId) {
@@ -119,7 +159,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
      *            the site ID
      */
     public MessageBuilder(JahiaUser subscriber, int siteId) {
-        this(subscriber, MailHelper.getEmailAddress(subscriber), siteId);
+        this(subscriber, UserPreferencesHelper.getEmailAddress(subscriber), siteId);
     }
 
     /**
@@ -180,7 +220,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     protected Locale getPreferredLocale() {
         if (preferredLocale == null) {
-            preferredLocale = MailHelper.getPreferredLocale(subscriber, siteId);
+            preferredLocale = UserPreferencesHelper.getPreferredLocale(subscriber, siteId);
         }
         return preferredLocale;
     }
@@ -272,7 +312,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
         mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress
                 .parse(vars.get("to") != null ? (String) vars.get("to")
-                        : MailHelper
+                        : UserPreferencesHelper
                         .getPersonalizedEmailAddress(subscriberEmail,
                                 subscriber)));
 
@@ -289,9 +329,9 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
     }
 
     protected void populateBinding(Binding binding) {
-        binding.setVariable("subscriber", new Subscriber(MailHelper
-                .getFirstName(subscriber), MailHelper.getLastName(subscriber),
-                MailHelper.getFullName(subscriber), MailHelper
+        binding.setVariable("subscriber", new Subscriber(UserPreferencesHelper
+                .getFirstName(subscriber), UserPreferencesHelper.getLastName(subscriber),
+                UserPreferencesHelper.getFullName(subscriber), UserPreferencesHelper
                         .getPersonalizedEmailAddress(subscriberEmail,
                                 subscriber), subscriber));
         binding.setVariable("locale", getPreferredLocale());

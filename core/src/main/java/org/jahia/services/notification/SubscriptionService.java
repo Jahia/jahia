@@ -30,11 +30,11 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.manager.SubscriptionManager;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.templates.SubscriptionConfirmationMessageBuilder;
 import org.jahia.services.notification.templates.TemplateUtils;
 import org.jahia.services.notification.templates.UnsubscribeConfirmationMessageBuilder;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -303,7 +303,7 @@ public class SubscriptionService extends JahiaService {
 
         JahiaUser user = TemplateUtils.getSubscriber(subscription);
         if (user != null) {
-            final String emailAddress = MailHelper.getEmailAddress(user);
+            final String emailAddress = UserPreferencesHelper.getEmailAddress(user);
             if (emailAddress != null) {
                 // generate and store confirmation key
                 generateConfirmationKey(subscription);

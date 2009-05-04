@@ -20,12 +20,12 @@ import java.security.Principal;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.Subscription.Channel;
 import org.jahia.services.notification.templates.SubscriberNotificationMessageBuilder;
 import org.jahia.services.notification.templates.SubscriptionNotificationMessageBuilder;
 import org.jahia.services.notification.templates.TemplateUtils;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -89,9 +89,9 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
         }, new Condition() {
             private boolean checkUser(JahiaUser user) {
                 boolean matches = false;
-                String emailAddress = MailHelper.getEmailAddress(user);
+                String emailAddress = UserPreferencesHelper.getEmailAddress(user);
                 if (emailAddress != null) {
-                    if (!MailHelper.areEmailNotificationsDisabled(user)) {
+                    if (!UserPreferencesHelper.areEmailNotificationsDisabled(user)) {
                         matches = true;
                     } else if (logger.isDebugEnabled()) {
                         logger.debug("The user '" + user.getUsername()
@@ -174,7 +174,7 @@ public class EmailNotificationEventHandler extends BaseNotificationEventHandler 
         JahiaUser user = TemplateUtils.getSubscriber(subscription);
         getMailService().sendTemplateMessage(
                 new SubscriptionNotificationMessageBuilder(events,
-                        subscription, user, MailHelper.getEmailAddress(user)));
+                        subscription, user, UserPreferencesHelper.getEmailAddress(user)));
     }
 
     public void setMailService(MailService mailService) {

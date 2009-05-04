@@ -23,11 +23,14 @@
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
 <%@ taglib uri="http://www.jahia.org/tags/uiComponentsLib" prefix="ui" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ page import="java.util.Locale" %>
 <%@ page import="org.jahia.data.JahiaData" %>
-<%@ page import="org.jahia.services.mail.MailHelper" %>
+<%@ page import="org.jahia.utils.LanguageCodeConverters" %>
 <%@ page import="org.jahia.params.ProcessingContext" %>
 <%@ page import="org.jahia.bin.*,org.jahia.admin.users.*" %>
+<%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <utility:setBundle basename="JahiaInternalResources"/>
 <c:set var="noneLabel"><fmt:message key="org.jahia.userMessage.none"/></c:set>
 <jsp:useBean id="URL" class="java.lang.String" scope="request"/>
@@ -209,12 +212,12 @@
         <%
             propValue = getUserProp(userProperties, "preferredLanguage");
             if (propValue == null || propValue.length() == 0) {
-                propValue = MailHelper.getPreferredLocale(null, jParams.getSite()).toString();
+                propValue = UserPreferencesHelper.getPreferredLocale(null, jParams.getSite()).toString();
             }
         %>
         <select name='<%=ManageUsers.USER_PROPERTY_PREFIX + "preferredLanguage"%>'>
             <%
-                for (java.util.Locale theLocale : MailHelper.getAvailableBundleLocalesSorted(jParams.getLocale())) {%>
+                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getLocale())) {%>
             <option value="<%=theLocale %>"
                     <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getLocale()) %>
             </option>

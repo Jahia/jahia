@@ -28,7 +28,7 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.mail.MailHelper;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.JahiaDBUser;
 import org.jahia.services.usermanager.JahiaUser;
@@ -112,7 +112,7 @@ public class LoginEngineAuthValveImpl implements Valve {
                 SettingsBean settingsBean = org.jahia.settings.SettingsBean.getInstance();
                 // do a switch to the user's preferred language
                 if (settingsBean.isConsiderPreferredLanguageAfterLogin()) {
-                    Locale preferredUserLocale = MailHelper
+                    Locale preferredUserLocale = UserPreferencesHelper
                             .getPreferredLocale(theUser, jParams
                                     .getSite());
                     if (jParams.getSite() != null) {

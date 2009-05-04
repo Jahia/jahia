@@ -23,8 +23,12 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 /**
  * <p>Title: Utility class to convert between the different type of language
@@ -304,5 +308,20 @@ public class LanguageCodeConverters {
             languageCodes.add(locale.toString());
         }
         return languageCodes;
+    }
+
+    public static List<Locale> getAvailableBundleLocales() {
+        return getAvailableBundleLocales(
+                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null);
+    }
+
+    public static List<Locale> getAvailableBundleLocalesSorted(
+            Locale currentLocale) {
+        Map<String, Locale> sortedLocales = new TreeMap<String, Locale>();
+        for (Locale locale : getAvailableBundleLocales(
+                JahiaResourceBundle.JAHIA_MESSAGE_RESOURCES, null)) {
+            sortedLocales.put(locale.getDisplayName(currentLocale), locale);
+        }
+        return new LinkedList<Locale>(sortedLocales.values());
     }
 }

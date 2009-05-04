@@ -24,8 +24,8 @@ import org.jahia.ajax.gwt.client.service.subscription.SubscriptionService;
 import org.jahia.ajax.gwt.client.widget.subscription.SubscriptionStatus;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.notification.Subscription;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -60,7 +60,7 @@ public class SubscriptionServiceImpl extends AbstractJahiaGWTServiceImpl
         JahiaUser user = getUser();
         if (JahiaUserManagerService.isGuest(user)) {
             status = SubscriptionStatus.UNAUTHORIZED;
-        } else if (MailHelper.getEmailAddress(user) == null) {
+        } else if (UserPreferencesHelper.getEmailAddress(user) == null) {
             status = SubscriptionStatus.NO_EMAIL_ADDRESS;
         } else {
             status = getSubscriptionService().isSubscribed(objectKey,

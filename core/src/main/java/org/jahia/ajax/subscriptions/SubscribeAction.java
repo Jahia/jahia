@@ -40,7 +40,6 @@ import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.mail.MailServiceImpl;
 import org.jahia.services.mail.MailSettings;
@@ -48,6 +47,7 @@ import org.jahia.services.notification.Subscription;
 import org.jahia.services.notification.SubscriptionService;
 import org.jahia.services.notification.SubscriptionService.ConfirmationResult;
 import org.jahia.services.notification.templates.TemplateUtils;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -348,7 +348,7 @@ public class SubscribeAction extends AjaxDispatchAction {
         Locale locale = null;
         JahiaSite site = TemplateUtils.getSite(siteId);
         if (subscription != null) {
-            locale = MailHelper.getPreferredLocale(TemplateUtils
+            locale = UserPreferencesHelper.getPreferredLocale(TemplateUtils
                     .getSubscriber(subscription), site);
         }
         locale = locale != null ? locale : request.getLocale();

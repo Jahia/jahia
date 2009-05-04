@@ -21,13 +21,15 @@
 <%@page import="org.jahia.bin.JahiaAdministration" %>
 <%@page import="org.jahia.data.JahiaData" %>
 <%@page import="org.jahia.data.viewhelper.principal.PrincipalViewHelper" %>
-<%@page import="org.jahia.services.mail.MailHelper" %>
 <%@page import="org.jahia.params.ProcessingContext" %>
+<%@ page import="org.jahia.utils.LanguageCodeConverters" %>
 <%@page import="org.jahia.utils.i18n.JahiaResourceBundle" %>
+<%@page import="org.jahia.services.preferences.user.UserPreferencesHelper"%>
 <%@page import="org.jahia.services.usermanager.JahiaUser,org.jahia.services.usermanager.UserProperties,org.jahia.services.usermanager.UserProperty" %>
 <%@ page import="org.jahia.utils.JahiaTools" %>
 <%@ page import="java.security.Principal" %>
 <%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.Locale" %>
 <%@ page import="java.util.MissingResourceException" %>
 <%@ page import="java.util.ResourceBundle" %>
 <%@ page import="java.util.Set" %>
@@ -283,13 +285,13 @@
             iReadOnly = isPropReadOnly(userProps, "preferredLanguage");
             propValue = getUserProp(userProps, "preferredLanguage");
             if (propValue == null || propValue.length() == 0) {
-                propValue = MailHelper.getPreferredLocale(jUser, jParams.getSite()).toString();
+                propValue = UserPreferencesHelper.getPreferredLocale(jUser, jParams.getSite()).toString();
             }
         %>
         <select name='<%=ManageUsers.USER_PROPERTY_PREFIX + "preferredLanguage"%>'
                 <% if (iReadOnly) {%>disabled="disabled"<% } %>>
             <%
-                for (java.util.Locale theLocale : MailHelper.getAvailableBundleLocalesSorted(jParams.getLocale())) {%>
+                for (Locale theLocale : LanguageCodeConverters.getAvailableBundleLocalesSorted(jParams.getLocale())) {%>
             <option value="<%=theLocale %>"
                     <% if (theLocale.toString().equals(propValue)) { %>selected="selected"<% } %>><%= theLocale.getDisplayName(jParams.getLocale()) %>
             </option>

@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.mail.MailHelper;
 import org.jahia.services.notification.NotificationEvent;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
@@ -89,10 +89,10 @@ public class WorkflowMessageBuilder extends
     protected void populateBinding(Binding binding) {
         super.populateBinding(binding);
         binding.setVariable("jobReportLink", getJobReportLink());
-        binding.setVariable("from", MailHelper.getSenderEmailAddress(ctx));
-        binding.setVariable("jobUser", new Subscriber(MailHelper
-                .getFirstName(ctx.getUser()), MailHelper.getLastName(ctx
-                .getUser()), MailHelper.getFullName(ctx.getUser()), null, ctx
+        binding.setVariable("from", getSenderEmailAddress(ctx));
+        binding.setVariable("jobUser", new Subscriber(UserPreferencesHelper
+                .getFirstName(ctx.getUser()), UserPreferencesHelper.getLastName(ctx
+                .getUser()), UserPreferencesHelper.getFullName(ctx.getUser()), null, ctx
                 .getUser()));
     }
 

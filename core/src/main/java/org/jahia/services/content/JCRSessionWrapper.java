@@ -115,8 +115,8 @@ public class JCRSessionWrapper implements Session {
             if (path.startsWith(mp+"/")) {
                 String localPath = path.substring(mp.length());
                 JCRStoreProvider provider = dynamicMountPoints.get(mp);
-                Item item = getProviderSession(provider).getItem(localPath);
-//                Item item = getProviderSession(provider).getItem(provider.encodeInternalName(localPath));
+//                Item item = getProviderSession(provider).getItem(localPath);
+                Item item = getProviderSession(provider).getItem(provider.encodeInternalName(localPath));
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {
@@ -136,7 +136,8 @@ public class JCRSessionWrapper implements Session {
                 if (localPath.equals("")) {
                     localPath = "/";
                 }
-                Item item = getProviderSession(provider).getItem(localPath);
+//                Item item = getProviderSession(provider).getItem(localPath);
+                Item item = getProviderSession(provider).getItem(provider.encodeInternalName(localPath));
                 if (item.isNode()) {
                     return provider.getNodeWrapper((Node) item, this);
                 } else {

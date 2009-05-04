@@ -18,14 +18,13 @@
 --%>
 <%@ include file="../../common/declarations.jspf" %>
 <query:createFacetFilter facetName="defaultCategoryFacet"
-    propertyName="defaultCategory" facetBeanId="defaultCategoryFacet"/>
+    propertyName="defaultCategory" facetBeanId="defaultCategoryFacet" facetValueBeanId="categoryList"/>
 <div class="categories">
     <h3><fmt:message key="article.categories"/></h3>
     
     <ul>
-    <query:getAppliedFacetFilters filterQueryParamName="filter" appliedFacetsId="appliedFacets"/>    
 	<c:if test='${!query:isFacetApplied(defaultCategoryFacet, appliedFacets)}'>
-    <query:getHitsPerFacetValue mainQueryBeanId="blogQuery" facetBeanId="defaultCategoryFacet" filterQueryParamName="filter"/>
+    <query:getHitsPerFacetValue mainQueryBeanId="blogQuery" facetBeanId="defaultCategoryFacet" filterQueryParamName="filter" display="false"/>
 </c:if>
     </ul>
 </div>

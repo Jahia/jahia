@@ -29,6 +29,8 @@
                         actionMenuNameLabelKey="article" actionMenuNamePostFix="manage">
     <%--query search --%>
     <query:containerQuery queryBeanID="blogQuery">
+        <query:setProperty name="${queryConstants.FILTER_CREATORS}" value="JahiaDBFilterCreator"/> 
+        <%--<query:setProperty name="${queryConstants.FACET_FILTER_QUERY_PARAM_NAME}" value="filter"/>--%>
         <query:selector nodeTypeName="social_templates:blogEntry" selectorName="blogSelector"/>
         <query:childNode selectorName="blogSelector" path="${blogEntriesPagination.JCRPath}"/>
         <query:sortBy propertyName="date" order="${queryConstants.ORDER_DESCENDING}"/>
@@ -58,6 +60,7 @@
         <c:if test="${!empty param.user}">
             <query:equalTo propertyName="${queryConstants.CREATOR}" metadata="true" value="${param.user}"/>
         </c:if>
+
     </query:containerQuery>
     <c:set var="blogType" value="full"/>
     <%@ include file="blog.jspf" %>

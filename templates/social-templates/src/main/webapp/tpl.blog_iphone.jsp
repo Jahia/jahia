@@ -65,7 +65,7 @@
         <!--start newslist -->
         <template:containerList name="blogEntries" id="blogEntriesPagination" windowSize="5" displayActionMenu="false">
             <template:container id="blogEntry" displayActionMenu="false" cacheKey="iphone_details"
-                                displaySkins="false" displayContainerAnchor="false">
+                                displaySkins="false" displayContainerAnchor="false" displayExtensions="false">
                 <template:getContentObjectCategories valueID="blogEntryCatKeys"
                                          objectKey="contentContainer_${pageScope.entry.ID}"/>
                 <div class="iLayer" id="waContainer<c:out value='${blogEntry.ID}'/>" title="Blog Detail">

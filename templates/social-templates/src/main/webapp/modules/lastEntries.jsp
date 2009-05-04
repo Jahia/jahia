@@ -25,11 +25,12 @@
     <div class="columnspace"><!--start columnspace -->
         <div class="mapshortcuts"><!--start bottomshortcuts-->
             <h4><fmt:message key="social_templates_lastEntries.recent"/></h4>
-            <template:containerList maxSize="${lastEntriesMaxEntries.integer}" id="newsList" displayActionMenu="false">
+            <template:containerList id="newsList" displayActionMenu="false">
                 <query:containerQuery>
+                    <query:setProperty name="${queryConstants.FILTER_CREATORS}" value="JahiaDBFilterCreator"/>
                     <query:selector nodeTypeName="social_templates:blogEntry" selectorName="blogEntry"/>
                     <query:descendantNode selectorName="blogEntry" path="${currentSite.JCRPath}"/>
-                    <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxEntries.integer}"/>
+                    <query:setProperty name="${queryConstants.DB_MAX_RESULT}" value="${lastEntriesMaxEntries.integer}"/>
                     <query:sortBy propertyName="date" order="${queryConstants.ORDER_DESCENDING}"/>
                 </query:containerQuery>
                 <ul class="footer-recent-posts">

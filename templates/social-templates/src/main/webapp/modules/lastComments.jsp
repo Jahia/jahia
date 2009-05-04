@@ -30,7 +30,8 @@
                 <query:containerQuery>
                     <query:selector nodeTypeName="jnt:comment" selectorName="comments"/>
                     <query:descendantNode selectorName="comments" path="${currentSite.JCRPath}"/>
-                    <query:setProperty name="${queryConstants.SEARCH_MAX_HITS}" value="${maxEntries.integer}"/>
+                    <query:setProperty name="${queryConstants.FILTER_CREATORS}" value="JahiaDBFilterCreator"/>
+                    <query:setProperty name="${queryConstants.DB_MAX_RESULT}" value="${lastCommentsMaxEntries.integer}"/>
                     <query:sortBy propertyName="commentDate" order="${queryConstants.ORDER_DESCENDING}"/>
                 </query:containerQuery>
                     <template:container id="comment" cacheKey="lastcomment" displayExtensions="false" displayActionMenu="false">

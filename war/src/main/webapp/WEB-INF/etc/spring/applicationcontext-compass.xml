@@ -169,6 +169,9 @@
                 <prop key="compass.engine.analyzer.lowercasekeyword.type">org.apache.lucene.analysis.KeywordAnalyzer</prop>
                 <prop key="compass.engine.analyzer.lowercasekeyword.filters">lowercase</prop>
                 
+                <prop key="compass.engine.analyzer.standard.factory">org.compass.core.lucene.engine.analyzer.DefaultLuceneAnalyzerFactory</prop>
+                <prop key="compass.engine.analyzer.standard.type">org.jahia.services.search.analyzer.StandardAnalyzer</prop>                
+                
                 <prop key="compass.engine.analyzer.simple.type">simple</prop>
                 <prop key="compass.engine.analyzer.whitespace.type">whitespace</prop>                                
                 

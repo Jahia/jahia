@@ -20,20 +20,23 @@
       <resource-property name="jahia.field_id" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.filecontent" store="no"/>
       <resource-property name="jahia.file_content_type" index="un_tokenized" analyzer="keyword"/>
-      <resource-property name="jahia.file_filename" analyzer="simple"/>
-      <resource-property name="jahia.file_realname" analyzer="simple"/>
+      <resource-property name="jahia.file_createdby" analyzer="standard"/>      
+      <resource-property name="jahia.file_filename" analyzer="standard"/>
+      <resource-property name="jahia.file_lastmodified" index="un_tokenized" analyzer="keyword"/>
+      <resource-property name="jahia.file_lastmodifiedby" analyzer="standard"/>      
+      <resource-property name="jahia.file_realname" analyzer="standard"/>
       <resource-property name="jahia.file_size" index="un_tokenized" analyzer="keyword" store="no"/>
       <resource-property name="jahia.id" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.jahia_id" index="un_tokenized" analyzer="keyword"/>
       <resource-property name="jahia.language_code" analyzer="lowercasekeyword"/>
       <resource-property name="jahia.metadata_created" index="un_tokenized" analyzer="keyword"/>
-      <resource-property name="jahia.metadata_createdby" analyzer="simple"/>
+      <resource-property name="jahia.metadata_createdby" analyzer="standard"/>
       <resource-property name="jahia.metadata_defaultcategory" analyzer="lowercasekeyword"/>
       <resource-property name="jahia.metadata_description" store="no"/>      
       <resource-property name="jahia.metadata_keywords" analyzer="lowercasekeyword" omit-norms="true" />      
       <resource-property name="jahia.metadata_lastmodified" index="un_tokenized" analyzer="keyword"/>
-      <resource-property name="jahia.metadata_lastmodifiedby" analyzer="simple"/>
-      <resource-property name="jahia.metadata_lastpublisher" analyzer="simple"/>      
+      <resource-property name="jahia.metadata_lastmodifiedby" analyzer="standard"/>
+      <resource-property name="jahia.metadata_lastpublisher" analyzer="standard"/>      
       <resource-property name="jahia.metadata_lastpublishingdate" index="un_tokenized" analyzer="keyword"/>              
       <resource-property name="jahia.metadata_pagepath" index="un_tokenized" analyzer="keyword" store="no"/>
       <resource-property name="jahia.object_key" analyzer="lowercasekeyword"/>

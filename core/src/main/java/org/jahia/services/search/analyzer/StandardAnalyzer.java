@@ -81,7 +81,8 @@
  import org.apache.lucene.analysis.StopFilter;
  import org.apache.lucene.analysis.TokenStream;
  import org.apache.lucene.analysis.WordlistLoader;
- import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 
  /**
   * Filters {@link StandardTokenizer} with {@link StandardFilter}, {@link
@@ -130,5 +131,12 @@
          result = new TokenWithCommaFilter(result);
          result = new ISOLatin1AccentFilter(result);
          return result;
-     }    
+     }
+     
+     public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
+         TokenStream result = super.reusableTokenStream(fieldName, reader);
+         result = new TokenWithCommaFilter(result);
+         result = new ISOLatin1AccentFilter(result);
+         return result;
+       }
  }

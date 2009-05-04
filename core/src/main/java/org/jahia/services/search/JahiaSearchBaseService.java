@@ -3088,12 +3088,14 @@ public class JahiaSearchBaseService extends JahiaSearchService
     private void addDefaultGroups (Map<String, Set<String>> newFieldGrouping, int siteId) {
         Set<String> l = new HashSet<String>();
         l.add(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
-        l.add(JahiaSearchConstant.TITLE);                    
+        l.add(JahiaSearchConstant.TITLE);
+        l.add(JahiaSearchConstant.FILE_NAME);
         newFieldGrouping.put((siteId > 0 ? siteId + "_" : "") + JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD, l);
         
         l = new HashSet<String>();
         l.add(JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE);
         l.add(JahiaSearchConstant.TITLE);
+        l.add(JahiaSearchConstant.FILE_NAME);        
         newFieldGrouping.put((siteId > 0 ? siteId + "_" : "") + JahiaSearchConstant.CONTENT_FULLTEXT_SEARCH_FIELD, l);
         
         l = new HashSet<String>();

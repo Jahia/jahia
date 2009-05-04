@@ -32,7 +32,7 @@ function toggleSearchMode(field) {
     <s:form searchFor="${searchMode}" name="advancedSearchForm" class="advancedSearchForm">
         <fieldset>
             <legend><fmt:message key="search.advancedSearch.criteria.text.title"/></legend>
-            <label for="term"><fmt:message key="search"/></label>&nbsp;<s:termMatch selectionOptions="all_words,exact_phrase,any_word"/>&nbsp;<s:term id="term"/><br/>
+            <label for="term"><fmt:message key="search"/></label>&nbsp;<s:termMatch selectionOptions="all_words,exact_phrase,any_word,as_is"/>&nbsp;<s:term id="term"/><br/>
             <label for="searchFields"><fmt:message key="searchForm.term.searchIn"/></label>&nbsp;<s:termFields id="searchFields" appearance="select" selectionOptions="pages_content,pages_all,documents_content,documents_all" value="pages_content" onChange="toggleSearchMode(this.options[this.selectedIndex].value)"/>
         </fieldset>
         <fieldset>

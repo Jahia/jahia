@@ -234,46 +234,31 @@ public class PageSearchResultBuilderImpl extends
                             if (isFile) {
                                 String mimeType = null;
                                 if (jcrName == null) {
-                                    JahiaField jahiaField = contentField
-                                            .getJahiaField(jParams
-                                                    .getEntryLoadRequest());
+                                    JahiaField jahiaField = contentField.getJahiaField(jParams.getEntryLoadRequest());
                                     jcrName = jahiaField.getValue();
                                 }
-                                JCRNodeWrapper file = JCRStoreService
-                                        .getInstance().getNodeByUUID(
-                                                jcrName.substring(jcrName
-                                                        .lastIndexOf(':') + 1),
-                                                currentUser);
+                                JCRNodeWrapper file = JCRStoreService.getInstance().getNodeByUUID(
+                                        jcrName.substring(jcrName.lastIndexOf(':') + 1), currentUser);
                                 info.setObject(file);
 
                                 if (mimeType == null) {
-                                    parsedObject
-                                            .getLazyFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE);
+                                    parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE);
                                 } else {
-                                    parsedObject
-                                            .getFields()
-                                            .put(
-                                                    JahiaSearchConstant.FILE_CONTENT_TYPE,
-                                                    new String[] { mimeType });
+                                    parsedObject.getFields().put(JahiaSearchConstant.FILE_CONTENT_TYPE,
+                                            new String[] { mimeType });
                                 }
 
-                                parsedObject
-                                        .getLazyFieldValue(JahiaSearchConstant.FILE_PROPERTY_PREFIX
-                                                + "author");
-                                parsedObject
-                                        .getLazyFieldValue(JahiaSearchConstant.FILE_PROPERTY_PREFIX
-                                                + "contributor");
+                                parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_CREATOR);
+                                parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_LAST_CONTRIBUTOR);
+                                parsedObject.getLazyFieldValue(JahiaSearchConstant.FILE_LAST_MODIFICATION_DATE);
                             }
                             try {
-                                if (SettingsBean.getInstance()
-                                        .isSiteIDInSearchHitPageURL()
-                                        && aPage.getJahiaID() != jParams
-                                                .getJahiaID()) {
+                                if (SettingsBean.getInstance().isSiteIDInSearchHitPageURL()
+                                        && aPage.getJahiaID() != jParams.getJahiaID()) {
                                     jParams.setForceAppendSiteKey(true);
                                 }
-                                url = aPage.getPageType() == JahiaPage.TYPE_URL ? aPage
-                                        .getRemoteURL()
-                                        : aPage.getURL(jParams);
+                                url = aPage.getPageType() == JahiaPage.TYPE_URL ? aPage.getRemoteURL() : aPage
+                                        .getURL(jParams);
                             } catch (Exception t) {
                                 logger.warn("Error obtaining page search hit details", t);
                             } finally {
@@ -431,18 +416,17 @@ public class PageSearchResultBuilderImpl extends
                 if (info.getType() == JahiaSearchHitInterface.FILE_TYPE) {
                     if (searchHit.getType() == JahiaSearchHitInterface.FILE_TYPE
                             && !"#".equals(searchHit.getURL())
-                            && searchHit.getURL().equals(info.getURL())) {
+                            && searchHit.getObject() != null
+                            && info.getObject() != null
+                            && ((JCRNodeWrapper) searchHit.getObject()).getUrl().equals(
+                                    ((JCRNodeWrapper) info.getObject()).getUrl())) {
                         // its a same linked file
                         duplicateFound = true;
-                    } else {
-                        shouldAdd = false;                        
-                    }
+                    } 
                 } else if (info.getPageId() == searchHit.getPageId()) {
                     if (searchHit.getType() != JahiaSearchHitInterface.FILE_TYPE) {
                         duplicateFound = true;
-                    } else {
-                        removePreviousHit = true;
-                    }
+                    } 
                 }
                 if (duplicateFound) {
                     if (biggerScore) {

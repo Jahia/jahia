@@ -343,6 +343,13 @@ public class FieldSearchIndexProcessValveImpl implements
                 String contentType = fileContent.getContentType();
                 doc.setFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE,
                         contentType);
+                doc.setFieldValue(JahiaSearchConstant.FILE_CREATOR,
+                        file.getCreationUser());
+                doc.setFieldValue(JahiaSearchConstant.FILE_LAST_CONTRIBUTOR,
+                        file.getModificationUser());
+                doc.setFieldValue(JahiaSearchConstant.FILE_LAST_MODIFICATION_DATE,
+                        String.valueOf(file.getLastModifiedAsDate()));
+                
                 if (contentType != null && !file.getPath().equals("#")) {
                     strVal = fileContent.getExtractedText();
                     doc.addFieldValue(

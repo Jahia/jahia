@@ -215,10 +215,7 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
 
             valuesList.addAll(Arrays.asList(values));
         } catch (Exception t) {
-            logger
-                    .debug(
-                            "Exception occured when getting field' values for indexation",
-                            t);
+            logger.debug("Exception occured when getting field' values for indexation", t);
         }
         String[] result = new String[valuesList.size()];
         valuesList.toArray(result);
@@ -246,14 +243,11 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
                         .getContainer(field.getctnid());
                 values = SearchIndexProcessValveUtils.loadContentMetadatas(
                         contextMap, contentContainer, LanguageCodeConverters
-                                .languageCodeToLocale(field.getLanguageCode()),
-                        field.getWorkflowState(), doc, context);
+                                .languageCodeToLocale(field.getLanguageCode()), field.getWorkflowState(),
+                        doc, context);
             }
         } catch (Exception t) {
-            logger
-                    .debug(
-                            "Exception occured when getting container' metadatas for indexation",
-                            t);
+            logger.debug("Exception occured when getting container' metadatas for indexation", t);
         }
         return values;
     }
@@ -311,15 +305,9 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
                     String type = jahiaFieldDefinition.getItemDefinition().getDeclaringNodeType().getName().replace(':','_');
                     String name = ctnField.getDefinition().getName();
                     name = type + name.substring(prefix.length());
-                    doc.setFieldValues(
-                            JahiaSearchConstant.CONTAINER_FIELD_PREFIX
-                                    + name,
-                            values);
+                    doc.setFieldValues(JahiaSearchConstant.CONTAINER_FIELD_PREFIX + name, values);
                 } catch (Exception t) {
-                    logger
-                            .debug(
-                                    "Exception occured when getting field' values for indexation",
-                                    t);
+                    logger.debug("Exception occured when getting field' values for indexation", t);
                 }
             }
         } catch (Exception t) {
@@ -355,21 +343,19 @@ public class FieldReferenceSearchIndexProcessValveImpl implements
                 String contentType = fileContent.getContentType();
                 doc.setFieldValue(JahiaSearchConstant.FILE_CONTENT_TYPE,
                         contentType);
+                doc.setFieldValue(JahiaSearchConstant.FILE_CREATOR,
+                        file.getCreationUser());
+                doc.setFieldValue(JahiaSearchConstant.FILE_LAST_CONTRIBUTOR,
+                        file.getModificationUser());
+                doc.setFieldValue(JahiaSearchConstant.FILE_LAST_MODIFICATION_DATE,
+                        String.valueOf(file.getLastModifiedAsDate()));                                        
                 if (contentType != null && !file.getPath().equals("#")) {
                     strVal = fileContent.getExtractedText();
-                    doc
-                            .addFieldValue(
-                                    JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD,
-                                    strVal);
-                    doc
-                            .addFieldValue(
-                                    JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE,
-                                    strVal);
+                    doc.addFieldValue(JahiaSearchConstant.FILE_CONTENT_FULLTEXT_SEARCH_FIELD, strVal);
+                    doc.addFieldValue(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE, strVal);
                 }
-                doc
-                        .addFieldValues(
-                                JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE,
-                                new String[] { file.getName() });
+                doc.addFieldValues(JahiaSearchConstant.ALL_FULLTEXT_SEARCH_FIELD_FOR_QUERY_REWRITE, new String[] { file
+                        .getName() });
             }
 
             if (strVal != null) {

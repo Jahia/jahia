@@ -139,16 +139,15 @@ public final class JahiaSearchConstant {
     public static final String CONTAINER_DEFINITION_NAME    = JAHIA_PREFIX + "container_definition_name";
 
 
-    /**
-     * Prefix for extracted file's properties
-     */
-    public static final String FILE_PROPERTY_PREFIX         = JAHIA_PREFIX + "file_property_";
-
     // File attributes
-    public static final String FILE_REALNAME                = JAHIA_PREFIX + "file_realname";
-    public static final String FILE_NAME                    = JAHIA_PREFIX + "file_filename";
-    public static final String FILE_CONTENT_TYPE            = JAHIA_PREFIX + "file_content_type";
-    public static final String FILE_SIZE                    = JAHIA_PREFIX + "file_size";
+    public static final String FILE_PREFIX                  = JAHIA_PREFIX + "file_";
+    public static final String FILE_REALNAME                = FILE_PREFIX + "realname";
+    public static final String FILE_NAME                    = FILE_PREFIX + "filename";
+    public static final String FILE_CONTENT_TYPE            = FILE_PREFIX + "content_type";
+    public static final String FILE_SIZE                    = FILE_PREFIX + "size";
+    public static final String FILE_CREATOR                 = FILE_PREFIX + CoreMetadataConstant.CREATOR.toLowerCase();
+    public static final String FILE_LAST_CONTRIBUTOR        = FILE_PREFIX + CoreMetadataConstant.LAST_CONTRIBUTOR.toLowerCase();
+    public static final String FILE_LAST_MODIFICATION_DATE  = FILE_PREFIX + CoreMetadataConstant.LAST_MODIFICATION_DATE.toLowerCase();    
 
 
     public static final String FIELD_FIELDID                = JAHIA_PREFIX + "field_id";

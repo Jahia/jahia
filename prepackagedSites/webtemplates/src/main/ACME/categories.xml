@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jahia:categories xmlns:jahia="http://www.jahia.org/">
+    <jahia:category jahia:key="root" jahia:acl="u:guest:r--">
+        <jahia:category jahia:key="business" jahia:acl="g:guest:r--" jahia:title_en="Business"></jahia:category>
+        <jahia:category jahia:key="project" jahia:acl="g:guest:r--" jahia:title_en="Project"></jahia:category>
+    </jahia:category>
+</jahia:categories>
+

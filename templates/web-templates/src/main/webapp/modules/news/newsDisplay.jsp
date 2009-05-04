@@ -19,7 +19,7 @@
 <%@ include file="../../common/declarations.jspf" %>
 <div class="newsList">
     <template:containerList name="news${param.id}" id="newsList" actionMenuNamePostFix="news"
-                           actionMenuNameLabelKey="news" windowSize="10" sortByMetaData="created" sortOrder="descending">
+                           actionMenuNameLabelKey="news" windowSize="10" sortByField="newsDate" sortOrder="descending">
         <%@ include file="newsDisplay.jspf" %>
     </template:containerList>
 </div>

@@ -16,8 +16,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.pagepicker;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.table.CellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.TreeItem;
@@ -29,8 +29,10 @@ import com.extjs.gxt.ui.client.binder.TreeTableBinder;
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.GridEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPageWrapper;
@@ -40,6 +42,8 @@ import org.jahia.ajax.gwt.client.util.tree.TreeOpener;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
+import org.jahia.ajax.gwt.client.widget.SearchField;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -47,30 +51,43 @@ import java.util.ArrayList;
 /**
  * Site/pages explorer
  */
-public class PageTreeTable extends TopRightComponent {
+public class PageExplorer extends TopRightComponent {
 
-    private LayoutContainer m_component ;
+    private ContentPanel m_component ;
     private TreeLoader<GWTJahiaPageWrapper> loader ;
     private TreeTable m_treeTable ;
     private TreeTableStore<GWTJahiaPageWrapper> store ;
     private TreeTableBinder<GWTJahiaPageWrapper> binder ;
 
+    private Grid<GWTJahiaPageWrapper> m_searchTable;
+    private ListStore<GWTJahiaPageWrapper> searchStore ;
+
+    private TabPanel tabs ;
+    private TabItem treeTable ;
+    private TabItem search ;
+
     private TreeItem lastSelection = null ;
 
-    public PageTreeTable(final int homePageID, final int siteID, final String operation, String pagePath, final String parentPath) {
-        m_component = new LayoutContainer(new FitLayout()) ;
+    public PageExplorer(final int homePageID, final int siteID, final String operation, String pagePath, final String parentPath) {
+        m_component = new ContentPanel(new FitLayout()) ;
+        m_component.setBodyBorder(false);
+        m_component.setBorders(false);
+        m_component.setHeaderVisible(false);
+
+        tabs = new TabPanel() ;
+        tabs.setBodyBorder(false);
+        tabs.setBorders(false);
+
         final JahiaContentServiceAsync service = JahiaContentService.App.getInstance() ;
-        Log.debug("start treetable");
         // data proxy
         RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>> proxy = new RpcProxy<GWTJahiaPageWrapper, List<GWTJahiaPageWrapper>>() {
             @Override
             protected void load(GWTJahiaPageWrapper parentPage, final AsyncCallback<List<GWTJahiaPageWrapper>> listAsyncCallback) {
-                Log.debug("load");
                 if (parentPage == null) {
                     if (homePageID != -1) {
                         service.getSubPagesForCurrentUser(homePageID, listAsyncCallback);
                     } else if (siteID != -1){
-                        service.getSiteHomePage(siteID, new AsyncCallback<GWTJahiaPageWrapper>() {
+                        JahiaContentService.App.getInstance().getSiteHomePage(siteID, new AsyncCallback<GWTJahiaPageWrapper>() {
                             public void onFailure(Throwable throwable) {
                                 listAsyncCallback.onFailure(throwable);
                             }
@@ -112,14 +129,14 @@ public class PageTreeTable extends TopRightComponent {
         binder.setDisplayProperty("title");
 
         binder.setIconProvider(new ModelStringProvider<GWTJahiaPageWrapper>() {
-            public String getStringValue(GWTJahiaPageWrapper node, String property) {
-                if (!node.isSiteRoot()) {
+            public String getStringValue(GWTJahiaPageWrapper page, String property) {
+                if (!page.isSiteRoot()) {
                     if (operation.equals("movePage")) {
-                        if (parentPath.contains("/"+node.getPid()+"/")) {
-                            Log.debug("in path:"+node.getPid()+"/"+property);
+                        if (parentPath.contains("/"+page.getPid()+"/")) {
+                            Log.debug("in path:"+page.getPid()+"/"+property);
                             return "gwt-pagepicker-icon-inpath";
                         }
-                        if (node.isLocked()) {
+                        if (page.isLocked()) {
                             return "gwt-pagepicker-icon-locked";
                         }
                     }
@@ -161,7 +178,72 @@ public class PageTreeTable extends TopRightComponent {
 //            });
 //        }
 
-        m_component.add(m_treeTable) ;
+        treeTable = new TabItem(Messages.getResource("fp_browse")) ;
+        treeTable.setLayout(new FitLayout());
+        treeTable.add(m_treeTable) ;
+        tabs.add(treeTable) ;
+
+        searchStore = new ListStore<GWTJahiaPageWrapper>() ;
+        m_searchTable = new Grid<GWTJahiaPageWrapper>(searchStore, getSearchHeaders(operation, parentPath)) ;
+        m_searchTable.setBorders(false);
+        m_searchTable.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
+        m_searchTable.addListener(Events.RowClick, new Listener<GridEvent>() {
+            public void handleEvent(GridEvent event) {
+                GWTJahiaPageWrapper newSelection = m_searchTable.getSelectionModel().getSelectedItem() ;
+                if (newSelection != null) {
+                    getLinker().onTableItemSelected();
+                }
+            }
+        });
+
+        search = new TabItem(Messages.getResource("fp_search")) ;
+        search.setLayout(new FitLayout());
+        search.add(m_searchTable) ;
+        tabs.add(search) ;
+
+        SearchField searchField = new SearchField("Search: ", false) {
+            public void onFieldValidation(String value) {
+                if (tabs.getSelectedItem() == treeTable) {
+                    tabs.setSelection(search);
+                }
+                setSearchContent(value);
+            }
+
+            public void onSaveButtonClicked(String value) {}
+        };
+        m_component.setTopComponent(searchField);
+
+        m_component.add(tabs) ;
+    }
+
+    public void setSearchContent(String text) {
+        searchStore.removeAll();
+        if (text != null && text.length()>0) {
+            if (getLinker() != null) {
+                getLinker().loading("searching content...");
+            }
+            JahiaContentService.App.getInstance().searchInPages(text, new AsyncCallback<List<GWTJahiaPageWrapper>>() {
+                public void onFailure(Throwable throwable) {
+                    com.google.gwt.user.client.Window.alert("Element list retrieval failed :\n" + throwable.getLocalizedMessage()) ;
+                    if (getLinker() != null) {
+                        getLinker().loaded();
+                    }
+                }
+
+                public void onSuccess(List<GWTJahiaPageWrapper> pages) {
+                    if (pages != null) {
+                        setProcessedContent(pages);
+                    } else {
+
+                    }
+                    if (getLinker() != null) {
+                        getLinker().loaded();
+                    }
+                }
+            });
+        } else {
+            refresh();
+        }
     }
 
     public void initWithLinker(BrowserLinker linker) {
@@ -169,7 +251,11 @@ public class PageTreeTable extends TopRightComponent {
         loader.load() ;
     }
 
-    public void setContent(Object root) {
+    public void setContent(Object root) {}
+
+    public void setProcessedContent(Object content) {
+        searchStore.removeAll();
+        searchStore.add((List<GWTJahiaPageWrapper>) content) ;
     }
 
     public void expandPath(String path) {
@@ -181,11 +267,15 @@ public class PageTreeTable extends TopRightComponent {
     }
 
     public Object getSelection() {
-        List<GWTJahiaPageWrapper> elts = binder.getSelection() ;
-        if (elts != null && elts.size()>0) {
-            return elts.get(0) ;
+        if (tabs.getSelectedItem() == treeTable) {
+            List<GWTJahiaPageWrapper> elts = binder.getSelection() ;
+            if (elts != null && elts.size()>0) {
+                return elts.get(0) ;
+            } else {
+                return null ;
+            }
         } else {
-            return null ;
+            return m_searchTable.getSelectionModel().getSelectedItem() ;
         }
     }
 
@@ -201,8 +291,6 @@ public class PageTreeTable extends TopRightComponent {
         List<TreeTableColumn> headerList = new ArrayList<TreeTableColumn>();
         TreeTableColumn col = new TreeTableColumn("title", "Title", .75f) ;
         headerList.add(col) ;
-
-
         if (!"guest".equals(JahiaGWTParameters.getCurrentUser())) {
             col = new TreeTableColumn("workflowStatus","Status", .2f) ;
             col.setRenderer(new CellRenderer() {
@@ -220,7 +308,6 @@ public class PageTreeTable extends TopRightComponent {
             });
             headerList.add(col) ;
         }
-
         col = new TreeTableColumn("pid", "pid", 0.05f) ;
         col.setAlignment(Style.HorizontalAlignment.CENTER);
         col.setRenderer(new CellRenderer() {
@@ -233,8 +320,63 @@ public class PageTreeTable extends TopRightComponent {
             }
         });
         headerList.add(col) ;
-
         return new TreeTableColumnModel(headerList);
+    }
+
+    private static ColumnModel getSearchHeaders(final String operation, final String parentPath) {
+        List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
+        ColumnConfig col = new ColumnConfig("title", "Title", 500) ;
+        col.setRenderer(new GridCellRenderer<GWTJahiaPageWrapper>() {
+            public String render(GWTJahiaPageWrapper page, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaPageWrapper> gwtJahiaPageWrapperListStore) {
+                StringBuilder title = new StringBuilder() ;
+                if (!page.isSiteRoot()) {
+                    if (operation.equals("movePage")) {
+                        if (parentPath.contains("/"+page.getPid()+"/")) {
+                            title.append("<span class=\"gwt-pagepicker-icon-inpath\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
+                        } else if (page.isLocked()) {
+                            title.append("<span class=\"gwt-pagepicker-icon-locked\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
+                        } else {
+                            title.append("<span class=\"icon-page\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>");
+                        }
+                    }
+                    title.append("<span>&nbsp;").append(page.getTitle()).append("</span>");
+                    return title.toString();
+                } else {
+                    return "";
+                }
+            }
+        });
+        headerList.add(col) ;
+        if (!"guest".equals(JahiaGWTParameters.getCurrentUser())) {
+            col = new ColumnConfig("workflowStatus","Status", 200) ;
+            col.setRenderer(new GridCellRenderer<GWTJahiaPageWrapper>() {
+                public String render(GWTJahiaPageWrapper page, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                    if (page == null) {
+                        return "" ;
+                    } else {
+                        StringBuilder r = new StringBuilder("<img src=\"../images/icons/workflow/").append(page.getWorkflowStatus()).append(".png\">") ;
+                        if (page.isHasLive()) {
+                            r.append("&nbsp;nbsp;No live version ! ");
+                        }
+                        return r.toString();
+                    }
+                }
+            });
+            headerList.add(col) ;
+        }
+        col = new ColumnConfig("pid", "pid", 50) ;
+        col.setAlignment(Style.HorizontalAlignment.CENTER);
+        col.setRenderer(new GridCellRenderer<GWTJahiaPageWrapper>() {
+                public String render(GWTJahiaPageWrapper page, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
+                    if (page == null || page.getPid() < 1) {
+                        return "" ;
+                    } else {
+                        return String.valueOf(page.getPid()) ;
+                    }
+                }
+            });
+        headerList.add(col) ;
+        return new ColumnModel(headerList);
     }
 
     /**

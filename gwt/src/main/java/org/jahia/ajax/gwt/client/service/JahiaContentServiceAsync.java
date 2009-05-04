@@ -63,7 +63,8 @@ public interface JahiaContentServiceAsync {
 
     void getSubPagesForCurrentUser(GWTJahiaPageWrapper parentPage, AsyncCallback<List<GWTJahiaPageWrapper>> async);
 
-    void getHomePageForCurrentUser(int pid, String mode, boolean recursive, AsyncCallback async);
+    void getHomePageForCurrentUser(int pid, String mode, boolean recursive, AsyncCallback<GWTJahiaPageWrapper> async);
 
+    void searchInPages(String queryString, AsyncCallback<List<GWTJahiaPageWrapper>> async);
 
 }

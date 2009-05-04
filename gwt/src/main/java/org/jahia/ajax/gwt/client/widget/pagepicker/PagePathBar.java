@@ -18,13 +18,9 @@ package org.jahia.ajax.gwt.client.widget.pagepicker;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaPageWrapper;
 import org.jahia.ajax.gwt.client.service.JahiaService;
@@ -32,7 +28,6 @@ import org.jahia.ajax.gwt.client.service.JahiaServiceAsync;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSelectedListener;
 import org.jahia.ajax.gwt.client.widget.language.LanguageSwitcher;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 
 /**
@@ -48,15 +43,10 @@ public class PagePathBar extends TopBar {
     private String callback;
     private String operation;
     private ToolBar m_component ;
-    private TextField pathTextField;
 
     public PagePathBar (String operation, String parentPath, String callback) {
         m_component = new ToolBar() ;
         m_component.add(new FillToolItem());
-        pathTextField = new TextField() ;
-        pathTextField.setId("sourcePageID");
-        pathTextField.setWidth("200px");
-        m_component.add(new AdapterToolItem(pathTextField));
         LanguageSwitcher languageSwitcher = new LanguageSwitcher(true, true, false, false, JahiaGWTParameters.getEngineLanguage(), true, new LanguageSelectedListener() {
             private final JahiaServiceAsync jahiaServiceAsync = JahiaService.App.getInstance();
 
@@ -79,27 +69,13 @@ public class PagePathBar extends TopBar {
         this.operation = operation;
     }
 
-    public void initWithLinker(BrowserLinker linker) {
-        super.initWithLinker(linker);
-        DeferredCommand.addCommand(new Command() {
-            public void execute() {
-                pathTextField.setName("sourcePageID");
-            }
-        });
-    }
-
     public void handleNewSelection(Object leftTreeSelection, Object topTableSelection) {
-        GWTJahiaPageWrapper selection = (GWTJahiaPageWrapper) topTableSelection ;
-
-        if (selection == null) {
-            pathTextField.reset();
-        } else {
-            Log.debug("Page "+selection.getLink()+" selected");
+        if (topTableSelection != null) {
+            GWTJahiaPageWrapper selection = (GWTJahiaPageWrapper) topTableSelection ;
+            Log.debug("Page " + selection.getLink() + " selected");
             Log.debug("parentPath " + parentPath);
             Log.debug("parentPID " + selection.getParentPid());
-            if (selection.getPid() != 0 &&
-                    (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !selection.isLocked()))) {
-                pathTextField.setRawValue(String.valueOf(selection.getPid()));
+            if (selection.getPid() != 0 && (!operation.equals("movePage") || (!parentPath.contains("/" + selection.getPid() + "/") && !selection.isLocked()))) {
                 if ("SetUrl".equals(callback)) {
                     nativeSetUrl(selection.getLink());
                 } else if ("setPid".equals(callback)) {
@@ -111,6 +87,10 @@ public class PagePathBar extends TopBar {
         }
     }
 
+    public Component getComponent() {
+        return m_component;
+    }
+
     public static native void nativeSetUrl(String url) /*-{
         $wnd.opener.SetUrl(url);
         $wnd.close();
@@ -120,10 +100,6 @@ public class PagePathBar extends TopBar {
         $wnd.opener.setPid(pid);
         $wnd.close();
     }-*/;
-
-    public Component getComponent() {
-        return m_component;
-    }
 
     public static native void nativeSetCustom(String callback, int pid, String url, String title) /*-{
         try {

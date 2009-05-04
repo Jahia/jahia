@@ -18,7 +18,7 @@ package org.jahia.ajax.gwt.client.widget.pagepicker;
 
 import org.jahia.ajax.gwt.client.widget.pagepicker.PagePathBar;
 import org.jahia.ajax.gwt.client.widget.pagepicker.PageStatusBar;
-import org.jahia.ajax.gwt.client.widget.pagepicker.PageTreeTable;
+import org.jahia.ajax.gwt.client.widget.pagepicker.PageExplorer;
 import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserLayout;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
@@ -39,7 +39,7 @@ public class PagePicker extends TriPanelBrowserLayout {
         setHeight("400px");
 
         // construction of the UI components
-        TopRightComponent treeTable = new PageTreeTable(homePageId, siteId, operation, pagePath, parentPath) ;
+        TopRightComponent treeTable = new PageExplorer(homePageId, siteId, operation, pagePath, parentPath) ;
         TopBar pathBar = new PagePathBar(operation, parentPath, callback) ;
         BottomBar statusBar = new PageStatusBar() ;
 

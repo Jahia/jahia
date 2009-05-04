@@ -80,4 +80,24 @@ public class JahiaGWTUtils {
         gwtAdvCompareModeSettings.setRevision2(settings.getGWTRevision2());
         return gwtAdvCompareModeSettings;
     }
+
+    /**
+     * Add "*" at beginning and end of query if not present in original search string.
+     * Ex: *query   -->   *query
+     *     query*   -->   query*
+     *     query    -->   *query*
+     *
+     * @param rawQuery the raw query string
+     * @return formatted query string
+     */
+    public static String formatQuery(String rawQuery) {
+        if (rawQuery == null || rawQuery.length() == 0) {
+            return "" ;
+        } else if (rawQuery.startsWith("*") || rawQuery.endsWith("*")) {
+            return rawQuery ;
+        } else {
+            return new StringBuilder("*").append(rawQuery).append("*").toString() ;
+        }
+    }
+    
 }

@@ -22,8 +22,12 @@ import org.jahia.ajax.gwt.client.service.JahiaContentService;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.data.*;
+import org.jahia.ajax.gwt.utils.JahiaObjectCreator;
+import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
+import org.jahia.data.search.JahiaSearchResult;
+import org.jahia.data.search.JahiaSearchHit;
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.beans.ContainerListBean;
 import org.jahia.data.containers.JahiaContainer;
@@ -32,6 +36,7 @@ import org.jahia.data.fields.JahiaField;
 import org.jahia.data.fields.LoadFlags;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
+import org.jahia.engines.search.PagesSearchViewHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.BasicURLGeneratorImpl;
 import org.jahia.params.ProcessingContext;
@@ -47,7 +52,12 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.UserProperties;
 import org.jahia.services.usermanager.UserProperty;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.search.SearchHandler;
+import org.jahia.services.search.PageSearcher;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.content.ObjectKey;
+import org.jahia.content.ContentPageKey;
+import org.jahia.content.ContentObject;
 
 import java.util.*;
 
@@ -711,5 +721,30 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
             result.add(new GWTJahiaBasicDataBean(locale.toString(), locale.getDisplayName(locale)));
         }
         return result;
+    }
+
+    public List<GWTJahiaPageWrapper> searchInPages(final String queryString) {
+        List<GWTJahiaPageWrapper> result = new ArrayList<GWTJahiaPageWrapper>() ;
+        ProcessingContext ctx = retrieveParamBean();
+
+        List<String> languageCodes = new ArrayList<String>(1);
+        languageCodes.add(ctx.getLocale().toString());
+
+        PageSearcher searcher = new PageSearcher(new String[] { ServicesRegistry.getInstance().getJahiaSearchService().getSearchHandler(ctx.getSiteID()).getName() }, languageCodes);
+        try {
+            JahiaSearchResult results = searcher.search(new StringBuilder("jahia.title:").append(JahiaGWTUtils.formatQuery(queryString)).toString(), ctx);
+            for (JahiaSearchHit hit: results.results()) {
+                ObjectKey key = hit.getSearchHitObjectKey();
+                if (key != null && key.getType().equals(ContentPageKey.PAGE_TYPE)) {
+                    ContentPage page = (ContentPage) JahiaObjectCreator.getContentObjectFromKey(hit.getSearchHitObjectKey());
+                    result.add(getJahiaPageWrapper(ctx, page.getPage(ctx))) ;
+                }
+            }
+        } catch (JahiaException e) {
+            logger.error(e.toString(), e);
+        } catch (ClassNotFoundException e) {
+            logger.error(e.toString(), e);
+        }
+        return result ;
     }
 }

@@ -87,4 +87,6 @@ public interface JahiaContentService extends RemoteService {
 
     public GWTJahiaPageWrapper getHomePageForCurrentUser(int pid, String mode, boolean recursive);
 
+    public List<GWTJahiaPageWrapper> searchInPages(String queryString);
+
 }

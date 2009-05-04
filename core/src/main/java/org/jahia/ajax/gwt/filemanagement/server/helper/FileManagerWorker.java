@@ -27,6 +27,7 @@ import org.jahia.ajax.gwt.filemanagement.server.GWTFileManagerUploadServlet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.aclmanagement.server.ACLHelper;
+import org.jahia.ajax.gwt.utils.JahiaGWTUtils;
 
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -363,7 +364,7 @@ public class FileManagerWorker {
 
     public static List<GWTJahiaNode> search(String searchString, int limit, ProcessingContext context) throws GWTJahiaServiceException {
         try {
-            Query q = createQuery(new StringBuilder("*").append(searchString).append("*").toString(), context);
+            Query q = createQuery(JahiaGWTUtils.formatQuery(searchString), context);
             return executeQuery(q, new String[0], new String[0], new String[0], context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -379,7 +380,7 @@ public class FileManagerWorker {
         String[] mimeTypesToMatch = getFiltersToApply(mimeTypes);
         String[] filtersToApply = getFiltersToApply(filters);
         try {
-            Query q = createQuery(new StringBuilder("*").append(searchString).append("*").toString(), context);
+            Query q = createQuery(JahiaGWTUtils.formatQuery(searchString), context);
             return executeQuery(q, nodeTypesToApply, mimeTypesToMatch, filtersToApply, context);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

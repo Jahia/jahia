@@ -62,8 +62,8 @@ public class SearchAutoFullFillAction extends AjaxAction {
             } catch (Exception e) {
                 // Ignore
             }
-            final Iterator terms = searchService.getTerms(jParams.getSiteID(), searchString);
-            final Set result = new HashSet();
+            final Iterator<String> terms = searchService.getTerms(jParams.getSiteID(), searchString);
+            final Set<String> result = new HashSet<String>();
             final StringBuffer buff = new StringBuffer();
             int count = 0;
             while (terms.hasNext()) {
@@ -74,7 +74,7 @@ public class SearchAutoFullFillAction extends AjaxAction {
                 }
                 query.append(")");
                 final PageSearchResultBuilderImpl resultBuilder = new PageSearchResultBuilderImpl(true);
-                final List languageCodes = new ArrayList();
+                final List<String> languageCodes = new ArrayList<String>();
                 languageCodes.add(jParams.getLocale().toString());
                 final JahiaSearchResult searchResults = searchService.search(jParams.getSiteID(),
                         StringEscapeUtils.unescapeHtml(query.toString()), jParams, languageCodes, resultBuilder);

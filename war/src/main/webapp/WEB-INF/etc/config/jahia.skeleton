@@ -596,7 +596,7 @@ aclDiff_display											= false
 # The following setting controls an inline edition feature that
 # allows users in edit mode to modify content directly in the HTML.
 # This is only available for smalltext and bigtext fields.
-inlineEditingActivated                                  = false
+inlineEditingActivated                                  = true
 # Show integrity violation indicator?
 integrityChecks_display                                 = false
 # Show time-based publishing state?

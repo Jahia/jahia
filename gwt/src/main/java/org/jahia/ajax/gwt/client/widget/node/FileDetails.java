@@ -503,7 +503,7 @@ public class FileDetails extends BottomRightComponent {
                         roleAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_roles", "Add user-role mapping"));
                         roleAclEditor.setAclGroup(JCRClientUtils.ROLES_ACL);
                         roleAclEditor.setCanBreakInheritance(false);
-                        roleAclEditor.setReadOnly(!selectedNode.isWriteable());
+                        roleAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
                         TextToolItem saveButton = roleAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, ROLES_TAB_ITEM));
                         renderRoles();
@@ -546,7 +546,7 @@ public class FileDetails extends BottomRightComponent {
                         modeAclEditor.setAddUsersLabel(Messages.getNotEmptyResource("fm_adduser_modes", "Add user-mode mapping"));
                         modeAclEditor.setAclGroup(JCRClientUtils.MODES_ACL);
                         modeAclEditor.setCanBreakInheritance(false);
-                        modeAclEditor.setReadOnly(!selectedNode.isWriteable());
+                        modeAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
                         TextToolItem saveButton = modeAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, MODES_TAB_ITEM));
                         renderModes();
@@ -588,7 +588,7 @@ public class FileDetails extends BottomRightComponent {
                         authAclEditor = new AclEditor(gwtJahiaNodeACL, selectedNode.getAclContext());
                         authAclEditor.setAclGroup(JCRClientUtils.AUTHORIZATIONS_ACL);
                         authAclEditor.setCanBreakInheritance(false);
-                        authAclEditor.setReadOnly(!selectedNode.isWriteable());
+                        authAclEditor.setReadOnly(!selectedNode.isWriteable() || selectedNode.isLocked());
                         TextToolItem saveButton = authAclEditor.getSaveButton();
                         saveButton.addSelectionListener(new SaveAclSelectionListener(selectedNode, AUTH_TAB_ITEM));
                         renderAuthorization();

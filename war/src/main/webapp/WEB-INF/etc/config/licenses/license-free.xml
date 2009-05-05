@@ -43,9 +43,6 @@
     <license component="org.jahia.actions.sites.*.admin.languages.ManageSiteLanguages" licensee="Jahia 6.0 R&amp;D GPL License" signature="MC0CFQCHtSikT9z8nQgkQ8knoS/759awzAIUZa0SXHMV2MN3mVwmY7WaJUyzDCo=" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>
-    <license component="org.jahia.actions.sites.*.admin.clipBuilder.MenuBuilderAction" licensee="Jahia 6.0 R&amp;D GPL License" signature="MC0CFQCPlhWb63n8hsTxBL4sEHTQwMOTNgIUOxx+gYP7uVWG/c7dgAlrZMAepmY=" certAlias="jahiaCert">
-      <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
-    </license>
     <license component="org.jahia.actions.sites.*.admin.production.ManageSiteProduction" licensee="Jahia 6.0 R&amp;D GPL License" signature="MCwCFHSwY2vZvZoBPNVetN8OnRmdu9iKAhRlMgR7xsy1CyQfkRS2yueWMwkL9Q==" certAlias="jahiaCert">
       <limit class="org.jahia.security.license.BooleanValidator" name="enabled" value="true"/>
     </license>

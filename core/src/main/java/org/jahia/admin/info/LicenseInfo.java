@@ -124,6 +124,10 @@ public class LicenseInfo extends AbstractAdministrationModule {
         if (sReg != null) {
 
             try {
+                String unlimited = JahiaResourceBundle
+                        .getJahiaInternalResource(
+                                "org.jahia.admin.status.ManageStatus.unlimited.label",
+                                jParams.getLocale(), "unlimited");
                 int nbCurrentSites     = sReg.getJahiaSitesService().getNbSites();
                 int nbMaxSites         = Jahia.getSiteLimit();
                 int nbCurrentUsers     = sReg.getJahiaUserManagerService().getNbUsers();
@@ -133,10 +137,10 @@ public class LicenseInfo extends AbstractAdministrationModule {
                 int nbCurrentPages     = sReg.getJahiaPageService().getRealActiveNbPages();
                 int nbMaxPages         = Jahia.getPageLimit();
 
-                String maxSites     = (nbMaxSites == -1)     ? "unlimited" : Integer.toString(nbMaxSites);
-                String maxUsers     = (nbMaxUsers == -1)     ? "unlimited" : Integer.toString(nbMaxUsers);
-                String maxTemplates = (nbMaxTemplates == -1) ? "unlimited" : Integer.toString(nbMaxTemplates);
-                String maxPages     = (nbMaxPages == -1)     ? "unlimited" : Integer.toString(nbMaxPages);
+                String maxSites     = (nbMaxSites == -1)     ? unlimited : Integer.toString(nbMaxSites);
+                String maxUsers     = (nbMaxUsers == -1)     ? unlimited : Integer.toString(nbMaxUsers);
+                String maxTemplates = (nbMaxTemplates == -1) ? unlimited : Integer.toString(nbMaxTemplates);
+                String maxPages     = (nbMaxPages == -1)     ? unlimited : Integer.toString(nbMaxPages);
 
                 LicensePackage licensePackage = LicenseManager.getInstance().
                     getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);

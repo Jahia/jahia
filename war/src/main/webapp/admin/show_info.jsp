@@ -29,17 +29,6 @@ ProcessingContext jParams = null;
 if (jData != null) {
 jParams = jData.params();
 }
-String  nbCurrentSites     = (String) request.getAttribute("nbCurrentSites");
-String  nbMaxSites         = (String) request.getAttribute("nbMaxSites");
-String  nbCurrentUsers     = (String) request.getAttribute("nbCurrentUsers");
-String  nbMaxUsers         = (String) request.getAttribute("nbMaxUsers");
-String  nbCurrentTemplates = (String) request.getAttribute("nbCurrentTemplates");
-String  nbMaxTemplates     = (String) request.getAttribute("nbMaxTemplates");
-String  nbCurrentPages     = (String) request.getAttribute("nbCurrentPages");
-String  nbMaxPages         = (String) request.getAttribute("nbMaxPages");
-String  release            = (String) request.getAttribute("release");
-String  build              = (String) request.getAttribute("build");
-String  jahiaEdition       = (String) request.getAttribute("jahiaEdition");
 List licenses         = (List) request.getAttribute("licenses");
 Date expirationDate = null;
 SimpleDateFormat dateFormatter = new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT);
@@ -48,7 +37,7 @@ if (request.getAttribute("expirationDate") != null) {
 expirationDate = (Date) request.getAttribute("expirationDate");
 maxDays = ((Integer) request.getAttribute("allowedDays")).intValue();
 }
-String jahiaEditionTitle = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.info.LicenceInfo.jahiaEdition." + jahiaEdition + ".label", jData.getProcessingContext().getLocale());
+pageContext.setAttribute("jahiaEditionTitle", JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.info.LicenceInfo.jahiaEdition." + request.getAttribute("jahiaEdition") + ".label", jData.getProcessingContext().getLocale()));
 stretcherToOpen   = 0; %>
 <div id="topTitle">
   <h1>Jahia</h1>
@@ -72,7 +61,7 @@ stretcherToOpen   = 0; %>
             <div id="content" class="fit">
               <div class="head">
                 <div class="object-title">
-                  <fmt:message key="org.jahia.admin.info.LicenceInfo.jahiaRelease.label"/><%=release %>, <%= jahiaEditionTitle %>, <fmt:message key="org.jahia.admin.build.label"/><%=build %>
+                  <fmt:message key="org.jahia.admin.info.LicenceInfo.jahiaRelease.label"/>&nbsp;${release},&nbsp;${jahiaEditionTitle},&nbsp;<fmt:message key="org.jahia.admin.build.label"/>&nbsp;${build}
                 </div>
               </div>
               <div class="content-body">
@@ -99,10 +88,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfSites.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentSites %></b>
+                        <b>${nbCurrentSites}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxSites %></b>
+                        <b>${nbMaxSites}</b>
                       </td>
                     </tr>
                     <tr class="oddLine">
@@ -110,10 +99,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfUsers.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentUsers %></b>
+                        <b>${nbCurrentUsers}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxUsers %></b>
+                        <b>${nbMaxUsers}</b>
                       </td>
                     </tr>
                     <tr class="evenLine">
@@ -121,10 +110,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfTemplates.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentTemplates %></b>
+                        <b>${nbCurrentTemplates}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxTemplates %></b>
+                        <b>${nbMaxTemplates}</b>
                       </td>
                     </tr>
                     <tr class="oddLine">
@@ -132,10 +121,10 @@ stretcherToOpen   = 0; %>
                         <fmt:message key="org.jahia.admin.info.LicenceInfo.numberOfPages.label"/>
                       </td>
                       <td width="25%">
-                        <b><%=nbCurrentPages %></b>
+                        <b>${nbCurrentPages}</b>
                       </td>
                       <td width="25%" class="lastCol">
-                        <b><%=nbMaxPages %></b>
+                        <b>${nbMaxPages}</b>
                       </td>
                     </tr>
                     <% if (expirationDate != null) { %>

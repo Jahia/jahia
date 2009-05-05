@@ -131,7 +131,7 @@ public class CacheListener extends DefaultEventListener {
                     ContentField field = ContentField.getField(id);
                     ContentContainerKey key = new ContentContainerKey(field.getContainerID());
                     ContentContainerListKey listkey = (ContentContainerListKey) key.getParent(null);
-                    ContainerHTMLCache containerHTMLCache = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
+                    ContainerHTMLCache<?, ?> containerHTMLCache = ServicesRegistry.getInstance().getCacheService().getContainerHTMLCacheInstance();
                     if (usageEntry.getWorkflow() == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
                         containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.NORMAL, usageEntry.getLang());
                         containerHTMLCache.invalidateContainerEntries(key.toString(), ProcessingContext.COMPARE, usageEntry.getLang());

@@ -21,7 +21,6 @@ import org.apache.jackrabbit.core.observation.SynchronousEventListener;
 import org.jahia.api.Constants;
 
 import javax.jcr.observation.Event;
-import javax.jcr.observation.EventListener;
 import java.util.HashSet;
 import java.util.Set;
 

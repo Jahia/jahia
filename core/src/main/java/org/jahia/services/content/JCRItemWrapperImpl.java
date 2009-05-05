@@ -32,8 +32,6 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
 
-import org.jahia.services.usermanager.JahiaUser;
-
 /**
  * Created by IntelliJ IDEA.
  * User: toto

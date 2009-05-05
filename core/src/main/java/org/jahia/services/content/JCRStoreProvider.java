@@ -46,7 +46,6 @@ import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.jaas.JahiaLoginModule;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 

@@ -313,23 +313,21 @@ public class DatabaseScripts {
                 continue;
             }
 
-            int curPos = 0;
-            int separatorPos = findNextSeparator(buffer, ";", curPos);
-            while (separatorPos != -1) {
+            buffer = buffer.trim();
+
+            if (buffer.endsWith(";")) {
                 // found seperator char in the script file, finish constructing
-                curSQLStatement.append(buffer.substring(curPos, separatorPos));
+                curSQLStatement.append(buffer.substring(0, buffer.length()-1));
                 String sqlStatement = curSQLStatement.toString().trim();
                 if (!"".equals(sqlStatement)) {
-                    logger.debug("Found statement [" + sqlStatement +
-                                 "]");
+                    // System.out.println("Found statement [" + sqlStatement + "]");
                     scriptsRuntimeList.add(sqlStatement);
                 }
                 curSQLStatement = new StringBuffer();
-                curPos = separatorPos + 1;
-                separatorPos = findNextSeparator(buffer, ";", curPos);
+            } else {
+                curSQLStatement.append(buffer);
+                curSQLStatement.append('\n');
             }
-            curSQLStatement.append(buffer.substring(curPos));
-            curSQLStatement.append('\n');
 
         }
         String sqlStatement = curSQLStatement.toString().trim();
@@ -341,15 +339,6 @@ public class DatabaseScripts {
 
         return scriptsRuntimeList;
     } // getDatabaseScriptsRuntime
-
-    private int findNextSeparator(String sqlStatement, String separator, int curPos) {
-        int nextPos = sqlStatement.indexOf(separator, curPos);
-        while ((nextPos != -1) && isInQuotes(sqlStatement, nextPos)) {
-            curPos = nextPos + 1;
-            nextPos = sqlStatement.indexOf(separator, curPos);
-        }
-        return nextPos;
-    }
 
     private boolean isInQuotes(String sqlStatement, int pos) {
         if (pos < 0) {

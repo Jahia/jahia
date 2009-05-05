@@ -356,26 +356,26 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @return
      */
     private JCRLayoutNode copyDefaultConfig() {
-        JCRLayoutNode node;
-        JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference;
-        node = findDefaultLayoutNode();
-        // get layout manager node
-        layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
+        JahiaPreference<JCRLayoutNode> layoutmanagerJahiaPreference = createPartialLayoutmanagerPreference();
+        if (layoutmanagerJahiaPreference != null) {
+            JCRLayoutNode node = findDefaultLayoutNode();
 
-        try {
-            layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-            layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
-            layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
-            layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
-            layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-            // save pref
-            getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+            try {
+                layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+                layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
+                layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
+                layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
+                layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+                // save pref
+                getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
 
 
-        } catch (Exception e) {
-            logger.error(e, e);
+            } catch (Exception e) {
+                logger.error(e, e);
+            }
+            return layoutmanagerJahiaPreference.getNode();
         }
-        return layoutmanagerJahiaPreference.getNode();
+        return null;
     }
 
 

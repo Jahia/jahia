@@ -23,7 +23,7 @@
 <%@page import="java.util.HashMap"%>
 <%@page import="org.jahia.data.beans.JahiaBean"%>
 <%@page import="org.jahia.registries.ServicesRegistry"%>
-<%@page import="org.jahia.services.mail.MailHelper"%>
+<%@page import="org.jahia.utils.LanguageCodeConverters"%>
 <%@page import="org.jahia.services.notification.Subscription"%>
 <%@page import="org.jahia.services.notification.SubscriptionService"%>
 <%@page import="org.jahia.services.notification.templates.TemplateUtils"%>
@@ -146,7 +146,7 @@ function doIt(action, subscription) {
     E-mail: <input name="username" value=""/><br/> 
     Firstname: <input name="firstname" value=""/><br/> 
     Lastname: <input name="lastname" value=""/><br/>
-    <% pageContext.setAttribute("locales", MailHelper.getAvailableBundleLocalesSorted(jBean.getProcessingContext().getLocale())); %>    
+    <% pageContext.setAttribute("locales", LanguageCodeConverters.getAvailableBundleLocalesSorted(jBean.getProcessingContext().getLocale())); %>    
     Preferred language:
     <select name="preferredLanguage">
         <c:forEach items="${locales}" var="locale">

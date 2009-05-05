@@ -63,12 +63,6 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     private static Logger logger = Logger.getLogger(MessageBuilder.class);
 
-    public static String getPageUrl(int pageId, JahiaSite site) {
-        return pageId > 0 ? getSiteUrl(site) + "/"
-                + ProcessingContext.PAGE_ID_PARAMETER + "/" + pageId
-                : getSiteUrl(site);
-    }
-
     /**
      * Returns the e-mail address with the personal name of the current user (or
      * the system's default one).
@@ -108,37 +102,11 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return email;
     }
 
-    public static String getServerUrl(int siteId) {
-        return getServerUrl(TemplateUtils.getSite(siteId));
-    }
-
-    public static String getServerUrl(JahiaSite site) {
-        String url = "http://localhost:8080";
-        if (site != null) {
-            SettingsBean settings = SettingsBean.getInstance();
-
-            url = "http://"
-                    + site.getServerName()
-                    + (settings.getSiteURLPortOverride() > 0 ? ":"
-                            + settings.getSiteURLPortOverride() : "");
-        }
-
-        return url;
-    }
-
-    public static String getSiteUrl(JahiaSite site) {
-        String url = Jahia.getContextPath() + Jahia.getServletPath();
-        if (site != null) {
-            if (!site.isDefault()) {
-                url = url + "/" + ProcessingContext.SITE_KEY_PARAMETER + "/"
-                        + site.getSiteKey();
-            }
-        }
-
-        return url;
-    }
-
     private Locale preferredLocale;
+
+    private String relativeSiteUrl;
+
+    private String serverUrl;
 
     private JahiaSite site;
 
@@ -159,7 +127,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
      *            the site ID
      */
     public MessageBuilder(JahiaUser subscriber, int siteId) {
-        this(subscriber, UserPreferencesHelper.getEmailAddress(subscriber), siteId);
+        this(subscriber, UserPreferencesHelper.getEmailAddress(subscriber),
+                siteId);
     }
 
     /**
@@ -178,6 +147,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         this.subscriber = subscriber;
         this.subscriberEmail = subscriberEmail;
         this.siteId = siteId;
+        resolveServerAndSiteUrl();
         resolveTemplatePackageName();
     }
 
@@ -215,18 +185,22 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
     }
 
     protected String getPageUrl(int pageId) {
-        return getPageUrl(pageId, getSite());
+        // TODO consider page URL key
+        return pageId > 0 ? getSiteUrl() + "/"
+                + ProcessingContext.PAGE_ID_PARAMETER + "/" + pageId
+                : getSiteUrl();
     }
 
     protected Locale getPreferredLocale() {
         if (preferredLocale == null) {
-            preferredLocale = UserPreferencesHelper.getPreferredLocale(subscriber, siteId);
+            preferredLocale = UserPreferencesHelper.getPreferredLocale(
+                    subscriber, siteId);
         }
         return preferredLocale;
     }
 
     protected String getServerUrl() {
-        return getServerUrl(getSite());
+        return serverUrl;
     }
 
     protected JahiaSite getSite() {
@@ -236,8 +210,13 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return site;
     }
 
+    /**
+     * Return the relative site URL (without scheme, server name and port).
+     * 
+     * @return the relative site URL (without scheme, server name and port)
+     */
     protected String getSiteUrl() {
-        return getSiteUrl(getSite());
+        return relativeSiteUrl;
     }
 
     protected Link getSubscriptionManagementLink() {
@@ -292,7 +271,7 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         }
 
         if (watchedObject != null) {
-            String url = getPageUrl(watchedObject.getPageID(), getSite());
+            String url = getPageUrl(watchedObject.getPageID());
             lnk = new Link("Watched content", url, getServerUrl() + url);
         }
 
@@ -312,9 +291,8 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
         mimeMessage.addRecipients(Message.RecipientType.TO, InternetAddress
                 .parse(vars.get("to") != null ? (String) vars.get("to")
-                        : UserPreferencesHelper
-                        .getPersonalizedEmailAddress(subscriberEmail,
-                                subscriber)));
+                        : UserPreferencesHelper.getPersonalizedEmailAddress(
+                                subscriberEmail, subscriber)));
 
         if (vars.get("cc") != null) {
             mimeMessage.addRecipients(Message.RecipientType.CC, InternetAddress
@@ -330,12 +308,14 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
 
     protected void populateBinding(Binding binding) {
         binding.setVariable("subscriber", new Subscriber(UserPreferencesHelper
-                .getFirstName(subscriber), UserPreferencesHelper.getLastName(subscriber),
-                UserPreferencesHelper.getFullName(subscriber), UserPreferencesHelper
-                        .getPersonalizedEmailAddress(subscriberEmail,
-                                subscriber), subscriber));
+                .getFirstName(subscriber), UserPreferencesHelper
+                .getLastName(subscriber), UserPreferencesHelper
+                .getFullName(subscriber), UserPreferencesHelper
+                .getPersonalizedEmailAddress(subscriberEmail, subscriber),
+                subscriber));
         binding.setVariable("locale", getPreferredLocale());
-        binding.setVariable("i18n", new JahiaResourceBundle(getPreferredLocale(), templatePackageName));
+        binding.setVariable("i18n", new JahiaResourceBundle(
+                getPreferredLocale(), templatePackageName));
         binding.setVariable("subscriptionManagementLink",
                 getSubscriptionManagementLink());
         binding.setVariable("unsubscribeLink", getUnsubscribeLink());
@@ -404,8 +384,48 @@ public abstract class MessageBuilder implements MimeMessagePreparator {
         return TemplateUtils.resolvePath(path, templatePackageName);
     }
 
+    protected void resolveServerAndSiteUrl() {
+        ProcessingContext ctx = Jahia.getThreadParamBean();
+        String scheme = null;
+        String serverName = null;
+        int serverPort = 0;
+
+        if (ctx != null) {
+            scheme = ctx.getScheme();
+            serverName = ctx.getServerName();
+            serverPort = SettingsBean.getInstance().getSiteURLPortOverride();
+            if (serverPort <= 0) {
+                serverPort = ctx.getServerPort();
+            }
+            JahiaSite site = getSite();
+            if (site != null) {
+                serverName = site.getServerName();
+            }
+            StringBuilder url = new StringBuilder(32).append(scheme).append(
+                    "://").append(serverName);
+            if (serverPort != 80) {
+                url.append(":").append(serverPort);
+            }
+            serverUrl = url.toString();
+        } else {
+            serverUrl = "http://localhost:8080";
+            logger
+                    .warn("ProcessingContext is not available."
+                            + " Unable to resolve server name, port and scheme for absolute server and site links.");
+        }
+
+        StringBuilder siteUrl = new StringBuilder(32).append(
+                Jahia.getContextPath()).append(Jahia.getServletPath());
+        JahiaSite site = getSite();
+        if (site != null && !site.isDefault()) {
+            siteUrl.append("/" + ProcessingContext.SITE_KEY_PARAMETER + "/")
+                    .append(site.getSiteKey());
+        }
+        relativeSiteUrl = siteUrl.toString();
+    }
+
     protected void resolveTemplatePackageName() {
-        JahiaSite site = TemplateUtils.getSite(siteId);
+        JahiaSite site = getSite();
         templatePackageName = site != null ? site.getTemplatePackageName()
                 : null;
     }

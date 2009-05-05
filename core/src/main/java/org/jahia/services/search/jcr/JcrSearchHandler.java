@@ -81,7 +81,7 @@ public class JcrSearchHandler extends SearchHandlerImpl {
     }
 
     @Override
-    public void notifyIndexUpdate(boolean waitForNewSearcher) {
+    public void notifyIndexUpdate(boolean synchronizedIndexing) {
         // nothing to do yet.
     }
 

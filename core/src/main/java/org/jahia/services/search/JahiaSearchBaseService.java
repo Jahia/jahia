@@ -90,6 +90,7 @@ import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.search.compass.CompassResourceConverter;
 import org.jahia.services.search.compass.JahiaCompassHighlighter;
 import org.jahia.services.search.indexingscheduler.*;
+import org.jahia.services.search.indexingscheduler.impl.condition.ActionRuleCondition;
 import org.jahia.services.search.jcr.JcrSearchHandler;
 import org.jahia.services.search.lucene.IndexUpdatedMessage;
 import org.jahia.services.search.lucene.JahiaAbstractHitCollector;
@@ -206,7 +207,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
 
     private long indexingJobInsertMinInterval = 0;
 
-    private int indexingJobInserMapMaxSize = 5000;
+    private int indexingJobInsertMapMaxSize = 5000;
 
     private long searchScoreBoostRefreshDelayTime = 30000;
 
@@ -353,12 +354,12 @@ public class JahiaSearchBaseService extends JahiaSearchService
         this.indexingJobInsertMinInterval = JahiaTools.getTimeAsLong(getIndexationConfig().getProperty(
                  JahiaSearchConfigConstant.SEARCH_INDEXING_JOB_EXECUTION_DELAY_TIME),"600").longValue()/2;
         try {
-            this.indexingJobInserMapMaxSize = Integer.parseInt(getIndexationConfig().getProperty(
+            this.indexingJobInsertMapMaxSize = Integer.parseInt(getIndexationConfig().getProperty(
                  JahiaSearchConfigConstant.SEARCH_INDEXING_JOB_INSERT_MAP_MAXSIZE,"5000"));
         } catch ( Throwable t ){
-            logger.debug("Wrong value for indexing job insert map max size, use default " + this.indexingJobInserMapMaxSize,t);
+            logger.debug("Wrong value for indexing job insert map max size, use default " + this.indexingJobInsertMapMaxSize,t);
         }
-        this.indexingJobInserts = new LRUMap(this.indexingJobInserMapMaxSize);
+        this.indexingJobInserts = new LRUMap(this.indexingJobInsertMapMaxSize);
         this.searchScoreBoostRefreshDelayTime = JahiaTools.getTimeAsLong(getIndexationConfig().getProperty(
                  JahiaSearchConfigConstant.SEARCH_SCORE_BOOST_REFRESH_DELAY_TIME,"0"),"0").longValue();
         if ( this.searchScoreBoostRefreshDelayTime > 0 && this.searchScoreBoostRefreshDelayTime < 5000 ){
@@ -925,61 +926,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
         if (job == null) {
             return;
         }
-        synchronized(indexingJobInserts){
-            Long lastInsertTime = null;
-            StringBuffer key =new StringBuffer(100);
-            String keyAsString = null;
-            long diff = 0;
-            if ( job instanceof JahiaFieldIndexingJob ){
-                job.setEnabledIndexingServers(getServerId());
-                key.append(job.getClassName())
-                    .append(((JahiaFieldIndexingJob)job).getFieldId());
-                keyAsString = key.toString();
-                lastInsertTime = (Long) indexingJobInserts.get(keyAsString);
-            } else if ( job instanceof JahiaContainerIndexingJob ) {
-                key.append(job.getClassName())
-                    .append(((JahiaContainerIndexingJob)job).getCtnId());
-                keyAsString = key.toString();
-                lastInsertTime = (Long) indexingJobInserts.get(keyAsString);
-            } else if ( job instanceof JahiaContainerListIndexingJob ) {
-                key.append(job.getClassName())
-                    .append(((JahiaContainerListIndexingJob)job).getCtnListId());
-                keyAsString = key.toString();
-                lastInsertTime = (Long) indexingJobInserts.get(keyAsString);
-            } else if ( job instanceof JahiaPageIndexingJob ) {
-                key.append(job.getClassName())
-                    .append(((JahiaPageIndexingJob)job).getPageId());
-                keyAsString = key.toString();
-                lastInsertTime = (Long) indexingJobInserts.get(keyAsString);
-            } else if ( job instanceof JahiaRemoveFromIndexJob ){
-                key.append(key.append(job.getClassName())
-                    .append(((JahiaRemoveFromIndexJob)job).getKeyFieldName())
-                    .append(((JahiaRemoveFromIndexJob)job).getKeyFieldValue())
-                    .append(job.getSiteId()));
-                keyAsString = key.toString();
-                lastInsertTime = (Long) indexingJobInserts.get(keyAsString);
-            } else if ( job instanceof JahiaDeleteIndexJob ){
-                key.append(key.append(job.getClassName())
-                        .append(job.getSiteId()));
-                keyAsString = key.toString();
-                lastInsertTime = (Long) indexingJobInserts.get(keyAsString);                
-            } else {
-                indexingJobInserts = new LRUMap(this.indexingJobInserMapMaxSize);
-            }
-            if ( lastInsertTime != null ){
-                diff = job.getDate().longValue()-lastInsertTime.longValue();
-                if (diff < this.indexingJobInsertMinInterval) {
-                    // skip inserting the job
-                    //logger.info("Skip inserting indexingJob ");
-                    return;
-                } else {
-                    indexingJobInserts.put(keyAsString,job.getDate());
-                }
-            } else if ( keyAsString != null ){
-                indexingJobInserts.put(keyAsString,job.getDate());
-            }
-        }
-
+   
         IndexationRuleInterface rule = ServicesRegistry.getInstance().getJahiaSearchIndexationService()
                 .evaluateContentIndexationRules(ctx);
         if ( rule != null ){
@@ -1029,11 +976,49 @@ public class JahiaSearchBaseService extends JahiaSearchService
             job.setScheduledFromTime1(new Integer(0));
             job.setScheduledToTime1(new Integer(23*60+60));
         }
-        if (job.getIndexImmediately().booleanValue()){
+        if (job.getIndexImmediately().booleanValue()) {
             triggerImmediateExecutionOnAllNodes(job);
-        } else {
+        } else if (!shouldSkip(job, ctx)) {
             indJobMgr.save(job);
-         }
+        }
+    }
+    
+    private boolean shouldSkip(JahiaIndexingJob job, RuleEvaluationContext ctx) {
+        boolean shouldSkip = false;
+        if (!ActionRuleCondition.DELETE_ENGINE.equals(ctx.getActionPerformed())) {
+            synchronized (indexingJobInserts) {
+                Long lastInsertTime = null;
+                StringBuffer key = new StringBuffer(100);
+                if (job instanceof JahiaFieldIndexingJob) {
+                    job.setEnabledIndexingServers(getServerId());
+                    key.append(job.getClassName()).append(((JahiaFieldIndexingJob) job).getFieldId());
+                } else if (job instanceof JahiaContainerIndexingJob) {
+                    key.append(job.getClassName()).append(((JahiaContainerIndexingJob) job).getCtnId());
+                } else if (job instanceof JahiaContainerListIndexingJob) {
+                    key.append(job.getClassName()).append(((JahiaContainerListIndexingJob) job).getCtnListId());
+                } else if (job instanceof JahiaPageIndexingJob) {
+                    key.append(job.getClassName()).append(((JahiaPageIndexingJob) job).getPageId());
+                } else if (job instanceof JahiaRemoveFromIndexJob) {
+                    key.append(key.append(job.getClassName()).append(((JahiaRemoveFromIndexJob) job).getKeyFieldName())
+                            .append(((JahiaRemoveFromIndexJob) job).getKeyFieldValue()).append(job.getSiteId()));
+                } else if (job instanceof JahiaDeleteIndexJob) {
+                    key.append(key.append(job.getClassName()).append(job.getSiteId()));
+                }
+                String keyAsString = key.length() > 0 ? key.toString() : null;
+                if (keyAsString != null) {
+                    lastInsertTime = (Long) indexingJobInserts.get(keyAsString);
+                } else {
+                    indexingJobInserts = new LRUMap(this.indexingJobInsertMapMaxSize);
+                }
+                if (lastInsertTime != null
+                        && job.getDate().longValue() - lastInsertTime.longValue() < this.indexingJobInsertMinInterval) {
+                    shouldSkip = true;
+                } else if (keyAsString != null) {
+                    indexingJobInserts.put(keyAsString, job.getDate());
+                }
+            }
+        }
+        return shouldSkip;
     }
 
     private void triggerImmediateExecutionOnAllNodes (JahiaIndexingJob job) {

@@ -901,6 +901,9 @@ public abstract class AbstractLuceneSearchIndexer implements SearchIndexer , Run
                                         languageAnalyzer = null;
                                     }
                                 }
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Indexing " + luceneDoc.getField("jahia.comp_id").stringValue());
+                                }
                                 if (languageAnalyzer == null) {
                                     fsWriter.addDocument(luceneDoc);
                                 } else {

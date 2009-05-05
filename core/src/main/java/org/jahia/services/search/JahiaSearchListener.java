@@ -392,35 +392,36 @@ public class JahiaSearchListener extends JahiaEventListener {
         List<ObjectKey> events = this.actionAggregatedEvents.get();
         JahiaEvent je = (JahiaEvent)this.actionEvent.get();
         String actionPerformed = getActionPerformed(je);
-        if (actionPerformed == null){
+        if (actionPerformed == null) {
             this.actionAggregatedEvents.remove();
             this.actionEvent.remove();
             return;
-        }
-        Object eventObject = je.getObject();
-        if (eventObject == null){
-            this.actionAggregatedEvents.remove();
-            this.actionEvent.remove();
-            return;
-        }
-        ContentObject contentObject = null;
-        if (eventObject instanceof ContentObject){
-            contentObject = (ContentObject)eventObject;
-        } else if (eventObject instanceof JahiaContainer){
-            JahiaContainer jahiaContainer = (JahiaContainer)eventObject;
-            contentObject = jahiaContainer.getContentContainer();
-        } else if (eventObject instanceof JahiaPage){
-            contentObject = ((JahiaPage)eventObject).getContentPage();
-        }
-        if (contentObject == null){
-            this.actionEvent.remove();
-            this.actionAggregatedEvents.remove();
-            return;
-        }
+        } else if (!ActionRuleCondition.STORE_FORM_IN_TEMPLATE.equals(actionPerformed)) {
+            Object eventObject = je.getObject();
+            if (eventObject == null) {
+                this.actionAggregatedEvents.remove();
+                this.actionEvent.remove();
+                return;
+            }
+            ContentObject contentObject = null;
+            if (eventObject instanceof ContentObject) {
+                contentObject = (ContentObject) eventObject;
+            } else if (eventObject instanceof JahiaContainer) {
+                JahiaContainer jahiaContainer = (JahiaContainer) eventObject;
+                contentObject = jahiaContainer.getContentContainer();
+            } else if (eventObject instanceof JahiaPage) {
+                contentObject = ((JahiaPage) eventObject).getContentPage();
+            }
+            if (contentObject == null) {
+                this.actionEvent.remove();
+                this.actionAggregatedEvents.remove();
+                return;
+            }
+        } 
         RuleEvaluationContext ctx = null;
         for (ObjectKey objectKey : events){
             try {
-                contentObject = ContentObject.getContentObjectInstance(objectKey);
+                ContentObject contentObject = ContentObject.getContentObjectInstance(objectKey);
                 ctx = new RuleEvaluationContext(objectKey,
                         contentObject,je.getProcessingContext(),je.getProcessingContext().getUser(),actionPerformed,true
                         ,false);

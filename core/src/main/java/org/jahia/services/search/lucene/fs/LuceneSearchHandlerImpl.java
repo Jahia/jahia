@@ -398,10 +398,10 @@ public class LuceneSearchHandlerImpl extends SearchHandlerImpl {
         return getAnalyzer(languageCode);
     }
 
-    public void notifyIndexUpdate(boolean waitForNewSearcher) {
+    public void notifyIndexUpdate(boolean synchronizedIndexing) {
         try {
             Future<Object>[] waitSearcher = null;
-            if (waitForNewSearcher) {
+            if (synchronizedIndexing) {
                 waitSearcher = new Future[]{null};
             }
             coreSearcher.getSearcher(true, false, waitSearcher);

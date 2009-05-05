@@ -28,14 +28,19 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
 import org.apache.log4j.Logger;
+import org.jahia.bin.Jahia;
 import org.jahia.data.fields.JahiaBigTextField;
 import org.jahia.engines.filemanager.URLUtil;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.hibernate.manager.JahiaFieldXRefManager;
 import org.jahia.hibernate.model.JahiaFieldXRef;
+import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.fields.ContentBigTextField;
 import org.jahia.services.fields.ContentField;
+import org.jahia.services.search.JahiaSearchService;
+import org.jahia.services.search.indexingscheduler.RuleEvaluationContext;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.EntryLoadRequest;
 
 /**
@@ -96,6 +101,10 @@ public class FieldReferenceListener extends DefaultEventListener {
             return;
         }
         try {
+            JahiaSearchService searchService = ServicesRegistry.getInstance().getJahiaSearchService();
+            ProcessingContext processingContext = Jahia.getThreadParamBean();
+            JahiaUser user = processingContext != null ? processingContext.getUser() : null;
+            
             Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE+provider.getKey()+":"+uuid);
 
             for (JahiaFieldXRef jahiaFieldXRef : c) {
@@ -127,6 +136,11 @@ public class FieldReferenceListener extends DefaultEventListener {
                                         bigText, version, workflow, language);
                     }
                 }
+                RuleEvaluationContext ctx = new RuleEvaluationContext(
+                        field.getObjectKey(), field,
+                        processingContext, user);
+                searchService.indexContentObject(field,
+                        user, ctx);
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

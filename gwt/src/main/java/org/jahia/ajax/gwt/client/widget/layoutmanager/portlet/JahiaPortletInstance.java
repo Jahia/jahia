@@ -36,19 +36,21 @@ public class JahiaPortletInstance extends JahiaPortlet {
         super(porletConfig);
         setLayout(new FlowLayout());
         setStyleAttribute("background", "none");
-        doView();
+        renderPortlet();
 
     }
 
     public JahiaPortletInstance() {
         setLayout(new FlowLayout());
-        doView();
+        renderPortlet();
     }
 
     @Override
     public void doView() {
         super.doView();
-        Log.debug("Path info ID: " + getPathInfo());
+    }
+
+    private void renderPortlet() {
         setHeading(getPorletConfig().getGwtJahiaNode().getName());
         portletRender = new PortletRender(getPageContext(), "-1", getWindowID(), getPathInfo(), getQueryString()) {
             @Override

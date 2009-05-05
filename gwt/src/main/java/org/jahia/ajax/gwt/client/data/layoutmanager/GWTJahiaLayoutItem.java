@@ -26,7 +26,11 @@ import java.io.Serializable;
  * Time: 11:19:43
  */
 public class GWTJahiaLayoutItem implements Serializable {
+    public static int MODE_VIEW = 0;
+    public static int MODE_EDIT = 1;
+    public static int MODE_HELP = 2;
     private String uuid;
+    private int currentMode;
     private String viewModeLink;
     private String editModeLink;
     private String helpModeLink;
@@ -40,8 +44,11 @@ public class GWTJahiaLayoutItem implements Serializable {
     public GWTJahiaLayoutItem() {
     }
 
-    public GWTJahiaLayoutItem(String uuid, GWTJahiaNode gwtJahiaNode, int column, int row, String status) {
+    public GWTJahiaLayoutItem(String uuid, GWTJahiaNode gwtJahiaNode, String viewModeLink, String editModeLink, String helpModeLink, int column, int row, String status, int currentMode) {
         this.gwtJahiaNode = gwtJahiaNode;
+        this.viewModeLink = viewModeLink;
+        this.editModeLink = editModeLink;
+        this.helpModeLink = helpModeLink;
         this.column = column;
         this.row = row;
         this.status = status;
@@ -50,6 +57,14 @@ public class GWTJahiaLayoutItem implements Serializable {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public int getCurrentMode() {
+        return currentMode;
+    }
+
+    public void setCurrentMode(int currentMode) {
+        this.currentMode = currentMode;
     }
 
     public void setUuid(String uuid) {
@@ -125,6 +140,30 @@ public class GWTJahiaLayoutItem implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public boolean hasViewMode() {
+        return this.viewModeLink != null;
+    }
+
+    public boolean hasEditMode() {
+        return this.editModeLink != null;
+    }
+
+    public boolean hasHelpMode() {
+        return this.helpModeLink != null;
+    }
+
+    public boolean isViewMode() {
+        return currentMode == MODE_VIEW;
+    }
+
+    public boolean isEditMode() {
+        return currentMode == MODE_EDIT;
+    }
+
+    public boolean isHelpMode() {
+        return currentMode == MODE_HELP;
     }
 
     @Override

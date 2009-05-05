@@ -21,6 +21,7 @@ import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletRemoved;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.listener.OnPortletStatusChanged;
 import org.jahia.ajax.gwt.client.widget.layoutmanager.JahiaPortalManager;
 import org.jahia.ajax.gwt.client.util.layoutmanager.JahiaPropertyHelper;
+import org.jahia.ajax.gwt.client.util.URL;
 
 import com.extjs.gxt.ui.client.Events;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -30,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.custom.Portlet;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Window;
 
 
 /**
@@ -44,11 +46,8 @@ public class JahiaPortlet extends Portlet {
     protected Widget editContainer = null;
     protected Widget helpContainer = null;
 
-    protected static int MODE_VIEW = 0;
-    protected static int MODE_EDIT = 1;
-    protected static int MODE_HELP = 2;
-    private int mode = 0;
-    private ToolButton viewEditButton = new ToolButton("x-tool-gear");
+    private ToolButton viewButton = new ToolButton("x-tool-search");
+    private ToolButton editButton = new ToolButton("x-tool-gear");
     private ToolButton helpButton = new ToolButton("x-tool-plus");
     private ToolButton maxButton = new ToolButton("x-tool-maximize");
     private ToolButton minButton = new ToolButton("x-tool-minimize");
@@ -84,42 +83,34 @@ public class JahiaPortlet extends Portlet {
         }
     }
 
-    public boolean isInstanciable() {
-        return true;
-    }
-
-
     public void doView() {
-        mode = MODE_VIEW;
-        // to implement
-        removeAll();
-        layout();
+        if (porletConfig.hasViewMode()) {
+            Window.Location.replace(porletConfig.getViewModeLink());
+        }
     }
 
     public void doEdit() {
-        mode = MODE_EDIT;
-        // to implement
-        removeAll();
-        layout();
+        if (porletConfig.hasEditMode()) {
+            Window.Location.replace(porletConfig.getEditModeLink());
+        }
     }
 
     public void doHelp() {
-        mode = MODE_HELP;
-        // to implement
-        removeAll();
-        layout();
+        if (porletConfig.hasHelpMode()) {
+            Window.Location.replace(porletConfig.getHelpModeLink());
+        }
     }
 
     protected boolean isViewMode() {
-        return mode == MODE_VIEW;
+        return porletConfig.isViewMode();
     }
 
     protected boolean isEditMode() {
-        return mode == MODE_EDIT;
+        return porletConfig.isEditMode();
     }
 
     protected boolean isHelpMode() {
-        return mode == MODE_HELP;
+        return porletConfig.isHelpMode();
     }
 
 
@@ -131,34 +122,41 @@ public class JahiaPortlet extends Portlet {
         setCollapsible(true);
         setAnimCollapse(false);
 
-
-        // change mode
-        viewEditButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            @Override
-            public void componentSelected(ComponentEvent ce) {
-                if (isViewMode()) {
-                    doEdit();
-                } else if (isEditMode()) {
-                    doView();
-                } else {
+        if (porletConfig.hasViewMode()) {
+            viewButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                @Override
+                public void componentSelected(ComponentEvent ce) {
                     doView();
                 }
-            }
 
-        });
-        /*getHeader().addTool(viewEditButton);*/
+            });
+            getHeader().addTool(viewButton);
+        }
 
-        // help mpde
+        // change mode
+        if (porletConfig.hasEditMode()) {
+            editButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                @Override
+                public void componentSelected(ComponentEvent ce) {
+                    doEdit();
+                }
 
-        helpButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            @Override
-            public void componentSelected(ComponentEvent ce) {
-                doHelp();
-            }
+            });
+            getHeader().addTool(editButton);
+        }
 
-        });
+        // help mode
+        if (porletConfig.hasHelpMode()) {
+            helpButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                @Override
+                public void componentSelected(ComponentEvent ce) {
+                    doHelp();
+                }
 
-        // help mpde
+            });
+            getHeader().addTool(helpButton);
+        }
+
 
         maxButton.addSelectionListener(new SelectionListener<ComponentEvent>() {
             @Override

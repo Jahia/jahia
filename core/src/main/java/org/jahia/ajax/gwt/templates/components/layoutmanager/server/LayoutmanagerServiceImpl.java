@@ -18,6 +18,7 @@ package org.jahia.ajax.gwt.templates.components.layoutmanager.server;
 
 
 import org.apache.log4j.Logger;
+import org.apache.pluto.PortletWindow;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.commons.server.AbstractJahiaGWTServiceImpl;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -31,17 +32,18 @@ import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesXpathHelper;
 import org.jahia.services.preferences.JahiaPreference;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRLayoutItemNode;
-import org.jahia.services.content.JCRLayoutNode;
+import org.jahia.services.content.*;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.data.applications.EntryPointDefinition;
+import org.jahia.data.beans.portlets.PortletWindowBean;
+import org.jahia.data.beans.portlets.PortletModeBean;
 import org.jahia.api.Constants;
+import org.jahia.params.ParamBean;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -482,9 +484,64 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
         // get status
         String status = jcrLayoutItemNode.getStatus();
 
-        JCRNodeWrapper portletNode = (JCRNodeWrapper) jcrLayoutItemNode.getPortlet();
+        JCRPortletNode portletNode = new JCRPortletNode((JCRNodeWrapper) jcrLayoutItemNode.getPortlet());
+        String uuid = portletNode.getUUID();
 
-        return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), FileManagerWorker.getGWTJahiaNode(portletNode), column, row, status);
+        // get modes urls
+        if (portletNode.getUUID() != null) {
+            String viewModeUrl = null;
+            String editModeUrl = null;
+            String helpModeUrl = null;
+            int currentPortletMode = 0;
+            try {
+                EntryPointDefinition entryPointDefinition = portletNode.getEntryPointDefinition();
+                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(uuid);
+                PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, uuid, retrieveParamBean());
+                PortletWindowBean portletWindowBean = new PortletWindowBean(retrieveParamBean(), window);
+                portletWindowBean.setEntryPointInstance(entryPointInstance);
+                portletWindowBean.setEntryPointDefinition(entryPointDefinition);
+                List<PortletModeBean> portletModeBeans = portletWindowBean.getPortletModeBeans();
+                for (PortletModeBean portletModeBean : portletModeBeans) {
+                    String portletModeName = portletModeBean.getName();
+                    if (portletModeName != null) {
+                        if (portletModeName.equalsIgnoreCase("view")) {
+                            viewModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
+                        } else if (portletModeName.equalsIgnoreCase("edit")) {
+                            editModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
+                        } else if (portletModeName.equalsIgnoreCase("help")) {
+                            helpModeUrl = retrieveParamBean().composeUrl(portletModeBean.getURL());
+                        } else {
+                            logger.warn("Unknown portlet mode [" + portletModeBean.getName() + "]");
+                        }
+                    }
+                }
+
+                // current mode
+                PortletModeBean currentPortletModeBean = portletWindowBean.getCurrentPortletModeBean();
+                if (currentPortletModeBean != null) {
+                    String portletModeName = currentPortletModeBean.getName();
+                    if (portletModeName != null) {
+                        if (portletModeName.equalsIgnoreCase("view")) {
+                            currentPortletMode = GWTJahiaLayoutItem.MODE_VIEW;
+                        } else if (portletModeName.equalsIgnoreCase("edit")) {
+                            currentPortletMode = GWTJahiaLayoutItem.MODE_EDIT;
+                        } else if (portletModeName.equalsIgnoreCase("help")) {
+                            currentPortletMode = GWTJahiaLayoutItem.MODE_HELP;
+                        } else {
+                            logger.warn("Unknown portlet mode [" + currentPortletModeBean.getName() + "]");
+                        }
+                    }
+                }
+
+
+            } catch (JahiaException e) {
+                logger.error(e, e);
+            }
+            return new GWTJahiaLayoutItem(jcrLayoutItemNode.getUUID(), FileManagerWorker.getGWTJahiaNode(portletNode), viewModeUrl, editModeUrl, helpModeUrl, column, row, status, currentPortletMode);
+        } else {
+            return null;
+        }
+
     }
 
 

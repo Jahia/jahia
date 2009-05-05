@@ -27,14 +27,14 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.DateWrapper;
-import com.extjs.gxt.ui.client.util.WidgetHelper;
+import com.extjs.gxt.ui.client.widget.ComponentHelper;
 import com.extjs.gxt.ui.client.widget.DatePicker;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
@@ -153,7 +153,7 @@ public class CalendarPicker extends DatePicker {
         }
 
         // hours input
-        hoursPanel = new LayoutContainer(new CenterLayout());
+        hoursPanel = new LayoutContainer(new TableLayout());
         //hoursPanel.setWidth(175);
         hoursPanel.setStyleName("x-date-hours-panel");
         HorizontalPanel hPanel = new HorizontalPanel();
@@ -230,13 +230,13 @@ public class CalendarPicker extends DatePicker {
     @Override
     protected void doAttachChildren() {
       super.doAttachChildren();
-      WidgetHelper.doAttach(hoursPanel);
+      ComponentHelper.doAttach(hoursPanel);
     }
 
     @Override
     protected void doDetachChildren() {
       super.doDetachChildren();
-      WidgetHelper.doDetach(hoursPanel);
+      ComponentHelper.doDetach(hoursPanel);
     }
 
     private class HourModel extends BaseModel {

@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.params.ProcessingContext;
+import org.jahia.security.license.LicenseActionChecker;
 import org.jahia.services.notification.templates.WorkflowMessageBuilder;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -35,6 +36,38 @@ public class WorkflowNotificationEventHandler extends
 
     private static Logger logger = Logger
             .getLogger(WorkflowNotificationEventHandler.class);
+
+    /**
+     * Initializes an instance of this class.
+     */
+    public WorkflowNotificationEventHandler() {
+        super();
+        final boolean authorizedByLicense = LicenseActionChecker
+                .isAuthorizedByLicense(
+                        "org.jahia.actions.sites.*.engines.workflow.MailNotifications",
+                        0);
+        insertCondition(new Condition() {
+            public boolean matches(Principal subscriber,
+                    List<NotificationEvent> events) {
+                if (!authorizedByLicense) {
+                    logger
+                            .info("Workflow mail notifications are not authorized by the current license."
+                                    + " Skip sending notification.");
+                }
+                return authorizedByLicense;
+            }
+
+            public boolean matches(Subscription subscription,
+                    List<NotificationEvent> events) {
+                if (!authorizedByLicense) {
+                    logger
+                            .info("Workflow mail notifications are not authorized by the current license."
+                                    + " Skip sending notification.");
+                }
+                return authorizedByLicense;
+            }
+        });
+    }
 
     @Override
     protected void handleEvents(Principal subscriber,

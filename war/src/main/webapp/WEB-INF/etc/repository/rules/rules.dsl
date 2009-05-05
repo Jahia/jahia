@@ -65,6 +65,7 @@
 [consequence][]Fire {eventType} notification event to group {targetGroup}=service.notifyGroup(node, "{eventType}", {targetGroup}, drools);
 [consequence][]Fire {eventType} notification event to the current user=service.notify(node, "{eventType}", user.getJahiaUser(), drools);
 [consequence][]Fire {eventType} notification event to the users involved in the next step=service.notify(node, "{eventType}", service.getWorkflowNextStepPrincipals(node,language), drools);
+[consequence][]Fire {eventType} notification event to the users having administration rights on the object=service.notify(node, "{eventType}", service.getWorkflowAdminPrincipals(node), drools);
 [consequence][]Fire {eventType} notification event to the last user that did "{action}"=service.notify(node, "{eventType}", service.getLastUserForAction(node,language,"{action}"), drools);
 [condition][]A search result hit is present=searchHit : JahiaSearchHit ( )
 [condition][]- the container is of type {containerType}=type == JahiaSearchHitInterface.CONTAINER_TYPE && containerType == "{containerType}"

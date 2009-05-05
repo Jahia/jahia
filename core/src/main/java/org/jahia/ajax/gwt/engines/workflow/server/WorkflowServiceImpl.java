@@ -28,6 +28,7 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowElement;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowHistoryEntry;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowManagerState;
 import org.jahia.services.pages.ContentPage;
+import org.jahia.services.workflow.AbstractActivationJob;
 import org.jahia.services.workflow.ActivationJob;
 import org.jahia.services.workflow.WorkflowAction;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -293,6 +294,7 @@ public class WorkflowServiceImpl extends AbstractJahiaGWTServiceImpl implements 
 
         jobDataMap.put(BackgroundJob.JOB_TYPE, ActivationJob.WORKFLOW_TYPE);
         jobDataMap.put(BackgroundJob.JOB_TITLE, batch.getTitle());
+        jobDataMap.put(AbstractActivationJob.COMMENTS_INPUT, batch.getComment());
         jobDataMap.put(ActivationJob.ACTIONS, actions);
 
         final SchedulerService schedulerServ = ServicesRegistry.getInstance().getSchedulerService();

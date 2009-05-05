@@ -3,6 +3,10 @@
 ${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
 
 <% if (jobUser.getUser().equals(subscriber.getUser())) { %>${i18n.get("notifications.workflow.job.triggeredBy.sameUser", "the workflow job, triggered by you")}<% } else { %>${i18n.get("notifications.workflow.job.triggeredBy.otherUser", "the workflow job, triggered by")} ${jobUser.fullName}<% } %>${i18n.get("notifications.workflow.job.executionFinished", ", has finished its execution.")}
+<% if (jobComment != null) { %>
+${i18n.get("notifications.workflow.comment", "Comment")}:
+${jobComment}
+<% } %>
 ${i18n.get("notifications.workflow.details.link", "Please check the details by clicking on the link:")} ${jobReportLink.absoluteUrl}
 
 ${i18n.get("notifications.common.farewell", "Sincerely Yours")}

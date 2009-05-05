@@ -24,6 +24,7 @@ import org.jahia.content.ContentObjectKey;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseActionChecker;
+import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapperImpl;
 import org.jahia.services.content.impl.jahia.JahiaContentNodeImpl;
@@ -46,6 +47,7 @@ import org.jahia.services.workflow.ExternalWorkflowInstanceCurrentInfos;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.hibernate.model.JahiaAclEntry;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
@@ -392,6 +394,19 @@ public class Service {
         }
     }
     
+    /**
+     * Returns all users, having explicitly assigned permissions to perform next
+     * step operation. Either assigned directly on the object or inherited from
+     * parent.
+     * 
+     * @param node
+     *            the current content node
+     * @param languageCode
+     *            current language code
+     * @return the set of all users, having explicitly assigned permissions to
+     *         perform next step operation. Either assigned directly on the
+     *         object or inherited from parent.
+     */
     public Set<Principal> getWorkflowNextStepPrincipals(NodeWrapper node, String languageCode) {
         WorkflowService workflowService = WorkflowService.getInstance();
         try {
@@ -412,6 +427,44 @@ public class Service {
             logger.error(e.getMessage(), e);
         }
         return null;
+    }
+
+    /**
+     * Returns all users, having {@link JahiaBaseACL#ADMIN_RIGHTS} on the
+     * object.
+     * 
+     * @param node
+     *            the current content node
+     * @return the set of all users, having {@link JahiaBaseACL#ADMIN_RIGHTS} on
+     *         the object
+     */
+    public Set<Principal> getWorkflowAdminPrincipals(NodeWrapper node) {
+        Set<Principal> s = new HashSet<Principal>();
+        ContentObject obj = ((JahiaContentNodeImpl) node.getNode())
+                .getContentObject();
+
+        Map m = obj.getACL().getACL().getRecursedGroupEntries();
+        for (Object key : m.keySet()) {
+            JahiaAclEntry e = (JahiaAclEntry) m.get(key);
+            if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                if (!key.equals("administrators:0")) {
+                    s.add(ServicesRegistry.getInstance()
+                            .getJahiaGroupManagerService().lookupGroup(
+                                    (String) key));
+                }
+            }
+        }
+        m = obj.getACL().getACL().getRecursedUserEntries();
+        for (Object key : m.keySet()) {
+            JahiaAclEntry e = (JahiaAclEntry) m.get(key);
+            if (e.getPermission(JahiaBaseACL.ADMIN_RIGHTS) == JahiaAclEntry.ACL_YES) {
+                s.add(ServicesRegistry.getInstance()
+                        .getJahiaUserManagerService().lookupUserByKey(
+                                (String) key));
+            }
+        }
+
+        return s;
     }
 
     public Set<Principal> getWorkflowPreviousStepPrincipals(NodeWrapper node, String languageCode) {

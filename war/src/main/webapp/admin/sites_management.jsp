@@ -244,9 +244,9 @@
                 } %>
             </tbody>
         </form>
-        
+
     </table>
-    
+
     <!-- prepackaged site -->
     <div class="head headtop">
         <div class="object-title">
@@ -289,7 +289,7 @@
     <!--   import backup -->
     <div class="head headtop">
         <div class="object-title">
-           <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+            <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
         </div>
     </div>
     <div  class="content-item">
@@ -311,7 +311,7 @@
                         <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
-                        :&nbsp;<input type="file" name="import">
+                        :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
 
                     <td>
@@ -429,7 +429,7 @@ else { %>
     <!--   import backup -->
     <div class="head headtop">
         <div class="object-title">
-             <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
+            <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.label"/>
         </div>
     </div>
     <div  class="content-item">
@@ -451,7 +451,7 @@ else { %>
                         <fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/>&nbsp;
                     </td>
                     <td>
-                        :&nbsp;<input type="file" name="import">
+                        :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                     </td>
 
                     <td>
@@ -553,7 +553,7 @@ else { %>
                             <label for="siteImport"><fmt:message key="org.jahia.admin.site.ManageSites.multipleimport.fileselect"/></label>
                         </td>
                         <td>
-                            :&nbsp;<input type="file" name="import">
+                            :&nbsp;<input type="file" name="import" onclick="setCheckedValue(document.forms['siteImport'].elements['siteImport'], 'siteImport'); setCheckedValue(document.forms['siteImportPrepackaged'].elements['siteImportPrepackaged'], '');setCheckedValue(document.forms['blank'].elements['blank'], '');">
                         </td>
 
                     </tr>
@@ -639,14 +639,14 @@ else { %>
             return;
         var radioLength = radioObj.length;
         if(radioLength == undefined) {
-        	  //window.alert("setting new checked value for ");
+            //window.alert("setting new checked value for ");
             radioObj.checked = (radioObj.value == newValue.toString());
             return;
         }
         for(var i = 0; i < radioLength; i++) {
             radioObj[i].checked = false;
             if(radioObj[i].value == newValue.toString()) {
-            	//window.alert("setting new checked value for "+newValue.toString());
+                //window.alert("setting new checked value for "+newValue.toString());
                 radioObj[i].checked = true;
             }
         }
@@ -654,7 +654,7 @@ else { %>
 
     function submitform()
     {
-    	
+
         if(getCheckedValue(document.forms['blank'].elements['blank'])=="blank"){
             //window.alert("radio button checked   "+getCheckedValue(document.forms['blank'].elements['blank']));
             document.blank.submit();

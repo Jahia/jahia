@@ -46,6 +46,8 @@ import com.extjs.gxt.ui.client.data.ChangeEvent;
 import com.extjs.gxt.ui.client.data.ChangeListener;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Command;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -297,7 +299,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
         w.setModal(true);
         w.setActive(true);
-        w.setSize(1000, 600);
+        w.setSize(1100, 700);
         w.setMaximizable(true);
         w.setLayout(new BorderLayout());
 
@@ -378,8 +380,9 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
        }
      }));
         */
-          final String site_or_page = siteORpage;
+        final String site_or_page = siteORpage;
         final SimpleComboBox<String> profilesComboBox = new SimpleComboBox<String>();
+        profilesComboBox.setEditable(false);
         profilesComboBox.addListener(Events.Select, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 //Log.info(be.toString());
@@ -411,7 +414,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         });
         infoPanel.add(profilesComboBox);
         infoPanel.add(html);
-        
+
         // the combobox for stat type selector
         final SimpleComboBox<StatSiteType> siteStats = new SimpleComboBox<StatSiteType>();
         siteStats.setEditable(false);
@@ -426,8 +429,10 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         pageStats.setSimpleValue(StatPageType.PAGEVIEWS);
         //pageStats.setWidth(12);
 
+        
         LabelToolItem languageSelection_Label = new LabelToolItem("Select a language");
         final SimpleComboBox<String> siteLanguages = new SimpleComboBox<String>();
+        siteLanguages.setEditable(false);
         siteLanguages.add("all");
         siteLanguages.setSimpleValue("all");
 
@@ -501,7 +506,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     bm.set("trackingEnabled", state);
                     gaParams.setJahiaGAprofile(jGAp.getJahiaGAprofile());
                 } else {
-                   Iterator itOnJgaP = jahiaGAprofiles[1].keySet().iterator();
+                    Iterator itOnJgaP = jahiaGAprofiles[1].keySet().iterator();
                     String japName = "";
                     while (itOnJgaP.hasNext()) {
                         japName = (String) itOnJgaP.next();
@@ -547,36 +552,37 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         end_date_field.setAllowBlank(false);
 
         ToolBar toolbar = new ToolBar();
-
-        AdapterToolItem atiSiteStats = new AdapterToolItem(siteStats);
-        AdapterToolItem atiBeginDate = new AdapterToolItem(begin_date_field);
-        AdapterToolItem atiEndDate = new AdapterToolItem(end_date_field);
-
-        AdapterToolItem atiPageStats = new AdapterToolItem(pageStats);
-        AdapterToolItem atiSiteLanguages = new AdapterToolItem(siteLanguages);
-        AdapterToolItem atiSiteLanguagesSelectionLabel = new AdapterToolItem(languageSelection_Label);
-
-
-        if (siteORpage.startsWith("site")) toolbar.add(atiSiteStats);
-        else toolbar.add(atiPageStats);
-        toolbar.add(new SeparatorToolItem());
-        toolbar.add(new SeparatorToolItem());
-        if (siteORpage.startsWith("page")) {
+        if (siteORpage.startsWith("site")){
+            AdapterToolItem atiSiteStats = new AdapterToolItem(siteStats);
+            toolbar.add(atiSiteStats);
+        }
+        else{//the pages part
+            AdapterToolItem atiPageStats = new AdapterToolItem(pageStats);
+            AdapterToolItem atiSiteLanguages = new AdapterToolItem(siteLanguages);
+            AdapterToolItem atiSiteLanguagesSelectionLabel = new AdapterToolItem(languageSelection_Label);
+            toolbar.add(atiPageStats);
+            toolbar.add(new SeparatorToolItem());
             toolbar.add(atiSiteLanguagesSelectionLabel);
             toolbar.add(new SeparatorToolItem());
-            toolbar.add(new SeparatorToolItem());
             toolbar.add(atiSiteLanguages);
-            toolbar.add(new SeparatorToolItem());
-            toolbar.add(new SeparatorToolItem());
         }
-        toolbar.add(begin_date_Label);
+        //common part on both site and page 
+        AdapterToolItem atiBeginDate = new AdapterToolItem(begin_date_field);
+        AdapterToolItem atiEndDate = new AdapterToolItem(end_date_field);
         toolbar.add(new SeparatorToolItem());
+        toolbar.add(new SeparatorToolItem());
+         /*
+        if (siteORpage.startsWith("page")) {
+            toolbar.add(new SeparatorToolItem());
+            toolbar.add(new SeparatorToolItem());              
+        }  */
+        toolbar.add(begin_date_Label);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(atiBeginDate);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(new SeparatorToolItem());
         toolbar.add(end_date_Label);
-        toolbar.add(new SeparatorToolItem());
+        
         toolbar.add(new SeparatorToolItem());
         toolbar.add(atiEndDate);
         toolbar.add(new SeparatorToolItem());
@@ -727,11 +733,14 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 }
             }
         };
-        Button button = new Button("OK");
+        final TextToolItem button = new TextToolItem("Show data") ;
         button.addSelectionListener(executeActionListener);
-        AdapterToolItem atiButton = new AdapterToolItem(button);
-        toolbar.add(atiButton);
-
+        toolbar.add(button);
+        DeferredCommand.addCommand(new Command() {
+            public void execute() {
+                button.fireEvent(Events.Select);
+            }
+        });
         w.setTopComponent(toolbar);
         w.add(charts, chartData);
         w.add(infoPanel, infoData);
@@ -1006,83 +1015,83 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                         SimpleComboBox<String> profilesComboBox,final ContentPanel annotatedTimeLinePanel1,final ContentPanel piePanel1,final ContentPanel geoMapPanel1){
         {
 
-                // get google analytics parameters from the form
-                DateTimeFormat fmt = DateTimeFormat.getFormat("yyyyMMdd");
-                if (!(fmt.format(begin_date_field.getValue()).length() < 8) && (!(fmt.format(end_date_field.getValue()).length() < 8))) {
-                    String dateRange = fmt.format(begin_date_field.getValue()) + "-" + fmt.format(end_date_field.getValue());
-                    String statType = "";
-                    gaParams.setDateRange(dateRange);
-                    // Info.display("date range ",dateRange);
-                    String chartType = "";
-                    String url = "";
-                    if (site_or_page.equals("siteStats")) {
-                        url = "site";
-                        gaParams.setSiteORpage(url);
+            // get google analytics parameters from the form
+            DateTimeFormat fmt = DateTimeFormat.getFormat("yyyyMMdd");
+            if (!(fmt.format(begin_date_field.getValue()).length() < 8) && (!(fmt.format(end_date_field.getValue()).length() < 8))) {
+                String dateRange = fmt.format(begin_date_field.getValue()) + "-" + fmt.format(end_date_field.getValue());
+                String statType = "";
+                gaParams.setDateRange(dateRange);
+                // Info.display("date range ",dateRange);
+                String chartType = "";
+                String url = "";
+                if (site_or_page.equals("siteStats")) {
+                    url = "site";
+                    gaParams.setSiteORpage(url);
 
-                        if (annotatedTimeLineTab1.isVisible()) {
-                            chartType = "AnnotatedTimeLine";
-                        } else if (pieTab1.isVisible()) {
-                            chartType = "Pie";
-                        } else if (geoMapTab1.isVisible()) {
-                            chartType = "GeoMap";
-                        }
-                        statType = siteStats.getSimpleValue().toString().replace(" ", "");
-                        gaParams.setStatType(statType);
-                        gaParams.setChartType(chartType);
-                        //Info.display("", statType + " in " + chartType);
-
-                    } else {
-                        if (siteLanguages.getSimpleValue().equals("all")) {
-                            url = "/Universal_Unique_Id/" + uuid+ "/";
-                        } else {
-                            url = "/Universal_Unique_Id/" + uuid + "/" + siteLanguages.getSimpleValue() + "/";
-                        }
-                        gaParams.setSiteORpage(url);
-                        statType = pageStats.getSimpleValue().toString();
+                    if (annotatedTimeLineTab1.isVisible()) {
                         chartType = "AnnotatedTimeLine";
-                        gaParams.setStatType(statType);
-                        gaParams.setChartType(chartType);
-
+                    } else if (pieTab1.isVisible()) {
+                        chartType = "Pie";
+                    } else if (geoMapTab1.isVisible()) {
+                        chartType = "GeoMap";
                     }
-                    gaParams.setJahiaGAprofile(profilesComboBox.getSimpleValue().toString());
-                    if (chartType.equals("AnnotatedTimeLine")) {
-                        annotatedTimeLinePanel1.getElement().setInnerHTML("Requested report is being downloaded");
-                    } else if (chartType.equals("Pie")) {
-                        piePanel1.getElement().setInnerHTML("Requested report is being downloaded");
-                    } else if (chartType.equals("GeoMap")) {
-                        geoMapPanel1.getElement().setInnerHTML("Requested report is being downloaded");
-                    }
+                    statType = siteStats.getSimpleValue().toString().replace(" ", "");
+                    gaParams.setStatType(statType);
+                    gaParams.setChartType(chartType);
+                    //Info.display("", statType + " in " + chartType);
 
-                    ToolbarService.App.getInstance().getGAdata(gaParams, new AsyncCallback<Map<String, String>>() {
-                        public void onSuccess(Map<String, String> gaData) {
-                            data.clear();
-                            data.putAll(gaData);
-                            boolean error = false;
-                            if (data.containsKey("Error")) {
-                                error = true;
-                                Window.alert(data.get("Error"));
-                            }
-                            if (!error) {
-                                if (annotatedTimeLineTab1.isVisible()) {
-                                    displayAnnotatedTimeLine(annotatedTimeLinePanel1.getElement());
-                                } else if (pieTab1.isVisible()) {
-                                    //piePanel.getElement().setInnerHTML("Coming soon");
-                                    //  displayPieChart(piePanel.getElement());
-                                } else if (geoMapTab1.isVisible()) {
-                                    displayGeoMap(geoMapPanel1.getElement());
-                                }
-                            }
-
-                        }
-
-                        public void onFailure(Throwable throwable) {
-                            Window.alert("Failure of data retreiving");
-                        }
-                    });
                 } else {
-                    Window.alert("Please select a begin and an end date");
+                    if (siteLanguages.getSimpleValue().equals("all")) {
+                        url = "/Universal_Unique_Id/" + uuid+ "/";
+                    } else {
+                        url = "/Universal_Unique_Id/" + uuid + "/" + siteLanguages.getSimpleValue() + "/";
+                    }
+                    gaParams.setSiteORpage(url);
+                    statType = pageStats.getSimpleValue().toString();
+                    chartType = "AnnotatedTimeLine";
+                    gaParams.setStatType(statType);
+                    gaParams.setChartType(chartType);
+
                 }
+                gaParams.setJahiaGAprofile(profilesComboBox.getSimpleValue().toString());
+                if (chartType.equals("AnnotatedTimeLine")) {
+                    annotatedTimeLinePanel1.getElement().setInnerHTML("Requested report is being downloaded");
+                } else if (chartType.equals("Pie")) {
+                    piePanel1.getElement().setInnerHTML("Requested report is being downloaded");
+                } else if (chartType.equals("GeoMap")) {
+                    geoMapPanel1.getElement().setInnerHTML("Requested report is being downloaded");
+                }
+
+                ToolbarService.App.getInstance().getGAdata(gaParams, new AsyncCallback<Map<String, String>>() {
+                    public void onSuccess(Map<String, String> gaData) {
+                        data.clear();
+                        data.putAll(gaData);
+                        boolean error = false;
+                        if (data.containsKey("Error")) {
+                            error = true;
+                            Window.alert(data.get("Error"));
+                        }
+                        if (!error) {
+                            if (annotatedTimeLineTab1.isVisible()) {
+                                displayAnnotatedTimeLine(annotatedTimeLinePanel1.getElement());
+                            } else if (pieTab1.isVisible()) {
+                                //piePanel.getElement().setInnerHTML("Coming soon");
+                                //  displayPieChart(piePanel.getElement());
+                            } else if (geoMapTab1.isVisible()) {
+                                displayGeoMap(geoMapPanel1.getElement());
+                            }
+                        }
+
+                    }
+
+                    public void onFailure(Throwable throwable) {
+                        Window.alert("Failure of data retreiving");
+                    }
+                });
+            } else {
+                Window.alert("Please select a begin and an end date");
             }
+        }
     }
 
 

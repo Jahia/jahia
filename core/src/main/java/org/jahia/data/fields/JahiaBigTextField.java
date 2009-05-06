@@ -150,7 +150,7 @@ public class JahiaBigTextField extends JahiaField implements
         }
 
         // populate variables internalLinks and wrongURLKeys
-        cleanUpHardCodedLinks(getRawValue(), jParams, LanguageCodeConverters
+        cleanUpHardCodedLinks(getValue(), jParams, LanguageCodeConverters
                 .languageCodeToLocale(getLanguageCode()), null);
         
         if (logger.isDebugEnabled()) {
@@ -357,7 +357,7 @@ public class JahiaBigTextField extends JahiaField implements
      * @return an Array of String. Position[0] contains the RawValue and position[1] the
      *         value that should be used when displaying the data
      */
-    public String cleanUpHardCodedLinks(
+    private String cleanUpHardCodedLinks(
             final String content,
             final ProcessingContext processingContext,
             final Locale code,
@@ -547,7 +547,7 @@ public class JahiaBigTextField extends JahiaField implements
                 append(getRawValue()).toString();
     }
 
-    private String cleanHtml (String bodyContent) {
+    private static String cleanHtml (String bodyContent) {
         // Try to remove all cache/(o|b).*/ and also jessionid
         String cleanBodyContent = bodyContent.replaceAll("cache/(o|b)[a-z]*/", "");
         cleanBodyContent = cleanBodyContent.replaceAll(SkeletonParseAndStoreValve.SESSION_ID_REGEXP, "$1");
@@ -555,7 +555,8 @@ public class JahiaBigTextField extends JahiaField implements
     }
 
     private void cleanURL (ProcessingContext processingContext, Locale code, OutputDocument document, Attribute href) {
-        String hrefValue = href.getValue();
+        String originalHrefValue = href.getValue();
+        String hrefValue = originalHrefValue;
         final String hrefValueLowerCase = hrefValue.toLowerCase();
         if (!hrefValueLowerCase.startsWith("http") && !hrefValueLowerCase.startsWith("javascript")
             && !hrefValueLowerCase.startsWith("mailto") && !hrefValueLowerCase.startsWith("ftp")
@@ -587,7 +588,9 @@ public class JahiaBigTextField extends JahiaField implements
                 logger.warn(e.getMessage(), e);
             }
         }
-        document.replace(href.getValueSegment(), hrefValue);
+        if (hrefValue != null && !originalHrefValue.equals(hrefValue)) {
+            document.replace(href.getValueSegment(), hrefValue);
+        }
     }
 
     private String handleCurrentServerPath (ProcessingContext processingContext, Locale code, String hrefValue, String siteKey) {

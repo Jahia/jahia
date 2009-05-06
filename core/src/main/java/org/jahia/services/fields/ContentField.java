@@ -745,7 +745,7 @@ public abstract class ContentField extends ContentObject
      * polymorphic and implemented for each class of ContentField.
      *
      * @return an ActivationTestResults object that indicates if the activation
-     *         would fail, only partially succeed (for exemple because a page field
+     *         would fail, only partially succeed (for example because a page field
      *         depends on a pages that hasn't been validated), or successfully completes.
      *         There are two types of messages returned by the test results : errors,
      *         and warnings. Errors are associated with a test failure, while warnings
@@ -1031,7 +1031,7 @@ public abstract class ContentField extends ContentObject
      * hasn't been activated yet, or missing languages for mandatory languages.
      *
      * @return an ActivationTestResults object that indicates if the activation
-     *         would fail, only partially succeed (for exemple because a page field
+     *         would fail, only partially succeed (for example because a page field
      *         depends on a pages that hasn't been validated), or successfully completes.
      *         There are two types of messages returned by the test results : errors,
      *         and warnings. Errors are associated with a test failure, while warnings
@@ -1045,7 +1045,7 @@ public abstract class ContentField extends ContentObject
 
     /**
      * This is called on all content fields to have them serialized only their
-     * specific part. The actual field metadata seriliazing is handled by the
+     * specific part. The actual field metadata serializing is handled by the
      * ContentField class. This method is called multiple times per field
      * according to the workflow state, languages and versioning entries we
      * want to serialize.
@@ -1609,7 +1609,7 @@ public abstract class ContentField extends ContentObject
      *                         will also be asked to change their state.
      *
      * @throws JahiaException raised if we have trouble storing the new
-     *                        workflow state in persistant storage.
+     *                        workflow state in persistent storage.
      */
     public void setWorkflowState (Set<String> languageCodes,
                                   int newWorkflowState,
@@ -1679,7 +1679,7 @@ public abstract class ContentField extends ContentObject
                 languageCodes.add (actEntryState.getLanguageCode ());
             }
             if (actEntryState.isActive ()) {
-                // ok appollo, we catched an active entry here! we handle this..
+                // ok appollo, we caught an active entry here! we handle this..
                 if (versioningEnabled) {
                     // we backup the active version
                     ContentObjectEntryState backupEntryState = fieldsDataManager.backupField (this, actEntryState);
@@ -1734,7 +1734,7 @@ public abstract class ContentField extends ContentObject
 
     /**
      * Writes an XML serialization version of this content field, according to
-     * the seriliazation options specified. This is very useful for exporting
+     * the serialization options specified. This is very useful for exporting
      * Jahia content to external systems.
      *
      * @param xmlWriter               the XML writer object in which to output the XML
@@ -1936,7 +1936,7 @@ public abstract class ContentField extends ContentObject
     }
 
     /**
-     * Call overrided restoreVersion then, reindex the field in search index
+     * Call overridden restoreVersion then, reindex the field in search index
      * if it is not actually marked for delete.
      *
      * @param user

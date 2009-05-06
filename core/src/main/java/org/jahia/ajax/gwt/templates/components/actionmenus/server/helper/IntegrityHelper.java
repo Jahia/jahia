@@ -33,14 +33,12 @@ import org.jahia.data.containers.JahiaContainerStructure;
 import org.jahia.data.fields.FieldTypes;
 import org.jahia.data.fields.JahiaBigTextField;
 import org.jahia.data.fields.JahiaFieldDefinition;
+import org.jahia.engines.validation.IntegrityChecksHelper;
 import org.jahia.engines.validation.LinkIntegrityChecker;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.JahiaContainerDefinitionsRegistry;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.acl.JahiaACLManagerService;
-import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.htmlparser.WAIValidator;
 
@@ -54,13 +52,13 @@ public final class IntegrityHelper {
     private static Logger logger = Logger.getLogger(IntegrityHelper.class);
 
     /**
-     * Returns a list of big text field names for the specififed container.
+     * Returns a list of big text field names for the specified container.
      * 
      * @param container
      *            the content container object
      * @param ctx
      *            current processing context object
-     * @return a list of big text field names for the specififed container
+     * @return a list of big text field names for the specified container
      * @throws JahiaException
      *             in case of an error
      */
@@ -116,20 +114,12 @@ public final class IntegrityHelper {
                 JahiaContainer jahiaContainer = container.getJahiaContainer(
                         ctx, ctx.getEntryLoadRequest());
                 if (jahiaContainer != null) {
-                    JahiaACLManagerService aclService = ServicesRegistry
-                            .getInstance().getJahiaACLManagerService();
-                    boolean isUserAnAdminMember = ctx.getUser().isAdminMember(
-                            ctx.getSiteID());
-                    boolean hasIntegrityBypassRole = isUserAnAdminMember
-                            || !ctx.getSite().isURLIntegrityCheckEnabled()
-                            || aclService.getSiteActionPermission(
-                                    "integrity.LinkIntegrity", ctx.getUser(),
-                                    JahiaBaseACL.READ_RIGHTS, ctx.getSiteID()) <= 0;
-                    boolean hasWAIBypassRole = isUserAnAdminMember
-                            || !ctx.getSite().isWAIComplianceCheckEnabled()
-                            || aclService.getSiteActionPermission(
-                                    "integrity.WaiCompliance", ctx.getUser(),
-                                    JahiaBaseACL.READ_RIGHTS, ctx.getSiteID()) <= 0;
+                    boolean hasIntegrityBypassRole = IntegrityChecksHelper
+                            .isAllowedToBypassLinkIntegrityChecks(
+                                    ctx.getUser(), ctx.getSite());
+                    boolean hasWAIBypassRole = IntegrityChecksHelper
+                            .isAllowedToBypassWaiChecks(ctx.getUser(), ctx
+                                    .getSite());
 
                     Map engineMap = new HashMap(1);
                     engineMap.put("theContainer", jahiaContainer);
@@ -185,9 +175,9 @@ public final class IntegrityHelper {
     }
 
     public static GWTJahiaIntegrityState getState(String objectKey, ProcessingContext ctx) {
-        // no checking is enabled for the site --> return
+        // no checks are enabled for the site --> return
         if (!ctx.getSite().isURLIntegrityCheckEnabled()
-                && ctx.getSite().isWAIComplianceCheckEnabled()) {
+                && !ctx.getSite().isWAIComplianceCheckEnabled()) {
             return null;
         }
         

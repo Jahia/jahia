@@ -298,11 +298,6 @@ public final class LinkIntegrityChecker {
         } else {
             oldLoc = elh.getPreviousLocale();
         }
-        final String value = theField.getValue();
-
-        theField.cleanUpHardCodedLinks(value, jParams, elh != null ? elh
-                .getCurrentLocale() : jParams.getLocale(), null);
-        
         final Set pids = theField.getInternalLinks();
         final Set wrongKeys = theField.getWrongURLKeys();
         final EngineMessages result = new EngineMessages();

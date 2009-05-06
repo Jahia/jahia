@@ -1185,16 +1185,7 @@ public class WorkflowService extends JahiaService {
             try {
                 ContentObject contentObject = (ContentObject) ContentObject.getInstance(contentObjectKey);
                 if (contentObject != null) {
-                    ActivationTestResults childResults = contentObject.isValidForActivation(languageCodes, jParams, stateModifContext);
-                    if (objectKey instanceof ContentPageKey && !(contentObject instanceof ContentPage)) {
-                        for (Object error : childResults.getErrors()) {
-                            ((NodeOperationResult)error).setBlocker(false);
-                        }
-                        for (Object warning : childResults.getWarnings()) {
-                            ((NodeOperationResult)warning).setBlocker(false);
-                        }
-                    }
-                    activationTestResults.merge(childResults);
+                    activationTestResults.merge(contentObject.isValidForActivation(languageCodes, jParams, stateModifContext));
                 }
             } catch (ClassNotFoundException e) {
             }

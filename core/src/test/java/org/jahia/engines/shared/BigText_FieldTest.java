@@ -29,10 +29,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Logger;
-import org.jahia.data.fields.JahiaBigTextField;
-import org.jahia.params.ProcessingContext;
-
 /**
  * JUnit based test
  *
@@ -40,7 +36,6 @@ import org.jahia.params.ProcessingContext;
  */
 public class BigText_FieldTest extends TestCase {
     
-    private static Logger logger = Logger.getLogger(BigText_FieldTest.class);
     private String content;
     
     public BigText_FieldTest(String testName) {
@@ -119,59 +114,6 @@ public class BigText_FieldTest extends TestCase {
     public static Test suite() {
         final TestSuite suite = new TestSuite(BigText_FieldTest.class);
         return suite;
-    }
-    
-    /**
-     * Test of cleanUpHardCodedLinks method, of class org.jahia.data.fields.JahiaBigTextField.
-     */
-    public void testCleanUpHardCodedLinks() throws Exception {
-        logger.info("testCleanUpHardCodedLinks");
-        
-        try {
-            //HttpServletRequest request = new HttpServletRequestWrapper(
-            //        new HttpServletRequestImpl());
-            final ProcessingContext processingContext = new ProcessingContext();
-            processingContext.setContextPath("/jahia");
-            processingContext.setServletPath("/Jahia");
-            processingContext.setServerName("localhost");
-            processingContext.setServerPort(8080);
-            processingContext.setScheme("http");
-            processingContext.setOpMode(ProcessingContext.EDIT);
-
-            final Integer id = new Integer(1);
-                        
-            final JahiaBigTextField field = new JahiaBigTextField( id,
-                    id,
-                    id,
-                    id,
-                    id,
-                    id,
-                    id,
-                    "",
-                    id,
-                    id,
-                    id,
-                    id,
-                    "en");
-            
-            String res = field.cleanUpHardCodedLinks(content, processingContext, Locale.getDefault(), "");
-            
-            logger.info("RawValue: "+res);
-            logger.info("InternalLinks: "+field.getInternalLinks());
-
-            final String rewritten = JahiaBigTextField.rewriteURLs(res, processingContext);
-            logger.info("rewritten: " + rewritten);
-            
-            assertTrue(res.indexOf("?matrix") < 0 &&
-                    res.indexOf(";jsessionid") < 0 &&
-                    res.indexOf("/op/") < 0 &&
-                    res.indexOf("/site/") < 0 &&
-                    res.indexOf("/lang/") > -1 &&
-                    res.indexOf(HttpServletRequestImpl.SERVER_NAME) < 0);                        
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
     }
     
     /**

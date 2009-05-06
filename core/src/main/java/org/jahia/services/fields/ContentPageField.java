@@ -21,6 +21,7 @@ import org.jahia.content.ContentObject;
 import org.jahia.content.ContentPageKey;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.engines.EngineMessage;
+import org.jahia.engines.validation.IntegrityChecksHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaPageNotFoundException;
 import org.jahia.exceptions.JahiaTemplateNotFoundException;
@@ -334,49 +335,64 @@ public class ContentPageField extends ContentField {
                         // Page publication is linked to its jahia field - so publication of the field is always ok
                         break;
                     case JahiaPage.TYPE_LINK:
-                        ContentPage linkPage;
-                        try {
-                            List<Locale> l = new ArrayList<Locale>();
-                            for (String lang : languageCodes) {
-                                l.add(LanguageCodeConverters.languageCodeToLocale(lang));
+                        if (jParams.getSite().isURLIntegrityCheckEnabled()) {
+                            boolean hasIntegrityBypassRole = IntegrityChecksHelper
+                                .isAllowedToBypassLinkIntegrityChecks(jParams
+                                        .getUser(), jParams.getSite());
+                            ContentPage linkPage;
+                            try {
+                                List<Locale> l = new ArrayList<Locale>();
+                                for (String lang : languageCodes) {
+                                    l.add(LanguageCodeConverters.languageCodeToLocale(lang));
+                                }
+                                EntryLoadRequest elr = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, l);
+                                linkPage = ServicesRegistry.getInstance().getJahiaPageService().
+                                        lookupContentPage(thePage.getPageLinkID(), elr, true);
+                            } catch (JahiaPageNotFoundException jpnfe) {
+                                linkPage = null;
                             }
-                            EntryLoadRequest elr = new EntryLoadRequest(EntryLoadRequest.STAGING_WORKFLOW_STATE, 0, l);
-                            linkPage = ServicesRegistry.getInstance().getJahiaPageService().
-                                    lookupContentPage(thePage.getPageLinkID(), elr, true);
-                        } catch (JahiaPageNotFoundException jpnfe) {
-                            linkPage = null;
-                        }
-                        if (linkPage != null) {
-                            for (String languageCode : languageCodes) {
-                                if (!linkPage.hasEntries(ContentPage.ACTIVE_PAGE_INFOS,languageCode) && !isMarkedForDelete() &&
-                                        !stateModifContext.isModifiedObject(WorkflowService.getInstance().getMainLinkObject(new ContentPageKey(linkPage.getID())))) {
-                                    activationTestResults.setStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                                    try {
-                                        String str = linkPage.getTitles(true).containsKey(languageCode) ? linkPage.getTitles(true).get(languageCode) : "";
-                                        final EngineMessage msg = new EngineMessage(
-                                                "org.jahia.services.fields.ContentPageField.pageOnlyInStagingWarning",
-                                                new StringBuilder(str).append(" (pid:").append(Integer.toString(linkPage.getID())).append(")").toString());
-                                        final IsValidForActivationResults activationResults = new
-                                                IsValidForActivationResults(mainKey,
-                                                languageCode, msg);
-                                        activationTestResults.appendWarning(activationResults);
-                                    } catch (ClassNotFoundException cnfe) {
-                                        logger.error(cnfe);
+                            if (linkPage != null) {
+                                for (String languageCode : languageCodes) {
+                                    if (!linkPage.hasEntries(ContentPage.ACTIVE_PAGE_INFOS,languageCode) && !isMarkedForDelete() &&
+                                            !stateModifContext.isModifiedObject(WorkflowService.getInstance().getMainLinkObject(new ContentPageKey(linkPage.getID())))) {
+                                        activationTestResults.setStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
+                                        try {
+                                            String str = linkPage.getTitles(true).containsKey(languageCode) ? linkPage.getTitles(true).get(languageCode) : "";
+                                            final EngineMessage msg = new EngineMessage(
+                                                    "org.jahia.services.fields.ContentPageField.pageOnlyInStagingWarning",
+                                                    new StringBuilder(str).append(" (pid:").append(Integer.toString(linkPage.getID())).append(")").toString());
+                                            final IsValidForActivationResults activationResults = new
+                                                    IsValidForActivationResults(mainKey,
+                                                    languageCode, msg);
+                                            if (hasIntegrityBypassRole) {
+                                                activationTestResults.appendWarning(activationResults);
+                                            } else {
+                                                activationResults.setBlocker(true);
+                                                activationTestResults.appendError(activationResults);
+                                            }
+                                        } catch (ClassNotFoundException cnfe) {
+                                            logger.error(cnfe);
+                                        }
                                     }
                                 }
-                            }
-                        } else {
-                            activationTestResults.setStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
-                            try {
-                                final EngineMessage msg = new EngineMessage(
-                                        "org.jahia.services.fields.ContentPageField.pageLinkNotFoundWarning",
-                                        Integer.toString(pageID), Integer.toString(thePage.getPageLinkID()));
-                                final IsValidForActivationResults activationResults = new
-                                        IsValidForActivationResults(mainKey,
-                                        jParams.getLocale().toString(), msg);
-                                activationTestResults.appendWarning(activationResults);
-                            } catch (ClassNotFoundException cnfe) {
-                                logger.error(cnfe);
+                            } else {
+                                activationTestResults.setStatus(ActivationTestResults.PARTIAL_OPERATION_STATUS);
+                                try {
+                                    final EngineMessage msg = new EngineMessage(
+                                            "org.jahia.services.fields.ContentPageField.pageLinkNotFoundWarning",
+                                            Integer.toString(pageID), Integer.toString(thePage.getPageLinkID()));
+                                    final IsValidForActivationResults activationResults = new
+                                            IsValidForActivationResults(mainKey,
+                                            jParams.getLocale().toString(), msg);
+                                    if (hasIntegrityBypassRole) {
+                                        activationTestResults.appendWarning(activationResults);
+                                    } else {
+                                        activationResults.setBlocker(true);
+                                        activationTestResults.appendError(activationResults);
+                                    }
+                                } catch (ClassNotFoundException cnfe) {
+                                    logger.error(cnfe);
+                                }
                             }
                         }
                         break;

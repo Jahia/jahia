@@ -25,10 +25,9 @@ import org.jahia.content.JahiaObject;
 import org.jahia.content.ObjectKey;
 import org.jahia.content.NodeOperationResult;
 import org.jahia.params.ProcessingContext;
+import org.jahia.engines.validation.IntegrityChecksHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.version.ActivationTestResults;
 import org.jahia.services.version.StateModificationContext;
 import org.jahia.services.pages.ContentPage;
@@ -54,7 +53,6 @@ public class ValidationHelper {
     private static Logger logger = Logger.getLogger(ValidationHelper.class) ;
     protected static final WorkflowService workflowService = ServicesRegistry.getInstance().getWorkflowService();
     protected static final LockService lockService = ServicesRegistry.getInstance().getLockService();
-    protected static final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
 
     /**
      * This method adds validation information to the given workflow object. It returns false if the object can't be accessed by
@@ -90,16 +88,12 @@ public class ValidationHelper {
             return false ;
         } else {
             boolean isUserAnAdminMember = currentUser.isAdminMember(jParams.getSiteID());
-            boolean hasIntegrityBypassRole = isUserAnAdminMember
-                    || !jParams.getSite().isURLIntegrityCheckEnabled()
-                    || aclService.getSiteActionPermission(
-                            "integrity.LinkIntegrity", currentUser,
-                            JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0;
-            boolean hasWAIBypassRole = isUserAnAdminMember
-                    || !jParams.getSite().isWAIComplianceCheckEnabled()
-                    || aclService.getSiteActionPermission(
-                            "integrity.WaiCompliance", currentUser,
-                            JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0;
+            boolean hasIntegrityBypassRole = IntegrityChecksHelper
+                    .isAllowedToBypassLinkIntegrityChecks(jParams.getUser(),
+                            jParams.getSite());
+            boolean hasWAIBypassRole = IntegrityChecksHelper
+                    .isAllowedToBypassWaiChecks(jParams.getUser(), jParams
+                            .getSite());
 
             workflowElement.setCanBypassWaiChecks(hasWAIBypassRole);
             workflowElement.setCanBypassUrlChecks(hasIntegrityBypassRole);
@@ -108,20 +102,10 @@ public class ValidationHelper {
             boolean blockingErrors = false;
 
 
-            //final int mode = workflowService.getInheritedMode(object);
-            //ActivationTestResults results ;
-            /* TODO take care of specific actions
-            if (WorkflowService.EXTERNAL == mode /* && !NStepWorkflow.isValidationNeededForAction(action)) {
-                // skip validation for N-Step actions, which do not require validation
-                results = new ActivationTestResults();
-            } else { */
-                ActivationTestResults results = workflowService.isValidForActivation(object,
-                        languageCodes, jParams, new StateModificationContext(
-                                objectKey, languageCodes, false));
-            //}
+            ActivationTestResults results = workflowService.isValidForActivation(object,
+                    languageCodes, jParams, new StateModificationContext(
+                            objectKey, languageCodes, false));
             final boolean failedOperationStatus = results.getStatus() == ActivationTestResults.FAILED_OPERATION_STATUS;
-            /*final boolean failedForLanguageOnly = results.getStatus() == ActivationTestResults.PARTIAL_OPERATION_STATUS &&
-                    (object.getClass() == ContentPage.class || object.getClass() == ContentContainer.class);*/
 
             // this will contains validation information for the current object
             Map<String, GWTJahiaNodeOperationResult> validationsForCurrentObject = new HashMap<String, GWTJahiaNodeOperationResult>() ;
@@ -138,11 +122,6 @@ public class ValidationHelper {
                 }
                 validationsForCurrentObject.get(lang).addErrorOrWarning(getValidationResult(res, lang, jParams, GWTJahiaNodeOperationResultItem.WARNING, GWTJahiaNodeOperationResultItem.VALIDATION));
                 blockingErrors |= res.isBlocker();
-//                blockingErrors = !blockingErrors
-//                        && (res.getClass() == WAIValidForActivationResults.class
-//                                && !workflowElement.canBypassWaiChecks() || res
-//                                .getClass() == URLIntegrityValidForActivationResults.class
-//                                && !workflowElement.canBypassUrlChecks()); 
             }
 
             for (Object error : results.getErrors()) {
@@ -159,33 +138,13 @@ public class ValidationHelper {
                     }
                     GWTJahiaNodeOperationResult currentValidation = validationsForCurrentObject.get(lang) ;
                     if (res instanceof WAIValidForActivationResults) {
-//                        if (!hasWAIBypassRole && failedForLanguageOnly && !isUserAnAdminMember) {
-//                            if (currentValidation.getValidationStatus()) {
-//                                currentValidation.setValidationStatus(false);
-//                            }
-//                        }
                         currentValidation.addErrorOrWarning(getValidationResult(res, lang, jParams, GWTJahiaNodeOperationResultItem.ERROR, GWTJahiaNodeOperationResultItem.WAI));
                     } else if (res instanceof URLIntegrityValidForActivationResults) {
-//                        if (!hasIntegrityBypassRole && failedForLanguageOnly && !isUserAnAdminMember) {
-//                            if (currentValidation.getValidationStatus()) {
-//                                currentValidation.setValidationStatus(false);
-//                            }
-//                        }
                         currentValidation.addErrorOrWarning(getValidationResult(res, lang, jParams, GWTJahiaNodeOperationResultItem.ERROR, GWTJahiaNodeOperationResultItem.URL));
                     } else {
-//                        if (failedForLanguageOnly && !isUserAnAdminMember) {
-//                            if (currentValidation.getValidationStatus()) {
-//                                currentValidation.setValidationStatus(false);
-//                            }
-//                        }
                         currentValidation.addErrorOrWarning(getValidationResult(res, lang, jParams, GWTJahiaNodeOperationResultItem.ERROR, GWTJahiaNodeOperationResultItem.VALIDATION));
                     }
                     blockingErrors |= res.isBlocker();
-//                    blockingErrors = !blockingErrors
-//                    && (res.getClass() == WAIValidForActivationResults.class
-//                            && !workflowElement.canBypassWaiChecks() || res
-//                            .getClass() == URLIntegrityValidForActivationResults.class
-//                            && !workflowElement.canBypassUrlChecks()); 
                 }
             }
             if (blockingErrors || (failedOperationStatus && !isUserAnAdminMember)) {

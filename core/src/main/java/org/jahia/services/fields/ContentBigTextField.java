@@ -27,6 +27,7 @@ import org.jahia.data.fields.LoadFlags;
 import org.jahia.engines.EngineMessage;
 import org.jahia.engines.shared.BigText_Field;
 import org.jahia.engines.validation.EngineValidationHelper;
+import org.jahia.engines.validation.IntegrityChecksHelper;
 import org.jahia.engines.validation.LinkIntegrityChecker;
 import org.jahia.engines.validation.ValidationError;
 import org.jahia.exceptions.JahiaException;
@@ -39,8 +40,6 @@ import org.jahia.services.pages.ContentPage;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.version.*;
-import org.jahia.services.acl.JahiaBaseACL;
-import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.utils.LanguageCodeConverters;
@@ -59,8 +58,6 @@ public class ContentBigTextField extends ContentField {
 
     private static final org.apache.log4j.Logger logger
             = org.apache.log4j.Logger.getLogger(ContentBigTextField.class);
-
-    protected static final JahiaACLManagerService aclService = ServicesRegistry.getInstance().getJahiaACLManagerService();
 
     protected ContentBigTextField(final Integer ID,
                                   final Integer jahiaID,
@@ -317,24 +314,21 @@ public class ContentBigTextField extends ContentField {
             return results;
         }
 
-        if (!site.isWAIComplianceCheckEnabled() && !site.isURLIntegrityCheckEnabled()) {
+        boolean urlIntegrityCheckEnabled = site.isURLIntegrityCheckEnabled();
+        boolean waiComplianceCheckEnabled = site.isWAIComplianceCheckEnabled();
+        if (!urlIntegrityCheckEnabled && !waiComplianceCheckEnabled) {
             return results;
         }
 
         final List<Locale> currentLocales = jParams.getLocales();
         Locale currentLocale = jParams.getCurrentLocale();
 
-        final boolean isAdminMember = jParams.getUser().isAdminMember(jParams.getSiteID());
-        boolean hasIntegrityBypassRole = isAdminMember
-                || !site.isURLIntegrityCheckEnabled()
-                || aclService.getSiteActionPermission(
-                        "integrity.LinkIntegrity", jParams.getUser(),
-                        JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0;
-        boolean hasWAIBypassRole = isAdminMember
-                || !site.isWAIComplianceCheckEnabled()
-                || aclService.getSiteActionPermission(
-                        "integrity.WaiCompliance", jParams.getUser(),
-                        JahiaBaseACL.READ_RIGHTS, jParams.getSiteID()) <= 0;
+        boolean hasIntegrityBypassRole = IntegrityChecksHelper
+                .isAllowedToBypassLinkIntegrityChecks(jParams.getUser(),
+                        jParams.getSite());
+        boolean hasWAIBypassRole = IntegrityChecksHelper
+                .isAllowedToBypassWaiChecks(jParams.getUser(), jParams
+                        .getSite());
 
         for (String languageCode : getLanguagesStates().keySet()) {
             final Locale bigTextLocale = LanguageCodeConverters.languageCodeToLocale(languageCode);
@@ -357,7 +351,7 @@ public class ContentBigTextField extends ContentField {
             }
 
             ContentObjectKey mainKey = ServicesRegistry.getInstance().getWorkflowService().getMainLinkObject((ContentObjectKey) getObjectKey());
-            if (site.isURLIntegrityCheckEnabled()) {
+            if (urlIntegrityCheckEnabled) {
                 try {
                     for (final int pid : theField.getInternalLinks()) {
                         String pageId = Integer.toString(pid);
@@ -502,7 +496,7 @@ public class ContentBigTextField extends ContentField {
                 }
             }
 
-            if (site.isWAIComplianceCheckEnabled()) {
+            if (waiComplianceCheckEnabled) {
                 try {
                     if (logger.isDebugEnabled()) {
                         logger.debug("WAI check on: " + theField);

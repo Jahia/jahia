@@ -73,29 +73,29 @@ public class JCRPortletNode extends JCRNodeDecorator {
     public String getCacheScope() throws RepositoryException {
         return getProperty("j:cacheScope").getString();
     }
-    
+
     public int getExpirationTime() throws RepositoryException {
         return (int) getProperty("j:expirationTime").getLong();
     }
 
-    public EntryPointDefinition getEntryPointDefinition() throws JahiaException, RepositoryException  {
+    public EntryPointDefinition getEntryPointDefinition() throws JahiaException, RepositoryException {
         return ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(getContextName()).getEntryPointDefinitionByName(getDefinitionName());
     }
 
-    public Map<String,List<String>> getAvailablePermissions() {
-        Map<String,List<String>> results = new HashMap<String,List<String>>(super.getAvailablePermissions());
+    public Map<String, List<String>> getAvailablePermissions() {
+        Map<String, List<String>> results = new HashMap<String, List<String>>(super.getAvailablePermissions());
         try {
             results.putAll(getAvailablePermissions(getContextName(), getDefinitionName()));
         } catch (JahiaException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (RepositoryException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         return results;
     }
 
-    public static Map<String,List<String>> getAvailablePermissions(String contextName, String definitionName) throws JahiaException {
-        Map<String,List<String>> results = new HashMap<String,List<String>>();
+    public static Map<String, List<String>> getAvailablePermissions(String contextName, String definitionName) throws JahiaException {
+        Map<String, List<String>> results = new HashMap<String, List<String>>();
         ApplicationBean bean = ServicesRegistry.getInstance().getApplicationsManagerService().getApplication(contextName);
         WebAppContext appContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationContext(bean);
         List<String> roles = appContext.getRoles();
@@ -105,7 +105,10 @@ public class JCRPortletNode extends JCRNodeDecorator {
         EntryPointDefinition epd = bean.getEntryPointDefinitionByName(definitionName);
         List<PortletMode> modes = epd.getPortletModes();
         for (PortletMode mode : modes) {
-            modesStr.add(mode.toString());
+            // mode view is mandatory and is garted to all users
+            if (mode != PortletMode.VIEW) {
+                modesStr.add(mode.toString());
+            }
         }
         results.put("modes", modesStr);
         return results;

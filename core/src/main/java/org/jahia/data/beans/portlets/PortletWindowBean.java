@@ -14,7 +14,7 @@
  *
  * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
- package org.jahia.data.beans.portlets;
+package org.jahia.data.beans.portlets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,7 @@ import org.jahia.params.ProcessingContext;
  * using portlets</p>
  * <p>Copyright: Copyright (c) 2004</p>
  * <p>Company: Jahia Ltd</p>
+ *
  * @author Serge Huber
  * @version 1.0
  */
@@ -43,42 +44,45 @@ public class PortletWindowBean {
     private EntryPointInstance entryPointInstance;
     private ProcessingContext processingContext;
     private org.jahia.data.applications.EntryPointDefinition
-        entryPointDefinition;
+            entryPointDefinition;
     private PortletWindow portletWindow;
 
-    public PortletWindowBean () {
+    public PortletWindowBean() {
     }
 
-    public PortletWindowBean (ProcessingContext processingContext, PortletWindow portletWindow) {
+    public PortletWindowBean(ProcessingContext processingContext, PortletWindow portletWindow) {
         this.processingContext = processingContext;
         this.portletWindow = portletWindow;
     }
 
-    public int getID () {
+    public int getID() {
         return ID;
     }
 
-    public void setID (int ID) {
+    public void setID(int ID) {
         this.ID = ID;
     }
 
-    public String getEntryPointInstanceID () {
+    public String getEntryPointInstanceID() {
         return entryPointInstance.getID();
     }
 
-    public List<PortletModeBean> getPortletModeBeans () {
+    public List<PortletModeBean> getPortletModeBeans() {
         List<PortletModeBean> portletModeBeans = new ArrayList<PortletModeBean>();
         if (entryPointDefinition != null) {
             for (PortletMode curPortletMode : entryPointDefinition.getPortletModes()) {
-                PortletModeBean curPortletModeBean = new PortletModeBean(processingContext, this);
-                curPortletModeBean.setName(curPortletMode.toString());
-                portletModeBeans.add(curPortletModeBean);
+                String modeName = curPortletMode.toString();
+                if (modeName != null && entryPointInstance.isModeAllowed(processingContext.getUser(), modeName)) {
+                    PortletModeBean curPortletModeBean = new PortletModeBean(processingContext, this);
+                    curPortletModeBean.setName(modeName);
+                    portletModeBeans.add(curPortletModeBean);
+                }
             }
         }
         return portletModeBeans;
     }
 
-    public List<WindowStateBean> getWindowStateBeans () {
+    public List<WindowStateBean> getWindowStateBeans() {
         List<WindowStateBean> windowStateBeans = new ArrayList<WindowStateBean>();
         if (entryPointDefinition != null) {
             for (WindowState curWindowState : entryPointDefinition.getWindowStates()) {
@@ -91,8 +95,8 @@ public class PortletWindowBean {
         return windowStateBeans;
     }
 
-    public PortletModeBean getCurrentPortletModeBean () {
-        
+    public PortletModeBean getCurrentPortletModeBean() {
+
         /*
         NavigationalStateComponent nav = (NavigationalStateComponent)Jetspeed.getComponentManager().getComponent(NavigationalStateComponent.class);
         RequestContextComponent contextComponent = null;
@@ -119,12 +123,12 @@ public class PortletWindowBean {
             return currentPortletModeBean;
         }
         */
-        PortletModeBean portletModeBean =  new PortletModeBean(processingContext, this);
+        PortletModeBean portletModeBean = new PortletModeBean(processingContext, this);
         portletModeBean.setName(portletWindow.getPortletMode().toString());
         return portletModeBean;
     }
 
-    public WindowStateBean getCurrentWindowStateBean () {
+    public WindowStateBean getCurrentWindowStateBean() {
         /*
         NavigationalStateComponent nav = (NavigationalStateComponent)Jetspeed.getComponentManager().getComponent(NavigationalStateComponent.class);
         RequestContextComponent contextComponent = null;
@@ -155,28 +159,28 @@ public class PortletWindowBean {
         return currentWindowStateBean;
     }
 
-    public EntryPointInstance getEntryPointInstance () {
+    public EntryPointInstance getEntryPointInstance() {
         return entryPointInstance;
     }
 
-    public void setEntryPointInstance (EntryPointInstance entryPointInstance) {
+    public void setEntryPointInstance(EntryPointInstance entryPointInstance) {
         this.entryPointInstance = entryPointInstance;
     }
 
-    public ProcessingContext getParamBean () {
+    public ProcessingContext getParamBean() {
         return processingContext;
     }
 
-    public EntryPointDefinition getEntryPointDefinition () {
+    public EntryPointDefinition getEntryPointDefinition() {
         return entryPointDefinition;
     }
 
-    public void setEntryPointDefinition (EntryPointDefinition
-                                         entryPointDefinition) {
+    public void setEntryPointDefinition(EntryPointDefinition
+            entryPointDefinition) {
         this.entryPointDefinition = entryPointDefinition;
     }
 
-    public PortletWindow getPortletWindow () {
+    public PortletWindow getPortletWindow() {
         return portletWindow;
     }
 

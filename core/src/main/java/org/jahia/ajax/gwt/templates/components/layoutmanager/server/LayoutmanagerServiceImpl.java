@@ -51,6 +51,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import javax.portlet.PortletMode;
 import java.util.*;
 import java.security.Principal;
 
@@ -521,11 +522,11 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
                 if (currentPortletModeBean != null) {
                     String portletModeName = currentPortletModeBean.getName();
                     if (portletModeName != null) {
-                        if (portletModeName.equalsIgnoreCase("view")) {
+                        if (portletModeName.equalsIgnoreCase(PortletMode.VIEW.toString())) {
                             currentPortletMode = GWTJahiaLayoutItem.MODE_VIEW;
-                        } else if (portletModeName.equalsIgnoreCase("edit")) {
+                        } else if (portletModeName.equalsIgnoreCase(PortletMode.EDIT.toString())) {
                             currentPortletMode = GWTJahiaLayoutItem.MODE_EDIT;
-                        } else if (portletModeName.equalsIgnoreCase("help")) {
+                        } else if (portletModeName.equalsIgnoreCase(PortletMode.HELP.toString())) {
                             currentPortletMode = GWTJahiaLayoutItem.MODE_HELP;
                         } else {
                             logger.warn("Unknown portlet mode [" + currentPortletModeBean.getName() + "]");

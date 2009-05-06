@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Node;
+import javax.portlet.PortletMode;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.List;
@@ -127,6 +128,10 @@ public class EntryPointInstance implements Serializable {
     }
 
     public boolean isModeAllowed(JahiaUser user, String mode) {
+        // mode view is mandatory for all user
+        if(mode != null && mode.equalsIgnoreCase(PortletMode.VIEW.toString())){
+            return true;
+        }
         return hasPermission(user, mode);
     }
 

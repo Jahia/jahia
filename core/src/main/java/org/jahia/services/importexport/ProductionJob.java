@@ -137,7 +137,10 @@ public class ProductionJob extends BackgroundJob {
         result.setStatus(TreeOperationResult.FAILED_OPERATION_STATUS);
         result.appendError(new NodeOperationResult(null,null,null,new EngineMessage(msgKey, new Object[0])));
         jobDataMap.put(RESULT, result);
-        throw new JobExecutionException(e);
+        if(e!=null)
+            throw new JobExecutionException(e);
+        else
+            throw new JobExecutionException("Production job execute fail for site " + sitename + " to target " + targetName);
 //        if (e != null) {
 //            logger.error("Production job execute fail for site " + sitename + " to target " + targetName,e);
 //        } else {

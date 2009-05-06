@@ -18,7 +18,7 @@
 --%>
 <%@ include file="../common/declarations.jspf" %>
 
-<fmt:message key='loginpopup'/>&nbsp;
+<fmt:message key='loginpopup'/><a href="<template:composePageURL page="login"/>" ><fmt:message key='login'/></a>
 
 
 <ui:loginArea>

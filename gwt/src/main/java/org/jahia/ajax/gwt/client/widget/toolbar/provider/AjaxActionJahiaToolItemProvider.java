@@ -429,7 +429,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         pageStats.setSimpleValue(StatPageType.PAGEVIEWS);
         //pageStats.setWidth(12);
 
-        
+
         LabelToolItem languageSelection_Label = new LabelToolItem("Select a language");
         final SimpleComboBox<String> siteLanguages = new SimpleComboBox<String>();
         siteLanguages.setEditable(false);
@@ -492,6 +492,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     while (itOnJgaP.hasNext()) {
                         japName = (String) itOnJgaP.next();
                         profilesComboBox.add(japName);
+                        Log.debug(" Adding an additionnal element");
                     }
                     profilesComboBox.setSimpleValue(japName);
                     GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(japName);
@@ -511,6 +512,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     while (itOnJgaP.hasNext()) {
                         japName = (String) itOnJgaP.next();
                         profilesComboBox.add(japName);
+                        Log.debug(" Adding an additionnal element");
                     }
                     profilesComboBox.setSimpleValue(japName);
                     GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(japName);
@@ -571,18 +573,14 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         AdapterToolItem atiEndDate = new AdapterToolItem(end_date_field);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(new SeparatorToolItem());
-         /*
-        if (siteORpage.startsWith("page")) {
-            toolbar.add(new SeparatorToolItem());
-            toolbar.add(new SeparatorToolItem());              
-        }  */
+
         toolbar.add(begin_date_Label);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(atiBeginDate);
         toolbar.add(new SeparatorToolItem());
         toolbar.add(new SeparatorToolItem());
         toolbar.add(end_date_Label);
-        
+
         toolbar.add(new SeparatorToolItem());
         toolbar.add(atiEndDate);
         toolbar.add(new SeparatorToolItem());
@@ -734,18 +732,20 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
             }
         };
         final TextToolItem button = new TextToolItem("Show data") ;
+
+
         button.addSelectionListener(executeActionListener);
         toolbar.add(button);
+        w.setTopComponent(toolbar);
+        w.add(charts, chartData);
+        w.add(infoPanel, infoData);
+        w.show();
         DeferredCommand.addCommand(new Command() {
             public void execute() {
                 button.fireEvent(Events.Select);
             }
         });
-        w.setTopComponent(toolbar);
-        w.add(charts, chartData);
-        w.add(infoPanel, infoData);
-        w.show();
-
+        Log.debug("showing the window");
 
     }
 

@@ -41,15 +41,13 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 public class CategoriesTopBar extends TopBar {
 
     private ToolBar m_component;
-    private TopRightComponent current;
 
 
     private List<TextToolItem> topTableSingleSelectionButtons = new ArrayList<TextToolItem>();
     private List<TextToolItem> topTableMultipleSelectionButtons = new ArrayList<TextToolItem>();
     private TextToolItem paste;
 
-    public CategoriesTopBar(final TopRightComponent manager, final String exportUrl, final String importUrl) {
-        current = manager;
+    public CategoriesTopBar(final String exportUrl, final String importUrl) {
         m_component = new ToolBar();
         m_component.setHeight(21);
         TextToolItem cut = new TextToolItem();
@@ -114,24 +112,26 @@ public class CategoriesTopBar extends TopBar {
         });
         m_component.add(paste);
         m_component.add(new SeparatorToolItem());
-
-        exportCategories.setIconStyle("fm-download");
-        exportCategories.setText(getResource("cat_export"));
-        exportCategories.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
-                CategoriesManagerActions.exportCategories(getLinker(), exportUrl);
-            }
-        });
-        m_component.add(exportCategories);
-        importCategories.setIconStyle("fm-upload");
-        importCategories.setText(getResource("cat_import"));
-        importCategories.addSelectionListener(new SelectionListener<ComponentEvent>() {
-            public void componentSelected(ComponentEvent event) {
-                CategoriesManagerActions.importCategories(getLinker(), importUrl);
-            }
-        });
-        m_component.add(importCategories);
-
+        if (exportUrl != null) {
+            exportCategories.setIconStyle("fm-download");
+            exportCategories.setText(getResource("cat_export"));
+            exportCategories.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent event) {
+                    CategoriesManagerActions.exportCategories(getLinker(), exportUrl);
+                }
+            });
+            m_component.add(exportCategories);
+        }
+        if (importUrl != null) {
+            importCategories.setIconStyle("fm-upload");
+            importCategories.setText(getResource("cat_import"));
+            importCategories.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent event) {
+                    CategoriesManagerActions.importCategories(getLinker(), importUrl);
+                }
+            });
+            m_component.add(importCategories);
+        }
         topTableMultipleSelectionButtons.add(cut);
         topTableMultipleSelectionButtons.add(remove);
 

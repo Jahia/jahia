@@ -16,14 +16,13 @@
  */
 package org.jahia.ajax.gwt.client.widget.category;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.StoreFilterField;
+import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
+import org.jahia.ajax.gwt.client.widget.node.FilePathBar;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
@@ -34,14 +33,27 @@ import java.util.List;
  * Time: 17:30:21
  */
 public class CategoriesPickerLeftComponent extends LeftComponent {
-    private CategoriesSearchPanel searchPanel;
+    private ContentPanel m_component;
+    private CategoryFilter categoryFilter;
     private CategoriesTree categoriesTree;
-    private CategoriesList categoriesList;
 
     public CategoriesPickerLeftComponent(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
+        m_component = new ContentPanel(new FitLayout()) ;
+        m_component.setBodyBorder(false);
+        m_component.setBorders(false);
+        m_component.setHeaderVisible(false);
+
+        categoryFilter = new CategoryFilter() ;
+
         categoriesTree = new CategoriesTree(categoryKey, this,selectedCategories,categoryLocale,autoSelectParent);
         categoriesTree.setHeaderVisible(false);
         categoriesTree.setBodyBorder(false);
+
+        StoreFilterField filter = categoryFilter.getFilter();
+        filter.bind(categoriesTree.getStore());
+
+        m_component.setTopComponent(categoryFilter.getComponent());
+        m_component.add(categoriesTree);
     }
 
     public void openAndSelectItem(Object item) {
@@ -57,7 +69,7 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
     }
 
     public Component getComponent() {
-        return categoriesTree;
+        return m_component;
     }
 
     public void addCategories(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
@@ -71,12 +83,5 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
     public static String getResource(String key) {
         return Messages.getResource(key);
     }
-
-    public void initWithLinker(BrowserLinker linker) {
-        StoreFilterField filter = ((CategoryFilter) linker.getTopObject()).getFilter();
-        filter.bind(categoriesTree.getStore());
-    }
-
-
 
 }

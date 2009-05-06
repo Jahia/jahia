@@ -41,7 +41,7 @@ public class CategoriesManager extends TriPanelBrowserLayout {
         // construction of the UI components
         TopRightComponent treeTable = new CategoriesTreeTable(rootKey);
         BottomRightComponent tabs = new CategoryDetails();
-        TopBar toolbar = new CategoriesTopBar(treeTable, exportActionUrl, importActionUrl);
+        TopBar toolbar = new CategoriesTopBar(exportActionUrl, importActionUrl);
         BottomBar statusBar = null;
 
         // setup widgets in layout

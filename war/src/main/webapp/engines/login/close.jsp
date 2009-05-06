@@ -23,15 +23,18 @@
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final String javaScriptPath = (String) engineMap.get("javaScriptPath");
-    final String reloadUrl = (String) engineMap.get("engineUrl");
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
+    String reloadUrl = (String) engineMap.get("engineUrl");    
+    if (reloadUrl == null || reloadUrl.length() == 0) {
+        reloadUrl = jParams.composePageUrl(jParams.getPageID());
+    }
 %>
 
 <script type="text/javascript" src="<%=javaScriptPath%>">
 </script>
 <script type="text/javascript">
     if (window.opener == null) {
-        window.location.href = "<%=jParams.composePageUrl(jParams.getPageID())%>";
+        window.location.href = "<%=reloadUrl%>";
     } else {
         window.opener.location.href = "<%=reloadUrl%>";
         window.close();

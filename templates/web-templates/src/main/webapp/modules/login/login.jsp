@@ -25,9 +25,8 @@
         <div class="boxloginFormTop-header">
             <div id="loginFormTop"><!--start loginFormTop-->
                 <ui:loginArea>
-                    <p><ui:loginUsername labelCssClassName="hide" cssClassName="text" labelKey="username" tabIndex="1"/>
-                        <ui:loginPassword labelCssClassName="hide" cssClassName="text" labelKey="password"
-                                          tabIndex="2"/>
+                    <p><label class="hide" for="username"><fmt:message key="username"/></label><ui:loginUsername class="text" id="username"  size="8"/>
+                        <label class="hide" for="password"><fmt:message key="password"/></label><ui:loginPassword class="text" id="password" size="8"/>
                         <input class="gobutton png" type="image"
                                src="<utility:resolvePath value='theme/${requestScope.currentTheme}/img/loginformtop-button.png'/>"
                                tabindex="3"/></p>

@@ -26,16 +26,18 @@
             <fieldset>
                 <legend><fmt:message key='login'/></legend>
                 <p>
-                    <ui:loginUsername labelCssClassName="" cssClassName="field username" labelKey="username" tabIndex="6"/>
+                    <label for="username"><fmt:message key="username"/></label><ui:loginUsername class="field username" id="username" size="8"/>
                 </p>
                 <p>
-                    <ui:loginPassword labelCssClassName="" cssClassName="field password" labelKey="password" tabIndex="7"/>
+                    <label for="password"><fmt:message key="password"/></label><ui:loginPassword class="field password" id="password" size="8"/>
                 </p>
                 <p>
-                    <ui:loginRememberMe labelCssClassName="rememberLabel" cssClassName="rememberme" labelKey="rememberme" tabIndex="8"/>
+                    <label class="rememberLabel" for="rememberme"><fmt:message key="rememberme"/></label><ui:loginRememberMe class="rememberme" id="rememberme"/>
                 </p>
                 <p><input type="submit" name="submit" id="submit" class="button" value="Login" tabindex="9"/></p>
-                <p><ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/></p>
+                <ui:isLoginError>
+                  <p><span class="error"><fmt:message key="invalidUsernamePasswordKey"/></span></p>
+                </ui:isLoginError>
             </fieldset>
         </ui:loginArea>
     </div>

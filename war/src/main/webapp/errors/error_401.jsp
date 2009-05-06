@@ -53,7 +53,9 @@ function keyDown(e) {
         <ui:loginArea>
         <h3 class="loginIcon"><fmt:message key="org.jahia.engines.loginToJahia.label"/></h3>
         <br class="clearFloat"/>
-        <ui:loginErrorMessage invalidUsernamePasswordKey="org.jahia.engines.login.Login_Engine.invalidUsernamePassword.label" cssClassName="error"/>
+        <ui:isLoginError>
+          <span class="error"><fmt:message key="org.jahia.engines.login.Login_Engine.invalidUsernamePassword.label"/></span>
+        </ui:isLoginError>
         <table cellspacing="1" cellpadding="0" border="0" class="formTable">
             <tbody>
             <tr>
@@ -78,7 +80,7 @@ function keyDown(e) {
           </tr>
           <tr>
               <td class="alignCenter" colspan="2">
-                <ui:loginRememberMe labelKey="org.jahia.engines.login.Login_Engine.rememberMe.label"/>
+                <label for="rememberme"><fmt:message key="org.jahia.engines.login.Login_Engine.rememberMe.label"/></label><ui:loginRememberMe id="rememberme"/>
               </td>
             </tr>
         </table>

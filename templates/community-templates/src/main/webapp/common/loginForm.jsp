@@ -21,12 +21,15 @@
 <!-- login -->
 <ui:loginArea>
     <p>
-        <ui:loginUsername labelCssClassName="hide" cssClassName="text" labelKey="username" tabIndex="1"/>
-        <ui:loginPassword labelCssClassName="hide" cssClassName="text" labelKey="password" tabIndex="2"/>
+        <label class="hide" for="username"><fmt:message key="username"/></label><ui:loginUsername class="text" id="username" size="8"/>
+        <label class="hide" for="password"><fmt:message key="password"/></label><ui:loginPassword class="text" id="password" size="8"/>
         <input type="image" class="gobutton"
                src="${pageContext.request.contextPath}/templates/community_templates/theme/${requestScope.currentTheme}/img/go-button.png" tabindex="3"/>
         <!-- input type bouton image non géré pour le moment -->
-        <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
+        <ui:isLoginError>
+          <span class="error"><fmt:message key="invalidUsernamePasswordKey"/></span>
+        </ui:isLoginError>        
+        
     </p>
 </ui:loginArea>
 

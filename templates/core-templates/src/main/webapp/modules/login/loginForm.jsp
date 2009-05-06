@@ -25,22 +25,24 @@
         <fieldset>
             <legend>&nbsp;<fmt:message key='login'/>&nbsp;</legend>
             <p>
-                <ui:loginUsername labelCssClassName="left" cssClassName="field" labelKey="username"/>
+                <label class="left" for="username"><fmt:message key="username"/></label><ui:loginUsername class="field" id="username" size="8"/>
             </p>
 
             <p>
-                <ui:loginPassword labelCssClassName="left" cssClassName="field" labelKey="password"/>
+                <label class="left" for="password"><fmt:message key="password"/></label><ui:loginPassword class="field" id="password" size="8"/>
             </p>
 
             <p>
-                <ui:loginRememberMe labelCssClassName="left" cssClassName="field" labelKey="rememberme"/>
+                <label class="left" for="rememberme"><fmt:message key="rememberme"/></label><ui:loginRememberMe class="field" id="rememberme"/>
             </p>
 
             <p>
-                <ui:loginButton cssClassName="button" labelKey="loginbutton"/>
+                <input type="submit" name="login" value="<fmt:message key='loginbutton'/>" class="button"/>
             </p>
 
-            <ui:loginErrorMessage invalidUsernamePasswordKey="invalidUsernamePasswordKey" cssClassName="error"/>
+            <ui:isLoginError>
+              <p><span class="error"><fmt:message key="invalidUsernamePasswordKey"/></span></p>
+            </ui:isLoginError>
 
         </fieldset>
     </div>

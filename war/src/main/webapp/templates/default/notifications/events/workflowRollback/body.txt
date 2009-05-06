@@ -4,7 +4,7 @@ ${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
 
 <% if (jobUser.getUser().equals(subscriber.getUser())) { %>${i18n.get("notifications.workflow.job.triggeredBy.sameUser", "the workflow job, triggered by you")}<% } else { %>${i18n.get("notifications.workflow.job.triggeredBy.otherUser", "the workflow job, triggered by")} ${jobUser.fullName}<% } %>${i18n.get("notifications.workflow.job.executionFinished", ", has finished its execution.")}
 
-Some content is ready for validation by you.
+Content has been rollbacked to you.
 
 <% if (jobComment != null) { %>
 ${i18n.get("notifications.workflow.comment", "Comment")}:

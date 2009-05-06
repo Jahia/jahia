@@ -521,6 +521,9 @@ public class Service {
                 if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage()) && action.equals(externalWorkflowHistoryEntry.getAction())) {
                     return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(externalWorkflowHistoryEntry.getUser());
                 }
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage()) && "start process".equals(externalWorkflowHistoryEntry.getAction())) {
+                    break;
+                }
             }
         }
         return null;
@@ -533,6 +536,9 @@ public class Service {
             for (ExternalWorkflowHistoryEntry externalWorkflowHistoryEntry : history) {
                 if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage())) {
                     return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(externalWorkflowHistoryEntry.getUser());
+                }
+                if (languageCode.equals(externalWorkflowHistoryEntry.getLanguage()) && "start process".equals(externalWorkflowHistoryEntry.getAction())) {
+                    break;
                 }
             }
         }

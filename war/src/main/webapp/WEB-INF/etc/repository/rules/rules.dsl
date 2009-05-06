@@ -33,6 +33,7 @@
 [condition][]A workflow state has changed for a node=property : PropertyWrapper ( language : name, state : stringValue, workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]- the node has the type {type}=node.types contains "{type}"
 [condition][]A node has been published=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "active", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
+[condition][]A node has been rollbacked to author=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "staging", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]- it has the type {type}=node.types contains "{type}"
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Create a new node {nodename} under the {node}=NodeWrapper {nodename} = new NodeWrapper({node}, "{nodename}", null, drools);insert ({nodename});

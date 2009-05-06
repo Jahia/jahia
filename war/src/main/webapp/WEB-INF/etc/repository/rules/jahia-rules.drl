@@ -75,11 +75,18 @@ rule "Notifications: workflow state changed"
         A workflow state has changed for a node
     then
         #Fire workflow notification event to user "testUser"
-        #Fire workflow notification event to group "testGroup" 
+        #Fire workflow notification event to group "testGroup"
         #Fire workflowCurrentUser notification event to the current user
         Fire workflowNextStepUsers notification event to the users involved in the next step
         #Fire workflowAdmins notification event to the users having administration rights on the object
         #Fire workflowLastUser notification event to the last user that did "notify"
+end
+
+rule "Notifications: workflow reverted"
+    when
+        A node has been rollbacked to author
+    then
+        Fire workflowRollback notification event to the last user that did "notify"
 end
 
 rule "Notifications: content published"
@@ -87,6 +94,7 @@ rule "Notifications: content published"
         A node has been published
  then
         Fire contentPublished notification event for node
+        Fire workflowPublished notification event to the last user that did "notify"
         Log "Fired contentPublished event in language " + language + " for node " + node.getPath()
 end
 

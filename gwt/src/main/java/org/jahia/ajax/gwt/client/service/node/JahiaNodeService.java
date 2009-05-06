@@ -76,6 +76,8 @@ public interface JahiaNodeService extends RemoteService {
 
     public void setLock(List<String> paths, boolean locked) throws GWTJahiaServiceException;
 
+    public void checkExistence(String path) throws GWTJahiaServiceException;
+
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException;
 
     public void deletePaths(List<String> path) throws GWTJahiaServiceException;

@@ -122,6 +122,12 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         FileManagerWorker.setLock(paths, locked, getUser());
     }
 
+    public void checkExistence(String path) throws GWTJahiaServiceException {
+        if (FileManagerWorker.checkExistence(path, getUser())) {
+            throw new ExistingFileException(path);
+        }
+    }
+
     public void createFolder(String parentPath, String name) throws GWTJahiaServiceException {
         FileManagerWorker.createFolder(parentPath, name, retrieveParamBean());
     }

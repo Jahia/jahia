@@ -664,6 +664,22 @@ public class FileManagerWorker {
         }
     }
 
+    public static Boolean checkExistence(String path, JahiaUser user) throws GWTJahiaServiceException {
+        try {
+            JCRNodeWrapper node = jcr.getThreadSession(user).getNode(path);
+            if (node != null && node.isValid()) {
+                return Boolean.valueOf(true);
+            }
+        } catch (RepositoryException e) {
+            if (e instanceof PathNotFoundException) {
+                return Boolean.valueOf(false);
+            }
+            logger.error(e.toString(), e);
+            throw new GWTJahiaServiceException("Error:\n" + e.toString());
+        }
+        return Boolean.valueOf(false);
+    }
+
     public static void createFolder(String parentPath, String name, ProcessingContext context) throws GWTJahiaServiceException {
         createNode(parentPath, name, "jnt:folder", new ArrayList<GWTJahiaNodeProperty>(), context);
     }

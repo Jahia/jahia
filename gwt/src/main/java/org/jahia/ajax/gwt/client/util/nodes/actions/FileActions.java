@@ -21,6 +21,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeServiceAsync;
+import org.jahia.ajax.gwt.client.service.node.ExistingFileException;
 import org.jahia.ajax.gwt.client.util.nodes.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.widget.node.*;
 import org.jahia.ajax.gwt.client.widget.node.portlet.PortletWizardWindow;
@@ -467,7 +468,8 @@ public class FileActions {
 
     public static void zip(final BrowserLinker linker) {
         final List<GWTJahiaNode> selectedItems = (List<GWTJahiaNode>) linker.getTableSelection();
-        if (selectedItems != null && selectedItems.size() > 0) {
+        final GWTJahiaNode parentItem = (GWTJahiaNode) linker.getTreeSelection();
+        if (parentItem != null && selectedItems != null && selectedItems.size() > 0) {
             final GWTJahiaNode selection = selectedItems.get(0);
             if (selection != null) {
                 linker.loading(Messages.getResource("fm_zipping"));
@@ -477,27 +479,44 @@ public class FileActions {
                 } else {
                     defaultArchName = "archive.zip";
                 }
-                String archName = Window.prompt(Messages.getResource("fm_confArchiveName"), defaultArchName);
+                final String archName = Window.prompt(Messages.getResource("fm_confArchiveName"), defaultArchName);
                 if (archName != null && archName.length() > 0) {
-                    List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
-                    for (GWTJahiaNode node : selectedItems) {
-                        selectedPaths.add(node.getPath());
-                    }
-                    service.zip(selectedPaths, archName, new AsyncCallback() {
+                    service.checkExistence(parentItem.getPath() + "/" + archName, new AsyncCallback<Boolean>() {
                         public void onFailure(Throwable throwable) {
-                            Window.alert("" +
-                                    Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
-                            linker.loaded();
+                            if (throwable instanceof ExistingFileException) {
+                                if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\n" + Messages.getResource("fm_confOverwrite"))) {
+                                     forceZip(selectedItems, archName, linker);
+                                 }
+                            } else {
+                                Window.alert(Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
+                                linker.loaded();
+                            }
                         }
-
-                        public void onSuccess(Object o) {
-                            linker.loaded();
-                            linker.refreshAll();
+                        public void onSuccess(Boolean aBoolean) {
+                            forceZip(selectedItems, archName, linker);
                         }
                     });
                 }
             }
         }
+    }
+
+    private static void forceZip(final List<GWTJahiaNode> selectedItems, final String archName, final BrowserLinker linker) {
+        List<String> selectedPaths = new ArrayList<String>(selectedItems.size());
+        for (GWTJahiaNode node : selectedItems) {
+            selectedPaths.add(node.getPath());
+        }
+        service.zip(selectedPaths, archName, new AsyncCallback() {
+            public void onFailure(Throwable throwable) {
+                Window.alert(Messages.getResource("fm_failZip") + "\n" + throwable.getLocalizedMessage());
+                linker.loaded();
+            }
+
+            public void onSuccess(Object o) {
+                linker.loaded();
+                linker.refreshTable();
+            }
+        });
     }
 
     public static void unzip(final BrowserLinker linker) {

@@ -57,6 +57,8 @@ public interface JahiaNodeServiceAsync {
 
     void setLock(List<String> paths, boolean locked, AsyncCallback async);
 
+    void checkExistence(String path,AsyncCallback async);
+
     void createFolder(String parentPath, String name, AsyncCallback async);
 
     void deletePaths(List<String> path, AsyncCallback async);

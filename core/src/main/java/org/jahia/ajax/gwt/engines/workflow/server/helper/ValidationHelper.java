@@ -211,8 +211,8 @@ public class ValidationHelper {
             ContentObject faulty = JahiaObjectCreator
                     .getContentObjectFromKey(operationResult.getNodeKey());
             if (faulty != null) {
-                ContentPage faultyPage = ContentPage
-                        .getPage(faulty.getPageID());
+                ContentPage faultyPage = faulty instanceof ContentPage ? (ContentPage) faulty
+                        : ContentPage.getPage(faulty.getPageID());
                 if (faultyPage != null) {
                     gwtOperationResultItem.setUrl(faultyPage.getURL(ctx, languageCode));
                 }

@@ -81,8 +81,8 @@ public class ThemeValve implements Valve {
             } else if (jParams.getUser().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID()) != null) {
                 jahiaThemeCurrent = jParams.getUser().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID());
             } else try {
-                if (jParams.getPage().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID()) != null) {
-                    jahiaThemeCurrent = jParams.getPage().getProperty(THEME_ATTRIBUTE_NAME +"_"+theSite.getID());
+                if (jParams.getPage().getProperty(THEME_ATTRIBUTE_NAME) != null) {
+                    jahiaThemeCurrent = jParams.getPage().getProperty(THEME_ATTRIBUTE_NAME);
                 } else if (theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME) != null) {
                     jahiaThemeCurrent = theSite.getSettings().getProperty(THEME_ATTRIBUTE_NAME);
                 }

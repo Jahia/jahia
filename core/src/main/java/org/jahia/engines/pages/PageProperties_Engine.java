@@ -609,9 +609,9 @@ public class PageProperties_Engine implements JahiaEngine {
                         thePage.getContentPage().setPageKey(null);
                         engineMap.put(PageProperty.PAGE_URL_KEY_PROPNAME, pageKey);
                     }
-                    String themePropertyName = ThemeValve.THEME_ATTRIBUTE_NAME + "_" + jParams.getSiteID();
+                    String themePropertyName = ThemeValve.THEME_ATTRIBUTE_NAME;
                     String oldTheme = thePage.getProperty(themePropertyName);
-                    String newTheme= ((String[]) jParams.getCustomParameters().get("jahiaThemeSelector"))[0];
+                    String newTheme= pageTempBean.getTheme();
                     changed |= (oldTheme == null && (newTheme != null && newTheme.length() > 0)) || (oldTheme != null && (newTheme == null
                             || !newTheme.equals(oldTheme)));
                     if(newTheme==null || "".equals(newTheme)) {
@@ -1040,24 +1040,12 @@ public class PageProperties_Engine implements JahiaEngine {
         final EngineMessages engineMessages = new EngineMessages();
         boolean setPageTitleSuccessfull = setPageTitleIfNecessary(jParams, languageCode, engineMessages, engineMap);
         boolean setPageURLKeySuccessfull = setPageURLKeyIfValidAndNotEmpty(jParams, engineMessages, engineMap);
-        setPageTemplateIDInEngineMapIfNecessary(jParams, engineMap);
+        boolean setPageThemeIfNecessary = setPageThemeIfNecessary(jParams, engineMessages, engineMap);
+
         saveMessagesIfNotEmpty(engineMessages, jParams);
 
-        return setPageTitleSuccessfull && setPageURLKeySuccessfull;
+        return setPageTitleSuccessfull && setPageURLKeySuccessfull && setPageThemeIfNecessary;
     }
-
-//    private void DisplayEngineMap(Map engineMap) {
-//        StringBuffer output = new StringBuffer("Detail of engineMap :\n");
-//
-//        Set keys = engineMap.keySet();
-//        Iterator iter = keys.iterator();
-//
-//        while (iter.hasNext()) {
-//            String name = (String) iter.next();
-//            Object object = engineMap.get(name);
-//            output.append("-").append(name).append(" = [").append(object.toString()).append("]\n");
-//        }
-//    }
 
     /**
      * loads the page cache bean with info from an existing JahiaPage
@@ -1186,6 +1174,15 @@ public class PageProperties_Engine implements JahiaEngine {
         if (StringUtils.isBlank(pageTitle)) {
             engineMessages.add("pageTitle", new EngineMessage("org.jahia.engines.pages.PageProperties_Engine.pageTitle.required.label"));
             return false;
+        }
+        return true;
+    }
+
+    private boolean setPageThemeIfNecessary(ProcessingContext jParams, EngineMessages engineMessages, Map engineMap) {
+        String theme = jParams.getParameter("jahiaThemeSelector");
+        JahiaPageEngineTempBean pageTempBean = (JahiaPageEngineTempBean) engineMap.get("pageTempBean");
+        if (theme != null) {
+            pageTempBean.setTheme(theme);
         }
         return true;
     }

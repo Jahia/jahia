@@ -29,6 +29,7 @@ import org.jahia.operations.valves.ThemeValve;
 import org.jahia.params.ProcessingContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.engines.shared.JahiaPageEngineTempBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map;
 
 /**
  * @author David Griffon
@@ -79,7 +81,16 @@ public class ThemeSelectorTag extends AbstractJahiaTag {
                     jahiaThemeCurrent = (String) pageContext.getSession().getAttribute(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + theSite.getID());
                 }
             } else if (scope.equals("page")) {
-                jahiaThemeCurrent = (String) jParams.getPage().getProperty(ThemeValve.THEME_ATTRIBUTE_NAME + "_" + theSite.getID());
+                Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
+                if (engineMap != null) {
+                    JahiaPageEngineTempBean tempBean = (JahiaPageEngineTempBean) engineMap.get("pageTempBean");
+                    if (tempBean != null) {
+                        jahiaThemeCurrent = tempBean.getTheme();
+                    }
+                }
+                if (jahiaThemeCurrent == null) {
+                    jahiaThemeCurrent = (String) jParams.getPage().getProperty(ThemeValve.THEME_ATTRIBUTE_NAME);
+                }
 
             } else {
                 return SKIP_BODY;

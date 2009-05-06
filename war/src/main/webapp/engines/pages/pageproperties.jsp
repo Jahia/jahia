@@ -175,24 +175,32 @@
                       <input type="text" name="pageTitle" value="<%=pageTitle%>"/>
                     </td>
                   </tr>
-                  <% if (templateListEnum.hasNext()) { %>
+
+
+
+
+                    <% if (templateListEnum.hasNext()) { %>
                     <tr>
-                      <th>
-                        <fmt:message key="org.jahia.engines.template.label"/>
+                      <th width="120">
+                        <fmt:message key="org.jahia.engines.template.label"/>:
                       </th>
                       <td>
-                        <select name="pageTemplate">
-                          <%
-                          while (templateListEnum.hasNext()) {
-                            final JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateListEnum.next();
-                            pageContext.setAttribute("pageTemplate", theTemplate);
-                          %>
-                            <option value="<%=theTemplate.getID()%>" <% if (theTemplate.getID() == pageTemplateID) { %> selected="selected" <% } %> title="<fmt:message key='${pageTemplate.description}'/>"><fmt:message key="${pageTemplate.displayName}"/></option>
-                          <%}%>
-                        </select>
+                        <%
+                        while (templateListEnum.hasNext()) {
+                          final JahiaPageDefinition theTemplate = (JahiaPageDefinition) templateListEnum.next();
+                        %>
+                          <% if (theTemplate.getID() == pageTemplateID) { %>
+                            <%=theTemplate.getName()%>
+                            <%  break;
+                          }
+                        } %>
                       </td>
                     </tr>
-                  <% } %>
+                    <% } %>
+
+
+
+
                   <% if (displayURLKeyInput) { %>
                     <tr>
                       <th>

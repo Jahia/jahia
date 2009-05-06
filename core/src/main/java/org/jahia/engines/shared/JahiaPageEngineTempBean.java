@@ -34,6 +34,7 @@ public class JahiaPageEngineTempBean implements Serializable {
     private int parentID;
     private int pageType;
     private Map<String, String> titles = new HashMap<String, String>();
+    private String theme;
     private int pageTemplateID;
     private Map<String, String> remoteURLs = new HashMap<String, String>();
     private int pageLinkID;
@@ -144,7 +145,14 @@ public class JahiaPageEngineTempBean implements Serializable {
         this.titles.put(languageCode, title);
     }
 
-    //------------------------------------------------------------------------
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
+    }
+
     public void removeTitle(String languageCode) {
         this.titles.remove(languageCode);
     }

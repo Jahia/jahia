@@ -54,18 +54,15 @@ public class CategoriesTree extends ContentPanel {
     private final List<GWTJahiaCategoryNode> selectedCategories;
     private final String categoryLocale;
     private final boolean autoSelectParent;
+    private TreeStore<GWTJahiaCategoryNode> store;
 
-    public CategoriesTree(String categoryKey, CategoriesPickerLeftComponent parentComponent, List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
+    public CategoriesTree(String categoryKey, final CategoriesPickerLeftComponent parentComponent, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale, boolean autoSelectParent) {
         this.categoryKey = categoryKey;
         this.parentComponent = parentComponent;
         this.selectedCategories = selectedCategories;
         this.categoryLocale = categoryLocale;
         this.autoSelectParent = autoSelectParent;
-    }
 
-    @Override
-    protected void onRender (Element parent, int pos) {
-        super.onRender(parent, pos);
         setHeading(getResource("categories"));
         setScrollMode(Style.Scroll.AUTO);
 
@@ -150,7 +147,7 @@ public class CategoriesTree extends ContentPanel {
         };
 
         // trees store
-        TreeStore<GWTJahiaCategoryNode> store = new TreeStore<GWTJahiaCategoryNode>(loader);
+        store = new TreeStore<GWTJahiaCategoryNode>(loader);
         store.setModelComparer(new ModelComparer<GWTJahiaCategoryNode>() {
             public boolean equals (GWTJahiaCategoryNode gwtJahiaCategoryNode, GWTJahiaCategoryNode gwtJahiaCategoryNode1) {
                 return gwtJahiaCategoryNode != null && gwtJahiaCategoryNode1 != null && gwtJahiaCategoryNode.getCategoryId().equals(gwtJahiaCategoryNode1.getCategoryId());
@@ -177,30 +174,24 @@ public class CategoriesTree extends ContentPanel {
         }
         binder.setSelection(selectedCategories);
 
-        StoreFilterField filter = new StoreFilterField() {
-            @Override
-            protected boolean doSelect (Store store, ModelData parent, ModelData record, String property, String filter) {
-                if (record instanceof GWTJahiaCategoryNode) {
-                    GWTJahiaCategoryNode node = (GWTJahiaCategoryNode) record;
-                    String s = node.getName().toLowerCase();
-                    if(s.startsWith("(") && s.endsWith(")")) s = s.substring(1);
-                    if(s.startsWith(filter.toLowerCase())) return true;
-                }
-                return false;
-            }
-        };
-        filter.bind(store);
-        filter.setWidth("100%");
         VerticalPanel panel = new VerticalPanel();
         panel.setAutoHeight(true);
         panel.setWidth("100%");
         setWidth("100%");
-        panel.add(filter);
+
+
+//        panel.add(filter);
+
+
         panel.add(tree);
 
         add(panel);
 //        binder.setCheckedSelection(selectedCategories);
-        doLayout();
+//        doLayout();
+    }
+
+    public TreeStore<GWTJahiaCategoryNode> getStore() {
+        return store;
     }
 
     public static String getResource(String key) {

@@ -58,17 +58,17 @@ public class CategoriesPickerPanel extends TriPanelBrowserLayout {
             leftComponent.setWidth("400px");
         }
         BottomRightComponent tabs = null;
-        TopBar toolbar = null;
+        CategoryFilter topBar = new CategoryFilter();
 
         // setup widgets in layout
         initWidgets(leftComponent,
                 treeTable.getComponent(),
                 null,
-                null,
+                topBar.getComponent(),
                 null);
 
         // linker initializations
-        linker.registerComponents(selectorsLeftComponent, treeTable, tabs, toolbar, null);
+        linker.registerComponents(selectorsLeftComponent, treeTable, tabs, topBar, null);
         treeTable.initContextMenu();
         linker.handleNewSelection();
     }

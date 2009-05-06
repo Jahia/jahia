@@ -54,14 +54,12 @@ public class JahiaConsole {
      * }
      */
 
-    /***
-        * constructor
-        * EV    08.10.2000
-        *
-        */
-    private JahiaConsole()
-    {
-        println( "JahiaConsole", "***** Starting Jahia Console" );
+    /**
+     * constructor
+     * EV    08.10.2000
+     */
+    private JahiaConsole() {
+        println("JahiaConsole", "***** Starting Jahia Console");
     } // end constructor
 
 
@@ -73,13 +71,11 @@ public class JahiaConsole {
         // do nothing;
     }
 
-    /***
-        * print
-        * EV    08.10.2000
-        *
-        */
-    public static void print( String origin, String msg )
-    {
+    /**
+     * print
+     * EV    08.10.2000
+     */
+    public static void print(String origin, String msg) {
         logger.debug(origin + " > " + msg);
 
 /*
@@ -92,13 +88,11 @@ public class JahiaConsole {
     } // end print
 
 
-    /***
-        * println
-        * EV    08.10.2000
-        *
-        */
-    public static void println( String origin, String msg )
-    {
+    /**
+     * println
+     * EV    08.10.2000
+     */
+    public static void println(String origin, String msg) {
 
         logger.debug(origin + "> " + msg);
 /*
@@ -115,66 +109,60 @@ public class JahiaConsole {
 
     /**
      * Small utility function to print stack trace on the Jahia console.
+     *
      * @param origin a String representing the origin of the message. Recommended
-     * format is class.method
-     * @param t the exception whose stack trace will be dumped into the Jahia
-     * Console.
+     *               format is class.method
+     * @param t      the exception whose stack trace will be dumped into the Jahia
+     *               Console.
      * @author Serge Huber.
      */
-    public static void printe( String origin, Throwable t ) {
+    public static void printe(String origin, Throwable t) {
         logger.debug(origin, t);
     }
 
-   /**
-    * Prints a message on the console.
-    * THIS METHOD SHOULD BE CALLED ONLY IF YOU WANT YOUR MESSAGE TO BE DISPLAYED IN THE
-    * RELEASE VERSION OF JAHIA.  Don't abuse ;-)
-    */
-    public static synchronized void finalPrintln( String origin, String msg )
-    {
+    /**
+     * Prints a message on the console.
+     * THIS METHOD SHOULD BE CALLED ONLY IF YOU WANT YOUR MESSAGE TO BE DISPLAYED IN THE
+     * RELEASE VERSION OF JAHIA.  Don't abuse ;-)
+     */
+    public static synchronized void finalPrintln(String origin, String msg) {
         logger.info(origin + "> " + msg);
         // System.out.println (origin + "> " + msg);
     } // end println
-    public static synchronized void finalPrint( String origin, String msg )
-    {
+
+    public static synchronized void finalPrint(String origin, String msg) {
         logger.info(origin + "> " + msg);
         // System.out.print (origin + "> " + msg);
     } // end println
 
 
-
-    /***
-        * startup
-        * EV    08.10.2000
-        *
-        */
-    public static void startup( int buildNumber )
-    {
+    /**
+     * startup
+     * EV    08.10.2000
+     */
+    public static void startup(int buildNumber) {
         String msg = "";
         msg += "***********************************\n";
         msg += "   Starting Jahia - Build " + buildNumber + "\n";
         msg += "       \"Today's a great day ! \"\n";
         msg += "***********************************\n";
-        JahiaConsole.println("JahiaConsole.startup","\n\n" + msg + "\n" );
-        println( "Jahia", "***** Starting Jahia *****" );
+        JahiaConsole.println("JahiaConsole.startup", "\n\n" + msg + "\n");
+        println("Jahia", "***** Starting Jahia *****");
     } // end startup
 
 
+    /**
+     * startupWithTrust
+     * AK    20.01.2001
+     */
+    public static void startupWithTrust(int buildNumber) {
+        Integer buildNumberInteger = new Integer(buildNumber);
+        String buildString = buildNumberInteger.toString();
+        StringBuilder buildBuffer = new StringBuilder();
 
-    /***
-        * startupWithTrust
-        * AK    20.01.2001
-        *
-        */
-    public static void startupWithTrust( int buildNumber )
-    {
-        Integer       buildNumberInteger  = new Integer(buildNumber);
-        String        buildString         = buildNumberInteger.toString();
-        StringBuilder buildBuffer         = new StringBuilder();
-
-        for(int i=0; i < buildString.length(); i++) {
+        for (int i = 0; i < buildString.length(); i++) {
             buildBuffer.append(" ");
-            buildBuffer.append(buildString.substring(i, i+1));
+            buildBuffer.append(buildString.substring(i, i + 1));
         }
 
         StringBuilder msg = new StringBuilder(512);
@@ -198,7 +186,7 @@ public class JahiaConsole {
                                 + "\n\n"
                                 + " *******************************************************************************\n"
                                 + " * The contents of this software, or the files included with this software,    *\n"
-                                + " * are subject to the GNU General Public License (GPL).                        *\n"
+                                + " * are subject to the Jahia Sustainable Enterprise License - JSEL.             *\n"
                                 + " * You may not use this software except in compliance with the license. You    *\n"
                                 + " * may obtain a copy of the license at http://www.jahia.org/license. See the   *\n"
                                 + " * license for the rights, obligations and limitations governing use of the    *\n"

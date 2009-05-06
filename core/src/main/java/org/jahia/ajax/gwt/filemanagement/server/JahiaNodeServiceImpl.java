@@ -228,8 +228,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            JCRNodeWrapper targetCheck = jcr.getThreadSession(getUser()).getNode(node.getPath().replace(node.getName(), target));
-            if (targetCheck.isValid() && !forceReplace) {
+            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -259,8 +258,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            JCRNodeWrapper targetCheck = jcr.getThreadSession(getUser()).getNode(node.getPath().replace(node.getName(), target));
-            if (targetCheck.isValid() && !forceReplace) {
+            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 
@@ -289,8 +287,7 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         JCRStoreService jcr = ServicesRegistry.getInstance().getJCRStoreService();
         try {
             JCRNodeWrapper node = jcr.getThreadSession(getUser()).getNode(path);
-            JCRNodeWrapper targetCheck = jcr.getThreadSession(getUser()).getNode(node.getPath().replace(node.getName(), target));
-            if (targetCheck.isValid() && !forceReplace) {
+            if (FileManagerWorker.checkExistence(node.getPath().replace(node.getName(), target), getUser()) && !forceReplace) {
                 throw new ExistingFileException("The file " + target + " already exists.");
             }
 

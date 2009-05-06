@@ -105,7 +105,7 @@ public class Login_Engine implements JahiaEngine {
             throws JahiaException,
             JahiaSessionExpirationException {
         // initalizes the hashmap
-        Map engineMap = new HashMap();
+        Map<String, Object> engineMap = new HashMap<String, Object>();
         initEngineMap(jParams, engineMap);
 
         processScreen(jParams, engineMap);
@@ -131,7 +131,7 @@ public class Login_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object
      */
-    public void processScreen(ProcessingContext jParams, Map engineMap)
+    public void processScreen(ProcessingContext jParams, Map<String, Object> engineMap)
             throws JahiaException,
             JahiaSessionExpirationException {
 
@@ -164,15 +164,14 @@ public class Login_Engine implements JahiaEngine {
                                 "The user do not have read access to the requested page ( other than GUEST ) !");
 
                         logger.error("User " + username + " cannot log in from this page");
+                        engineMap.put("notAllowedToLoginFromThisPage", Boolean.TRUE);
+                        engineMap.put("screen", "edit");                        
+                        
                         if (jParams.getParameter("logtag") != null) {
-                            engineMap.put("notAllowedToLoginFromThisPage", Boolean.TRUE);
-                            engineMap.put("screen", "edit");
                             engineMap.put(ENGINE_URL_PARAM, jParams.composeEngineUrl("", EMPTY_STRING));
                             jParams.setAttribute("NotAllowedLogin", Boolean.TRUE); 
 
                         } else {
-                            engineMap.put("notAllowedToLoginFromThisPage", Boolean.TRUE);
-                            engineMap.put("screen", "edit");
                             engineMap.put(ENGINE_URL_PARAM, jParams.composeEngineUrl(ENGINE_NAME, EMPTY_STRING));
                             engineMap.put("jspSource", BADLOGIN_JSP);
                         }
@@ -247,7 +246,7 @@ public class Login_Engine implements JahiaEngine {
      *
      * @param jParams a ProcessingContext object (with request and response)
      */
-    private void initEngineMap(ProcessingContext jParams, Map engineMap)
+    private void initEngineMap(ProcessingContext jParams, Map<String, Object> engineMap)
             throws JahiaException {
         // init map
         String theScreen = jParams.getParameter("screen");
@@ -317,7 +316,7 @@ public class Login_Engine implements JahiaEngine {
             logger.debug("Searching groups for homepage") ;
             JahiaGroupManagerService grpServ = ServicesRegistry.getInstance ().getJahiaGroupManagerService ();
 
-            List v = grpServ.getUserMembership(user);
+            List<String> v = grpServ.getUserMembership(user);
             int size = v.size();
             String grpKey;
             JahiaGroup grp;

@@ -7,9 +7,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
 http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
 
     <portlet>
-        <description>Simple HTML mashup portlet</description>
+        <description>This portlet will render an HTML fragment</description>
         <portlet-name>JahiaHTMLMashup</portlet-name>
-        <display-name>Jahia HTML mashup portlet</display-name>
+        <display-name>HTML portlet</display-name>
         <portlet-class>org.jahia.portlets.HTMLMashupPortlet</portlet-class>
         <init-param>
             <name>rootPath</name>
@@ -38,7 +38,6 @@ http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
         </security-role-ref>
 
     </portlet>
-
 </portlet-app>
 
  

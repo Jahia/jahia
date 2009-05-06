@@ -6,9 +6,9 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
 http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
     <portlet>
-        <description>Jahia RSS Portlet</description>
+        <description>This portlet will render a RSS feeds</description>
         <portlet-name>JahiaRSSPortlet</portlet-name>
-        <display-name>Jahia RSS Portlet Files</display-name>
+        <display-name>RSS Portlet</display-name>
         <portlet-class>org.jahia.portlets.JahiaRSSPortlet</portlet-class>
         <init-param>
             <name>contextConfigLocation</name>

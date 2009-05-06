@@ -1,71 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd"
 version="1.0"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd
 http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
-
     <portlet>
-        <description>Jahia Content Portlet - main contents</description>
-        <portlet-name>JahiaContentPortlet</portlet-name>
-        <display-name>Jahia Content Portlet Main contents</display-name>
-        <portlet-class>org.jahia.portlets.JahiaContentPortlet</portlet-class>
-        <init-param>
-            <name>contextConfigLocation</name>
-            <value>/WEB-INF/web-application-config.xml</value>
-        </init-param>
-        <init-param>
-            <name>rootPath</name>
-            <value>/WEB-INF/fragments/content</value>
-        </init-param>
-        <init-param>
-            <name>portletType</name>
-            <value>jnt:mainContentPortlet</value>
-        </init-param>
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>VIEW</portlet-mode>
-            <portlet-mode>EDIT</portlet-mode>
-            <portlet-mode>HELP</portlet-mode>
-        </supports>
-        <portlet-info>
-            <title>About Apache Pluto</title>
-        </portlet-info>
-    </portlet>
-
-    <portlet>
-        <description>Jahia Content Portlet - files</description>
-        <portlet-name>JahiaContentPortletFiles</portlet-name>
-        <display-name>Jahia Content Portlet Files</display-name>
-        <portlet-class>org.jahia.portlets.JahiaContentPortlet</portlet-class>
-        <init-param>
-            <name>contextConfigLocation</name>
-            <value>/WEB-INF/web-application-config.xml</value>
-        </init-param>
-        <init-param>
-            <name>rootPath</name>
-            <value>/WEB-INF/fragments/files</value>
-        </init-param>
-        <init-param>
-            <name>portletType</name>
-            <value>jnt:filesPortlet</value>
-        </init-param>
-        <supports>
-            <mime-type>text/html</mime-type>
-            <portlet-mode>VIEW</portlet-mode>
-            <portlet-mode>EDIT</portlet-mode>
-            <portlet-mode>HELP</portlet-mode>
-        </supports>
-        <portlet-info>
-            <title>About Apache Pluto</title>
-        </portlet-info>
-    </portlet>
-
-    <portlet>
-        <description>Jahia RSS Portlet</description>
+        <description>Render a RSS feeds</description>
         <portlet-name>JahiaRSSPortlet</portlet-name>
-        <display-name>Jahia RSS Portlet Files</display-name>
+        <display-name>RSS Portlet</display-name>
         <portlet-class>org.jahia.portlets.JahiaRSSPortlet</portlet-class>
         <init-param>
             <name>contextConfigLocation</name>
@@ -89,9 +33,9 @@ http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
     </portlet>
 
     <portlet>
-        <description>Jahia HTML mashup</description>
-        <portlet-name>JahiaHTMLMashup</portlet-name>
-        <display-name>Jahia html mashup</display-name>
+        <description>Render an HTML fragment</description>
+        <portlet-name>JahiaHTMLportlet</portlet-name>
+        <display-name>HTML portlet</display-name>
         <portlet-class>org.jahia.portlets.HTMLMashupPortlet</portlet-class>
         <init-param>
             <name>rootPath</name>
@@ -106,25 +50,14 @@ http://java.sun.com/xml/ns/portlet/portlet-app_1_0.xsd">
             <portlet-mode>VIEW</portlet-mode>
         </supports>
         <portlet-info>
-            <title>About Apache Pluto</title>
+            <title>HTML portlet</title>
         </portlet-info>
-
-        <security-role-ref>
-          <role-name>role1</role-name>
-          <role-link>role1</role-link>
-        </security-role-ref>
-
-        <security-role-ref>
-          <role-name>role2</role-name>
-          <role-link>role2</role-link>
-        </security-role-ref>
-
     </portlet>
 
     <portlet>
-        <description>This portlet will render a remote Google Gadget</description>
+        <description>Render a remote Google Gadget</description>
         <portlet-name>JahiaGoogleGadget</portlet-name>
-        <display-name>Jahia Google Gadget</display-name>
+        <display-name>Google Gadget</display-name>
         <portlet-class>org.jahia.portlets.GoogleGadgetPortlet</portlet-class>
         <init-param>
             <name>rootPath</name>

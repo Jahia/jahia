@@ -1682,7 +1682,7 @@ public class ContentPage extends ContentObject implements
         String outURL = "";
         switch (getPageType(jParams.getEntryLoadRequest())) {
             case (TYPE_DIRECT):
-                outURL = jParams.composePageUrl(getID(), languageCode);
+                outURL = jParams.composePageUrl(this, languageCode);
                 break;
             case (TYPE_LINK):
                 int linkPageID = -1;

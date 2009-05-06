@@ -127,7 +127,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -1690,8 +1689,8 @@ public class ProcessingContext {
      */
     public String composeUrl(final String params) throws JahiaException {
         return composeUrl(
-                getContentPage() != null ? getPageURLKeyPart(getContentPage().getID()) : "",
-                getContentPage() != null ? getPageURLPart(getContentPage().getID()) : "", 0, null, null, params);
+                getContentPage() != null ? getPageURLKeyPart(getContentPage()) : "",
+                getContentPage() != null ? getPageURLPart(getContentPage(), false) : "", null, null, null, params);
     }
 
     /**
@@ -1703,7 +1702,7 @@ public class ProcessingContext {
      */
     public String composeUrl(final String pageUrlKey, final String params)
             throws JahiaException {
-        return composeUrl(pageUrlKey, "", 0, null, null, params);
+        return composeUrl(pageUrlKey, "", null, null, null, params);
     } // end composeUrl
 
     // -------------------------------------------------------------------------
@@ -1748,21 +1747,27 @@ public class ProcessingContext {
                 pageID, null, languageCode, null);
     }
 
+    public String composePageUrl(ContentPage page, final String languageCode)
+            throws JahiaException {
+        return composeUrl(getPageURLKeyPart(page), getPageURLPart(page, false),
+                page, null, languageCode, null);
+    }
+
     public String composePageUrl(final String pageUrlKey,
                                  final String languageCode) throws JahiaException {
-        return composeUrl(pageUrlKey, "", 0, null, languageCode, null);
+        return composeUrl(pageUrlKey, "", null, null, languageCode, null);
     }
 
     public String composePageUrl(final JahiaPage page) throws JahiaException {
         return composeUrl(getPageURLKeyPart(page.getContentPage()),
-                getPageURLPart(page.getContentPage(), false), page.getID(),
+                getPageURLPart(page.getContentPage(), false), page.getContentPage(),
                 null, this.getLocale().toString(), null);
     }
 
     public String composePageUrl(final JahiaPage page, final String languageCode)
             throws JahiaException {
         return composeUrl(getPageURLKeyPart(page.getContentPage()),
-                getPageURLPart(page.getContentPage(), false), page.getID(),
+                getPageURLPart(page.getContentPage(), false), page.getContentPage(),
                 null, languageCode, null);
     }
 
@@ -1779,7 +1784,7 @@ public class ProcessingContext {
     public String composeUrl(final int pageID, final Map<String, Object> pathParams,
                              Map<String, Object> queryParams, String languageCode) throws JahiaException {
         // compose pathParams as string
-        final StringBuffer pathParamsAsString = new StringBuffer();
+        final StringBuilder pathParamsAsString = new StringBuilder();
         if (pathParams != null && !pathParams.isEmpty()) {
             Iterator<String> it = pathParams.keySet().iterator();
             boolean isFirst = true;
@@ -1804,7 +1809,7 @@ public class ProcessingContext {
         }
 
         // compose queryParams as String
-        final StringBuffer queryParamsAsString = new StringBuffer();
+        final StringBuilder queryParamsAsString = new StringBuilder();
         if (queryParams != null && !queryParams.isEmpty()) {
             Iterator<String> it = queryParams.keySet().iterator();
             boolean isFirst = true;
@@ -1832,32 +1837,41 @@ public class ProcessingContext {
     }
 
     private String composeUrl(final String pageUrlKey, final String pageUrl,
-                              final int pageID, final String pathParams,
-                              final String languageCode, final String params)
+            ContentPage aContentPage, final String pathParams,
+            final String languageCode, final String params)
             throws JahiaException {
         final StringBuffer theUrl = new StringBuffer();
         theUrl.append(getJahiaCoreHttpPath());
         theUrl.append(getEngineURLPart(CORE_ENGINE_NAME));
-        ContentPage aContentPage = pageID > 0 ? ContentPage.getPage(pageID)
-                : null;
         if (aContentPage == null) {
             theUrl.append(getSiteURLPart(getSite().getSiteKey()));
-        } else if (aContentPage != null) { /* && this.isForceAppendSiteKey() && aContentPage.getSiteID() != getSite().getID()) {*/
-            if (getSiteByHostName() != null && !aContentPage.getSite().getSiteKey().equals(getSiteByHostName().getSiteKey())) {
-                return getSiteURL(aContentPage.getSite(), pageID, false, opMode, languageCode, false);
+        } else if (aContentPage != null) { /*
+                                            * && this.isForceAppendSiteKey() &&
+                                            * aContentPage.getSiteID() !=
+                                            * getSite().getID()) {
+                                            */
+            if (getSiteByHostName() != null
+                    && !aContentPage.getSite().getSiteKey().equals(
+                            getSiteByHostName().getSiteKey())) {
+                return getSiteURL(aContentPage.getSite(),
+                        aContentPage != null ? aContentPage.getID() : 0, false,
+                        opMode, languageCode, false);
             }
-            // this case can happens when a page from another site is listened in the search result
+            // this case can happens when a page from another site is listened
+            // in the search result
             // when a search is done on several site
-            theUrl.append(this.getSiteURLPart(aContentPage.getSite().getSiteKey()));
+            theUrl.append(this.getSiteURLPart(aContentPage.getSite()
+                    .getSiteKey()));
         }
         String paramOpMode = getParameter(OPERATION_MODE_PARAMETER);
         String opModeToUse = paramOpMode != null ? paramOpMode : getOpMode();
         theUrl.append(getOpModeURLPart(opModeToUse));
         if (languageCode != null) {
-                theUrl.append(condAppendURL(LANGUAGE_CODE, languageCode));
+            theUrl.append(condAppendURL(LANGUAGE_CODE, languageCode));
         }
         if (COMPARE.equals(opModeToUse)) {
-            theUrl.append(getEntryStateURLPart(getParameter(ENTRY_STATE_PARAMETER)));
+            theUrl
+                    .append(getEntryStateURLPart(getParameter(ENTRY_STATE_PARAMETER)));
             theUrl.append(getShowRevisionDiffURLPart(getDiffVersionID()));
         }
         if (pathParams != null) {
@@ -1874,6 +1888,14 @@ public class ProcessingContext {
         } catch (NullPointerException npe) {
             return theUrl.toString();
         }
+    }
+
+    private String composeUrl(final String pageUrlKey, final String pageUrl,
+            final int pageID, final String pathParams,
+            final String languageCode, final String params)
+            throws JahiaException {
+        return composeUrl(pageUrlKey, pageUrl, pageID > 0 ? ContentPage
+                .getPage(pageID) : null, pathParams, languageCode, params);
     }
 
     // -------------------------------------------------------------------------

@@ -62,7 +62,7 @@ public class WizardCard extends LayoutContainer {
     protected void notifyFinishListeners() {
         if (finishListeners != null) {
             for (Listener<BaseEvent> listener : finishListeners) {
-                listener.handleEvent(new BaseEvent());
+                listener.handleEvent(new BaseEvent(this));
             }
         }
     }

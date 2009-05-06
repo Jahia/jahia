@@ -430,17 +430,17 @@ public class FileManagerWorker {
             }
             JCRNodeWrapper user = users.iterator().next();
             JCRNodeWrapper queryStore;
-            boolean createdSearchFolder = false ;
+            boolean createdSearchFolder = false;
             if (!user.hasNode("savedSearch")) {
                 queryStore = user.createCollection("savedSearch");
-                createdSearchFolder = true ;
+                createdSearchFolder = true;
             } else {
                 queryStore = jcr.getThreadSession(context.getUser()).getNode(user.getPath() + "/savedSearch");
             }
             String path = queryStore.getPath() + "/" + name;
             q.storeAsNode(path);
             if (createdSearchFolder) {
-                user.save() ;
+                user.save();
             } else {
                 queryStore.save();
             }
@@ -539,10 +539,10 @@ public class FileManagerWorker {
         String aclContext = "sharedOnly";
         Node i = f;
         try {
-            while ( !i.isNode() || !i.isNodeType("jnt:virtualsite") ) {
+            while (!i.isNode() || !i.isNodeType("jnt:virtualsite")) {
                 i = i.getParent();
             }
-            aclContext = "site:"+i.getName();
+            aclContext = "site:" + i.getName();
         } catch (RepositoryException e) {
         }
 
@@ -557,7 +557,7 @@ public class FileManagerWorker {
                         n.setExt("icon-portlet");
                     }
                 } catch (RepositoryException e) {
-                     n.setExt("icon-portlet");
+                    n.setExt("icon-portlet");
                 }
             }
         } else {
@@ -1097,7 +1097,7 @@ public class FileManagerWorker {
                                         if (objectNode.hasNode(prop.getName())) {
                                             objectNode.getNode(prop.getName()).remove();
                                         }
-                                        
+
                                         if (!clear) {
                                             String s = end.getRequiredPrimaryTypesNames()[0];
                                             Node content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
@@ -1514,7 +1514,7 @@ public class FileManagerWorker {
                 }
             }
         } else {
-            throw new GWTJahiaServiceException("Only root can mount folders");            
+            throw new GWTJahiaServiceException("Only root can mount folders");
         }
     }
 
@@ -1565,7 +1565,7 @@ public class FileManagerWorker {
         }
         GWTJahiaNodeACL gwtJahiaNodeACL = new GWTJahiaNodeACL(new ArrayList<GWTJahiaNodeACE>());
         gwtJahiaNodeACL.setAvailablePermissions(JCRPortletNode.getAvailablePermissions(appBean.getContext(), entryPointDefinition.getName()));
-        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(),entryPointDefinition.getDisplayName(), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(), expTime, cacheScope);
+        return new GWTJahiaPortletDefinition(appBean.getContext(), entryPointDefinition.getName(), entryPointDefinition.getDisplayName(), portletType, gwtJahiaNodeACL, entryPointDefinition.getDescription(), expTime, cacheScope);
     }
 
     /**
@@ -1593,19 +1593,27 @@ public class FileManagerWorker {
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getContextName(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllPermissions();
-            for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getModes().getAce()) {
-                String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-                if (!ace.isInherited()) {
-                    node.changePermissions(user, ace.getPermissions());
-                }
-            }
-            for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getRoles().getAce()) {
-                String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
-                if (!ace.isInherited()) {
-                    node.changePermissions(user, ace.getPermissions());
+
+            // set modes permissions
+            if (gwtJahiaNewPortletInstance.getModes() != null) {
+                for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getModes().getAce()) {
+                    String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
+                    if (!ace.isInherited()) {
+                        node.changePermissions(user, ace.getPermissions());
+                    }
                 }
             }
 
+            // set roles permissions
+            if (gwtJahiaNewPortletInstance.getRoles() != null) {
+                for (GWTJahiaNodeACE ace : gwtJahiaNewPortletInstance.getRoles().getAce()) {
+                    String user = ace.getPrincipalType() + ":" + ace.getPrincipal();
+                    if (!ace.isInherited()) {
+                        node.changePermissions(user, ace.getPermissions());
+                    }
+                }
+            }
+            
             try {
                 parentNode.save();
             } catch (RepositoryException e) {
@@ -1614,10 +1622,10 @@ public class FileManagerWorker {
             }
             return getGWTJahiaNode(node);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e, e);
             throw new GWTJahiaServiceException("error");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e, e);
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }

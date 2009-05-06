@@ -25,6 +25,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -99,13 +100,15 @@ public class WizardCard extends LayoutContainer {
      */
     public void setFormPanel(FormPanel panel) {
         this.panel = panel;
-        panel.setHeight(300);
+        RowData rowData = new RowData();
+        rowData.setHeight(300);
         panel.setFrame(false);
         panel.setBorders(false);
         panel.setBodyBorder(false);
         panel.setHeaderVisible(false);
-        add(panel);
+        add(panel,rowData);
     }
+    
 
     /**
      * Calls the isValid of the form (if set) and returns the result.
@@ -137,6 +140,10 @@ public class WizardCard extends LayoutContainer {
 
     public void setWizardWindow(WizardWindow wizardWindow) {
         this.wizardWindow = wizardWindow;
+    }
+
+    public void refreshLayout(){
+      layout();
     }
     
 }

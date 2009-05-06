@@ -21,6 +21,7 @@ import org.jahia.ajax.gwt.client.widget.wizard.WizardCard;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.ArrayList;
 import java.util.List;

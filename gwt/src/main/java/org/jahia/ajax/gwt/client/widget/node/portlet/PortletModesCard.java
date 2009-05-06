@@ -24,6 +24,7 @@ import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import com.extjs.gxt.ui.client.widget.toolbar.TextToolItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.List;
@@ -40,8 +41,12 @@ public class PortletModesCard extends MashupWizardCard {
 
     public PortletModesCard() {
         super(Messages.getNotEmptyResource("mw_modes_permissions", "Modes permissions"));
-        setHtmlText(Messages.getNotEmptyResource("mw_modes_permissions_description", "Set modes permissions"));
+        setHtmlText(getText());
 
+    }
+
+    public String getText() {
+        return Messages.getNotEmptyResource("mw_modes_permissions_description", "Set modes permissions");
     }
 
     public void next() {
@@ -52,32 +57,37 @@ public class PortletModesCard extends MashupWizardCard {
 
     public void createUI() {
         removeAll();
+        super.createUI();
         // update
         final GWTJahiaNodeACL acl = getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl();
         List<String> permissions = acl.getAvailablePermissions().get(JCRClientUtils.MODES_ACL);
-        JahiaNodeService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new AsyncCallback<GWTJahiaNodeACE>() {
-            public void onSuccess(GWTJahiaNodeACE gwtJahiaNodeACE) {
-                Log.debug("Add group ACE");
-                List<GWTJahiaNodeACE> aces = acl.getAce();
-                if (aces == null) {
-                    aces = new ArrayList<GWTJahiaNodeACE>();
+        if (permissions != null && permissions.size() > 0) {
+            JahiaNodeService.App.getInstance().createDefaultUsersGroupACE(permissions, true, new AsyncCallback<GWTJahiaNodeACE>() {
+                public void onSuccess(GWTJahiaNodeACE gwtJahiaNodeACE) {
+                    Log.debug("Add group ACE");
+                    List<GWTJahiaNodeACE> aces = acl.getAce();
+                    if (aces == null) {
+                        aces = new ArrayList<GWTJahiaNodeACE>();
+                    }
+                    aces.add(gwtJahiaNodeACE);
+                    acl.setAce(aces);
+                    initModeMappingEditor();
+                    add(modeMappingEditor.renderNewAclPanel());
                 }
-                aces.add(gwtJahiaNodeACE);                
-                acl.setAce(aces);
-                initModeMappingEditor(acl);
-                add(modeMappingEditor.renderNewAclPanel());
-            }
 
-            public void onFailure(Throwable throwable) {
-                Log.error("Unable to Add group ACE");
-                initModeMappingEditor(acl);
-                add(modeMappingEditor.renderNewAclPanel());
-            }
-        });
+                public void onFailure(Throwable throwable) {
+                    Log.error("Unable to Add group ACE");
+                    initModeMappingEditor();
+                    add(modeMappingEditor.renderNewAclPanel());
+                }
+            });
+        } else {
+            add(new Label(Messages.getNotEmptyResource("mw_only_view_mode", "The selected portlets contains only view mode.")));
+        }
     }
 
-    private void initModeMappingEditor(GWTJahiaNodeACL acl) {
-        modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext());
+    private void initModeMappingEditor() {
+        modeMappingEditor = new AclEditor(getPortletWizardWindow().getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getBaseAcl(), getPortletWizardWindow().getParentNode().getAclContext());
         modeMappingEditor.setAclGroup(JCRClientUtils.MODES_ACL);
         modeMappingEditor.setAddUsersLabel(Messages.getNotEmptyResource("mw_modes_adduser", "Add mode-user permission"));
         modeMappingEditor.setAddGroupsLabel(Messages.getNotEmptyResource("mw_modes_addgroup", "Add mode-group permission"));
@@ -89,4 +99,8 @@ public class PortletModesCard extends MashupWizardCard {
         restoreButton.setVisible(false);
     }
 
+    @Override
+    public void refreshLayout() {
+        // do nothing
+    }
 }

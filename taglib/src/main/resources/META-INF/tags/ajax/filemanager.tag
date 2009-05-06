@@ -382,4 +382,16 @@
 <internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
                             aliasResourceName="mw_save_as"/>
 
+<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationName.label"
+                            aliasResourceName="mw_name"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.components.ManageComponents.applicationDesc.label"
+                            aliasResourceName="mw_description"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
+                            aliasResourceName="mw_roles_perm_desc"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.saveas.label"
+                            aliasResourceName="mw_finish_description"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.MashupsManager.wizard.roles.any"
+                            aliasResourceName="mw_no_role"/>
+
+
 

@@ -121,8 +121,8 @@ public class WizardWindow extends Window {
     private void updateWizard() {
         WizardCard wc = cards.get(currentStep);
         headerPanel.updateIndicatorStep(wc.getCardTitle(), wc.getHtmltext());
+        wc.refreshLayout();
         this.cardPanel.setActiveItem(wc);
-        wc.layout();
 
         if (currentStep + 1 == cards.size()) {
             nextBtn.setText(finishButtonText);

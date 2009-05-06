@@ -35,15 +35,26 @@ public class PortletSaveAsCard extends MashupWizardCard {
 
     public PortletSaveAsCard() {
         super(Messages.getNotEmptyResource("mw_finish","Finish"));
-        setHtmlText(Messages.getNotEmptyResource("mw_finish_description",""));
+        setHtmlText(getText());
+    }
 
+    public String getText() {
+        return Messages.getNotEmptyResource("mw_finish_description","");
     }
 
     public void createUI() {
+        super.createUI();        
         FormPanel simple = new FormPanel();
+        simple.setFieldWidth(300);
+        simple.setLabelWidth(200);
         saveAs.setFieldLabel(Messages.getNotEmptyResource("mw_save_as","Save as"));
         saveAs.setAllowBlank(false);
         saveAs.setMinLength(5);
+        try {
+            saveAs.setValue(getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getDisplayName());
+        } catch (Exception e) {
+            Log.error("Error while setting default values");
+        }
         simple.add(saveAs);
         setFormPanel(simple);
     }

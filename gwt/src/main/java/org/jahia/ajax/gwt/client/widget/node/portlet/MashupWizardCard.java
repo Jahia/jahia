@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 public abstract class MashupWizardCard extends WizardCard {
     private MashupWizardCard nextWizardCard;
     private boolean uiCreated;
+    private String text;
 
     public MashupWizardCard(String cardtitle) {
         super(cardtitle);
@@ -41,22 +42,37 @@ public abstract class MashupWizardCard extends WizardCard {
     }
 
     public GWTJahiaNewPortletInstance getGwtJahiaNewPortletInstance() {
+        if (getPortletWizardWindow() == null) {
+            return null;
+        }
         return getPortletWizardWindow().getGwtJahiaNewPortletInstance();
     }
 
     public void setGwtPortletInstanceWizard(GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance) {
+        if (getPortletWizardWindow() == null) {
+            return;
+        }
         getPortletWizardWindow().setGwtPortletInstanceWizard(gwtJahiaNewPortletInstance);
     }
 
     public String getJahiNodeType() {
+        if (getGwtJahiaNewPortletInstance() == null) {
+            return null;
+        }
         return getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getPortletType();
     }
 
     public BrowserLinker getLinker() {
+        if (getPortletWizardWindow() == null) {
+            return null;
+        }
         return getPortletWizardWindow().getLinker();
     }
 
-     public GWTJahiaNode getParentNode() {
+    public GWTJahiaNode getParentNode() {
+        if (getPortletWizardWindow() == null) {
+            return null;
+        }
         return getPortletWizardWindow().getParentNode();
     }
 
@@ -82,7 +98,20 @@ public abstract class MashupWizardCard extends WizardCard {
         setUiCreated(false);
     }
 
-    public abstract void createUI();
+    public void createUI(){
+       updateHtmlText(); 
+    }
+
+    public abstract String getText();
 
     public abstract void next();
+
+    private void updateHtmlText() {
+        String name = "";
+        if (getGwtJahiaNewPortletInstance() != null && getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition() != null) {
+            name = getGwtJahiaNewPortletInstance().getGwtJahiaPortletDefinition().getDisplayName();
+
+        }
+        super.setHtmlText("[" + name + "] " + getText());    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

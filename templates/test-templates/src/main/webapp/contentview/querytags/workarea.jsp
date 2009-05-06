@@ -284,7 +284,7 @@ public boolean isNumeric (String propertyName, Map<String, ExtendedPropertyDefin
 	    <ui:dateSelector cssClassName="dateSelection" fieldName="modifiedDateFilter" value="${modifiedDateFilter}"/><br/>
         <fmt:message key="label.metadata.category"/>
         <query:categoryFilter startingCategoryKey="root"
-            display="selectBoxSingle"
+            display="selectBoxMultiple"
             name="listCategories"
             level="1"
             messageKey="noCategories"

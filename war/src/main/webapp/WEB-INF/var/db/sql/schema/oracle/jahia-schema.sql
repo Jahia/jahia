@@ -380,6 +380,7 @@
         name_jahia_grps varchar2(195 char),
         key_jahia_grps varchar2(200 char) unique,
         siteid_jahia_grps number(10,0),
+        hidden_jahia_grps number(1,0),
         primary key (id_jahia_grps)
     );
 

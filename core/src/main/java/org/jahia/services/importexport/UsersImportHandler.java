@@ -27,10 +27,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.security.Principal;
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,6 +65,10 @@ public class UsersImportHandler  extends DefaultHandler {
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         try {
+            Map<String,String> groups = new HashMap();
+            if (site != null){
+                groups = sg.getGroups(site.getID());
+            }
             if (currentGroup == null) {
                 if (localName.equals("user")) {
                     String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
@@ -127,7 +128,9 @@ public class UsersImportHandler  extends DefaultHandler {
                     if (name != null) {
                         currentGroup = g.lookupGroup(site.getID(), name);
                         if (currentGroup == null) {
-                            currentGroup = g.createGroup(site.getID(), name, p);
+                            currentGroup = g.createGroup(site.getID(), name, p, false);
+                        }
+                        if (site != null && !groups.containsKey(currentGroup.getGroupname())) {
                             sg.addGroup(site.getID(), currentGroup);
                         }
                     }

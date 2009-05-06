@@ -485,6 +485,7 @@
         name_jahia_grps varchar(195),
         key_jahia_grps varchar(200) unique,
         siteid_jahia_grps int4,
+        hidden_jahia_grps bool,
         primary key (id_jahia_grps)
     );
 

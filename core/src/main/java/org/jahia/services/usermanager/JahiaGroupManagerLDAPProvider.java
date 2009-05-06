@@ -16,10 +16,6 @@
  */
 package org.jahia.services.usermanager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -230,12 +226,13 @@ public class JahiaGroupManagerLDAPProvider extends JahiaGroupManagerProvider {
      * @param siteID    the site owner of this user
      * @param groupname Group's unique identification name
      *
+     * @param hidden
      * @return Retrun a reference on a group object on success, or if the groupname
      *         already exists or another error occured, null is returned.
      */
 
-    public JahiaGroup createGroup (int siteID, String groupname,
-                                                Properties parm3) {
+    public JahiaGroup createGroup(int siteID, String groupname,
+                                  Properties parm3, boolean hidden) {
         /**@todo Implement this org.jahia.services.usermanager.JahiaGroupManagerProvider abstract method*/
         throw new java.lang.UnsupportedOperationException (
                 "Method createGroup() not yet implemented.");

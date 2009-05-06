@@ -49,13 +49,19 @@ public class JahiaGrp implements Serializable {
     private JahiaSite site;
 
     /**
+     * nullable persistent field
+     */
+    private Boolean hidden;
+
+    /**
      * full constructor
      */
-    public JahiaGrp(Integer idJahiaGrps, String nameJahiaGrps, String keyJahiaGrps, JahiaSite siteidJahiaGrps) {
+    public JahiaGrp(Integer idJahiaGrps, String nameJahiaGrps, String keyJahiaGrps, JahiaSite siteidJahiaGrps, Boolean hidden) {
         this.id = idJahiaGrps;
         this.name = nameJahiaGrps;
         this.key = keyJahiaGrps;
         this.site = siteidJahiaGrps;
+        this.hidden = hidden;
     }
 
     /**
@@ -119,6 +125,14 @@ public class JahiaGrp implements Serializable {
 
     public void setSite(JahiaSite site) {
         this.site = site;
+    }
+
+    public Boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
     }
 
     public String toString() {

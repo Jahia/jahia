@@ -80,7 +80,9 @@ public class UsersGroup extends JahiaDBGroup {
         if (principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
             return false;
         }
-
+        if (mSiteID == 0) {
+            return true;
+        }
         if (!(principal instanceof JahiaDBUser)) {
             return true;
         } else {

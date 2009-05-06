@@ -83,6 +83,8 @@ public abstract class JahiaGroup implements Group, Serializable {
      */
     protected String mGroupKey;
 
+    protected boolean hidden = false;
+
     /** The site id */
     protected int mSiteID;
 
@@ -437,4 +439,11 @@ public abstract class JahiaGroup implements Group, Serializable {
         return preloadedGroups;
     }
 
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
 }

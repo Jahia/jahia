@@ -860,7 +860,7 @@ public class ManageGroups extends AbstractAdministrationModule {
     {
         // create the group...
         JahiaGroup theGroup = null;
-        theGroup = gMgr.createGroup(jahiaSite.getID(), name , null);
+        theGroup = gMgr.createGroup(jahiaSite.getID(), name , null, false);
         if (theGroup != null) {
             // create group membership...
             try {

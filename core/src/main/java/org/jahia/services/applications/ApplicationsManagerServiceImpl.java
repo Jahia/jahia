@@ -50,7 +50,6 @@ import org.jahia.services.content.JCRPortletNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.InsertionSortedMap;
-import org.jahia.registries.ServicesRegistry;
 import org.xml.sax.SAXException;
 
 /**
@@ -389,7 +388,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
             role = (String) updatedRoles.next();
             groupName = entryPointInstance.getID() + "_" + role;
             groupManagerService.createGroup(0,
-                            groupName, null); // Hollis all app role groups are of site 0 !!!
+                            groupName, null, true); // Hollis all app role groups are of site 0 !!!
         }
 
     }

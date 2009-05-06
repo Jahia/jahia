@@ -61,6 +61,7 @@ public class AclNameEditor {
     private List<String> items;
     private Table tbl;
     private boolean readonly;
+    protected static String aclContext = "currentSite";
 
     public static void initACLNameEditors() {
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
@@ -69,6 +70,10 @@ public class AclNameEditor {
                 String heightAttribute = DOM.getElementAttribute(panel.getElement(), "height");
                 final String height = heightAttribute.length() > 0 ? heightAttribute : "200px";
                 final int aclId = Integer.parseInt(DOM.getElementAttribute(panel.getElement(), "aclid"));
+                final String acl = DOM.getElementAttribute(panel.getElement(), "aclContext");
+                if (acl != null && acl.length()>0) {
+                    aclContext = acl;
+                }
                 ACLService.App.getInstance().getACL(aclId, new AsyncCallback<GWTJahiaNodeACL>() {
                     public void onFailure(Throwable caught) {
                         Log.error("ACL load failed for the ID '" + aclId + "'", caught);
@@ -212,13 +217,13 @@ public class AclNameEditor {
             addUser.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     Log.debug("add");
-                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, "currentSite");
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, aclContext);
                 }
             });
             addGroup.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
                     Log.debug("add");
-                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, "currentSite");
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, aclContext);
                 }
             });
         }

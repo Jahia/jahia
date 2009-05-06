@@ -123,14 +123,12 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
     /**
      * Create a new group in the system.
      *
-     * @param int       siteID the site owner of this user
-     * @param groupname Group's unique identification name
-     *
+     * @param hidden
      * @return a reference on a group object on success, or if the groupname
      *         already exists or another error occurred, null is returned.
      */
-    public synchronized JahiaGroup createGroup (int siteID, String name,
-                                                Properties properties) {
+    public synchronized JahiaGroup createGroup(int siteID, String name,
+                                               Properties properties, boolean hidden) {
         // try to avoid a NullPointerException
         if (!isGroupNameSyntaxCorrect(name)) {
             return null;
@@ -145,7 +143,7 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
         JahiaDBGroup group = null;
         String groupKey = name + ":" + String.valueOf(siteID);
         group = new JahiaDBGroup(0, name, groupKey, siteID, null, properties, false);
-
+        group .setHidden(hidden);
         groupManager.createGroup(group);
         group = (JahiaDBGroup) groupManager.findGroupBySiteAndName(siteID, name);
         return group;
@@ -183,7 +181,10 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
             return null;
         }
 
-		/* 2004-16-06 : update by EP
+		if (name.equals(GUEST_GROUPNAME) || name.equals(USERS_GROUPNAME)) {
+            siteID = 0;
+        }
+        /* 2004-16-06 : update by EP
 		new cache to browse : cross providers ...  */
 	    JahiaGroup group = groupManager.findGroupBySiteAndName(siteID, name);
 
@@ -206,7 +207,8 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
 
         // cannot remove the super admin group
         if ((group.getSiteID () == 0) &&
-                (group.getGroupname ().equals (ADMINISTRATORS_GROUPNAME))) {
+                (group.getGroupname ().equals (ADMINISTRATORS_GROUPNAME) || group.getGroupname ().equals(GUEST_GROUPNAME)
+                        || group.getGroupname ().equals(USERS_GROUPNAME))) {
             return false;
         }
 
@@ -347,7 +349,7 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
      * @return Return the instance of the guest group. Return null on any failure.
      */
     public final JahiaGroup getGuestGroup (int siteID) {
-        return lookupGroup (siteID, GUEST_GROUPNAME);
+        return lookupGroup (0, GUEST_GROUPNAME);
     }
 
     //-------------------------------------------------------------------------
@@ -479,7 +481,9 @@ public class JahiaGroupManagerDBProvider extends JahiaGroupManagerProvider {
         while (groupKeyEnum.hasNext()) {
             String curGroupKey = (String) groupKeyEnum.next();
             JahiaGroup group = lookupGroup(curGroupKey);
-            result.add(group);
+            if (!group.isHidden()) {
+                result.add(group);
+            }
         }
 
         return result;

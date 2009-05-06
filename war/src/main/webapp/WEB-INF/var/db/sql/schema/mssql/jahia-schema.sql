@@ -485,6 +485,7 @@
         name_jahia_grps nvarchar(195) null,
         key_jahia_grps nvarchar(200) null unique,
         siteid_jahia_grps int null,
+        hidden_jahia_grps tinyint null,
         primary key (id_jahia_grps)
     );
 

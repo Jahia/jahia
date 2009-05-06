@@ -111,7 +111,8 @@ public class JahiaGroupManager {
             jahiaSite = siteDAO.findById(siteid);
             grpidSitesGrps = dao.loadJahiaGroupBySiteAndName(siteid,
                                                              grp.getGroupname());
-        } else {
+        }
+        if (grpidSitesGrps == null){
             grpidSitesGrps = dao.loadJahiaGroupByName(grp.getGroupname());
         }
         if (grpidSitesGrps != null) {
@@ -150,6 +151,7 @@ public class JahiaGroupManager {
         JahiaGrp jahiaGrp = new JahiaGrp();
         jahiaGrp.setKey(group.getGroupKey());
         jahiaGrp.setName(group.getGroupname());
+        jahiaGrp.setHidden(group.isHidden());
         if (group.getSiteID() > 0) {
             jahiaGrp.setSite(siteDAO.findById(new Integer(group.getSiteID())));
         }
@@ -286,12 +288,15 @@ public class JahiaGroupManager {
     private JahiaGroup getJahiaGroup(JahiaGrp jahiaGrp, int siteID, Map<String, Principal> members, Properties properties, boolean preloadedGroups) {
         JahiaGroup group;
         if (JahiaGroupManagerDBProvider.GUEST_GROUPNAME.equals(jahiaGrp.getName())) {
-            group = new GuestGroup(jahiaGrp.getId().intValue(), siteID, properties);
+            group = new GuestGroup(jahiaGrp.getId().intValue(), 0, properties);
         } else if (JahiaGroupManagerDBProvider.USERS_GROUPNAME.equals(jahiaGrp.getName())) {
-            group = new UsersGroup(jahiaGrp.getId().intValue(), siteID, properties);
+            group = new UsersGroup(jahiaGrp.getId().intValue(), 0, properties);
         } else {
             group = new JahiaDBGroup(jahiaGrp.getId().intValue(), jahiaGrp.getName(), jahiaGrp.getKey(),
                                      siteID, members, properties, preloadedGroups);
+            if (jahiaGrp.isHidden() != null ) {
+                group.setHidden(jahiaGrp.isHidden());
+            }
         }
         return group;
     }
@@ -404,13 +409,19 @@ public class JahiaGroupManager {
     }
 
     public void searchGroupName(String curCriteriaValue, int siteID, Set<String> groupKeys) {
-        List<String> list = dao.searchGroupName(curCriteriaValue, new Integer(siteID));
-        groupKeys.addAll(list);
+        if (siteID == 0) {
+            groupKeys.addAll(dao.searchGroupNameInJahiaGrp(curCriteriaValue, null));
+        } else {
+            groupKeys.addAll(dao.searchGroupName(curCriteriaValue, new Integer(siteID)));
+        }
     }
 
     public void searchGroupName(List<String> criteriaNameList, List<String> criteriaValueList, int siteID, Set<String> groupKeys, String providerName) {
-        List<String> list = dao.searchGroupName(criteriaNameList, criteriaValueList, new Integer(siteID), providerName);
-        groupKeys.addAll(list);
+        if (siteID == 0) {
+            groupKeys.addAll(dao.searchGroupNameInJahiaGrp("", 0));
+        } else {
+            groupKeys.addAll(dao.searchGroupName(criteriaNameList, criteriaValueList, new Integer(siteID), providerName));
+        }
     }
 
     public boolean updateProperty(String key, String value, int id, String providerName, String groupKey) {

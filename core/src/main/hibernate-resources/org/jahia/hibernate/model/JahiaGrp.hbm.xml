@@ -66,6 +66,15 @@
             />
         </many-to-one>
 
+        <property
+            name="hidden"
+            type="java.lang.Boolean"
+            update="true"
+            insert="true"
+            access="property"
+            column="hidden_jahia_grps"
+        />
+
         <!--
             To add non XDoclet property mappings, create a file named
                 hibernate-properties-JahiaGrp.xml

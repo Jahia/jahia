@@ -38,13 +38,11 @@ public abstract class JahiaGroupManagerService extends JahiaService {
     /**
      * Create a new group in the system.
      *
-     * @param int       siteID the site owner of this group
-     * @param groupname Group's unique identification name
-     *
+     * @param hidden
      * @return Retrun a reference on a group object on success, or if the groupname
      *         already exists or another error occured, null is returned.
      */
-    public abstract JahiaGroup createGroup (int siteID, String name, Properties properties);
+    public abstract JahiaGroup createGroup(int siteID, String name, Properties properties, boolean hidden);
 
 
     //-------------------------------------------------------------------------

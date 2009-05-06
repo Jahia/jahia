@@ -41,13 +41,13 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
     public List<String> getGroupKeys() {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        return template.find("select distinct g.key from JahiaGrp g");
+        return template.find("select distinct g.key from JahiaGrp g where g.hidden=false");
     }
 
     public List<String> getGroupNames() {
         HibernateTemplate template = getHibernateTemplate();
         template.setCacheQueries(true);
-        return template.find("select distinct g.name from JahiaGrp g");
+        return template.find("select distinct g.name from JahiaGrp g where g.hidden=false");
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -65,7 +65,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         if (siteId == null) {
             return template.find("select distinct g.key from JahiaGrp g where g.site.id is null");
         } else {
-            return template.find("select distinct g.key from JahiaGrp g where g.site.id=?",
+            return template.find("select distinct g.key from JahiaGrp g where ((g.site.id=?) ) and g.hidden=false",
                                  siteId);
         }
     }
@@ -76,7 +76,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         if (siteId == null) {
             return template.find("select distinct g.name from JahiaGrp g where g.site.id is null");
         } else {
-            return template.find("select distinct g.name from JahiaGrp g where g.site.id=?",
+            return template.find("select distinct g.name from JahiaGrp g where ((g.site.id=?) ) and g.hidden=false",
                                  siteId);
         }
     }

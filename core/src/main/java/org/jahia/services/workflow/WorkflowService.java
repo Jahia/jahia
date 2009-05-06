@@ -398,7 +398,7 @@ public class WorkflowService extends JahiaService {
             // create group
             grp = ServicesRegistry.getInstance().
                     getJahiaGroupManagerService().
-                    createGroup(0, "workflowrole_" + main + "_" + role, new Properties());
+                    createGroup(0, "workflowrole_" + main + "_" + role, new Properties(), true);
         }
         WorkflowRole r = new WorkflowRole(role, grp, main);
 

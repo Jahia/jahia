@@ -399,12 +399,19 @@ public class JahiaSitesBaseService extends JahiaSitesService {
             site.getACL().setGroupEntry(adminGrp, adminAclEntry);
 
             // create default groups...
+            JahiaGroup usersGroup = jgms.lookupGroup(0,JahiaGroupManagerService.USERS_GROUPNAME);
+            if (usersGroup == null) {
+                usersGroup = jgms.createGroup(0, JahiaGroupManagerService.USERS_GROUPNAME, null, false);
+            }
+
+            JahiaGroup guestGroup = jgms.lookupGroup(0,JahiaGroupManagerService.GUEST_GROUPNAME);
+            if (guestGroup == null) {
+                guestGroup = jgms.createGroup(0, JahiaGroupManagerService.GUEST_GROUPNAME, null, false);
+            }
+
             JahiaGroup adminGroup = jgms.createGroup(site.getID(),
-                    JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null);
-            JahiaGroup usersGroup = jgms.createGroup(site.getID(),
-                    JahiaGroupManagerService.USERS_GROUPNAME, null);
-            JahiaGroup guestGroup = jgms.createGroup(site.getID(),
-                    JahiaGroupManagerService.GUEST_GROUPNAME, null);
+                    JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME, null, false);
+
 
             // create groups memberships...
             JahiaSiteTools.addGroup(adminGroup, site);

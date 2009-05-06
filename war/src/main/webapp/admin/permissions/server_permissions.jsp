@@ -79,7 +79,7 @@ stretcherToOpen   = 0; %>
                         <c:set var="fieldName" value="${fn:replace(aclName, '.', '_')}"/>
                         <c:set var="readonly"><%= !LicenseActionChecker.isAuthorizedByLicense((String) pageContext.getAttribute("aclName"), siteID.intValue()) %></c:set>
                         <input type="hidden" name="${fieldName}" id="${fieldName}" value=""/>
-                        <span id="gwtaclnameeditor-${status.index}" aclid="${curAclName.acl.id}" height="120px" fieldId="${fieldName}" readonly="${readonly}"></span>
+                        <span id="gwtaclnameeditor-${status.index}" aclid="${curAclName.acl.id}" height="120px" fieldId="${fieldName}" readonly="${readonly}" aclContext="siteSelector"></span>
                     </td>
                   </tr>
                 </c:forEach>

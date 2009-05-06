@@ -110,7 +110,6 @@ public class UserManagerServiceImpl extends SessionManagerServiceImpl implements
             for (Integer siteId : sites) {
                 Set groups = groupMgrServ.searchGroups(siteId, criterias);
                 if (groups != null) {
-                    JahiaSite jahiaSite = sitesService.getSite(siteId);
                     Iterator iterator = groups.iterator();
                     JahiaGroup group;
                     GWTJahiaGroup data;
@@ -133,7 +132,12 @@ public class UserManagerServiceImpl extends SessionManagerServiceImpl implements
                             displayMembers = JahiaResourceBundle.getJahiaInternalResource("org.jahia.engines.groups.guest.label", retrieveParamBean().getLocale());
                         }
                         data.setDisplayMembers(displayMembers);
-                        data.setSiteName(jahiaSite.getServerName());
+                        if (group.getSiteID() > 0) {
+                            JahiaSite jahiaSite = sitesService.getSite(group.getSiteID());
+                            if (jahiaSite != null) {
+                                data.setSiteName(jahiaSite.getServerName());
+                            }
+                        }
                         data.setSiteId(siteId);
                         data.setProvider(group.getProviderName());
                         result.add(data);

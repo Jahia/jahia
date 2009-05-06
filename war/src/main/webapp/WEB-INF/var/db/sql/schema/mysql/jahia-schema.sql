@@ -520,6 +520,7 @@
         name_jahia_grps varchar(195),
         key_jahia_grps varchar(200) unique,
         siteid_jahia_grps integer,
+        hidden_jahia_grps bit,
         primary key (id_jahia_grps)
     );
 

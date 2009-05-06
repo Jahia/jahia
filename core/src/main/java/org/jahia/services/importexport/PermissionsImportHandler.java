@@ -50,7 +50,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * To change this template use File | Settings | File Templates.
  */
 public class PermissionsImportHandler extends DefaultHandler {
-    private static Logger logger = Logger.getLogger(UsersImportHandler.class);
+    private static Logger logger = Logger.getLogger(PermissionsImportHandler.class);
     private JahiaUserManagerService u;
     private JahiaGroupManagerService g;
     private JahiaSiteUserManagerService su;

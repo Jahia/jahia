@@ -110,10 +110,10 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService {
         }
     }    
 
-    public JahiaGroup createGroup (final int siteID, final String name, final Properties properties) {
+    public JahiaGroup createGroup(final int siteID, final String name, final Properties properties, final boolean hidden) {
         return (JahiaGroup) routeCallOne(new Command() {
             public Object execute(JahiaGroupManagerProvider p) {
-                return p.createGroup(siteID, name, properties);
+                return p.createGroup(siteID, name, properties, hidden);
             }
         }, null, properties);
     }

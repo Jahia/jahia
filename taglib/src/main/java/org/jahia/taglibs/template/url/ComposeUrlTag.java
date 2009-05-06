@@ -79,15 +79,10 @@ public class ComposeUrlTag extends AbstractJahiaTag {
                     }
                     
                 } else if (page.equals("login")) {                     	
-                	  final String popupLoginURL;
-                    if (pageID > 0) {
-                        popupLoginURL = jData.gui().drawPopupLoginUrl(pageID);
-                    } else {
-                        popupLoginURL = jData.gui().drawPopupLoginUrl();
-                    }
-                    final String params = "width=450,height=500,left=10,top=10,resizable=yes,scrollbars=no,status=no";
-                    buffer.append("window.open('").append(popupLoginURL).append("','Login','").append(params).append("')");
-
+                    buffer.append("javascript:").append(pageID > 0 ? jData.gui().html()
+                        .drawLoginLauncher(pageID) : jData.gui().html()
+                        .drawLoginLauncher());
+                    
                 } else if (page.equals("mySettings")) {
                     buffer.append(jData.gui().html().drawMySettingsLauncher());
                     

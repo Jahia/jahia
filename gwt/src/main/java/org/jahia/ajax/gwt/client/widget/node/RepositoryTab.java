@@ -104,7 +104,7 @@ public class RepositoryTab extends ContentPanel {
             }
 
             @Override
-            protected void onLoadSuccess(GWTJahiaNode gwtJahiaNode, List< GWTJahiaNode > gwtJahiaNodes) {
+            protected void onLoadSuccess(GWTJahiaNode gwtJahiaNode, List<GWTJahiaNode> gwtJahiaNodes) {
                 super.onLoadSuccess(gwtJahiaNode, gwtJahiaNodes);
                 if (init) {
                     Log.debug("setting init to false") ;

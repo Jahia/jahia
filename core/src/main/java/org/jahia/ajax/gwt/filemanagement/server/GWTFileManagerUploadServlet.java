@@ -193,8 +193,13 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         }
 
 
-
-        JCRNodeWrapper locationFolder = jcr.getFileNode(location, user) ;
+        JCRNodeWrapper locationFolder;
+        try {
+            locationFolder = jcr.getThreadSession(user).getNode(location);
+        } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
+            return false;
+        }
 
         Exception ex = locationFolder.getException() ;
         if (ex != null) {

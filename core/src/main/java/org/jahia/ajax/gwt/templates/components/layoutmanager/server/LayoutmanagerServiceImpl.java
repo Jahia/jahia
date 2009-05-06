@@ -611,7 +611,12 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
      * @return
      */
     private JCRNodeWrapper findLayoutmanagerNode() {
-        return getJCRStoreService().getFileNode(LAYOUTMANAGER_NODE_PATH, getRemoteJahiaUser());
+        try {
+            return getJCRStoreService().getThreadSession(getRemoteJahiaUser()).getNode(LAYOUTMANAGER_NODE_PATH);
+        } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
+            return null;
+        }
     }
 
 

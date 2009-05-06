@@ -783,6 +783,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
        options['height'] = 240;
        options['is3D'] = true;
        options['title'] = "'"+statType+"'";
+       options['wmode'] = 'transparent';
 
         var chart = new  $wnd.google.visualization.BarChart(element);
         chart.draw(data, options);
@@ -816,6 +817,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
 
           var options = {};
           options['dataMode'] = 'regions';
+          options['wmode'] = 'transparent';
           var geomap = new $wnd.google.visualization.GeoMap(element);
           geomap.draw(data, options);
         }-*/;
@@ -850,6 +852,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
          options['displayAnnotations']= true;
          options['annotationsWidth'] = 5;
          options['scaleType'] = 'maximize';
+         options['wmode'] = 'transparent';
          var chart = new $wnd.google.visualization.AnnotatedTimeLine(element);
          chart.draw(data, options);
 

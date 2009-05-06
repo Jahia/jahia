@@ -76,7 +76,7 @@ rule "Notifications: workflow state changed"
     then
         #Fire workflow notification event to user "testUser"
         #Fire workflow notification event to group "testGroup" 
-        Fire workflowCurrentUser notification event to the current user
+        #Fire workflowCurrentUser notification event to the current user
         Fire workflowNextStepUsers notification event to the users involved in the next step
         #Fire workflowAdmins notification event to the users having administration rights on the object
         #Fire workflowLastUser notification event to the last user that did "notify"

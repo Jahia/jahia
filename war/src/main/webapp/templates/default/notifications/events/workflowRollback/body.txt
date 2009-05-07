@@ -1,10 +1,8 @@
-
-
 ${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
 
 <% if (jobUser.getUser().equals(subscriber.getUser())) { %>${i18n.get("notifications.workflow.job.triggeredBy.sameUser", "the workflow job, triggered by you")}<% } else { %>${i18n.get("notifications.workflow.job.triggeredBy.otherUser", "the workflow job, triggered by")} ${jobUser.fullName}<% } %>${i18n.get("notifications.workflow.job.executionFinished", ", has finished its execution.")}
 
-Content has been rollbacked to you.
+${i18n.get("notifications.workflow.status.rollbacked", "The content has not been approved for publishing and has been refused. Please make appropriate modifications.")}
 
 <% if (jobComment != null) { %>
 ${i18n.get("notifications.workflow.comment", "Comment")}:

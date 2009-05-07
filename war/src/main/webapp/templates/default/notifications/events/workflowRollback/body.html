@@ -25,7 +25,7 @@ p {
 <h1>${i18n.get("notifications.workflow.subject", "Workflow operation report")}<% if (jobTitle != null) { %> - ${jobTitle}<% } %></h1>
 <p>${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},</p>
 <p><% if (jobUser.getUser().equals(subscriber.getUser())) { %>${i18n.get("notifications.workflow.job.triggeredBy.sameUser", "the workflow job, triggered by you")}<% } else { %>${i18n.get("notifications.workflow.job.triggeredBy.otherUser", "the workflow job, triggered by")} ${jobUser.fullName}<% } %>${i18n.get("notifications.workflow.job.executionFinished", ", has finished its execution.")}</p>
-<p>Content has been rollbacked to you.</p>
+<p>${i18n.get("notifications.workflow.status.rollbacked", "The content has not been approved for publishing and has been refused. Please make appropriate modifications.")}</p>
 <% if (jobComment != null) { %>
 <p><strong>${i18n.get("notifications.workflow.comment", "Comment")}:</strong><br>${jobComment}</p>
 <% } %>

@@ -1,5 +1,3 @@
-
-
 ${i18n.get("notifications.common.salutation", "Dear")} ${subscriber.fullName},
 <% msg = 'an event {0} occurred on the following page:' %>
 ${i18n.getFormatted("notifications.events.default.eventOccurred", msg, eventType)} ${targetPage.absoluteUrl}

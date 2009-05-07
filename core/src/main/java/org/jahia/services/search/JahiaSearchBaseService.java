@@ -2888,7 +2888,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                     }
                 }
                 addDefaultGroups(newFieldsGrouping, siteId);
-            } 
+            }
 
             for (Integer currentID : siteId > 0 ? fieldService.getAllFieldDefinitionIDs(siteId) : fieldService.getAllFieldDefinitionIDs()) {
                 JahiaFieldDefinition def = fieldService
@@ -2909,7 +2909,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                 .getNodeType(nodeType).getPropertyDefinition(
                                         propertyName);
                     }
-                    if (propertyDef != null) {                    
+                    if (propertyDef != null) {
                         scoreBoost = (float) propertyDef.getScoreboost();
                         analyzer = propertyDef.getAnalyzer();
                         indexMode = propertyDef.getIndex();
@@ -2926,12 +2926,12 @@ public class JahiaSearchBaseService extends JahiaSearchService
                             indexMode = ExtendedPropertyDefinition.INDEXED_UNTOKENIZED;
                             }
                         }
-                    } 
-                    
+                    }
+
                     String name;
                     boolean isMetadata = def.getIsMetadata();
                     String lowerCaseName = def.getName().toLowerCase();
-                    
+
                     if (isMetadata) {
                         name = JahiaSearchConstant.METADATA_PREFIX
                                 + lowerCaseName;
@@ -2975,10 +2975,10 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                 if (!compassConfigChanged) {
                                     compassConfigChanged = true;
                                 }
-                            }                            
+                            }
                         }
                     }
-                    
+
                     if (propertyDef != null) {
                         if (propertyDef.isFacetable()) {
                             if (updateCompassMappings(
@@ -3006,7 +3006,7 @@ public class JahiaSearchBaseService extends JahiaSearchService
                                 if (!compassConfigChanged) {
                                     compassConfigChanged = true;
                                 }
-                            }                            
+                            }
                         }
                         if (propertyDef.isSortable()) {
                             if (updateCompassMappings(
@@ -3025,14 +3025,14 @@ public class JahiaSearchBaseService extends JahiaSearchService
                         }
                     }
 
-                    if (indexMode != ExtendedPropertyDefinition.INDEXED_NO 
+                    if (indexMode != ExtendedPropertyDefinition.INDEXED_NO
                             && (def.getItemDefinition() != null
                             && def.getType() != FieldTypes.DATE
                             && def.getType() != FieldTypes.BOOLEAN
                             && def.getType() != FieldTypes.FLOAT
                             && def.getType() != FieldTypes.INTEGER
                             && def.getType() != FieldTypes.COLOR
-                            && def.getType() != FieldTypes.APPLICATION && 
+                            && def.getType() != FieldTypes.APPLICATION &&
                                (propertyDef == null || !Boolean.FALSE
                                     .equals(propertyDef.getFulltextSearchable())))
                             || (propertyDef != null && Boolean.TRUE

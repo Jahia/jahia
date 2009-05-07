@@ -24,6 +24,7 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.hibernate.dao.JahiaUserDAO;
+import org.jahia.hibernate.dao.JahiaAclDAO;
 import org.jahia.hibernate.model.JahiaSitesUser;
 import org.jahia.hibernate.model.JahiaSitesUserPK;
 import org.jahia.hibernate.model.JahiaUserProp;
@@ -51,6 +52,7 @@ public class JahiaUserManager {
     private Cache<String, JahiaUser> cache;
 
     private JahiaUserDAO userDAO = null;
+    private JahiaAclDAO aclDAO = null;
 
 // --------------------- GETTER / SETTER METHODS ---------------------
 
@@ -67,6 +69,10 @@ public class JahiaUserManager {
 
     public void setJahiaUserDAO(JahiaUserDAO dao) {
         this.userDAO = dao;
+    }
+
+    public void setJahiaAclDAO(JahiaAclDAO aclDAO) {
+        this.aclDAO = aclDAO;
     }
 
     public void setCacheService(CacheService cacheService) {
@@ -123,6 +129,7 @@ public class JahiaUserManager {
     public boolean deleteUser(JahiaUser user) {
         try {
             userDAO.delete(user.getUserKey());
+            aclDAO.removeUserAclEntries(user.getUserKey());
             return true;
         } catch (Exception e) {
             return false;

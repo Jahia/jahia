@@ -238,6 +238,7 @@ public class JahiaUserDAO extends AbstractGeneratorDAO {
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         template.deleteAll(template.find("from JahiaSitesUser u where u.comp_id.siteId=? " +
                                       "and u.comp_id.username=?", new Object[]{siteID, username}));
+        template.flush();
     }
 
     public void removeMemberFromAllSite(String name) {

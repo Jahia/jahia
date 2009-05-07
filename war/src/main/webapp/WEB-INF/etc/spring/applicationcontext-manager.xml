@@ -266,6 +266,7 @@
     <bean id="org.jahia.hibernate.manager.JahiaUserManager" parent="txProxyTemplate">
         <property name="target">
             <bean class="org.jahia.hibernate.manager.JahiaUserManager">
+                <property name="jahiaAclDAO" ref="jahiaAclDAO" />
                 <property name="jahiaUserDAO" ref="jahiaUserDAO" />
                 <property name="cacheService" ref="JahiaCacheService" />
             </bean>

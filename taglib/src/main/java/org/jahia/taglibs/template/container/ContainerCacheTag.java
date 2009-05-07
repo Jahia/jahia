@@ -356,12 +356,12 @@ public class ContainerCacheTag extends AbstractJahiaTag implements ContainerCach
                 writer.print("<fieldset><legend align=\"right\">not cached (now " + dateFormat.format(new Date()) + ")</legend>");
             }
         }
-        final boolean b = content.contains("<!-- cache:include src=");
-        if (!b && org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated()) {
+        boolean b = currentCache && !content.contains("<!-- cache:include src=") && org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated();
+        if (b) {
             writer.print("<!-- cache:include src=\"" + pageURL + "?ctnid=" + (container!=null?container.getID():"0") + "&cacheKey=" + cacheKey + "\" -->");
         }
-        writer.print(content);
-        if (!b && org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated()) {
+        writer.print(new String(content.getBytes("UTF-8")));        
+        if (b) {
             writer.println("<!-- /cache:include -->");
         }
         if (debug) {

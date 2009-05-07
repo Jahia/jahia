@@ -29,6 +29,7 @@
 <ui:rssButton targetURL=""/>
 <ui:subscribeButton source=""/>
 <ui:mediaGallery name="" inputName=""/>
+<ui:userGroupSelector/>
 <s:date/>
 <s:created/>
 <s:createdBy/>

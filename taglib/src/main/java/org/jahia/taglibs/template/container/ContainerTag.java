@@ -46,6 +46,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.services.applications.StringServletOutputStream;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.containerlist.AbsoluteContainerListTag;
@@ -56,6 +57,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -517,8 +519,9 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                         buf.append("</div><!-- css user defined -->");
                     }
 
+                    String content = buf.toString();
                     if (currentCache) {
-                        writeToContainerCache(container, jData, buf.toString());
+                        writeToContainerCache(container, jData, content);
                     }
                     if (random && !ProcessingContext.EDIT.equals(context.getOperationMode())) {
                         if (randomCounter == 0)
@@ -531,7 +534,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
 
                         }
                     }
-                    ContainerCacheTag.writeOut(getPreviousOut(), buf.toString(), currentCache, debug, container, cacheKey,
+                    ContainerCacheTag.writeOut(getPreviousOut(), content, currentCache, debug, container, cacheKey,
                             context.getSiteURL(context.getSite(), context.getPageID(), false, true, true),
                             pageContext);
                 }
@@ -839,6 +842,16 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
         try {
             if (rd != null) {
                 rd.include(request, new HttpServletResponseWrapper(resp) {
+                    @Override
+                    public ServletOutputStream getOutputStream() throws IOException {
+                        return new ServletOutputStream() {
+                            @Override
+                            public void write(int i) throws IOException {
+                                stringWriter.write(i);
+                            }
+                        };
+                    }
+
                     public PrintWriter getWriter() throws IOException {
                         return new PrintWriter(stringWriter);
                     }

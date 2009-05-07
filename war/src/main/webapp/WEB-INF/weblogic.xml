@@ -16,9 +16,10 @@
         <keepgenerated>true</keepgenerated>
         <precompile>false</precompile>
         <verbose>true</verbose>
+        <!-- Chnage this value on to higher level on production to avoid too many recompilations of jsps-->
+        <page-check-seconds>3600</page-check-seconds>
     </jsp-descriptor>
     <container-descriptor>
-        <
         <prefer-web-inf-classes>false</prefer-web-inf-classes>
     </container-descriptor>    
 </weblogic-web-app>

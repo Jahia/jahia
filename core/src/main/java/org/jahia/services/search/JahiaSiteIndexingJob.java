@@ -19,7 +19,6 @@ package org.jahia.services.search;
 import org.quartz.*;
 import org.jahia.params.ProcessingContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.utils.JahiaChrono;
 import org.jahia.bin.Jahia;
 import org.jahia.services.containers.JahiaContainersService;
 import org.jahia.services.containers.ContentContainer;
@@ -129,7 +128,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
         int lastProcessedPage = this.getLastProcessedPage();
 
         // start the chrono...
-        long startTime = JahiaChrono.getInstance().start();
+        long startTime = System.currentTimeMillis();
 
         try {
             String interruptStatus = site.getSettings().getProperty(serverId + "_" +
@@ -145,7 +144,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
             JahiaSearchService searchService = ServicesRegistry.getInstance()
                     .getJahiaSearchService();
             logger.info("starting re-indexing site ["
-                    + JahiaChrono.getInstance().read(startTime) +
+                    + (System.currentTimeMillis() - startTime) +
                     "ms]");
             List<Locale> locales = new ArrayList<Locale>();
             locales.add(Locale.ENGLISH);
@@ -322,7 +321,7 @@ public class JahiaSiteIndexingJob extends BackgroundJob implements RamJob {
             ServicesRegistry.getInstance().getJahiaSitesService().updateSiteProperties(site, resultSettings);            
         } finally {
             logger.info("indexing time ["
-                    + JahiaChrono.getInstance().read(startTime) +
+                    + (System.currentTimeMillis() - startTime) +
                     "ms]");
         }
     }

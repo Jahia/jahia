@@ -68,7 +68,7 @@ public class StringResponseWrapper extends HttpServletResponseWrapper {
      * Initializes an instance of this class.
      * 
      * @param response
-     *            response object, whoes output stream should be wrapperd
+     *            response object, whose output stream should be wrapped
      */
     public StringResponseWrapper(HttpServletResponse response) {
         super(response);

@@ -87,17 +87,15 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.urls.URI;
 import org.jahia.urls.URICodec;
-import org.jahia.utils.JahiaChrono;
 import org.jahia.utils.JahiaConsole;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Version;
-import org.jahia.utils.WebAppPathResolver;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.modifier.TomcatUsersModifier;
 import org.xml.sax.SAXException;
 
 /**
- * desc:  This is the main servlet of Jahia.
+ * This is the main servlet of Jahia.
  *   ----=[  Welcome to the Jahia portal  ]=----
  *
  * Copyright:    Copyright (c) 2002
@@ -294,18 +292,10 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             JahiaConsole.startupWithTrust(getBuildNumber());
         }
 
-        // get servlet basic variables, like confid and context...
+        // get servlet basic variables, like config and context...
         this.config = aConfig;
         staticServletConfig = aConfig;
         final ServletContext context = aConfig.getServletContext();
-        final WebAppPathResolver pathResolver = new WebAppPathResolver();
-        pathResolver.setServletContext(aConfig.getServletContext());
-
-        /* old system, that doesn't work well when setting up Jahia in root
-           context
-        Jahia.jahiaContextPath = "/" + this.context.getServletContextName();
-        Jahia.jahiaServletPath = "/" + config.getServletName();
-        */
 
         if (jahiaContextPath == null) {
             initContextData(getServletContext());
@@ -853,7 +843,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
                     sb.append("] user=[").append(jParams.getUser().getUsername() )
                             .append("] ip=[" ).append(jParams.getRequest().getRemoteAddr() )
                             .append("] sessionID=[").append(jParams.getSessionID())
-                            .append("] in [" ).append(JahiaChrono.getInstance().read(jParams.getStartTime()) )
+                            .append("] in [" ).append(System.currentTimeMillis() - jParams.getStartTime())
                             .append("ms]");
                             
                     logger.info(sb.toString());

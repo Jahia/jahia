@@ -38,7 +38,6 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.log4j.Logger;
 import org.jahia.admin.database.DatabaseScripts;
 import org.jahia.services.templates.JahiaTemplatesPackageHandler;
-import org.jahia.tools.files.MimeTypesFromWebAppXmlFile;
 import org.jahia.utils.JahiaTools;
 import org.jahia.utils.PathResolver;
 import org.jahia.utils.properties.PropertiesManager;
@@ -164,7 +163,6 @@ public class SettingsBean {
     public int mail_maxRegroupingOfPreviousException = 500;
 
     private DtdEntityResolver mResolver;
-    protected Properties mimeTypes;
 
     private boolean jmxHTTPAdaptorActivated = false;
     private boolean jmxXSLProcessorActivated = false;
@@ -456,7 +454,6 @@ public class SettingsBean {
 
             // load mime types
             initDtdEntityResolver ();
-            loadMimeTypes ();
 
             // load MaxCached values (max_cached_*)
             maxCachedValues = new HashMap<String, Long>();
@@ -832,38 +829,6 @@ public class SettingsBean {
 
     //--------------------------------------------------------------------------
     /**
-     * Load mime types from web.xml files
-     *
-     * <mime-mapping>
-     *   <extension>abs</extension>
-     *   <mime-type>audio/x-mpeg</mime-type>
-     * </mime-mapping>
-     * <mime-mapping>
-     *   <extension>ai</extension>
-     *   <mime-type>application/postscript</mime-type>
-     * </mime-mapping>
-     */
-    private void loadMimeTypes () {
-
-        String filepath = pathResolver.resolvePath ("/WEB-INF/web.xml");
-        File f = new File (filepath);
-        if (f.exists () && f.canRead ()) {
-            try {
-                MimeTypesFromWebAppXmlFile mtHandler
-                        = new MimeTypesFromWebAppXmlFile (f.getAbsolutePath (), mResolver);
-
-                mimeTypes = mtHandler.getMimeTypes ();
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-        if (mimeTypes == null)
-            mimeTypes = new Properties ();
-
-    }
-
-    //--------------------------------------------------------------------------
-    /**
      * initiate the Dtd entity resolver we use with local dtd
      */
     private void initDtdEntityResolver () {
@@ -879,16 +844,6 @@ public class SettingsBean {
         mResolver.registerSchema(
                 JahiaTemplatesPackageHandler.TEMPLATES_DESCRIPTOR_20_URI,
                 new File(diskPath, "xml_dtd/templates_2_0.xsd"));
-    }
-
-    //--------------------------------------------------------------------------
-    /**
-     * Return the mime types
-     *
-     * @return Properties mimeTypes
-     */
-    public Properties getMimeTypes () {
-        return mimeTypes;
     }
 
     //--------------------------------------------------------------------------

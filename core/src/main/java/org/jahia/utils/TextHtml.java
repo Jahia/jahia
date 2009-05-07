@@ -45,7 +45,7 @@ public class TextHtml {
     public static String text2html(String text) {
         if (text == null)
             return text;
-        StringBuffer t = new StringBuffer(text.length() + 10); // 10 is just a test value, could be anything, should affect performance
+        StringBuilder t = new StringBuilder(text.length() + 10); // 10 is just a test value, could be anything, should affect performance
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             // Check for non ISO8859-1 characters
@@ -74,7 +74,7 @@ public class TextHtml {
     public static String html2text(String text) {
         if (text == null)
             return text;
-        StringBuffer t = new StringBuffer(text.length());
+        StringBuilder t = new StringBuilder(text.length());
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (c == '&') {
@@ -272,7 +272,7 @@ public class TextHtml {
      * Each symbolic code string (sorted by alphabetical order) have its numerical
      * corresponding code.<br>
      * This class also implements the 'Comparable' interface to ease the sorting
-     * process in the initialisation bloc.
+     * process in the initialization block.
     */
     final private static class NumericSymbolicCode implements Comparable {
 

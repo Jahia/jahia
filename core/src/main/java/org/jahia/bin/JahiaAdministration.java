@@ -77,9 +77,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
-import org.jahia.utils.JahiaChrono;
 import org.jahia.utils.JahiaTools;
-import org.jahia.utils.WebAppPathResolver;
 import org.jahia.utils.properties.PropertiesManager;
 import org.springframework.beans.factory.BeanFactory;
 
@@ -162,8 +160,6 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         // get servlet config and context...
         JahiaAdministration.config = aConfig;
         JahiaAdministration.context = aConfig.getServletContext();
-        WebAppPathResolver webPathResolver = new WebAppPathResolver();
-        webPathResolver.setServletContext(aConfig.getServletContext());
 
         JahiaAdministration.contentServletPath = Jahia.getDefaultServletPath(aConfig.getServletContext());
     } // end init
@@ -1044,7 +1040,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
                         " engine for user " +
                         jParams.getUser().getUsername() + " from [" +
                         jParams.getRequest().getRemoteAddr() + "] in [" +
-                        JahiaChrono.getInstance().read(jParams.getStartTime()) +
+                        (System.currentTimeMillis() - jParams.getStartTime()) +
                         "ms]");
             }
         }
@@ -1138,7 +1134,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         }
 
         // start the chrono...
-        long startTime = JahiaChrono.getInstance().start();
+        long startTime = System.currentTimeMillis();
 
         // get the main http method...
         String requestMethod = request.getMethod();

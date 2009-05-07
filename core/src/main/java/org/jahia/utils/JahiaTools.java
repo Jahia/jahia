@@ -41,7 +41,6 @@ import org.apache.commons.jexl.JexlContext;
 import org.apache.commons.jexl.JexlHelper;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.apache.taglibs.standard.tag.common.fmt.SetLocaleSupport;
 import org.jahia.bin.Jahia;
 import org.jahia.data.fields.ExpressionMarker;
 import org.jahia.data.fields.JahiaField;

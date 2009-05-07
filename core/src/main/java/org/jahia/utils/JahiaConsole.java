@@ -77,15 +77,7 @@ public class JahiaConsole {
      */
     public static void print(String origin, String msg) {
         logger.debug(origin + " > " + msg);
-
-/*
-        if (servlet != null) {
-            if (currentLoggingLevel >= DEFAULT_LOGGING_LEVEL) {
-              servlet.log(origin + " > " + msg);
-            }
-        }
-*/
-    } // end print
+    }
 
 
     /**
@@ -93,19 +85,8 @@ public class JahiaConsole {
      * EV    08.10.2000
      */
     public static void println(String origin, String msg) {
-
         logger.debug(origin + "> " + msg);
-/*
-        if (servlet != null) {
-            if (currentLoggingLevel >= DEFAULT_LOGGING_LEVEL) {
-                servlet.log(origin + " > " + msg);
-            }
-            if (currentLoggingLevel >= CONSOLE_LOGGING_LEVEL) {
-                System.out.println (origin + "> " + msg);
-            }
-        }
-*/
-    } // end println
+    }
 
     /**
      * Small utility function to print stack trace on the Jahia console.
@@ -127,13 +108,11 @@ public class JahiaConsole {
      */
     public static synchronized void finalPrintln(String origin, String msg) {
         logger.info(origin + "> " + msg);
-        // System.out.println (origin + "> " + msg);
-    } // end println
+    }
 
     public static synchronized void finalPrint(String origin, String msg) {
         logger.info(origin + "> " + msg);
-        // System.out.print (origin + "> " + msg);
-    } // end println
+    }
 
 
     /**
@@ -148,7 +127,7 @@ public class JahiaConsole {
         msg += "***********************************\n";
         JahiaConsole.println("JahiaConsole.startup", "\n\n" + msg + "\n");
         println("Jahia", "***** Starting Jahia *****");
-    } // end startup
+    }
 
 
     /**
@@ -196,6 +175,6 @@ public class JahiaConsole {
 
         System.out.println (msg.toString());
         System.out.flush();
-    } // end startupWithTrust
+    }
 
 }

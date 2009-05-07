@@ -1171,6 +1171,16 @@
     cursor: pointer;
 }
 
+.workflow-911 {
+    background: url(../images/workflow/910.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-911h {
+    background: url(../images/workflow/910_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
 .workflow-920 {
     background: url(../images/workflow/920.png ) center center no-repeat;
     cursor: pointer;
@@ -1181,13 +1191,72 @@
     cursor: pointer;
 }
 
+.workflow-921 {
+    background: url(../images/workflow/920.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-921h {
+    background: url(../images/workflow/920_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
 .workflow-930 {
     background: url(../images/workflow/930.png ) center center no-repeat;
     cursor: pointer;
 }
 
-.workflow-930 {
+.workflow-930h {
     background: url(../images/workflow/930_h.png ) center center no-repeat;
+}
+
+.workflow-931 {
+    background: url(../images/workflow/920.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-931h {
+    background: url(../images/workflow/920_h.png ) center center no-repeat;
+}
+
+.workflow-940 {
+    background: url( ../images/workflow/930.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-940h {
+    background: url( ../images/workflow/930_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-941 {
+    background: url( ../images/workflow/920.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-941h {
+    background: url( ../images/workflow/920_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-950 {
+    background: url( ../images/workflow/930.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-950h {
+    background: url( ../images/workflow/930_h.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-951 {
+    background: url( ../images/workflow/920.png ) center center no-repeat;
+    cursor: pointer;
+}
+
+.workflow-951h {
+    background: url( ../images/workflow/920_h.png ) center center no-repeat;
+    cursor: pointer;
 }
 
 /* Timebased publishing */

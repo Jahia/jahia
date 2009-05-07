@@ -1755,7 +1755,6 @@ public class WorkflowService extends JahiaService {
 
             if (getWorkflowMode(contentObject) == LINKED) {
                 workflowMode = 9;
-                isEditable = false;
             }
             if (contentObject.isMarkedForDelete(language)) {
                 workflowMode = 6;

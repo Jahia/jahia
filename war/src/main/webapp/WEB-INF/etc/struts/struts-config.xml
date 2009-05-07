@@ -326,10 +326,9 @@
     </plug-in>
 
     <!-- Validator PlugIn -->
-    <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <plug-in className="org.jahia.bin.JahiaValidatorPlugIn">
         <set-property property="pathnames"
-                      value="/WEB-INF/etc/struts/validator-rules.xml,
-   			       /WEB-INF/etc/struts/validator-jahia-rules.xml"/>
+                        value="/WEB-INF/etc/struts/validation.xml,/WEB-INF/etc/struts/validator-rules.xml,/WEB-INF/etc/struts/validator-jahia-rules.xml"/>
     </plug-in>
 
 </struts-config>

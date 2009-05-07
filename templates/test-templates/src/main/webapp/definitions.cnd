@@ -139,7 +139,7 @@
  integer longBetween1and10 < '[1,10]'
  integer mandatoryLongBetween1and10 mandatory < '[1,10]'
 
-[test_templates:validationFieldsUsingValidator] > jnt:container validator='validationFieldsUsingValidator'
+[test_templates:validationFieldsUsingValidator] > jnt:container validator='test-tesmplates-validationFieldsUsingValidator'
  sharedSmallText mandatorySmallText
  integer mandatoryLong
  sharedSmallText alphanumericSmallText

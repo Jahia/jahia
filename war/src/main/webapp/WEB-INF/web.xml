@@ -339,12 +339,8 @@
         </init-param>
         <init-param>
             <param-name>config</param-name>
-            <!-- <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>-->
-            <param-value>
-                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
-            </param-value>
+            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <!-- commented out because we did provide any resource file yet -->
         <init-param>
             <param-name>application</param-name>
             <param-value>ApplicationResources</param-value>
@@ -543,12 +539,8 @@
         </init-param>
         <init-param>
             <param-name>config</param-name>
-            <!-- <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>-->
-            <param-value>
-                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
-            </param-value>
+            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <!-- commented out because we did provide any resource file yet -->
         <init-param>
             <param-name>application</param-name>
             <param-value>ApplicationResources</param-value>
@@ -583,11 +575,8 @@
         <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
         <init-param>
             <param-name>config</param-name>
-            <param-value>
-                /WEB-INF/etc/struts/struts-config.xml,/WEB-INF/etc/struts/struts-config-corporateportal.xml
-            </param-value>
+            <param-value>/WEB-INF/etc/struts/struts-config.xml</param-value>
         </init-param>
-        <!-- commented out because we did provide any resource file yet -->
         <init-param>
             <param-name>application</param-name>
             <param-value>ApplicationResources</param-value>

@@ -32,6 +32,12 @@
 [condition][]- it has the extension type {type}=types contains "{type}"
 [condition][]A workflow state has changed for a node=property : PropertyWrapper ( language : name, state : stringValue, workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]- the node has the type {type}=node.types contains "{type}"
+[condition][]- the new state is not {newState}=property.stringValue != {newState}
+[condition][]- the new state is {newState}=property.stringValue == {newState}
+[condition][]- the new state not matches {newState}=property.stringValue not matches {newState}
+[condition][]- the new state matches {newState}=property.stringValue matches {newState}
+[condition][]- it is not a quick correction action=property.stringValue not matches ".*-quickEdit"
+[condition][]- the language is {lang}=property.name == {lang}
 [condition][]A node has been published=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "active", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]A node has been rollbacked to author=property : PropertyWrapper ( language : name, state : stringValue, stringValue == "staging", workflowNode : node, workflowNode.types contains "jnt:workflowState") and node : NodeWrapper () from workflowNode.parent
 [condition][]- it has the type {type}=node.types contains "{type}"

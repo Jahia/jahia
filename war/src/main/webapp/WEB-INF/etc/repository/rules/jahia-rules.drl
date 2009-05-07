@@ -73,6 +73,7 @@ end
 rule "Notifications: workflow state changed"
     when
         A workflow state has changed for a node
+            - it is not a quick correction action
     then
         Fire workflowNextStepUsers notification event to the users involved in the next step
         #Fire workflowCurrentUser notification event to the current user

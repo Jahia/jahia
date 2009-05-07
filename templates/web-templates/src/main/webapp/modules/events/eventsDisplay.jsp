@@ -37,7 +37,7 @@
             <fmt:message key='statictitle.lastevents'/>
         </c:if>
         </span></h3>
-        <template:jahiaPageForm name="eventPageForm" method="get">
+        <template:jahiaPageForm name="eventPageForm" method="post">
             <c:set value="" var="startDateSelected"/>
             <c:set value="" var="locationSelected"/>
             <c:if test="${param.eventsSort == 'startDate'}">
@@ -52,7 +52,18 @@
                 <option value="location" ${locationSelected}><fmt:message key='sortLocation'/></option>
             </select>
             <input type="hidden" name="startDate" value="${param.startDate}">
-            <span class="hidden"><utility:dropDownFromBundle bundleName="resources.eventsType"/></span>
+            <utility:dropDownFromBundle bundleName="resources.eventsType" var="eventsList"/>
+            <select class="eventsSort" name="eventsTypeFilter" onchange="document.eventPageForm.submit();">
+                <option value=""><fmt:message key="events.form.types.all"/> </option>
+            <c:set value="" var="selected"/>
+            <c:forEach var="event" items="${eventsList}">
+                <c:if test="${param.eventsTypeFilter == event}">
+                    <c:set value="selected" var="selected"/>
+                </c:if>
+                <option value="${event}" ${selected}>${event}</option>
+                <c:set value="" var="selected"/>
+            </c:forEach>
+        </select>
         </template:jahiaPageForm>
 
             <div class="box4-bottomright"></div>
@@ -96,7 +107,6 @@
         <query:propertyValue value="${beginMonth}"/>
         <query:selector nodeTypeName="web_templates:eventContainer" selectorName="eventsSelector"/>
         <query:childNode selectorName="eventsSelector" path="${eventsContainer.JCRPath}"/>
-
         <query:greaterThanOrEqualTo numberValue="false" propertyName="endDate" value="${beginMonth.time}"/>
         <query:lessThanOrEqualTo numberValue="false" propertyName="startDate" value="${endMonth.time}"/>        
     </query:createFacetFilter>
@@ -110,6 +120,9 @@
         <query:childNode selectorName="eventsSelector" path="${eventsContainer.JCRPath}"/>
         <query:sortBy propertyName="${sortBy}" order="${order}"/>
         <query:setProperty name="${queryConstants.FACET_FILTER_QUERY_PARAM_NAME}" value="filter"/>
+        <c:if test="${!empty param.eventsTypeFilter}">
+            <query:equalTo propertyName="eventsType" value="${param.eventsTypeFilter}"/>
+        </c:if>
         <c:if test="${!empty param.startDate}">
             <utility:dateUtil currentDate="${param.startDate}" datePattern="dd/MM/yyyy" valueID="today" hours="0"
                               minutes="0"

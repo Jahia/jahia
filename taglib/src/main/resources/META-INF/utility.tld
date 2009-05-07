@@ -243,6 +243,11 @@
         <tag-class>org.jahia.taglibs.utility.i18n.DropDownFromBundleFileTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>bundleName</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>

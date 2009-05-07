@@ -18,6 +18,7 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.i18n.JahiaTemplatesRBLoader;
+import org.jahia.data.beans.RequestBean;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -37,6 +38,7 @@ import java.io.IOException;
 @SuppressWarnings("serial")
 public class DropDownFromBundleFileTag extends AbstractJahiaTag {
     private String bundleName;
+    private String var;
 
     /**
      * Default processing of the start tag returning EVAL_BODY_BUFFERED.
@@ -55,15 +57,20 @@ public class DropDownFromBundleFileTag extends AbstractJahiaTag {
                 String key = keys.nextElement();
                 values.add(bundle.getString(key));
             }
-            final JspWriter writer = pageContext.getOut();
-            try {
-                writer.println("<select>");
-                for (String value : values) {
-                    writer.println("<option value=\""+value+"\">"+value+"</option>");
+            if (var == null || "".equals(var)) {
+                final JspWriter writer = pageContext.getOut();
+                try {
+                    writer.println("<select>");
+                    for (String value : values) {
+                        writer.println("<option value=\""+value+"\">"+value+"</option>");
+                    }
+                    writer.println("</select>");
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-                writer.println("</select>");
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            else {
+                pageContext.setAttribute(var,values);
             }
         }
         return SKIP_BODY;
@@ -75,5 +82,13 @@ public class DropDownFromBundleFileTag extends AbstractJahiaTag {
 
     public void setBundleName(String bundleName) {
         this.bundleName = bundleName;
+    }
+
+    public String getVar() {
+        return var;
+    }
+
+    public void setVar(String var) {
+        this.var = var;
     }
 }

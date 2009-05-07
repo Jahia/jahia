@@ -14,7 +14,7 @@
 
 [jmix:categorized] mixin
  - j:keywords (string)
- - j:defaultCategory (string, category) multiple
+ - j:defaultCategory (string, category[autoSelectParent=false]) multiple
 
 [jmix:lastPublished] mixin
  - j:lastPublishingDate (date) protected

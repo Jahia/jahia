@@ -30,7 +30,7 @@
 	<template:field name='date' var="date" display="false"/>
 
 	<div class="publicationListItem"><!--start publicationListItem -->
-	<ui:actionMenu contentObjectName="publicationContainer" namePostFix="publication" labelKey="publication.update">
+	<ui:actionMenu contentObjectName="publicationContainer" namePostFix="publication" labelKey="publication.update"  iconStyle="editContainer">
 		<div class="publicationListSpace"><!--start publicationListSpace -->
 			<div class="publicationPhoto">
                 <a href="${file.file.downloadUrl}" >

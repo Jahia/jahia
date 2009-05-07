@@ -98,7 +98,6 @@
     }
     monitor();
     watch();
-    loadFirstPage();
 </script>
 
 <%
@@ -145,7 +144,6 @@
                         <div id="actionBar">
   <span class="dex-PushButton" id="connectButtonDiv">
     <span class="first-child" id='msg'>
-      <a class="ico-next" href='javascript:loadFirstPage();'><internal:message key='org.jahia.connect.button'/></a>
     </span>
   </span>
                         </div>

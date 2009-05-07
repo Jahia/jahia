@@ -76,12 +76,12 @@
                     <map>
                         <entry key="org.jahia.actions.sites.*.engines">
                           <map>
-                            <entry key="g:users:*" value="RWA"/>
+                            <entry key="g:users:0" value="RWA"/>
                           </map>
                         </entry>
                         <entry key="org.jahia.actions.sites.*.toolbar">
                           <map>
-                            <entry key="g:users:*" value="RWA"/>
+                            <entry key="g:users:0" value="RWA"/>
                           </map>
                         </entry>
                         <entry key="org.jahia.actions.sites.*.toolbar.subscriptions">
@@ -92,7 +92,7 @@
                         </entry>
                         <entry key="org.jahia.actions.sites.*.htmlsettings.toolbar.Basic">
                             <map>
-                               <entry key="g:users:*" value="R"/>
+                               <entry key="g:users:0" value="R"/>
                             </map>
                         </entry>
                         <entry key="org.jahia.actions.sites.*.engines.actions.publishAll">
@@ -100,7 +100,7 @@
                         </entry>
                         <entry key="org.jahia.actions.sites.*.htmlsettings.toolbar.Light">
                             <map>
-                               <entry key="g:users:*" value="R"/>
+                               <entry key="g:users:0" value="R"/>
                             </map>
                         </entry>
                         <entry key="org.jahia.actions.sites.*.integrity">

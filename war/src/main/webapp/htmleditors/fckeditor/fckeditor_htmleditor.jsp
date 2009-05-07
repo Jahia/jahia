@@ -52,13 +52,6 @@ private static boolean isAuthorizedForToolbar(String toolbarSetName, ParamBean j
     String theOldField = theField.getValue();
     String theNewField = "";
 
-    /*
-    theOldField = JahiaTools.replacePattern(theOldField, ">\n", ">");
-    if (!theOldField.toLowerCase().startsWith("<html>") &&
-            !theOldField.toLowerCase().startsWith("&lt;html>")) {
-        theOldField = JahiaTools.replacePattern(theOldField, "\n", "<br/>");
-    }*/
-
     theOldField = JahiaTools.replacePatternIgnoreCase(theOldField, "<br>", "<br/>");
 
     final String strToRemove[] = {"<jahia", "&lt;jahia", "_htmleditor>", "&lt;html>", "&lt;/html>", "<html>", "</html>"};
@@ -77,6 +70,7 @@ private static boolean isAuthorizedForToolbar(String toolbarSetName, ParamBean j
     if (theOldField == null || "".equals(theOldField)) {
         theOldField = "<html><body></body></html>";
     }
+    pageContext.setAttribute("theOldField", theOldField);
 
     final StringBuffer jahiaPath = new StringBuffer();
 
@@ -199,10 +193,10 @@ jahia.config.startWorkInProgressOnLoad=true;
 </script>
 
 <input type="hidden" name="_<%=theField.getID()%>"
-       value="<%=FormDataManager.formEncode(theOldField)%>" />
+       value="<c:out value='${theOldField}'/>" />
 
 <span class="htmleditor">
   <textarea id="jahiaEditor" name="jahiaEditor" rows="20" cols="75">
-  <%=JahiaTools.replacePattern(FormDataManager.formEncode(theOldField),"<","&lt;")%>
+  <c:out value="${theOldField}"/>
   </textarea>
 </span>

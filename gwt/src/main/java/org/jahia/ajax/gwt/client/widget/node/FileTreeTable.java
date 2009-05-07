@@ -101,6 +101,9 @@ public class FileTreeTable extends TopRightComponent {
             @Override
             protected void onLoadSuccess(GWTJahiaNode parent, List<GWTJahiaNode> children) {
                 super.onLoadSuccess(parent, children);
+                for (GWTJahiaNode n: children) {
+                    n.setParent(parent);
+                }
                 if (selectPathAfterUpload != null) {
                     selectPath(selectPathAfterUpload);
                     ((FilePickerContainer) getLinker().getTopRightObject()).handleNewSelection();

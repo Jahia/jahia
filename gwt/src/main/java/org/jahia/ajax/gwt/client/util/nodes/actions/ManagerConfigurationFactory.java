@@ -21,7 +21,6 @@ import org.jahia.ajax.gwt.client.util.nodes.JCRClientUtils;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import com.extjs.gxt.ui.client.GXT;
-import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * User: rfelden
@@ -283,9 +282,18 @@ public class ManagerConfigurationFactory {
         filePickerConfig.addItem(paste);
         edit.addItem(paste);
 
+        FileActionItemGroup image = new FileActionItemGroup(Messages.getResource("fm_imageMenu"));
+        FileActionItem crop = ItemCreator.createCropItem(linker);
+        image.addItem(crop);
+        FileActionItem resize = ItemCreator.createResizeItem(linker);
+        image.addItem(resize);
+        FileActionItem rotate = ItemCreator.createRotateItem(linker);
+        image.addItem(rotate);
+
         // add menus to the config as well
         filePickerConfig.addGroup(file);
         filePickerConfig.addGroup(edit);
+        filePickerConfig.addGroup(image);
 
         // no columns to add (default)
 

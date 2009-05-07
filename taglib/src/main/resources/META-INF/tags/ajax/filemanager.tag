@@ -28,6 +28,21 @@
 <%@ attribute name="conf" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 <%@ attribute name="callback" required="false" rtexprvalue="true" type="java.lang.String" description="text" %>
 
+<link rel="stylesheet" type="text/css" media="screen" href="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/uvumi-crop.css"/>
+<style type="text/css" >
+.yellowSelection{
+border: 2px dotted #FFB82F;
+}
+
+.blueMask{
+background-color:#00f;
+cursor:pointer;
+}
+</style>
+
+<script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/mootools-for-crop.js"> </script>
+<script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/UvumiCrop-compressed.js"> </script>
+<script type="text/javascript" > var crop=0; 	</script>
 <template:gwtJahiaModule id="filemanager" jahiaType="filemanager" rootPath="<%=rootPath%>" startPath="<%=startPath%>"
                          enginemode="<%=enginemode%>" nodeTypes="<%=nodeTypes%>" filters="<%=filters%>"
                          mimeTypes="<%=mimeTypes%>" callback="<%=callback%>" config="<%=conf%>"/>

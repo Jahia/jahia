@@ -22,23 +22,6 @@
 <html>
 	<head>
 		<title><internal:message key="org.jahia.engines.filemanager.Filemanager_Engine.name.label"/></title>
-	
-	
-<link rel="stylesheet" type="text/css" media="screen" href="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/uvumi-crop.css"/>
-<style type="text/css" >
-.yellowSelection{
-border: 2px dotted #FFB82F;
-}
-
-.blueMask{
-background-color:#00f;
-cursor:pointer;
-}
-</style>
-<script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/mootools-for-crop.js"> </script>
-<script type="text/javascript" src="<%= request.getContextPath() %>/engines/gwtfilemanager/javascript/UvumiCrop-compressed.js"> </script>
-<script type="text/javascript" > var crop=0; 	</script>
-
 		<internal:gwtInit standalone="true"/>
 		<internal:gwtImport module="org.jahia.ajax.gwt.module.filemanager.FileManager" />
 	</head>

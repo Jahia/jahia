@@ -75,6 +75,12 @@ public class FileListContextMenu extends Menu {
                     if (leftTreeSelection != null) {
                         isTreeSelection = true ;
                     }
+                    if (!isTreeSelection) {
+                        GWTJahiaNode parent = topTableSelection.get(0).getParent() ;
+                        if (parent != null) {
+                            isParentWriteable = parent.isWriteable();
+                        }
+                    }
                     isTableSelection = true ;
                     isWritable = true;
                     isLockable = true;

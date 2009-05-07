@@ -681,20 +681,20 @@ public class FileManagerWorker {
         }
     }
 
-    public static Boolean checkExistence(String path, JahiaUser user) throws GWTJahiaServiceException {
+    public static boolean checkExistence(String path, JahiaUser user) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper node = jcr.getThreadSession(user).getNode(path);
             if (node != null && node.isValid()) {
-                return Boolean.valueOf(true);
+                return true;
             }
         } catch (RepositoryException e) {
             if (e instanceof PathNotFoundException) {
-                return Boolean.valueOf(false);
+                return false;
             }
             logger.error(e.toString(), e);
             throw new GWTJahiaServiceException("Error:\n" + e.toString());
         }
-        return Boolean.valueOf(false);
+        return false;
     }
 
     public static void createFolder(String parentPath, String name, ProcessingContext context) throws GWTJahiaServiceException {
@@ -854,37 +854,18 @@ public class FileManagerWorker {
         }
     }
 
-    public static void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
-        JCRNodeWrapper dest;
-        try {
-            dest = jcr.getThreadSession(user).getNode(destinationPath);
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(destinationPath).append(" could not be accessed :\n").append(e.toString()).toString());
-        }
+        public static void paste(final List<GWTJahiaNode> pathsToCopy, final String destinationPath, boolean cut, JahiaUser user) throws GWTJahiaServiceException {
         List<String> missedPaths = new ArrayList<String>();
         for (GWTJahiaNode aNode : pathsToCopy) {
-            JCRNodeWrapper node;
-            try {
-                node = jcr.getThreadSession(user).getNode(aNode.getPath());
-            } catch (RepositoryException e) {
-                logger.error(e.toString(), e);
-                missedPaths.add(new StringBuilder(aNode.getDisplayName()).append(" could not be accessed : ").append(e.toString()).toString());
-                continue;
-            }
+            JCRNodeWrapper node = jcr.getFileNode(aNode.getPath(), user);
             String name = node.getName();
             if (node.hasPermission(JCRNodeWrapper.READ)) {
-
+                JCRNodeWrapper dest = jcr.getFileNode(destinationPath, user);
                 if (dest.isCollection()) {
                     String destPath = dest.getPath();
                     int i = 1;
-                    JCRNodeWrapper target = null;
-                    try {
-                        target = jcr.getThreadSession(user).getNode(destPath + "/" + name);
-                    } catch (RepositoryException e) {
-                        logger.error(e.toString(), e);
-                        missedPaths.add(new StringBuilder(aNode.getDisplayName()).append(" could not be copied into ").append(destPath).append(" : ").append(e.toString()).toString());
-                    }
+                    JCRNodeWrapper target = jcr.getFileNode(dest.getPath() + "/" + name, user);
+
                     String basename = name;
                     int dot = basename.lastIndexOf('.');
                     String ext = "";
@@ -896,13 +877,10 @@ public class FileManagerWorker {
                     if (und > -1 && basename.substring(und + 1).matches("[0-9]+")) {
                         basename = basename.substring(0, und);
                     }
+
                     while (target.getException() == null) {
                         name = basename + "_" + (i++) + ext;
-                        try {
-                            target = jcr.getThreadSession(user).getNode(destPath + "/" + name);
-                        } catch (RepositoryException e) {
-                            logger.error(e.toString(), e);
-                        }
+                        target = jcr.getFileNode(dest.getPath() + "/" + name, user);
                     }
                     if (dest.isWriteable()) {
                         if (cut) {
@@ -1167,14 +1145,8 @@ public class FileManagerWorker {
     }
 
     public static GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<GWTJahiaNodeProperty> props, ProcessingContext context) throws GWTJahiaServiceException {
-        try {
-            if (jcr.getThreadSession(context.getUser()).getNode(parentPath + "/" + name).isValid()) {
-                throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
-            }
-        } catch (PathNotFoundException e) {
-        } catch (RepositoryException e) {
-            logger.error(e.toString(), e);
-            throw new GWTJahiaServiceException(new StringBuilder(parentPath).append("/").append(name).append(" could not be accessed :\n").append(e.toString()).toString());
+        if (checkExistence(parentPath + "/" + name, context.getUser())) {
+            throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
         }
         JCRNodeWrapper parentNode;
         try {
@@ -1603,7 +1575,7 @@ public class FileManagerWorker {
                 name = gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName().replaceAll("/", "___") + Math.round(Math.random() * 1000000l);
             }
 
-            if (jcr.getThreadSession(context.getUser()).getNode(parentPath + "/" + name).isValid()) {
+            if (checkExistence(parentPath + "/" + name, context.getUser())) {
                 throw new GWTJahiaServiceException("A node already exists with name '" + name + "'");
             }
             JCRNodeWrapper parentNode = jcr.getThreadSession(context.getUser()).getNode(parentPath);

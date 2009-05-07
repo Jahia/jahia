@@ -120,8 +120,11 @@ public class SearchTable extends TopRightComponent {
 
     public void setProcessedContent(Object content) {
         clearTable();
-        for (GWTJahiaNode node: (List<GWTJahiaNode>) content) {
-            store.add(node) ;
+        store.add((List<GWTJahiaNode>) content) ;
+        if (store.getSortState().getSortField() != null && store.getSortState().getSortDir() != null) {
+            store.sort(store.getSortState().getSortField(), store.getSortState().getSortDir());
+        } else {
+            store.sort("date", Style.SortDir.DESC);
         }
     }
 

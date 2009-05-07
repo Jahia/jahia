@@ -112,8 +112,8 @@ public class ThumbView extends TopRightComponent {
         sort.setWidth(250);
         sort.add(sorts);
         sort.setSimpleValue(sorts.get(0));
-        sort.addListener(Events.SelectionChange, new Listener<FieldEvent>() {
-            public void handleEvent(FieldEvent be) {
+        sort.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
+            public void handleEvent(SelectionChangedEvent be) {
                 sort();
             }
         });
@@ -149,6 +149,10 @@ public class ThumbView extends TopRightComponent {
         view.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
             public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> gwtJahiaNodeSelectionChangedEvent) {
                 getLinker().onTableItemSelected();
+                TopRightComponent topRight = getLinker().getTopRightObject() ;
+                if (topRight instanceof FilePickerContainer) {
+                    ((FilePickerContainer) topRight).handleNewSelection();
+                }
             }
         });
         view.addListener(Event.ONDBLCLICK, new Listener<ListViewEvent>() {

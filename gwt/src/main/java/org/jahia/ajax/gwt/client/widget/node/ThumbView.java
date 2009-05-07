@@ -31,10 +31,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.toolbar.AdapterToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.toolbar.*;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,6 +56,7 @@ public class ThumbView extends TopRightComponent {
     private ListStore<GWTJahiaNode> store;
     private MyListView<GWTJahiaNode> view;
     private SimpleComboBox<String> sort;
+    private ToggleToolItem sortOrder ;
 
     private ManagerConfiguration configuration;
 
@@ -114,13 +112,20 @@ public class ThumbView extends TopRightComponent {
         sort.setWidth(250);
         sort.add(sorts);
         sort.setSimpleValue(sorts.get(0));
-        sort.addListener(Events.Change, new Listener<FieldEvent>() {
+        sort.addListener(Events.SelectionChange, new Listener<FieldEvent>() {
             public void handleEvent(FieldEvent be) {
+                sort();
+            }
+        });
+        sortOrder = new ToggleToolItem(Messages.getResource("fm_invertSort"));
+        sortOrder.addListener(Events.Select, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent componentEvent) {
                 sort();
             }
         });
 
         bar.add(new AdapterToolItem(sort));
+        bar.add(sortOrder);
 
         m_component.setTopComponent(bar);
 
@@ -176,11 +181,11 @@ public class ThumbView extends TopRightComponent {
     private void sort() {
         int index = sort.getSelectedIndex();
         if (index == 0) {
-            store.sort("name", Style.SortDir.ASC);
+            store.sort("name", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
         } else if (index == 1) {
-            store.sort("size", Style.SortDir.ASC);
+            store.sort("size", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
         } else if (index == 2) {
-            store.sort("date", Style.SortDir.ASC);
+            store.sort("date", sortOrder.isPressed() ? Style.SortDir.DESC : Style.SortDir.ASC);
         }
     }
 
@@ -206,6 +211,7 @@ public class ThumbView extends TopRightComponent {
                 public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
                     if (gwtJahiaNodes != null) {
                         store.add(gwtJahiaNodes);
+                        sort();
                     } else {
                         Window.alert("null list");
                     }
@@ -224,6 +230,7 @@ public class ThumbView extends TopRightComponent {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             getLinker().onTableItemSelected();
+            sort();
         }
     }
 

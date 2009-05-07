@@ -293,6 +293,8 @@
                             aliasResourceName="fm_thumbSortSize"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.thumbSortLastModif.label"
                             aliasResourceName="fm_thumbSortLastModif"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.invertSort.label"
+                            aliasResourceName="fm_invertSort"/>
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.column.type.label"
                             aliasResourceName="fm_column_type"/>

@@ -148,6 +148,11 @@ public class FileTable extends TopRightComponent {
             List<GWTJahiaNode> gwtJahiaNodes = (List<GWTJahiaNode>) content;
             store.add(gwtJahiaNodes);
             getLinker().onTableItemSelected();
+            if (store.getSortState().getSortField() != null && store.getSortState().getSortDir() != null) {
+                store.sort(store.getSortState().getSortField(), store.getSortState().getSortDir());
+            } else {
+                store.sort("date", Style.SortDir.DESC);
+            }
         }
     }
 

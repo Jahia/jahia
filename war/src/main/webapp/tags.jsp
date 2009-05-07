@@ -20,6 +20,10 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<ui:loginArea/>
+<ui:loginPassword/>
+<ui:loginRememberMe/>
+<ui:loginUsername/>
 <utility:resolvePath value=""/>
 <utility:applicationResources/>
 <ui:folderSelector fieldId=""/>

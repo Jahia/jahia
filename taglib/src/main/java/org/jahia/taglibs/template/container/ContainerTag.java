@@ -69,6 +69,7 @@ import javax.servlet.jsp.jstl.core.LoopTagStatus;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 
@@ -519,7 +520,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                         buf.append("</div><!-- css user defined -->");
                     }
 
-                    String content = buf.toString();
+                    String content = buf.toString().trim();
                     if (currentCache) {
                         writeToContainerCache(container, jData, content);
                     }
@@ -837,7 +838,8 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
         }
 
         final StringWriter stringWriter = new StringWriter();
-
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(1024);
+        final boolean[] isWriter = new boolean[1];
         RequestDispatcher rd = request.getRequestDispatcher(resolvedPath);
         try {
             if (rd != null) {
@@ -847,12 +849,13 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
                         return new ServletOutputStream() {
                             @Override
                             public void write(int i) throws IOException {
-                                stringWriter.write(i);
+                                outputStream.write(i);
                             }
                         };
                     }
 
                     public PrintWriter getWriter() throws IOException {
+                        isWriter[0] = true;
                         return new PrintWriter(stringWriter);
                     }
                 });
@@ -862,7 +865,13 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
             return body;
         }
         request.removeAttribute("skinned");
-        return stringWriter.getBuffer();
+        if(isWriter[0]) {
+            return stringWriter.getBuffer();
+        }
+        else {
+            String s = outputStream.toString("UTF-8");
+            return new StringBuffer(s);
+        }
     }
 
     @Override

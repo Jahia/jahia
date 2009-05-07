@@ -80,6 +80,11 @@ import org.jahia.hibernate.manager.SpringContextSingleton;
  */
 @SuppressWarnings("serial")
 public class IncludeTag extends ImportSupport {
+    
+    public IncludeTag() {
+        super();
+        charEncoding = "UTF-8";
+    }
 
     /**
      * Adds a parameters to the list.

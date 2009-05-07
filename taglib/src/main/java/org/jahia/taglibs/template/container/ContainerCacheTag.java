@@ -39,6 +39,7 @@ import org.jahia.taglibs.template.containerlist.ContainerListTag;
 import org.jahia.engines.calendar.CalendarHandler;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
@@ -49,6 +50,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.nio.charset.Charset;
 
 /**
  * Created by IntelliJ IDEA.
@@ -351,16 +353,16 @@ public class ContainerCacheTag extends AbstractJahiaTag implements ContainerCach
                                 JahiaContainer container, String cacheKey, String pageURL, PageContext pageContext) throws IOException {
         if (debug) {
             if (currentCache) {
-                writer.print("<fieldset><legend align=\"right\">written to cache (at " + dateFormat.format(new Date()) + ")</legend>");
+                writer.println("<fieldset><legend align=\"right\">written to cache (at " + dateFormat.format(new Date()) + ")</legend>");
             } else {
-                writer.print("<fieldset><legend align=\"right\">not cached (now " + dateFormat.format(new Date()) + ")</legend>");
+                writer.println("<fieldset><legend align=\"right\">not cached (now " + dateFormat.format(new Date()) + ")</legend>");
             }
         }
         boolean b = currentCache && !content.contains("<!-- cache:include src=") && org.jahia.settings.SettingsBean.getInstance().isOutputContainerCacheActivated();
         if (b) {
-            writer.print("<!-- cache:include src=\"" + pageURL + "?ctnid=" + (container!=null?container.getID():"0") + "&cacheKey=" + cacheKey + "\" -->");
+            writer.println("<!-- cache:include src=\"" + pageURL + "?ctnid=" + (container!=null?container.getID():"0") + "&cacheKey=" + cacheKey + "\" -->");
         }
-        writer.print(new String(content.getBytes("UTF-8")));        
+        writer.println(content);        
         if (b) {
             writer.println("<!-- /cache:include -->");
         }

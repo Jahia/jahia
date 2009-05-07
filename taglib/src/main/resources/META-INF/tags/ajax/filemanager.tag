@@ -311,6 +311,8 @@
 
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myRepository.label"
                             aliasResourceName="fm_repository_myRepository"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.usersRepository.label"
+                            aliasResourceName="fm_repository_usersRepository"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.myExternalRepository.label"
                             aliasResourceName="fm_repository_myExternalRepository"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.repository.sharedRepository.label"

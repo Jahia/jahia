@@ -219,7 +219,6 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
         FileManagerWorker.mount(target, root, getUser());
     }
 
-
     private JahiaUser getUser() {
         return getRemoteJahiaUser();
     }

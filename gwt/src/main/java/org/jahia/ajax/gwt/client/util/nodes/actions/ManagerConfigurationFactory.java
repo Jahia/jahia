@@ -235,6 +235,7 @@ public class ManagerConfigurationFactory {
         fileManagerConfig.addAccordion(JCRClientUtils.SHARED_REPOSITORY);
         fileManagerConfig.addAccordion(JCRClientUtils.MY_EXTERNAL_REPOSITORY);
         fileManagerConfig.addAccordion(JCRClientUtils.MY_REPOSITORY);
+        fileManagerConfig.addAccordion(JCRClientUtils.USERS_REPOSITORY);
 
         // show the current site (first) tab by default
 

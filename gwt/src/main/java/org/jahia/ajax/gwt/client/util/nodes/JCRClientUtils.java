@@ -27,6 +27,7 @@ public final class JCRClientUtils {
     public static final String PORTLET_NODETYPES = "nt:folder,jnt:mountPoint,jnt:portlet";
 
     public final static String MY_REPOSITORY = "myRepository";
+    public final static String USERS_REPOSITORY = "usersRepository";
     public final static String MY_EXTERNAL_REPOSITORY = "myExternalRepository";
     public final static String SHARED_REPOSITORY = "sharedRepository";
     public final static String WEBSITE_REPOSITORY = "websiteRepository";

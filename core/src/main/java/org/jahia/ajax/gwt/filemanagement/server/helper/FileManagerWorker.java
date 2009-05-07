@@ -277,6 +277,23 @@ public class FileManagerWorker {
                 }
                 break; // one node should be enough
             }
+        } else if (key.equals(JCRClientUtils.USERS_REPOSITORY)) {
+            try {
+                NodeIterator ni = jcr.getThreadSession(jParams.getUser()).getNode("/content/users").getNodes();
+                while (ni.hasNext()) {
+                    Node node = (Node) ni.next();
+                    GWTJahiaNode jahiaNode = getGWTJahiaNode((JCRNodeWrapper) node.getNode("files"));
+                    jahiaNode.setDisplayName(node.getName());
+                    userNodes.add(jahiaNode);
+                }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
+            }
+            Collections.sort(userNodes, new Comparator<GWTJahiaNode>() {
+                public int compare(GWTJahiaNode o1, GWTJahiaNode o2) {
+                    return o1.getDisplayName().compareTo(o2.getDisplayName());
+                }
+            });
         } else if (key.equals(JCRClientUtils.MY_EXTERNAL_REPOSITORY)) {
             GWTJahiaNode root = getNode("/content/mounts", jParams.getUser());
             if (root != null) {

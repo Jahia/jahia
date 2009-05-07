@@ -207,6 +207,10 @@
     background-image: url( ../images/home.png ) !important;
 }
 
+.fm-usersRepository {
+    background-image: url( ../images/users.png ) !important;
+}
+
 .fm-myMashupRepository {
     background-image: url( ../images/home.png ) !important;
 }

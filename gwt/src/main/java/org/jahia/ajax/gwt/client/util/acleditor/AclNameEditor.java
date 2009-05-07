@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.acl.ACLService;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -91,6 +92,10 @@ public class AclNameEditor {
         }
     }
 
+    private static String getMessage(String key) {
+        return Messages.getResource(key);
+    }
+    
     public AclNameEditor(GWTJahiaNodeACL acl, String fieldId) {
         this(acl, fieldId, false);
     }
@@ -129,17 +134,17 @@ public class AclNameEditor {
     public ContentPanel renderNewAclPanel() {
         final List<TableColumn> columns = new ArrayList<TableColumn>();
 
-        TableColumn col = new TableColumn("Type", .10f);
+        TableColumn col = new TableColumn("", .10f);
         columns.add(col);
 
-        col = new TableColumn("Principal", .75f);
+        col = new TableColumn(getMessage("ae_principal"), .75f);
         columns.add(col);
 
         col = new TableColumn("local", "", .15f);
         col.setRenderer(new CellRenderer<TableItem>() {
             public String render(final TableItem item, final String property, final Object value) {
                 final GWTJahiaNodeACE ace = (GWTJahiaNodeACE) value;
-                Button button = new Button("remove");
+                Button button = new Button(getMessage("ae_remove"));
                 button.setEnabled(!readonly);
                 if (!readonly) {
                     button.addSelectionListener(new SelectionListener<ComponentEvent>() {
@@ -179,10 +184,10 @@ public class AclNameEditor {
         panel.add(tbl);
 
         ToolBar toolBar = new ToolBar();
-        TextToolItem addUser = new TextToolItem("Add user", "um-adduser");
+        TextToolItem addUser = new TextToolItem(getMessage("um_adduser"), "um-adduser");
         addUser.setEnabled(!readonly);
         toolBar.add(addUser);
-        TextToolItem addGroup = new TextToolItem("Add group", "um-addgroup");
+        TextToolItem addGroup = new TextToolItem(getMessage("um_addgroup"), "um-addgroup");
         addGroup.setEnabled(!readonly);
         toolBar.add(addGroup);
         
@@ -216,13 +221,11 @@ public class AclNameEditor {
             };
             addUser.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
-                    Log.debug("add");
                     new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, aclContext);
                 }
             });
             addGroup.addSelectionListener(new SelectionListener<ComponentEvent>() {
                 public void componentSelected(ComponentEvent event) {
-                    Log.debug("add");
                     new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, aclContext);
                 }
             });
@@ -249,4 +252,5 @@ public class AclNameEditor {
             field.setAttribute("value", value.toString());
         }
     }
+    
 }

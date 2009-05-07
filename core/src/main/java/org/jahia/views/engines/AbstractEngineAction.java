@@ -47,7 +47,7 @@ public abstract class AbstractEngineAction extends Action {
     * already been completed.
     *
     * @param mapping The ActionMapping used to select this instance
-    * @param actionForm The optional ActionForm bean for this request (if any)
+    * @param form The optional ActionForm bean for this request (if any)
     * @param request The HTTP request we are processing
     * @param response The HTTP response we are creating
     *
@@ -105,8 +105,7 @@ public abstract class AbstractEngineAction extends Action {
      *
      * Do a call to servlet.log(msg)
      *
-     * @param msg
-     * @param ex
+     * @param msg message
      */
     public void loggingMsg(String msg){
         servlet.log(msg);

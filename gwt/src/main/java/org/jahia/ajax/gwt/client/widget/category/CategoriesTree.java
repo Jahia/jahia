@@ -80,14 +80,7 @@ public class CategoriesTree extends ContentPanel {
             public void checkChanged (CheckChangedEvent event) {
                 super.checkChanged(event);
                 final List<GWTJahiaCategoryNode> list = event.getCheckedSelection();
-                final List<GWTJahiaCategoryNode> gwtJahiaCategoryNodeList = new ArrayList<GWTJahiaCategoryNode>(list.size()-1);
-                parentComponent.removeAllCategories();
-                for (GWTJahiaCategoryNode selectedCategory : list) {
-                    if(!selectedCategory.getParentKey().equals(selectedCategory.getKey())){
-                        gwtJahiaCategoryNodeList.add(selectedCategory);
-                    }
-                }
-                parentComponent.addCategories(gwtJahiaCategoryNodeList);
+                parentComponent.addCategories(list);
             }
         };
         // tree loader

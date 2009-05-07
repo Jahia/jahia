@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -84,15 +85,14 @@ public class PickedCategoriesGrid extends TopRightComponent {
         });
         column.setId("name");
         column.setHeader(getResource("title"));
-        column.setWidth(300);
         configs.add(column);
 
         // path
-        column = new ColumnConfig();
-        column.setId("path");
-        column.setHeader(getResource("path"));
-        column.setWidth(100);
-        configs.add(column);
+//        column = new ColumnConfig();
+//        column.setId("path");
+//        column.setHeader(getResource("path"));
+//        column.setWidth(300);
+//        configs.add(column);
 
         // list loader
         store = new ListStore<GWTJahiaCategoryNode>();
@@ -110,6 +110,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
             }
         });
         ColumnModel columnModel = new ColumnModel(configs);
+        store.setDefaultSort("name", Style.SortDir.ASC);
 
         // main component
         m_component.setHeading(getResource("categories_selected"));
@@ -160,6 +161,12 @@ public class PickedCategoriesGrid extends TopRightComponent {
                 store.add(gwtJahiaCategoryNode);
             }
         }
+        for (GWTJahiaCategoryNode gwtJahiaCategoryNode : store.getModels()) {
+            if (!gwtJahiaCategoryNodes.contains(gwtJahiaCategoryNode)) {
+                store.remove(gwtJahiaCategoryNode);
+            }
+        }
+        store.sort("name", Style.SortDir.ASC);
     }
 
     public List<GWTJahiaCategoryNode> getCategories() {

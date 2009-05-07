@@ -21,7 +21,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <html>
 <head>
-    <title><title><internal:message key="button.mashupmanager"/></title></title>
+    <title><internal:message key="button.mashupmanager"/></title>
 
 
     <link rel="stylesheet" type="text/css" media="screen"

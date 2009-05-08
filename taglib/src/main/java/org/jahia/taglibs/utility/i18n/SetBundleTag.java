@@ -64,7 +64,7 @@ public class SetBundleTag extends TagSupport {
             try {
                 context = Utils.getProcessingContext(pageContext, true);
             } catch (JahiaBadRequestException e) {
-                logger.warn(e.getMessage(), e);
+                logger.debug(e.getMessage(), e);
             }
             final Locale locale = context != null ? context.getLocale() : pageContext.getRequest().getLocale();
             ResourceBundle resourceBundle = new JahiaResourceBundle(basename,

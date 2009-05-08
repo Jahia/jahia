@@ -22,6 +22,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.jstl.core.Config;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.apache.log4j.Category;
 import org.jahia.bin.Jahia;
@@ -47,6 +49,7 @@ import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.GroupCacheKey;
 import org.jahia.services.expressions.DateBean;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 /**
  * <p> Title: </p> <p> Description: </p> <p> Copyright: Copyright (c) 2004 </p> <p> Company: Jahia Ltd </p>
  *
@@ -289,6 +292,12 @@ public class EngineValve implements Valve {
         JahiaBean jahiaBean = new JahiaBean(jParams, siteBean, pageBean, requestBean, dateBean, jParams.getUser());
         request.setAttribute ("currentJahia", jahiaBean);
         request.setAttribute("jahia", jahiaBean);
+        
+        // init localization context
+        Config.set(jParams.getRequest(), Config.FMT_LOCALIZATION_CONTEXT,
+                new LocalizationContext(new JahiaResourceBundle(jParams
+                        .getLocale(), jParams.getSite()
+                        .getTemplatePackageName()), jParams.getLocale()));        
 
         boolean isIE = false;
         final String userAgent = jParams.getRequest ().getHeader ("user-agent");

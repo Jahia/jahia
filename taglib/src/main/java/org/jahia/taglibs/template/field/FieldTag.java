@@ -44,6 +44,7 @@ import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.utils.FileUtils;
 import org.jahia.utils.JahiaTools;
+import org.jahia.content.ContentObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -666,6 +667,14 @@ public class FieldTag extends AbstractFieldTag {
         if (processingContext == null) {
             logger.warn("ProcessingContext is null, ignoring contentEditable feature. ");
             return resultingValue;
+        }
+        try {
+            ContentObject picked = theField.getContentField().getPickedObject() ;
+            if (picked != null) {
+                return resultingValue;
+            }
+        } catch (JahiaException e) {
+            logger.error(e.toString(), e);
         }
         if (inlineEditingActivated && (theField.getType() == FieldTypes.BIGTEXT ||
                 theField.getType() == FieldTypes.SMALLTEXT ||

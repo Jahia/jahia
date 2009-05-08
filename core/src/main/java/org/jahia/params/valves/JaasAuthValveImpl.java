@@ -60,9 +60,9 @@ public class JaasAuthValveImpl implements Valve {
                 LoginContext lc = new LoginContext("jahia");
                 lc.login();
                 Subject s = lc.getSubject();
-                Collection ps = s.getPrincipals();
-                for (Iterator iterator = ps.iterator(); iterator.hasNext();) {
-                    Principal principal = (Principal) iterator.next();
+                Collection<Principal> ps = s.getPrincipals();
+                for (Iterator<Principal> iterator = ps.iterator(); iterator.hasNext();) {
+                    Principal principal = iterator.next();
                     JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
                     if (user != null) {
                         processingContext.setTheUser(user);

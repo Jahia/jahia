@@ -65,16 +65,16 @@ public class EngineMessages {
         return messages.keySet();
     }
 
-    public Set getEntrySet() {
+    public Set<Map.Entry<String, List<EngineMessage>>> getEntrySet() {
         return messages.entrySet();
     }
 
     public int getSize() {
-        Iterator propertyIter = getProperties().iterator();
+        Iterator<String> propertyIter = getProperties().iterator();
         int size = 0;
         while (propertyIter.hasNext()) {
             String curPropertyName = (String) propertyIter.next();
-            List curPropertyList = messages.get(curPropertyName);
+            List<EngineMessage> curPropertyList = messages.get(curPropertyName);
             size += curPropertyList.size();
         }
         return size;
@@ -96,7 +96,7 @@ public class EngineMessages {
     }
 
     public int getSize(String property) {
-        List propertyList = messages.get(property);
+        List<EngineMessage> propertyList = messages.get(property);
         if (propertyList != null) {
             return propertyList.size();
         } else {

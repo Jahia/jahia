@@ -36,7 +36,7 @@ public class EngineParams {
     /**
      * associates String
      */
-    final private Map theParams = new HashMap();
+    final private Map<String, String> theParams = new HashMap<String, String>();
 
 
     /**
@@ -76,7 +76,7 @@ public class EngineParams {
      * getParameter EV    03.12.2000
      */
     public String getParameter (String keyStr) {
-        return (String) theParams.get (keyStr);
+        return theParams.get (keyStr);
     } // end getParams
 
 

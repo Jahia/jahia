@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentMap;
  * Created by IntelliJ IDEA. User: Serge Huber Date: 26 mars 2007 Time: 12:09:55 To change this template use File |
  * Settings | File Templates.
  */
-public class SkeletonCache extends Cache {
+public class SkeletonCache<K, V> extends Cache<GroupCacheKey, SkeletonCacheEntry> {
 // ------------------------------ FIELDS ------------------------------
 
     // the Container HTML cache name.
@@ -54,7 +54,7 @@ public class SkeletonCache extends Cache {
     /**
      * <p>Creates a new <code>ContainerHTMLCache</code> instance.</p>
      */
-    protected SkeletonCache(CacheImplementation cacheImplementation) {
+    protected SkeletonCache(CacheImplementation<GroupCacheKey, CacheEntry<SkeletonCacheEntry>> cacheImplementation) {
         super(SKELETON_CACHE, cacheImplementation);
         cacheKeyGeneratorService = ServicesRegistry.getInstance().getCacheKeyGeneratorService();
     }

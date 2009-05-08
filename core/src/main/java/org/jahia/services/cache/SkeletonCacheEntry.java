@@ -16,7 +16,7 @@
  */
 package org.jahia.services.cache;
 
-import au.id.jericho.lib.html.Source;
+import au.id.jericho.lib.html.Tag;
 
 import java.io.Serializable;
 import java.util.List;
@@ -43,8 +43,8 @@ public class SkeletonCacheEntry implements Serializable {
      * the HTML content type.
      */
     private String contentBody;
-    private transient List includeTag;
-    private transient List varsTag;
+    private transient List<? extends Tag> includeTag;
+    private transient List<? extends Tag> varsTag;
     public SkeletonCacheEntry() {
     }
 
@@ -64,19 +64,19 @@ public class SkeletonCacheEntry implements Serializable {
         this.contentType = contentType;
     }
 
-    public List getIncludeTag() {
+    public List<? extends Tag> getIncludeTag() {
         return includeTag;
     }
 
-    public void setIncludeTag(List includeTag) {
+    public void setIncludeTag(List<? extends Tag> includeTag) {
         this.includeTag = includeTag;
     }
 
-    public List getVarsTag() {
+    public List<? extends Tag> getVarsTag() {
         return varsTag;
     }
 
-    public void setVarsTag(List varsTag) {
+    public void setVarsTag(List<? extends Tag> varsTag) {
         this.varsTag = varsTag;
     }
 }

@@ -39,6 +39,7 @@ import org.jahia.exceptions.JahiaSessionExpirationException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import java.security.Principal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -92,7 +93,7 @@ public class CookieAuthValveImpl implements Valve {
             searchCriterias.setProperty(settingsBean.
                                         getCookieAuthUserPropertyName(),
                                         authCookie.getValue());
-            Set foundUsers = ServicesRegistry.getInstance().
+            Set<Principal> foundUsers = ServicesRegistry.getInstance().
                              getJahiaUserManagerService().searchUsers(processingContext.
                 getSiteID(), searchCriterias);
             if (foundUsers.size() == 1) {
@@ -112,7 +113,7 @@ public class CookieAuthValveImpl implements Valve {
                         searchCriterias.setProperty(settingsBean.
                             getCookieAuthUserPropertyName(),
                             cookieUserKey);
-                        Set usersWithKey = ServicesRegistry.getInstance().
+                        Set<Principal> usersWithKey = ServicesRegistry.getInstance().
                                            getJahiaUserManagerService().
                                            searchUsers(
                             processingContext.getSiteID(), searchCriterias);
@@ -189,7 +190,7 @@ public class CookieAuthValveImpl implements Valve {
         if (!evalResult.isSuccess()) {
             EngineMessages policyMsgs = evalResult.getEngineMessages();
             EngineMessages resultMessages = new EngineMessages();
-            for (Iterator iterator = policyMsgs.getMessages().iterator(); iterator
+            for (Iterator<EngineMessage> iterator = policyMsgs.getMessages().iterator(); iterator
                     .hasNext();) {
                 resultMessages.add((EngineMessage) iterator.next());
             }

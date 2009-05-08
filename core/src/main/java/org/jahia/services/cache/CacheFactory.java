@@ -64,7 +64,7 @@ public class CacheFactory extends CacheService {
     {
         // do nothing when settings are missing
         if (settingsBean == null) {
-            cacheLimits = new ConcurrentHashMap(2503);
+            cacheLimits = new ConcurrentHashMap<String, Long>(2503);
             return;
         }
         Iterator<CacheProvider> providerIterator = cacheProviders.values().iterator();
@@ -141,10 +141,10 @@ public class CacheFactory extends CacheService {
         }
 
         if (cacheLimits == null) {
-            cacheLimits = new ConcurrentHashMap(2503);
+            cacheLimits = new ConcurrentHashMap<String, Long>(2503);
         }
         if (cacheGroupsLimits == null) {
-            cacheGroupsLimits = new ConcurrentHashMap(2503);
+            cacheGroupsLimits = new ConcurrentHashMap<String, Long>(2503);
         }
 
         // instanciate the new cache, can throw an JahiaInitialization exception
@@ -170,7 +170,7 @@ public class CacheFactory extends CacheService {
         return null;
     }
 
-    private boolean registerCache (Cache cache) {
+    private boolean registerCache (Cache<?, ?> cache) {
         // Add the cache to the table
         caches.put (cache.getName (), cache);
 
@@ -183,9 +183,9 @@ public class CacheFactory extends CacheService {
     }
 
 
-    public ContainerHTMLCache getContainerHTMLCacheInstance() throws JahiaInitializationException {
+    public ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> getContainerHTMLCacheInstance() throws JahiaInitializationException {
         // if the Html cache already exists, then return the instance
-        ContainerHTMLCache cache = (ContainerHTMLCache)getCache (ContainerHTMLCache.CONTAINER_HTML_CACHE);
+        ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> cache = (ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry>)getCache (ContainerHTMLCache.CONTAINER_HTML_CACHE);
         if (cache != null)
             return cache;
 
@@ -194,7 +194,7 @@ public class CacheFactory extends CacheService {
         if(providerName ==null)
             providerName = DEFAULT_CACHE;
         CacheProvider provider = cacheProviders.get(providerName);
-        cache = new ContainerHTMLCache (provider.newCacheImplementation(ContainerHTMLCache.CONTAINER_HTML_CACHE));
+        cache = new ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry> (provider.newCacheImplementation(ContainerHTMLCache.CONTAINER_HTML_CACHE));
         if (cacheLimits.containsKey(cache.getName())) {
             Long cacheLimit = (Long) cacheLimits.get(cache.getName());
             cache.setCacheLimit(cacheLimit.longValue());
@@ -205,9 +205,9 @@ public class CacheFactory extends CacheService {
         return cache;
     }
 
-    public SkeletonCache getSkeletonCacheInstance() throws JahiaInitializationException {
+    public SkeletonCache<GroupCacheKey, SkeletonCacheEntry> getSkeletonCacheInstance() throws JahiaInitializationException {
         // if the Html cache already exists, then return the instance
-        SkeletonCache cache = (SkeletonCache) getCache (SkeletonCache.SKELETON_CACHE);
+        SkeletonCache<GroupCacheKey, SkeletonCacheEntry> cache = (SkeletonCache<GroupCacheKey, SkeletonCacheEntry>) getCache (SkeletonCache.SKELETON_CACHE);
         if (cache != null)
             return cache;
 
@@ -216,7 +216,7 @@ public class CacheFactory extends CacheService {
         if(providerName == null)
             providerName = DEFAULT_CACHE;
         CacheProvider provider = cacheProviders.get(providerName);
-        cache = new SkeletonCache (provider.newCacheImplementation(SkeletonCache.SKELETON_CACHE));
+        cache = new SkeletonCache<GroupCacheKey, SkeletonCacheEntry> (provider.newCacheImplementation(SkeletonCache.SKELETON_CACHE));
         if (cacheLimits.containsKey(cache.getName())) {
             Long cacheLimit = (Long) cacheLimits.get(cache.getName());
             cache.setCacheLimit(cacheLimit.longValue());
@@ -250,7 +250,7 @@ public class CacheFactory extends CacheService {
         Iterator<String> cacheNames = getNames().iterator();
         while (cacheNames.hasNext ()) {
             String curCacheName = cacheNames.next ();
-            Cache cache = caches.get (curCacheName);
+            Cache<?, ?> cache = caches.get (curCacheName);
 
             cache.flush();
         }

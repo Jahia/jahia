@@ -61,7 +61,7 @@ public abstract class JahiaAuditLogManagerService extends JahiaService {
      * @param   objectID    an <code>int</code> representing the ID of the object to retrieve logs for
      * @return              a <code>List</code> of HashMaps containing keys for time, username, operation, and their value for each logged event
      */
-    public abstract List getLog (int objectType, int objectID, ProcessingContext jParams);
+    public abstract List<Map<String, Object>> getLog (int objectType, int objectID, ProcessingContext jParams);
 
 
     /**
@@ -72,7 +72,7 @@ public abstract class JahiaAuditLogManagerService extends JahiaService {
      * long !
      * @return              a <code>List</code> of HashMaps containing keys for time, username, operation, and their value for each logged event
      */
-    public abstract List getLog (long fromDate, ProcessingContext jParams);
+    public abstract List<Map<String, Object>> getLog (long fromDate, ProcessingContext jParams);
 
     /**
      * utility method to flush log entries for a specific object type and  ID
@@ -133,7 +133,7 @@ public abstract class JahiaAuditLogManagerService extends JahiaService {
      * @return
      * @throws JahiaException
      */
-    public abstract List executeNamedQuery(String queryName, Map parameters) throws JahiaException;
+    public abstract <E> List<E> executeNamedQuery(String queryName, Map<String, Object> parameters) throws JahiaException;
 
     //--------------------------------------------------------------------------
     /**

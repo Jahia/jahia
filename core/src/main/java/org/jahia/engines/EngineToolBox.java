@@ -205,7 +205,7 @@ public class EngineToolBox {
             case 2:
                 deletedRows = mAuditLogManager.flushLogs(objectType, objectID, jParams);
             default:
-                final List logData = mAuditLogManager.getLog(objectType, objectID, jParams);
+                final List<Map<String, Object>> logData = mAuditLogManager.getLog(objectType, objectID, jParams);
                 engineMap.put("logData", logData);
                 engineMap.put("deletedRows", Integer.valueOf(deletedRows));
                 output = registry.getJahiaFetcherService().fetchServlet((ParamBean) jParams, JSP_LOGFORM);

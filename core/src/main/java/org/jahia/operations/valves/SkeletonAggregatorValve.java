@@ -19,6 +19,7 @@ package org.jahia.operations.valves;
 import au.id.jericho.lib.html.OutputDocument;
 import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.StartTag;
+import au.id.jericho.lib.html.Tag;
 
 import org.apache.log4j.Logger;
 import org.jahia.content.ContentObjectKey;
@@ -71,7 +72,7 @@ public class SkeletonAggregatorValve implements Valve {
     public static final String ESI_VARIABLE_USER = "user";
     public static final String THEME_VARIABLE = "theme";
     public static final String GWT_VARIABLE = "gwtInit";
-    private static ContainerHTMLCache containerHTMLCache = null;
+    private static ContainerHTMLCache<GroupCacheKey, ContainerHTMLCacheEntry>  containerHTMLCache = null;
     private JahiaEventGeneratorBaseService eventService;
     private PageGeneratorQueue generatorQueue;
     private CacheKeyGeneratorService cacheKeyGeneratorService;
@@ -114,7 +115,7 @@ public class SkeletonAggregatorValve implements Valve {
                 if (processingContext.getCacheExpirationDelay() == -1 ||
                     processingContext.getCacheExpirationDelay() > 0) iscacheable = true;
 
-                SkeletonCache skeletonCache;
+                SkeletonCache<GroupCacheKey, SkeletonCacheEntry> skeletonCache;
                 try {
                     // Get the HTML cache instance
                     skeletonCache = ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance();
@@ -184,7 +185,7 @@ public class SkeletonAggregatorValve implements Valve {
                     return exit;
                 }
                 watch.start("getCacheEntry");
-                CacheEntry cacheEntry = skeletonCache.getCacheEntry(entryKey);
+                CacheEntry<?> cacheEntry = skeletonCache.getCacheEntry(entryKey);
                 watch.stop();
                 if (cacheEntry != null) {
                     //                            logger.debug ("Found HTML page in cache!!!!!!!!!!!!!!!!!!");
@@ -206,12 +207,12 @@ public class SkeletonAggregatorValve implements Valve {
                             OutputDocument outputDocument = new OutputDocument(htmlContent);
                             watch.stop();
                             watch.start("find tags");
-                            List esiIncludeTags = htmlEntry.getIncludeTag();
+                            List<? extends Tag> esiIncludeTags = htmlEntry.getIncludeTag();
                             if(esiIncludeTags == null) {
                                 esiIncludeTags = htmlContent.findAllStartTags("esi:include");
                                 htmlEntry.setIncludeTag(esiIncludeTags);
                             }
-                            List esiVarsTags = htmlEntry.getVarsTag();
+                            List<? extends Tag> esiVarsTags = htmlEntry.getVarsTag();
                             if(esiVarsTags == null) {
                                 esiVarsTags = htmlContent.findAllStartTags("esi:vars");
                                 htmlEntry.setVarsTag(esiVarsTags);
@@ -228,7 +229,7 @@ public class SkeletonAggregatorValve implements Valve {
                             }
                             if (containerHTMLCache != null) {
                                 watch.start("Iterate through include tags (" + esiIncludeTags.size() + ")");
-                                for (Iterator i = esiIncludeTags.iterator(); i.hasNext();) {
+                                for (Iterator<? extends Tag> i = esiIncludeTags.iterator(); i.hasNext();) {
                                     StartTag segment = (StartTag) i.next();
                                     String[] attrs = segment.getAttributeValue("src").split("&");
                                     String cacheKey = "";
@@ -258,7 +259,7 @@ public class SkeletonAggregatorValve implements Valve {
                                 }
                                 watch.stop();
                                 watch.start("Iterate through vars tags (" + esiVarsTags.size() + ")");
-                                for (Iterator i = esiVarsTags.iterator(); i.hasNext();) {
+                                for (Iterator<? extends Tag> i = esiVarsTags.iterator(); i.hasNext();) {
                                     StartTag segment = (StartTag) i.next();
                                     String variableName = segment.getAttributeValue("var");
                                     if (variableName.equals(ESI_VARIABLE_USERNAME)) {

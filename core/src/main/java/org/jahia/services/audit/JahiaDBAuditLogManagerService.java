@@ -148,9 +148,9 @@ public class JahiaDBAuditLogManagerService extends JahiaAuditLogManagerService {
      * @param   objectID    an <code>int</code> representing the ID of the object to retrieve logs for
      * @return              a <code>List</code> of HashMaps containing keys for time, username, operation, and their value for each logged event
      */
-    public List getLog (int objectType, int objectID, ProcessingContext jParams) {
+    public List<Map<String, Object>> getLog (int objectType, int objectID, ProcessingContext jParams) {
         // Have the recursive method descend down the tree
-        List childrenObjectList = logManager.getAllChildren (objectType, objectID, null);
+        List<Integer[]> childrenObjectList = logManager.getAllChildren (objectType, objectID, null);
         return logManager.getLogs(objectType,objectID,childrenObjectList,jParams);
 
     } // end getLog
@@ -165,7 +165,7 @@ public class JahiaDBAuditLogManagerService extends JahiaAuditLogManagerService {
      * @return  a <code>List</code> of HashMaps containing keys for time, username,
      *          operation, and their value for each logged event
      */
-    public List getLog (long fromDate, ProcessingContext jParams) {
+    public List<Map<String, Object>> getLog (long fromDate, ProcessingContext jParams) {
         return logManager.getLogs(fromDate, jParams);
     } // end getLog
 
@@ -175,7 +175,7 @@ public class JahiaDBAuditLogManagerService extends JahiaAuditLogManagerService {
      * @return              the number of rows deleted, as an <code>int</code>
      */
     public int flushLogs (int objectType, int objectID, ProcessingContext jParams) {
-        List childrenObjectList = logManager.getAllChildren (objectType, objectID, null);
+        List<Integer[]> childrenObjectList = logManager.getAllChildren (objectType, objectID, null);
         int result = logManager.flushLogs(objectType,objectID,childrenObjectList);
         if (result > 0) {
 
@@ -436,8 +436,8 @@ public class JahiaDBAuditLogManagerService extends JahiaAuditLogManagerService {
      * @return
      * @throws JahiaException
      */
-    public List executeNamedQuery(String queryName, Map parameters) throws JahiaException{
-        return new LinkedList();
+    public <E> List<E> executeNamedQuery(String queryName, Map<String, Object> parameters) throws JahiaException{
+        return new LinkedList<E>();
     }
 
     /**

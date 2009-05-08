@@ -30,6 +30,8 @@ import org.apache.struts.action.ActionMessage;
 
 public class EngineMessage extends ActionMessage {
 
+    private static final long serialVersionUID = 8836639382833159715L;
+
     public EngineMessage() {
         this((String)null);
     }

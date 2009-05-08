@@ -30,7 +30,7 @@ import java.util.concurrent.Semaphore;
  */
 public class PageGeneratorQueue {
     private Map<GroupCacheKey,GroupCacheKey> notCacheablePage = new ConcurrentHashMap<GroupCacheKey, GroupCacheKey>(2503);
-    private Map generatingPages;
+    private Map<GroupCacheKey, CountDownLatch> generatingPages;
     private int maxPagesToGenerateInParallel;
     private long pageGenerationWaitTime ;
     private long pageGenerationWaitTimeOnStartup ;    
@@ -41,14 +41,14 @@ public class PageGeneratorQueue {
         maxPagesToGenerateInParallel = settingsBean.getMaxParallelProcessings();
         pageGenerationWaitTime = settingsBean.getPageGenerationWaitTime();
         pageGenerationWaitTimeOnStartup = settingsBean.getPageGenerationWaitTimeOnStartup();
-        generatingPages = new HashMap(maxPagesToGenerateInParallel);
+        generatingPages = new HashMap<GroupCacheKey, CountDownLatch>(maxPagesToGenerateInParallel);
     }
     
     public Map<GroupCacheKey, GroupCacheKey> getNotCacheablePage() {
         return notCacheablePage;
     }
 
-    public Map getGeneratingPages() {
+    public Map<GroupCacheKey, CountDownLatch> getGeneratingPages() {
         return generatingPages;
     }
     

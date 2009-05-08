@@ -23,13 +23,13 @@ import java.util.*;
  */
 public class LangLinksFactory {
     private String url;
-    private List locales;
+    private List<Locale> locales;
     private String prevLanguageCode;
-    private final List links = new ArrayList();
+    private final List<LangLink> links = new ArrayList<LangLink>();
     private String selectedLanguageCode;
 
     public LangLinksFactory(final String url,
-                            final List locales,
+                            final List<Locale> locales,
                             final String prevLanguageCode,
                             final String selectedLanguageCode) {
         this.url = url;
@@ -39,7 +39,7 @@ public class LangLinksFactory {
         createLinks();
     }
 
-    public Iterator getLinks() {
+    public Iterator<LangLink> getLinks() {
         return links.iterator();
     }
 
@@ -50,7 +50,7 @@ public class LangLinksFactory {
             return;
         }
 
-        final Iterator iterator = locales.iterator();
+        final Iterator<Locale> iterator = locales.iterator();
         while (iterator.hasNext()) {
             final Locale locale = (Locale) iterator.next();
             final String languageCode = locale.toString();

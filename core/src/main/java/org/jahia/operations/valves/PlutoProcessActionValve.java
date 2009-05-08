@@ -16,7 +16,7 @@
  */
  package org.jahia.operations.valves;
 
-import java.util.Iterator;
+import java.util.Enumeration;
 
 import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
@@ -24,7 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.pluto.PortletContainer;
 import org.apache.pluto.PortletContainerException;
 import org.apache.pluto.PortletWindow;
@@ -194,10 +193,10 @@ public class PlutoProcessActionValve implements Valve {
 		String portletName = PortletWindowConfig.parsePortletName(portletID);
 		PortletDD portletDD = container.getOptionalContainerServices().getPortletRegistryService()
 								.getPortletDescriptor(applicationId, portletName);
-		Iterator<String> parameterNames = new EnumerationIterator(request.getParameterNames());
+		Enumeration<?> parameterNames = request.getParameterNames();
 		if (parameterNames != null){
-			while(parameterNames.hasNext()){
-				String parameterName = parameterNames.next();
+			while(parameterNames.hasMoreElements()){
+				String parameterName = (String)parameterNames.nextElement();
 				if (portletDD.getPublicRenderParameter() != null){
 					if (portletDD.getPublicRenderParameter().contains(parameterName)){
 						String value = request.getParameter(parameterName);

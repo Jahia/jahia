@@ -20,6 +20,8 @@ import au.id.jericho.lib.html.OutputDocument;
 import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.SourceFormatter;
 import au.id.jericho.lib.html.StartTag;
+import au.id.jericho.lib.html.Tag;
+
 import org.apache.log4j.Category;
 import org.jahia.content.ContentObjectKey;
 import org.jahia.content.ContentPageKey;
@@ -82,7 +84,7 @@ public class SkeletonParseAndStoreValve implements Valve {
                 String generatedOutput = processingContext.getGeneratedOutput();
                 String curContentType = processingContext.getContentType();
                 // Get the HTML cache instance
-                SkeletonCache skeletonCache;
+                SkeletonCache<GroupCacheKey, SkeletonCacheEntry> skeletonCache;
                 try {
                     skeletonCache = ServicesRegistry.getInstance().getCacheService().getSkeletonCacheInstance();
                 } catch (JahiaInitializationException ex) {
@@ -120,7 +122,7 @@ public class SkeletonParseAndStoreValve implements Valve {
      * @param contentType     the html content type
      */
     private void parseAndStoreInCache(ProcessingContext context,
-                                       SkeletonCache skeletonCache,
+                                       SkeletonCache<GroupCacheKey, SkeletonCacheEntry> skeletonCache,
                                        int workflowState,
                                        String languageCode,
                                        String generatedOutput,
@@ -214,12 +216,12 @@ public class SkeletonParseAndStoreValve implements Valve {
                     SkeletonCacheEntry htmlEntry = new SkeletonCacheEntry();
                     source = new Source(generatedOutput);
                     esiIncludeTags = source.findAllStartTags("esi:include");
-                    final List esiVarsTags = source.findAllStartTags("esi:vars");
+                    final List<? extends Tag> esiVarsTags = source.findAllStartTags("esi:vars");
                     htmlEntry.setContentType(contentType);
                     htmlEntry.setContentBody(generatedOutput);
                     htmlEntry.setIncludeTag(esiIncludeTags);
                     htmlEntry.setVarsTag(esiVarsTags);
-                    CacheEntry newEntry = new CacheEntry(htmlEntry);
+                    CacheEntry<SkeletonCacheEntry> newEntry = new CacheEntry<SkeletonCacheEntry>(htmlEntry);
                     newEntry.setOperationMode(context.getOperationMode());
 
                     if (context.getCacheExpirationDelay() == 0 && doWeCache) {

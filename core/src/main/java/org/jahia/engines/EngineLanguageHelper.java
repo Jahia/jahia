@@ -37,6 +37,8 @@ import org.jahia.utils.LanguageCodeConverters;
  */
 public class EngineLanguageHelper implements Serializable {
 
+    private static final long serialVersionUID = -2812778018861341683L;
+    
     public static final String ENGINE_LANG_PARAM = "engine_lang";
     public static final String PREV_ENGINE_LANG_PARAM = "prev_engine_lang";
 

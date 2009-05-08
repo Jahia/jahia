@@ -55,7 +55,7 @@ public class OperationModeCheckValve implements Valve {
                         SESSION_LOCALE);
                     processingContext.flushLocaleListCache();
                     List<Locale> locales = processingContext.getLocales(true);
-                    Map pageTitles = processingContext.getContentPage().getTitles(true);
+                    Map<String, String> pageTitles = processingContext.getContentPage().getTitles(true);
                     Locale locale = null;
                     String lang = null;
                     for (int i = 0; i < locales.size(); i++) {

@@ -95,11 +95,11 @@ public class JahiaAuditLogManager {
         return false;
     }
  
-    public List getAllChildren(int objectType, int objectID, List parents) {
-        List fullChildrenList = parents == null ? new FastArrayList(103)
+    public List<Integer[]> getAllChildren(int objectType, int objectID, List<Integer[]> parents) {
+        List<Integer[]> fullChildrenList = parents == null ? new FastArrayList(103)
                 : parents;
-        List tempChildrenList = getChildrenList(objectType, objectID);
-        for (Iterator it = tempChildrenList.iterator(); it.hasNext();) {
+        List<Integer[]> tempChildrenList = getChildrenList(objectType, objectID);
+        for (Iterator<Integer[]> it = tempChildrenList.iterator(); it.hasNext();) {
             Integer[] newChild = (Integer[]) it.next();
             fullChildrenList.add(newChild);
             Integer newObjType = newChild[0];
@@ -113,9 +113,9 @@ public class JahiaAuditLogManager {
         return fullChildrenList;
     }
 
-    private List getChildrenList(int objectType, int objectID) {
+    private List<Integer[]> getChildrenList(int objectType, int objectID) {
         List list = null;
-        FastArrayList retList = new FastArrayList(103);
+        List<Integer[]> retList = new FastArrayList(103);
         Integer integer;
         switch (objectType) {
 
@@ -158,11 +158,13 @@ public class JahiaAuditLogManager {
                 fillListWithArrayOfIntegers(list, integer, retList);
                 break;
         }
-        retList.setFast(true);
+        if (retList instanceof FastArrayList) {        
+            ((FastArrayList)retList).setFast(true);
+        }
         return retList;
     }
 
-    private void fillListWithArrayOfIntegers(List list, Integer integer, List retList) {
+    private void fillListWithArrayOfIntegers(List list, Integer integer, List<Integer[]> retList) {
         for (Iterator it = list.iterator(); it.hasNext();) {
             Object object = it.next();
             Integer id = (object instanceof Integer ? (Integer) object
@@ -177,21 +179,21 @@ public class JahiaAuditLogManager {
         }
     }
 
-    public List getLogs(int objectType, int objectID, List childrenObjectList, ProcessingContext processingContext) {
-        List list = dao.getLogs(new Integer(objectType), new Integer(objectID), childrenObjectList);
+    public List<Map<String, Object>>  getLogs(int objectType, int objectID, List<Integer[]> childrenObjectList, ProcessingContext processingContext) {
+        List<JahiaAuditLog> list = dao.getLogs(new Integer(objectType), new Integer(objectID), childrenObjectList);
         return fillList(list, processingContext);
     }
 
-    private List fillList(List list, ProcessingContext processingContext) {
-        FastArrayList retList = new FastArrayList(list.size());
+    private List<Map<String, Object>>  fillList(List<JahiaAuditLog> list, ProcessingContext processingContext) {
+        List<Map<String, Object>> retList = new FastArrayList(list.size());
         DateFormat dateTimeInstance = DateFormat.getDateTimeInstance(3, 3, processingContext.getCurrentLocale());
-        for (Iterator it = list.iterator(); it.hasNext();) {
+        for (Iterator<JahiaAuditLog> it = list.iterator(); it.hasNext();) {
             JahiaAuditLog auditLog = (JahiaAuditLog) it.next();
             String time;
             Long myTime = auditLog.getTime();
             java.util.Date myDate = new java.util.Date(myTime.longValue());
             time = dateTimeInstance.format(myDate);
-            FastHashMap map = new FastHashMap(7);
+            Map<String, Object> map = new FastHashMap(7);
             map.put("timeStr", time);
             map.put("time",myTime);
             map.put("username", auditLog.getUsername());
@@ -221,13 +223,13 @@ public class JahiaAuditLogManager {
                 log.error("Error getting serialized object", e);
             }
             map.put("id", auditLog.getId());
-            map.setFast(true);
+            if (map instanceof FastHashMap) {
+                ((FastHashMap)map).setFast(true);
+            }
             retList.add(map);
         }
-        Collections.sort(retList, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                Map map1 = (Map) o1;
-                Map map2 = (Map) o2;
+        Collections.sort(retList, new Comparator<Map<String, Object>>() {
+            public int compare(Map<String, Object> map1, Map<String, Object> map2) {
                 //first order by site
                 /*
                 String site1 = (String) map1.get("sitekey");
@@ -246,7 +248,9 @@ public class JahiaAuditLogManager {
                 }
             }
         });
-        retList.setFast(true);
+        if (retList instanceof FastArrayList){
+            ((FastArrayList)retList).setFast(true);
+        }
 //        Collections.sort(retList, new Comparator() {
 //            public int compare(Object o1, Object o2) {
 //                Map map1 = (Map) o1;
@@ -260,12 +264,12 @@ public class JahiaAuditLogManager {
         return retList;
     }
 
-    public List getLogs(long fromDate, ProcessingContext processingContext) {
-        List list = dao.getLogs(fromDate);
+    public List<Map<String, Object>> getLogs(long fromDate, ProcessingContext processingContext) {
+        List<JahiaAuditLog> list = dao.getLogs(fromDate);
         return fillList(list, processingContext);
     }
 
-    public int flushLogs(int objectType, int objectID, List childrenObjectList) {
+    public int flushLogs(int objectType, int objectID, List<Integer[]> childrenObjectList) {
         return dao.flushLogs(new Integer(objectType), new Integer(objectID), childrenObjectList);
     }
 
@@ -293,7 +297,7 @@ public class JahiaAuditLogManager {
         return dao.executeCriteria(criteria, maxResultSet);
     }
 
-    public List executeNamedQuery(String queryName, Map parameters) {
+    public <E> List<E> executeNamedQuery(String queryName, Map<String, Object> parameters) {
         return dao.executeNamedQuery(queryName, parameters);
     }
 }

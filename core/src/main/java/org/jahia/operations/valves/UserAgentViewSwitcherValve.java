@@ -16,7 +16,6 @@
  */
 package org.jahia.operations.valves;
 
-import java.util.Set;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Pattern;

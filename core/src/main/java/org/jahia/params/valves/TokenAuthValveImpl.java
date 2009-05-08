@@ -42,7 +42,7 @@ public class TokenAuthValveImpl implements Valve {
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 
-    private static Map map = new HashMap();
+    private static Map<String, JahiaUser> map = new HashMap<String, JahiaUser>();
 
     public TokenAuthValveImpl() {
     }

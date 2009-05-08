@@ -67,10 +67,10 @@ public class JahiaAuditLogDAO extends AbstractGeneratorDAO {
         });
     }
 
-    public List getLogs(Integer objectType, Integer objectID,
+    public List<JahiaAuditLog> getLogs(Integer objectType, Integer objectID,
             List<Integer[]> childrenObjectList) {
 
-        List retList = Collections.emptyList();
+        List<JahiaAuditLog> retList = Collections.emptyList();
 
         if (objectType != null && objectID != null) {
             HibernateTemplate template = getHibernateTemplate();
@@ -143,7 +143,7 @@ public class JahiaAuditLogDAO extends AbstractGeneratorDAO {
         return retList;
     }
 
-    public List getLogs(long fromDate) {
+    public List<JahiaAuditLog> getLogs(long fromDate) {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_NEVER);
         template.setCacheQueries(false);
@@ -226,8 +226,8 @@ public class JahiaAuditLogDAO extends AbstractGeneratorDAO {
         HibernateTemplate template = getHibernateTemplate();
         template.setFlushMode(HibernateTemplate.FLUSH_AUTO);
         template.setCacheQueries(false);
-        List ret = template.find("select count(l.id) from JahiaAuditLog l");
-        int numRows = ((Long) ret.get(0)).intValue();
+        List<Long> ret = template.find("select count(l.id) from JahiaAuditLog l");
+        int numRows = ret.get(0).intValue();
         int numDeletes = numRows - maxLogs;
         // if rows need to be deleted, get the highest ID to be deleted
         if (numDeletes > 0) {
@@ -254,17 +254,17 @@ public class JahiaAuditLogDAO extends AbstractGeneratorDAO {
         return executableCriteria.list();
     }
 
-    public List executeNamedQuery(String queryName, Map parameters){
+    public <E> List<E> executeNamedQuery(String queryName, Map<String, Object> parameters){
         Query query = this.getSession().getNamedQuery(queryName);
         if ( parameters != null ){
-            Iterator it = parameters.keySet().iterator();
+            Iterator<String> it = parameters.keySet().iterator();
             String key = null;
             Object value = null;
             while (it.hasNext()){
                 key = (String)it.next();
                 value = parameters.get(key);
                 if ( value instanceof Collection ){
-                    query.setParameterList(key,(Collection)value);
+                    query.setParameterList(key,(Collection<?>)value);
                 } else {
                     query.setParameter(key,value);
                 }

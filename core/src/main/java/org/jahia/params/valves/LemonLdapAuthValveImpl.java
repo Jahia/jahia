@@ -68,8 +68,8 @@ public class LemonLdapAuthValveImpl implements Valve {
 
                 logger.debug("Looking for dn "+dn);
 
-                List v = ServicesRegistry.getInstance().getJahiaUserManagerService().getProviderList();
-                for (Iterator iterator = v.iterator(); iterator.hasNext();) {
+                List<? extends JahiaUserManagerProvider> v = ServicesRegistry.getInstance().getJahiaUserManagerService().getProviderList();
+                for (Iterator<? extends JahiaUserManagerProvider> iterator = v.iterator(); iterator.hasNext();) {
                     JahiaUserManagerProvider userManagerProviderBean = (JahiaUserManagerProvider) iterator.next();
                     if (userManagerProviderBean.getClass().getName().equals(JahiaUserManagerLDAPProvider.class.getName())) {
                         JahiaUserManagerLDAPProvider jahiaUserManagerLDAPProvider = (JahiaUserManagerLDAPProvider)userManagerProviderBean;

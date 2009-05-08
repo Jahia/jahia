@@ -50,7 +50,7 @@ public class HistoryValve implements Valve {
     private void updateHistoryBeanList(ProcessingContext processingContext) {
         List<HistoryBean> historyBeanList = (List<HistoryBean>) processingContext.getSessionState().getAttribute(ORG_JAHIA_TOOLBAR_HISTORY);
         if (historyBeanList == null) {
-            historyBeanList = new ArrayList();
+            historyBeanList = new ArrayList<HistoryBean>();
         }
 
         // create a new history bean

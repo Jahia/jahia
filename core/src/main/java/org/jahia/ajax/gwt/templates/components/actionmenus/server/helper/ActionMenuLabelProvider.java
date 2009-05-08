@@ -58,7 +58,7 @@ public class ActionMenuLabelProvider {
      * @param action the action identifier (see constants)
      * @return the formatted label
      */
-    private static String getActionLabel(ProcessingContext ctx, String action) {
+    public static String getActionLabel(ProcessingContext ctx, String action) {
         return new JahiaResourceBundle(ctx.getLocale(), ctx.getSite().getTemplatePackageName()).getString(new StringBuilder("actionmenus.actions.").append(action).toString(), action);
     }
 

@@ -51,6 +51,7 @@ import org.jahia.services.content.JCRPortletNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.utils.InsertionSortedMap;
+import org.jahia.registries.ServicesRegistry;
 import org.xml.sax.SAXException;
 
 /**

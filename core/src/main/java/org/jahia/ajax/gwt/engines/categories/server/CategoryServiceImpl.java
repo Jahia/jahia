@@ -498,7 +498,9 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             engineLocale = LanguageCodeConverters.languageCodeToLocale(categoryLocale);
         }
         String name = category.getTitle(engineLocale);
-        name = "(" + category.getKey() + ") "+((name == null)?"":name);
+        if(name ==  null || name.length() == 0){
+             name = "(" + category.getKey() + ")";
+        }
         gwtJahiaNode.setCategoryId("" + category.getJahiaCategory().getId());
         gwtJahiaNode.setParentKey(parentKey);
         gwtJahiaNode.setName(name);

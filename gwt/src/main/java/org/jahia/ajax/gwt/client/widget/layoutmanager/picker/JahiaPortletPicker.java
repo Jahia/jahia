@@ -250,7 +250,7 @@ public class JahiaPortletPicker extends ContentPanel {
         // make a call ajax
         LayoutmanagerService.App.getInstance().addLayoutItem(JahiaPageEntryPoint.getJahiaGWTPage(),gwtLayoutItem, new AsyncCallback() {
             public void onSuccess(Object o) {
-                Info.display("","Mashup added to 'MyPortal'");
+                Info.display("",Messages.getNotEmptyResource("p_mashup_added_myPortal", "Mashup added to 'MyPortal'"));
             }
 
             public void onFailure(Throwable t) {

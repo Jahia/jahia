@@ -148,9 +148,9 @@ public class JahiaPortalManager extends ContentPanel {
 
                 box.setButtons(MessageBox.OKCANCEL);
                 box.setIcon(MessageBox.QUESTION);
-                box.setTitle("Restore");
+                box.setTitle(Messages.getNotEmptyResource("p_save_default","Save as default"));
                 box.addCallback(confirmBoxListener);
-                box.setMessage("Do you really want to restore dafault?");
+                box.setMessage(Messages.getNotEmptyResource("p_confirm_save_default","Do you really want to save as default?"));
                 box.show();
             }
         });
@@ -181,9 +181,9 @@ public class JahiaPortalManager extends ContentPanel {
 
                 box.setButtons(MessageBox.OKCANCEL);
                 box.setIcon(MessageBox.QUESTION);
-                box.setTitle("Restore");
+                box.setTitle(Messages.getNotEmptyResource("p_restore_default", "Restore default"));
                 box.addCallback(confirmBoxListener);
-                box.setMessage("Do you really want to restore dafault?");
+                box.setMessage(Messages.getNotEmptyResource("p_restore_confirm", "Do you really want to restore default?"));
                 box.show();
             }
         });

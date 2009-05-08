@@ -298,7 +298,7 @@ stretcherToOpen   = 0; %>
                 <table border="0" cellpadding="5" cellspacing="0" class="topAlignedTable">
                     <tr>
                         <td>
-                            <fmt:message key="org.jahia.admin.components.ManageComponents.deploy.preparewar.fileselect"/>&nbsp;
+                            <fmt:message key="org.jahia.admin.components.ManageComponents.deploy.fileselect"/>&nbsp;
                         </td>
                         <td colspan="2" >
                             :&nbsp;<input type="file" name="war">

@@ -82,14 +82,28 @@ public class ReportGrid extends Grid<ReportGrid.GWTReportElement> {
                     for (String lang : gwtaction.getLangs()) {
                         String errs = null;
                         if (errorsAndWarningsForThisKey != null && errorsAndWarningsForThisKey.containsKey(lang)) {
+                            List<String> warList = new ArrayList<String>();
+                            List<String> errList = new ArrayList<String>();
+
+                            for (GWTJahiaNodeOperationResultItem err : errorsAndWarningsForThisKey.get(lang).getErrorsAndWarnings()) {
+                                String msg = err.getMessage();
+                                if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.ERROR) {
+                                    if (!errList.contains(msg)) {
+                                        errList.add(msg);
+                                    }
+                                } else if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.WARNING) {
+                                    if (!warList.contains(msg)) {
+                                        warList.add(msg);
+                                    }
+                                }
+                            }
                             StringBuilder sbWars = new StringBuilder("<ul class=\"batchWarnings\">");
                             StringBuilder sbErrs = new StringBuilder("<ul class=\"batchErrors\">");
-                            for (GWTJahiaNodeOperationResultItem err : errorsAndWarningsForThisKey.get(lang).getErrorsAndWarnings()) {
-                                if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.ERROR) {
-                                    sbErrs.append("\n<li>").append(err.getMessage()).append("</li>");
-                                } else if (err.getLevel().intValue() == GWTJahiaNodeOperationResultItem.WARNING) {
-                                    sbWars.append("\n<li>").append(err.getMessage()).append("</li>");
-                                }
+                            for (String err: errList) {
+                                sbErrs.append("\n<li>").append(err).append("</li>");
+                            }
+                            for (String war: warList) {
+                                sbWars.append("\n<li>").append(war).append("</li>");
                             }
                             sbWars.append("\n</ul>");
                             sbErrs.append("\n</ul>");

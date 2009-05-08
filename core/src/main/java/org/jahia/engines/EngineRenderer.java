@@ -21,30 +21,19 @@ package org.jahia.engines;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.jstl.core.Config;
-import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 
 import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
-import org.jahia.data.beans.JahiaBean;
-import org.jahia.data.beans.PageBean;
-import org.jahia.data.beans.RequestBean;
-import org.jahia.data.beans.SiteBean;
-import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.gui.GuiBean;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
-import org.jahia.services.expressions.DateBean;
 import org.jahia.spring.aop.interceptor.SilentJamonPerformanceMonitorInterceptor;
 import org.jahia.utils.FileUtils;
-import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -74,7 +63,7 @@ public class EngineRenderer {
      * render ProcessingContext render EV    23.12.2000 AK    04.01.2001  remove the fileName from
      * method arguments
      */
-    public void render (final ProcessingContext jParams, final Map engineHashMap)
+    public void render (final ProcessingContext jParams, final Map<String, Object> engineHashMap)
             throws JahiaException {
         renderCore (jParams, engineHashMap);
     }
@@ -83,7 +72,7 @@ public class EngineRenderer {
      * render JahiaData render EV    23.12.2000 AK    04.01.2001  remove the fileName from
      * method arguments
      */
-    public void render (final JahiaData jData, final Map engineHashMap)
+    public void render (final JahiaData jData, final Map<String, Object> engineHashMap)
             throws JahiaException {
         jData.getProcessingContext().setAttribute ("org.jahia.data.JahiaData",
                 jData);
@@ -96,7 +85,7 @@ public class EngineRenderer {
      * get the render type from the engineHashMap (include or forward) AK    04.01.2001  correct
      * the jahiaChrono call consoleMsg
      */
-    private void renderCore (final ProcessingContext processingContext, final Map engineHashMap)
+    private void renderCore (final ProcessingContext processingContext, final Map<String, Object> engineHashMap)
             throws JahiaException {
 
         String fileName = JahiaEngine.EMPTY_STRING;
@@ -143,63 +132,8 @@ public class EngineRenderer {
 
             request.setAttribute ("org.jahia.params.ParamBean", jParams);
 
-            // now let's set the content access beans.
-            PageBean pageBean = null;
-            if (jParams.getPage()!=null) {
-                pageBean = new PageBean (jParams.getPage (), jParams);
-                request.setAttribute ("currentPage", pageBean);
-            }
-            SiteBean siteBean = new SiteBean (jParams.getSite (), jParams);
-            request.setAttribute ("currentSite", siteBean);
-            
-            request.setAttribute ("currentUser", jParams.getUser ());
-            
-            RequestBean requestBean = new RequestBean (new GuiBean (jParams), jParams);
-            request.setAttribute ("currentRequest", requestBean);
-
-            DateBean dateBean = new DateBean(jParams,
-                    new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT));
-            request.setAttribute("dateBean", dateBean);
-
-            JahiaBean jahiaBean = new JahiaBean(jParams, siteBean, pageBean, requestBean, dateBean, jParams.getUser());
-            request.setAttribute ("currentJahia", jahiaBean);
-            request.setAttribute("jahia", jahiaBean);
-            
-            // init localization context
-            Config.set(jParams.getRequest(), Config.FMT_LOCALIZATION_CONTEXT,
-                    new LocalizationContext(new JahiaResourceBundle(jParams
-                            .getLocale(), jParams.getSite()
-                            .getTemplatePackageName()), jParams.getLocale()));
-
-            boolean isIE = false;
-            final String userAgent = jParams.getRequest ().getHeader ("user-agent");
-            if (userAgent != null) {
-                isIE = (userAgent.indexOf ("IE") != -1);
-            }
-
-            if (isIE) {
-                request.setAttribute ("isIE", Boolean.TRUE);
-            } else {
-                request.setAttribute ("isIE", Boolean.FALSE);
-            }
             request.setAttribute ("org.jahia.engines.EngineHashMap",
                     engineHashMap);
-            request.setAttribute ("javaScriptPath",
-                    jParams.settings ().getJsHttpPath ());
-            request.setAttribute ("URL",
-                    getJahiaCoreHttpPath (jParams) +
-                    jParams.settings ().
-                    getEnginesContext ());
-            request.setAttribute (JahiaEngine.ENGINE_URL_PARAM,
-                    getJahiaCoreHttpPath (jParams) +
-                    jParams.settings ().
-                    getEnginesContext ());
-            request.setAttribute ("serverURL",
-                    getJahiaCoreHttpPath (jParams));
-            request.setAttribute ("httpJsContextPath",
-                    getJahiaCoreHttpPath (jParams) +
-                    jParams.settings ().
-                    getJavascriptContext ());
 
             String jspSource = (String) engineHashMap.get ("jspSource");
             if (jspSource == null)
@@ -274,17 +208,6 @@ public class EngineRenderer {
         } catch(IllegalStateException ise) {
             logger.debug("Error while forwarding the Engine "+fileName,ise);
         }
-    }
-
-    /**
-     * Build an http path containing the server name for the current site, instead of the path
-     * from JahiaPrivateSettings.
-     *
-     * @return An http path leading to Jahia, built with the server name, and the server port if
-     *         nonstandard.
-     */
-    private String getJahiaCoreHttpPath (final ProcessingContext jParams) {
-        return jParams.getContextPath ();
     }
 
     /*******************************************************************************

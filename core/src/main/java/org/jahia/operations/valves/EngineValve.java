@@ -16,18 +16,28 @@
  */
 package org.jahia.operations.valves;
 
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Category;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaData;
+import org.jahia.data.beans.JahiaBean;
+import org.jahia.data.beans.PageBean;
+import org.jahia.data.beans.RequestBean;
+import org.jahia.data.beans.SiteBean;
 import org.jahia.engines.JahiaEngine;
+import org.jahia.engines.calendar.CalendarHandler;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaServerOverloadedException;
+import org.jahia.gui.GuiBean;
 import org.jahia.operations.PageGeneratorQueue;
 import org.jahia.operations.PageState;
+import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.SessionState;
 import org.jahia.pipelines.PipelineException;
@@ -36,6 +46,7 @@ import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.EnginesRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.GroupCacheKey;
+import org.jahia.services.expressions.DateBean;
 /**
  * <p> Title: </p> <p> Description: </p> <p> Copyright: Copyright (c) 2004 </p> <p> Company: Jahia Ltd </p>
  *
@@ -172,7 +183,9 @@ public class EngineValve implements Valve {
 
             // for JSp
             processingContext.setAttribute("org.jahia.data.JahiaData", jData);
-
+            
+            setContentAccessBeans((ParamBean)processingContext);
+            
             theEngine.handleActions(processingContext, jData);
             logger.debug("Operation handled for engine " + processingContext.getEngine());
 
@@ -198,7 +211,7 @@ public class EngineValve implements Valve {
                 latch.countDown();
 
                 if (state != null && state.getKey() != null) {
-                    Map generatingPages = getGeneratorQueue().getGeneratingPages();
+                    Map<GroupCacheKey, CountDownLatch> generatingPages = getGeneratorQueue().getGeneratingPages();
                     synchronized (generatingPages) {
                         generatingPages.remove(state.getKey());
                     }
@@ -214,7 +227,7 @@ public class EngineValve implements Valve {
         CountDownLatch latch = null;
         boolean mustWait = true;
         GroupCacheKey entryKey = state.getKey();
-        Map generatingPages = getGeneratorQueue().getGeneratingPages();
+        Map<GroupCacheKey, CountDownLatch> generatingPages = getGeneratorQueue().getGeneratingPages();
         synchronized (generatingPages) {
             latch = (CountDownLatch) generatingPages.get(entryKey);
             if (latch == null) {
@@ -254,4 +267,68 @@ public class EngineValve implements Valve {
         this.skeletonAggregatorValve = skeletonAggregatorValve;
     }
 
+    private void setContentAccessBeans(ParamBean jParams) {
+        final HttpServletRequest request = jParams.getRequest();
+        PageBean pageBean = null;
+        if (jParams.getPage()!=null) {
+            pageBean = new PageBean (jParams.getPage (), jParams);
+            request.setAttribute ("currentPage", pageBean);
+        }
+        SiteBean siteBean = new SiteBean (jParams.getSite (), jParams);
+        request.setAttribute ("currentSite", siteBean);
+        
+        request.setAttribute ("currentUser", jParams.getUser ());
+        
+        RequestBean requestBean = new RequestBean (new GuiBean (jParams), jParams);
+        request.setAttribute ("currentRequest", requestBean);
+
+        DateBean dateBean = new DateBean(jParams,
+                new SimpleDateFormat(CalendarHandler.DEFAULT_DATE_FORMAT));
+        request.setAttribute("dateBean", dateBean);
+
+        JahiaBean jahiaBean = new JahiaBean(jParams, siteBean, pageBean, requestBean, dateBean, jParams.getUser());
+        request.setAttribute ("currentJahia", jahiaBean);
+        request.setAttribute("jahia", jahiaBean);
+
+        boolean isIE = false;
+        final String userAgent = jParams.getRequest ().getHeader ("user-agent");
+        if (userAgent != null) {
+            isIE = (userAgent.indexOf ("IE") != -1);
+        }
+
+        if (isIE) {
+            request.setAttribute ("isIE", Boolean.TRUE);
+        } else {
+            request.setAttribute ("isIE", Boolean.FALSE);
+        }
+
+        request.setAttribute ("javaScriptPath",
+                jParams.settings ().getJsHttpPath ());
+        request.setAttribute ("URL",
+                getJahiaCoreHttpPath (jParams) +
+                jParams.settings ().
+                getEnginesContext ());
+        request.setAttribute (JahiaEngine.ENGINE_URL_PARAM,
+                getJahiaCoreHttpPath (jParams) +
+                jParams.settings ().
+                getEnginesContext ());
+        request.setAttribute ("serverURL",
+                getJahiaCoreHttpPath (jParams));
+        request.setAttribute ("httpJsContextPath",
+                getJahiaCoreHttpPath (jParams) +
+                jParams.settings ().
+                getJavascriptContext ());
+   
+    }
+    
+    /**
+     * Build an http path containing the server name for the current site, instead of the path
+     * from JahiaPrivateSettings.
+     *
+     * @return An http path leading to Jahia, built with the server name, and the server port if
+     *         nonstandard.
+     */
+    private String getJahiaCoreHttpPath (final ProcessingContext jParams) {
+        return jParams.getContextPath ();
+    }
 }

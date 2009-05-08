@@ -41,9 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.pluto.Constants;
 import org.apache.pluto.PortletContainerException;
 import org.apache.pluto.PortletWindow;
-import org.apache.pluto.core.ContainerInvocation;
-import org.apache.pluto.core.NullPortlet;
-import org.apache.pluto.core.PortletContextManager;
+import org.apache.pluto.core.*;
 import org.apache.pluto.descriptors.portlet.PortletDD;
 import org.apache.pluto.internal.InternalPortletConfig;
 import org.apache.pluto.internal.InternalPortletContext;
@@ -129,6 +127,7 @@ public class PortletServlet extends HttpServlet {
         for (int i = 0; i < fragments.length; i++) {
             try {
                 File fragment = fragments[i];
+                log("Processing fragment " + fragment);
                 ServletConfig config = new ServletConfigWrapper(getServletConfig(), fragment.getName());
                 String applicationId = mgr.register(config);
                 portletContext = (InternalPortletContext) mgr.getPortletContext(applicationId);
@@ -138,7 +137,7 @@ public class PortletServlet extends HttpServlet {
                     portletConfigs.put( Jahia.getContextPath()+"/"+fragment.getName()+"."+portletDD.getPortletName(), (InternalPortletConfig) mgr.getPortletConfig(applicationId, portletDD.getPortletName()));
                 }
             } catch (PortletContainerException ex) {
-                ex.printStackTrace();
+                log("Error while registering portlet", ex);
             }
         }
 
@@ -442,6 +441,11 @@ public class PortletServlet extends HttpServlet {
             this.contextPath = contextPath;
         }
 
+        /**
+         * This only gets called in Servlet API 2.5 and above. We need to find another way for Servlet API 2.4 and
+         * earlier ? 
+         * @return
+         */
         public String getContextPath() {
             return Jahia.getContextPath()+"/"+contextPath;
         }
@@ -518,6 +522,11 @@ public class PortletServlet extends HttpServlet {
         }
 
         public String getInitParameter(String s) {
+            if (InitParameterApplicationIdResolver.CONTEXT_PATH_PARAM.equals(s)) {
+                // this code is used internally by Pluto to determine the context if we are using a container
+                // that is not Servlet API 2.5+ compliant.
+                return new String(Jahia.getContextPath()+"/"+contextPath);
+            }
             return deleguee.getInitParameter(s);
         }
 

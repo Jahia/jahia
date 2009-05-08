@@ -7,6 +7,14 @@
 
     <display-name>Jahia</display-name>
 
+    <!-- Uncomment the following if running Jahia under Websphere 6.1+ -->
+    <!--
+    <context-param>
+        <param-name>com.ibm.websphere.portletcontainer.PortletDeploymentEnabled</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    -->
+    
     <context-param>
         <description>
             The location of Spring's configuration files used by the listener upon startup

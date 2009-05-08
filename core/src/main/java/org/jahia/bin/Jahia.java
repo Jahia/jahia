@@ -535,7 +535,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             createProcessingPipeline(config);
 
             // initialize content portlets
-            ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().initPortletListener();
+            // ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().initPortletListener();
 
             /* todo let's find a cleaner way to initialize this static repository reference, maybe if we move
              * Jackrabbit to be initialized using Spring we could initialize these dependencies using Spring

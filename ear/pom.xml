@@ -193,15 +193,9 @@
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
                     <archive>
-                      <index>true</index>
                       <manifest>
                           <addClasspath>true</addClasspath>
                           <addExtensions/>
-                        <!-- options
-                        <addClasspath>true</addClasspath>
-                        <addExtensions/>
-                        <classpathPrefix/>
-                        -->
                       </manifest>
                       <manifestEntries>
                         <url>${pom.url}</url>
@@ -209,7 +203,6 @@
                       <!--manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile-->
                     </archive>
                     <earSourceDirectory>src/main/resources</earSourceDirectory>
-                    <!--defaultJavaBundleDir>lib/</defaultJavaBundleDir-->
 
                     <modules>
                         <webModule>

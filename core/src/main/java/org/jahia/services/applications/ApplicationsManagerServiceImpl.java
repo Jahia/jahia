@@ -32,6 +32,7 @@ import javax.portlet.WindowState;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pluto.PortletWindow;
+import org.apache.pluto.core.PortletContextManager;
 import org.jahia.bin.Jahia;
 import org.jahia.data.JahiaDOMObject;
 import org.jahia.data.applications.ApplicationBean;
@@ -245,6 +246,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
         throws JahiaException {
 
         checkIsLoaded();
+
+        syncPlutoWithDB();
 
         List<ApplicationBean> apps = new ArrayList<ApplicationBean>(applicationManager.getApplicationsList(false));
         Collections.sort(apps, dummyComparator);
@@ -613,6 +616,29 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
                 "Error accessing a service that was not initialized successfully",
                 "Error accessing a service that was not initialized successfully",
                 JahiaException.SERVICE_ERROR, JahiaException.CRITICAL_SEVERITY);
+        }
+
+    }
+
+    private void syncPlutoWithDB() throws JahiaException {
+        // here we will compare Pluto's memory state with the state of the database, and add any missing application.
+        Iterator<String> portletApplicationIdsIterator = PortletContextManager.getManager().getRegisteredPortletApplicationIds();
+        while (portletApplicationIdsIterator.hasNext()) {
+            String currentPortletApplicationId = portletApplicationIdsIterator.next();
+            ApplicationBean app = applicationCache.get(APPLICATION_DEFINITION_CONTEXT + currentPortletApplicationId);
+            if (app == null) {
+                // try to load from db
+                app = applicationManager.getApplicationDefinition(currentPortletApplicationId);
+                if (app != null) {
+                    applicationCache.put(APPLICATION_DEFINITION + app.getID(), app);
+                    applicationCache.put(APPLICATION_DEFINITION_CONTEXT +app.getContext(),app);
+                }
+            }
+            if (app == null) {
+                // The app was not found in Jahia but is registered in Pluto, so we register it in Jahia.
+                logger.info("Registering portlet context " + currentPortletApplicationId + " in Jahia.");
+                ServicesRegistry.getInstance().getJahiaWebAppsDeployerService().registerWebApps(currentPortletApplicationId);
+            }
         }
     }
 

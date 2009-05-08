@@ -383,7 +383,16 @@ This will deploy jahia,start your tomcat and stop it, and then undeploy jahia.
 The resulting report will be generated in target/site/clover/ for clover and in
 the file target/site/surefire-report.html and look at the test result.
 
-Still needs to be integrated with the QA packages substructure.
+WARNING : Clover will instrument your code in your local repository, meaning
+that the JARs will contain code to analyse the code's behavior and also
+hardcoded paths to store the analysis results. So you should NEVER upload
+instrumented JARs to the remote repository, because they will simply not work.
+
+It might be a good idea, when compiling for code coverage, to use an
+alternate remote repository. You can do this by using the following command
+line argument :
+
+-Dmaven.repo.local=/home/myusername/.m2/repository-for-clover
 
  Troubleshooting
 ------------------------------------------------------------------------------

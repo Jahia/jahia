@@ -33,6 +33,7 @@ import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaSessionExpirationException;
 import org.jahia.params.ProcessingContext;
+import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.pages.ContentPage;
 import org.jahia.services.pages.JahiaPage;
@@ -149,7 +150,7 @@ public class Login_Engine implements JahiaEngine {
 
         if ("ok".equals(res)) {
             String loginChoice = jParams.getParameter ("loginChoice");
-            boolean stayAtCurrentPage = (loginChoice != null && loginChoice.equals ("1") || theUser.isRoot());
+            boolean stayAtCurrentPage = (loginChoice != null && loginChoice.equals (LoginEngineAuthValveImpl.STAY_AT_CURRENT_PAGE) || theUser.isRoot());
             JahiaPage loginPage = null;
             if (stayAtCurrentPage) {
                 logger.debug("Staying at current page...") ;

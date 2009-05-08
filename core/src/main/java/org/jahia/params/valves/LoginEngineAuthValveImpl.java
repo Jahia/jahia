@@ -39,6 +39,7 @@ import org.jahia.utils.JahiaString;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -56,6 +57,9 @@ public class LoginEngineAuthValveImpl implements Valve {
     public static final String USE_COOKIE = "useCookie";
     public static final String LOGIN_TAG_PARAMETER = "loginFromTag";
     public static final String DO_REDIRECT = "loginDoRedirect";
+    
+    public static final String STAY_AT_CURRENT_PAGE = "1";
+    public static final String GO_TO_HOMEPAGE = "2";    
 
     public void initialize() {
     }
@@ -148,7 +152,7 @@ public class LoginEngineAuthValveImpl implements Valve {
                         cookieUserKey = JahiaString.generateRandomString(settingsBean.getCookieAuthIDLength());
                         Properties searchCriterias = new Properties();
                         searchCriterias.setProperty(settingsBean.getCookieAuthUserPropertyName(), cookieUserKey);
-                        Set foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(
+                        Set<Principal> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(
                                 jParams.getSiteID(), searchCriterias);
                         if (foundUsers.size() > 0) {
                             cookieUserKey = null;

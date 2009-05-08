@@ -1002,7 +1002,7 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
         logger.debug("Path Info: " + pathInfo);
         if (pathInfo == null)
             return false;
-        if (pathInfo.indexOf("engineName") == -1)
+        if (pathInfo.indexOf(ProcessingContext.ENGINE_NAME_PARAMETER) == -1)
             return false;
 
         // get the main http method...

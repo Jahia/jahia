@@ -287,6 +287,7 @@ public class PropertiesEditor extends AbsolutePanel {
 
         newFieldWindow.add(formPanel);
         newFieldWindow.setWidth(400);
+        newFieldWindow.setHeight(150);
         newFieldWindow.layout();
         newFieldWindow.show();
     }

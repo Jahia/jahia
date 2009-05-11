@@ -952,4 +952,8 @@
         <name>loginRememberMe</name>
         <path>/META-INF/tags/login/loginRememberMe.tag</path>
     </tag-file>
+    <tag-file>
+        <name>loginRedirectChoice</name>
+        <path>/META-INF/tags/login/loginRedirectChoice.tag</path>
+    </tag-file>    
 </taglib>

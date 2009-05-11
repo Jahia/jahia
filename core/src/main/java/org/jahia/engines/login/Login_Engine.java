@@ -274,8 +274,7 @@ public class Login_Engine implements JahiaEngine {
         jParams.setAttribute("engineTitle", "Login");
         //jParams.getRequest().setAttribute( "engineMap", engineMap );
     }
-
-
+    
     /**
      * Return the first available home page for this user. Personal homepage has precedence over
      * groups' homepage.
@@ -284,7 +283,7 @@ public class Login_Engine implements JahiaEngine {
      * @param user the user.
      * @return JahiaPage the first available home page, null if none.
      */
-    private JahiaPage getHomepage(JahiaSite site, JahiaUser user, ProcessingContext jParams) {
+    public static JahiaPage getHomepage(JahiaSite site, JahiaUser user, ProcessingContext jParams) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("started homepage retrieval for user '" + user.getUserKey() + "'");

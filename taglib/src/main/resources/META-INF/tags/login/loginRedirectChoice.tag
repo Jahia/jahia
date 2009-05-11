@@ -21,13 +21,22 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="h" uri="http://www.jahia.org/tags/functions"%>
+<%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<utility:setBundle basename="JahiaInternalResources"/>
 <c:if test="${!currentRequest.logged}">
+  <c:if test="${empty loginChoices}">
+    <utility:useConstants var="loginConstants" className="org.jahia.params.valves.LoginEngineAuthValveImpl" scope="application"/>
+    <jsp:useBean id="loginChoices" class="java.util.LinkedHashMap"/>
+    <c:set target="${loginChoices}" property="${loginConstants.STAY_AT_CURRENT_PAGE}" value="org.jahia.engines.login.Login_Engine.stayAtCurrentPage.label"/>
+    <c:set target="${loginChoices}" property="${loginConstants.GO_TO_HOMEPAGE}" value="org.jahia.engines.login.Login_Engine.jumpToHomePage.label"/>
+  </c:if>
   <c:set target="${attributes}" property="type" value="text"/>
   <c:set target="${attributes}" property="name" value="loginChoice"/>
-  <c:set var="value" value="${h:default(param['username'], 'username')}"/>
+  <c:set var="value" value="${h:default(param['loginRedirectChoice'], loginConstants.STAY_AT_CURRENT_PAGE)}"/>
   <select ${h:attributes(attributes)}>
      <c:forEach items="${loginChoices}" var="loginChoice">
-          <option value="${loginChoice.key}" ${value == loginChoice.key ? 'selected="selected"' : ''}><fmt:message key="${loginChoice.key}"/></option>
+          <option value="${loginChoice.key}" ${value == loginChoice.key ? 'selected="selected"' : ''}><fmt:message key="${loginChoice.value}"/></option>
      </c:forEach>  
   </select>
-</c:if>  
+</c:if> 

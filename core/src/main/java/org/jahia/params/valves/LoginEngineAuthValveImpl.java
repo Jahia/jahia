@@ -28,6 +28,7 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.Valve;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.pages.JahiaPage;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.JahiaDBUser;
@@ -56,6 +57,7 @@ public class LoginEngineAuthValveImpl implements Valve {
     public static final String OK = "ok";
     public static final String USE_COOKIE = "useCookie";
     public static final String LOGIN_TAG_PARAMETER = "loginFromTag";
+    public static final String LOGIN_CHOICE_PARAMETER = "loginChoice";
     public static final String DO_REDIRECT = "loginDoRedirect";
     
     public static final String STAY_AT_CURRENT_PAGE = "1";
@@ -182,19 +184,29 @@ public class LoginEngineAuthValveImpl implements Valve {
     }
 
     private void checkRedirect(ParamBean ctx) {
-        if ("POST".equals(ctx.getRequest().getMethod())) {
-            String doRedirect = ctx.getRequest().getParameter(DO_REDIRECT);
-            if (doRedirect != null
-                    && (Boolean.valueOf(doRedirect) || "1".equals(doRedirect))) {
-                try {
-                    ctx.getResponse().sendRedirect(ctx.composePageUrl());
-                } catch (Exception ex) {
-                    logger.error(
-                            "Unable to perform client-side redirect after login. Cause: "
-                                    + ex.getMessage(), ex);
+        String redirectUrl = null;
+        try {
+            if (GO_TO_HOMEPAGE.equals(ctx.getParameter(LOGIN_CHOICE_PARAMETER))) {
+                JahiaPage loginPage = Login_Engine.getHomepage(ctx.getSite(), ctx.getUser(), ctx);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("User homepage is " + loginPage != null ? loginPage.getTitle() : "null");
                 }
-
+                int loginPageId = loginPage == null ? 0 : loginPage.getID();            
+                if (loginPageId == 0) {
+                    loginPageId = ctx.getSite().getHomePageID();
+                }
+                redirectUrl = ctx.composePageUrl (loginPageId, ctx.getLocale().toString());
+            } else if ("POST".equals(ctx.getRequest().getMethod())) {
+                String doRedirect = ctx.getRequest().getParameter(DO_REDIRECT);
+                if (doRedirect != null && (Boolean.valueOf(doRedirect) || "1".equals(doRedirect))) {
+                    redirectUrl = ctx.composePageUrl();
+                }
             }
+            if (redirectUrl != null) {
+                ctx.getResponse().sendRedirect(redirectUrl);
+            }
+        } catch (Exception ex) {
+            logger.error("Unable to perform client-side redirect after login. Cause: " + ex.getMessage(), ex);
         }
     }
 
@@ -219,4 +231,5 @@ public class LoginEngineAuthValveImpl implements Valve {
             }
         }
     }
+    
 }

@@ -51,7 +51,7 @@
                 <option value="startDate" ${startDateSelected}><fmt:message key='sortDate'/></option>
                 <option value="location" ${locationSelected}><fmt:message key='sortLocation'/></option>
             </select>
-            <input type="hidden" name="startDate" value="${param.startDate}">
+            <input type="hidden" name="startDate" value="${param.startDate}"/>
             <utility:dropDownFromBundle bundleName="resources.eventsType" var="eventsList"/>
             <select class="eventsSort" name="eventsTypeFilter" onchange="document.eventPageForm.submit();">
                 <option value=""><fmt:message key="events.form.types.all"/> </option>

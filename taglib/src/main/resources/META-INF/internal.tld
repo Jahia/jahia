@@ -235,5 +235,9 @@
         <name>aclEditor</name>
         <path>/META-INF/tags/ajax/acleditor.tag</path>
     </tag-file>
+    <tag-file>
+        <name>aclNameEditor</name>
+        <path>/META-INF/tags/ajax/aclNameEditor.tag</path>
+    </tag-file>
 
 </taglib>

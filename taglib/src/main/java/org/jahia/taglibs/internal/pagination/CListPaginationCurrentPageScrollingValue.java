@@ -147,7 +147,7 @@ public class CListPaginationCurrentPageScrollingValue extends AbstractJahiaTag {
                 buff.append(containerList.getDefinition().getName());
                 buff.append("' value='");
                 buff.append(value);
-                buff.append("'>\n");
+                buff.append("'/>\n");
                 buff.append("<input type='hidden' name='");
                 buff.append("ctnlistpagination_");
                 buff.append(containerList.getDefinition().getName());

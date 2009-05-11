@@ -2339,3 +2339,7 @@ body.x-body-masked .x-window-plain .x-window-mc{background:#C7D6E9;}
     cursor: pointer;
     background: transparent url( ../images/arrow_right_blue.png ) no-repeat;
 }
+
+.ext-ie7 .x-btn button{
+    width:100%;
+}

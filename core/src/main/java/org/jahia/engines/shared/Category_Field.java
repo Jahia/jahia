@@ -32,6 +32,7 @@ import org.jahia.services.categories.Category;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.lock.LockPrerequisites;
 import org.jahia.services.lock.LockPrerequisitesResult;
+import org.jahia.utils.JahiaTools;
 
 import java.util.*;
 
@@ -231,9 +232,9 @@ public class Category_Field implements FieldSubEngine {
                 defaultCategoryKeysStartPos = fieldDefaultValue.indexOf("]") + 1;
             }
 
-            final StringTokenizer categoryKeyTokens = new StringTokenizer(fieldDefaultValue.substring(defaultCategoryKeysStartPos));
-            while (categoryKeyTokens.hasMoreTokens()) {
-                final String curCategoryKey = categoryKeyTokens.nextToken();
+            for (final String curCategoryKey : JahiaTools.getTokens(
+                fieldDefaultValue.substring(defaultCategoryKeysStartPos),
+                JahiaField.MULTIPLE_VALUES_SEP)) {
                 final Category curCategory = Category.getCategory(curCategoryKey, jParams.getUser());
                 if (curCategory != null) {
                     defaultSelectedCategories.add(curCategoryKey);
@@ -324,7 +325,6 @@ public class Category_Field implements FieldSubEngine {
 
         final Iterator<String> paramNameIter = parameterMap.keySet().iterator();
         final List<String> newSelectedCategories = new ArrayList<String>();
-        boolean adding = true;
         while (paramNameIter.hasNext()) {
             String curParamName = paramNameIter.next();
             if (curParamName.startsWith(CATEGORYPREFIX_HTMLPARAMETER)) {

@@ -80,7 +80,7 @@
                             aliasResourceName="cat_titles"/>
 <internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.editCategory.key.label"
                             aliasResourceName="cat_key"/>
-<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.copyCategoryAction.label"
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.cut.label"
                             aliasResourceName="cat_cut"/>
 <internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.propertyName.label"

@@ -72,11 +72,11 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("mw_roles_description", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.rolesperm.description.label"));
             addGwtDictionaryMessage("mw_finish", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.finish.label"));
             addGwtDictionaryMessage("mw_save_as", getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
-            addGwtDictionaryMessage("mw_name","org.jahia.admin.components.ManageComponents.applicationName.label");
-            addGwtDictionaryMessage("mw_description","org.jahia.admin.components.ManageComponents.applicationDesc.label");
-            addGwtDictionaryMessage("mw_roles_perm_desc","org.jahia.engines.MashupsManager.wizard.saveas.label");
-            addGwtDictionaryMessage("mw_finish_description","org.jahia.engines.MashupsManager.wizard.saveas.label");
-            addGwtDictionaryMessage("mw_no_role","org.jahia.engines.MashupsManager.wizard.roles.any");
+            addGwtDictionaryMessage("mw_name",getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationName.label"));
+            addGwtDictionaryMessage("mw_description",getJahiaInternalResourceValue("org.jahia.admin.components.ManageComponents.applicationDesc.label"));
+            addGwtDictionaryMessage("mw_roles_perm_desc",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
+            addGwtDictionaryMessage("mw_finish_description",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.saveas.label"));
+            addGwtDictionaryMessage("mw_no_role",getJahiaInternalResourceValue("org.jahia.engines.MashupsManager.wizard.roles.any"));
             addGwtDictionaryMessage("p_add_mashups", getJahiaInternalResourceValue("org.jahia.myportal.addMashup"));
             addGwtDictionaryMessage("p_save_default", getJahiaInternalResourceValue("org.jahia.myportal.saveAsDefault"));
             addGwtDictionaryMessage("p_confirm_save_default", getJahiaInternalResourceValue("org.jahia.myportal.saveAsDefault.confirm"));

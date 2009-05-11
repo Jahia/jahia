@@ -60,11 +60,12 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             if (gwtJahiaCategoryNode == null) {
                 // load root
                 parentCategory = Category.getRootCategory(currentUser);
+                //childrenCategories.add(parentCategory);
                 childrenCategories = parentCategory.getChildCategories(currentUser);
             } else {
                 logger.debug("load category with key[" + gwtJahiaCategoryNode.getKey() + "].");
                 parentCategory = Category.getCategory(gwtJahiaCategoryNode.getKey(), currentUser);
-                if(parentCategory == null){
+                if (parentCategory == null) {
                     return new ArrayList<GWTJahiaCategoryNode>();
                 }
                 childrenCategories = parentCategory.getChildCategories(currentUser);
@@ -249,19 +250,21 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         }
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
-            Category newParentCat = Category.getCategory(newParentJahiaCategoryNode.getKey(), currentUser);
-            for (GWTJahiaCategoryNode categoryNode : copiedNode) {
-                Category categoryToMove = Category.getCategory(categoryNode.getKey(), currentUser);
-                if (newParentCat.getKey() != categoryToMove.getKey()) {
-                    if (cut) {
-                        // remove from old parent
-                        Category parentCat = Category.getCategory(categoryNode.getParentKey(), currentUser);
-                        parentCat.removeChildObjectKey(categoryToMove.getObjectKey());
+            if (newParentJahiaCategoryNode != null) {
+                Category newParentCat = Category.getCategory(newParentJahiaCategoryNode.getKey(), currentUser);
+                for (GWTJahiaCategoryNode categoryNode : copiedNode) {
+                    Category categoryToMove = Category.getCategory(categoryNode.getKey(), currentUser);
+                    if (newParentCat.getKey() != categoryToMove.getKey()) {
+                        if (cut) {
+                            // remove from old parent
+                            Category parentCat = Category.getCategory(categoryNode.getParentKey(), currentUser);
+                            parentCat.removeChildObjectKey(categoryToMove.getObjectKey());
+                        }
+                        // link to new parent
+                        newParentCat.addChildObjectKey(categoryToMove.getObjectKey());
                     }
-                    // link to new parent
-                    newParentCat.addChildObjectKey(categoryToMove.getObjectKey());
-                }
 
+                }
             }
         } catch (Exception e) {
             logger.error("Unable to paste category", e);
@@ -269,38 +272,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         }
     }
 
-    /**
-     * Cut category
-     *
-     * @param gwtJahiaCategoryNodes
-     * @throws GWTJahiaServiceException
-     */
-    public void cut(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) throws GWTJahiaServiceException {
-        // not implemented
-    }
 
-    /**
-     * Copy categoris
-     *
-     * @param gwtJahiaCategoryNodes
-     * @throws GWTJahiaServiceException
-     */
-    public void copy(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) throws GWTJahiaServiceException {
-        // not implemented
-    }
-
-    /**
-     * Get download path
-     *
-     * @param path
-     * @return
-     * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
-     *
-     */
-    public String getDownloadPath(String path) throws GWTJahiaServiceException {
-        // No implemented
-        return null;
-    }
 
 
     /**
@@ -313,7 +285,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         final JahiaUser currentUser = getRemoteJahiaUser();
         try {
             // test if category exists
-            if(Category.getCategory(newCategory.getKey()) != null){
+            if (Category.getCategory(newCategory.getKey()) != null) {
                 throw new GWTJahiaServiceException(getLocaleJahiaAdminResource("org.jahia.admin.categories.ManageCategories.editCategory.categoryAlreadyExists.label"));
             }
 
@@ -472,8 +444,8 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
         }
 
         //  do not remove 'root' category
-        List<Category>  parentCategories = currentCategory.getParentCategories();
-        if(parentCategories == null || parentCategories.size() == 0 ){
+        List<Category> parentCategories = currentCategory.getParentCategories();
+        if (parentCategories == null || parentCategories.size() == 0) {
             return;
         }
         currentCategory.delete();
@@ -498,8 +470,8 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             engineLocale = LanguageCodeConverters.languageCodeToLocale(categoryLocale);
         }
         String name = category.getTitle(engineLocale);
-        if(name ==  null || name.length() == 0){
-             name = "(" + category.getKey() + ")";
+        if (name == null || name.length() == 0) {
+            name = "(" + category.getKey() + ")";
         }
         gwtJahiaNode.setCategoryId("" + category.getJahiaCategory().getId());
         gwtJahiaNode.setParentKey(parentKey);

@@ -42,12 +42,6 @@ public interface CategoryServiceAsync {
 
     void deleteCategory(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes, AsyncCallback async);
 
-    void getDownloadPath(String path, AsyncCallback<String> async);
-
-    void copy(List<GWTJahiaCategoryNode> gwtJahiaCategories, AsyncCallback async);
-
-    void cut(List<GWTJahiaCategoryNode> gwtJahiaCategories, AsyncCallback async);
-
     void paste(List<GWTJahiaCategoryNode> copiedNode, GWTJahiaCategoryNode destination, boolean cut, AsyncCallback async);
 
     void updateCategoryInfo(GWTJahiaCategoryNode gwtJahiaCategoryNode, AsyncCallback async);

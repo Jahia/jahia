@@ -60,12 +60,6 @@ public interface CategoryService extends RemoteService {
 
     public void createCategory(GWTJahiaCategoryNode parentCategory,GWTJahiaCategoryNode newCategory) throws GWTJahiaServiceException;
 
-    public String getDownloadPath(String path) throws GWTJahiaServiceException;
-
-    public void copy(List<GWTJahiaCategoryNode> gwtJahiaCategories) throws GWTJahiaServiceException;
-
-    public void cut(List<GWTJahiaCategoryNode> gwtJahiaCategories) throws GWTJahiaServiceException;
-
     public void paste(List<GWTJahiaCategoryNode> copiedNode,GWTJahiaCategoryNode destination, boolean cut) throws GWTJahiaServiceException;
 
     public void updateCategoryInfo(GWTJahiaCategoryNode gwtJahiaCategoryNode) throws GWTJahiaServiceException;

@@ -51,16 +51,8 @@ public abstract class CategoriesManagerActions {
     public static void copy(final BrowserLinker linker) {
         final List<GWTJahiaCategoryNode> selectedItems = (List<GWTJahiaCategoryNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            service.copy(selectedItems, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Copy failed :\n" + throwable.getLocalizedMessage());
-                }
-
-                public void onSuccess(Object o) {
-                    CopyPasteEngine.getInstance().setCopiedCategories(selectedItems);
-                    linker.handleNewSelection();
-                }
-            });
+            CopyPasteEngine.getInstance().setCopiedCategories(selectedItems);
+            linker.handleNewSelection();
         }
     }
 
@@ -72,16 +64,8 @@ public abstract class CategoriesManagerActions {
     public static void cut(final BrowserLinker linker) {
         final List<GWTJahiaCategoryNode> selectedItems = (List<GWTJahiaCategoryNode>) linker.getTableSelection();
         if (selectedItems != null && selectedItems.size() > 0) {
-            service.cut(selectedItems, new AsyncCallback() {
-                public void onFailure(Throwable throwable) {
-                    Window.alert("Cut failed :\n" + throwable.getLocalizedMessage());
-                }
-
-                public void onSuccess(Object o) {
-                    CopyPasteEngine.getInstance().setCutPaths(selectedItems);
-                    linker.handleNewSelection();
-                }
-            });
+            CopyPasteEngine.getInstance().setCutPaths(selectedItems);
+            linker.handleNewSelection();
         }
     }
 
@@ -92,19 +76,20 @@ public abstract class CategoriesManagerActions {
      */
     public static void paste(final BrowserLinker linker) {
         GWTJahiaCategoryNode m = getSingleSelectedNode(linker);
+        if (m != null) {
+            final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
+            service.paste(copyPasteEngine.getCopiedCategories(), m, copyPasteEngine.isCut(), new AsyncCallback() {
+                public void onFailure(Throwable throwable) {
+                    Log.error("Error", throwable);
+                    Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
+                }
 
-        final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-        service.paste(copyPasteEngine.getCopiedCategories(), m, copyPasteEngine.isCut(), new AsyncCallback() {
-            public void onFailure(Throwable throwable) {
-                Log.error("Error", throwable);
-                Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
-            }
-
-            public void onSuccess(Object o) {
-                copyPasteEngine.onPastedPath();
-                linker.refreshAll();
-            }
-        });
+                public void onSuccess(Object o) {
+                    copyPasteEngine.onPastedPath();
+                    linker.refreshAll();
+                }
+            });
+        }
 
     }
 
@@ -244,10 +229,10 @@ public abstract class CategoriesManagerActions {
             }
             w.setWidth(400);
             GWTJahiaCategoryNode jahiaCategoryNode = new GWTJahiaCategoryNode();
-        jahiaCategoryNode.setParentKey(null);
-        jahiaCategoryNode.setName("root");
-        jahiaCategoryNode.setKey("root");
-        jahiaCategoryNode.setPath("/root");
+            jahiaCategoryNode.setParentKey(null);
+            jahiaCategoryNode.setName("root");
+            jahiaCategoryNode.setKey("root");
+            jahiaCategoryNode.setPath("/root");
             w.add(new InfoEditor(linker, w, jahiaCategoryNode, newCategory));
             w.setScrollMode(Style.Scroll.AUTO);
             w.layout();

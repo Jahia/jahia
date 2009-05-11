@@ -292,7 +292,7 @@ public class JahiaGroupDAO extends AbstractGeneratorDAO {
         removeAllGroupsFromSite(siteID);
         for (JahiaSitesGrp jahiaGrp : list) {
             JahiaGrp group = jahiaGrp.getGroup();
-            if(group.getSite().getId().equals(siteID)) {
+            if(group.getSite() != null && group.getSite().getId().equals(siteID)) {
                 res.add(group.getKey());
                 delete(group.getKey());
             }

@@ -117,7 +117,7 @@ public class CategoriesTreeTable extends TopRightComponent {
         m_treeTable.addListener(Events.CellClick, new Listener() {
             public void handleEvent(BaseEvent baseEvent) {
                 TreeItem newSelection = m_treeTable.getSelectedItem();
-                if (lastSelection == newSelection) {
+                if (lastSelection == newSelection && m_treeTable.getSelectedItem() != null) {
                     lastSelection = null;
                     m_treeTable.setSelectedItem(m_treeTable.getRootItem());
                 }else {

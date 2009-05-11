@@ -46,6 +46,7 @@
 <%@ page import="org.jahia.registries.EnginesRegistry" %>
 <%@ page import="org.jahia.services.pages.ContentPage" %>
 <%@ page import="org.jahia.services.version.EntryLoadRequest" %>
+<%@ page import="org.jahia.services.version.VersioningDifferenceStatus" %>
 <%@ page import="org.jahia.utils.TextHtml" %>
 <%@ page import="org.jahia.engines.importexport.ManageContentPicker" %>
 <%@ taglib uri="http://www.jahia.org/tags/internalLib" prefix="internal" %>
@@ -202,7 +203,16 @@
             while (pages.hasNext()) {
                 ContentPage thePage = (ContentPage) pages.next();
                 String _label = thePage.getTitle(elr);
-        if(_label==null) _label="nd";
+                if(_label==null) {
+                    if (thePage.isStagedEntryMarkedForDeletion(elr.getFirstLocale(true).toString())) {
+                        elr = new EntryLoadRequest(elr);
+                        elr.setWithMarkedForDeletion(true);
+                        _label = thePage.getTitle(elr);
+                    }
+                if(_label==null) {
+                    _label="nd";
+                }
+            }
 
                 cpath +=_label.length();
                 if(pathsize==0 || cpath<pathsize-3){
@@ -1315,6 +1325,7 @@ for (int z = 2; z < 5; z++) {
                   siteLocalisation = "urlkey:" + theUkey + " Site:" + sitekey;
               else
                   siteLocalisation = "PID:" + pageId + " Site:" + sitekey;
+
               //check if object is a text contentfield or a contentpage
               /*
               if (thisHit.getType() == JahiaSearchHitInterface.PAGE_TYPE) {
@@ -1381,7 +1392,14 @@ for (int z = 2; z < 5; z++) {
                       logger.debug("NO description");
                   }
               }
-              sb.append("<br/>");
+              if (thiscontainer.getStagingStatus() == VersioningDifferenceStatus.TO_BE_REMOVED) {
+                  sb.append("<img alt='").append(bundle.getString("org.jahia.admin.warning.label"))
+                      .append("' src='").append(request.getContextPath())
+                      .append("/engines/images/icons/workflow/warnings.gif' width='12' height='12' border='0'/>")
+                      .append("&nbsp;").append(bundle.getString(bundle_prefix + ".results.markForDeletionWarning.label"))
+                      .append("<br/>");
+              }
+                  
               if (!keywords.equals(""))
                   sb.append("<b>").append(bundle.getString(bundle_prefix + ".results.keywords.label")).append("</b>:");
               sb.append(keywords);

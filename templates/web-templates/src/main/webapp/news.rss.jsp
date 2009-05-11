@@ -19,7 +19,7 @@
 --%>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <%@include file="common/declarations.jspf" %>
-    <template:composePageURL fullURL="true" valueID="url"/>
+    <template:composePageURL fullURL="true" var="url"/>
     <channel>
         <title><fmt:message key="newsChannelTitle"/></title>
         <link><c:out value="${url}"/></link>
@@ -39,7 +39,7 @@
                     <description><![CDATA[<c:out value="${newsDesc}"/>]]></description>
                     <guid isPermaLink="false">${url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}</guid>
                     <template:getContentObjectCategories objectKey="ContentContainer_${newsContainer.ID}" asSet="true"
-                                                        valueID="categories"/>
+                                                        var="categories"/>
                     <c:forEach items="${categories}" var="category">
                         <category><![CDATA[<c:out value="${category.title}"/>]]></category>
                     </c:forEach>

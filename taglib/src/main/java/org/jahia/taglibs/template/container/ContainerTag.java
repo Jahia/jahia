@@ -46,7 +46,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.pages.JahiaPage;
-import org.jahia.services.applications.StringServletOutputStream;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.template.containerlist.AbsoluteContainerListTag;
@@ -283,7 +282,7 @@ public class ContainerTag extends AbstractJahiaTag implements ContainerCache {
 
         ContainerSupport containerSupport = (ContainerSupport) findAncestorWithClass(this, ContainerSupport.class, pageContext.getRequest());
         if (containerSupport instanceof GetContainerTag) {
-            setSrcBeanId(((GetContainerTag) containerSupport).getValueID());
+            setSrcBeanId(((GetContainerTag) containerSupport).getVar());
         }
         if (getSrcBeanId() == null && containerSupport instanceof ContainerListTag) {
             ContainerListTag cListTag = (ContainerListTag) containerSupport;

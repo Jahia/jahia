@@ -790,7 +790,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose a ContainerBean instance for the requested container.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose a ContainerBean instance for the requested container.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -812,8 +824,20 @@
             <type>org.jahia.data.beans.ContainerBean</type>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose a field's value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose a field's value.
+            </description>
+            <name>var</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
@@ -829,8 +853,20 @@
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose the FieldBean instance for the requested field.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose the FieldBean instance for the requested field.
+            </description>
+            <name>var</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
@@ -926,7 +962,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>The name of the page scope variable, to expose the FieldValueBean instance</description>
+            <description>The name of the page scope variable to expose the FieldValueBean instance</description>
             <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1284,20 +1320,32 @@
         <tag-class>org.jahia.taglibs.template.category.GetContentObjectCategoriesTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <name>asSet</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
             <name>objectKey</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose the collection of CategoryBean instances.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>asSet</name>
+            <description>
+                The name of the page scope variable to expose the collection of CategoryBean instances.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
         </attribute>
     </tag>
 
@@ -1455,7 +1503,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                The name of the page scope variable to expose the result URL.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                The name of the page scope variable to expose the result URL.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

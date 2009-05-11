@@ -16,32 +16,23 @@
  */
 package org.jahia.taglibs.template.field;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.services.fields.ContentField;
-import org.jahia.data.JahiaData;
 import org.jahia.data.beans.FieldBean;
 import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspTagException;
-
 /**
- * Allow to get any field from its ID
+ * Allow to get any field from its ID.
  */
 @SuppressWarnings("serial")
-public class GetFieldTag extends AbstractJahiaTag {
+public class GetFieldTag extends ValueJahiaTag {
     private static transient final Logger logger = Logger.getLogger(GetFieldTag.class);
 
     private int fieldID;
-    private String valueID;
 
     public void setFieldID(int fieldID) {
         this.fieldID = fieldID;
-    }
-
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
     }
 
     public int doStartTag() {
@@ -49,18 +40,16 @@ public class GetFieldTag extends AbstractJahiaTag {
             final ContentField cf = ContentField.getField(fieldID);
             if (cf == null) return SKIP_BODY;
 
-            final ServletRequest request = pageContext.getRequest();
-            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ProcessingContext jParams = jData.getProcessingContext();
+            final ProcessingContext jParams = getProcessingContext();
 
             final FieldBean cfBean = new FieldBean(cf.getJahiaField(jParams.getEntryLoadRequest()),
                     jParams);
-            if (valueID != null && valueID.length() > 0) {
-                pageContext.setAttribute(valueID, cfBean);
-            } else {
-                throw new JspTagException("valueID attribute must not have an empty value");
+            if (getVar() != null) {
+                pageContext.setAttribute(getVar(), cfBean);
             }
-
+            if (getValueID() != null) {
+                pageContext.setAttribute(getValueID(), cfBean);
+            }
         } catch (Exception e) {
             logger.error("Error in GetFieldTag", e);
         }
@@ -68,8 +57,13 @@ public class GetFieldTag extends AbstractJahiaTag {
     }
 
     public int doEndTag() {
-        fieldID = -1;
-        valueID = null;
+        resetState();
         return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
+        super.resetState();
+        fieldID = -1;
     }
 }

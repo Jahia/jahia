@@ -398,17 +398,17 @@ public boolean isNumeric (String propertyName, Map<String, ExtendedPropertyDefin
           <query:like propertyName="lastModifiedBy" value="${param.src_lastEditor}" metadata="true"/>
         </c:if>        
         <c:if test="${!empty createdDateFilter}">
-          <utility:dateUtil currentDate="${createdDateFilter}" valueID="createdDateFrom" hours="0" minutes="0"
+          <utility:dateUtil currentDate="${createdDateFilter}" var="createdDateFrom" hours="0" minutes="0"
               seconds="0"/>
-          <utility:dateUtil currentDate="${createdDateFilter}" valueID="createdDateUntil" days="1" hours="0" minutes="0"
+          <utility:dateUtil currentDate="${createdDateFilter}" var="createdDateUntil" days="1" hours="0" minutes="0"
               seconds="0"/>
           <query:greaterThan propertyName="created" value="${createdDateFrom.time}" numberValue="true" />
           <query:lessThanOrEqualTo propertyName="created" value="${createdDateUntil.time}" numberValue="true" />
         </c:if>        
         <c:if test="${!empty modifiedDateFilter}">
-          <utility:dateUtil currentDate="${modifiedDateFilter}" valueID="modifiedDateFrom" hours="0" minutes="0"
+          <utility:dateUtil currentDate="${modifiedDateFilter}" var="modifiedDateFrom" hours="0" minutes="0"
               seconds="0"/>
-          <utility:dateUtil currentDate="${modifiedDateFilter}" valueID="modifiedDateTo" days="1" hours="0" minutes="0"
+          <utility:dateUtil currentDate="${modifiedDateFilter}" var="modifiedDateTo" days="1" hours="0" minutes="0"
               seconds="0"/>
           <query:greaterThan propertyName="lastModified" value="${modifiedDateFrom.time}" numberValue="true" />
           <query:lessThanOrEqualTo propertyName="lastModified" value="${modifiedDateTo.time}" numberValue="true" />

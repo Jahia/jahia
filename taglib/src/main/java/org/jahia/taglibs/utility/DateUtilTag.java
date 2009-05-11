@@ -48,8 +48,6 @@ public class DateUtilTag extends AbstractDateTag {
     private String currentDate;
     private String datePattern;
 
-    private String valueID;
-
     private final Calendar cal = Calendar.getInstance();
 
     public void setCurrentDate(String currentDate) {
@@ -78,10 +76,6 @@ public class DateUtilTag extends AbstractDateTag {
 
     public void setSeconds(int seconds) {
         this.seconds = seconds;
-    }
-
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
     }
 
     public void setYears(int years) {
@@ -133,11 +127,22 @@ public class DateUtilTag extends AbstractDateTag {
                     cal.add(Calendar.SECOND, seconds);
                 }
 
-                pageContext.setAttribute(valueID, cal.getTime());
-
+                Date valueToSet = cal.getTime();
+                if (getVar() != null) {
+                    pageContext.setAttribute(getVar(), valueToSet);
+                }
+                if (getValueID() != null) {
+                    pageContext.setAttribute(getValueID(), valueToSet);
+                }
             } catch (ParseException pe) {
                 logger.debug("String passed to DateUtilTag could not be parsed as Date: " + currentDate);
-                pageContext.setAttribute(valueID, new Date());
+                Date newDate = new Date();
+                if (getVar() != null) {
+                    pageContext.setAttribute(getVar(), newDate);
+                }
+                if (getValueID() != null) {
+                    pageContext.setAttribute(getValueID(), newDate);
+                }
             }
 
         } catch (final Exception e) {
@@ -148,6 +153,13 @@ public class DateUtilTag extends AbstractDateTag {
     }
 
     public int doEndTag() {
+        resetState();
+        return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
+        super.resetState();
         days = Integer.MIN_VALUE;
         months = Integer.MIN_VALUE;
         years = Integer.MIN_VALUE;
@@ -156,7 +168,5 @@ public class DateUtilTag extends AbstractDateTag {
         seconds = Integer.MIN_VALUE;
         currentDate = null;
         datePattern = null;
-        valueID = null;
-        return EVAL_PAGE;
     }
 }

@@ -16,13 +16,11 @@
  */
 package org.jahia.taglibs.template.category;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.services.categories.Category;
-import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
-import javax.servlet.ServletRequest;
 import java.util.StringTokenizer;
 
 /**
@@ -30,28 +28,20 @@ import java.util.StringTokenizer;
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public class DisplayCategoryTitleTag extends AbstractJahiaTag {
+public class DisplayCategoryTitleTag extends ValueJahiaTag {
 
     private static transient final Logger logger = Logger.getLogger(DisplayCategoryTitleTag.class);
 
     private String categoryKeys;
-    private String valueID;
-
     public void setCategoryKeys(String categoryKeys) {
         this.categoryKeys = categoryKeys;
-    }
-
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
     }
 
     public int doStartTag() {
         if (categoryKeys != null && categoryKeys.length() > 0) {
             try {
-                final ServletRequest request = pageContext.getRequest();
-                final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-                final ProcessingContext jParams = jData.getProcessingContext();
-                final StringBuffer result = new StringBuffer();
+                final ProcessingContext jParams = getProcessingContext();
+                final StringBuilder result = new StringBuilder();
                 final StringTokenizer tokenizer = new StringTokenizer(categoryKeys, "$$$");
                 while (tokenizer.hasMoreTokens()) {
                     final String key = tokenizer.nextToken();
@@ -65,8 +55,13 @@ public class DisplayCategoryTitleTag extends AbstractJahiaTag {
                     }
                 }
 
-                if (valueID != null && valueID.length() > 0) {
-                    pageContext.setAttribute(valueID, result.toString());
+                if (getVar() != null || getValueID() != null) {
+                    if (getVar() != null) {
+                        pageContext.setAttribute(getVar(), result.toString());
+                    }
+                    if (getValueID() != null) {
+                        pageContext.setAttribute(getValueID(), result.toString());
+                    }
                 } else {
                     pageContext.getOut().print(result.toString());
                 }
@@ -78,8 +73,13 @@ public class DisplayCategoryTitleTag extends AbstractJahiaTag {
     }
 
     public int doEndTag() {
-        categoryKeys = null;
-        valueID = null;
+        resetState();
         return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
+        super.resetState();
+        categoryKeys = null;
     }
 }

@@ -175,6 +175,13 @@ public class GWTDateTimePickerTag extends AbstractDateTag {
     }
 
     public int doEndTag() {
+        resetState();
+        return EVAL_PAGE;
+    }
+
+    @Override
+    protected void resetState() {
+        super.resetState();
         cssClassName = null;
         datePattern = null;
         displayTime = false;
@@ -183,6 +190,5 @@ public class GWTDateTimePickerTag extends AbstractDateTag {
         templateUsage = true;
         fieldName = null;
         value = null;
-        return EVAL_PAGE;
     }
 }

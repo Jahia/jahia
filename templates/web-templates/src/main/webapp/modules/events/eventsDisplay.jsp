@@ -124,7 +124,7 @@
             <query:equalTo propertyName="eventsType" value="${param.eventsTypeFilter}"/>
         </c:if>
         <c:if test="${!empty param.startDate}">
-            <utility:dateUtil currentDate="${param.startDate}" datePattern="dd/MM/yyyy" valueID="today" hours="0"
+            <utility:dateUtil currentDate="${param.startDate}" datePattern="dd/MM/yyyy" var="today" hours="0"
                               minutes="0"
                               seconds="0"/>
             <query:greaterThanOrEqualTo numberValue="false" propertyName="startDate" value="${today.time}"/>

@@ -25,7 +25,7 @@
                    namePostFix="pressRelease"
                    labelKey="pressRelease.update">
 
-        <template:getContentObjectCategories valueID="pressReleaseContainerCatKeys"
+        <template:getContentObjectCategories var="pressReleaseContainerCatKeys"
                                              objectKey="contentContainer_${pageScope.pressReleaseContainer.ID}"/>
 
         <h4><template:field name='title'/></h4>

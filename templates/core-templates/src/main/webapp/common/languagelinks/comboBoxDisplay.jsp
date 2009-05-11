@@ -24,8 +24,8 @@
         <c:forEach var="langCode" items="${requestScope.languageCodes}">
             <ui:displayLanguageSwitchLink languageCode="${langCode}"
                                                  linkKind="${requestScope.linkDisplay}"
-                                                 valueID="linkValue"
-                                                 urlValueID="urlValue"
+                                                 var="linkValue"
+                                                 urlVar="urlValue"
                                                  titleKey="switchTo"
                                                  title="Switch to ${langCode}"
                                                  onLanguageSwitch="${requestScope.onLanguageSwitch}"

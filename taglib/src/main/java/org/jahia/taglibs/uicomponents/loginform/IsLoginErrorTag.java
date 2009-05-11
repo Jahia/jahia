@@ -18,7 +18,7 @@ package org.jahia.taglibs.uicomponents.loginform;
 
 import java.io.IOException;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
@@ -32,23 +32,19 @@ import javax.servlet.http.HttpServletRequest;
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public class IsLoginErrorTag extends AbstractJahiaTag {
+public class IsLoginErrorTag extends ValueJahiaTag {
     private static final transient Logger logger = Logger.getLogger(IsLoginErrorTag.class);
 
-    private String valueID;
-
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
-    }
-
     public int doStartTag() {
-        final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-        final ProcessingContext jParams = jData.getProcessingContext();
+        final JahiaData jData = getJahiaData();
+        final ProcessingContext jParams = getProcessingContext();
         final String valveResult = (String) jParams.getAttribute(LoginEngineAuthValveImpl.VALVE_RESULT);
         if (!jData.gui().isLogged() && valveResult != null && !LoginEngineAuthValveImpl.OK.equals(valveResult)) {
-            if (valueID != null && valueID.length() > 0) {
-                pageContext.setAttribute(valueID, valveResult);
+            if (getVar() != null) {
+                pageContext.setAttribute(getVar(), valveResult);
+            }
+            if (getValueID() != null) {
+                pageContext.setAttribute(getValueID(), valveResult);
             }
             return EVAL_BODY_BUFFERED;            
         } else {
@@ -72,8 +68,12 @@ public class IsLoginErrorTag extends AbstractJahiaTag {
 
 
     public int doEndTag() throws JspException {
-        super.doEndTag();
-        valueID = null;
+        resetState();
         return EVAL_PAGE;
+    }
+
+    @Override
+    protected void resetState() {
+        super.resetState();
     }
 }

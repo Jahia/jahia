@@ -555,8 +555,19 @@
         <tag-class>org.jahia.taglibs.uicomponents.loginform.IsLoginErrorTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
-            <description>Name of the variable under which the errorcode will be set in page context.</description>
+            <description>
+                Name of the variable under which the errorcode will be set in page context.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the variable under which the errorcode will be set in page context.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -625,12 +636,36 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+            </description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the URL value.
+                @deprecated this attribute is deprecated in favour of the urlVar attribute
+            </description>
             <name>urlValueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the URL value.
+            </description>
+            <name>urlVar</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -883,7 +918,19 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+            </description>
+            <name>var</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

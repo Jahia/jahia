@@ -16,14 +16,14 @@
  */
 package org.jahia.taglibs.internal.date;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.engines.calendar.CalendarHandler;
 
 /**
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public abstract class AbstractDateTag extends AbstractJahiaTag {
+public abstract class AbstractDateTag extends ValueJahiaTag {
     protected static final String DATE_PATTERN_NO_TIME = CalendarHandler.DEFAULT_DATEONLY_FORMAT;
     protected static final String DATE_PATTERN_TIME = CalendarHandler.DEFAULT_DATE_FORMAT;
 }

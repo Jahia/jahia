@@ -41,7 +41,7 @@
         <div class="more"><span><a href="${currentPage.url}/template/tpl.newsDetail?queryPath=${newsContainer.JCRPath}">
             <fmt:message key="news.readmore"/>
         </a></span></div>
-        <template:getContentObjectCategories valueID="newsContainerCatKeys"
+        <template:getContentObjectCategories var="newsContainerCatKeys"
                                              objectKey="contentContainer_${pageScope.newsContainer.ID}"/>
         <c:if test="${!empty newsContainerCatKeys }">
             <div class="newsMeta">

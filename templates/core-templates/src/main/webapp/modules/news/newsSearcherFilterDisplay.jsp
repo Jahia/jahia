@@ -81,9 +81,9 @@
                                    metadata="true" multiValue="true"/>
                 </c:if>
                 <c:if test="${!empty dateFilter}">
-                    <utility:dateUtil currentDate="${dateFilter}" valueID="today" hours="0" minutes="0"
+                    <utility:dateUtil currentDate="${dateFilter}" var="today" hours="0" minutes="0"
                                         seconds="0"/>
-                    <utility:dateUtil currentDate="${dateFilter}" valueID="tomorrow" days="1" hours="0" minutes="0"
+                    <utility:dateUtil currentDate="${dateFilter}" var="tomorrow" days="1" hours="0" minutes="0"
                                         seconds="0"/>
                     <query:greaterThan numberValue="true" propertyName="newsDate" value="${today.time}"/>
                     <query:lessThanOrEqualTo numberValue="true" propertyName="newsDate" value="${tomorrow.time}"/>

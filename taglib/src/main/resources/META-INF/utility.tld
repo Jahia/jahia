@@ -179,8 +179,20 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+                @deprecated this attribute is deprecated in favour of the var attribute
+            </description>
             <name>valueID</name>
-            <required>true</required>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
+                Name of the page scope variable to expose the value.
+            </description>
+            <name>var</name>
+            <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>

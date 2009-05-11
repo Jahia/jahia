@@ -58,14 +58,14 @@
                 <query:selector nodeTypeName="web_templates:pressContainer" selectorName="pressSelector"/>
                 <query:childNode selectorName="pressSelector" path="${pressContainer.JCRPath}"/>
                 <c:if test="${!empty param.pressdatefrom}">
-                    <utility:dateUtil currentDate="${param.pressdatefrom}" valueID="today" hours="0" minutes="0"
+                    <utility:dateUtil currentDate="${param.pressdatefrom}" var="today" hours="0" minutes="0"
                                       seconds="0"/>
                     <c:if test="${today.time != -1}">
                         <query:greaterThanOrEqualTo numberValue="true" propertyName="date" value="${today.time}"/>
                     </c:if>
                 </c:if>
                 <c:if test="${!empty param.pressdateto}">
-                    <utility:dateUtil currentDate="${param.pressdateto}" valueID="today" hours="0" minutes="0"
+                    <utility:dateUtil currentDate="${param.pressdateto}" var="today" hours="0" minutes="0"
                                       seconds="0"/>
                     <c:if test="${today.time != -1}">
                         <query:lessThanOrEqualTo numberValue="true" propertyName="date" value="${today.time}"/>

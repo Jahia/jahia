@@ -118,28 +118,37 @@ public class FieldTag extends AbstractFieldTag {
         this.name = name;
     }
 
+    /**
+     * @deprecated use {@link #setVar(String)} instead
+     */
     public void setValueBeanID(String valueBeanID) {
         if (logger.isDebugEnabled()) {
-            logger
-                    .warn(
-                            "The valueBeanID attribute is deprecated. Please, use var attribute instead.",
-                            new JspException());
+            logger.debug("The valueBeanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.",
+                    new JspException());
         } else {
-            logger
-                    .warn("The valueBeanID attribute is deprecated. Please, use var attribute instead.");
+            logger.info("The valueBeanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.");
         }
-        this.valueBeanID = valueBeanID == null || valueBeanID.length() == 0 ? null : valueBeanID;
+        this.valueBeanID = valueBeanID == null || valueBeanID.length() == 0 ? null
+                : valueBeanID;
     }
 
+    /**
+     * @deprecated use {@link #setVar(String)} instead
+     */
     public void setBeanID(String beanID) {
         if (logger.isDebugEnabled()) {
-            logger
-                    .warn(
-                            "The beanID attribute is deprecated. Please, use var attribute instead.",
-                            new JspException());
+            logger.debug("The beanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.",
+                    new JspException());
         } else {
-            logger
-                    .warn("The beanID attribute is deprecated. Please, use var attribute instead.");
+            logger.info("The beanID attribute is deprecated for tag "
+                    + StringUtils.substringAfterLast(this.getClass().getName(),
+                            ".") + ". Please, use var attribute instead.");
         }
         this.beanID = beanID == null || beanID.length() == 0 ? null : beanID;
     }

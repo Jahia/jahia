@@ -16,32 +16,37 @@
  */
 package org.jahia.taglibs.template.container;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.content.JCRJahiaContentNode;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.data.beans.ContainerBean;
-import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
 import org.apache.log4j.Logger;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.jsp.JspTagException;
-
 /**
- * Allows to retreive a specific container displayed on the current page, knowing its container id
+ * Allows to retrieve a specific container displayed on the current page, knowing its container id.
  *
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public class GetContainerTag extends AbstractJahiaTag implements ContainerSupport {
+public class GetContainerTag extends ValueJahiaTag implements ContainerSupport {
 
     private static transient final Logger logger = Logger.getLogger(GetContainerTag.class);
 
     private int containerID = -1;
     private String path = null;
-    private String valueID = "container";
+    
+    
+    /**
+     * Initializes an instance of this class.
+     */
+    public GetContainerTag() {
+        super();
+        setValueID("container");
+        setVar("container");
+    }
 
     public int getContainerID() {
         return containerID;
@@ -49,14 +54,6 @@ public class GetContainerTag extends AbstractJahiaTag implements ContainerSuppor
 
     public void setContainerID(int containerID) {
         this.containerID = containerID;
-    }
-
-    public String getValueID() {
-        return valueID;
-    }
-
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
     }
 
     public String getPath() {
@@ -70,16 +67,14 @@ public class GetContainerTag extends AbstractJahiaTag implements ContainerSuppor
     public int doStartTag() {
         pushTag();
         try {
-            final ServletRequest request = pageContext.getRequest();
-            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-            final ProcessingContext jParams = jData.getProcessingContext();
+            final ProcessingContext jParams = getProcessingContext();
 
             ContentContainer ctn = null;
             if (containerID != -1) {
                 ctn = ContentContainer.getContainer(containerID);
             } else if (path != null) {
                 try {
-                    JCRNodeWrapper nodeWrapper = JCRStoreService.getInstance().getFileNode(getPath(), jParams.getUser());
+                    JCRNodeWrapper nodeWrapper = JCRStoreService.getInstance().getThreadSession(jParams.getUser()).getNode(getPath());
                     if (nodeWrapper.isValid() && nodeWrapper instanceof JCRJahiaContentNode) {
                         JCRJahiaContentNode jahiaContentNode = (JCRJahiaContentNode) nodeWrapper;
                         ctn = (ContentContainer) jahiaContentNode.getContentObject();
@@ -91,10 +86,11 @@ public class GetContainerTag extends AbstractJahiaTag implements ContainerSuppor
             if (ctn == null) return SKIP_BODY;
 
             final ContainerBean ctnBean = new ContainerBean(ctn.getJahiaContainer(jParams, jParams.getEntryLoadRequest()), jParams);
-            if (valueID != null && valueID.length() > 0) {
-                pageContext.setAttribute(valueID, ctnBean);
-            } else {
-                throw new JspTagException("valueID attribute must not have an empty value");
+            if (getVar() != null) {
+                pageContext.setAttribute(getVar(), ctnBean);
+            }
+            if (getValueID() != null) {
+                pageContext.setAttribute(getValueID(), ctnBean);
             }
 
         } catch (Exception e) {
@@ -105,10 +101,17 @@ public class GetContainerTag extends AbstractJahiaTag implements ContainerSuppor
     }
 
     public int doEndTag() {
-        containerID = -1;
-        path = null;
-        valueID = "container";
+        resetState();
         popTag();
         return EVAL_PAGE;
+    }
+
+    @Override
+    protected void resetState() {
+        super.resetState();
+        containerID = -1;
+        path = null;
+        setVar("container");
+        setValueID("container");
     }
 }

@@ -25,8 +25,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <jsp:useBean id="now" class="java.util.Date"/>
 
-<template:getContainer containerID="${containerID}" valueID="container"/>
-<template:getContainerField fieldName="isCommentable" containerBean="${container}" valueID="isCommentable"/>
+<template:getContainer containerID="${containerID}" var="container"/>
+<template:getContainerField fieldName="isCommentable" containerBean="${container}" var="isCommentable"/>
 <c:if test="${isCommentable.value}">
 
     <template:containerList name="comment" id="comment" displayActionMenu="false"

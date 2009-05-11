@@ -20,7 +20,7 @@
 <rss version="2.0"
      xmlns:dc="http://purl.org/dc/elements/1.1/">
     <%@ include file="../../common/declarations.jspf"%>
-    <template:composePageURL fullURL="true" valueID="url"/>
+    <template:composePageURL fullURL="true" var="url"/>
     <channel>
         <title>Technology news</title>
         <link><c:out value="${url}"/></link>

@@ -18,15 +18,16 @@ package org.jahia.taglibs.template.field;
 
 import org.jahia.data.beans.ContainerBean;
 import org.jahia.data.beans.FieldBean;
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 
 /**
+ * Retrieves the specified field from a container.
+ * 
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public class GetContainerFieldTag extends AbstractJahiaTag {
+public class GetContainerFieldTag extends ValueJahiaTag {
 
-    private String valueID;
     private ContainerBean containerBean;
     private String fieldName;
 
@@ -38,22 +39,29 @@ public class GetContainerFieldTag extends AbstractJahiaTag {
         this.fieldName = fieldName;
     }
 
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
-    }
-
     public int doStartTag() {
         final FieldBean field = containerBean.getField(fieldName);
-        if (field != null && valueID != null) {
-            pageContext.setAttribute(valueID, field);
+        if (field != null) {
+            if (getVar() != null) {
+                pageContext.setAttribute(getVar(), field);
+            }
+            if (getValueID() != null) {
+                pageContext.setAttribute(getValueID(), field);
+            }
         }
         return SKIP_BODY;
     }
 
     public int doEndTag() {
-        valueID = null;
-        containerBean = null;
-        fieldName = null;
+        resetState();
         return EVAL_PAGE;
     }
+
+    @Override
+    protected void resetState() {
+        super.resetState();
+        containerBean = null;
+        fieldName = null;
+    }
+    
 }

@@ -16,35 +16,29 @@
  */
 package org.jahia.taglibs.template.url;
 
+import org.apache.log4j.Logger;
 import org.jahia.data.JahiaData;
 import org.jahia.params.ProcessingContext;
-import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.ValueJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
 
 /**
- * Generates a URL to the current page in the given cache mode
+ * Generates a URL to the current page in the given cache mode.
  *
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public class ComposeUrlTag extends AbstractJahiaTag {
+public class ComposeUrlTag extends ValueJahiaTag {
 
-    private static final transient org.apache.log4j.Logger logger =
-            org.apache.log4j.Logger.getLogger(ComposeUrlTag.class);
+    private static final transient Logger logger = Logger.getLogger(ComposeUrlTag.class);
 
     private int pageID;
-    private String valueID;
     private boolean fullURL = false;
     private String page;
 
     public void setPageID(int pageID) {
         this.pageID = pageID;
-    }
-
-    public void setValueID(String valueID) {
-        this.valueID = valueID;
     }
 
     public void setFullURL(boolean fullURL) {
@@ -102,16 +96,19 @@ public class ComposeUrlTag extends AbstractJahiaTag {
 
             } else if (pageID > 0) {
                 buffer.append(jParams.composePageUrl(pageID));
-
             } else {
                 buffer.append(jParams.composePageUrl(jData.page()));
             }
 
-            if (valueID != null && valueID.length() > 0) {
-                pageContext.setAttribute(valueID, buffer.toString());
+            if (getVar() != null || getValueID() != null) {
+                if (getVar() != null) {
+                    pageContext.setAttribute(getVar(), buffer.toString());
+                }
+                if (getValueID() != null) {
+                    pageContext.setAttribute(getValueID(), buffer.toString());
+                }
             } else {
-                final JspWriter out = pageContext.getOut();
-                out.print(buffer.toString());
+                pageContext.getOut().print(buffer.toString());
             }
         } catch (final Exception e) {
             logger.error("Error in PageURLTag", e);
@@ -121,10 +118,15 @@ public class ComposeUrlTag extends AbstractJahiaTag {
     }
 
     public int doEndTag() {
-        valueID = null;
+        resetState();
+        return EVAL_PAGE;
+    }
+    
+    @Override
+    protected void resetState() {
+        super.resetState();
         pageID = -1;
         fullURL = false;
         page = null;
-        return EVAL_PAGE;
     }
 }

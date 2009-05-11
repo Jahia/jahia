@@ -54,8 +54,6 @@ public class DateCalcTag extends AbstractDateTag {
 
     private Date value;
 
-    private String var;
-
     private final Calendar cal = Calendar.getInstance();
 
     public void setDays(int days) {
@@ -151,15 +149,7 @@ public class DateCalcTag extends AbstractDateTag {
     }
 
     public int doEndTag() {
-        setDays(0);
-        setMonths(0);
-        setYears(0);
-        setHours(0);
-        setMinutes(0);
-        setSeconds(0);
-        setMilliseconds(0);        
-        setValue(null);
-        setVar(null);
+        resetState();
         return EVAL_PAGE;
     }
 
@@ -171,19 +161,25 @@ public class DateCalcTag extends AbstractDateTag {
         return value;
     }
 
-    public void setVar(String var) {
-        this.var = var;
-    }
-
-    public String getVar() {
-        return var;
-    }
-
     public void setMilliseconds(int milliseconds) {
         this.milliseconds = milliseconds;
     }
 
     public int getMilliseconds() {
         return milliseconds;
+    }
+    
+    @Override
+    protected void resetState() {
+        super.resetState();
+        setDays(0);
+        setMonths(0);
+        setYears(0);
+        setHours(0);
+        setMinutes(0);
+        setSeconds(0);
+        setMilliseconds(0);        
+        setValue(null);
+        setVar(null);
     }
 }

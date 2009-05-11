@@ -46,7 +46,7 @@
 
                 <p class="eventsResume">
                     <template:field name="body"/></p>
-                <template:getContentObjectCategories valueID="eventsContainerCatKeys"
+                <template:getContentObjectCategories var="eventsContainerCatKeys"
                                                      objectKey="contentContainer_${pageScope.eventContainer.ID}"/>
                 <c:if test="${!empty eventsContainerCatKeys }">
                     <div class="eventsMeta">

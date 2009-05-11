@@ -24,37 +24,37 @@
 <c:set var="now1" value="<%=sf.format(new java.util.Date())%>"/>
 
 <p>
-    <utility:dateUtil currentDate="${now1}" valueID="dateU" datePattern="dd.MM.yyyy HH:mm"/> <br/>
+    <utility:dateUtil currentDate="${now1}" var="dateU" datePattern="dd.MM.yyyy HH:mm"/> <br/>
     <b><fmt:message key='dateutil.now'/>:</b> <c:out value="${dateU}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU}"/></p>
 
-<p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" days="7"/> <br/>
+<p><utility:dateUtil currentDate="${now1}" var="dateU1" datePattern="dd.MM.yyyy HH:mm" days="7"/> <br/>
     <b><fmt:message key='dateutil.week'/>:</b> <c:out value="${dateU1}"/>
     -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
-<p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" months="1"/> <br/>
+<p><utility:dateUtil currentDate="${now1}" var="dateU1" datePattern="dd.MM.yyyy HH:mm" months="1"/> <br/>
     <b><fmt:message key='dateutil.month'/>:</b> <c:out
             value="${dateU1}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
-<p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="1"/> <br/>
+<p><utility:dateUtil currentDate="${now1}" var="dateU1" datePattern="dd.MM.yyyy HH:mm" years="1"/> <br/>
     <b><fmt:message key='dateutil.year'/>:</b> <c:out value="${dateU1}"/>
     -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
-<p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="-1"/> <br/>
+<p><utility:dateUtil currentDate="${now1}" var="dateU1" datePattern="dd.MM.yyyy HH:mm" years="-1"/> <br/>
     <b><fmt:message key='dateutil.lastyear'/>:</b><c:out
             value="${dateU1}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
-<p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="1" hours="12"/>
+<p><utility:dateUtil currentDate="${now1}" var="dateU1" datePattern="dd.MM.yyyy HH:mm" years="1" hours="12"/>
     <br/>
     <b><fmt:message key='dateutil.yearhours'/>:</b> <c:out
             value="${dateU1}"/> -
     <fmt:formatDate pattern="dd.MM.yyyy HH:MM" value="${dateU1}"/></p>
 
-<p><utility:dateUtil currentDate="${now1}" valueID="dateU1" datePattern="dd.MM.yyyy HH:mm" years="2" days="1"
+<p><utility:dateUtil currentDate="${now1}" var="dateU1" datePattern="dd.MM.yyyy HH:mm" years="2" days="1"
                          months="1" hours="12" minutes="30" seconds="30"/> <br/>
     <b><fmt:message key='dateutil.complex'/>:</b>
     <br/> <c:out value="${dateU1}"/> -

@@ -21,7 +21,7 @@
 <template:container id="newsContainer" encapsulatingDivCssClassName="news" actionMenuNamePostFix="news"
                     actionMenuNameLabelKey="news.update">
     <template:field name='newsDate' display="false" var="newsDate"/>
-    <template:getContentObjectCategories valueID="newsContainerCatKeys"
+    <template:getContentObjectCategories var="newsContainerCatKeys"
                                          objectKey="contentContainer_${pageScope.newsContainer.ID}"/>
     <div class="newsItem"><!--start newsItem -->
         <h2><template:field name='newsTitle'/></h2>

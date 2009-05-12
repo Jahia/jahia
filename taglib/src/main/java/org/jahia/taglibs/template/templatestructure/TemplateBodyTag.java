@@ -201,9 +201,53 @@ public class TemplateBodyTag extends AbstractJahiaTag implements DynamicAttribut
     private void addToolbarMessageResources() {
         // add messages required by the subscriptions toolbar
         addGwtDictionaryMessage("subscriptions.toolbar.page.windowTitle", getMessage("subscriptions.toolbar.page.windowTitle"));
-        addGwtDictionaryMessage("subscriptions.toolbar.page.event.contentPublished", getMessage("subscriptions.toolbar.page.event.contentPublished"));
+        addGwtDictionaryMessage("subscriptoolbar.analytics.timeOnSitetions.toolbar.page.event.contentPublished", getMessage("subscriptions.toolbar.page.event.contentPublished"));
         addGwtDictionaryMessage("subscriptions.toolbar.page.event.commentAdded", getMessage("subscriptions.toolbar.page.event.commentAdded"));
         addGwtDictionaryMessage("subscriptions.toolbar.page.includeChildren", getMessage("subscriptions.toolbar.page.includeChildren"));
+
+        //google analytics resource messages
+        addGwtDictionaryMessage("siteStatistics", getMessage("toolbar.analytics.siteStatistics"));
+        addGwtDictionaryMessage("pageStatistics", getMessage("toolbar.analytics.pageStatistics"));
+        addGwtDictionaryMessage("analyticsProfile", getMessage("toolbar.analytics.analyticsProfile"));
+        addGwtDictionaryMessage("userAccount", getMessage("toolbar.analytics.userAccount"));
+        addGwtDictionaryMessage("profile", getMessage("toolbar.analytics.profile"));
+        addGwtDictionaryMessage("login", getMessage("toolbar.analytics.login"));
+        addGwtDictionaryMessage("trackedurl", getMessage("toolbar.analytics.trackedurl"));
+        addGwtDictionaryMessage("state", getMessage("toolbar.analytics.state"));
+        addGwtDictionaryMessage("languageSelection", getMessage("toolbar.analytics.languageSelection"));
+        addGwtDictionaryMessage("selectAll", getMessage("toolbar.analytics.selectAll"));
+        addGwtDictionaryMessage("selecLanguage", getMessage("toolbar.analytics.selecLanguage"));
+        addGwtDictionaryMessage("selectBeginDate", getMessage("toolbar.analytics.selectBeginDate"));
+        addGwtDictionaryMessage("selectEndDate", getMessage("toolbar.analytics.selectEndDate"));
+        addGwtDictionaryMessage("showData", getMessage("toolbar.analytics.showData"));
+        addGwtDictionaryMessage("downloadingData", getMessage("toolbar.analytics.downloadingData"));
+        addGwtDictionaryMessage("bounceRate", getMessage("toolbar.analytics.bounceRate"));
+        addGwtDictionaryMessage("browser", getMessage("toolbar.analytics.browser"));
+        addGwtDictionaryMessage("connectionSpeed", getMessage("toolbar.analytics.connectionSpeed"));
+        addGwtDictionaryMessage("direct", getMessage("toolbar.analytics.direct"));
+        addGwtDictionaryMessage("newVisits", getMessage("toolbar.analytics.newVisits"));
+        addGwtDictionaryMessage("pagesPerVisit", getMessage("toolbar.analytics.pagesPerVisit"));
+        addGwtDictionaryMessage("averageTime", getMessage("toolbar.analytics.averageTime"));
+        addGwtDictionaryMessage("percentage", getMessage("toolbar.analytics.percentage"));
+        addGwtDictionaryMessage("search", getMessage("toolbar.analytics.search"));
+        addGwtDictionaryMessage("bounces", getMessage("toolbar.analytics.bounces"));
+        addGwtDictionaryMessage("timeOnSite", getMessage("toolbar.analytics.timeOnSite"));
+        addGwtDictionaryMessage("keyword", getMessage("toolbar.analytics.keyword"));
+        addGwtDictionaryMessage("visitors", getMessage("toolbar.analytics.visitors"));
+        addGwtDictionaryMessage("pageStatistics", getMessage("toolbar.analytics.pageStatistics"));
+        addGwtDictionaryMessage("error", getMessage("toolbar.analytics.errorMessage"));
+        addGwtDictionaryMessage("visits", getMessage("toolbar.analytics.visits"));
+        addGwtDictionaryMessage("source", getMessage("toolbar.analytics.source"));
+        addGwtDictionaryMessage("referral", getMessage("toolbar.analytics.referral"));
+        addGwtDictionaryMessage("percentageNewVisits", getMessage("toolbar.analytics.percentageNewVisits"));
+        addGwtDictionaryMessage("index", getMessage("toolbar.analytics.index"));
+        addGwtDictionaryMessage("exit", getMessage("toolbar.analytics.exit"));
+        addGwtDictionaryMessage("pageViews", getMessage("toolbar.analytics.pageViews"));
+        addGwtDictionaryMessage("timeOnPage", getMessage("toolbar.analytics.timeOnPage"));
+        addGwtDictionaryMessage("uniquePageviews", getMessage("toolbar.analytics.uniquePageviews"));
+        addGwtDictionaryMessage("geographicMap", getMessage("toolbar.analytics.geographicMap"));
+        addGwtDictionaryMessage("annotatedTimelime", getMessage("toolbar.analytics.annotatedTimelime"));
+                                      
     }
 
     /**

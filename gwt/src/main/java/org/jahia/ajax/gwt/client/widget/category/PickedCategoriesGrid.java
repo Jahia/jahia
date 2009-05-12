@@ -60,7 +60,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
     }
 
     public Object getSelection() {
-        return selectionModel.getSelectedItems();  //To change body of implemented methods use File | Settings | File Templates.
+        return store.getModels();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void refresh() {

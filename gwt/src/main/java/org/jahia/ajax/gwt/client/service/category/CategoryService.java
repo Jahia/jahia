@@ -48,6 +48,8 @@ public interface CategoryService extends RemoteService {
         }
     }
 
+    public List<GWTJahiaCategoryNode> lsInit(final String rootKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale) throws GWTJahiaServiceException;
+
     public List<GWTJahiaCategoryNode> ls(GWTJahiaCategoryNode gwtJahiaCategoryNode, String categroyLocale) throws GWTJahiaServiceException;
 
     public List<GWTJahiaCategoryNode> getCategories(List<String> keys) throws GWTJahiaServiceException;

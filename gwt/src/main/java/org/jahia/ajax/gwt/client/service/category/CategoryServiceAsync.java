@@ -30,6 +30,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * Time: 16:22:46
  */
 public interface CategoryServiceAsync {
+    void lsInit(final String rootKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale, AsyncCallback<List<GWTJahiaCategoryNode>> async);
+
     void ls(GWTJahiaCategoryNode node,String categoryLocale, AsyncCallback<List<GWTJahiaCategoryNode>> async);
 
     void getCategories(List<String> keys, AsyncCallback<List<GWTJahiaCategoryNode>> async);

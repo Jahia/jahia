@@ -29,7 +29,7 @@ import java.util.List;
  * @author rfelden
  * @version 19 juin 2008 - 15:57:38
  */
-public class GWTJahiaCategoryNode extends BaseTreeModel implements Serializable {
+public class GWTJahiaCategoryNode extends BaseTreeModel<GWTJahiaCategoryNode> implements Serializable {
     private List<GWTJahiaCategoryTitle> categoryTitles;
 
     public GWTJahiaCategoryNode() {

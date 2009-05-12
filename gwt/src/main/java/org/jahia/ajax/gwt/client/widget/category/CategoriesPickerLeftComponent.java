@@ -18,12 +18,9 @@ package org.jahia.ajax.gwt.client.widget.category;
 
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
-import org.jahia.ajax.gwt.client.widget.node.FilePathBar;
-import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
 
@@ -56,6 +53,11 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
         m_component.add(categoriesTree);
     }
 
+    public void initWithLinker(BrowserLinker linker) {
+        super.initWithLinker(linker);
+        categoriesTree.init();
+    }
+
     public void openAndSelectItem(Object item) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -78,10 +80,6 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
 
     public void removeAllCategories() {
         getLinker().getTopRightObject().clearTable();
-    }
-
-    public static String getResource(String key) {
-        return Messages.getResource(key);
     }
 
 }

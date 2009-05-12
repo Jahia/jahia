@@ -94,7 +94,7 @@ public class JahiaConfigurationWizard extends HttpServlet {
             org.apache.log4j.Logger.getLogger(JahiaConfigurationWizard.class);
     /** ... */
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.org\" target=\"newJahia\">Jahia Ltd</a> -";
+            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
     public static final String VERSION = "6.0";
 
     private  ServletContext context;

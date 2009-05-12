@@ -14,35 +14,6 @@
  *
  * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-//
-
-/*
- * ----- BEGIN LICENSE BLOCK -----
- * Version: JCSL 1.0
- *
- * The contents of this file are subject to the Jahia Community Source License
- * 1.0 or later (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://www.jahia.org/license
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the rights, obligations and limitations governing use of the contents
- * of the file. The Original and Upgraded Code is the Jahia CMS and Portal
- * Server. The developer of the Original and Upgraded Code is JAHIA Ltd. JAHIA
- * Ltd. owns the copyrights in the portions it created. All Rights Reserved.
- *
- * The Shared Modifications are Jahia View Helper.
- *
- * The Developer of the Shared Modifications is Jahia Solution S�rl.
- * Portions created by the Initial Developer are Copyright (C) 2002 by the
- * Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- * Feb 4 24 2002 Jahia Solutions S�rl: MAP Initial release.
- *
- * ----- END LICENSE BLOCK -----
- */
 
 package org.jahia.data.viewhelper.sitemap;
 

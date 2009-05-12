@@ -153,12 +153,12 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
 
     /** ... */
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.org\" target=\"newJahia\">Jahia Ltd</a> -";
+            "&copy; Copyright 2002-2009  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
-    public final static String COPYRIGHT_TXT = "2009 Jahia Ltd." ;
+    public final static String COPYRIGHT_TXT = "2009 Jahia Solutions Group SA" ;
 
     /**
-     * the lock name in the lock registery
+     * the lock name in the lock registry
      */
     public static final String JAHIA_LOCK_NAME = CLASS_NAME + "_lock_name";
 

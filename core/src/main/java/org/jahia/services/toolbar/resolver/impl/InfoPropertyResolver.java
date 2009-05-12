@@ -74,7 +74,11 @@ public class InfoPropertyResolver implements PropertyResolver {
         	  			format = "dd-MMM-yyyy";
         	  		SimpleDateFormat sf = new SimpleDateFormat(format);              	
               	//JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", getLocale());
-            	  return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + " "  + sf.format(expirationDate);
+        	  		if(expirationDate.before(new Date(System.currentTimeMillis() + (1000L * 60L * 60L * 24L * 10))))
+        	  		{	
+            	    return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + " "  + sf.format(expirationDate);
+        	  		}
+        	  		return "";
               }
               else
               {

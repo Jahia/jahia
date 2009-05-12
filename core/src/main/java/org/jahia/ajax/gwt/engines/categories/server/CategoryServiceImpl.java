@@ -97,14 +97,12 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
     }
 
     private void addChildrenToCategory(final GWTJahiaCategoryNode node, final List<String> pathsToAdd, final JahiaUser currentUser, final String locale) throws JahiaException {
-        logger.error("adding children to " + node.getKey());
         Category cat = Category.getCategory(node.getKey(), currentUser);
         List<Category> childrenCategories = cat.getChildCategories();
         for (Category childCategory: childrenCategories) {
             if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
                 GWTJahiaCategoryNode childNode = createGWTJahiaCategoryNode(node.getKey(), childCategory, false, locale);
                 addChildrenToCategory(childNode, pathsToAdd, currentUser, locale);
-                logger.error("adding child " + childNode.getKey() + " to " + node.getKey());
                 node.add(childNode);
                 childNode.setParent(node);
             }

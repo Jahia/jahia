@@ -51,15 +51,6 @@ import java.util.*;
 
 public class SettingsBean {
 
-    public boolean isConsiderPreferredLanguageAfterLogin() {
-        return considerPreferredLanguageAfterLogin;
-    }
-
-    public void setConsiderPreferredLanguageAfterLogin(
-            boolean considerPreferredLanguageAfterLogin) {
-        this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
-    }
-
     private static final transient Logger logger =
             Logger.getLogger (SettingsBean.class);
     
@@ -273,6 +264,8 @@ public class SettingsBean {
     private boolean gmailPasswordExported = true;
 
     private boolean considerPreferredLanguageAfterLogin;
+    
+    private boolean considerDefaultJVMLocal;
 
     // enable ACL check when displaying the current page path
     private boolean checkAclInPagePath ;
@@ -422,6 +415,8 @@ public class SettingsBean {
             // multi language default language code property.
             defaultLanguageCode = getString ("org.jahia.multilang.default_language_code", "en");
 
+            considerDefaultJVMLocal = getBoolean("considerDefaultJVMLocal", false);
+                
             considerPreferredLanguageAfterLogin = getBoolean("considerPreferredLanguageAfterLogin", false);
 
             aclPreloadActive = getBoolean("org.jahia.acl.preload_active", true);
@@ -1619,5 +1614,22 @@ public class SettingsBean {
 
     public void setIntegrityDisp(boolean integrityDisp) {
         this.integrityDisp = integrityDisp;
+    }
+
+    public boolean isConsiderDefaultJVMLocal() {
+        return considerDefaultJVMLocal;
+    }
+
+    public void setConsiderDefaultJVMLocal(boolean considerDefaultJVMLocal) {
+        this.considerDefaultJVMLocal = considerDefaultJVMLocal;
+    }
+
+    public boolean isConsiderPreferredLanguageAfterLogin() {
+        return considerPreferredLanguageAfterLogin;
+    }
+
+    public void setConsiderPreferredLanguageAfterLogin(
+            boolean considerPreferredLanguageAfterLogin) {
+        this.considerPreferredLanguageAfterLogin = considerPreferredLanguageAfterLogin;
     }
 }

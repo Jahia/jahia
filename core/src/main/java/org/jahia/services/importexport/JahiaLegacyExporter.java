@@ -433,6 +433,9 @@ public class JahiaLegacyExporter extends Exporter{
                 } else {
                 }
                 ContentDefinition parentDef = (ContentDefinition) ContentDefinition.getInstance(cc.getParent(toLoadRequest).getParent(toLoadRequest).getDefinitionKey(toLoadRequest));
+                if (parentDef == null) {
+                    parentDef = (ContentDefinition) ContentDefinition.getInstance(cc.getParent(toLoadRequest).getParent(toLoadRequest).getDefinitionKey(null));
+                }
                 int tplNameLength = 0;
                 if (parentDef instanceof JahiaPageDefinition) {
                     tplNameLength = ((JahiaPageDefinition)parentDef).getPageType().length();

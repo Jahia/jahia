@@ -26,6 +26,7 @@ import au.id.jericho.lib.html.Source;
 import au.id.jericho.lib.html.SourceFormatter;
 import au.id.jericho.lib.html.StartTag;
 import au.id.jericho.lib.html.Tag;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.extractor.HTMLTextExtractor;
 import org.apache.log4j.Logger;
@@ -659,7 +660,8 @@ public class JahiaBigTextField extends JahiaField implements
         if (href == null) {
             return;
         }
-        String hrefValue = href.getValue();
+        String originalHrefValue = href.getValue();
+        String hrefValue = originalHrefValue;
         if (hrefValue.contains(URL_MARKER)) {
             if (hrefValue.startsWith(URL_MARKER + JahiaFieldXRefManager.PAGE)) {
                 String[] values = hrefValue.split("/");
@@ -712,10 +714,20 @@ public class JahiaBigTextField extends JahiaField implements
                 }
             } else if (hrefValue.startsWith(URL_MARKER + JahiaFieldXRefManager.FILE)) {
                 // This is a file
-                final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(hrefValue.substring((URL_MARKER + JahiaFieldXRefManager.FILE).length()), processingContext.getUser());
-                hrefValue = node.getUrl();
+                try {
+                    String path = URLDecoder.decode(hrefValue.substring((URL_MARKER + JahiaFieldXRefManager.FILE).length()), "UTF-8");
+                    final JCRNodeWrapper node = ServicesRegistry.getInstance().getJCRStoreService().getFileNode(path, processingContext.getUser());
+                    if (!node.isValid()) {
+                        logger.warn("Unable to retrieve a node for the path: " + path);
+                    }
+                    hrefValue = node.getUrl();
+                } catch (UnsupportedEncodingException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
-            document.replace(href.getValueSegment(), hrefValue);
+            if (hrefValue != null && !originalHrefValue.equals(hrefValue)) {
+                document.replace(href.getValueSegment(), hrefValue);
+            }
         }
     }
 

@@ -106,41 +106,58 @@ public class FieldReferenceListener extends DefaultEventListener {
             JahiaUser user = processingContext != null ? processingContext.getUser() : null;
             
             Collection<JahiaFieldXRef> c = fieldXRefManager.getReferencesForTarget(JahiaFieldXRefManager.FILE+provider.getKey()+":"+uuid);
-
-            for (JahiaFieldXRef jahiaFieldXRef : c) {
-                int fieldId = jahiaFieldXRef.getComp_id().getFieldId();
-                int workflow = jahiaFieldXRef.getComp_id().getWorkflow();
-                String language = jahiaFieldXRef.getComp_id().getLanguage();
-                int version = 0;
-                if (workflow == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
-                    version = ContentField.getField(fieldId).getActiveVersionID();
-                }
-
-                ContentField field = ContentField.getField(fieldId);
-
-                if (field instanceof ContentBigTextField) {
-                    String bigText = ServicesRegistry.getInstance().getJahiaTextFileService().loadBigTextValue(jahiaFieldXRef.getSiteId(), field.getPageID(),
-                            field.getID(), "", version, workflow, language);
-                    if (bigText != null) {
-                        bigText = bigText.replace(JahiaBigTextField.URL_MARKER
-                                + JahiaFieldXRefManager.FILE
-                                + URLUtil.URLEncode(sourceUri, "UTF-8"),
-                                JahiaBigTextField.URL_MARKER
+            
+            if (c.size() > 0) {
+                sourceUri = provider.decodeInternalName(sourceUri);
+                destinationUri = provider.decodeInternalName(destinationUri);
+                
+                for (JahiaFieldXRef jahiaFieldXRef : c) {
+                    int fieldId = jahiaFieldXRef.getComp_id().getFieldId();
+                    int workflow = jahiaFieldXRef.getComp_id().getWorkflow();
+                    String language = jahiaFieldXRef.getComp_id().getLanguage();
+                    int version = 0;
+                    if (workflow == EntryLoadRequest.ACTIVE_WORKFLOW_STATE) {
+                        version = ContentField.getField(fieldId).getActiveVersionID();
+                    }
+    
+                    ContentField field = ContentField.getField(fieldId);
+    
+                    if (field != null) {
+                        if (field instanceof ContentBigTextField) {
+                            String bigText = ServicesRegistry.getInstance().getJahiaTextFileService().loadBigTextValue(jahiaFieldXRef.getSiteId(), field.getPageID(),
+                                    field.getID(), "", version, workflow, language);
+                            if (bigText != null) {
+                                String replacement = JahiaBigTextField.URL_MARKER
                                         + JahiaFieldXRefManager.FILE
-                                        + URLUtil.URLEncode(destinationUri,
-                                                "UTF-8"));
-                        ServicesRegistry.getInstance()
-                                .getJahiaTextFileService().saveContents(
-                                        jahiaFieldXRef.getSiteId(),
-                                        field.getPageID(), field.getID(),
-                                        bigText, version, workflow, language);
+                                        + destinationUri;
+                                String modifiedBigText = bigText
+                                        .replace(
+                                                JahiaBigTextField.URL_MARKER
+                                                        + JahiaFieldXRefManager.FILE
+                                                        + URLUtil.URLEncode(sourceUri,
+                                                                "UTF-8"), replacement)
+                                        .replace(
+                                                JahiaBigTextField.URL_MARKER
+                                                        + JahiaFieldXRefManager.FILE
+                                                        + sourceUri, replacement);
+                                if (!bigText.equals(modifiedBigText)) {
+                                    ServicesRegistry.getInstance()
+                                            .getJahiaTextFileService().saveContents(
+                                                    jahiaFieldXRef.getSiteId(),
+                                                    field.getPageID(), field.getID(),
+                                                    modifiedBigText, version, workflow, language);
+                                }
+                            }
+                        }
+                        RuleEvaluationContext ctx = new RuleEvaluationContext(
+                                field.getObjectKey(), field,
+                                processingContext, user);
+                        searchService.indexContentObject(field,
+                                user, ctx);
+                    } else {
+                        logger.warn("No content field with the ID " + fieldId + " can be found.");
                     }
                 }
-                RuleEvaluationContext ctx = new RuleEvaluationContext(
-                        field.getObjectKey(), field,
-                        processingContext, user);
-                searchService.indexContentObject(field,
-                        user, ctx);
             }
         } catch (JahiaException e) {
             logger.error(e.getMessage(), e);

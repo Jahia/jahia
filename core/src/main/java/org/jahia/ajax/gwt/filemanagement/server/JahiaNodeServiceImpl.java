@@ -247,6 +247,8 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
             node.getParent().save();
             tmp.delete();
             f.delete();
+        } catch (ExistingFileException e) {
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -275,6 +277,8 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
             node.getParent().save();
             tmp.delete();
             f.delete();
+        } catch (ExistingFileException e) {
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());
@@ -308,6 +312,8 @@ public class JahiaNodeServiceImpl extends AbstractJahiaGWTServiceImpl implements
             node.getParent().save();
             tmp.delete();
             f.delete();
+        } catch (ExistingFileException e) {
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(e.getMessage());

@@ -76,7 +76,6 @@ import org.jahia.resourcebundle.ResourceMessage;
 import org.jahia.security.license.License;
 import org.jahia.security.license.LicenseConstants;
 import org.jahia.security.license.LicenseManager;
-import org.jahia.security.license.LicensePackage;
 import org.jahia.security.license.Limit;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.deamons.filewatcher.FileListSync;
@@ -1083,9 +1082,7 @@ public final class Jahia extends org.apache.struts.action.ActionServlet implemen
             try {
                 final LicenseManager licenseManager = LicenseManager.getInstance();
                 licenseManager.load(mLicenseFilename);
-                final LicensePackage jahiaLicensePackage = licenseManager.
-                        getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
-                coreLicense = jahiaLicensePackage.getLicense(LicenseConstants.CORE_COMPONENT);
+                coreLicense = licenseManager.getJahiaLicensePackage().getLicense(LicenseConstants.CORE_COMPONENT);
                 final InputStream keystoreIn =
                     Jahia.class.getResourceAsStream(
                         publicKeyStoreResourceName);

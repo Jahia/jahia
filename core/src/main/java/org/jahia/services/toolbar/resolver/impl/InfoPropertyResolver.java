@@ -17,18 +17,12 @@
 package org.jahia.services.toolbar.resolver.impl;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 
 import org.jahia.data.JahiaData;
 import org.jahia.gui.GuiBean;
-import org.jahia.security.license.CommonDaysLeftValidator;
-import org.jahia.security.license.LicenseConstants;
 import org.jahia.security.license.LicenseManager;
-import org.jahia.security.license.LicensePackage;
-import org.jahia.security.license.Limit;
 import org.jahia.services.toolbar.resolver.PropertyResolver;
 import org.jahia.utils.i18n.JahiaResourceBundle;
 
@@ -56,55 +50,26 @@ public class InfoPropertyResolver implements PropertyResolver {
                 }
             } else if(input.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_LICENSE_INFO)) {
             	try{
-              LicensePackage licensePackage = LicenseManager.getInstance().
-              getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
-
-              Limit daysLeftLimit = licensePackage.getLicense(LicenseConstants.CORE_COMPONENT).
-                      getLimit("maxUsageDays");
-              if (daysLeftLimit != null) {
-              	CommonDaysLeftValidator daysLeftValidator = (CommonDaysLeftValidator)
-                  	daysLeftLimit.getValidator();
-              	int maxDays = Integer.parseInt(daysLeftLimit.getValueStr());
-              	long expirationTime = daysLeftValidator.
-                  	getCommonInstallDate().getTime() +
-                  	1000L * 60L * 60L * 24L * maxDays;
-              	Date expirationDate = new Date(expirationTime);     
-        	  		String format = JahiaResourceBundle.getMessageResource("jahia.toolbar.license.dateformat", jData.getProcessingContext().getLocale());
-        	  		if(format == null || format.length() < 5)
-        	  			format = "dd-MMM-yyyy";
-        	  		SimpleDateFormat sf = new SimpleDateFormat(format);              	
-              	//JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", getLocale());
-        	  		if(expirationDate.before(new Date(System.currentTimeMillis() + (1000L * 60L * 60L * 24L * 10))))
-        	  		{	
-            	    return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + " "  + sf.format(expirationDate);
-        	  		}
-        	  		return "";
-              }
-              else
-              {
-                Limit dateLimit = licensePackage.getLicense(LicenseConstants.CORE_COMPONENT).
-                			getLimit("date");
-            	  if(dateLimit != null)
-            	  {
-            	  	String enddate = dateLimit.getValueStr();
-            	  	int year = Integer.parseInt(enddate.substring(6, 10));
-            	  	int month = Integer.parseInt(enddate.substring(3, 5));
-            	  	int day = Integer.parseInt(enddate.substring(0, 2));
-            	  	Calendar cal = new GregorianCalendar(year, month-1, day);
-            	  	Calendar cal1 = new GregorianCalendar(year, month-1, day);
-            	  	cal1.add(Calendar.DATE, -10);
-            	  	if(cal1.getTime().before(new Date(System.currentTimeMillis())))
-            	  	{
-            	  		String format = JahiaResourceBundle.getMessageResource("jahia.toolbar.license.dateformat", jData.getProcessingContext().getLocale());
-            	  		if(format == null || format.length() < 5)
-            	  			format = "dd-MMM-yyyy";
-            	  		SimpleDateFormat sf1 = new SimpleDateFormat(format);
-            	  		return JahiaResourceBundle.getMessageResource("jahia.toolbar.license.expire", jData.getProcessingContext().getLocale()) + "&nbsp;<b>" + sf1.format(cal.getTime()) + "</b>";
-            	  	}
-            	  }
-              }
-              }catch(Exception ex)
-              {
+            	    
+            	    long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();
+            	    long now = System.currentTimeMillis();
+            	    if (expirationTime > 0 && (now >= expirationTime || (expirationTime - now) <= 1000L * 60 * 60 * 24 * 10)) {
+            	        return JahiaResourceBundle.getMessageResource(
+                                "jahia.toolbar.license.expire", jData
+                                        .getProcessingContext().getLocale())
+                                + " "
+                                + new SimpleDateFormat(
+                                        JahiaResourceBundle
+                                                .getMessageResource(
+                                                        "jahia.toolbar.license.dateformat",
+                                                        jData
+                                                                .getProcessingContext()
+                                                                .getLocale(),
+                                                        "dd-MMM-yyyy"))
+                                        .format(new Date(expirationTime));
+            	    }
+              } catch(Exception ex) {
+                  // do nothing
               }
             }
         }

@@ -81,5 +81,7 @@ public final class LicenseConstants {
     public static final String TEMPLATE_LIMIT_NAME = "templates";
     public static final String BUILDNUMBER_LIMIT_NAME = "build";
     public static final String RELEASE_LIMIT_NAME = "release";
+    public static final String MAX_USAGE_DAYS_LIMIT_NAME = "maxUsageDays";
+    public static final String DATE_LIMIT_NAME = "date";
 
 }

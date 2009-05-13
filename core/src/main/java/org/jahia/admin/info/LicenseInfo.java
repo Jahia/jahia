@@ -142,24 +142,12 @@ public class LicenseInfo extends AbstractAdministrationModule {
                 String maxTemplates = (nbMaxTemplates == -1) ? unlimited : Integer.toString(nbMaxTemplates);
                 String maxPages     = (nbMaxPages == -1)     ? unlimited : Integer.toString(nbMaxPages);
 
-                LicensePackage licensePackage = LicenseManager.getInstance().
-                    getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
+                LicensePackage licensePackage = LicenseManager.getInstance().getJahiaLicensePackage();
 
-                Limit daysLeftLimit = licensePackage.
-                            getLicense("org.jahia.actions.server.admin.sites.ManageSites").
-                            getLimit("maxUsageDays");
-                // the limit might be null if a license has been created without
-                // this limit.
-                if (daysLeftLimit != null) {
-                    CommonDaysLeftValidator daysLeftValidator = (CommonDaysLeftValidator)
-                        daysLeftLimit.getValidator();
-                    int maxDays = Integer.parseInt(daysLeftLimit.getValueStr());
-                    req.setAttribute("allowedDays", new Integer(maxDays));
-                    long expirationTime = daysLeftValidator.
-                        getCommonInstallDate().getTime() +
-                        1000L * 60L * 60L * 24L * maxDays;
-                    Date expirationDate = new Date(expirationTime);
-                    req.setAttribute("expirationDate", expirationDate);
+                req.setAttribute("allowedDays", Integer.valueOf((LicenseManager.getInstance().getJahiaMaxUsageDays())));
+                long expirationDate = LicenseManager.getInstance().getJahiaExpirationDate();
+                if (expirationDate > 0) {
+                    req.setAttribute("expirationDate", new Date(expirationDate));
                 }
 
                 req.setAttribute("nbCurrentSites",     Integer.toString(nbCurrentSites)      );

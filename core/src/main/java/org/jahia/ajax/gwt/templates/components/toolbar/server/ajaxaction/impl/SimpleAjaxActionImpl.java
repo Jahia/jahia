@@ -42,11 +42,8 @@ public class SimpleAjaxActionImpl extends AjaxAction {
     private final static String LICENSE_INFO = "licenseinfo";
     private final static String SEND_EMAIL_INFO = "sendEmail";
 
-    //caches
-    private final static String PUBLISH_PAGE = "publishPage";
-
     /**
-     * Execute the method that correponds to the action
+     * Execute the method that corresponds to the action
      *
      * @param jahiaData
      * @param action
@@ -80,25 +77,16 @@ public class SimpleAjaxActionImpl extends AjaxAction {
     }
 
     /**
-     * Get informatino about the license
+     * Get information about the license
      *
      * @param jahiaData
      * @param gwtPropertiesMap
      * @return
      */
     public String licenseInfo(JahiaData jahiaData, Map gwtPropertiesMap) {
-        final LicenseManager licenseManager = LicenseManager.getInstance();
-        final LicensePackage jahiaLicensePackage = licenseManager.getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
-        // we take a component that has an expiration date here. Please modify this
-        // if licensing policy changes.
-        License manageSiteLicense = jahiaLicensePackage.getLicense("org.jahia.actions.server.admin.sites.ManageSites");
-        final Limit daysLeftLimit = manageSiteLicense.getLimit("maxUsageDays");
-        // the limit might be null if a license has been created without
-        // this limit.
-        if (daysLeftLimit != null) {
-            final int maxDays = Integer.parseInt(daysLeftLimit.getValueStr());
-            final EngineMessage allowedDaysMsg = new EngineMessage("org.jahia.bin.JahiaConfigurationWizard.congratulations.daysLeftInLicense.label", new Integer(maxDays));
-            return getMessage(jahiaData, allowedDaysMsg);
+        int daysLeft = LicenseManager.getInstance().getJahiaMaxUsageDays();
+        if (daysLeft > 0) {
+            return getMessage(jahiaData, new EngineMessage("org.jahia.bin.JahiaConfigurationWizard.congratulations.daysLeftInLicense.label", Integer.valueOf(daysLeft)));
         }
         return "unknown";
     }

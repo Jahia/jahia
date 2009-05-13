@@ -22,6 +22,8 @@
  */
 package org.jahia.security.license;
 
+import static org.jahia.security.license.LicenseConstants.*;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class LicenseManager {
     private Digester digester;
 
     private LicenseManager() {
+        super();
     }
 
     public static LicenseManager getInstance() {
@@ -133,6 +136,51 @@ public class LicenseManager {
             }
         }
         return null;
+    }
+
+    public LicensePackage getJahiaLicensePackage() {
+        return getLicensePackage(JAHIA_PRODUCT_NAME);
+    }
+
+    /**
+     * Returns the Jahia product (the core feature) expiration date.
+     * 
+     * @return the Jahia product (the core feature) expiration date; returns -1
+     *         if the limit is not specified
+     */
+    public long getJahiaExpirationDate() {
+        long expiraionTime = -1;
+        int maxUsageDays = getJahiaMaxUsageDays();
+        if (maxUsageDays > 0) {
+            expiraionTime = ((CommonDaysLeftValidator) getJahiaLicensePackage()
+                    .getLicense(CORE_COMPONENT).getLimit(
+                            MAX_USAGE_DAYS_LIMIT_NAME).getValidator())
+                    .getCommonInstallDate().getTime()
+                    + 1000L * 60L * 60L * 24L * maxUsageDays;
+        } else {
+            Limit dateLimit = getJahiaLicensePackage().getLicense(
+                    CORE_COMPONENT).getLimit(DATE_LIMIT_NAME);
+            if (dateLimit != null) {
+                expiraionTime = ((DateValidator) dateLimit.getValidator())
+                        .getDate();
+            }
+
+        }
+        return expiraionTime;
+    }
+    
+    /**
+     * Returns the global limit for usage days for Jahia product (the core
+     * feature).
+     * 
+     * @return the global limit for usage days for Jahia product (the core
+     *         feature); returns -1 if the limit is not specified
+     */
+    public int getJahiaMaxUsageDays() {
+        Limit maxUsageDays = getJahiaLicensePackage()
+                .getLicense(CORE_COMPONENT).getLimit(MAX_USAGE_DAYS_LIMIT_NAME);
+        return maxUsageDays != null ? Integer.valueOf(maxUsageDays
+                .getValueStr()) : -1;
     }
 
     public boolean verifyAllSignatures(

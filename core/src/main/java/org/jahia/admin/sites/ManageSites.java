@@ -2219,16 +2219,11 @@ public class ManageSites extends AbstractAdministrationModule {
      */
     private void setAllowedDayRequestAttr(HttpServletRequest request) {
         try {
-            LicensePackage licensePackage = LicenseManager.getInstance().
-                    getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
-            Limit daysLeftLimit = licensePackage.getLicense("org.jahia.actions.server.admin.sites.ManageSites").getLimit("maxUsageDays");
-            // the limit might be null if a license has been created without
-            // this limit.
-            if (daysLeftLimit != null) {
-                int maxDays = Integer.parseInt(daysLeftLimit.getValueStr());
-                request.setAttribute("allowedDays", new Integer(maxDays));
-                final EngineMessage allowedDaysMsg = new EngineMessage("org.jahia.bin.JahiaConfigurationWizard.congratulations.daysLeftInLicense.label", new Integer(maxDays));
-                request.setAttribute("allowedDaysMsg", allowedDaysMsg);
+            int maxDays = LicenseManager.getInstance().getJahiaMaxUsageDays();
+            if (maxDays > 0) {
+                Integer limit = Integer.valueOf(maxDays);
+                request.setAttribute("allowedDays", limit);
+                request.setAttribute("allowedDaysMsg", new EngineMessage("org.jahia.bin.JahiaConfigurationWizard.congratulations.daysLeftInLicense.label", limit));
             }
         } catch (Exception e) {
             logger.error("Enable to compute allowed days.");

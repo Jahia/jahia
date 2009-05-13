@@ -61,12 +61,7 @@ import org.jahia.params.ProcessingContextFactory;
 import org.jahia.params.ServletURLGeneratorImpl;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
-import org.jahia.security.license.CommonDaysLeftValidator;
-import org.jahia.security.license.License;
-import org.jahia.security.license.LicenseConstants;
 import org.jahia.security.license.LicenseManager;
-import org.jahia.security.license.LicensePackage;
-import org.jahia.security.license.Limit;
 import org.jahia.services.acl.JahiaACLManagerService;
 import org.jahia.services.acl.JahiaBaseACL;
 import org.jahia.services.pages.ContentPage;
@@ -800,27 +795,11 @@ public class JahiaAdministration extends org.apache.struts.action.ActionServlet 
             return;
         }
 
-        final LicenseManager licenseManager = LicenseManager.getInstance();
-        final LicensePackage jahiaLicensePackage = licenseManager.
-                getLicensePackage(LicenseConstants.JAHIA_PRODUCT_NAME);
-        // we take a component that has an expiration date here. Please modify this
-        // if licensing policy changes.
-        License manageSiteLicense = jahiaLicensePackage.getLicense("org.jahia.actions.server.admin.sites.ManageSites");
-        final Limit daysLeftLimit = manageSiteLicense.getLimit("maxUsageDays");
-        // the limit might be null if a license has been created without
-        // this limit.
-        if (daysLeftLimit != null) {
-            CommonDaysLeftValidator daysLeftValidator = (CommonDaysLeftValidator)
-                    daysLeftLimit.getValidator();
-            int maxDays = Integer.parseInt(daysLeftLimit.getValueStr());
-            long expirationTime = daysLeftValidator.getCommonInstallDate().getTime() + DAY_MILLIS * maxDays;
-            long nowTime = System.currentTimeMillis();
-            long timeLeft = expirationTime - nowTime;
-            if (timeLeft < 0) {
-                timeLeft = 0;
-            }
-            int daysLeft = (int) (timeLeft / DAY_MILLIS);
-            request.setAttribute("daysLeft", daysLeft);
+        long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();
+        if (expirationTime > 0) {
+            long timeLeft = expirationTime - System.currentTimeMillis();
+            timeLeft = timeLeft < 0 ? 0 : timeLeft;
+            request.setAttribute("daysLeft", (int) (timeLeft / DAY_MILLIS));
         }
 
         request.setAttribute("site", theSite);

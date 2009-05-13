@@ -85,4 +85,16 @@ public class DateValidator extends AbstractValidator {
         return false;
     }
 
+    public long getDate() {
+        long licenseDate = 0;
+        try {
+            licenseDate = dateFormat.parse(value).getTime();
+        } catch (ParseException e) {
+            errorMessage = new ResourceMessage(
+                    "org.jahia.security.license.DateValidator.invalidLicenseDateValue.label",
+                    value);
+        }
+
+        return licenseDate;
+    }
 }

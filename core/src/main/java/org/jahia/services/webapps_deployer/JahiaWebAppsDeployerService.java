@@ -174,21 +174,21 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
         }
     } // end init
 
-    public void initPortletListener() {
-        PortletContextManager.getManager().addPortletRegistryListener(new PortletRegistryListener() {
-            public void portletApplicationRegistered(PortletRegistryEvent portletRegistryEvent) {
-                try {
-                    registerWebApps(portletRegistryEvent.getApplicationId());
-                } catch (JahiaException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-
-            public void portletApplicationRemoved(PortletRegistryEvent portletRegistryEvent) {
-            }
-        }) ;
-        PortletContextManager.getManager().getRegisteredPortletApplications();
-    }
+//    public void initPortletListener() {
+//        PortletContextManager.getManager().addPortletRegistryListener(new PortletRegistryListener() {
+//            public void portletApplicationRegistered(PortletRegistryEvent portletRegistryEvent) {
+//                try {
+//                    registerWebApps(portletRegistryEvent.getApplicationId());
+//                } catch (JahiaException e) {
+//                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//                }
+//            }
+//
+//            public void portletApplicationRemoved(PortletRegistryEvent portletRegistryEvent) {
+//            }
+//        }) ;
+//        PortletContextManager.getManager().getRegisteredPortletApplications();
+//    }
 
     /************************************************************************
      * Abstract Methods , need different implementations depending of the
@@ -280,47 +280,39 @@ public abstract class JahiaWebAppsDeployerService extends JahiaService {
         if (!context.startsWith("/"))
             context = "/" + context;
 
-        ApplicationBean theWebApp = ServicesRegistry.getInstance().
-                getApplicationsManagerService().
-                getApplication(context);
+        //System.out.println("registerWebApps app context " + appContext + " not used");
+        int parentAclID = 0;
 
-        if (theWebApp == null) {
-
-            //System.out.println("registerWebApps app context " + appContext + " not used");
-            int parentAclID = 0;
-
-            // Create a new ACL.
-            JahiaBaseACL acl = new JahiaBaseACL();
-            try {
-                acl.create(parentAclID);
-                JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
-                acl.setUserEntry(guest, new JahiaAclEntry(1,0));
-            } catch (ACLNotFoundException ex) {
-                throw new JahiaException("Could not create the page def.",
-                        "The parent ACL ID [" + parentAclID + "] could not be found," +
-                                " while trying to create a new page def.",
-                        JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
-            }
-
-            // save definition in db
-            theWebApp = new ApplicationBean(
-                    0, // id
-                    context.substring(1),
-                    context,
-                    m_VisibleStatus,
-                    false, // not shared
-                    acl.getID(),
-                    "",
-                    "",
-                    "portlet"
-            );
-
-            ServicesRegistry.getInstance().getApplicationsManagerService()
-                    .addDefinition(theWebApp);
-
-            //System.out.println("registerWebApps()" + webAppDef.getName() );
-
+        // Create a new ACL.
+        JahiaBaseACL acl = new JahiaBaseACL();
+        try {
+            acl.create(parentAclID);
+            JahiaUser guest = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerProvider.GUEST_USERNAME);
+            acl.setUserEntry(guest, new JahiaAclEntry(1,0));
+        } catch (ACLNotFoundException ex) {
+            throw new JahiaException("Could not create the page def.",
+                    "The parent ACL ID [" + parentAclID + "] could not be found," +
+                            " while trying to create a new page def.",
+                    JahiaException.TEMPLATE_ERROR, JahiaException.ERROR_SEVERITY, ex);
         }
+
+        // save definition in db
+        ApplicationBean theWebApp = new ApplicationBean(
+                0, // id
+                context.substring(1),
+                context,
+                m_VisibleStatus,
+                false, // not shared
+                acl.getID(),
+                "",
+                "",
+                "portlet"
+        );
+
+        ServicesRegistry.getInstance().getApplicationsManagerService()
+                .addDefinition(theWebApp);
+
+        //System.out.println("registerWebApps()" + webAppDef.getName() );
     }
 
 

@@ -223,6 +223,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService {
 
         checkIsLoaded();
 
+        syncPlutoWithDB();
+
         if (context == null) {
             return null;
         }

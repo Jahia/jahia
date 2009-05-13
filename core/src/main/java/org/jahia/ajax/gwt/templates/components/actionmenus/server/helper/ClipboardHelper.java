@@ -134,7 +134,7 @@ public class ClipboardHelper {
         return clipboardContent == null ;
     }
 
-    public static boolean clipboardContentHasActiveEntry(HttpSession session, Locale locale) {
+    public static boolean clipboardContentHasActiveEntry(HttpSession session) {
         final String skey = (String) session.getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT);
 
         // is there an object to paste ?
@@ -142,8 +142,7 @@ public class ClipboardHelper {
             try {
                 ContentObject obj = JahiaObjectCreator.getContentObjectFromString(skey) ;
                 if (obj != null) {
-                    ContentObjectEntryState state = ContentObjectEntryState.getEntryState(1, locale.toString());
-                    return obj.getEntryState(state, false, false) != null;
+                    return obj.hasActiveEntries();
                 }
             } catch (ClassNotFoundException e) {
                 logger.error(e, e) ;
@@ -217,6 +216,7 @@ public class ClipboardHelper {
                 if (linkedCopy) {
                     jobDataMap.put(CopyJob.LINK, StructuralRelationship.ACTIVATION_PICKER_LINK);
                 }
+                jobDataMap.put(CopyJob.VERSION, CopyJob.VERSION_CURRENT);
                 jobDataMap.put(CopyJob.SITESOURCE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(source.getSiteID()).getSiteKey());
                 jobDataMap.put(BackgroundJob.JOB_DESTINATION_SITE, ServicesRegistry.getInstance().getJahiaSitesService().getSite(dest.getSiteID()).getSiteKey());
                 jobDataMap.put(BackgroundJob.JOB_TYPE, linkedCopy ? CopyJob.PICKERCOPY_TYPE : CopyJob.COPYPASTE_TYPE);

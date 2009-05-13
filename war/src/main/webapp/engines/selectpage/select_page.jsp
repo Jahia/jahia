@@ -69,6 +69,16 @@
 
 %>
 
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.browse.label"
+                            aliasResourceName="pp_browse"/>
+<internal:gwtResourceBundle resourceName="button.search"
+                            aliasResourceName="pp_search"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.workflow.label"
+                            aliasResourceName="pp_wfState"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.pages.PageProperties_Engine.pageTitle.label"
+                            aliasResourceName="pp_title"/>
+<internal:gwtGenerateDictionary/>
+
 <div id="mainContent">
   <div id="gwtpagepicker" pagePath="<%=pagePath%>" parentPath="<%=parentPath%>" selectPageOperation="<%=selectedPageOperation%>" siteID="${param['siteID']}" homePageID="${param['homepageID']}" callback="${param['callback']}">
   </div>

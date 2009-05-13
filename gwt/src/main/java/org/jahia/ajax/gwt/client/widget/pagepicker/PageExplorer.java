@@ -178,7 +178,7 @@ public class PageExplorer extends TopRightComponent {
 //            });
 //        }
 
-        treeTable = new TabItem(Messages.getResource("fp_browse")) ;
+        treeTable = new TabItem(Messages.getResource("pp_browse")) ;
         treeTable.setLayout(new FitLayout());
         treeTable.add(m_treeTable) ;
         tabs.add(treeTable) ;
@@ -196,12 +196,12 @@ public class PageExplorer extends TopRightComponent {
             }
         });
 
-        search = new TabItem(Messages.getResource("fp_search")) ;
+        search = new TabItem(Messages.getResource("pp_search")) ;
         search.setLayout(new FitLayout());
         search.add(m_searchTable) ;
         tabs.add(search) ;
 
-        SearchField searchField = new SearchField("Search: ", false) {
+        SearchField searchField = new SearchField(Messages.getResource("pp_search") + ": ", false) {
             public void onFieldValidation(String value) {
                 if (tabs.getSelectedItem() == treeTable) {
                     tabs.setSelection(search);
@@ -289,10 +289,10 @@ public class PageExplorer extends TopRightComponent {
 
     private static TreeTableColumnModel getHeaders() {
         List<TreeTableColumn> headerList = new ArrayList<TreeTableColumn>();
-        TreeTableColumn col = new TreeTableColumn("title", "Title", .75f) ;
+        TreeTableColumn col = new TreeTableColumn("title", Messages.getResource("pp_title"), .75f) ;
         headerList.add(col) ;
         if (!"guest".equals(JahiaGWTParameters.getCurrentUser())) {
-            col = new TreeTableColumn("workflowStatus","Status", .2f) ;
+            col = new TreeTableColumn("workflowStatus", Messages.getResource("pp_wfState"), .2f) ;
             col.setRenderer(new CellRenderer() {
                 public String render(Component component, String s, Object o) {
                     String r = "";
@@ -325,7 +325,7 @@ public class PageExplorer extends TopRightComponent {
 
     private static ColumnModel getSearchHeaders(final String operation, final String parentPath) {
         List<ColumnConfig> headerList = new ArrayList<ColumnConfig>();
-        ColumnConfig col = new ColumnConfig("title", "Title", 500) ;
+        ColumnConfig col = new ColumnConfig("title", Messages.getResource("pp_title"), 300) ;
         col.setRenderer(new GridCellRenderer<GWTJahiaPageWrapper>() {
             public String render(GWTJahiaPageWrapper page, String s, ColumnData columnData, int i, int i1, ListStore<GWTJahiaPageWrapper> gwtJahiaPageWrapperListStore) {
                 StringBuilder title = new StringBuilder() ;
@@ -348,7 +348,7 @@ public class PageExplorer extends TopRightComponent {
         });
         headerList.add(col) ;
         if (!"guest".equals(JahiaGWTParameters.getCurrentUser())) {
-            col = new ColumnConfig("workflowStatus","Status", 200) ;
+            col = new ColumnConfig("workflowStatus", Messages.getResource("pp_wfState"), 100) ;
             col.setRenderer(new GridCellRenderer<GWTJahiaPageWrapper>() {
                 public String render(GWTJahiaPageWrapper page, String s, ColumnData columnData, int i, int i1, ListStore listStore) {
                     if (page == null) {

@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class CategoriesPickerLeftComponent extends LeftComponent {
     private ContentPanel m_component;
-    private CategoryFilter categoryFilter;
+//    private CategoryFilter categoryFilter;
     private CategoriesTree categoriesTree;
 
     public CategoriesPickerLeftComponent(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
@@ -40,16 +40,16 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
         m_component.setBorders(false);
         m_component.setHeaderVisible(false);
 
-        categoryFilter = new CategoryFilter() ;
+//        categoryFilter = new CategoryFilter() ;
 
         categoriesTree = new CategoriesTree(categoryKey, this,selectedCategories,categoryLocale,autoSelectParent);
         categoriesTree.setHeaderVisible(false);
         categoriesTree.setBodyBorder(false);
 
-        StoreFilterField filter = categoryFilter.getFilter();
-        filter.bind(categoriesTree.getStore());
+//        StoreFilterField filter = categoryFilter.getFilter();
+//        filter.bind(categoriesTree.getStore());
 
-        m_component.setTopComponent(categoryFilter.getComponent());
+//        m_component.setTopComponent(categoryFilter.getComponent());
         m_component.add(categoriesTree);
     }
 

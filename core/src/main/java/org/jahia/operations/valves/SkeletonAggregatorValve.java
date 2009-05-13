@@ -207,16 +207,8 @@ public class SkeletonAggregatorValve implements Valve {
                             OutputDocument outputDocument = new OutputDocument(htmlContent);
                             watch.stop();
                             watch.start("find tags");
-                            List<? extends Tag> esiIncludeTags = htmlEntry.getIncludeTag();
-                            if(esiIncludeTags == null) {
-                                esiIncludeTags = htmlContent.findAllStartTags("esi:include");
-                                htmlEntry.setIncludeTag(esiIncludeTags);
-                            }
-                            List<? extends Tag> esiVarsTags = htmlEntry.getVarsTag();
-                            if(esiVarsTags == null) {
-                                esiVarsTags = htmlContent.findAllStartTags("esi:vars");
-                                htmlEntry.setVarsTag(esiVarsTags);
-                            }
+                            List<? extends Tag> esiIncludeTags = htmlContent.findAllStartTags("esi:include");
+                            List<? extends Tag> esiVarsTags = htmlContent.findAllStartTags("esi:vars");
                             watch.stop();
                             if (containerHTMLCache == null) {
                                 try {

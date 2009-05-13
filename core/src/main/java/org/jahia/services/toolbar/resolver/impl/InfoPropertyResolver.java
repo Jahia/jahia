@@ -48,12 +48,20 @@ public class InfoPropertyResolver implements PropertyResolver {
                 }else{
                     return "";
                 }
-            } else if(input.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_LICENSE_INFO)) {
+            } else if(input.startsWith(ORG_JAHIA_TOOLBAR_ITEM_LICENSE_INFO)) {
             	try{
-            	    
-            	    long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();
+            		  
+            	    long warningdays = 10;
+            	    try{
+            	      if(input.indexOf("_") > 0)
+            	      {
+            	      	warningdays = Long.parseLong(input.substring(input.indexOf("_") + 1, input.length()));
+            	      }
+            	    }catch(NumberFormatException ex)
+            	    {}
             	    long now = System.currentTimeMillis();
-            	    if (expirationTime > 0 && (now >= expirationTime || (expirationTime - now) <= 1000L * 60 * 60 * 24 * 10)) {
+            	    long expirationTime = LicenseManager.getInstance().getJahiaExpirationDate();
+            	    if (expirationTime > 0 && (now >= expirationTime || (expirationTime - now) <= 1000L * 60 * 60 * 24 * warningdays)) {
             	        return JahiaResourceBundle.getMessageResource(
                                 "jahia.toolbar.license.expire", jData
                                         .getProcessingContext().getLocale())

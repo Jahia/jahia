@@ -353,7 +353,7 @@
         		<title-resourcebundle-key key="button.license"/>
             <visibility authentication="false" mode="edit" />
             <property name="info">
-                <value-resolver class="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver" input="license"/>
+                <value-resolver class="org.jahia.services.toolbar.resolver.impl.InfoPropertyResolver" input="license_30"/>
             </property>
         </item>
         

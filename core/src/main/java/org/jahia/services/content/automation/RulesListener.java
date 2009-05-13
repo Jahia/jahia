@@ -89,7 +89,7 @@ public class RulesListener extends DefaultEventListener {
     public Set<String> getRuleFiles() {
         return ruleFiles;
     }
-    
+
     private StatelessSession getStatelessSession (Map<String, Object> globals) {
         StatelessSession session = ruleBase.newStatelessSession();
         for (Map.Entry<String, Object> entry : globals.entrySet()) {
@@ -97,18 +97,18 @@ public class RulesListener extends DefaultEventListener {
         }
         return session;
     }
-    
+
     public void executeRules(Object fact, Map<String, Object> globals) {
         getStatelessSession(globals).execute(fact);
     }
-    
+
     public void executeRules(Object[] facts, Map<String, Object> globals) {
         getStatelessSession(globals).execute(facts);
     }
-    
+
     public void executeRules(Collection<?> facts, Map<String, Object> globals) {
         getStatelessSession(globals).execute(facts);
-    }            
+    }
 
     public void setRuleFiles(Set<String> ruleFiles) {
         this.ruleFiles = ruleFiles;
@@ -132,8 +132,9 @@ public class RulesListener extends DefaultEventListener {
             //conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
             //conf.setRemoveIdentities( true );
             ruleBase = RuleBaseFactory.newRuleBase(conf);
-
-            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+            Properties properties = new Properties();
+            properties.setProperty("drools.dialect.java.compiler","JANINO");
+            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
@@ -166,7 +167,9 @@ public class RulesListener extends DefaultEventListener {
 
     public void addRules(File dsrlFile) {
         try {
-            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+            Properties properties = new Properties();
+            properties.setProperty("drools.dialect.java.compiler","JANINO");
+            PackageBuilderConfiguration cfg = new PackageBuilderConfiguration(properties);
             JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration("java");
             javaConf.setCompiler(JavaDialectConfiguration.JANINO);
 
@@ -326,7 +329,7 @@ public class RulesListener extends DefaultEventListener {
                     globals.put("user", new User(username));
                     globals.put("provider", provider);
                     globals.put("delayedUpdates", delayedUpdates);
-                    
+
                     executeRules(list, globals);
 
                     if (list.size()>3) {

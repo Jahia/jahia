@@ -1,4 +1,3 @@
-<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--
 
     Jahia Enterprise Edition v6
@@ -20,10 +19,12 @@
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
 <%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
+<%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <ui:loginArea/>
 <ui:loginPassword/>
 <ui:loginRememberMe/>
 <ui:loginUsername/>
+<ui:loginRedirectChoice/>
 <utility:resolvePath value=""/>
 <utility:applicationResources/>
 <ui:folderSelector fieldId=""/>
@@ -60,3 +61,4 @@
 <internal:categorySelector/>
 <internal:jobReport/>
 <internal:workflowManager sitekey="test" startpage="1"/>
+<internal:aclNameEditor aclId="0" fieldId="0"/>

@@ -61,13 +61,13 @@
 </script>
 <div id="header">
   <h1>Jahia</h1>
-  <h2><fmt:message key="org.jahia.engines.application.applicationSettings.label"/></h2>
+  <h2><internal:message key="org.jahia.engines.application.applicationSettings.label"/></h2>
 </div>
 <div id="mainContent">
   <table style="width: 100%;" class="dex-TabPanel" cellpadding="0" cellspacing="0">
     <tbody>
       <tr>
-        <td style="vertical-align: top;" align="left" width="100%">
+        <td style="vertical-align: top;" align="left">
           <div class="dex-TabBar">
             <jsp:include page="../menuBar.jsp" flush="true" />
           </div>

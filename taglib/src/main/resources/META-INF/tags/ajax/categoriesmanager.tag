@@ -82,6 +82,10 @@
                             aliasResourceName="cat_key"/>
 <internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.cut.label"
                             aliasResourceName="cat_cut"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.deleteCategory.confirm.label"
+                            aliasResourceName="cat_delete_confirm"/>
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.deleteRootCategory.confirm.label"
+                            aliasResourceName="cat_deleteRoot_confirm"/>
 <internal:gwtResourceBundle
         resourceName="org.jahia.admin.categories.ManageCategories.editCategory.propertyName.label"
         aliasResourceName="cat_prop_name"/>

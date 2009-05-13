@@ -156,9 +156,13 @@ public abstract class CategoriesManagerActions {
             boolean rem;
             if (selectedItems.size() == 1) {
                 GWTJahiaCategoryNode selection = selectedItems.get(0);
-                rem = Window.confirm("Do you really want to remove the category " + selection.getName() + " ?");
+                if (selection.getKey() != null && selection.getKey().equalsIgnoreCase("root")) {
+                    rem = Window.confirm(Messages.getResource("cat_deleteRoot_confirm") + " " + selection.getName() + " ?");
+                } else {
+                    rem = Window.confirm(Messages.getResource("cat_delete_confirm") + " " + selection.getName() + " ?");
+                }
             } else {
-                rem = Window.confirm("Do you really want to remove the current selection ? (" + selectedItems.size() + " items)");
+                rem = Window.confirm(Messages.getResource("cat_confMultiRemove"));
             }
             if (rem) {
                 List<String> selectedPaths = new ArrayList<String>(selectedItems.size());

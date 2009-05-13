@@ -46,7 +46,7 @@
                             aliasResourceName="cat_remove"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.include.actionSelector.RightsMgmt.label"
                             aliasResourceName="cat_update_acl"/>
-<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.moveCategoryAction.label"
+<internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.paste.label"
                             aliasResourceName="cat_paste"/>
 <internal:gwtResourceBundle resourceName="org.jahia.admin.categories.ManageCategories.copy.label"
                             aliasResourceName="cat_copy"/>

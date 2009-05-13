@@ -62,14 +62,14 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             }
 
             List<String> selectedPaths = new ArrayList<String>();
-            for (GWTJahiaCategoryNode node: selectedCategories) {
+            for (GWTJahiaCategoryNode node : selectedCategories) {
                 selectedPaths.add(node.getPath());
             }
 
             List<GWTJahiaCategoryNode> result = new ArrayList<GWTJahiaCategoryNode>(1);
 
             if ("root".equals(rootCategory.getKey())) { // don't retrieve root category, get its children instead
-                for (Category child: rootCategory.getChildCategories()) {
+                for (Category child : rootCategory.getChildCategories()) {
                     List<Category> parents = child.getParentCategories();
                     String parentKey = null;
                     if (parents != null && parents.size() > 0) {
@@ -99,7 +99,7 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
     private void addChildrenToCategory(final GWTJahiaCategoryNode node, final List<String> pathsToAdd, final JahiaUser currentUser, final String locale) throws JahiaException {
         Category cat = Category.getCategory(node.getKey(), currentUser);
         List<Category> childrenCategories = cat.getChildCategories();
-        for (Category childCategory: childrenCategories) {
+        for (Category childCategory : childrenCategories) {
             if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
                 GWTJahiaCategoryNode childNode = createGWTJahiaCategoryNode(node.getKey(), childCategory, false, locale);
                 addChildrenToCategory(childNode, pathsToAdd, currentUser, locale);
@@ -314,16 +314,20 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
                 Category newParentCat = Category.getCategory(newParentJahiaCategoryNode.getKey(), currentUser);
                 for (GWTJahiaCategoryNode categoryNode : copiedNode) {
                     Category categoryToMove = Category.getCategory(categoryNode.getKey(), currentUser);
-                    if (newParentCat.getKey() != categoryToMove.getKey()) {
-                        if (cut) {
-                            // remove from old parent
-                            Category parentCat = Category.getCategory(categoryNode.getParentKey(), currentUser);
-                            parentCat.removeChildObjectKey(categoryToMove.getObjectKey());
+                    if (categoryToMove != null) {
+                        String newParentPath = newParentCat.getCategoryPath(currentUser);
+                        List<Category> oldParentCategories = categoryToMove.getParentCategories(currentUser);
+                        // paste categories if it's not root and if newParent is not a child of the catgeories to move
+                        if ((oldParentCategories != null && !oldParentCategories.isEmpty()) && newParentPath.indexOf(categoryToMove.getCategoryPath(currentUser)) != 0) {
+                            if (cut) {
+                                // remove from old parent
+                                Category parentCat = Category.getCategory(categoryNode.getParentKey(), currentUser);
+                                parentCat.removeChildObjectKey(categoryToMove.getObjectKey());
+                            }
+                            // link to new parent
+                            newParentCat.addChildObjectKey(categoryToMove.getObjectKey());
                         }
-                        // link to new parent
-                        newParentCat.addChildObjectKey(categoryToMove.getObjectKey());
                     }
-
                 }
             }
         } catch (Exception e) {
@@ -331,8 +335,6 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             throw new GWTJahiaServiceException(e.getMessage());
         }
     }
-
-
 
 
     /**

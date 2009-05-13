@@ -27,6 +27,7 @@ import org.jahia.params.ProcessingContext;
 import org.jahia.services.containers.ContentContainerList;
 import org.jahia.services.containers.ContentContainer;
 import org.jahia.services.version.EntryLoadRequest;
+import org.jahia.services.version.ContentObjectEntryState;
 import org.jahia.services.lock.LockRegistry;
 import org.jahia.services.lock.LockKey;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -43,6 +44,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Locale;
 
 /**
  * Created by IntelliJ IDEA.
@@ -132,7 +134,7 @@ public class ClipboardHelper {
         return clipboardContent == null ;
     }
 
-    public static boolean clipboardContentHasActiveEntries(HttpSession session) {
+    public static boolean clipboardContentHasActiveEntry(HttpSession session, Locale locale) {
         final String skey = (String) session.getAttribute(GWTJahiaAction.CLIPBOARD_CONTENT);
 
         // is there an object to paste ?
@@ -140,7 +142,8 @@ public class ClipboardHelper {
             try {
                 ContentObject obj = JahiaObjectCreator.getContentObjectFromString(skey) ;
                 if (obj != null) {
-                    return obj.hasActiveEntries() ;
+                    ContentObjectEntryState state = ContentObjectEntryState.getEntryState(1, locale.toString());
+                    return obj.getEntryState(state, false, false) != null;
                 }
             } catch (ClassNotFoundException e) {
                 logger.error(e, e) ;

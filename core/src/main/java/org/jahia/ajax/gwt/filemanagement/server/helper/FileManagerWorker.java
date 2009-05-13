@@ -421,13 +421,18 @@ public class FileManagerWorker {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         QueryResult qr = q.execute();
         NodeIterator ni = qr.getNodes();
+        List<String> foundPaths = new ArrayList<String>();
         while (ni.hasNext()) {
             JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
             if (matchesNodeType(n, nodeTypesToApply) && n.isVisible()) {
                 if ((filtersToApply.length == 0 && mimeTypesToMatch.length == 0)
                         || n.isCollection()
                         || (matchesFilters(n.getName(), filtersToApply) && matchesFilters(n.getFileContent().getContentType(), mimeTypesToMatch))) {
-                    result.add(getGWTJahiaNode(n));
+                    String path = n.getPath() ;
+                    if (!foundPaths.contains(path)) { // TODO dirty filter, please correct search/index issue (sometimes duplicate results)
+                        foundPaths.add(path);
+                        result.add(getGWTJahiaNode(n));
+                    }
                 }
             }
         }

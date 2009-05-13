@@ -252,7 +252,7 @@ public class ActionMenuHelper {
                     }
                 }
                 // Paste reference
-                if (pastedType != null && ActionMenuLabelProvider.CONTAINER.equals(pastedType) && ClipboardHelper.clipboardContentHasActiveEntries(session)) { // paste only container reference
+                if (pastedType != null && ActionMenuLabelProvider.CONTAINER.equals(pastedType) && ClipboardHelper.clipboardContentHasActiveEntry(session, jParams.getLocale())) { // paste only container reference
                     GWTJahiaAction pasteContainerReference = new GWTJahiaClipboardAction(GWTJahiaAction.PASTE_REF, ActionMenuLabelProvider.getActionLabel(jParams, GWTJahiaAction.PASTE_REF), objectKey) ;
                     LockKey lockKey = LockKey.composeLockKey(LockKey.ADD_CONTAINER_TYPE, contentObject.getID());
                     if (!lockRegistry.isAcquireable(lockKey, currentUser, currentUser.getUserKey())) {

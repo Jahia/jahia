@@ -102,6 +102,10 @@ public class GoogleGadgetPortlet extends GenericPortlet {
                     pw.print("<iframe frameborder=\"0\" border=\"0\" scrolling=\"no\" marginHeight=\"0\" marginWidth=\"0\" allowTransparency=\"true\" width=\"100%\" "+height+" src=\"");
                     pw.print(scriptURL);
                     pw.print("\"></iframe>");
+                    pw.print("<center><table><tr><td style=\"text-align: left;\"><div style=\"height: 20px;\"><a href=\"http://fusion.google.com/ig/add?synd=open&amp;source=ggyp&amp;moduleurl=");
+                    int i = scriptURL.indexOf("url=") + 4;
+                    pw.print(scriptURL.substring(i, scriptURL.indexOf("&",i)));
+                    pw.print("\" target=\"_top\"><img src=\"http://www.gmodules.com/ig/images/plus_google.gif\" style=\"border: 0pt none ; height: 17px; width: 68px;\"/></a></div></td><td style=\"text-align: right; vertical-align: middle; height: 18px;\"><div><a href=\"http://www.google.com/webmasters/gadgets.html\" style=\"font-size: 10px; color: rgb(0, 0, 204); text-decoration: underline;\" target=\"_top\"> Gadgets</a><span style=\"font-size: 10px; color: rgb(0, 0, 204);\"> powered by Google</span></div></td></tr></table></center>");
                 } else {
                     pw.print("Couldn't render Google Gadget because the URL couldn't be resolved.");
                 }

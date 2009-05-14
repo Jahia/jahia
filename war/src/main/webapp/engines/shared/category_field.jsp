@@ -46,5 +46,5 @@
 
 %>
 <internal:gwtImport module="org.jahia.ajax.gwt.module.categorypicker.CategoryPicker"/>
-<internal:categorySelector selectedCategories="<%=selectedCategories%>" readonly="<%=readOnly%>" locale="<%=elh.getCurrentLanguageCode()%>" autoSelectParent='<%=theField.getDefinition().getItemDefinition().getSelectorOptions().get("autoSelectParent")%>'/>
+<internal:categorySelector startCategoryKey="<%=startCategory%>" multiple="<%=theField.getDefinition().getPropertyDefinition().isMultiple()%>" selectedCategories="<%=selectedCategories%>" readonly="<%=readOnly%>" locale="<%=elh.getCurrentLanguageCode()%>" autoSelectParent='<%=theField.getDefinition().getItemDefinition().getSelectorOptions().get("autoSelectParent")%>'/>
 

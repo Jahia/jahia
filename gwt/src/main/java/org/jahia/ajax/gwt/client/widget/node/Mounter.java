@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.widget.form.AdapterField;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.service.node.JahiaNodeService;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -43,7 +44,7 @@ public class Mounter extends Window {
     public Mounter(final BrowserLinker linker) {
         super() ;
         setHeading(Messages.getResource("fm_mount"));
-        setSize(500, 180);
+        setSize(500, 230);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
         final FormPanel form = new FormPanel() ;
@@ -65,6 +66,11 @@ public class Mounter extends Window {
         t.setValue("smb://");
         t.setFieldLabel(Messages.getResource("fm_serveraddress"));
         form.add(t);
+
+        final Label disclaimer = new Label(Messages.getResource("fm_mountDisclaimerLabel"));
+        final AdapterField disclaimerField = new AdapterField(disclaimer);
+        disclaimerField.setFieldLabel(Messages.getResource("fm_mountDisclaimer"));
+        form.add(disclaimerField);
 
         final ProgressBar bar = new ProgressBar() ;
         final AdapterField barField = new AdapterField(bar) ;

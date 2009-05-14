@@ -210,6 +210,10 @@ cursor:pointer;
                             aliasResourceName="fm_unmount"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.mountpoint.label"
                             aliasResourceName="fm_mountpoint"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.mount.disclaimer.label"
+                            aliasResourceName="fm_mountDisclaimerLabel"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.mount.disclaimer"
+                            aliasResourceName="fm_mountDisclaimer"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.serveraddress.label"
                             aliasResourceName="fm_serveraddress"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.fileMenu.label"

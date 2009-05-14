@@ -637,3 +637,28 @@ td.x-date-mp-sep{border-right:1px solid #b7cbd8;}
     cursor: pointer;
     background: transparent url(../images/xtheme-jahia-andromeda/default/grid/page-next.gif) no-repeat;
 }
+                                                         
+/*portlet*/
+.x-tool-portlet-view{background-position:0 -405px;}
+.x-tool-portlet-view-over{background-position:-15px -405px;}
+
+.x-tool-portlet-edit{background-position:0 -420px;}
+.x-tool-portlet-edit-over{background-position:-15px -420px;}
+
+.x-tool-portlet-help{background-position:0 -435px;}
+.x-tool-portlet-help-over{background-position:-15px -435px;}
+
+.x-tool-portlet-close{background-position:0 -450px;}
+.x-tool-portlet-close-over{background-position:-15px -450px;}
+
+.x-tool-portlet-toggle{background-position:0 -465px;}
+.x-tool-portlet-toggle-over{background-position:-15px -465px;}
+
+.x-panel-collapsed .x-tool-portlet-toggle{background-position:0 -480px;}
+.x-panel-collapsed .x-tool-portlet-toggle-over{background-position:-15px -480px;}
+
+.x-tool-portlet-minimize{background-position:0 -495px;}
+.x-tool-portlet-minimize-over{background-position:-15px -495px;}
+
+.x-tool-portlet-maximize{background-position:0 -510px;}
+.x-tool-portlet-maximize-over{background-position:-15px -510px;}

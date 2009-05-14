@@ -157,9 +157,9 @@ public abstract class CategoriesManagerActions {
             if (selectedItems.size() == 1) {
                 GWTJahiaCategoryNode selection = selectedItems.get(0);
                 if (selection.getKey() != null && selection.getKey().equalsIgnoreCase("root")) {
-                    rem = Window.confirm(Messages.getResource("cat_deleteRoot_confirm") + " " + selection.getName() + " ?");
+                    rem = Window.confirm(Messages.getResource("cat_deleteRoot_confirm") + "?");
                 } else {
-                    rem = Window.confirm(Messages.getResource("cat_delete_confirm") + " " + selection.getName() + " ?");
+                    rem = Window.confirm(Messages.getResource("cat_delete_confirm") + " " + selection.getName() + "?");
                 }
             } else {
                 rem = Window.confirm(Messages.getResource("cat_confMultiRemove"));

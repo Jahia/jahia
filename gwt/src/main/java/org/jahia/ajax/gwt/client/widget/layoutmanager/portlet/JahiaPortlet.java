@@ -46,15 +46,21 @@ public class JahiaPortlet extends Portlet {
     protected Widget editContainer = null;
     protected Widget helpContainer = null;
 
-    private ToolButton viewButton = new ToolButton("x-tool-search");
-    private ToolButton editButton = new ToolButton("x-tool-gear");
-    private ToolButton helpButton = new ToolButton("x-tool-plus");
-    private ToolButton maxButton = new ToolButton("x-tool-maximize");
-    private ToolButton minButton = new ToolButton("x-tool-minimize");
-    private ToolButton removeButton = new ToolButton("x-tool-close");
+    private ToolButton viewButton = new ToolButton("x-tool-portlet-view");
+    private ToolButton editButton = new ToolButton("x-tool-portlet-edit");
+    private ToolButton helpButton = new ToolButton("x-tool-portlet-help");
+    private ToolButton maxButton = new ToolButton("x-tool-portlet-maximize");
+    private ToolButton minButton = new ToolButton("x-tool-portlet-minimize");
+    private ToolButton removeButton = new ToolButton("x-tool-portlet-close");
 
     public JahiaPortlet() {
         configPanel();
+    }
+
+    @Override
+    protected void afterRender() {
+        super.afterRender();
+        getCollapseBtn().changeStyle("x-tool-portlet-toggle");
     }
 
     public JahiaPortlet(GWTJahiaLayoutItem porletConfig) {
@@ -181,6 +187,7 @@ public class JahiaPortlet extends Portlet {
         // close portlet
         removeButton.addSelectionListener(new OnPortletRemoved(this));
         getHeader().addTool(removeButton);
+
 
         if (JahiaPropertyHelper.isStatusFullScreen(getStatus())) {
             maxButton.setVisible(false);

@@ -88,7 +88,7 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
             addGwtDictionaryMessage("p_portal_editable_live_mode", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.editableLiveMode"));
             addGwtDictionaryMessage("p_add_mashup_live_mode", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.addMashupLiveMode"));
             addGwtDictionaryMessage("p_save", getJahiaInternalResourceValue("org.jahia.myportal.myConfig.save"));
-            addGwtDictionaryMessage("p_mashup_create", getJahiaInternalResourceValue("org.jahia.myportal.addMahusp"));
+            addGwtDictionaryMessage("p_mashup_create", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.newMashup.label"));
             addGwtDictionaryMessage("p_my_portal", getJahiaInternalResourceValue("org.jahia.myportal.myPortal"));
             addGwtDictionaryMessage("p_mashup_added_myPortal", getJahiaInternalResourceValue("org.jahia.myportal.mashupAdded"));
 

@@ -46,7 +46,7 @@
             access="property"
             property-ref="key"
         >
-            <column name="userid_sites_users" length="255"/>
+            <column name="userid_sites_users" length="50"/>
         </many-to-one>
 
         <!--

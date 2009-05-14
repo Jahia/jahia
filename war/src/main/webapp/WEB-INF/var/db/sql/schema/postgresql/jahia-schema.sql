@@ -825,14 +825,14 @@
     create table jahia_sites_grps (
         grpname_sites_grps varchar(50) not null,
         siteid_sites_grps int4 not null,
-        grpid_sites_grps varchar(255),
+        grpid_sites_grps varchar(200),
         primary key (grpname_sites_grps, siteid_sites_grps)
     );
 
     create table jahia_sites_users (
         username_sites_users varchar(50) not null,
         siteid_sites_users int4 not null,
-        userid_sites_users varchar(255),
+        userid_sites_users varchar(50),
         primary key (username_sites_users, siteid_sites_users)
     );
 

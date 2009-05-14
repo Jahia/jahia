@@ -294,8 +294,8 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         com.extjs.gxt.ui.client.widget.Window w = new com.extjs.gxt.ui.client.widget.Window();
 
         final HashMap<String, GWTJahiaGAprofile>[] jahiaGAprofiles = new HashMap[2];
-        if (siteORpage.equals("pageStats")) w.setHeading(Messages.getResource("pageStats"));
-        else w.setHeading(Messages.getResource("siteStats"));
+        if (siteORpage.equals("pageStats")) w.setHeading(Messages.getResource("pageStatistics"));
+        else w.setHeading(Messages.getResource("siteStatistics"));
 
 
         w.setModal(true);
@@ -413,6 +413,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 bm.set("trackingEnabled", state);
             }
         });
+
         infoPanel.add(profilesComboBox);
         infoPanel.add(html);
 
@@ -446,7 +447,9 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         // will always be the last registered one
 
         ToolbarService.App.getInstance().getGAsiteProperties(pid, new AsyncCallback<Map<String, String>>() {
+
             public void onSuccess(Map<String, String> data) {
+                Log.debug("in getGAsiteProperties");
                 Map<String, String> profileNames = new HashMap<String, String>();
                 jahiaGAprofiles[0] = new HashMap();// for real urls
                 jahiaGAprofiles[1] = new HashMap();// for virtual urls
@@ -482,21 +485,22 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     jahiaGAprofiles[tu].put(currentProfile, jGAp);
                 }
                 if (site_or_page.equals("siteStats")) {
+
+                    String profile="hello";
                     Iterator itOnJgaP = jahiaGAprofiles[0].keySet().iterator();
-                    String japName = "";
                     while (itOnJgaP.hasNext()) {
-                        japName = (String) itOnJgaP.next();
-                        profilesComboBox.add(japName);
+                        profile=(String) itOnJgaP.next();
+                        Log.debug("Setting value1 "+profile);
+                        profilesComboBox.add(profile);
                     }
                     itOnJgaP = jahiaGAprofiles[1].keySet().iterator();
-                    japName = "";
                     while (itOnJgaP.hasNext()) {
-                        japName = (String) itOnJgaP.next();
-                        profilesComboBox.add(japName);
-                        Log.debug("Adding an additionnal element");
+                        profile=(String) itOnJgaP.next();
+                        Log.debug("Setting value2 "+profile);
+                        profilesComboBox.add(profile);
                     }
-                    profilesComboBox.setSimpleValue(japName);
-                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(japName);
+                    profilesComboBox.setSimpleValue(profile);
+                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(profile);
                     bm.set("gaUserAccount", jGAp.getGaUserAccount());
                     bm.set("gaProfile", jGAp.getGaProfile());
                     bm.set("gaLogin", jGAp.getGaLogin());
@@ -508,15 +512,16 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                     bm.set("trackingEnabled", state);
                     gaParams.setJahiaGAprofile(jGAp.getJahiaGAprofile());
                 } else {
+                    String profile="hello2";
                     Iterator itOnJgaP = jahiaGAprofiles[1].keySet().iterator();
-                    String japName = "";
                     while (itOnJgaP.hasNext()) {
-                        japName = (String) itOnJgaP.next();
-                        profilesComboBox.add(japName);
-                        Log.debug(" Adding an additionnal element");
+                        profile=(String) itOnJgaP.next();
+                        Log.debug("Setting value3 "+profile);
+                        profilesComboBox.add(profile);
+
                     }
-                    profilesComboBox.setSimpleValue(japName);
-                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(japName);
+                    profilesComboBox.setSimpleValue(profile);
+                    GWTJahiaGAprofile jGAp = jahiaGAprofiles[1].get(profilesComboBox.getSimpleValue().toString());
                     bm.set("gaUserAccount", jGAp.getGaUserAccount());
                     bm.set("gaProfile", jGAp.getGaProfile());
                     bm.set("gaLogin", jGAp.getGaLogin());
@@ -533,9 +538,10 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                 for (int i = 0; i < tab.length; i++) {
                     siteLanguages.add(tab[i]);
                 }
-            }
 
+            }
             public void onFailure(Throwable throwable) {
+                Log.debug("in getGAsiteProperties onFailure"+throwable);
                 Window.alert(Messages.getResource("error"));
             }
         });
@@ -546,7 +552,6 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         begin_date_field.setMaxValue(new Date());
         begin_date_field.setValue(new Date(twentyFourDaysAgoLong - 8 * 86400000));
         begin_date_field.setAllowBlank(false);
-
 
         LabelToolItem end_date_Label = new LabelToolItem(Messages.getResource("selectEndDate"));
         final DateField end_date_field = new DateField();
@@ -724,30 +729,31 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
                         }
 
                         public void onFailure(Throwable throwable) {
-                            Window.alert(Messages.getResource("error"));
+                            Log.info("in Failure 1");
+
+                           // Window.alert(Messages.getResource("error"));
                         }
                     });
                 } else {
-                    Window.alert(Messages.getResource("error"));
+                    Log.info("in Failure 2");
+                   // Window.alert(Messages.getResource("error"));
                 }
             }
         };
         final TextToolItem button = new TextToolItem(Messages.getResource("showData")) ;
+
         button.addSelectionListener(executeActionListener);
         toolbar.add(button);
         w.setTopComponent(toolbar);
         w.add(charts, chartData);
         w.add(infoPanel, infoData);
         w.show();
-        /*
         DeferredCommand.addCommand(new Command() {
             public void execute() {
                 button.fireEvent(Events.Select);
             }
         });
-        */
         Log.debug("showing the window");
-
     }
 
     /*
@@ -867,7 +873,7 @@ public class AjaxActionJahiaToolItemProvider extends AbstractJahiaToolItemProvid
         BOUNCERATE(Messages.getResource("bounceRate")), BROWSER(Messages.getResource("browser")), CONNECTIONSPEED(Messages.getResource("connectionSpeed")), DIRECT(Messages.getResource("direct")),
         /*GOAL1("Goal1"), GOAL2("Goal2"), GOAL3("Goal3"), GOAL4("Goal4"),*/ KEYWORD(Messages.getResource("keyword")),
         NEWVISITS(Messages.getResource("newVisits")), PAGEVIEWS(Messages.getResource("pageViews")), REFERRAL(Messages.getResource("referral")), SEARCH(Messages.getResource("search")),
-         /**/SOURCE(Messages.getResource("Source")), TIMEONSITE(Messages.getResource("timeOnSite")), VISITORS(Messages.getResource("visitors")), VISITS(Messages.getResource("visits")),
+         /**/SOURCE(Messages.getResource("source")), TIMEONSITE(Messages.getResource("timeOnSite")), VISITORS(Messages.getResource("visitors")), VISITS(Messages.getResource("visits")),
         PAGESPERVISIT(Messages.getResource("pagesPerVisit")), AVGTIMEONSITE("Avgerage Time on Site"), PERCENTAGEOFNEWVISITS(Messages.getResource("percentageNewVisits")), BOUNCES(Messages.getResource("bounces"));
 
         //todo unlock goals

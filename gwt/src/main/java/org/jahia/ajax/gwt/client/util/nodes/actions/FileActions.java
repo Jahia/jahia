@@ -484,7 +484,7 @@ public class FileActions {
                     service.checkExistence(parentItem.getPath() + "/" + archName, new AsyncCallback<Boolean>() {
                         public void onFailure(Throwable throwable) {
                             if (throwable instanceof ExistingFileException) {
-                                if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\n" + Messages.getResource("fm_confOverwrite"))) {
+                                if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
                                      forceZip(selectedItems, archName, linker);
                                  }
                             } else {

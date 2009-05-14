@@ -249,6 +249,9 @@ cursor:pointer;
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.authorizations.label"
                             aliasResourceName="fm_authorizations"/>
 
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.alreadyExists.label"
+                            aliasResourceName="fm_alreadyExists"/>
+
 <internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.usages.label"
                             aliasResourceName="fm_usages"/>
 

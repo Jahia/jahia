@@ -142,7 +142,7 @@ public class ImageResize extends Window {
          JahiaNodeService.App.getInstance().resizeImage(path, targetName, width, height, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\n" + Messages.getResource("fm_confOverwrite"))) {
+                     if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n" + Messages.getResource("fm_confOverwrite"))) {
                          resizeImage(path, targetName, width, height, true);
                      }
                 } else {

@@ -99,7 +99,7 @@ public class ImageRotate extends Window {
          JahiaNodeService.App.getInstance().rotateImage(path, target, clockwise, force, new AsyncCallback() {
              public void onFailure(Throwable throwable) {
                  if (throwable instanceof ExistingFileException) {
-                    if (com.google.gwt.user.client.Window.confirm(throwable.toString() + "\n"+ Messages.getResource("fm_confOverwrite"))) {
+                    if (com.google.gwt.user.client.Window.confirm(Messages.getResource("fm_alreadyExists") + "\n"+ Messages.getResource("fm_confOverwrite"))) {
                          rotateImage(path, target, clockwise, true);
                      }
                 } else {

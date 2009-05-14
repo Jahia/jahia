@@ -833,21 +833,21 @@ public class JahiaContainerListDAO extends AbstractGeneratorDAO {
         return null;
     }
 
-    private static Boolean isMySQLDB = null;
+    private static Boolean isMySQLDBOrHSQL = null;
 
     public List<Integer> getContainerListIDsOnPagesHavingAcls(Set pageIDs, Set aclIDs) {
         List<Integer> retList = Collections.emptyList();
         if (!pageIDs.isEmpty() && !aclIDs.isEmpty()) {
             try {
-                if (isMySQLDB == null) {
-                    isMySQLDB = getSession().connection()
+                if (isMySQLDBOrHSQL == null) {
+                    String dbname = getSession().connection()
                             .getMetaData()
                             .getDatabaseProductName()
-                            .toLowerCase()
-                            .indexOf("mysql") >= 0;
+                            .toLowerCase();
+                    isMySQLDBOrHSQL = dbname.indexOf("mysql") >= 0 || dbname.indexOf("hsql") >= 0;
                 }
                 //Todo remove that test when going to upper hibernate version by an extending dialect if hibernate bug not close around mysql cast error
-                if (isMySQLDB) {
+                if (isMySQLDBOrHSQL) {
                     // Here we rely on Mysql automatic casting capabilities
                     Query query = this.getSession()
                             .createQuery(
@@ -876,15 +876,15 @@ public class JahiaContainerListDAO extends AbstractGeneratorDAO {
         List<Integer> retList = Collections.emptyList();
         if (!aclIDs.isEmpty()) {
             try {
-                if (isMySQLDB == null) {
-                    isMySQLDB = getSession().connection()
+                if (isMySQLDBOrHSQL == null) {
+                    String dbname = getSession().connection()
                             .getMetaData()
                             .getDatabaseProductName()
-                            .toLowerCase()
-                            .indexOf("mysql") >= 0;
+                            .toLowerCase();
+                    isMySQLDBOrHSQL = dbname.indexOf("mysql") >= 0 || dbname.indexOf("hsql") >= 0;
                 }
                 //Todo remove that test when going to upper hibernate version by an extending dialect if hibernate bug not close around mysql cast error
-                if (isMySQLDB) {
+                if (isMySQLDBOrHSQL) {
                     // Here we rely on Mysql automatic casting capabilities
                     Query query = this.getSession()
                             .createQuery(

@@ -189,6 +189,7 @@ public class ManageUsers extends AbstractAdministrationModule {
         } else if (operation.equals("processEdit")) {
             if (processUserEdit(request, response, session)) {
                 if (isSuperAdminProp) {
+                    session.setAttribute(JahiaAdministration.CLASS_NAME + "configJahia", Boolean.TRUE);
                     JahiaAdministration.displayMenu(request, response, session);
                 } else {
                     displayUsers(request, response, session);
@@ -732,12 +733,14 @@ public class ManageUsers extends AbstractAdministrationModule {
                         && homePageParam.length() > 0 ? Integer
                         .parseInt(homePageParam) : -1);
 
-        userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
-            jParams.getLocale());
-        userMessage += " [" + username + "] ";
-        userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.updated.label",
-            jParams.getLocale());
-        isError = false;
+        if (!isSuperAdminProp) {
+            userMessage = JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.user.label",
+                jParams.getLocale());
+            userMessage += " [" + username + "] ";
+            userMessage += JahiaResourceBundle.getJahiaInternalResource("org.jahia.admin.userMessage.updated.label",
+                jParams.getLocale());
+            isError = false;
+        }
 
         // Nicol�s Charczewski - Neoris Argentina - added 28/03/2006 - Begin
         JahiaEvent je = new JahiaEvent(this, jParams, usr);

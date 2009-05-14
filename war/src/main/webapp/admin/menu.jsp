@@ -56,7 +56,7 @@
     Iterator sitesEnum = sitesList.iterator();
     Iterator sitesJavaScript = sitesList.iterator();
 
-    if (sub != null && !"".equals(sub)) {
+    if (sub != null && !"".equals(sub) && !(isSuperAdmin && "processEdit".equals(sub))) {
         if (sub.equals("server")) {
             stretcherToOpen = 0;
         } else {

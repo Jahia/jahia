@@ -1,4 +1,8 @@
-
+#bodywrapper .box div.more {
+float:right;
+position:relative;
+margin-top:2em
+}
 #bodywrapper .box3-container { 
 	width:100%;
 	height:auto;

@@ -732,7 +732,7 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
 
         PageSearcher searcher = new PageSearcher(new String[] { ServicesRegistry.getInstance().getJahiaSearchService().getSearchHandler(ctx.getSiteID()).getName() }, languageCodes);
         try {
-            JahiaSearchResult results = searcher.search(new StringBuilder("jahia.title:").append(JahiaGWTUtils.formatQuery(queryString)).toString(), ctx);
+            JahiaSearchResult results = searcher.search(new StringBuilder("jahia.title:").append(queryString).toString(), ctx);
             for (JahiaSearchHit hit: results.results()) {
                 ObjectKey key = hit.getSearchHitObjectKey();
                 if (key != null && key.getType().equals(ContentPageKey.PAGE_TYPE)) {

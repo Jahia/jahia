@@ -3309,6 +3309,9 @@ body {
     background: #99ccff url( ../img/bg-input-on.png ) repeat-x top left;
     color: #333333;
 }
+#bodywrapper .loginForm .loginRedirectChoice{
+    width: 96%;
+}
 
 #bodywrapper .loginForm .remember {
 

@@ -32,7 +32,7 @@
                     <label for="password"><fmt:message key="password"/></label><ui:loginPassword class="field password" id="password" size="8"/>
                 </p>
                 <p>
-                    <ui:loginRedirectChoice/>
+                    <ui:loginRedirectChoice class="select loginRedirectChoice"/>
                 </p>                
                 <p>
                     <label class="rememberLabel" for="rememberme"><fmt:message key="rememberme"/></label><ui:loginRememberMe class="rememberme" id="rememberme"/>

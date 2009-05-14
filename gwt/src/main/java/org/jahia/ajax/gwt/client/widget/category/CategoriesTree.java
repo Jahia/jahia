@@ -19,14 +19,11 @@ package org.jahia.ajax.gwt.client.widget.category;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.binder.TreeBinder;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.CheckChangedEvent;
-import com.extjs.gxt.ui.client.event.CheckChangedListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.tree.Tree;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
 import org.jahia.ajax.gwt.client.service.category.CategoryServiceAsync;
@@ -35,9 +32,7 @@ import org.jahia.ajax.gwt.client.util.tree.CustomTreeLoader;
 import org.jahia.ajax.gwt.client.util.tree.PreviousPathsOpener;
 import org.jahia.ajax.gwt.client.util.tree.CustomTreeBinder;
 
-import java.util.List;
-import java.util.ConcurrentModificationException;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * User: ktlili
@@ -46,34 +41,55 @@ import java.util.ArrayList;
  */
 public class CategoriesTree extends ContentPanel {
     private MyTreeBinder<GWTJahiaCategoryNode> binder;
-    private CategoriesPickerLeftComponent parentComponent;
     private CustomTreeLoader<GWTJahiaCategoryNode> loader;
-    private final List<GWTJahiaCategoryNode> selectedCategories;
     private TreeStore<GWTJahiaCategoryNode> store;
     private PreviousPathsOpener<GWTJahiaCategoryNode> previousPathsOpener = null ;
     private Tree tree ;
-    private CheckChangedListener checkListener ;
     private boolean init = true ;
+    private boolean autoSelectParent = true ;
 
-    public CategoriesTree(final String categoryKey, final CategoriesPickerLeftComponent parentComponent, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale, boolean autoSelectParent) {
+    public CategoriesTree(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, final String categoryLocale, boolean autoSelectParent, final boolean multiple) {
         super(new FitLayout());
-        this.parentComponent = parentComponent;
-        this.selectedCategories = selectedCategories;
+        this.autoSelectParent = autoSelectParent;
 
         setHeading(Messages.getResource("categories"));
         setScrollMode(Style.Scroll.AUTO);
 
         final CategoryServiceAsync service = CategoryService.App.getInstance();
 
-        checkListener = new CheckChangedListener() {
+        /*checkListener = new CheckChangedListener() {
             @Override
             public void checkChanged(CheckChangedEvent event) {
-                super.checkChanged(event);
-                Log.debug("check listener fired");
-                final List<GWTJahiaCategoryNode> list = event.getCheckedSelection();
-                parentComponent.addCategories(list);
+                if (!muteListener) {
+                    Log.debug("check listener fired");
+                    List<GWTJahiaCategoryNode> checked = binder.getCheckedSelection();
+                    if (!multiple) {
+                        Log.debug("not multiple");
+                        if (lastChecked == null) {
+                            Log.debug("no last checked");
+                            if (checked.size() == 1) {
+                                Log.debug("size is 1");
+                                lastChecked = checked.get(0);
+                            } else {
+                                Log.error("checked list should not be this size : " + checked.size());
+                            }
+                        } else if (checked.size() == 2) {
+                            Log.debug("last checked exists and size 2");
+                            checked.remove(lastChecked);
+                            lastChecked = checked.get(0);
+                        } else {
+                            Log.error("checked list should not be this size : " + checked.size());
+                        }
+                        muteListener = true;
+                        Log.debug("listener muted");
+                        binder.setCheckedSelection(checked);
+                        muteListener = false;
+                        Log.debug("listener unmuted");
+                    }
+                    parentComponent.addCategories(checked);
+                }
             }
-        };
+        };*/
 
         // data proxy
         RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>> proxy = new RpcProxy<GWTJahiaCategoryNode, List<GWTJahiaCategoryNode>>() {
@@ -95,7 +111,7 @@ public class CategoriesTree extends ContentPanel {
 
             protected void expandPreviousPaths() {
                 expandAllPreviousPaths();
-                initSelectedCategories();
+                //initSelectedCategories(multiple);
             }
 
             @Override
@@ -104,7 +120,10 @@ public class CategoriesTree extends ContentPanel {
                 if (init) {
                     init = false ;
                 } else {
-                    checkSelectedCategories();
+                    for (GWTJahiaCategoryNode n: gwtJahiaCategoryNodes) {
+                        n.setParent(gwtJahiaCategoryNode);
+                    }
+                    gwtJahiaCategoryNode.setChildren(gwtJahiaCategoryNodes);
                 }
             }
         };
@@ -118,12 +137,15 @@ public class CategoriesTree extends ContentPanel {
         });
         // tree
         tree = new Tree();
-        tree.setCheckable(true);
-        if (autoSelectParent) {
+        if (multiple) {
+            tree.setSelectionMode(Style.SelectionMode.MULTI);
+        }
+        /*tree.setCheckable(true);
+        if (autoSelectParent && multiple) {
             tree.setCheckStyle(Tree.CheckCascade.PARENTS);
         } else {
             tree.setCheckStyle(Tree.CheckCascade.NONE);
-        }
+        }*/
         binder = new MyTreeBinder<GWTJahiaCategoryNode>(tree, store);
         binder.setDisplayProperty("name");
 
@@ -145,7 +167,25 @@ public class CategoriesTree extends ContentPanel {
         previousPathsOpener.expandPreviousPaths();
     }
 
-    private void initSelectedCategories() {
+    public List<GWTJahiaCategoryNode> getSelection() {
+        if (!autoSelectParent) {
+            return binder.getSelection() ;
+        }
+        Set<GWTJahiaCategoryNode> nodes = new HashSet<GWTJahiaCategoryNode>(binder.getSelection());
+        for (GWTJahiaCategoryNode n: binder.getSelection()) {
+            GWTJahiaCategoryNode parent = n.getParent();
+            while (parent != null) {
+                if("root".equals(parent.getKey())) {
+                    break;
+                }
+                nodes.add(parent);
+                parent = parent.getParent();
+            }
+        }
+        return new ArrayList<GWTJahiaCategoryNode>(nodes);
+    }
+
+/*    private void initSelectedCategories(boolean multiple) {
         List<GWTJahiaCategoryNode> toCheck = new ArrayList<GWTJahiaCategoryNode>();
         for (GWTJahiaCategoryNode n: store.getAllItems()) {
             for (GWTJahiaCategoryNode selected: selectedCategories) {
@@ -168,7 +208,7 @@ public class CategoriesTree extends ContentPanel {
             }
         }
         binder.setCheckedSelection(toCheck);
-    }
+    }*/
 
     /**
      * TreeBinder that has renderChildren public.

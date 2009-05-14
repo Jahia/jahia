@@ -74,7 +74,7 @@
 <input id="removedCategories" type="hidden" name="removedCategories" value=""/>
 
 <template:gwtJahiaModule id="<%=CategoryPickerEntryPoint.ID%>" jahiaType="<%=CategoryPickerEntryPoint.ID%>"
-                         rootKey="${startCategoryKey}" readonly="${readonly}"/>
+                         rootKey="${startCategoryKey}" readonly="${readonly}" multiple="${multiple}"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.categories.categories"
                             aliasResourceName="categories"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.categories.title"

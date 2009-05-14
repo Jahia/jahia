@@ -17,7 +17,13 @@
 package org.jahia.ajax.gwt.client.widget.category;
 
 import com.extjs.gxt.ui.client.widget.*;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.BrowserLinker;
@@ -34,15 +40,15 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
 //    private CategoryFilter categoryFilter;
     private CategoriesTree categoriesTree;
 
-    public CategoriesPickerLeftComponent(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent) {
-        m_component = new ContentPanel(new FitLayout()) ;
+    public CategoriesPickerLeftComponent(final String categoryKey, final List<GWTJahiaCategoryNode> selectedCategories, String categoryLocale, boolean autoSelectParent, boolean multiple, final boolean readonly) {
+        m_component = new ContentPanel(new BorderLayout()) ;
         m_component.setBodyBorder(false);
         m_component.setBorders(false);
         m_component.setHeaderVisible(false);
 
 //        categoryFilter = new CategoryFilter() ;
 
-        categoriesTree = new CategoriesTree(categoryKey, this,selectedCategories,categoryLocale,autoSelectParent);
+        categoriesTree = new CategoriesTree(categoryKey, selectedCategories, categoryLocale, autoSelectParent, multiple);
         categoriesTree.setHeaderVisible(false);
         categoriesTree.setBodyBorder(false);
 
@@ -50,7 +56,35 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
 //        filter.bind(categoriesTree.getStore());
 
 //        m_component.setTopComponent(categoryFilter.getComponent());
-        m_component.add(categoriesTree);
+
+        Button add = new Button(">>", new SelectionListener<ComponentEvent>() {
+            public void componentSelected(ComponentEvent componentEvent) {
+                addCategories(categoriesTree.getSelection());
+            }
+        });
+        Button remove = new Button("<<", new SelectionListener<ComponentEvent>() {
+            public void componentSelected(ComponentEvent componentEvent) {
+                removeCategories();
+            }
+        });
+        if (readonly) {
+            add.setEnabled(false);
+            remove.setEnabled(false);
+        }
+
+        VerticalPanel panel = new VerticalPanel();
+        panel.setVerticalAlign(Style.VerticalAlignment.MIDDLE);
+        panel.add(add);
+        panel.add(remove);
+        LayoutContainer buttons = new LayoutContainer(new CenterLayout());
+        buttons.add(panel);
+        BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.EAST, 30, 30, 30);
+        data.setFloatable(false);
+        data.setSplit(false);
+        m_component.add(buttons, data);
+        data = new BorderLayoutData(Style.LayoutRegion.CENTER);
+        data.setSplit(false);
+        m_component.add(categoriesTree, data);
     }
 
     public void initWithLinker(BrowserLinker linker) {
@@ -58,16 +92,12 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
         categoriesTree.init();
     }
 
-    public void openAndSelectItem(Object item) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void openAndSelectItem(Object item) {}
 
-    public void refresh() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void refresh() {}
 
     public Object getSelectedItem() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return getLinker().getTopRightObject().getSelection();
     }
 
     public Component getComponent() {
@@ -78,8 +108,8 @@ public class CategoriesPickerLeftComponent extends LeftComponent {
         ((PickedCategoriesGrid) getLinker().getTopRightObject()).addCategories(gwtJahiaCategoryNodes);
     }
 
-    public void removeAllCategories() {
-        getLinker().getTopRightObject().clearTable();
+    public void removeCategories() {
+        ((PickedCategoriesGrid) getLinker().getTopRightObject()).removeSelectedCategories();
     }
 
 }

@@ -27,7 +27,6 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.service.category.CategoryService;
-import org.jahia.ajax.gwt.client.widget.category.CategoriesPickerPanel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +68,7 @@ public class CategoryField extends TriggerField<String> {
     }
 
     private void displayPicker(List<GWTJahiaCategoryNode> selectedCategories) {
-        final CategoriesPickerPanel catPicker = new CategoriesPickerPanel(selectedCategories, false, null, null, null);
+        final CategoriesPickerPanel catPicker = new CategoriesPickerPanel(selectedCategories, false, null, null, null, true);
         final Window w = new Window();
         w.setLayout(new FitLayout());
         w.setModal(true);

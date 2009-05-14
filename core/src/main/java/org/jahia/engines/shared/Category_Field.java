@@ -210,6 +210,10 @@ public class Category_Field implements FieldSubEngine {
 
         List<String> defaultSelectedCategories = new ArrayList<String>();
         boolean foundNoSelectionMarker = false;
+        
+        String rootCategoryKey = theField.getDefinition().getItemDefinition().getSelectorOptions().get("root");
+        Category startCategory = (rootCategoryKey != null) ? Category.getCategory(rootCategoryKey, jParams.getUser()) : null;
+        
         String fieldDefaultValue = theField.getDefinition().getDefaultValue();
 
         // the field default value contains a combination of :
@@ -218,7 +222,6 @@ public class Category_Field implements FieldSubEngine {
         // [rootCategoryKey]defaultCategoryKey1,defaultCategory2,...
         // the rootCategoryKey part is optional.
 
-        Category startCategory = null;
 
         logger.debug("fieldDefaultValue: " + fieldDefaultValue);
         if ((fieldDefaultValue != null) && !"".equals(fieldDefaultValue)) {
@@ -226,9 +229,6 @@ public class Category_Field implements FieldSubEngine {
             int defaultCategoryKeysStartPos = 0;
             if ((fieldDefaultValue.indexOf("]") > 0) &&
                     (fieldDefaultValue.indexOf("[") == 0)) {
-                // we have detected a root category key
-                String rootCategoryKey = fieldDefaultValue.substring(1, fieldDefaultValue.indexOf("]"));
-                startCategory = Category.getCategory(rootCategoryKey, jParams.getUser());
                 defaultCategoryKeysStartPos = fieldDefaultValue.indexOf("]") + 1;
             }
 

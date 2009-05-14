@@ -32,6 +32,8 @@ public class CategoryPickerEntryPoint implements EntryPoint {
     public static String ID = "categories_picker";
     public static String ROOT_KEY = "rootKey";
     public static String READ_ONLY = "readonly";
+    public static String MULTIPLE = "multiple";
+
     private static RootPanel jahiaTypePanel;
 
 
@@ -41,7 +43,7 @@ public class CategoryPickerEntryPoint implements EntryPoint {
         // init panel
         jahiaTypePanel = RootPanel.get(ID);
         if (jahiaTypePanel != null) {
-            jahiaTypePanel.add(new CategoriesPickerPanel(CategoryHelper.getSelectedCategoriesFromHTML(),getReadOnly(),getRootKey(),CategoryHelper.getCategoryLocale(),CategoryHelper.getAutoSelectParent()));
+            jahiaTypePanel.add(new CategoriesPickerPanel(CategoryHelper.getSelectedCategoriesFromHTML(),getReadOnly(),getRootKey(),CategoryHelper.getCategoryLocale(),CategoryHelper.getAutoSelectParent(), isMultipleProperty()));
         } else {
             Log.debug("Categories selector not found");
         }
@@ -57,6 +59,21 @@ public class CategoryPickerEntryPoint implements EntryPoint {
             return jahiaTypePanel.getElement().getAttribute(ROOT_KEY);
         }
         return null;
+    }
+
+    /**
+     * Get multiple property
+     *
+     * @return
+     */
+    public static boolean isMultipleProperty() {
+        if (jahiaTypePanel.getElement() != null) {
+            String prop = jahiaTypePanel.getElement().getAttribute(MULTIPLE) ;
+            if (prop != null && prop.equalsIgnoreCase("false")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

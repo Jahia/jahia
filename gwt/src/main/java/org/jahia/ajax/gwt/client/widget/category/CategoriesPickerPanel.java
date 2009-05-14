@@ -20,12 +20,9 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
-import org.jahia.ajax.gwt.client.widget.category.CategoriesPickerLeftComponent;
-import org.jahia.ajax.gwt.client.widget.category.PickedCategoriesGrid;
 import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserLayout;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.List;
@@ -37,7 +34,7 @@ import java.util.List;
  */
 public class CategoriesPickerPanel extends TriPanelBrowserLayout {
 
-    public CategoriesPickerPanel(final List<GWTJahiaCategoryNode> selectedCategories, final boolean readonly, final String rootKey, String categoryLocale, String autoSelectParent) {
+    public CategoriesPickerPanel(final List<GWTJahiaCategoryNode> selectedCategories, final boolean readonly, final String rootKey, String categoryLocale, String autoSelectParent, boolean isMultiple) {
         super();
         setBorders(false);
         setBodyBorder(false);
@@ -46,14 +43,18 @@ public class CategoriesPickerPanel extends TriPanelBrowserLayout {
         setWestData(new BorderLayoutData(Style.LayoutRegion.WEST, 300));
 
         // construction of the UI components
-        TopRightComponent treeTable = new PickedCategoriesGrid(selectedCategories, readonly);
+        TopRightComponent treeTable = new PickedCategoriesGrid(selectedCategories, readonly, isMultiple);
         LeftComponent selectorsLeftComponent = null;
         Component leftComponent = null;
-        boolean isAutoSelectParent = true;
-        if(autoSelectParent!=null && !"".equalsIgnoreCase(autoSelectParent.trim()))
-        isAutoSelectParent = Boolean.valueOf(autoSelectParent);
+        boolean isAutoSelectParent = false;
+        if(autoSelectParent!=null && !"".equalsIgnoreCase(autoSelectParent.trim())){
+            isAutoSelectParent = Boolean.valueOf(autoSelectParent);
+        }
+        if (isAutoSelectParent && !isMultiple) {
+            isAutoSelectParent = false;
+        }
         if (!readonly) {
-            selectorsLeftComponent = new CategoriesPickerLeftComponent(rootKey,selectedCategories,categoryLocale,isAutoSelectParent);
+            selectorsLeftComponent = new CategoriesPickerLeftComponent(rootKey,selectedCategories,categoryLocale,isAutoSelectParent, isMultiple, readonly);
             leftComponent = selectorsLeftComponent.getComponent();
             leftComponent.setWidth("400px");
         }

@@ -25,8 +25,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.Style;
 import org.jahia.ajax.gwt.client.data.category.GWTJahiaCategoryNode;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
@@ -42,18 +41,20 @@ import java.util.List;
  */
 public class PickedCategoriesGrid extends TopRightComponent {
     private ContentPanel m_component = new ContentPanel();
-    private GridSelectionModel<GWTJahiaCategoryNode> selectionModel = new GridSelectionModel<GWTJahiaCategoryNode>();
     private List<GWTJahiaCategoryNode> selectedCategories;
     private ListStore<GWTJahiaCategoryNode> store;
+    private Grid<GWTJahiaCategoryNode> grid ;
+    private boolean readOnly;
+    private boolean multiple;
 
-    public PickedCategoriesGrid(final List<GWTJahiaCategoryNode> selectedCategories, final boolean readonly) {
+    public PickedCategoriesGrid(final List<GWTJahiaCategoryNode> selectedCategories, final boolean readonly, final boolean multiple) {
         this.selectedCategories = selectedCategories;
-        createCheckBox(readonly);
+        this.readOnly = readonly;
+        this.multiple = multiple;
+        createUI();
     }
 
-    public void setContent(Object root) {
-        //this methos is not implement for this componet
-    }
+    public void setContent(Object root) {}
 
     public void clearTable() {
         store.removeAll();
@@ -63,15 +64,13 @@ public class PickedCategoriesGrid extends TopRightComponent {
         return store.getModels();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void refresh() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
+    public void refresh() {}
 
     public Component getComponent() {
         return m_component;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    private void createCheckBox(final boolean readonly) {
+    private void createUI() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         //name
@@ -84,13 +83,13 @@ public class PickedCategoriesGrid extends TopRightComponent {
 
         });
         column.setId("name");
-        column.setHeader(getResource("title"));
+        column.setHeader(Messages.getResource("categories_selected"));
         configs.add(column);
 
         // path
 //        column = new ColumnConfig();
 //        column.setId("path");
-//        column.setHeader(getResource("path"));
+//        column.setHeader(Messages.getResource("path"));
 //        column.setWidth(300);
 //        configs.add(column);
 
@@ -110,23 +109,23 @@ public class PickedCategoriesGrid extends TopRightComponent {
             }
         });
         ColumnModel columnModel = new ColumnModel(configs);
-        store.setDefaultSort("name", Style.SortDir.ASC);
+        //store.setDefaultSort("name", Style.SortDir.ASC);
+        store.sort("name", Style.SortDir.ASC);
 
         // main component
-        m_component.setHeading(getResource("categories_selected"));
-        m_component.setFrame(true);
+        m_component.setHeading(Messages.getResource("categories"));
+        m_component.setFrame(false);
         m_component.setHeaderVisible(false);
-        m_component.setLayout(new FillLayout());
+        m_component.setLayout(new FitLayout());
         m_component.setSize(600, 300);
 
         // grid
-        Grid<GWTJahiaCategoryNode> grid = new Grid<GWTJahiaCategoryNode>(store, columnModel);
-        grid.setSelectionModel(selectionModel);
+        grid = new Grid<GWTJahiaCategoryNode>(store, columnModel);
         grid.setBorders(true);
         grid.getView().setForceFit(true);
 
 //        if (!readonly) {
-//            TextToolItem unselectToolItem = new TextToolItem(getResource("remove"));
+//            TextToolItem unselectToolItem = new TextToolItem(Messages.getResource("remove"));
 //            unselectToolItem.setIconStyle("remove");
 //            unselectToolItem.addSelectionListener(new SelectionListener<ComponentEvent>() {
 //                public void componentSelected(ComponentEvent event) {
@@ -156,26 +155,46 @@ public class PickedCategoriesGrid extends TopRightComponent {
     }
 
     public void addCategories(List<GWTJahiaCategoryNode> gwtJahiaCategoryNodes) {
-        for (GWTJahiaCategoryNode gwtJahiaCategoryNode : gwtJahiaCategoryNodes) {
-            if (!store.contains(gwtJahiaCategoryNode)) {
-                store.add(gwtJahiaCategoryNode);
-            }
+        if (readOnly) {
+            return;
         }
-        for (GWTJahiaCategoryNode gwtJahiaCategoryNode : store.getModels()) {
-            if (!gwtJahiaCategoryNodes.contains(gwtJahiaCategoryNode)) {
-                store.remove(gwtJahiaCategoryNode);
+        if (!multiple && gwtJahiaCategoryNodes.size() > 0) {
+            store.removeAll();
+            store.add(gwtJahiaCategoryNodes.get(0));
+        } else {
+            List<GWTJahiaCategoryNode> toAdd = new ArrayList<GWTJahiaCategoryNode>();
+            for (GWTJahiaCategoryNode gwtJahiaCategoryNode : gwtJahiaCategoryNodes) {
+                boolean add = true ;
+                for (GWTJahiaCategoryNode n: store.getModels()) {
+                    if (gwtJahiaCategoryNode.getPath().equals(n.getPath())) {
+                        add = false ;
+                        break;
+                    }
+                }
+                if (add) {
+                    toAdd.add(gwtJahiaCategoryNode);
+                }
             }
+            store.add(toAdd);
+            store.sort("name", Style.SortDir.ASC);
         }
-        store.sort("name", Style.SortDir.ASC);
+    }
+
+    public void removeSelectedCategories() {
+        if (readOnly) {
+            return;
+        }
+        List<GWTJahiaCategoryNode> toremove = new ArrayList<GWTJahiaCategoryNode>();
+        for (GWTJahiaCategoryNode selectedNode: grid.getSelectionModel().getSelection()) {
+            toremove.add(selectedNode);
+        }
+        for (GWTJahiaCategoryNode n: toremove) {
+            store.remove(n);
+        }
     }
 
     public List<GWTJahiaCategoryNode> getCategories() {
         return store.getModels();
     }
-
-    private String getResource(String key) {
-        return Messages.getResource(key);
-    }
-
 
 }

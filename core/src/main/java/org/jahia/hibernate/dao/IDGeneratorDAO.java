@@ -89,7 +89,7 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
                     sequences.put(sequenceName, generator);
                     boolean createTableSeq = false;
                     try {
-                        session.createSQLQuery("select * from " + dbSequenceName).uniqueResult();
+                        generator.generate((SessionImplementor) session,null);
                     } catch (HibernateException e) {
                         createTableSeq = true;
                     }
@@ -97,12 +97,12 @@ public class IDGeneratorDAO extends HibernateDaoSupport {
                         for (String sql : sqls) {
                             try {
                                 session.createSQLQuery(sql).executeUpdate();
+                                generator.generate((SessionImplementor) session,null);
                             } catch (HibernateException e) {
                                 break;
                             }
                         }
                     }
-                    generator.generate((SessionImplementor) session,null);
                 } catch (HibernateException e) {
                     logger.error("Problem when creating sequence for " + sequenceName + " (" + fqnID + ")", e);
                 }

@@ -69,7 +69,9 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             List<GWTJahiaCategoryNode> result = new ArrayList<GWTJahiaCategoryNode>(1);
 
             if ("root".equals(rootCategory.getKey())) { // don't retrieve root category, get its children instead
-                for (Category child : rootCategory.getChildCategories()) {
+                final TreeSet<Category> sortedChildrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
+                sortedChildrenCategories.addAll(rootCategory.getChildCategories());
+                for (Category child : sortedChildrenCategories) {
                     List<Category> parents = child.getParentCategories();
                     String parentKey = null;
                     if (parents != null && parents.size() > 0) {
@@ -98,7 +100,8 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
 
     private void addChildrenToCategory(final GWTJahiaCategoryNode node, final List<String> pathsToAdd, final JahiaUser currentUser, final String locale) throws JahiaException {
         Category cat = Category.getCategory(node.getKey(), currentUser);
-        List<Category> childrenCategories = cat.getChildCategories();
+        final TreeSet<Category> childrenCategories = new TreeSet<Category>(new NumericStringComparator<Category>());
+        childrenCategories.addAll(cat.getChildCategories());
         for (Category childCategory : childrenCategories) {
             if (pathsToAdd.contains(childCategory.getCategoryPath((Principal) null))) {
                 GWTJahiaCategoryNode childNode = createGWTJahiaCategoryNode(node.getKey(), childCategory, false, locale);

@@ -737,7 +737,9 @@ public class JahiaContentServiceImpl extends AbstractJahiaGWTServiceImpl impleme
                 ObjectKey key = hit.getSearchHitObjectKey();
                 if (key != null && key.getType().equals(ContentPageKey.PAGE_TYPE)) {
                     ContentPage page = (ContentPage) JahiaObjectCreator.getContentObjectFromKey(hit.getSearchHitObjectKey());
-                    result.add(getJahiaPageWrapper(ctx, page.getPage(ctx))) ;
+                    if (page != null && page.getPageType(ctx.getEntryLoadRequest()) == PageInfoInterface.TYPE_DIRECT) {
+                        result.add(getJahiaPageWrapper(ctx, page.getPage(ctx))) ;
+                    }
                 }
             }
         } catch (JahiaException e) {

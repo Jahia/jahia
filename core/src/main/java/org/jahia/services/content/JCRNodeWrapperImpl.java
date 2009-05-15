@@ -619,7 +619,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return false;
         }
         try {
-            return objectNode.isNodeType("jmix:collection") || objectNode.getPath().equals("/");
+            return objectNode.isNodeType("jmix:collection") || objectNode.isNodeType("nt:folder") || objectNode.getPath().equals("/");
         } catch (RepositoryException e) {
             return false;
         }

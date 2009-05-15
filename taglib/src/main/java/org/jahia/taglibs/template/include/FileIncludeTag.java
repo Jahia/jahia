@@ -27,9 +27,13 @@ import java.io.IOException;
  */
 public class FileIncludeTag extends ImportSupport {
     private boolean process = true;
-
+    private boolean valid = false;
     public void setPath(String path) {
         ServletRequest r = pageContext.getRequest();
+
+        if (path != null && path.length() > 0) {
+            valid = true;
+        }
 
         String ctx;
         if ("/".equals(Jahia.getContextPath())) {
@@ -47,27 +51,35 @@ public class FileIncludeTag extends ImportSupport {
 
     @Override
     public int doStartTag() throws JspException {
-        if (process) {
-            setVar("internalContent");
-            setScope("page");
-        }
+        if (valid) {
+            if (process) {
+                setVar("internalContent");
+                setScope("page");
+            }
 
-        return super.doStartTag();
+            return super.doStartTag();
+        } else {
+            return EVAL_PAGE;
+        }
 
     }
 
     @Override
     public int doEndTag() throws JspException {
-        int res = super.doEndTag();
+        if (valid) {
+            int res = super.doEndTag();
 
-        String result = (String) pageContext.getAttribute("internalContent", PageContext.PAGE_SCOPE);
+            String result = (String) pageContext.getAttribute("internalContent", PageContext.PAGE_SCOPE);
 
-        try {
-            pageContext.getOut().print(processContent(result));
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            try {
+                pageContext.getOut().print(processContent(result));
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            return res;
+        } else {
+            return EVAL_PAGE;
         }
-        return res;
     }
 
     private String processContent(String html) {

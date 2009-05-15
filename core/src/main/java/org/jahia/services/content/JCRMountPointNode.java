@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.beans.PropertyDescriptor;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,6 +80,11 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
     public JCRNodeWrapper addNode(String name, String type) throws RepositoryException {
         return getRootNode().addNode(name, type);
+    }
+
+    @Override
+    public JCRNodeWrapper uploadFile(String name, InputStream is, String contentType) throws RepositoryException {
+        return getRootNode().uploadFile(name, is, contentType);
     }
 
     private JCRNodeWrapper getRootNode() throws RepositoryException {

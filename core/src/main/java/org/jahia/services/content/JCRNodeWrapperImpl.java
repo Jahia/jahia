@@ -168,9 +168,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (exception != null) {
             return false;
         }
-        if (isNodeType("jnt:mountPoint")) {
-            return getUser().isAdminMember(0);
-        }
+//        if (isNodeType("jnt:mountPoint")) {
+//            return getUser().isAdminMember(0);
+//        }
         JCRStoreProvider jcrStoreProvider = getProvider();
         if (jcrStoreProvider.isDynamicallyMounted()) {
             try {

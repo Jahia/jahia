@@ -51,6 +51,7 @@ public class InfoJahiaItemProvider extends AbstractJahiaToolItemProvider {
         }
         return item;
     }
+    
 
     private class JahiaTextToolItem extends ToolItem {
         JahiaTextButton button;

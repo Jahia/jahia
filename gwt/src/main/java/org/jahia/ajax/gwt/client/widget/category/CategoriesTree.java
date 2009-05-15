@@ -147,7 +147,7 @@ public class CategoriesTree extends ContentPanel {
             tree.setCheckStyle(Tree.CheckCascade.NONE);
         }*/
         binder = new MyTreeBinder<GWTJahiaCategoryNode>(tree, store);
-        binder.setDisplayProperty("name");
+        binder.setDisplayProperty("extendedName");
 
         add(tree);
     }

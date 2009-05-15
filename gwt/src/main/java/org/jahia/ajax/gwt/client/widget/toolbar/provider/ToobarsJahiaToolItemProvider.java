@@ -37,7 +37,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolItem;
 /**
  * Item provider for creating a list of toolbars to have a possibility to
  * show/hide then.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ToobarsJahiaToolItemProvider extends
@@ -54,9 +54,7 @@ public class ToobarsJahiaToolItemProvider extends
     }
 
     @Override
-    public MenuItem createMenuItem(
-            GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup,
-            GWTJahiaToolbarItem gwtToolbarItem) {
+    public MenuItem createMenuItem(GWTJahiaToolbarItemsGroup gwtToolbarItemsGroup,GWTJahiaToolbarItem gwtToolbarItem) {
         final MenuItem thisItem = new MenuItem(gwtToolbarItem.getTitle());
         toolbarManager.addContextMenuReadyListener(new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {

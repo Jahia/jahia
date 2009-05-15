@@ -97,4 +97,6 @@
                             aliasResourceName="value"/>
 <internal:gwtResourceBundle resourceName="org.jahia.engines.categories.path"
                             aliasResourceName="path"/>
+<internal:gwtResourceBundle resourceName="org.jahia.engines.filemanager.Filemanager_Engine.selectedCategories.label"
+                            aliasResourceName="categories_selected"/>
 <%}%>

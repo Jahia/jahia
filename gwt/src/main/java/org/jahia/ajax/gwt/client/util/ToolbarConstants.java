@@ -47,6 +47,7 @@ public abstract class ToolbarConstants {
 
     // special type
     public static final String ITEMSGROUP_FILL = "org.jahia.toolbar.itemsgroup.Fill";
+    public static final String ITEMS_TOOLBARLABEL = "org.jahia.toolbar.item.Toolbars";
 
     // prop. parmeter
     public static final String URL = "url";

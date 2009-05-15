@@ -535,12 +535,17 @@ public class CategoryServiceImpl extends AbstractJahiaGWTServiceImpl implements 
             engineLocale = LanguageCodeConverters.languageCodeToLocale(categoryLocale);
         }
         String name = category.getTitle(engineLocale);
+        String extendedName;
         if (name == null || name.length() == 0) {
             name = "(" + category.getKey() + ")";
+            extendedName = "(" + category.getKey() + ")";
+        }else{
+            extendedName = "(" + category.getKey() + ") "+category.getTitle(engineLocale);
         }
         gwtJahiaNode.setCategoryId("" + category.getJahiaCategory().getId());
         gwtJahiaNode.setParentKey(parentKey);
         gwtJahiaNode.setName(name);
+        gwtJahiaNode.setExtendedName(extendedName);
         gwtJahiaNode.setKey(category.getKey());
         gwtJahiaNode.setPath(category.getCategoryPath(getRemoteJahiaUser()));
 

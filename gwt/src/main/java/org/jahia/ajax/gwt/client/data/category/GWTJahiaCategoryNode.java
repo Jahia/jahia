@@ -69,6 +69,10 @@ public class GWTJahiaCategoryNode extends BaseTreeModel<GWTJahiaCategoryNode> im
         return get("name");
     }
 
+    public String getExtendedName() {
+        return get("extendedName");
+    }
+
     public void setACLLink(String aclLink) {
         set("aclLink", aclLink);
     }
@@ -79,6 +83,10 @@ public class GWTJahiaCategoryNode extends BaseTreeModel<GWTJahiaCategoryNode> im
 
     public void setName(String name) {
         set("name", name);
+    }
+
+    public void setExtendedName(String name) {
+        set("extendedName", name);
     }
 
     public String getLog() {

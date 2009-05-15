@@ -77,12 +77,12 @@ public class PickedCategoriesGrid extends TopRightComponent {
         ColumnConfig column = new ColumnConfig();
         column.setRenderer(new GridCellRenderer<GWTJahiaCategoryNode>() {
             public String render(GWTJahiaCategoryNode categoryNode, String property, ColumnData columnData, int rowIndex, int colIndex, ListStore<GWTJahiaCategoryNode> categoryNodeListStore) {
-                return "<input type=\"hidden\" name=\"category_" + categoryNode.getCategoryId() + "\"/> " + categoryNode.getName();
+                return "<input type=\"hidden\" name=\"category_" + categoryNode.getCategoryId() + "\"/> " + categoryNode.getExtendedName();
             }
 
 
         });
-        column.setId("name");
+        column.setId("extendedName");
         column.setHeader(Messages.getResource("categories_selected"));
         configs.add(column);
 
@@ -110,7 +110,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
         });
         ColumnModel columnModel = new ColumnModel(configs);
         //store.setDefaultSort("name", Style.SortDir.ASC);
-        store.sort("name", Style.SortDir.ASC);
+        store.sort("extendedName", Style.SortDir.ASC);
 
         // main component
         m_component.setHeading(Messages.getResource("categories"));
@@ -176,7 +176,7 @@ public class PickedCategoriesGrid extends TopRightComponent {
                 }
             }
             store.add(toAdd);
-            store.sort("name", Style.SortDir.ASC);
+            store.sort("extendedName", Style.SortDir.ASC);
         }
     }
 

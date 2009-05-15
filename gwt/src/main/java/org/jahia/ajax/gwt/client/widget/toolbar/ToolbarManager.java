@@ -63,7 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Time: 15:27:13
  */
 public class ToolbarManager {
-    
+
     private RootPanel topPanel;
 
     // target toolbar panel
@@ -93,7 +93,7 @@ public class ToolbarManager {
 
     // number of displayed toolbar
     private int displayedToolbars = 0;
-    
+
     private List<Listener<BaseEvent>> contextMenuReadyListeners = new ArrayList<Listener<BaseEvent>>(
             1);
 
@@ -105,7 +105,6 @@ public class ToolbarManager {
         this.topPanel = topPanel;
         this.pageContext = pageContext;
     }
-
 
 
     /**
@@ -329,24 +328,36 @@ public class ToolbarManager {
     private void initContextMenu() {
         if (getJahiaToolbars() != null) {
             for (final JahiaToolbar jahiaToolbar : getJahiaToolbars()) {
-                final CheckMenuItem item = new CheckMenuItem();
-                item.setChecked(jahiaToolbar.getGwtToolbar().getState().isDisplay());
-                item.setEnabled(!jahiaToolbar.getGwtToolbar().isMandatory());
-                item.setText(jahiaToolbar.getGwtToolbar().getTitle());
-                item.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                    public void componentSelected(ComponentEvent event) {
-                        // check if there are more that 2 toolbar diplsay
-                        Log.debug("Displayed toolabr: " + displayedToolbars);
-                        if (!item.isChecked() && displayedToolbars == 1) {
-                            MessageBox.alert(getResource("alert"), getResource("hide_alert"), null);
-                            item.setChecked(true);
-                        } else {
-                            jahiaToolbar.setDisplay(item.isChecked());
+                if (!jahiaToolbar.getGwtToolbar().isMandatory()) {
+                    final CheckMenuItem item = new CheckMenuItem();
+                    item.setChecked(jahiaToolbar.getGwtToolbar().getState().isDisplay());
+                    item.setEnabled(!jahiaToolbar.getGwtToolbar().isMandatory());
+                    item.setText(jahiaToolbar.getGwtToolbar().getTitle());
+                    item.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                        public void componentSelected(ComponentEvent event) {
+                            // check if there are more that 2 toolbar diplsay
+                            Log.debug("Displayed toolabr: " + displayedToolbars);
+                            if (!item.isChecked() && displayedToolbars == 1) {
+                                MessageBox.alert(getResource("alert"), getResource("hide_alert"), null);
+                                item.setChecked(true);
+                            } else {
+                                jahiaToolbar.setDisplay(item.isChecked());
+                            }
                         }
-                    }
-                });
-                toolbarContextMenu.add(item);
+                    });
+                    toolbarContextMenu.add(item);
+                }
             }
+            // reset position
+            MenuItem resetPosition = new MenuItem(getResource("reset"));
+            resetPosition.addSelectionListener(new SelectionListener<ComponentEvent>() {
+                public void componentSelected(ComponentEvent event) {
+                    loadToolbars(true);
+                }
+            });
+            toolbarContextMenu.add(resetPosition);
+            BaseEvent evt = new BaseEvent(toolbarContextMenu);
+
             toolbarContextMenu.add(new SeparatorMenuItem());
 
             // hide all
@@ -358,18 +369,11 @@ public class ToolbarManager {
             });
             toolbarContextMenu.add(hideAllMenu);
 
-            // reset position
-            MenuItem resetPosition = new MenuItem(getResource("reset"));
-            resetPosition.addSelectionListener(new SelectionListener<ComponentEvent>() {
-                public void componentSelected(ComponentEvent event) {
-                    loadToolbars(true);
-                }
-            });
-            toolbarContextMenu.add(resetPosition);
-            BaseEvent evt = new BaseEvent(toolbarContextMenu);
             for (Listener<BaseEvent> listener : contextMenuReadyListeners) {
                 listener.handleEvent(evt);
             }
+
+
         }
     }
 
@@ -447,13 +451,13 @@ public class ToolbarManager {
 
         // get X position
         int pagePositionX = state.getPagePositionX();
-       /* if(pagePositionX > Window.getClientHeight()){
-            pagePositionX = Window.getClientHeight() - jahiaToolbar.getOffsetHeight();
-        } */
+        /* if(pagePositionX > Window.getClientHeight()){
+           pagePositionX = Window.getClientHeight() - jahiaToolbar.getOffsetHeight();
+       } */
 
         // get Y position
         int pagePositionY = state.getPagePositionY();
-       /* if(pagePositionY  > Window.getClientWidth()){
+        /* if(pagePositionY  > Window.getClientWidth()){
             pagePositionY  = Window.getClientWidth() - jahiaToolbar.getOffsetWidth();
         }*/
 
@@ -495,7 +499,7 @@ public class ToolbarManager {
     public String getResource(String key) {
         return Messages.getResource(key);
     }
-    
+
     public void addContextMenuReadyListener(Listener<BaseEvent> listener) {
         contextMenuReadyListeners.add(listener);
     }

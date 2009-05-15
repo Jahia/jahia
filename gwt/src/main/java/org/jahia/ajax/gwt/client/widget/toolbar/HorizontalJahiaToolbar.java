@@ -138,7 +138,7 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
             if (toolbarItemWidgetProvider == null && !isSeparator(gwtToolbarItem)) {
                 printProviderNotFoundError(gwtToolbarItem);
             } else {
-                Log.debug("items group layout =" + gwtToolbarItemsGroup.getLayout());
+                Log.debug(gwtToolbarItem.getType()+" - items group layout =" + gwtToolbarItemsGroup.getLayout());
                 if (gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_RADIO || gwtToolbarItemsGroup.getLayout() == ToolbarConstants.ITEMSGROUP_MENU_CHECKBOX) {
                     // handle case of menuSeparator
                     if (isSeparator(gwtToolbarItem)) {
@@ -155,6 +155,9 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
                     else {
                         Item toolbarMenuItem = toolbarItemWidgetProvider.createMenuItem(gwtToolbarItemsGroup, gwtToolbarItem);
                         if (toolbarMenuItem != null) {
+                            if(gwtToolbarItem.getType().equalsIgnoreCase(ToolbarConstants.ITEMS_TOOLBARLABEL)){
+                               toolbarMenuItem.setEnabled(false);
+                            }
                             menu.add(toolbarMenuItem);
                         }
                         addMenu = true;
@@ -173,6 +176,9 @@ public class HorizontalJahiaToolbar extends JahiaToolbar {
                     else {
                         Item toolbarMenuItem = toolbarItemWidgetProvider.createMenuItem(gwtToolbarItemsGroup, gwtToolbarItem);
                         if (toolbarMenuItem != null) {
+                            if(gwtToolbarItem.getType().equalsIgnoreCase(ToolbarConstants.ITEMS_TOOLBARLABEL)){
+                               toolbarMenuItem.setEnabled(false);
+                            }
                             menu.add(toolbarMenuItem);
                         }
                         addMenu = true;

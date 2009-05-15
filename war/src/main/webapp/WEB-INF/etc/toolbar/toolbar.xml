@@ -348,6 +348,7 @@
         <item type="org.jahia.toolbar.item.Fill"/>
         
         <item type="org.jahia.toolbar.item.Toolbars"/>
+        
         <item type="org.jahia.toolbar.item.ToolbarsTitle" extends="org.jahia.toolbar.item.Toolbars">
             <title-resourcebundle-key key="toolbar.view.toolbars"/>
         </item>

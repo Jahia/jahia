@@ -6,8 +6,8 @@
         <version>6.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>webtemplates</artifactId>
-    <name>ACME demo</name>
+    <artifactId>testSite</artifactId>
+    <name>Test site with test templates</name>
     <packaging>pom</packaging>
 
     <build>
@@ -19,12 +19,12 @@
 
                 <executions>
                     <execution>
-                        <id>ACME</id>
+                        <id>testSite</id>
                         <configuration>
                             <descriptors>
-                                <descriptor>src/main/assembly/ACME.xml</descriptor>
+                                <descriptor>src/main/assembly/testSite.xml</descriptor>
                             </descriptors>
-                            <finalName>ACME</finalName>
+                            <finalName>testSite</finalName>
                         </configuration>
 
                         <phase>validate</phase>

@@ -395,6 +395,12 @@
             <type>zip</type>
         </dependency>
         <dependency>
+            <groupId>org.jahia.prepackagedsites</groupId>
+            <artifactId>testSite</artifactId>
+            <version>${jahia.package.version}</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.4</version>
@@ -599,12 +605,33 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-webtemplates</id>
                         <phase>process-resources</phase>
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.jahia.prepackagedsites</groupId>
                                     <artifactId>webtemplates</artifactId>
+                                    <version>${jahia.package.version}</version>
+                                    <type>zip</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${pom.basedir}/src/main/webapp/WEB-INF/var/prepackagedSites</outputDirectory>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy-testSite</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.prepackagedsites</groupId>
+                                    <artifactId>testSite</artifactId>
                                     <version>${jahia.package.version}</version>
                                     <type>zip</type>
                                 </artifactItem>

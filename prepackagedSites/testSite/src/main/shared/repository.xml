@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0">
+    <shared jcr:createdBy="root" j:filename="shared" jcr:lastModified="2009-01-27T10:05:44.640+01:00" jcr:created="2009-01-27T10:05:43.843+01:00" jcr:uuid="6a4ed890-b9cc-496c-898a-02392b8dc708" j:fullpath="/content/shared" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder">
+        <files jcr:createdBy="root" j:filename="files" jcr:lastModified="2009-01-27T10:05:44.625+01:00" jcr:created="2009-01-27T10:05:43.843+01:00" jcr:uuid="a9806b7b-6b47-4686-9130-03bb40e136f4" j:fullpath="/content/shared/files" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder"></files>
+        <mashups jcr:createdBy="root" j:filename="mashups" jcr:lastModified="2009-01-27T10:05:44.640+01:00" jcr:created="2009-01-27T10:05:43.843+01:00" jcr:uuid="747df075-7b6d-4bd9-bbfe-7794899957e8" j:fullpath="/content/shared/mashups" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder"></mashups>
+        <j:acl jcr:primaryType="jnt:acl">
+            <j:ace j:principal="g:users" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="GRANT" j:privileges="jcr:read jcr:write"></j:ace>
+            <j:ace j:principal="g:users" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="DENY" j:privileges=""></j:ace>
+        </j:acl>
+    </shared>
+    <users j:usersFolderSkeleton="user.xml" jcr:createdBy="root" j:filename="users" jcr:lastModified="2009-01-27T10:15:08.593+01:00" jcr:created="2009-01-27T10:05:43.843+01:00" jcr:uuid="5a644abb-c779-49e5-8967-6515d7e0f8ca" j:fullpath="/content/users" jcr:lastModifiedBy="root" jcr:primaryType="jnt:systemfolder" jcr:mixinTypes="jmix:usersFolder">
+        <root jcr:createdBy="root" j:filename="root" jcr:lastModified="2009-01-27T10:15:08.671+01:00" jcr:created="2009-01-27T10:15:08.484+01:00" jcr:uuid="ecbf0c01-4c80-45f8-ac71-25d661b0fbce" j:fullpath="/content/users/root" jcr:lastModifiedBy="root" jcr:primaryType="jnt:userFolder">
+            <files jcr:createdBy="root" j:filename="files" jcr:lastModified="2009-01-27T10:15:08.671+01:00" jcr:created="2009-01-27T10:15:08.484+01:00" jcr:uuid="cbefa507-2ae1-4c98-8f2f-2e3bb39325d9" j:fullpath="/content/users/root/files" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder">
+                <private jcr:createdBy="root" j:filename="private" jcr:lastModified="2009-01-27T10:15:08.640+01:00" jcr:created="2009-01-27T10:15:08.484+01:00" jcr:uuid="6b0c92ca-cfe5-4c6a-a5b9-25a296603403" j:fullpath="/content/users/root/files/private" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder">
+                    <imports jcr:createdBy="root" j:filename="imports" jcr:lastModified="2009-01-27T10:15:14.968+01:00" jcr:created="2009-01-27T10:15:08.484+01:00" jcr:uuid="9c65ac4a-20a2-4597-90f8-fa3e7ebcbfd0" j:fullpath="/content/users/root/files/private/imports" jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"></imports>
+                    <j:acl jcr:primaryType="jnt:acl">
+                        <j:ace j:principal="g:guest" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="GRANT" j:privileges=""></j:ace>
+                        <j:ace j:principal="g:guest" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="DENY" j:privileges="jcr:read jcr:write"></j:ace>
+                    </j:acl>
+                </private>
+            </files>
+            <mashups jcr:createdBy="root" j:filename="mashups" jcr:lastModified="2009-01-27T10:15:08.671+01:00" jcr:created="2009-01-27T10:15:08.484+01:00" jcr:uuid="530bd189-16da-485e-a002-4b8fcf59104b" j:fullpath="/content/users/root/mashups" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder"></mashups>
+            <preferences j:hidden="true" jcr:createdBy="root" j:filename="preferences" jcr:lastModified="2009-01-28T15:37:33.296+01:00" jcr:created="2009-01-27T10:15:08.484+01:00" jcr:uuid="9ba240e2-b803-4386-880f-c852ef722e0e" j:fullpath="/content/users/root/preferences" jcr:lastModifiedBy="root" jcr:primaryType="jnt:preferences">
+                <j:acl jcr:primaryType="jnt:acl">
+                    <j:ace j:principal="g:guest" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="GRANT" j:privileges=""></j:ace>
+                    <j:ace j:principal="g:guest" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="DENY" j:privileges="jcr:read jcr:write"></j:ace>
+                </j:acl>
+                <org.jahia.preferences.provider.toolbar jcr:createdBy="root" j:filename="org.jahia.preferences.provider.toolbar" jcr:lastModified="2009-01-28T15:37:33.328+01:00" jcr:created="2009-01-28T15:37:32.781+01:00" jcr:uuid="ecc2876c-6b16-48a7-bd06-019992f761d4" j:fullpath="/content/users/root/preferences/org.jahia.preferences.provider.toolbar" jcr:lastModifiedBy="root" jcr:primaryType="jnt:preferenceProvider">
+                    <preference jcr:createdBy="root" j:filename="preference" jcr:lastModified="2009-01-28T15:37:33.328+01:00" type="org.jahia.toolbar.workflow" jcr:created="2009-01-28T15:37:32.796+01:00" jcr:uuid="761eb51f-0745-445c-aa52-2d9caa6f13e5" j:fullpath="/content/users/root/preferences/org.jahia.preferences.provider.toolbar/preference" jcr:lastModifiedBy="root" jcr:primaryType="jnt:preference" name="worflow">
+                        <preferenceValue display="true" index="0" jcr:createdBy="root" jcr:lastModifiedBy="root" positionX="0" j:filename="preferenceValue" jcr:lastModified="2009-01-28T15:37:33.328+01:00" positionY="0" jcr:created="2009-01-28T15:37:32.812+01:00" j:fullpath="/content/users/root/preferences/org.jahia.preferences.provider.toolbar/preference/preferenceValue" jcr:uuid="b7a81ff1-8637-4e01-bb7f-a623a8ce2f19" visible="true" jcr:primaryType="jnt:preferenceValue" state="0"></preferenceValue>
+                    </preference>
+                </org.jahia.preferences.provider.toolbar>
+            </preferences>
+            <j:acl jcr:primaryType="jnt:acl">
+                <j:ace j:principal="u:root" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="GRANT" j:privileges="jcr:read jcr:write"></j:ace>
+                <j:ace j:principal="u:root" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="DENY" j:privileges=""></j:ace>
+            </j:acl>
+        </root>
+    </users>
+    <sites jcr:createdBy="root" j:filename="sites" jcr:lastModified="2009-01-27T10:15:03.343+01:00" jcr:created="2009-01-27T10:05:43.843+01:00" jcr:uuid="c950f8fa-708a-4bf3-94c5-1ad8f595b3ad" j:fullpath="/content/sites" jcr:lastModifiedBy="root" jcr:primaryType="jnt:systemfolder" j:virtualsitesFolderSkeleton="site.xml" jcr:mixinTypes="jmix:virtualsitesFolder"></sites>
+    <imports j:hidden="true" jcr:createdBy="root" j:filename="imports" jcr:lastModified="2009-01-27T10:05:44.640+01:00" jcr:created="2009-01-27T10:05:43.843+01:00" jcr:uuid="a8d4d812-d3c9-42b2-b064-9e8d0e0e2fc7" j:fullpath="/content/imports" jcr:lastModifiedBy="root" jcr:primaryType="jnt:importDropBox"></imports>
+    <mounts jcr:createdBy="root" j:filename="mounts" jcr:lastModified="2009-01-27T10:05:44.656+01:00" jcr:created="2009-01-27T10:05:43.843+01:00" jcr:uuid="ffb94134-414d-4e82-804f-270919312feb" j:fullpath="/content/mounts" jcr:lastModifiedBy="root" jcr:primaryType="jnt:folder">
+        <j:acl jcr:primaryType="jnt:acl">
+            <j:ace j:principal="g:users" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="GRANT" j:privileges="jcr:read jcr:write"></j:ace>
+            <j:ace j:principal="g:users" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="DENY" j:privileges=""></j:ace>
+        </j:acl>
+    </mounts>
+</content>
+

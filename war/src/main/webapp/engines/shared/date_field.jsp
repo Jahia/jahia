@@ -28,14 +28,17 @@
 <%@ page import="java.util.*" %>
 <%@page import="org.jahia.data.fields.ExpressionMarker"%>
 <%@page import="org.jahia.utils.i18n.ResourceBundleMarker"%>
+<%@page import="org.apache.commons.lang.time.FastDateFormat"%>
 <%
     final Map engineMap = (Map) request.getAttribute("org.jahia.engines.EngineHashMap");
     final ParamBean jParams = (ParamBean) request.getAttribute("org.jahia.params.ParamBean");
     final JahiaField theField = (JahiaField) engineMap.get(engineMap.get("fieldsEditCallingEngineName") + ".theField");
     final JahiaFieldDefinition def = theField.getDefinition();
 
-    final String format = JahiaDateFieldUtil.getDateFormat(def.getDefaultValue(
-    ), jParams.getLocale()).getPattern();
+    FastDateFormat formatter = JahiaDateFieldUtil.getDateFormat(def.getDefaultValue(
+    ), jParams.getLocale());
+    
+    String format = formatter.getPattern();
 
     final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
     if (elh != null) {
@@ -48,7 +51,7 @@
     } else if (theField.getRawValue().startsWith("<jahia-resource")) {
         val = ResourceBundleMarker.getValue(theField.getRawValue(), jParams.getLocale());
     } else {
-        val = theField.getValue();
+        val = theField.getObject() != null && !"".equals(theField.getObject()) ? formatter.format(new Long((String)theField.getObject()).longValue()) : "";
     }    
 %>
 

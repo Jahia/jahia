@@ -163,6 +163,7 @@ public class JahiaLuceneQueryParser extends QueryParser {
     protected Query getFuzzyQuery(String field, String termStr,
             float minSimilarity) throws ParseException {
         float boost = 1;
+        termStr = removeAccents(termStr);
         String paddedText = NumberPadding.pad(termStr);
         String queryText = NumberPadding.unpad(termStr);
         boolean addPadded = !paddedText.equals(queryText);
@@ -320,6 +321,7 @@ public class JahiaLuceneQueryParser extends QueryParser {
     protected Query getWildcardQuery(String field, String termStr)
             throws ParseException {
         float boost = 1;
+        termStr = removeAccents(termStr);        
         String paddedText = NumberPadding.pad(termStr);
         String queryText = NumberPadding.unpad(termStr);
         boolean addPadded = !paddedText.equals(queryText);

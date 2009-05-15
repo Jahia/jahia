@@ -24,6 +24,7 @@ import org.jahia.data.JahiaData;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.pages.PageInfoInterface;
 import org.jahia.services.pages.JahiaPage;
+import org.jahia.params.ProcessingContext;
 
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.http.HttpServletRequest;
@@ -80,6 +81,8 @@ public class DisplayLinkTag extends AbstractFieldTag {
     public int doStartTag() {
         try {
             final Object bean = pageContext.getAttribute(page);
+            final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
             PageBean thePageBean = null;
             if (bean instanceof FieldValueBean) {
                 thePageBean = ((FieldValueBean<?>) bean).getPage();
@@ -87,8 +90,6 @@ public class DisplayLinkTag extends AbstractFieldTag {
                 thePageBean = (PageBean) bean;
 
             } else if (bean instanceof JahiaPage) {
-                final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-                final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
                 thePageBean = new PageBean((JahiaPage) bean, jData.getProcessingContext());
             }
 
@@ -98,8 +99,6 @@ public class DisplayLinkTag extends AbstractFieldTag {
                     if (theField != null) {
                         final JahiaPage thePage = (JahiaPage) theField.getObject();
                         if (thePage != null) {
-                            final HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-                            final JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
                             thePageBean = new PageBean(thePage, jData.getProcessingContext());
                         }
                     }
@@ -145,7 +144,8 @@ public class DisplayLinkTag extends AbstractFieldTag {
 
             } else if (thePageBean != null) {
                 final String tmp = thePageBean.getHighLightDiffTitle();
-                if (maxChar > 0 && tmp != null && tmp.length() > maxChar) {
+                if (!jData.getProcessingContext().getOperationMode().equals(ProcessingContext.COMPARE) &&
+                    maxChar > 0 && tmp != null && tmp.length() > maxChar) {
                     linkValue = tmp.substring(0, maxChar - 3) + "...";
                 } else {
                     linkValue = tmp;

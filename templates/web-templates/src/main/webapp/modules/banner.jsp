@@ -24,7 +24,7 @@
     <template:field name='background' var="background" display="false"/>
 
     <div id="illustration2" style="background:transparent url(${background.file.downloadUrl}) no-repeat top left;">
-        <div class="illustration2-text" style='margin-top:<template:field name="positionTop"/>px; margin-left:<template:field name="positionLeft"/>px'>
+        <div class="illustration2-text" style='margin-top:<template:field name="positionTop" diffActive="false"/>px; margin-left:<template:field name="positionLeft" diffActive="false"/>px'>
             <h2><template:field name="title"/></h2>
             <p><template:field name="cast"/></p>
         <div class="clear"> </div></div>

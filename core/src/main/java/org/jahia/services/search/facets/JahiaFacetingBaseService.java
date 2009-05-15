@@ -134,7 +134,7 @@ public class JahiaFacetingBaseService extends JahiaFacetingService {
                     .getContainerDefinitionNames(), jParams, QueryModelTools.FACETING_TYPE);
             String languageCode = LanguageCodeConverters.localeToLanguageTag(jParams.getLocale());
             if (fieldDef.getType() == FieldTypes.CATEGORY) {
-                String rootCategory = fieldDef.getPropertyDefinition().getSelectorOptions().get("root");
+                String rootCategory = fieldDef.getItemDefinition().getSelectorOptions().get("root");
                 Category startCategory = rootCategory == null ? Category.getRootCategory(jParams.getUser()) : Category
                         .getCategory(rootCategory, jParams.getUser());
                 if (startCategory != null) {

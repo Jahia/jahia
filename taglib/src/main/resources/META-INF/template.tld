@@ -287,6 +287,28 @@
         </attribute>
     </tag>
     <tag>
+      <description>
+  Embed file from jahia repository
+      </description>
+      <name>fileImport</name>
+        <tag-class>org.jahia.taglibs.template.include.FileIncludeTag</tag-class>
+      <body-content>JSP</body-content>
+      <attribute>
+          <description>
+  Path of the file in jahia repository
+          </description>
+          <name>path</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>processHtml</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+          <type>boolean</type>
+      </attribute>
+    </tag>
+    <tag>
         <description>
             Used to call the overriden JSP from the parent set. Does nothing, if it is not found.
         </description>

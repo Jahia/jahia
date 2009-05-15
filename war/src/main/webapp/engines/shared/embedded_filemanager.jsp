@@ -50,7 +50,7 @@
     if (filters == null) filters = "";
 
     boolean folder = options.containsKey("folder");
-    String nodeType = folder ? "jnt:folder" : "jnt:file";
+    String nodeType = folder ? "nt:folder" : "nt:file";
 
     final EngineLanguageHelper elh = (EngineLanguageHelper) engineMap.get(JahiaEngine.ENGINE_LANGUAGE_HELPER);
     if (elh != null) {

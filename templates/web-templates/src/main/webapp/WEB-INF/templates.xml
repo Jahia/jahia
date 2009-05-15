@@ -11,6 +11,7 @@
     <rules-file>rules.drl</rules-file>
     <common-pages>
         <search-results>tpl.searchresult.jsp</search-results>
+        <sitemap>sitemap.jsp</sitemap>
     </common-pages>
     <templates default="simple" homepage="Home">
         <template name="Home" display-name="template.name.home" filename="tpl.home.jsp" page-type="web_templates:home"/>

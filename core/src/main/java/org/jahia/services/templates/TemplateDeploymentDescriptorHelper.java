@@ -124,6 +124,15 @@ final class TemplateDeploymentDescriptorHelper {
         digester.addBeanPropertySetter(
                 "template-set/common-pages/search-results",
                 "searchResultsPageName");
+        digester.addBeanPropertySetter(
+            "template-set/common-pages/new-user-registration",
+            "newUserRegistrationPageName");
+        digester.addBeanPropertySetter(
+            "template-set/common-pages/new-user-registration-success",
+            "newUserRegistrationSuccessPageName");        
+        digester.addBeanPropertySetter(
+            "template-set/common-pages/sitemap",
+            "sitemapPageName");        
 
         digester.addCallMethod("template-set/properties/property",
                 "addProperty", 2);
@@ -214,7 +223,7 @@ final class TemplateDeploymentDescriptorHelper {
                 "thumbnail"));
 
         // build the templates list
-        List nodesList = XMLParser.getChildNodes(docElNode, "template");
+        List<Node> nodesList = XMLParser.getChildNodes(docElNode, "template");
 
         int size = nodesList.size();
         if (size > 0) {
@@ -396,6 +405,16 @@ final class TemplateDeploymentDescriptorHelper {
                     ch.dataElement("search-results", pkg
                             .getSearchResultsPageName());
                 }
+                if (pkg.getNewUserRegistrationPageName() != null) {
+                    ch.dataElement("new-user-registration", pkg.getNewUserRegistrationPageName());
+                }
+                if (pkg.getNewUserRegistrationSuccessPageName() != null) {
+                    ch.dataElement("new-user-registration-success", pkg
+                            .getNewUserRegistrationSuccessPageName());
+                }    
+                if (pkg.getSitemapPageName() != null) {
+                    ch.dataElement("sitemap", pkg.getNewUserRegistrationPageName());
+                }
                 ch.endElement(NS_URI_JAHIA,
                         "common-pages", "common-pages");
             }
@@ -430,7 +449,7 @@ final class TemplateDeploymentDescriptorHelper {
             }
             ch.startElement(NS_URI_JAHIA,
                     "templates", "templates", attr);
-            for (Iterator iterator = pkg.getTemplates().iterator(); iterator
+            for (Iterator<JahiaTemplateDef> iterator = pkg.getTemplates().iterator(); iterator
                     .hasNext();) {
                 JahiaTemplateDef template = (JahiaTemplateDef) iterator.next();
                 attr = new AttributesImpl();

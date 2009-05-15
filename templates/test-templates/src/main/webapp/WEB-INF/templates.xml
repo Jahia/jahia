@@ -11,6 +11,10 @@
     <definitions-file>definitions.cnd</definitions-file>
     <definitions-file>definitions.grp</definitions-file>
     <rules-file>rules.drl</rules-file>
+    <common-pages>
+        <new-user-registration>newuserregistration.jsp</new-user-registration>
+        <new-user-registration-success>userregistrationok.jsp</new-user-registration-success>
+    </common-pages>
     <templates default="Simple" homepage="TestUnitHome">
         <template name="TestUnitHome" display-name="template.name.testUnitHome" filename="home/testunitshome.jsp"
                   visible="false" page-type="test_templates:home"/>

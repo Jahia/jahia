@@ -24,12 +24,15 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.jahia.data.JahiaData;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.engines.EngineToolBox;
 import org.jahia.engines.JahiaEngine;
 import org.jahia.engines.validation.EngineValidationHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.ParamBean;
 import org.jahia.params.ProcessingContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 
 /** todo this engine should be modified if site map defined with tag lib !! */
 
@@ -112,11 +115,8 @@ public class SiteMap_Engine implements JahiaEngine {
      */
     public EngineValidationHelper handleActions (final ProcessingContext jParams, final JahiaData jData)
             throws JahiaException {
-        final Map engineMap = new HashMap();
-        String jspSiteMapFileName = jParams.getPage ().getPageTemplate ().getSourcePath ();
-        jspSiteMapFileName = jspSiteMapFileName.substring (0, jspSiteMapFileName.lastIndexOf ("/") + 1) +
-                SITEMAP_JSP_NAME;
-        engineMap.put (ENGINE_OUTPUT_FILE_PARAM, jspSiteMapFileName);
+        final Map<String, Object> engineMap = new HashMap<String, Object>();
+        engineMap.put (ENGINE_OUTPUT_FILE_PARAM, getJspPath(jParams));
         engineMap.put (RENDER_TYPE_PARAM, new Integer (JahiaEngine.RENDERTYPE_FORWARD));
         engineMap.put (ENGINE_NAME_PARAM, ENGINE_NAME);
         engineMap.put (ENGINE_URL_PARAM, jParams.composeEngineUrl (ENGINE_NAME, EMPTY_STRING));
@@ -135,6 +135,29 @@ public class SiteMap_Engine implements JahiaEngine {
         EngineToolBox.getInstance().displayScreen(jParams, engineMap);
 
         return null;
+    }
+    
+    private String getJspPath(ProcessingContext ctx) {
+        String path = SITEMAP_JSP_NAME;
+
+        JahiaTemplateManagerService templateMgr = ServicesRegistry
+                .getInstance().getJahiaTemplateManagerService();
+
+        JahiaTemplatesPackage templatePackage = templateMgr
+                .getTemplatePackage(ctx.getSite().getTemplatePackageName());
+
+        if (templatePackage.getSitemapPageName() != null) {
+            path = templateMgr.resolveResourcePath(templatePackage
+                    .getSitemapPageName(), templatePackage.getName());
+        } else {
+            String jspSiteMapFileName = ctx.getPage().getPageTemplate()
+                    .getSourcePath();
+            path = jspSiteMapFileName.substring(0,
+                    jspSiteMapFileName.lastIndexOf("/") + 1)
+                    + path;
+        }
+
+        return path;
     }
 
     /**

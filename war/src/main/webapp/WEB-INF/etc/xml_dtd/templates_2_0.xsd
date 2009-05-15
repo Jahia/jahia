@@ -19,7 +19,10 @@
             <sequence>
               <element name="my-settings" type="string" minOccurs="0"/>
               <element name="my-settings-success" type="string" minOccurs="0"/>
+              <element name="new-user-registration" type="string" minOccurs="0"/>
+              <element name="new-user-registration-success" type="string" minOccurs="0"/>              
               <element name="search-results" type="string" minOccurs="0"/>
+              <element name="sitemap" type="string" minOccurs="0"/>              
             </sequence>
           </complexType>
         </element>

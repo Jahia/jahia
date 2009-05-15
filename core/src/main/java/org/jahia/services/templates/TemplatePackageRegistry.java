@@ -24,7 +24,6 @@ import org.jahia.services.toolbar.JahiaToolbarService;
 import java.io.File;
 import java.util.*;
 
-import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.data.templates.JahiaTemplateDef;
@@ -163,9 +162,9 @@ class TemplatePackageRegistry {
      */
     public List<JahiaTemplatesPackage> getAvailablePackages() {
         if (null == templatePackages) {
-            templatePackages = UnmodifiableList
-                    .decorate(new LinkedList<JahiaTemplatesPackage>(registry
-                            .values()));
+            templatePackages = Collections
+                .unmodifiableList(new LinkedList<JahiaTemplatesPackage>(
+                    registry.values()));
         }
         return templatePackages;
     }
@@ -282,7 +281,7 @@ class TemplatePackageRegistry {
                     pkg.getProperties().putAll(parentPkg.getProperties());
                     pkg.getProperties().putAll(ownProperties);
                     
-                    List ownTemplates = pkg.getTemplates();
+                    List<JahiaTemplateDef> ownTemplates = pkg.getTemplates();
                     // clear the list
                     pkg.removeTemplates();
                     // add all inherited templates
@@ -304,6 +303,18 @@ class TemplatePackageRegistry {
                                     .getSearchResultsPageName() != null ? pkg
                                     .getSearchResultsPageName() : parentPkg
                                     .getSearchResultsPageName());
+                    pkg.setNewUserRegistrationPageName(pkg
+                        .getNewUserRegistrationPageName() != null ? pkg
+                        .getNewUserRegistrationPageName() : parentPkg
+                        .getNewUserRegistrationPageName());                    
+                    pkg.setNewUserRegistrationSuccessPageName(pkg
+                        .getNewUserRegistrationSuccessPageName() != null ? pkg
+                        .getNewUserRegistrationSuccessPageName() : parentPkg
+                        .getNewUserRegistrationSuccessPageName());
+                    pkg.setSitemapPageName(pkg
+                        .getSitemapPageName() != null ? pkg
+                        .getSitemapPageName() : parentPkg
+                        .getSitemapPageName());                    
 
                     // check homepage and default page
                     pkg.setHomePageName(pkg.getHomePageName() != null ? pkg

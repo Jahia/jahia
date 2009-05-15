@@ -116,6 +116,12 @@ public class JahiaTemplatesPackage {
     private String mySettingsPageName;
 
     private String mySettingsSuccessPageName;
+    
+    private String newUserRegistrationPageName;
+
+    private String newUserRegistrationSuccessPageName;    
+    
+    private String sitemapPageName;    
 
     private String searchResultsPageName;
 
@@ -675,5 +681,31 @@ public class JahiaTemplatesPackage {
         getHierarchy().clear();
         getLookupPath().clear();
         getResourceBundleHierarchy().clear();
+    }
+
+    public void setNewUserRegistrationPageName(
+            String newUserRegistrationPageName) {
+        this.newUserRegistrationPageName = newUserRegistrationPageName;
+    }
+
+    public String getNewUserRegistrationPageName() {
+        return newUserRegistrationPageName;
+    }
+
+    public void setNewUserRegistrationSuccessPageName(
+            String newUserRegistrationSuccessPageName) {
+        this.newUserRegistrationSuccessPageName = newUserRegistrationSuccessPageName;
+    }
+
+    public String getNewUserRegistrationSuccessPageName() {
+        return newUserRegistrationSuccessPageName;
+    }
+
+    public void setSitemapPageName(String sitemapPageName) {
+        this.sitemapPageName = sitemapPageName;
+    }
+
+    public String getSitemapPageName() {
+        return sitemapPageName;
     }
 }

@@ -44,7 +44,7 @@ public class Mounter extends Window {
     public Mounter(final BrowserLinker linker) {
         super() ;
         setHeading(Messages.getResource("fm_mount"));
-        setSize(500, 230);
+        setSize(500, 250);
         setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
         final FormPanel form = new FormPanel() ;

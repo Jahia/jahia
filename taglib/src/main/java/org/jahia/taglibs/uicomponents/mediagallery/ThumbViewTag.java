@@ -18,9 +18,16 @@ package org.jahia.taglibs.uicomponents.mediagallery;
 
 import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.data.JahiaData;
+import org.jahia.params.ProcessingContext;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Random;
+import java.util.Locale;
+import java.util.MissingResourceException;
 
 /**
  * a simple iterating body tag to display a list of image files in a webdav path
@@ -41,6 +48,8 @@ public class ThumbViewTag extends AbstractJahiaTag {
         final StringBuffer buf = new StringBuffer();
         try {
             if (path.length() > 0 && !path.equals("null")) {
+                addThumbViewMessageResources();
+
                 buf.append("<div ");
                 if (cssClassName != null && cssClassName.length() > 0) {
                     buf.append("class=\"");
@@ -68,6 +77,16 @@ public class ThumbViewTag extends AbstractJahiaTag {
         }
 
         return SKIP_BODY;
+    }
+
+    private void addThumbViewMessageResources() {
+        // add messages required by the subscriptions toolbar
+        addGwtDictionaryMessage("fm_thumbFilter", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbFilter.label"));
+        addGwtDictionaryMessage("fm_thumbSort", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSort.label"));
+        addGwtDictionaryMessage("fm_thumbSortName", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSortName.label"));
+        addGwtDictionaryMessage("fm_thumbSortSize", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSortSize.label"));
+        addGwtDictionaryMessage("fm_thumbSortLastModif", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.thumbSortLastModif.label"));
+        addGwtDictionaryMessage("fm_invertSort", getJahiaInternalResourceValue("org.jahia.engines.filemanager.Filemanager_Engine.invertSort.label"));
     }
 
     public int doEndTag() throws JspException {

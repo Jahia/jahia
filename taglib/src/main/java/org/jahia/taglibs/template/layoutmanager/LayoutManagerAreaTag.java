@@ -121,36 +121,4 @@ public class LayoutManagerAreaTag extends AbstractJahiaTag {
     public void setWidth(String width) {
         this.width = width;
     }
-
-    private String getJahiaInternalResourceValue(String key) {
-        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
-
-        Locale currentLocale = request.getLocale();
-        HttpSession session = pageContext.getSession();
-        if (session != null) {
-            if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
-                currentLocale = (Locale) session.getAttribute(ProcessingContext.
-                        SESSION_LOCALE);
-            }
-        }
-
-        String resValue = null;
-
-        try {
-
-            if (jData != null) {
-                resValue = JahiaResourceBundle.getJahiaInternalResource(key, jData.getProcessingContext().getLocale());
-            } else {
-                // for any reason the jData wasn't loaded correctly
-                resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);
-            }
-        } catch (MissingResourceException mre) {
-            logger.error(mre.toString(), mre);
-        }
-        if (resValue == null) {
-            resValue = key;
-        }
-        return resValue;
-    }
 }

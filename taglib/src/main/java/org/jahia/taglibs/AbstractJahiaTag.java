@@ -30,6 +30,8 @@ import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.registries.ServicesRegistry;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -183,6 +185,38 @@ public class AbstractJahiaTag extends BodyTagSupport {
 
     protected String getMessage(final String key) {
         return getMessage(key, "???" + key + "???");
+    }
+
+    protected String getJahiaInternalResourceValue(String key) {
+        HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+        JahiaData jData = (JahiaData) request.getAttribute("org.jahia.data.JahiaData");
+
+        Locale currentLocale = request.getLocale();
+        HttpSession session = pageContext.getSession();
+        if (session != null) {
+            if (session.getAttribute(ProcessingContext.SESSION_LOCALE) != null) {
+                currentLocale = (Locale) session.getAttribute(ProcessingContext.
+                        SESSION_LOCALE);
+            }
+        }
+
+        String resValue = null;
+
+        try {
+
+            if (jData != null) {
+                resValue = JahiaResourceBundle.getJahiaInternalResource(key, jData.getProcessingContext().getLocale());
+            } else {
+                // for any reason the jData wasn't loaded correctly
+                resValue = JahiaResourceBundle.getJahiaInternalResource(key, currentLocale);
+            }
+        } catch (MissingResourceException mre) {
+            logger.error(mre.toString(), mre);
+        }
+        if (resValue == null) {
+            resValue = key;
+        }
+        return resValue;
     }
 
     /**

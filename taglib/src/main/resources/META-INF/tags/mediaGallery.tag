@@ -20,6 +20,7 @@
 <%@ taglib prefix="ui" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
+<%@ taglib prefix="internal" uri="http://www.jahia.org/tags/internalLib" %>
 <%@ attribute name="name" required="true" rtexprvalue="true" %>
 <%@ attribute name="inputName" required="true" rtexprvalue="true" %>
 <%@ attribute name="cssClassName" required="false" rtexprvalue="true" %>

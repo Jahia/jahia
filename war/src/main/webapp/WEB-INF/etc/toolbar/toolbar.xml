@@ -191,7 +191,7 @@
         <!-- tools-->
         <itemsgroup type="org.jahia.toolbar.itemsgroup.Tools" layout="menu">
             <title-resourcebundle-key key='toolbar.itemgroups.tools'/>
-            <visibility authentication="true" mode="edit,compare,preview"/>
+            <visibility authentication="true"/>
             <item ref-type="org.jahia.toolbar.item.FileManager"/>
             <item ref-type="org.jahia.toolbar.item.MashupManager"/>
             <item ref-type="org.jahia.toolbar.item.GWTWorkflow"/>
@@ -494,7 +494,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-filemanager-min"
                         max="gwt-toolbar-ItemsGroup-icons-filemanager-normal"/>
             <description-resourcebundle-key key="button.filemanager"/>
-            <visibility mode="edit,preview,compare" site-action-permission="engines.filemanager"/>
+            <visibility site-action-permission="engines.filemanager"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtfilemanager"/>
@@ -507,7 +507,7 @@
             <icon-style min="gwt-toolbar-ItemsGroup-icons-mashupmanager-min"
                         max="gwt-toolbar-ItemsGroup-icons-mashupmanager-normal"/>
             <description-resourcebundle-key key="button.filemanager"/>
-            <visibility mode="edit,preview,compare" site-action-permission="engines.mashupmanager"/>
+            <visibility site-action-permission="engines.mashupmanager"/>
             <property name="url">
                 <value-resolver class="org.jahia.services.toolbar.resolver.impl.URLPropertyResolver"
                                 input="gwtmashupmanager"/>

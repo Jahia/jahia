@@ -18,7 +18,6 @@ package org.jahia.taglibs.utility.i18n;
 
 import org.apache.log4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.params.ProcessingContext;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -61,12 +60,14 @@ public class SetBundleTag extends TagSupport {
         // Position localisationContext
         if (basename != null && !"".equals(basename)) {
             ProcessingContext context = null;
+            Locale locale = null;
             try {
                 context = Utils.getProcessingContext(pageContext, true);
-            } catch (JahiaBadRequestException e) {
+                locale = context != null ? context.getLocale() : pageContext.getRequest().getLocale();
+            } catch (Exception e) {
                 logger.debug(e.getMessage(), e);
+                locale = pageContext.getRequest().getLocale();
             }
-            final Locale locale = context != null ? context.getLocale() : pageContext.getRequest().getLocale();
             ResourceBundle resourceBundle = new JahiaResourceBundle(basename,
                     locale,
                     context != null && context.getSite() != null ? context

@@ -444,7 +444,7 @@ public class ProcessingContext {
             setEngineNameIfAvailable();
 
             // retrieve site info
-            if (findSiteFromWhatWeHave() == false) {
+            if (!findSiteFromWhatWeHave() && REGISTRY.getJahiaSitesService().getNbSites() > 0) {
                 throw new JahiaSiteNotFoundException(
                         "400 Bad Request : No site specified or site not found",
                         JahiaException.CRITICAL_SEVERITY);
@@ -457,14 +457,16 @@ public class ProcessingContext {
                 setSite(getDefaultSite());
             }
 
-            setSiteInfoFromSiteFound();
+            if (getSite() != null) {
+                setSiteInfoFromSiteFound();
+            }
 
             if (!isContentPageLoadedWhileTryingToFindSiteByPageID()) {
                 if (isPageRequestedByID()) {
                     setContentPageToPageWithID();
                 } else if (isPageRequestedByKey()) {
                     setContentPageToPageWithURLKey();
-                } else {
+                } else if (getSite() != null) {
                     setContentPage(getSite().getHomeContentPage());
                 }
             }
@@ -499,8 +501,7 @@ public class ProcessingContext {
             // last engine name
             this.setLastEngineName((String) getSessionState().getAttribute(
                     SESSION_LAST_ENGINE_NAME));
-            this
-                    .setEngineHasChanged((getLastEngineName() == null || !getLastEngineName()
+            this.setEngineHasChanged((getLastEngineName() == null || !getLastEngineName()
                             .equals(getEngine())));
 
             resolveCacheStatus();
@@ -1062,13 +1063,15 @@ public class ProcessingContext {
 
         List<Locale> newLocaleList = new ArrayList<Locale>();
 
-        List<Locale> siteLanguages;
+        List<Locale> siteLanguages = Collections.emptyList();
         try {
-            siteLanguages = this.getSite().getLanguageSettingsAsLocales(true);
+            if (this.getSite() != null) {
+                siteLanguages = this.getSite().getLanguageSettingsAsLocales(
+                    true);
+            }
         } catch (Exception t) {
             logger.debug("Exception while getting language settings as locales",
                     t);
-            siteLanguages = new ArrayList<Locale>();
         }
 
         // STEP 1 : let's retrieve the current session locale

@@ -77,7 +77,7 @@ stretcherToOpen   = 0; %>
                       </div>
                         <c:set var="aclName" value="${curAclName.aclName}"/>
                         <c:set var="fieldName" value="${fn:replace(aclName, '.', '_')}"/>
-                        <c:set var="readonly"><%= !LicenseActionChecker.isAuthorizedByLicense((String) pageContext.getAttribute("aclName"), siteID.intValue()) %></c:set>
+                        <c:set var="readonly"><%= !LicenseActionChecker.isAuthorizedByLicense((String) pageContext.getAttribute("aclName"), siteID != null ? siteID.intValue() : 0) %></c:set>
                         <internal:aclNameEditor aclId="${curAclName.acl.id}" fieldId="${fieldName}" fieldName="${fieldName}" readonly="${readonly}" allowSiteSelection="true"/>
                     </td>
                   </tr>

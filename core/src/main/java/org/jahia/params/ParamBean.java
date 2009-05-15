@@ -344,7 +344,7 @@ public class ParamBean extends ProcessingContext {
             setEngineNameIfAvailable();
 
             // retrieve site info
-            if (!findSiteFromWhatWeHave()) {
+            if (!findSiteFromWhatWeHave() && REGISTRY.getJahiaSitesService().getNbSites() > 0) {
                 throw new JahiaSiteNotFoundException(
                         "400 Bad Request : No site specified or site not found",
                         JahiaException.CRITICAL_SEVERITY);
@@ -367,15 +367,16 @@ public class ParamBean extends ProcessingContext {
                             request.getServerName());
                 }
             }
-
-            setSiteInfoFromSiteFound();
+            if (getSite() != null) {
+                setSiteInfoFromSiteFound();
+            }
 
             if (!isContentPageLoadedWhileTryingToFindSiteByPageID()) {
                 if (isPageRequestedByID()) {
                     setContentPageToPageWithID();
                 } else if (isPageRequestedByKey()) {
                     setContentPageToPageWithURLKey();
-                } else {
+                } else if (getSite() != null) {
                     setContentPage(getSite().getHomeContentPage());
                 }
             }

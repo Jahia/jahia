@@ -1,4 +1,3 @@
-
 <toolbars id="org.jahia.toolbars.default">
     <display>
         <toolbar name="switchingmode" ref-type="org.jahia.toolbar.switchingmode" state="top" draggable="false"
@@ -31,6 +30,7 @@
 
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.User"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.sites" separator="false"/>
+            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.View"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Tools"/>
             
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.License"/>
@@ -41,7 +41,6 @@
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Notification"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.Page"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.LanguageSwitcher"/>
-            <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.EditMode"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.PreviewMode"/>
             <itemsgroup ref-type="org.jahia.toolbar.itemsgroup.CompareMode"/>
 
@@ -161,14 +160,14 @@
             <item ref-type="org.jahia.toolbar.item.PageProperties"/>
         </itemsgroup>
 
-        <!-- items that are visible only during the edit mode context-->
-        <itemsgroup type="org.jahia.toolbar.itemsgroup.EditMode" layout="menu-checkbox">
-            <title-resourcebundle-key key='toolbar.advanced'/>
-            <visibility authentication="true" mode="edit"/>
+        <itemsgroup type="org.jahia.toolbar.itemsgroup.View" layout="menu-checkbox">
+            <title-resourcebundle-key key='toolbar.view'/>
             <item ref-type="org.jahia.toolbar.item.acldiff"/>
             <item ref-type="org.jahia.toolbar.item.timebasepublishing"/>
             <item ref-type="org.jahia.toolbar.item.integrity"/>
             <item ref-type="org.jahia.toolbar.item.inlineediting"/>
+            <item ref-type="org.jahia.toolbar.item.Separator"/>
+            <item ref-type="org.jahia.toolbar.item.ToolbarsTitle"/>
         </itemsgroup>
 
         <!-- items that are visible only during the edit mode context-->
@@ -347,6 +346,11 @@
 
         <!-- fill item-->
         <item type="org.jahia.toolbar.item.Fill"/>
+        
+        <item type="org.jahia.toolbar.item.Toolbars"/>
+        <item type="org.jahia.toolbar.item.ToolbarsTitle" extends="org.jahia.toolbar.item.Toolbars">
+            <title-resourcebundle-key key="toolbar.view.toolbars"/>
+        </item>
         
         <!-- License information -->
         <item type="org.jahia.toolbar.item.License" extends="org.jahia.toolbar.item.InfoPanel">

@@ -27,7 +27,6 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.ToolbarConstants;
 import org.jahia.ajax.gwt.client.data.config.GWTJahiaPageContext;
 import org.jahia.ajax.gwt.client.core.JahiaPageEntryPoint;
-import org.jahia.ajax.gwt.client.core.JahiaType;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaState;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItemsGroup;
@@ -42,7 +41,9 @@ import org.jahia.ajax.gwt.client.widget.toolbar.dnd.ToolbarIndexedDropController
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -62,6 +63,7 @@ import com.google.gwt.user.client.ui.RootPanel;
  * Time: 15:27:13
  */
 public class ToolbarManager {
+    
     private RootPanel topPanel;
 
     // target toolbar panel
@@ -91,8 +93,12 @@ public class ToolbarManager {
 
     // number of displayed toolbar
     private int displayedToolbars = 0;
+    
+    private List<Listener<BaseEvent>> contextMenuReadyListeners = new ArrayList<Listener<BaseEvent>>(
+            1);
 
     public ToolbarManager() {
+        super();
     }
 
     public ToolbarManager(RootPanel topPanel, GWTJahiaPageContext pageContext) {
@@ -221,10 +227,11 @@ public class ToolbarManager {
     public void clear() {
         for (final JahiaToolbar jahiaToolbar : getJahiaToolbars()) {
             jahiaToolbar.clearAndRemoveFromParent();
-            jahiaToolbars = new ArrayList<JahiaToolbar>();
-            displayedToolbars = 0;
-            toolbarContextMenu.removeAll();
         }
+        jahiaToolbars = new ArrayList<JahiaToolbar>();
+        displayedToolbars = 0;
+        toolbarContextMenu.removeAll();
+        contextMenuReadyListeners.clear();
     }
 
 
@@ -359,7 +366,10 @@ public class ToolbarManager {
                 }
             });
             toolbarContextMenu.add(resetPosition);
-
+            BaseEvent evt = new BaseEvent(toolbarContextMenu);
+            for (Listener<BaseEvent> listener : contextMenuReadyListeners) {
+                listener.handleEvent(evt);
+            }
         }
     }
 
@@ -421,7 +431,11 @@ public class ToolbarManager {
             jahiaToolbars.add(jahiaToolbar);
             // handle drag option
             handleDraggable(jahiaToolbar);
-            jahiaToolbar.setContextMenu(toolbarContextMenu);
+            // deactivate right click context menu if the listener was provided
+            // (we will display this menu in another place then)
+            if (contextMenuReadyListeners.size() == 0) {
+                jahiaToolbar.setContextMenu(toolbarContextMenu);
+            }
             if (jahiaToolbar.isLoaded() && hideToolbarsButton != null) {
                 hideToolbarsButton.setVisible(false);
             }
@@ -480,5 +494,9 @@ public class ToolbarManager {
 
     public String getResource(String key) {
         return Messages.getResource(key);
+    }
+    
+    public void addContextMenuReadyListener(Listener<BaseEvent> listener) {
+        contextMenuReadyListeners.add(listener);
     }
 }

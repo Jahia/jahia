@@ -37,6 +37,7 @@ public class JahiaProviderFactory extends ProviderHelper {
     public static final String ORG_JAHIA_TOOLBAR_ITEM_OPEN_HTML_WINDOW = "org.jahia.toolbar.item.OpenHTMLWindow";
     public static final String ORG_JAHIA_TOOLBAR_ITEM_SUBSCRIPTIONS = "org.jahia.toolbar.item.Subscriptions";
     public static final String ORG_JAHIA_TOOLBAR_ITEM_LANGUAGE_SWITCHER = "org.jahia.toolbar.item.LanguageSwitcher";
+    public static final String ORG_JAHIA_TOOLBAR_ITEM_TOOLBARS = "org.jahia.toolbar.item.Toolbars";
 
 
     // these type are  special ones: its handled directly by the Toolbar
@@ -75,6 +76,8 @@ public class JahiaProviderFactory extends ProviderHelper {
             return new SubscriptionsJahiaToolItemProvider() ;
         } else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_LANGUAGE_SWITCHER)) {
             return new LanguageSwitcherProvider();
+        } else if (type.equalsIgnoreCase(ORG_JAHIA_TOOLBAR_ITEM_TOOLBARS)) {
+            return new ToobarsJahiaToolItemProvider();
         }
         return null;
     }

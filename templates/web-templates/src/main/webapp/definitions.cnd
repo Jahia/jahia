@@ -32,7 +32,7 @@ page            link (page[type="internal,external"])
 page            link (page[type="internal"])
 
 [web_templates:bannerContainer] > jnt:container, web_templates:title
-file            background
+file            background (file[mime='image/*'])
 smallText       cast
 integer         positionTop indexed=no
 integer         positionLeft indexed=no

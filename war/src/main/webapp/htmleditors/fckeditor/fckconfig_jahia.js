@@ -1,3 +1,5 @@
+FCKConfig.SkinPath = FCKConfig.BasePath + 'skins/jahia/' ;
+
 FCKConfig.AutoDetectLanguage	= false ;
 
 FCKConfig.ToolbarSets["Full"] = [

@@ -24,7 +24,7 @@
         <template:container id="fileContentContainer" displayActionMenu="false">
             <ui:actionMenu contentObjectName="fileContentContainer" namePostFix="fileContent" labelKey="fileContent.update">
             <template:field name="fileContentSource" var="mySourceField" display="false"/>
-                <c:import url="${pageContext.request.scheme}://${pageContext.request.localAddr}:${pageContext.request.localPort}${mySourceField.file.downloadUrl}"/>
+                <template:fileImport path="${mySourceField.file.realName}"/>
             </ui:actionMenu>
         </template:container>
 </template:containerList>

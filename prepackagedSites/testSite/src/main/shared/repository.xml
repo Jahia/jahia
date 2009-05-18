@@ -25,11 +25,6 @@
                     <j:ace j:principal="g:guest" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="GRANT" j:privileges=""></j:ace>
                     <j:ace j:principal="g:guest" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="DENY" j:privileges="jcr:read jcr:write"></j:ace>
                 </j:acl>
-                <org.jahia.preferences.provider.toolbar jcr:createdBy="root" j:filename="org.jahia.preferences.provider.toolbar" jcr:lastModified="2009-01-28T15:37:33.328+01:00" jcr:created="2009-01-28T15:37:32.781+01:00" jcr:uuid="ecc2876c-6b16-48a7-bd06-019992f761d4" j:fullpath="/content/users/root/preferences/org.jahia.preferences.provider.toolbar" jcr:lastModifiedBy="root" jcr:primaryType="jnt:preferenceProvider">
-                    <preference jcr:createdBy="root" j:filename="preference" jcr:lastModified="2009-01-28T15:37:33.328+01:00" type="org.jahia.toolbar.workflow" jcr:created="2009-01-28T15:37:32.796+01:00" jcr:uuid="761eb51f-0745-445c-aa52-2d9caa6f13e5" j:fullpath="/content/users/root/preferences/org.jahia.preferences.provider.toolbar/preference" jcr:lastModifiedBy="root" jcr:primaryType="jnt:preference" name="worflow">
-                        <preferenceValue display="true" index="0" jcr:createdBy="root" jcr:lastModifiedBy="root" positionX="0" j:filename="preferenceValue" jcr:lastModified="2009-01-28T15:37:33.328+01:00" positionY="0" jcr:created="2009-01-28T15:37:32.812+01:00" j:fullpath="/content/users/root/preferences/org.jahia.preferences.provider.toolbar/preference/preferenceValue" jcr:uuid="b7a81ff1-8637-4e01-bb7f-a623a8ce2f19" visible="true" jcr:primaryType="jnt:preferenceValue" state="0"></preferenceValue>
-                    </preference>
-                </org.jahia.preferences.provider.toolbar>
             </preferences>
             <j:acl jcr:primaryType="jnt:acl">
                 <j:ace j:principal="u:root" j:protected="false" jcr:primaryType="jnt:ace" j:aceType="GRANT" j:privileges="jcr:read jcr:write"></j:ace>

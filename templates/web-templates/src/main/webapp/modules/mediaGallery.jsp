@@ -22,5 +22,6 @@
         <template:container id="pictFolderContainer" emptyContainerDivCssClassName="mockup-pictFolder">
             <template:field name='pictFolder' var="pictures" display="false"/>
             <c:set var="picts" value="${pictures.file.realName}" scope="request"/>
+            <ui:thumbView path="${picts}" cssClassName="thumbView"/>
         </template:container>
     </template:containerList>

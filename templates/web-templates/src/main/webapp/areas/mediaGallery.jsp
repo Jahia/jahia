@@ -26,4 +26,4 @@
         <template:include page="modules/introduction/introductionDisplay.jsp"/>
         <template:include page="modules/mediaGallery.jsp"/>
 <!--start jobsSearchForm -->
-		<ui:thumbView path="${picts}" cssClassName="thumbView"/>
+		

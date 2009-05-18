@@ -165,7 +165,7 @@ public class JahiaConsole {
                                 + "\n\n"
                                 + " *******************************************************************************\n"
                                 + " * The contents of this software, or the files included with this software,    *\n"
-                                + " * are subject to the Jahia Sustainable Enterprise License - JSEL.             *\n"
+                                + " * are subject to the Jahia Sustainable Enterprise License - JSEL v2.          *\n"
                                 + " * You may not use this software except in compliance with the license. You    *\n"
                                 + " * may obtain a copy of the license at http://www.jahia.com/license. See the   *\n"
                                 + " * license for the rights, obligations and limitations governing use of the    *\n"

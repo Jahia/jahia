@@ -413,7 +413,7 @@ final class TemplateDeploymentDescriptorHelper {
                             .getNewUserRegistrationSuccessPageName());
                 }    
                 if (pkg.getSitemapPageName() != null) {
-                    ch.dataElement("sitemap", pkg.getNewUserRegistrationPageName());
+                    ch.dataElement("sitemap", pkg.getSitemapPageName());
                 }
                 ch.endElement(NS_URI_JAHIA,
                         "common-pages", "common-pages");

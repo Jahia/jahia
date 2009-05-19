@@ -10,39 +10,74 @@
     <short-name>template</short-name>
     <uri>http://www.jahia.org/tags/templateLib</uri>
     <tag>
-        <description>template wrapper</description>
+        <description>
+            This tag simply defines that the JSP file containing it should be considered as a
+            Jahia template. It generates the XML doctype and starting &lt;html&gt; tag of the XHTML page that will be
+            sent to the browser. It should be used together with the templateHead and templateBody tags, since all templates
+            MUST have a head and a body
+        </description>
         <name>template</name>
         <tag-class>org.jahia.taglibs.template.templatestructure.TemplateTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>
+                Defines what DOCTYPE to use for the current pages created from this template. By default, pages are rendered
+                using the XHTML TRANSITIONAL doctype. Legal values for this attribute are "xhtml-strict", "xhtml-transitional",
+                "html-strict" or "html-transitional"
+            </description>
             <name>doctype</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                Enables GWT for the guest (anonymous) user if the attribute value is 'true'. By default
+                GWT is disabled for the guest user in order to not generate javascript code for non-loggued user
+            </description>
             <name>gwtForGuest</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Defines what resource bundle file to use if the default template one is not suitable for this template.</description>
             <name>resourceBundle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <example>
+        &lt;template:template&gt;
+            &lt;template:templateHead&gt;
+               &lt;%@ include file="common/template-head.jspf" %&gt;
+               &lt;utility:applicationResources/&gt;
+           &lt;/template:templateHead&gt;
+           &lt;template:templateBody&gt;
+           &lt;/template:templateBody&gt;
+         &lt;/template:template&gt;
+        </example>
     </tag>
     <tag>
-        <description>template head wrapper</description>
+        <description>
+            This tag simply delimits what is the head part of a Jahia template.
+            It generates links to mandatory Jahia resources such as javascript or CSS files. All templates MUST have a head part.
+            It should be used together with the template and templateBody tags.
+        </description>
         <name>templateHead</name>
         <tag-class>org.jahia.taglibs.template.templatestructure.TemplateHeaderTag</tag-class>
         <body-content>JSP</body-content>
     </tag>
     <tag>
-        <description>template body wrapper</description>
+        <description>
+            This tag simply delimits what is the body part of a Jahia template.
+            All templates MUST have a body part. It should be used together with the template and templateHead tags. The tag also
+            implements the dynamic attributes interface allowing to specify whatever attribute should be passed to the HTML
+            body tag of the generated page.
+        </description>
         <name>templateBody</name>
         <tag-class>org.jahia.taglibs.template.templatestructure.TemplateBodyTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>Allows the template developer to specify a specific GWT javascript file to use rather than the default one</description>
             <name>gwtScript</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -50,26 +85,33 @@
         <dynamic-attributes>true</dynamic-attributes>
     </tag>
     <tag>
-        <description>Generates a "meta" html tag</description>
+        <description>Generates a HTML meta tag to be placed in the head part of the template</description>
         <name>meta</name>
         <tag-class>org.jahia.taglibs.template.metadata.HTMLMetaTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>Sets the name of the meta tag</description>
             <name>name</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>If the generated value should used a specific static value, this is the attribute to use in order to set it</description>
             <name>value</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                If the generated value should reflect a Jahia metadata, this is the place where to give the name of the Jahia
+                metadata we are interested in.
+            </description>
             <name>metadata</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set to true if you only want the value as a String and not the encapsulating HTML meta tag and its attributes</description>
             <name>valueOnly</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -82,72 +124,96 @@
         <tag-class>org.jahia.taglibs.template.box.BoxListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>This attribute can be used to set the maximum size of the container list ( the max containers to load )</description>
             <name>maxSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                This is an identifier that must be unique within the current parent object (page or containerlist).
+                Usually it is good practice to avoid using spaces in this name, which makes manipulation easier in general.
+            </description>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                It is possible to allow the user to change the number of items per page used in the Pagination of a given Container List.
+                Say, if a container list contains a 1000 containers/fields, you'll want to spread this list across mutilple pages. If you don't, then
+                enjoy the wait...
+                The default value is -1 meaning the functionality is deactivated.
+            </description>
             <name>windowSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                This attribute dictates the initial number of pages into the paginated list for this containerList. The default value is 0.
+                Note that if windowOffset is superior to the number of elements in the container list, it defaults back to a zero value.
+            </description>
             <name>windowOffset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Set the number of containers display in a page</description>
             <name>nbStepPerPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>set this attribute to true to activate pagination</description>
             <name>displayPagination</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Define a containerListBean exposed in pageContext Scope</description>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is true. Display containerList action menu bar</description>
             <name>displayActionMenu</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>set ressource for the left part of the action menu ("manage" in "manage boxes")</description>
             <name>actionMenuNamePostFix</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set a css class around the action menu code with a &lt;div&gt; statement</description>
             <name>actionMenuCssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>set ressource for the right part of the action menu ("boxes" in "manage boxes")</description>
             <name>actionMenuNameLabelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is false. If true, the action menu for the containerList is display at then end of the list.</description>
             <name>displayActionMenuAtBottom</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Add a css style to the icon represent the action menu</description>
             <name>actionMenuIconStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -169,18 +235,21 @@
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Retreive container defintion from pageID</description>
             <name>pageID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Retreive container defintion from pageLevel</description>
             <name>pageLevel</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Retreive container defintion from pageKey</description>
             <name>pageKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -197,12 +266,14 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>if false (default) hide title. If true, display box title, surrounded by &lt;span class="boxTitle"&gt; &lt;/span&gt;</description>
             <name>displayTitle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>if true (default) inline edititing active on the title</description>
             <name>inlineEditingActivated</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -355,72 +426,96 @@
         <tag-class>org.jahia.taglibs.template.containerlist.ContainerListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>This attribute can be used to set the maximum size of the container list ( the max containers to load )</description>
             <name>maxSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                This is an identifier that must be unique within the current parent object (page or containerlist).
+                Usually it is good practice to avoid using spaces in this name, which makes manipulation easier in general.
+            </description>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                It is possible to allow the user to change the number of items per page used in the Pagination of a given Container List.
+                Say, if a container list contains a 1000 containers/fields, you'll want to spread this list across mutilple pages. If you don't, then
+                enjoy the wait...
+                The default value is -1 meaning the functionality is deactivated.
+            </description>
             <name>windowSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                This attribute dictates the initial number of pages into the paginated list for this containerList. The default value is 0.
+                Note that if windowOffset is superior to the number of elements in the container list, it defaults back to a zero value.
+            </description>
             <name>windowOffset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Set the number of containers display in a page</description>
             <name>nbStepPerPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>set this attribute to true to activate pagination</description>
             <name>displayPagination</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Define a containerListBean exposed in pageContext Scope</description>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is true. Display containerList action menu bar</description>
             <name>displayActionMenu</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>set ressource for the left part of the action menu ("manage" in "manage boxes")</description>
             <name>actionMenuNamePostFix</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set a css class around the action menu code with a &lt;div&gt; statement</description>
             <name>actionMenuCssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>set ressource for the right part of the action menu ("boxes" in "manage boxes")</description>
             <name>actionMenuNameLabelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is false. If true, the action menu for the containerList is display at then end of the list.</description>
             <name>displayActionMenuAtBottom</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Add a css style to the icon represent the action menu</description>
             <name>actionMenuIconStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -472,72 +567,96 @@
         <tag-class>org.jahia.taglibs.template.containerlist.AbsoluteContainerListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>This attribute can be used to set the maximum size of the container list ( the max containers to load )</description>
             <name>maxSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                This is an identifier that must be unique within the current parent object (page or containerlist).
+                Usually it is good practice to avoid using spaces in this name, which makes manipulation easier in general.
+            </description>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                It is possible to allow the user to change the number of items per page used in the Pagination of a given Container List.
+                Say, if a container list contains a 1000 containers/fields, you'll want to spread this list across mutilple pages. If you don't, then
+                enjoy the wait...
+                The default value is -1 meaning the functionality is deactivated.
+            </description>
             <name>windowSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                This attribute dictates the initial number of pages into the paginated list for this containerList. The default value is 0.
+                Note that if windowOffset is superior to the number of elements in the container list, it defaults back to a zero value.
+            </description>
             <name>windowOffset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Set the number of containers display in a page</description>
             <name>nbStepPerPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>set this attribute to true to activate pagination</description>
             <name>displayPagination</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Define a containerListBean exposed in pageContext Scope</description>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is true. Display containerList action menu bar</description>
             <name>displayActionMenu</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>set ressource for the left part of the action menu ("manage" in "manage boxes")</description>
             <name>actionMenuNamePostFix</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set a css class around the action menu code with a &lt;div&gt; statement</description>
             <name>actionMenuCssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>set ressource for the right part of the action menu ("boxes" in "manage boxes")</description>
             <name>actionMenuNameLabelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is false. If true, the action menu for the containerList is display at then end of the list.</description>
             <name>displayActionMenuAtBottom</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Add a css style to the icon represent the action menu</description>
             <name>actionMenuIconStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -559,18 +678,22 @@
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>the Page ID of the page which contains the desired container.</description>
             <name>pageId</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>the offset from the root page, specifying the number of
+            levels to go down in the tree.</description>
             <name>pageLevel</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>the Page Key of the page which contains the desired container.</description>
             <name>pageKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -582,72 +705,96 @@
         <tag-class>org.jahia.taglibs.template.containerlist.RelativeContainerListTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>This attribute can be used to set the maximum size of the container list ( the max containers to load )</description>
             <name>maxSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                This is an identifier that must be unique within the current parent object (page or containerlist).
+                Usually it is good practice to avoid using spaces in this name, which makes manipulation easier in general.
+            </description>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>
+                It is possible to allow the user to change the number of items per page used in the Pagination of a given Container List.
+                Say, if a container list contains a 1000 containers/fields, you'll want to spread this list across mutilple pages. If you don't, then
+                enjoy the wait...
+                The default value is -1 meaning the functionality is deactivated.
+            </description>
             <name>windowSize</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>
+                This attribute dictates the initial number of pages into the paginated list for this containerList. The default value is 0.
+                Note that if windowOffset is superior to the number of elements in the container list, it defaults back to a zero value.
+            </description>
             <name>windowOffset</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Set the number of containers display in a page</description>
             <name>nbStepPerPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>set this attribute to true to activate pagination</description>
             <name>displayPagination</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Define a containerListBean exposed in pageContext Scope</description>
             <name>id</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is true. Display containerList action menu bar</description>
             <name>displayActionMenu</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>set ressource for the left part of the action menu ("manage" in "manage boxes")</description>
             <name>actionMenuNamePostFix</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Set a css class around the action menu code with a &lt;div&gt; statement</description>
             <name>actionMenuCssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>set ressource for the right part of the action menu ("boxes" in "manage boxes")</description>
             <name>actionMenuNameLabelKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>default is false. If true, the action menu for the containerList is display at then end of the list.</description>
             <name>displayActionMenuAtBottom</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Add a css style to the icon represent the action menu</description>
             <name>actionMenuIconStyle</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -669,6 +816,8 @@
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>the offset from the current page, specifying the number of
+      levels to up down in the tree</description>
             <name>levelNb</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1173,31 +1322,37 @@
         <tag-class>org.jahia.taglibs.template.field.DisplayImageTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>Name of the bean contains the image to displqy</description>
             <name>file</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img class attribute</description>
             <name>cssClassName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img align attribute</description>
             <name>align</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img title attribute</description>
             <name>title</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>img alt attribute</description>
             <name>alt</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>bean name of the container containing the file</description>
             <name>containerName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1377,38 +1532,45 @@
         <tag-class>org.jahia.taglibs.template.cache.CacheTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
+            <description>define the cache key of the current cache object</description>
             <name>cacheKey</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>used for old call name of jsp:useBean</description>
             <name>cacheKeyName</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>used for old call property of jsp:useBean</description>
             <name>cacheKeyProperty</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>used for old call scope of jsp:useBean</description>
             <name>cacheKeyScope</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Hash set of cache dependecies</description>
             <name>dependencies</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.Set</type>
         </attribute>
         <attribute>
+            <description>if true disable cache in edit mode (default false)</description>
             <name>forceExecutionInEditMode</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>define expiration in seconds</description>
             <name>expiration</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1421,12 +1583,14 @@
         <tag-class>org.jahia.taglibs.template.cache.AddDependencyTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>define the depedency set</description>
             <name>set</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.Set</type>
         </attribute>
         <attribute>
+            <description>Bean dependency associated</description>
             <name>bean</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1445,6 +1609,9 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>jahiaType is one of : actionmenu,calendar,calendar,form,inlineediting,jobreport,layoutmanager,layoutmanager,
+                layoutmanagerbox,mediaGallery,mySettings,opensearch,pdisplay,
+                portletrender,query,rss,subscription,toolsbars,usergroup,versioncomparison</description>
             <name>jahiaType</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1455,6 +1622,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>if false (default) use gxt-admin module, if true use gxt-template module</description>
             <name>templateUsage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1514,12 +1682,16 @@
         <tag-class>org.jahia.taglibs.template.url.ComposeUrlTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>URL Page ID</description>
             <name>pageID</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Page type.
+                Valid values are 'administration', 'login', 'logout', 'mySettings', 'siteMap', 'search'
+            </description>
             <name>page</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -1555,6 +1727,7 @@
         <tag-class>org.jahia.taglibs.template.theme.ThemeDisplayTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
+            <description>name of the default theme</description>
             <name>defaultTheme</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

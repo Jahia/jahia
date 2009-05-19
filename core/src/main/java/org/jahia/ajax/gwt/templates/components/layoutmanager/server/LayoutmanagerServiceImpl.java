@@ -364,13 +364,22 @@ public class LayoutmanagerServiceImpl extends AbstractJahiaGWTServiceImpl implem
             JCRLayoutNode node = findDefaultLayoutNode();
 
             try {
-                layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-                layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
-                layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
-                layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
-                layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
-                // save pref
-                getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+                if (node != null) {
+                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+                    layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
+                    layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
+                    layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
+                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+
+                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+                    layoutmanagerJahiaPreference.getNode().setLiveDraggable(node.isLiveDraggable());
+                    layoutmanagerJahiaPreference.getNode().setLiveEditable(node.isLiveEditable());
+                    layoutmanagerJahiaPreference.getNode().setNbColumns(node.getNbColumns());
+                    layoutmanagerJahiaPreference.getNode().setPage(node.getPage());
+
+                    // save pref
+                    getLayoutManagerJahiaPreferencesProvider().setJahiaPreference(layoutmanagerJahiaPreference);
+                }
 
 
             } catch (Exception e) {

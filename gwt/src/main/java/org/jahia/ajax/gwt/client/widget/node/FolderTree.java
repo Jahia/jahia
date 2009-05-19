@@ -82,7 +82,7 @@ public class FolderTree extends LeftComponent {
         searchPanel.setBodyBorder(false);
         searchPanel.setBorders(false);
         searchPanel.setScrollMode(Style.Scroll.NONE);
-        searchPanel.setHeading("My saved search") ;
+        searchPanel.setHeading(Messages.getResource("fm_repository_savedSearch")) ;
         searchPanel.getHeader().setIconStyle("fm-savedSearch");
         searchPanel.getHeader().setBorders(false);
         queryList = new DataList() ;

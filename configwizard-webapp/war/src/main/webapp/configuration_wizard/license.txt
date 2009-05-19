@@ -1,13 +1,13 @@
-JAHIA SUSTAINABLE ENTEPRISE LICENSE (JSEL)
+JAHIA SUSTAINABLE ENTERPRISE LICENSE (JSEL)
 Version 2.0
 
 INTRODUCTION
 
 The JAHIA Sustainable Enterprise License ("License") may include: 1) Test,
-Research and Development Right of Usage and 2) Commercial Right of Usage. You 
+Research and Development Right of Usage and 2) Commercial Right of Usage. You
 have agreed to the terms of this License by selecting the "Accept" button at the
 end of the JSEL or executing a hardcopy JSEL or a document that expressly
-referred to the License with Jahia Solutions Group SA (?JSG?).
+referred to the License with Jahia Solutions Group SA ("JSG").
 
 The Commercial Use must be approved by You and JSG with the signature of a
 related document, delivered by JSG, in order to become effective. Capitalized
@@ -33,8 +33,8 @@ files containing Generic Developments, in each case including portions thereof.
 1.5. "Executable" means the Covered Software in any form other than Source Code.
 
 1.6. "Generic Developments" are defined as Modifications done at Your request by
-JSG as a contribution to the Software and identified as such on the JSG Order
-Forms signed by You. Once incorporated into the Original Software, Generic
+JSG as a contribution to the Original Software and identified as such on the JSG
+Order Forms signed by You. Once incorporated into the Original Software, Generic
 Developments are by nature subject to the terms of the licenses used by JSG.
 
 1.7. "Generic Elements" means, without limitation: software, modules, patches,
@@ -108,8 +108,8 @@ whether by contract or otherwise, or (b) ownership of more than fifty percent
 JSG hereby grants You a world-wide, royalty-free, non-exclusive Test, Research
 and Development Use license:
 
-(a) under intellectual property rights (other than patent or trademark)
-Licensable by JSG, to use, modify, display, and perform the Original Software
+(a) under intellectual property rights (other than patent or trademark),
+licensable by JSG, to use, modify, display, and perform the Original Software
 (or portions thereof), with or without Modifications, and/or as part of a Larger
 Work, for Test, Research and Development Use by You; and
 
@@ -127,7 +127,7 @@ code that You delete from the Original Software, or (2) for infringements caused
 by: (i) the modification of the Original Software, or (ii) the combination of
 the Original Software with other software or devices.
 
-(e)Execution of the Covered Software for all other purposes than mentioned in
+(e) Execution of the Covered Software for all other purposes than mentioned in
 this Section is subject to a fee, payable to JSG and to be mutually agreed upon
 by You and JSG. The grant explicitly does not apply to Commercial Use of the
 Original Software. Commercial Use of Original Software requires a signed
@@ -144,7 +144,7 @@ scope of use (subscription, number of JVM, users, servers, modules, support
 scope,...) applicable have to be agreed on a document provided by JSG and signed
 by You according to JSG Offering.
 
-3.2 Conditioned upon the payment of the appropriate fee to JSG, the respect of
+3.2. Conditioned upon the payment of the appropriate fee to JSG, the respect of
 this License terms and limited to the scope of Commercial Use as defined by JSG,
 JSG hereby grants You a world-wide, non-exclusive and fee-bearing license:
 
@@ -169,7 +169,7 @@ the Original Software with other software or devices.
 (e) Other than the rights expressly granted in this License, JSG retains all
 rights, titles, and interests in Original Software
 
-3.3 Commercial Distribution Requirement / OEM Agreement
+3.3. Commercial Distribution Requirement / OEM Agreement
 You may distribute copies for Commercial Use or integrate Original Software in a
 Larger Work under a license agreement of Your choice which is consistent with
 Your rights and obligations under the License including with the fact that you
@@ -372,4 +372,5 @@ indirectly, out of its utilization of rights under this License and You agree to
 work with JSG to distribute such responsibility according to the Modifications
 Contributor provided. Nothing herein is intended or shall be deemed to
 constitute any admission of liability.
+
 
